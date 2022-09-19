@@ -52,9 +52,9 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
@@ -88,18 +88,18 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'display', 'none' );
 
 
-		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
-		$css->add_property( 'max-height', (  isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250) .  ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+		$css->add_property( 'max-height', ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
 		$css->add_property( 'overflow-y', 'hidden' );
 
 		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
-			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
-			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
+			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
 		}
 
 		// Default expanded Desktop
 		if ( isset( $attributes['defaultExpandedDesktop'] ) && $attributes['defaultExpandedDesktop'] ) {
-			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 			$css->set_media_state( 'desktop' );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
@@ -129,9 +129,9 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'max-height', ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
 				$css->add_property( 'overflow-y', 'hidden' );
 
-				if ( isset( $attributes['enableFadeOut']) && $attributes['enableFadeOut'] ) {
-					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
-					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+				if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
+					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
+					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
 				}
 
 				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
@@ -167,12 +167,12 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content ) {
-		$show_more_container_id        = 'kb-block-show-more-container' . esc_attr( $unique_id );
-		$show_more_id = str_replace( array( '-' ), '', $unique_id );
+		$show_more_container_id = 'kb-block-show-more-container' . esc_attr( $unique_id );
+		$show_more_id           = str_replace( array( '-' ), '', $unique_id );
 
 		$show_hide_more = isset( $attributes['showHideMore'] ) && $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $show_more_id . ".style.display = 'block';";
 		$preview_height = ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( ! empty( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' );
-		$maskvalue = 'none';
+		$maskvalue      = 'none';
 
 		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
 			$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)';

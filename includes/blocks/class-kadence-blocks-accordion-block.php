@@ -44,12 +44,14 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
+
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
+	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 */
@@ -143,8 +145,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
+
 		return $css->css_output();
 	}
+
 	/**
 	 * Registers scripts and styles.
 	 */
@@ -161,6 +165,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kt-accordion.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		}
 	}
+
 	/**
 	 * Render Block CSS in Page Head.
 	 *
@@ -183,4 +188,5 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		}
 	}
 }
+
 Kadence_Blocks_Accordion_Block::get_instance();

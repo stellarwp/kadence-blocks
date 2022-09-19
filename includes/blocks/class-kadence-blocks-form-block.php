@@ -74,7 +74,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) && isset( $attributes['labelFont'][0]['google'] ) && $attributes['labelFont'][0]['google'] && ( ! isset( $attributes['labelFont'][0]['loadGoogle'] ) || true === $attributes['labelFont'][0]['loadGoogle'] ) && isset( $attributes['labelFont'][0]['family'] ) ) {
 			$label_font = $attributes['labelFont'][0];
 
-			$font_family = ( isset( $label_font['family'] ) ? $label_font['family'] : '' );
+			$font_family  = ( isset( $label_font['family'] ) ? $label_font['family'] : '' );
 			$font_variant = ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' );
 			$font_subset  = ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' );
 
@@ -84,7 +84,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) && isset( $attributes['submitFont'][0]['google'] ) && $attributes['submitFont'][0]['google'] && ( ! isset( $attributes['submitFont'][0]['loadGoogle'] ) || true === $attributes['submitFont'][0]['loadGoogle'] ) && isset( $attributes['submitFont'][0]['family'] ) ) {
 			$submit_font = $attributes['submitFont'][0];
 
-			$font_family = ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' );
+			$font_family  = ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' );
 			$font_variant = ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' );
 			$font_subset  = ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' );
 
@@ -94,7 +94,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['messageFont'] ) && is_array( $attributes['messageFont'] ) && isset( $attributes['messageFont'][0] ) && is_array( $attributes['messageFont'][0] ) && isset( $attributes['messageFont'][0]['google'] ) && $attributes['messageFont'][0]['google'] && ( ! isset( $attributes['messageFont'][0]['loadGoogle'] ) || true === $attributes['messageFont'][0]['loadGoogle'] ) && isset( $attributes['messageFont'][0]['family'] ) ) {
 			$message_font = $attributes['messageFont'][0];
 
-			$font_family = ( isset( $message_font['family'] ) ? $message_font['family'] : '' );
+			$font_family  = ( isset( $message_font['family'] ) ? $message_font['family'] : '' );
 			$font_variant = ( isset( $message_font['variant'] ) ? $message_font['variant'] : '' );
 			$font_subset  = ( isset( $message_font['subset'] ) ? $message_font['subset'] : '' );
 
@@ -202,8 +202,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $style['mobileGutter'] ) && is_numeric( $style['mobileGutter'] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field' );
-				$css->add_property( 'padding-right', (floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) ) );
-				$css->add_property( 'padding-left', (floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) ) );
+				$css->add_property( 'padding-right', ( floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) ) );
+				$css->add_property( 'padding-left', ( floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) ) );
 
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form' );
 				$css->add_property( 'margin-right', '-' . ( floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) ) );
@@ -230,23 +230,23 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'line-height', $style['lineHeight'][0] . ( isset( $style['lineType'] ) && ! empty( $style['lineType'] ) ? $style['lineType'] : 'px' ) );
 				}
 				if ( isset( $style['borderWidth'] ) && is_array( $style['borderWidth'] ) && is_numeric( $style['borderWidth'][0] ) ) {
-					$css->add_property( 'border-width', $style['borderWidth'][0] . 'px ' . $style['borderWidth'][1] . 'px ' . $style['borderWidth'][2] . 'px ' . $style['borderWidth'][3] . 'px');
+					$css->add_property( 'border-width', $style['borderWidth'][0] . 'px ' . $style['borderWidth'][1] . 'px ' . $style['borderWidth'][2] . 'px ' . $style['borderWidth'][3] . 'px' );
 				}
 				if ( isset( $style['backgroundType'] ) && 'gradient' === $style['backgroundType'] ) {
 					$bg1 = ( ! isset( $style['background'] ) || 'transparent' === $style['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $style['background'], ( isset( $style['backgroundOpacity'] ) && is_numeric( $style['backgroundOpacity'] ) ? $style['backgroundOpacity'] : 1 ) ) );
 					$bg2 = ( isset( $style['gradient'][0] ) && ! empty( $style['gradient'][0] ) ? $css->render_color( $style['gradient'][0], ( isset( $style['gradient'][1] ) && is_numeric( $style['gradient'][1] ) ? $style['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $style['gradient'][1] ) && is_numeric( $style['gradient'][1] ) ? $style['gradient'][1] : 1 ) ) );
 					if ( isset( $style['gradient'][4] ) && 'radial' === $style['gradient'][4] ) {
-						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $style['gradient'][6] ) && ! empty( $style['gradient'][6] ) ? $style['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $style['gradient'][2] ) && is_numeric( $style['gradient'][2] ) ? $style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradient'][3] ) && is_numeric( $style['gradient'][3] ) ? $style['gradient'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $style['gradient'][6] ) && ! empty( $style['gradient'][6] ) ? $style['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $style['gradient'][2] ) && is_numeric( $style['gradient'][2] ) ? $style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradient'][3] ) && is_numeric( $style['gradient'][3] ) ? $style['gradient'][3] : '100' ) . '%)' );
 					} else if ( ! isset( $style['gradient'][4] ) || 'radial' !== $style['gradient'][4] ) {
-						$css->add_property( 'background', 'linear-gradient(' . ( isset( $style['gradient'][5] ) && ! empty( $style['gradient'][5] ) ? $style['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $style['gradient'][2] ) && is_numeric( $style['gradient'][2] ) ? $style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradient'][3] ) && is_numeric( $style['gradient'][3] ) ? $style['gradient'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'linear-gradient(' . ( isset( $style['gradient'][5] ) && ! empty( $style['gradient'][5] ) ? $style['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $style['gradient'][2] ) && is_numeric( $style['gradient'][2] ) ? $style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradient'][3] ) && is_numeric( $style['gradient'][3] ) ? $style['gradient'][3] : '100' ) . '%)' );
 					}
 				} else if ( isset( $style['background'] ) && ! empty( $style['background'] ) ) {
 					$alpha = ( isset( $style['backgroundOpacity'] ) && is_numeric( $style['backgroundOpacity'] ) ? $style['backgroundOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $style['background'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $style['background'], $alpha ) );
 				}
 				if ( isset( $style['border'] ) && ! empty( $style['border'] ) ) {
 					$alpha = ( isset( $style['borderOpacity'] ) && is_numeric( $style['borderOpacity'] ) ? $style['borderOpacity'] : 1 );
-					$css->add_property('border-color', $css->render_color( $style['border'], $alpha ) );
+					$css->add_property( 'border-color', $css->render_color( $style['border'], $alpha ) );
 				}
 				if ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) {
 					$css->add_property( 'box-shadow', ( isset( $style['boxShadow'][7] ) && true === $style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $style['boxShadow'][3] ) && is_numeric( $style['boxShadow'][3] ) ? $style['boxShadow'][3] : '1' ) . 'px ' . ( isset( $style['boxShadow'][4] ) && is_numeric( $style['boxShadow'][4] ) ? $style['boxShadow'][4] : '1' ) . 'px ' . ( isset( $style['boxShadow'][5] ) && is_numeric( $style['boxShadow'][5] ) ? $style['boxShadow'][5] : '2' ) . 'px ' . ( isset( $style['boxShadow'][6] ) && is_numeric( $style['boxShadow'][6] ) ? $style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $style['boxShadow'][1] ) && ! empty( $style['boxShadow'][1] ) ? $style['boxShadow'][1] : '#000000' ), ( isset( $style['boxShadow'][2] ) && is_numeric( $style['boxShadow'][2] ) ? $style['boxShadow'][2] : 0.2 ) ) );
@@ -260,7 +260,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				if ( isset( $style['borderActive'] ) && ! empty( $style['borderActive'] ) ) {
 					$alpha = ( isset( $style['borderActiveOpacity'] ) && is_numeric( $style['borderActiveOpacity'] ) ? $style['borderActiveOpacity'] : 1 );
-					$css->add_property('border-color', $css->render_color( $style['borderActive'], $alpha ) );
+					$css->add_property( 'border-color', $css->render_color( $style['borderActive'], $alpha ) );
 				}
 				if ( isset( $style['boxShadowActive'] ) && is_array( $style['boxShadowActive'] ) && isset( $style['boxShadowActive'][0] ) && true === $style['boxShadowActive'][0] ) {
 					$css->add_property( 'box-shadow', ( isset( $style['boxShadowActive'][7] ) && true === $style['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $style['boxShadowActive'][3] ) && is_numeric( $style['boxShadowActive'][3] ) ? $style['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $style['boxShadowActive'][4] ) && is_numeric( $style['boxShadowActive'][4] ) ? $style['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $style['boxShadowActive'][5] ) && is_numeric( $style['boxShadowActive'][5] ) ? $style['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $style['boxShadowActive'][6] ) && is_numeric( $style['boxShadowActive'][6] ) ? $style['boxShadowActive'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $style['boxShadowActive'][1] ) && ! empty( $style['boxShadowActive'][1] ) ? $style['boxShadowActive'][1] : '#000000' ), ( isset( $style['boxShadowActive'][2] ) && is_numeric( $style['boxShadowActive'][2] ) ? $style['boxShadowActive'][2] : 0.4 ) ) );
@@ -269,13 +269,13 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$bg1 = ( ! isset( $style['backgroundActive'] ) ? $css->render_color( '#444444', ( isset( $style['backgroundActiveOpacity'] ) && is_numeric( $style['backgroundActiveOpacity'] ) ? $style['backgroundActiveOpacity'] : 1 ) ) : $css->render_color( $style['backgroundActive'], ( isset( $style['backgroundActiveOpacity'] ) && is_numeric( $style['backgroundActiveOpacity'] ) ? $style['backgroundActiveOpacity'] : 1 ) ) );
 					$bg2 = ( isset( $style['gradientActive'][0] ) && ! empty( $style['gradientActive'][0] ) ? $css->render_color( $style['gradientActive'][0], ( isset( $style['gradientActive'][1] ) && is_numeric( $style['gradientActive'][1] ) ? $style['gradientActive'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $style['gradientActive'][1] ) && is_numeric( $style['gradientActive'][1] ) ? $style['gradientActive'][1] : 1 ) ) );
 					if ( isset( $style['gradientActive'][4] ) && 'radial' === $style['gradientActive'][4] ) {
-						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $style['gradientActive'][6] ) && ! empty( $style['gradientActive'][6] ) ? $style['gradientActive'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $style['gradientActive'][2] ) && is_numeric( $style['gradientActive'][2] ) ? $style['gradientActive'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradientActive'][3] ) && is_numeric( $style['gradientActive'][3] ) ? $style['gradientActive'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $style['gradientActive'][6] ) && ! empty( $style['gradientActive'][6] ) ? $style['gradientActive'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $style['gradientActive'][2] ) && is_numeric( $style['gradientActive'][2] ) ? $style['gradientActive'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradientActive'][3] ) && is_numeric( $style['gradientActive'][3] ) ? $style['gradientActive'][3] : '100' ) . '%)' );
 					} else if ( ! isset( $style['gradientActive'][4] ) || 'radial' !== $style['gradientActive'][4] ) {
-						$css->add_property( 'background', 'linear-gradient(' . ( isset( $style['gradientActive'][5] ) && ! empty( $style['gradientActive'][5] ) ? $style['gradientActive'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $style['gradientActive'][2] ) && is_numeric( $style['gradientActive'][2] ) ? $style['gradientActive'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradientActive'][3] ) && is_numeric( $style['gradientActive'][3] ) ? $style['gradientActive'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'linear-gradient(' . ( isset( $style['gradientActive'][5] ) && ! empty( $style['gradientActive'][5] ) ? $style['gradientActive'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $style['gradientActive'][2] ) && is_numeric( $style['gradientActive'][2] ) ? $style['gradientActive'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $style['gradientActive'][3] ) && is_numeric( $style['gradientActive'][3] ) ? $style['gradientActive'][3] : '100' ) . '%)' );
 					}
 				} else if ( isset( $style['backgroundActive'] ) && ! empty( $style['backgroundActive'] ) ) {
 					$alpha = ( isset( $style['backgroundActiveOpacity'] ) && is_numeric( $style['backgroundActiveOpacity'] ) ? $style['backgroundActiveOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $style['backgroundActive'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $style['backgroundActive'], $alpha ) );
 				}
 
 			}
@@ -304,16 +304,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $style['size'] ) && 'custom' && $style['size'] && isset( $style['deskPadding'] ) && is_array( $style['deskPadding'] ) && isset( $style['deskPadding'][0] ) && is_numeric( $style['deskPadding'][0] ) ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field' );
 				if ( isset( $style['deskPadding'][0] ) && is_numeric( $style['deskPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $style['deskPadding'][0] . 'px');
+					$css->add_property( 'padding-top', $style['deskPadding'][0] . 'px' );
 				}
 				if ( isset( $style['deskPadding'][1] ) && is_numeric( $style['deskPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $style['deskPadding'][1] . 'px');
+					$css->add_property( 'padding-right', $style['deskPadding'][1] . 'px' );
 				}
 				if ( isset( $style['deskPadding'][2] ) && is_numeric( $style['deskPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $style['deskPadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $style['deskPadding'][2] . 'px' );
 				}
 				if ( isset( $style['deskPadding'][3] ) && is_numeric( $style['deskPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $style['deskPadding'][3] . 'px');
+					$css->add_property( 'padding-left', $style['deskPadding'][3] . 'px' );
 				}
 
 			}
@@ -321,16 +321,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field' );
 				if ( isset( $style['tabletPadding'][0] ) && is_numeric( $style['tabletPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $style['tabletPadding'][0] . 'px');
+					$css->add_property( 'padding-top', $style['tabletPadding'][0] . 'px' );
 				}
 				if ( isset( $style['tabletPadding'][1] ) && is_numeric( $style['tabletPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $style['tabletPadding'][1] . 'px');
+					$css->add_property( 'padding-right', $style['tabletPadding'][1] . 'px' );
 				}
 				if ( isset( $style['tabletPadding'][2] ) && is_numeric( $style['tabletPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $style['tabletPadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $style['tabletPadding'][2] . 'px' );
 				}
 				if ( isset( $style['tabletPadding'][3] ) && is_numeric( $style['tabletPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $style['tabletPadding'][3] . 'px');
+					$css->add_property( 'padding-left', $style['tabletPadding'][3] . 'px' );
 				}
 				$css->set_media_state( 'desktop' );
 			}
@@ -338,23 +338,23 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field' );
 				if ( isset( $style['mobilePadding'][0] ) && is_numeric( $style['mobilePadding'][0] ) ) {
-					$css->add_property( 'padding-top', $style['mobilePadding'][0] . 'px');
+					$css->add_property( 'padding-top', $style['mobilePadding'][0] . 'px' );
 				}
 				if ( isset( $style['mobilePadding'][1] ) && is_numeric( $style['mobilePadding'][1] ) ) {
-					$css->add_property( 'padding-right', $style['mobilePadding'][1] . 'px');
+					$css->add_property( 'padding-right', $style['mobilePadding'][1] . 'px' );
 				}
 				if ( isset( $style['mobilePadding'][2] ) && is_numeric( $style['mobilePadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $style['mobilePadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $style['mobilePadding'][2] . 'px' );
 				}
 				if ( isset( $style['mobilePadding'][3] ) && is_numeric( $style['mobilePadding'][3] ) ) {
-					$css->add_property( 'padding-left', $style['mobilePadding'][3] . 'px');
+					$css->add_property( 'padding-left', $style['mobilePadding'][3] . 'px' );
 				}
 				$css->set_media_state( 'desktop' );
 			}
 		}
 		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) ) {
 			$label_font = $attributes['labelFont'][0];
-			$css->set_selector('.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label' );
+			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label' );
 			if ( isset( $label_font['color'] ) && ! empty( $label_font['color'] ) ) {
 				$css->add_property( 'color', $css->render_color( $label_font['color'] ) );
 			}
@@ -380,35 +380,35 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'font-weight', $label_font['weight'] );
 			}
 			if ( isset( $label_font['padding'] ) && is_array( $label_font['padding'] ) && is_numeric( $label_font['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $label_font['padding'][0] . 'px');
+				$css->add_property( 'padding-top', $label_font['padding'][0] . 'px' );
 			}
 			if ( isset( $label_font['padding'] ) && is_array( $label_font['padding'] ) && is_numeric( $label_font['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $label_font['padding'][1] . 'px');
+				$css->add_property( 'padding-right', $label_font['padding'][1] . 'px' );
 			}
 			if ( isset( $label_font['padding'] ) && is_array( $label_font['padding'] ) && is_numeric( $label_font['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $label_font['padding'][2] . 'px');
+				$css->add_property( 'padding-bottom', $label_font['padding'][2] . 'px' );
 			}
 			if ( isset( $label_font['padding'] ) && is_array( $label_font['padding'] ) && is_numeric( $label_font['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $label_font['padding'][3] . 'px');
+				$css->add_property( 'padding-left', $label_font['padding'][3] . 'px' );
 			}
 			if ( isset( $label_font['margin'] ) && is_array( $label_font['margin'] ) && is_numeric( $label_font['margin'][0] ) ) {
-				$css->add_property( 'margin-top', $label_font['margin'][0] . 'px');
+				$css->add_property( 'margin-top', $label_font['margin'][0] . 'px' );
 			}
 			if ( isset( $label_font['margin'] ) && is_array( $label_font['margin'] ) && is_numeric( $label_font['margin'][1] ) ) {
-				$css->add_property( 'margin-right', $label_font['margin'][1] . 'px');
+				$css->add_property( 'margin-right', $label_font['margin'][1] . 'px' );
 			}
 			if ( isset( $label_font['margin'] ) && is_array( $label_font['margin'] ) && is_numeric( $label_font['margin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $label_font['margin'][2] . 'px');
+				$css->add_property( 'margin-bottom', $label_font['margin'][2] . 'px' );
 			}
 			if ( isset( $label_font['margin'] ) && is_array( $label_font['margin'] ) && is_numeric( $label_font['margin'][3] ) ) {
-				$css->add_property( 'margin-left', $label_font['margin'][3] . 'px');
+				$css->add_property( 'margin-left', $label_font['margin'][3] . 'px' );
 			}
-			
+
 			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][0] ) ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
 				$css->add_property( 'font-size', $label_font['lineHeight'][0] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
-				$css->add_property( 'height', '1em');
-				$css->add_property( 'margin-top', '0');
+				$css->add_property( 'height', '1em' );
+				$css->add_property( 'margin-top', '0' );
 
 			}
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) ) {
@@ -424,8 +424,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) {
 					$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
 					$css->add_property( 'font-size', $label_font['lineHeight'][1] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
-					$css->add_property( 'height', '1em');
-					$css->add_property( 'margin-top', '0');
+					$css->add_property( 'height', '1em' );
+					$css->add_property( 'margin-top', '0' );
 				}
 
 			}
@@ -442,8 +442,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) {
 					$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
 					$css->add_property( 'font-size', $label_font['lineHeight'][2] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
-					$css->add_property( 'height', '1em');
-					$css->add_property( 'margin-top', '0');
+					$css->add_property( 'height', '1em' );
+					$css->add_property( 'margin-top', '0' );
 
 				}
 
@@ -451,18 +451,18 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['submit'] ) && is_array( $attributes['submit'] ) && isset( $attributes['submit'][0] ) && is_array( $attributes['submit'][0] ) ) {
 			$submit = $attributes['submit'][0];
-			$css->set_selector('.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
+			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 			if ( isset( $submit['widthType'] ) && 'fixed' === $submit['widthType'] && isset( $submit['fixedWidth'] ) && is_array( $submit['fixedWidth'] ) && isset( $submit['fixedWidth'][0] ) && ! empty( $submit['fixedWidth'][0] ) ) {
-				$css->add_property( 'width', $submit['fixedWidth'][0] . 'px');
+				$css->add_property( 'width', $submit['fixedWidth'][0] . 'px' );
 			}
 			if ( isset( $submit['color'] ) && ! empty( $submit['color'] ) ) {
 				$css->add_property( 'color', $css->render_color( $submit['color'] ) );
 			}
 			if ( isset( $submit['borderRadius'] ) && is_numeric( $submit['borderRadius'] ) ) {
-				$css->add_property( 'border-radius', $submit['borderRadius'] . 'px');
+				$css->add_property( 'border-radius', $submit['borderRadius'] . 'px' );
 			}
 			if ( isset( $submit['borderWidth'] ) && is_array( $submit['borderWidth'] ) && is_numeric( $submit['borderWidth'][0] ) ) {
-				$css->add_property( 'border-width', $submit['borderWidth'][0] . 'px ' . $submit['borderWidth'][1] . 'px ' . $submit['borderWidth'][2] . 'px ' . $submit['borderWidth'][3] . 'px');
+				$css->add_property( 'border-width', $submit['borderWidth'][0] . 'px ' . $submit['borderWidth'][1] . 'px ' . $submit['borderWidth'][2] . 'px ' . $submit['borderWidth'][3] . 'px' );
 			}
 			if ( isset( $submit['backgroundType'] ) && 'gradient' === $submit['backgroundType'] || isset( $submit['backgroundHoverType'] ) && 'gradient' === $submit['backgroundHoverType'] ) {
 				$bgtype = 'gradient';
@@ -473,29 +473,29 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$bg1 = ( ! isset( $submit['background'] ) || 'transparent' === $submit['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $submit['background'], ( isset( $submit['backgroundOpacity'] ) && is_numeric( $submit['backgroundOpacity'] ) ? $submit['backgroundOpacity'] : 1 ) ) );
 				$bg2 = ( isset( $submit['gradient'][0] ) && ! empty( $submit['gradient'][0] ) ? $css->render_color( $submit['gradient'][0], ( isset( $submit['gradient'][1] ) && is_numeric( $submit['gradient'][1] ) ? $submit['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $submit['gradient'][1] ) && is_numeric( $submit['gradient'][1] ) ? $submit['gradient'][1] : 1 ) ) );
 				if ( isset( $submit['gradient'][4] ) && 'radial' === $submit['gradient'][4] ) {
-					$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $submit['gradient'][6] ) && ! empty( $submit['gradient'][6] ) ? $submit['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $submit['gradient'][2] ) && is_numeric( $submit['gradient'][2] ) ? $submit['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradient'][3] ) && is_numeric( $submit['gradient'][3] ) ? $submit['gradient'][3] : '100' ) . '%)');
+					$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $submit['gradient'][6] ) && ! empty( $submit['gradient'][6] ) ? $submit['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $submit['gradient'][2] ) && is_numeric( $submit['gradient'][2] ) ? $submit['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradient'][3] ) && is_numeric( $submit['gradient'][3] ) ? $submit['gradient'][3] : '100' ) . '%)' );
 				} else if ( ! isset( $submit['gradient'][4] ) || 'radial' !== $submit['gradient'][4] ) {
-					$css->add_property( 'background', 'linear-gradient(' . ( isset( $submit['gradient'][5] ) && ! empty( $submit['gradient'][5] ) ? $submit['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $submit['gradient'][2] ) && is_numeric( $submit['gradient'][2] ) ? $submit['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradient'][3] ) && is_numeric( $submit['gradient'][3] ) ? $submit['gradient'][3] : '100' ) . '%)');
+					$css->add_property( 'background', 'linear-gradient(' . ( isset( $submit['gradient'][5] ) && ! empty( $submit['gradient'][5] ) ? $submit['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $submit['gradient'][2] ) && is_numeric( $submit['gradient'][2] ) ? $submit['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradient'][3] ) && is_numeric( $submit['gradient'][3] ) ? $submit['gradient'][3] : '100' ) . '%)' );
 				}
 			} else if ( isset( $submit['background'] ) && ! empty( $submit['background'] ) ) {
 				$alpha = ( isset( $submit['backgroundOpacity'] ) && is_numeric( $submit['backgroundOpacity'] ) ? $submit['backgroundOpacity'] : 1 );
-				$css->add_property('background', $css->render_color( $submit['background'], $alpha ) );
+				$css->add_property( 'background', $css->render_color( $submit['background'], $alpha ) );
 			}
 			if ( isset( $submit['border'] ) && ! empty( $submit['border'] ) ) {
 				$alpha = ( isset( $submit['borderOpacity'] ) && is_numeric( $submit['borderOpacity'] ) ? $submit['borderOpacity'] : 1 );
-				$css ->add_property('border-color', $css->render_color( $submit['border'], $alpha ) );
+				$css->add_property( 'border-color', $css->render_color( $submit['border'], $alpha ) );
 			}
 			if ( isset( $submit['boxShadow'] ) && is_array( $submit['boxShadow'] ) && isset( $submit['boxShadow'][0] ) && true === $submit['boxShadow'][0] ) {
 				$css->add_property( 'box-shadow', ( isset( $submit['boxShadow'][7] ) && true === $submit['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadow'][3] ) && is_numeric( $submit['boxShadow'][3] ) ? $submit['boxShadow'][3] : '1' ) . 'px ' . ( isset( $submit['boxShadow'][4] ) && is_numeric( $submit['boxShadow'][4] ) ? $submit['boxShadow'][4] : '1' ) . 'px ' . ( isset( $submit['boxShadow'][5] ) && is_numeric( $submit['boxShadow'][5] ) ? $submit['boxShadow'][5] : '2' ) . 'px ' . ( isset( $submit['boxShadow'][6] ) && is_numeric( $submit['boxShadow'][6] ) ? $submit['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadow'][1] ) && ! empty( $submit['boxShadow'][1] ) ? $submit['boxShadow'][1] : '#000000' ), ( isset( $submit['boxShadow'][2] ) && is_numeric( $submit['boxShadow'][2] ) ? $submit['boxShadow'][2] : 0.2 ) ) );
 			}
-			
+
 			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:hover, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:focus ' );
 			if ( isset( $submit['colorHover'] ) && ! empty( $submit['colorHover'] ) ) {
 				$css->add_property( 'color', $css->render_color( $submit['colorHover'] ) );
 			}
 			if ( isset( $submit['borderHover'] ) && ! empty( $submit['borderHover'] ) ) {
 				$alpha = ( isset( $submit['borderHoverOpacity'] ) && is_numeric( $submit['borderHoverOpacity'] ) ? $submit['borderHoverOpacity'] : 1 );
-				$css->add_property('border-color', $css->render_color( $submit['borderHover'], $alpha ) );
+				$css->add_property( 'border-color', $css->render_color( $submit['borderHover'], $alpha ) );
 			}
 			if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true !== $submit['boxShadowHover'][7] ) {
 				$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
@@ -503,31 +503,31 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( 'gradient' !== $bgtype ) {
 				if ( isset( $submit['backgroundHover'] ) && ! empty( $submit['backgroundHover'] ) ) {
 					$alpha = ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $submit['backgroundHover'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $submit['backgroundHover'], $alpha ) );
 				}
 				if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ) {
 					$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
 				}
 			}
-			
+
 			if ( 'gradient' === $bgtype ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit::before' );
 				if ( isset( $submit['backgroundHoverType'] ) && 'gradient' === $submit['backgroundHoverType'] ) {
 					$bg1 = ( ! isset( $submit['backgroundHover'] ) ? $css->render_color( '#444444', ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 ) ) : $css->render_color( $submit['backgroundHover'], ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 ) ) );
 					$bg2 = ( isset( $submit['gradientHover'][0] ) && ! empty( $submit['gradientHover'][0] ) ? $css->render_color( $submit['gradientHover'][0], ( isset( $submit['gradientHover'][1] ) && is_numeric( $submit['gradientHover'][1] ) ? $submit['gradientHover'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $submit['gradientHover'][1] ) && is_numeric( $submit['gradientHover'][1] ) ? $submit['gradientHover'][1] : 1 ) ) );
 					if ( isset( $submit['gradientHover'][4] ) && 'radial' === $submit['gradientHover'][4] ) {
-						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $submit['gradientHover'][6] ) && ! empty( $submit['gradientHover'][6] ) ? $submit['gradientHover'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $submit['gradientHover'][2] ) && is_numeric( $submit['gradientHover'][2] ) ? $submit['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradientHover'][3] ) && is_numeric( $submit['gradientHover'][3] ) ? $submit['gradientHover'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $submit['gradientHover'][6] ) && ! empty( $submit['gradientHover'][6] ) ? $submit['gradientHover'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $submit['gradientHover'][2] ) && is_numeric( $submit['gradientHover'][2] ) ? $submit['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradientHover'][3] ) && is_numeric( $submit['gradientHover'][3] ) ? $submit['gradientHover'][3] : '100' ) . '%)' );
 					} else if ( ! isset( $submit['gradientHover'][4] ) || 'radial' !== $submit['gradientHover'][4] ) {
-						$css->add_property( 'background', 'linear-gradient(' . ( isset( $submit['gradientHover'][5] ) && ! empty( $submit['gradientHover'][5] ) ? $submit['gradientHover'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $submit['gradientHover'][2] ) && is_numeric( $submit['gradientHover'][2] ) ? $submit['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradientHover'][3] ) && is_numeric( $submit['gradientHover'][3] ) ? $submit['gradientHover'][3] : '100' ) . '%)');
+						$css->add_property( 'background', 'linear-gradient(' . ( isset( $submit['gradientHover'][5] ) && ! empty( $submit['gradientHover'][5] ) ? $submit['gradientHover'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $submit['gradientHover'][2] ) && is_numeric( $submit['gradientHover'][2] ) ? $submit['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $submit['gradientHover'][3] ) && is_numeric( $submit['gradientHover'][3] ) ? $submit['gradientHover'][3] : '100' ) . '%)' );
 					}
 				} else if ( isset( $submit['backgroundHover'] ) && ! empty( $submit['backgroundHover'] ) ) {
 					$alpha = ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $submit['backgroundHover'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $submit['backgroundHover'], $alpha ) );
 				}
 				if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ) {
 					$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
 					if ( isset( $submit['borderRadius'] ) && is_numeric( $submit['borderRadius'] ) ) {
-						$css->add_property( 'border-radius', $submit['borderRadius'] . 'px');
+						$css->add_property( 'border-radius', $submit['borderRadius'] . 'px' );
 					}
 				}
 
@@ -535,16 +535,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $submit['size'] ) && 'custom' && $submit['size'] && isset( $submit['deskPadding'] ) && is_array( $submit['deskPadding'] ) && isset( $submit['deskPadding'][0] ) && is_numeric( $submit['deskPadding'][0] ) ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 				if ( isset( $submit['deskPadding'][0] ) && is_numeric( $submit['deskPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $submit['deskPadding'][0] . 'px');
+					$css->add_property( 'padding-top', $submit['deskPadding'][0] . 'px' );
 				}
 				if ( isset( $submit['deskPadding'][1] ) && is_numeric( $submit['deskPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $submit['deskPadding'][1] . 'px');
+					$css->add_property( 'padding-right', $submit['deskPadding'][1] . 'px' );
 				}
 				if ( isset( $submit['deskPadding'][2] ) && is_numeric( $submit['deskPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $submit['deskPadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $submit['deskPadding'][2] . 'px' );
 				}
 				if ( isset( $submit['deskPadding'][3] ) && is_numeric( $submit['deskPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $submit['deskPadding'][3] . 'px');
+					$css->add_property( 'padding-left', $submit['deskPadding'][3] . 'px' );
 				}
 
 			}
@@ -552,16 +552,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 				if ( isset( $submit['tabletPadding'][0] ) && is_numeric( $submit['tabletPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $submit['tabletPadding'][0] . 'px');
+					$css->add_property( 'padding-top', $submit['tabletPadding'][0] . 'px' );
 				}
 				if ( isset( $submit['tabletPadding'][1] ) && is_numeric( $submit['tabletPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $submit['tabletPadding'][1] . 'px');
+					$css->add_property( 'padding-right', $submit['tabletPadding'][1] . 'px' );
 				}
 				if ( isset( $submit['tabletPadding'][2] ) && is_numeric( $submit['tabletPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $submit['tabletPadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $submit['tabletPadding'][2] . 'px' );
 				}
 				if ( isset( $submit['tabletPadding'][3] ) && is_numeric( $submit['tabletPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $submit['tabletPadding'][3] . 'px');
+					$css->add_property( 'padding-left', $submit['tabletPadding'][3] . 'px' );
 				}
 
 				$css->set_media_state( 'desktop' );
@@ -570,16 +570,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 				if ( isset( $submit['mobilePadding'][0] ) && is_numeric( $submit['mobilePadding'][0] ) ) {
-					$css->add_property( 'padding-top', $submit['mobilePadding'][0] . 'px');
+					$css->add_property( 'padding-top', $submit['mobilePadding'][0] . 'px' );
 				}
 				if ( isset( $submit['mobilePadding'][1] ) && is_numeric( $submit['mobilePadding'][1] ) ) {
-					$css->add_property( 'padding-right', $submit['mobilePadding'][1] . 'px');
+					$css->add_property( 'padding-right', $submit['mobilePadding'][1] . 'px' );
 				}
 				if ( isset( $submit['mobilePadding'][2] ) && is_numeric( $submit['mobilePadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $submit['mobilePadding'][2] . 'px');
+					$css->add_property( 'padding-bottom', $submit['mobilePadding'][2] . 'px' );
 				}
 				if ( isset( $submit['mobilePadding'][3] ) && is_numeric( $submit['mobilePadding'][3] ) ) {
-					$css->add_property( 'padding-left', $submit['mobilePadding'][3] . 'px');
+					$css->add_property( 'padding-left', $submit['mobilePadding'][3] . 'px' );
 				}
 				$css->set_media_state( 'desktop' );
 			}
@@ -640,7 +640,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) ) {
 			$submit_font = $attributes['submitFont'][0];
-			$css->add_property('.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
+			$css->add_property( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 			if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $submit_font['size'][0] . ( ! isset( $submit_font['sizeType'] ) ? 'px' : $submit_font['sizeType'] ) );
 			}
@@ -648,7 +648,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'line-height', $submit_font['lineHeight'][0] . ( ! isset( $submit_font['lineType'] ) ? 'px' : $submit_font['lineType'] ) );
 			}
 			if ( isset( $submit_font['letterSpacing'] ) && is_numeric( $submit_font['letterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $submit_font['letterSpacing'] . 'px');
+				$css->add_property( 'letter-spacing', $submit_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $submit_font['textTransform'] ) && ! empty( $submit_font['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $submit_font['textTransform'] );
@@ -662,7 +662,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $submit_font['weight'] ) && ! empty( $submit_font['weight'] ) ) {
 				$css->add_property( 'font-weight', $submit_font['weight'] );
 			}
-			
+
 			if ( ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][1] ) ) || ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][1] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
@@ -698,7 +698,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				if ( isset( $message_font['backgroundSuccess'] ) && ! empty( $message_font['backgroundSuccess'] ) ) {
 					$alpha = ( isset( $message_font['backgroundSuccessOpacity'] ) && is_numeric( $message_font['backgroundSuccessOpacity'] ) ? $message_font['backgroundSuccessOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $message_font['backgroundSuccess'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $message_font['backgroundSuccess'], $alpha ) );
 				}
 
 			}
@@ -712,16 +712,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				if ( isset( $message_font['backgroundError'] ) && ! empty( $message_font['backgroundError'] ) ) {
 					$alpha = ( isset( $message_font['backgroundErrorOpacity'] ) && is_numeric( $message_font['backgroundErrorOpacity'] ) ? $message_font['backgroundErrorOpacity'] : 1 );
-					$css->add_property('background', $css->render_color( $message_font['backgroundError'], $alpha ) );
+					$css->add_property( 'background', $css->render_color( $message_font['backgroundError'], $alpha ) );
 				}
 
 			}
 			$css->set_selector( '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message, .kadence-form-' . $unique_id . ' .kb-form-error-msg' );
 			if ( isset( $message_font['borderRadius'] ) && ! empty( $message_font['borderRadius'] ) ) {
-				$css->add_property( 'border-radius', $message_font['borderRadius'] . 'px');
+				$css->add_property( 'border-radius', $message_font['borderRadius'] . 'px' );
 			}
 			if ( isset( $message_font['borderWidth'] ) && is_array( $message_font['borderWidth'] ) && is_numeric( $message_font['borderWidth'][0] ) ) {
-				$css->add_property( 'border-width', $message_font['borderWidth'][0] . 'px ' . $message_font['borderWidth'][1] . 'px ' . $message_font['borderWidth'][2] . 'px ' . $message_font['borderWidth'][3] . 'px');
+				$css->add_property( 'border-width', $message_font['borderWidth'][0] . 'px ' . $message_font['borderWidth'][1] . 'px ' . $message_font['borderWidth'][2] . 'px ' . $message_font['borderWidth'][3] . 'px' );
 			}
 			if ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $message_font['size'][0] . ( ! isset( $message_font['sizeType'] ) ? 'px' : $message_font['sizeType'] ) );
@@ -730,7 +730,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'line-height', $message_font['lineHeight'][0] . ( ! isset( $message_font['lineType'] ) ? 'px' : $message_font['lineType'] ) );
 			}
 			if ( isset( $message_font['letterSpacing'] ) && is_numeric( $message_font['letterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $message_font['letterSpacing'] . 'px');
+				$css->add_property( 'letter-spacing', $message_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $message_font['textTransform'] ) && ! empty( $message_font['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $message_font['textTransform'] );
@@ -745,28 +745,28 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'font-weight', $message_font['weight'] );
 			}
 			if ( isset( $message_font['padding'] ) && is_array( $message_font['padding'] ) && is_numeric( $message_font['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $message_font['padding'][0] . 'px');
+				$css->add_property( 'padding-top', $message_font['padding'][0] . 'px' );
 			}
 			if ( isset( $message_font['padding'] ) && is_array( $message_font['padding'] ) && is_numeric( $message_font['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $message_font['padding'][1] . 'px');
+				$css->add_property( 'padding-right', $message_font['padding'][1] . 'px' );
 			}
 			if ( isset( $message_font['padding'] ) && is_array( $message_font['padding'] ) && is_numeric( $message_font['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $message_font['padding'][2] . 'px');
+				$css->add_property( 'padding-bottom', $message_font['padding'][2] . 'px' );
 			}
 			if ( isset( $message_font['padding'] ) && is_array( $message_font['padding'] ) && is_numeric( $message_font['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $message_font['padding'][3] . 'px');
+				$css->add_property( 'padding-left', $message_font['padding'][3] . 'px' );
 			}
 			if ( isset( $message_font['margin'] ) && is_array( $message_font['margin'] ) && is_numeric( $message_font['margin'][0] ) ) {
-				$css->add_property( 'margin-top', $message_font['margin'][0] . 'px');
+				$css->add_property( 'margin-top', $message_font['margin'][0] . 'px' );
 			}
 			if ( isset( $message_font['margin'] ) && is_array( $message_font['margin'] ) && is_numeric( $message_font['margin'][1] ) ) {
-				$css->add_property( 'margin-right', $message_font['margin'][1] . 'px');
+				$css->add_property( 'margin-right', $message_font['margin'][1] . 'px' );
 			}
 			if ( isset( $message_font['margin'] ) && is_array( $message_font['margin'] ) && is_numeric( $message_font['margin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $message_font['margin'][2] . 'px');
+				$css->add_property( 'margin-bottom', $message_font['margin'][2] . 'px' );
 			}
 			if ( isset( $message_font['margin'] ) && is_array( $message_font['margin'] ) && is_numeric( $message_font['margin'][3] ) ) {
-				$css->add_property( 'margin-left', $message_font['margin'][3] . 'px');
+				$css->add_property( 'margin-left', $message_font['margin'][3] . 'px' );
 			}
 
 			if ( ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][1] ) ) || ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][1] ) ) ) {

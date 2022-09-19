@@ -52,9 +52,9 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
@@ -80,7 +80,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
 			$divider_height = ( ! empty( $attributes['dividerHeight'] ) ? $attributes['dividerHeight'] : '10' );
 			$css->add_property( 'height', $divider_height . 'px' );
-			$divider_width = ( ! empty( $attributes['dividerWidth'] ) ? $attributes['dividerWidth'] : '80' );
+			$divider_width       = ( ! empty( $attributes['dividerWidth'] ) ? $attributes['dividerWidth'] : '80' );
 			$divider_width_units = ( isset( $attributes['dividerWidthUnits'] ) && ! empty( $attributes['dividerWidthUnits'] ) ? $attributes['dividerWidthUnits'] : '%' );
 			$css->add_property( 'width', $divider_width . $divider_width_units );
 			if ( ( ! empty( $attributes['tabletDividerHeight'] ) ) || ( isset( $attributes['tabletDividerWidth'] ) && ! empty( $attributes['tabletDividerWidth'] ) ) ) {
@@ -94,7 +94,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->set_media_state( 'desktop' );
 			}
-			if (  ! empty( $attributes['mobileDividerHeight'] ) || ! empty( $attributes['mobileDividerWidth'] ) ) {
+			if ( ! empty( $attributes['mobileDividerHeight'] ) || ! empty( $attributes['mobileDividerWidth'] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
 				if ( ! empty( $attributes['mobileDividerHeight'] ) ) {
@@ -121,7 +121,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->add_property( 'border-top-color', $css->render_color( $attributes['dividerColor'], $alp ) );
 			}
-			$divider_width = ( ! empty( $attributes['dividerWidth'] ) ? $attributes['dividerWidth'] : '80' );
+			$divider_width       = ( ! empty( $attributes['dividerWidth'] ) ? $attributes['dividerWidth'] : '80' );
 			$divider_width_units = ( isset( $attributes['dividerWidthUnits'] ) && ! empty( $attributes['dividerWidthUnits'] ) ? $attributes['dividerWidthUnits'] : '%' );
 			$css->add_property( 'width', $divider_width . $divider_width_units );
 			if ( isset( $attributes['dividerStyle'] ) && ! empty( $attributes['dividerStyle'] ) ) {
@@ -147,7 +147,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 				if ( ! empty( $attributes['mobileDividerWidth'] ) ) {
 					$css->add_property( 'width', $attributes['mobileDividerWidth'] . $divider_width_units . '!important' );
 				}
-				$css->set_media_state('desktop');
+				$css->set_media_state( 'desktop' );
 			}
 		}
 

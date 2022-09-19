@@ -37,24 +37,26 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
+
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
+	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
-		
+
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		// Add media number font
 		if ( isset( $attributes['mediaType'] ) && 'number' === $attributes['mediaType'] && isset( $attributes['mediaNumber'] ) && is_array( $attributes['mediaNumber'] ) && isset( $attributes['mediaNumber'][0] ) && is_array( $attributes['mediaNumber'][0] ) && isset( $attributes['mediaNumber'][0]['google'] ) && $attributes['mediaNumber'][0]['google'] && ( ! isset( $attributes['mediaNumber'][0]['loadGoogle'] ) || true === $attributes['mediaNumber'][0]['loadGoogle'] ) && isset( $attributes['mediaNumber'][0]['family'] ) ) {
 			$number_font = $attributes['mediaNumber'][0];
 
-			$font_family = ( isset( $number_font['family'] ) ? $number_font['family'] : '' );
+			$font_family  = ( isset( $number_font['family'] ) ? $number_font['family'] : '' );
 			$font_variant = ( isset( $number_font['variant'] ) ? $number_font['variant'] : '' );
 			$font_subset  = ( isset( $number_font['subset'] ) ? $number_font['subset'] : '' );
 
@@ -65,7 +67,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) && isset( $attributes['titleFont'][0]['family'] ) ) {
 			$title_font = $attributes['titleFont'][0];
 
-			$font_family = ( isset( $title_font['family'] ) ? $title_font['family'] : '' );
+			$font_family  = ( isset( $title_font['family'] ) ? $title_font['family'] : '' );
 			$font_variant = ( isset( $title_font['variant'] ) ? $title_font['variant'] : '' );
 			$font_subset  = ( isset( $title_font['subset'] ) ? $title_font['subset'] : '' );
 
@@ -76,7 +78,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['textFont'] ) && is_array( $attributes['textFont'] ) && isset( $attributes['textFont'][0] ) && is_array( $attributes['textFont'][0] ) && isset( $attributes['textFont'][0]['google'] ) && $attributes['textFont'][0]['google'] && ( ! isset( $attributes['textFont'][0]['loadGoogle'] ) || true === $attributes['textFont'][0]['loadGoogle'] ) && isset( $attributes['textFont'][0]['family'] ) ) {
 			$text_font = $attributes['textFont'][0];
 
-			$font_family = ( isset( $text_font['family'] ) ? $text_font['family'] : '' );
+			$font_family  = ( isset( $text_font['family'] ) ? $text_font['family'] : '' );
 			$font_variant = ( isset( $text_font['variant'] ) ? $text_font['variant'] : '' );
 			$font_subset  = ( isset( $text_font['subset'] ) ? $text_font['subset'] : '' );
 
@@ -87,7 +89,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['displayLearnMore'] ) && $attributes['displayLearnMore'] && isset( $attributes['learnMoreStyles'] ) && is_array( $attributes['learnMoreStyles'] ) && isset( $attributes['learnMoreStyles'][0] ) && is_array( $attributes['learnMoreStyles'][0] ) && isset( $attributes['learnMoreStyles'][0]['google'] ) && $attributes['learnMoreStyles'][0]['google'] && ( ! isset( $attributes['learnMoreStyles'][0]['loadGoogle'] ) || true === $attributes['learnMoreStyles'][0]['loadGoogle'] ) && isset( $attributes['learnMoreStyles'][0]['family'] ) ) {
 			$learn_more_font = $attributes['learnMoreStyles'][0];
 
-			$font_family = ( isset( $learn_more_font['family'] ) ? $learn_more_font['family'] : '' );
+			$font_family  = ( isset( $learn_more_font['family'] ) ? $learn_more_font['family'] : '' );
 			$font_variant = ( isset( $learn_more_font['variant'] ) ? $learn_more_font['variant'] : '' );
 			$font_subset  = ( isset( $learn_more_font['subset'] ) ? $learn_more_font['subset'] : '' );
 
@@ -794,8 +796,9 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'box-shadow', '0px 0px 14px 0px rgba(0,0,0,0.2)' );
 			}
 		}
-		
+
 		return $css->css_output();
 	}
 }
+
 Kadence_Blocks_Infobox_Block::get_instance();

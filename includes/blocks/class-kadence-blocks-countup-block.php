@@ -62,7 +62,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 		$this->enqueue_script( 'countup' );
 
 		// Add title font
-		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) &&  isset( $attributes['titleFont'][0]['family'] ) ) {
+		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) && isset( $attributes['titleFont'][0]['family'] ) ) {
 			$title_font = $attributes['titleFont'][0];
 
 			$font_variant = ( ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : '' );
@@ -72,7 +72,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Add number font
-		if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && isset( $attributes['numberFont'][0] ) && is_array( $attributes['numberFont'][0] ) && isset( $attributes['numberFont'][0]['google'] ) && $attributes['numberFont'][0]['google'] && ( ! isset( $attributes['numberFont'][0]['loadGoogle'] ) || true === $attributes['numberFont'][0]['loadGoogle'] ) &&  isset( $attributes['numberFont'][0]['family'] ) ) {
+		if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && isset( $attributes['numberFont'][0] ) && is_array( $attributes['numberFont'][0] ) && isset( $attributes['numberFont'][0]['google'] ) && $attributes['numberFont'][0]['google'] && ( ! isset( $attributes['numberFont'][0]['loadGoogle'] ) || true === $attributes['numberFont'][0]['loadGoogle'] ) && isset( $attributes['numberFont'][0]['family'] ) ) {
 			$numbeer_font = $attributes['numberFont'][0];
 
 			$font_variant = ( ! empty( $numbeer_font['variant'] ) ? array( $numbeer_font['variant'] ) : '' );
@@ -154,7 +154,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( isset( $attributes['titleTabletPadding'] ) && is_array( $attributes['titleTabletPadding'] ) ) {
-			$css->set_media_state( 'tablet');
+			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
 			if ( isset( $attributes['titleTabletPadding'][0] ) && is_numeric( $attributes['titleTabletPadding'][0] ) ) {
 				$css->add_property( 'padding-top', $attributes['titleTabletPadding'][0] . ( isset( $attributes['titlePaddingType'] ) ? $attributes['titlePaddingType'] : 'px' ) );

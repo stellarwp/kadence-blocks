@@ -52,9 +52,9 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
@@ -181,20 +181,24 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'custom'                 => isset( $attr['customSnazzy'] ) ? $attr['customSnazzy'] : '[]'
 		];
 
-		$zoom = empty( $attr['zoom'] ) ? 11 : $attr['zoom'];
+		$zoom    = empty( $attr['zoom'] ) ? 11 : $attr['zoom'];
 		$gMapLat = empty( $attr['lat'] ) ? '37.8201' : $attr['lat'];
 		$gMapLng = empty( $attr['lng'] ) ? '-122.4781' : $attr['lng'];
 
 		$content .= '<script>';
-		$content .= 'function kb_google_map' . str_replace('-', '_', $unique_id) . '() {';
+		$content .= 'function kb_google_map' . str_replace( '-', '_', $unique_id ) . '() {';
 		$content .= ' let center = { lat: ' . $gMapLat . ', lng: ' . $gMapLng . '};';
 
-		$content .= ' let map = new google.maps.Map(document.getElementById("kb-google-map'.$unique_id.'"), {
-					    zoom: '. $zoom . ',
+		$content .= ' let map = new google.maps.Map(document.getElementById("kb-google-map' . $unique_id . '"), {
+					    zoom: ' . $zoom . ',
 					    center: center,';
 
-		if ( ! empty( $attr['mapStyle'] ) && $attr['mapStyle'] !== 'standard' ){ $content .= 'styles: '. $snazzyStyles[$attr['mapStyle']].','; }
-		if ( isset( $attr['mapType'] ) && $attr['mapType'] === 'satellite' ){ $content .= 'mapTypeId: "satellite",'; }
+		if ( ! empty( $attr['mapStyle'] ) && $attr['mapStyle'] !== 'standard' ) {
+			$content .= 'styles: ' . $snazzyStyles[ $attr['mapStyle'] ] . ',';
+		}
+		if ( isset( $attr['mapType'] ) && $attr['mapType'] === 'satellite' ) {
+			$content .= 'mapTypeId: "satellite",';
+		}
 
 		$content .= '});';
 
@@ -224,7 +228,7 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey' );
+		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api', 'missingkey' );
 		wp_register_script( 'kadence-blocks-googlemaps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-googlemaps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
