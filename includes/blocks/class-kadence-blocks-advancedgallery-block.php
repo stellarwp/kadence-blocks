@@ -36,7 +36,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance Control
@@ -58,8 +58,40 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+
+		if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) ) {
+			$this->enqueue_style( 'kadence-blocks-pro-slick' );
+
+			if ( ! doing_filter( 'the_content' ) ) {
+				if ( ! wp_style_is( 'kadence-blocks-pro-slick', 'done' ) ) {
+					wp_print_styles( 'kadence-blocks-pro-slick' );
+				}
+			}
+
+			$this->enqueue_script( 'kadence-blocks-slick-init' );
+
+		} elseif ( ! isset( $attributes['type'] ) || ( isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) ) {
+			$this->enqueue_script( 'kadence-blocks-masonry-init' );
+		}
+		if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
+			$this->enqueue_style( 'kadence-simplelightbox-css' );
+
+			if ( ! doing_filter( 'the_content' ) ) {
+				if ( ! wp_style_is( 'kadence-simplelightbox-css', 'done' ) ) {
+					wp_print_styles( 'kadence-simplelightbox-css' );
+				}
+			}
+
+			$this->enqueue_script( 'kadence-blocks-simplelightbox-init' );
+		}
+
+		if ( ! doing_filter( 'the_content' ) ) {
+			if ( ! wp_style_is( 'kadence-blocks-gallery', 'done' ) ) {
+				wp_print_styles( 'kadence-blocks-gallery' );
+			}
+		}
+
 
 		return $css->css_output();
 	}
@@ -77,6 +109,16 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
+
+		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'includes/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
+
+		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-slick-init.min.js', array(
+			'jquery',
+			'kadence-slick'
+		), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-masonry-init.min.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-simple-init.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 
 	}
 }

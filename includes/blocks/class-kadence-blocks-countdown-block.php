@@ -39,13 +39,6 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
-	 * Countdown Block information.
-	 *
-	 * @var array
-	 */
-	public static $countdown = array();
-
-	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -673,14 +666,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	public function build_html( $attributes, $unique_id, $content ) {
-		if ( ! is_array( $attributes ) ) {
-			return;
-		}
 
 		$unique_id               = $attributes['uniqueID'];
 		$countdown               = array();
-		$campaign_id             = ( isset( $attributes['campaignID'] ) && ! empty( $attributes['campaignID'] ) ? $attributes['campaignID'] : $unique_id );
-		$countdown_type          = ( isset( $attributes['countdownType'] ) && ! empty( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' );
+		$campaign_id             = ( ! empty( $attributes['campaignID'] ) ? $attributes['campaignID'] : $unique_id );
+		$countdown_type          = ( ! empty( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' );
 		$site_slug               = apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) );
 		$reset_days              = ( isset( $attributes['evergreenReset'] ) && ! empty( $attributes['evergreenReset'] ) ? $attributes['evergreenReset'] : 30 );
 		$countdown[ $unique_id ] = array(

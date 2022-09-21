@@ -152,8 +152,6 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 			if ( isset( $attributes[ 'borderWidth' . $breakpoint ] ) && is_array( $attributes[ 'borderWidth' . $breakpoint ] ) ) {
 
-//				die( print_r( $attributes[ 'borderWidth' . $breakpoint ]  ) );
-
 				foreach ( $attributes[ 'borderWidth' . $breakpoint ] as $key => $bDesktop ) {
 					if ( is_numeric( $bDesktop ) ) {
 						$css->add_property( 'border-' . $key_positions[ $key ] . '-width', $bDesktop . ( ! isset( $attributes['borderWidthUnit'] ) ? 'px' : $attributes['borderWidthUnit'] ) );
