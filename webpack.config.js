@@ -28,7 +28,7 @@ module.exports = {
 		'blocks-tabs': './src/blocks/tabs/block.js',
 		'blocks-infobox': './src/blocks/infobox/block.js',
 		'blocks-accordion': './src/blocks/accordion/block.js',
-		'blocks-icon-list': './src/blocks/icon-list/block.js',
+		'blocks-iconlist': './src/blocks/iconlist/block.js',
 		'blocks-advancedgallery': './src/blocks/advancedgallery/block.js',
 		'blocks-form': './src/blocks/form/block.js',
 		'blocks-table-of-contents': './src/blocks/table-of-contents/index.js',

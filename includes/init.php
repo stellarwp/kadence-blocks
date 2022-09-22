@@ -69,7 +69,7 @@ function kadence_gutenberg_editor_assets() {
 		'form',
 		'googlemaps',
 		'icon',
-		'icon-list',
+		'iconlist',
 		'image',
 		'infobox',
 		'lottie',
