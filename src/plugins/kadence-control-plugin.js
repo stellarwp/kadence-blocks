@@ -48,7 +48,6 @@ import KadenceColumn from './block-defaults/column-defaults';
 import KadenceColumnSettings from './block-settings/column-settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
 import KadenceDesignLibrarySettings from './block-settings/design-library-settings';
-//import KadenceGlobalTypography from './block-globals/typography';
 
 /*
  * Components
@@ -102,69 +101,79 @@ class KadenceConfig extends Component {
 					</PanelBody>
 					<PanelBody
 						title={ __( 'Block Defaults', 'kadence-blocks'  ) }
-						initialOpen={ false }
 					>
 						<div className="kt-blocks-control-wrap">
+							{/*Spacer*/}
 							<div className="kt-blocks-control-row">
 								<KadenceSpacer />
 								{ 'admin' === this.state.user && (
 									<KadenceSpacerSettings />
 								) }
 							</div>
+							{/*Tabs*/}
 							<div className="kt-blocks-control-row">
 								<KadenceTabs />
 								{ 'admin' === this.state.user && (
 									<KadenceTabsSettings />
 								) }
 							</div>
+							{/*Accordion*/}
 							<div className="kt-blocks-control-row">
 								<KadenceAccordion />
 								{ 'admin' === this.state.user && (
 									<KadenceAccordionSettings />
 								) }
 							</div>
+							{/*Info Box*/}
 							<div className="kt-blocks-control-row">
 								<KadenceInfoBox />
 								{ 'admin' === this.state.user && (
 									<KadenceInfoBoxSettings />
 								) }
 							</div>
+							{/*Advanced Button*/}
 							<div className="kt-blocks-control-row">
 								<KadenceAdvancedBtn />
 								{ 'admin' === this.state.user && (
 									<KadenceAdvancedSettings />
 								) }
 							</div>
+							{/*Icon List*/}
 							<div className="kt-blocks-control-row">
 								<KadenceIconList />
 								{ 'admin' === this.state.user && (
 									<KadenceIconListSettings />
 								) }
 							</div>
+							{/*Testimonials*/}
 							<div className="kt-blocks-control-row">
 								<KadenceTestimonials />
 								{ 'admin' === this.state.user && (
 									<KadenceTestimonialsSettings />
 								) }
 							</div>
+							{/*Advanced Heading*/}
 							<div className="kt-blocks-control-row">
 								<KadenceHeadings />
 								{ 'admin' === this.state.user && (
 									<KadenceHeadingsSettings />
 								) }
 							</div>
+							{/*Row Layout*/}
 							<div className="kt-blocks-control-row">
 								<KadenceRowLayout />
 								{ 'admin' === this.state.user && (
 									<KadenceRowLayoutSettings />
 								) }
 							</div>
+							{/*Section*/}
 							<div className="kt-blocks-control-row">
 								<KadenceColumn />
 								{ 'admin' === this.state.user && (
 									<KadenceColumnSettings />
 								) }
 							</div>
+							{/*Advanced Gallery*/}
 							<div className="kt-blocks-control-row">
 								<KadenceGallery />
 								{ 'admin' === this.state.user && (

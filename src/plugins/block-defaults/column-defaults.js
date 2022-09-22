@@ -21,7 +21,15 @@ import {
 	Modal,
 } from '@wordpress/components';
 
-import { blockColumnIcon, bottomRightIcon, bottomLeftIcon, topRightIcon, topLeftIcon, radiusIndividualIcon, radiusLinkedIcon } from '@kadence/icons';
+import {
+	blockColumnIcon,
+	bottomRightIcon,
+	bottomLeftIcon,
+	topRightIcon,
+	topLeftIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon
+} from '@kadence/icons';
 
 class KadenceColumnDefault extends Component {
 	constructor() {
@@ -345,6 +353,7 @@ class KadenceColumnDefault extends Component {
 				</TabPanel>
 			</div>
 		);
+
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>

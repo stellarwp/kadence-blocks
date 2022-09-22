@@ -270,7 +270,7 @@ function kadence_blocks_gutenberg_editor_plugin_enqueue() {
 	global $pagenow;
 	if ( $pagenow !== 'widgets.php' ) {
 		wp_enqueue_script( 'kadence-blocks-plugin-js' );
-		wp_enqueue_style( 'kadence-blocks-editor-plugin-css' );
+		wp_enqueue_style( 'kadence-blocks-plugin-css' );
 	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );

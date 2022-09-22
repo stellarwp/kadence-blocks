@@ -55,7 +55,7 @@ class KadenceColumnSettings extends Component {
 						<Dashicon icon="visibility" />
 					</Button>
 				</Tooltip>
-				{ isOpen ?
+				{ isOpen &&
 					<Modal
 						className="kt-block-settings-modal"
 						title={ __( 'Section Settings', 'kadence-blocks' ) }
@@ -135,7 +135,7 @@ class KadenceColumnSettings extends Component {
 							{ __( 'Save/Close', 'kadence-blocks' ) }
 						</Button>
 					</Modal>
-					: null }
+				}
 			</Fragment>
 		);
 	}

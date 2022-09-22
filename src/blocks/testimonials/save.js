@@ -86,8 +86,6 @@ function Save( { attributes } ) {
 		} )
 	} );
 
-	console.log( 'SAVING ');
-
 	const renderTestimonialIcon = ( index ) => {
 		return (
 			<div className="kt-svg-testimonial-global-icon-wrap" style={{
