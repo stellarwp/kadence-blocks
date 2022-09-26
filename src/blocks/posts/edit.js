@@ -28,6 +28,7 @@ import {
 	KadenceSelectTerms,
 	TypographyControls,
 	InspectorControlTabs,
+	KadenceInspectorControls,
 } from '@kadence/components';
 import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import {
@@ -35,9 +36,6 @@ import {
 	useEffect,
 	useState,
 } from '@wordpress/element';
-import {
-	InspectorControls,
-} from '@wordpress/blockEditor';
 import {
 	TextControl,
 	Placeholder,
@@ -226,7 +224,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	const settingspanel = (
 		<>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/posts' }>
 
 				<InspectorControlTabs
 					panelName={'countdown'}
@@ -426,7 +424,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<KadencePanelBody
 							title={__( 'Layout Settings', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-posts-layout-settings'}
+							panelName={'layoutSettings'}
+							blockSlug={ 'kadence/posts' }
 						>
 							<RangeControl
 								label={__( 'Columns', 'kadence-blocks' )}
@@ -480,7 +479,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<KadencePanelBody
 							title={__( 'Image Settings', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-posts-image-settings'}
+							panelName={'imageSettings'}
+							blockSlug={ 'kadence/posts' }
 						>
 							<ToggleControl
 								label={__( 'Enable Image', 'kadence-blocks' )}
@@ -566,7 +566,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							<KadencePanelBody
 								title={__( 'Category Settings', 'kadence-blocks' )}
 								initialOpen={false}
-								panelName={'kb-posts-category-settings'}
+								panelName={'categorySettings'}
+								blockSlug={ 'kadence/posts' }
 							>
 								<ToggleControl
 									label={__( 'Enable Above Title Category', 'kadence-blocks' )}
@@ -626,7 +627,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					<>
 						<KadencePanelBody
 							title={__( 'Title Size', 'kadence-blocks' )}
-							panelName={'kb-posts-title-settings'}
+							panelName={'titleSettings'}
+							blockSlug={ 'kadence/posts' }
 						>
 							<TypographyControls
 								fontGroup={'post-title'}
@@ -655,7 +657,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					<>
 						<KadencePanelBody
 							title={__( 'Meta Settings', 'kadence-blocks' )}
-							panelName={'kb-posts-meta-settings'}
+							panelName={'metaSettings'}
+							blockSlug={ 'kadence/posts' }
 						>
 							<ToggleControl
 								label={__( 'Enable Meta Info', 'kadence-blocks' )}
@@ -782,7 +785,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<KadencePanelBody
 							title={__( 'Content Settings', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-posts-content'}
+							panelName={'contentSettings'}
+							blockSlug={ 'kadence/posts' }
 						>
 							<ToggleControl
 								label={__( 'Enable Excerpt', 'kadence-blocks' )}
@@ -818,7 +822,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						</KadencePanelBody>
 					</>
 				}
-			</InspectorControls>
+			</KadenceInspectorControls>
 		</>
 	);
 	if ( !loaded ) {

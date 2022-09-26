@@ -13,22 +13,24 @@ import './editor.scss'
 import { __ } from '@wordpress/i18n'
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { PanelBody, ToggleControl, RangeControl } from '@wordpress/components';
+import { ToggleControl, RangeControl } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
 	ResponsiveMeasurementControls,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceInspectorControls,
+	KadencePanelBody
 } from '@kadence/components';
 
 import { createElement } from '@wordpress/element'
-import { InnerBlocks, InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import { Fragment } from 'react';
+import { Fragment } from '@wordpress/element';
 
 const ktShowMoreUniqueIDs = []
 
@@ -148,18 +150,21 @@ export function Edit ({
 
 	return (
 		<Fragment>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/show-more' }>
 				<InspectorControlTabs
-					panelName={ 'lottie' }
+					panelName={ 'show-more' }
+					allowedTabs={ [ 'general', 'advanced' ] }
 					setActiveTab={ setActiveTab }
 					activeTab={ activeTab }
 				/>
 
 				{( activeTab === 'general' ) &&
 					<>
-						<PanelBody
+						<KadencePanelBody
 							title={__( 'Show More Settings', 'kadence-blocks' )}
 							initialOpen={true}
+							panelName={ 'showMoreSettings'}
+							blockSlug={ 'kadence/show-more' }
 						>
 							<ToggleControl
 								label={__( 'Display "hide" button once expanded', 'kadence-blocks' )}
@@ -201,14 +206,16 @@ export function Edit ({
 											  onChange={( value ) => setAttributes( { fadeOutSize: value } )}/>
 							)}
 
-						</PanelBody>
+						</KadencePanelBody>
 					</>
 				}
 
-				{( activeTab === 'style' ) &&
+				{( activeTab === 'advanced' ) &&
 					<>
-						<PanelBody
+						<KadencePanelBody
 							title={__( 'Spacing Settings', 'kadence-blocks' )}
+							panelName={ 'spacingSettings'}
+							blockSlug={ 'kadence/show-more' }
 						>
 							<ResponsiveMeasurementControls
 								label={__( 'Padding', 'kadence-blocks' )}
@@ -246,14 +253,11 @@ export function Edit ({
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 								onUnit={( value ) => setAttributes( { marginUnit: value } )}
 							/>
-						</PanelBody>
-					</>
-				}
-
-				{( activeTab === 'advanced' ) &&
-					<>
-						<PanelBody
+						</KadencePanelBody>
+						<KadencePanelBody
 							title={__( 'Expand Settings', 'kadence-blocks' )}
+							panelName={ 'expandSettings'}
+							blockSlug={ 'kadence/show-more' }
 						>
 							<ToggleControl
 								label={__( 'Default Expanded on Desktop', 'kadence-blocks' )}
@@ -270,10 +274,10 @@ export function Edit ({
 								checked={defaultExpandedMobile}
 								onChange={( value ) => setAttributes( { defaultExpandedMobile: value } )}
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					</>
 				}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<FadeOut/>
 			<div {...blockProps}
 				style={ {

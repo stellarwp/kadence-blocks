@@ -176,11 +176,8 @@ function KadenceConfig() {
 							<KadenceCountup />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Count Up'} blockSlug={'countup'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'titleStyle', label: __( 'Enable Title Style Settings', 'kadence-blocks' ) },
+									{ key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>
@@ -202,11 +199,7 @@ function KadenceConfig() {
 							<KadenceIcon />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Icon'} blockSlug={'icon'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'iconSpacing', label: __( 'Enable Icon Spacing Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>
@@ -245,11 +238,9 @@ function KadenceConfig() {
 							<KadenceLottie />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Lottie'} blockSlug={'lottie'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'sourceFile', label: __( 'Enable Source File Settings', 'kadence-blocks' ) },
+									{ key: 'playbackSettings', label: __( 'Enable Playback Settings', 'kadence-blocks' ) },
+									{ key: 'sizeControl', label: __( 'Enable Size Control Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>
@@ -259,11 +250,12 @@ function KadenceConfig() {
 							<KadencePosts />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Posts'} blockSlug={'posts'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'layoutSettings', label: __( 'Enable Layout Settings', 'kadence-blocks' ) },
+									{ key: 'imageSettings', label: __( 'Enable Image Settings', 'kadence-blocks' ) },
+									{ key: 'categorySettings', label: __( 'Enable Category Settings', 'kadence-blocks' ) },
+									{ key: 'titleSettings', label: __( 'Enable Title Style Settings', 'kadence-blocks' ) },
+									{ key: 'metaSettings', label: __( 'Enable Meta Settings', 'kadence-blocks' ) },
+									{ key: 'contentSettings', label: __( 'Enable Content Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>
@@ -305,11 +297,9 @@ function KadenceConfig() {
 							<KadenceShowMore />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Show More'} blockSlug={'show-more'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'showMoreSettings', label: __( 'Enable Show More Settings', 'kadence-blocks' ) },
+									{ key: 'spacingSettings', label: __( 'Enable Spacing Settings', 'kadence-blocks' ) },
+									{ key: 'expandSettings', label: __( 'Enable Expand Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>
@@ -332,11 +322,13 @@ function KadenceConfig() {
 							<KadenceTableOfContents />
 							{'admin' === user && (
 								<KadenceVisibilitySettings blockName={'Table Of Contents'} blockSlug={'table-of-contents'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
+									{ key: 'allowedHeaders', label: __( 'Enable Allowed Headers Settings', 'kadence-blocks' ) },
+									{ key: 'titleSettings', label: __( 'Enable Title Settings', 'kadence-blocks' ) },
+									{ key: 'collapsibleSettings', label: __( 'Enable Collapsible Settings', 'kadence-blocks' ) },
+									{ key: 'listSettings', label: __( 'Enable List Settings', 'kadence-blocks' ) },
+									{ key: 'scrollSettings', label: __( 'Enable Scroll Settings', 'kadence-blocks' ) },
+									{ key: 'containerSettings', label: __( 'Enable Container Settings', 'kadence-blocks' ) },
+									{ key: 'nonStaticContent', label: __( 'Enable Non static Content', 'kadence-blocks' ) },
 								]}/>
 							)}
 						</div>

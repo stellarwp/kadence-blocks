@@ -17,6 +17,7 @@ import {
 	KadencePanelBody,
 	ResponsiveAlignControls,
 	InspectorControlTabs,
+	KadenceInspectorControls,
 } from '@kadence/components';
 
 /**
@@ -24,7 +25,6 @@ import {
  */
 import { __ } from '@wordpress/i18n';
 import { useState, Component, Fragment } from '@wordpress/element';
-import { InspectorControls } from '@wordpress/block-editor';
 
 import {
 	TextControl,
@@ -114,7 +114,7 @@ function Inspector( props ) {
 	theSeparator = ( theSeparator === false ? '' : theSeparator );
 
 	return (
-		<InspectorControls>
+		<KadenceInspectorControls blockSlug={ 'kadence/countup' }>
 
 			<InspectorControlTabs
 				panelName={ 'count-up' }
@@ -214,7 +214,8 @@ function Inspector( props ) {
 				<>
 					<KadencePanelBody
 						title={__( 'Title Settings', 'kadence-blocks' )}
-						panelName={'kb-inspector-title-settings'}
+						panelName={'titleStyle'}
+						blockSlug={ 'kadence/countup' }
 					>
 						<ToggleControl
 							label={__( 'Show Title', 'kadence-blocks' )}
@@ -385,7 +386,8 @@ function Inspector( props ) {
 					<KadencePanelBody
 						title={__( 'Number Settings', 'kadence-blocks' )}
 						initialOpen={false}
-						panelName={'kb-inspector-number-settings'}
+						panelName={'numberStyle'}
+						blockSlug={ 'kadence/countup' }
 					>
 						<PopColorControl
 							label={__( 'Number Color', 'kadence-blocks' )}
@@ -534,7 +536,7 @@ function Inspector( props ) {
 				</>
 			}
 
-		</InspectorControls>
+		</KadenceInspectorControls>
 	);
 }
 

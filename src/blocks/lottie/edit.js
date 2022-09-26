@@ -18,10 +18,7 @@ import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
 import { has, get } from 'lodash';
 
-const {
-	InspectorControls,
-	BlockControls,
-} = wp.blockEditor;
+import { BlockControls } from '@wordpress/block-editor';
 
 const { apiFetch } = wp;
 import {
@@ -44,7 +41,8 @@ import {
 	KadenceSelectPosts,
 	ResponsiveMeasurementControls,
 	KadencePanelBody,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceInspectorControls,
 } from '@kadence/components'
 
 const ktlottieUniqueIDs = [];
@@ -263,7 +261,7 @@ export function Edit( {
 					onChange={ ( value ) => setAttributes( { align: value } ) }
 				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/lottie' }>
 
 				<InspectorControlTabs
 					panelName={ 'lottie' }
@@ -276,7 +274,8 @@ export function Edit( {
 						<KadencePanelBody
 							title={ __('Source File', 'kadence-blocks') }
 							initialOpen={ true }
-							panelName={ 'kb-lottie-source-file' }
+							panelName={ 'sourceFile' }
+							blockSlug={ 'kadence/lottie' }
 						>
 
 							<SelectControl
@@ -333,7 +332,8 @@ export function Edit( {
 						<KadencePanelBody
 							title={ __( 'Playback Settings', 'kadence-blocks' ) }
 							initialOpen={ true }
-							panelName={ 'kb-lottie-playback-settings' }
+							panelName={ 'playbackSettings' }
+							blockSlug={ 'kadence/lottie' }
 						>
 							<ToggleControl
 								label={ __( 'Show Controls', 'kadence-blocks' ) }
@@ -463,7 +463,8 @@ export function Edit( {
 					<>
 						<KadencePanelBody
 							title={ __( 'Size Controls', 'kadence-blocks' ) }
-							panelName={ 'kb-lottie-size' }
+							panelName={ 'sizeControl' }
+							blockSlug={ 'kadence/lottie' }
 						>
 							<ResponsiveMeasurementControls
 								label={ __( 'Padding', 'kadence-blocks' ) }
@@ -520,7 +521,7 @@ export function Edit( {
 					</>
 				}
 
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div className={ containerClasses } style={
 				{
 					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),

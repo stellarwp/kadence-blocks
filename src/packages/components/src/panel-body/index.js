@@ -5,6 +5,7 @@ import { PanelBody } from '@wordpress/components'
 import { compose } from '@wordpress/compose'
 import { withSelect, withDispatch } from '@wordpress/data'
 import { showSettings } from '@kadence/helpers';
+import { get } from 'lodash';
 
 function KadencePanelBody ({
 							   children,
@@ -16,6 +17,7 @@ function KadencePanelBody ({
 							   icon = '',
 							   buttonProps = {},
 							   blockSlug = false,
+							   index = false,
 							   panelName
 						   }) {
 
@@ -42,16 +44,20 @@ function KadencePanelBody ({
 export default compose([
 	withSelect( (select, ownProps ) => {
 		const initialOpen = ( undefined !== ownProps.initialOpen ? ownProps.initialOpen : true );
+		const index = get(ownProps, ['index'], '');
+
 		return {
-			isOpened: select( 'kadenceblocks/data' ).isEditorPanelOpened( ownProps.panelName + select('core/block-editor').getSelectedBlockClientId(), initialOpen ),
+			isOpened: select( 'kadenceblocks/data' ).isEditorPanelOpened( ownProps.panelName + index + select('core/block-editor').getSelectedBlockClientId(), initialOpen ),
 		}
 	}),
 	withDispatch((dispatch, ownProps, { select }) => {
 		const { getSelectedBlockClientId } = select('core/block-editor')
 		const initialOpen = ( undefined !== ownProps.initialOpen ? ownProps.initialOpen : true );
+		const index = get(ownProps, ['index'], '');
+
 		return {
 			toggleOpened: () => {
-				dispatch('kadenceblocks/data').toggleEditorPanelOpened( ownProps.panelName + getSelectedBlockClientId(), initialOpen )
+				dispatch('kadenceblocks/data').toggleEditorPanelOpened( ownProps.panelName + index + getSelectedBlockClientId(), initialOpen )
 			},
 		}
 	})

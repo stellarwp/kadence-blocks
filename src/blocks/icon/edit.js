@@ -18,7 +18,8 @@ import {
 	InspectorControlTabs,
 	RangeControl,
 	KadenceRadioButtons,
-	ResponsiveAlignControls
+	ResponsiveAlignControls,
+	KadenceInspectorControls,
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -34,7 +35,6 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 
 import {
-	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
@@ -149,7 +149,9 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			<KadencePanelBody
 				title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Spacing Settings', 'kadence-blocks' )}
 				initialOpen={ ( 1 === iconCount ? true : false ) }
-				panelName={'kb-icon-settings-' + index}
+				panelName={'iconSpacing'}
+				index={index}
+				blockSlug={ 'kadence/icon' }
 			>
 				{ icons[ index ].style !== 'default' && (
 					<ResponsiveMeasurementControls
@@ -426,7 +428,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 					onChange={value => setAttributes( { textAlignment: value } )}
 				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/icon' }>
 
 				<InspectorControlTabs
 					panelName={ 'icon' }
@@ -508,7 +510,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 						{ renderAdvancedSettings }
 					</>
 				}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${previewTextAlign ? ' kb-icon-halign-' + previewTextAlign : ''}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`}>
 				{times( iconCount, n => renderIconsPreview( n ) )}
 			</div>
