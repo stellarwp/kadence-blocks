@@ -9,3 +9,4 @@ export { default as capitalizeFirstLetter } from './capital-first';
 export { default as KadenceTryParseJSON } from './parse-json';
 export { default as getUnitIcon } from './get-unit-icon';
 export { default as typographyStyle } from './typography-style';
+export { default as linkedOrIndividual } from './is-linked-or-individual';
