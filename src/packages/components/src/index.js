@@ -25,6 +25,7 @@ export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';
 export { default as KadenceImageControl } from './common/image-controls';
 export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
+export { default as KadenceInspectorControls } from './inspector-controls';
 export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';

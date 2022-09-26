@@ -4,6 +4,7 @@
 import { PanelBody } from '@wordpress/components'
 import { compose } from '@wordpress/compose'
 import { withSelect, withDispatch } from '@wordpress/data'
+import { showSettings } from '@kadence/helpers';
 
 function KadencePanelBody ({
 							   children,
@@ -13,8 +14,15 @@ function KadencePanelBody ({
 							   toggleOpened,
 							   className = '',
 							   icon = '',
-							   buttonProps = {}
+							   buttonProps = {},
+							   blockSlug = false,
+							   panelName
 						   }) {
+
+	/* If the block slug is set, check the panel name against the allowed settings for the user */
+	if( blockSlug !== false && !showSettings( panelName, blockSlug ) ) {
+		return null;
+	}
 
 	return (
 		<PanelBody
