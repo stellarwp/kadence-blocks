@@ -931,7 +931,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 				{isSelected && (
 					<Fragment>
 						<Button
-							isDefault={true}
+							isSecondary
 							icon={plus}
 							onClick={() => {
 								const newitems = items;

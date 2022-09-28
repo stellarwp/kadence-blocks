@@ -1834,7 +1834,7 @@ function KadenceForm( props ) {
 											<>
 												&nbsp;
 												<Button
-													isDefault
+													isSecondary
 													onClick={() => removeKeys}
 												>
 													{__( 'Remove', 'kadence-blocks' )}

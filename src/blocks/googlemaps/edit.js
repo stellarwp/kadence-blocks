@@ -453,7 +453,7 @@ export function Edit( {
 								<>
 									&nbsp;
 									<Button
-										isDefault
+										isSecondary
 										onClick={removeGoogleApiKey}
 										disabled={'' === customGoogleApiKey}
 									>

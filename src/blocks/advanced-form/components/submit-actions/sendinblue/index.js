@@ -211,7 +211,7 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 					<Fragment>
 						&nbsp;
 						<Button
-							isDefault
+							isSecondary
 							onClick={() => removeAPI()}
 						>
 							{__( 'Remove', 'kadence-blocks-pro' )}

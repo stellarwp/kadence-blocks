@@ -68,12 +68,12 @@ class OpacityControl extends Component {
 				) }
 				<Tooltip text={ this.props.label }>
 					{ ! this.state.isVisible && (
-						<Button className="kt-opacity-icon" isDefault onClick={ toggleVisible }>
+						<Button className="kt-opacity-icon" isSecondary onClick={ toggleVisible }>
 							{ icons.opacity }
 						</Button>
 					) }
 					{ this.state.isVisible && (
-						<Button className="kt-opacity-icon" isDefault onClick={ toggleClose }>
+						<Button className="kt-opacity-icon" isSecondary onClick={ toggleClose }>
 							{ icons.opacity }
 						</Button>
 					) }

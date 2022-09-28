@@ -46,7 +46,7 @@ export default function StepControls( {
 					<Button
 						className="kb-step-btn"
 						icon={ chevronLeftSmall }
-						isDefault
+						isSecondary
 						onClick={ onMinus }
 					/>
 					<input
@@ -61,7 +61,7 @@ export default function StepControls( {
 					/>
 					<Button
 						className="kb-step-btn"
-						isDefault
+						isSecondary
 						icon={ chevronRightSmall }
 						onClick={ onPlus }
 					/>
