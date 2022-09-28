@@ -340,10 +340,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$post_meta = get_post_meta( $post_id );
 		$form_meta = array();
-
-		foreach ( $post_meta as $meta_key => $meta_value ) {
-			if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset( $meta_value[0] ) ) {
-				$form_meta[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset( $meta_value[0] ) ) {
+					$form_meta[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				}
 			}
 		}
 
