@@ -152,7 +152,7 @@ button.components-button.kb-grid-btns svg {
     padding-top: 10px;
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-gap: 0;
+    gap: 0;
 }
 .components-modal__frame.kt-prebuilt-modal .components-modal__header .components-modal__header-heading {
     text-transform: uppercase;
@@ -464,7 +464,7 @@ h2.kb-template-name {
 }
 
 .components-modal__frame.kt-prebuilt-modal .components-button-group.kb-prebuilt-grid {
-	grid-gap: 30px;
+	gap: 30px;
 	.kt-prebuilt-item {
 		padding: 0;
 		border:5px solid #fff;
@@ -518,7 +518,7 @@ h2.kb-template-name {
 .kt-prebuilt-content.kb-prebuilt-has-sidebar {
     display: grid;
     grid-template-columns: 1fr 5fr;
-    grid-gap: 24px;
+    gap: 24px;
     height: calc( 100% - 50px );
 }
 .kt-prebuilt-sidebar {
@@ -530,7 +530,7 @@ h2.kb-template-name {
 .kb-prebuilt-templates-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr) );
-    grid-gap: 0;
+    gap: 0;
 }
 .components-modal__frame.kt-prebuilt-modal .kt-prebuilt-item .kt-import-btn:hover .kb-scroll-over-image img {
     transform: translateY(calc(-100% + 400px));

@@ -295,9 +295,7 @@ class Kadence_Blocks_Settings {
 	public function activation_redirect() {
 		if ( get_option( 'kadence_blocks_redirect_on_activation', false ) ) {
 			delete_option( 'kadence_blocks_redirect_on_activation' );
-			if ( ! isset( $_GET['activate-multi'] ) ) {
-				wp_safe_redirect( $this->settings_link() );
-			}
+			// @todo add admin notice for optional data share.
 		}
 	}
 	/**
