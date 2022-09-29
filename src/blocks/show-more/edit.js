@@ -21,6 +21,7 @@ import {
 	KadenceInspectorControls,
 	KadencePanelBody
 } from '@kadence/components';
+import { setBlockDefaults } from '@kadence/helpers';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
@@ -65,12 +66,8 @@ export function Edit ({
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/show-more' ] !== undefined && typeof blockConfigObject[ 'kadence/show-more' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/show-more' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/show-more' ][ attribute ];
-				} );
-			}
+			attributes = setBlockDefaults( 'kadence/show-more', attributes);
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
