@@ -44,6 +44,7 @@ import {
 	InspectorControlTabs,
 	KadenceInspectorControls,
 } from '@kadence/components'
+import { setBlockDefaults } from '@kadence/helpers';
 
 const ktlottieUniqueIDs = [];
 
@@ -125,12 +126,8 @@ export function Edit( {
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-					uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
-				} );
-			}
+			attributes = setBlockDefaults( 'kadence/lottie', attributes);
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
@@ -266,6 +263,7 @@ export function Edit( {
 				<InspectorControlTabs
 					panelName={ 'lottie' }
 					setActiveTab={ setActiveTab }
+					allowedTabs={ [ 'general', 'advanced' ] }
 					activeTab={ activeTab }
 				/>
 
@@ -458,8 +456,7 @@ export function Edit( {
 					</>
 				}
 
-
-				{ ( activeTab === 'style' ) &&
+				{ ( activeTab === 'advanced' ) &&
 					<>
 						<KadencePanelBody
 							title={ __( 'Size Controls', 'kadence-blocks' ) }
@@ -513,11 +510,6 @@ export function Edit( {
 								max={ 1000 }
 							/>
 						</KadencePanelBody>
-					</>
-				}
-
-				{ ( activeTab === 'advanced' ) &&
-					<>
 					</>
 				}
 

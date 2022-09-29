@@ -38,18 +38,16 @@ import {
 /**
  * Count Up Settings
  */
-function Inspector( props ) {
+function Inspector( {
+						attributes,
+						setAttributes,
+					} ) {
 
 	const [ titlePaddingControl, setTitlePaddingControl ] = useState( 'individual' );
 	const [ titleMarginControl, setTitleMarginControl ] = useState( 'individual' );
 	const [ numberPaddingControl, setNumberPaddingControl ] = useState( 'individual' );
 	const [ numberMarginControl, setNumberMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
-	const {
-		attributes,
-		setAttributes,
-	} = props;
 
 	const {
 		start,

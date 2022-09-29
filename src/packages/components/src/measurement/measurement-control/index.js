@@ -20,7 +20,7 @@ import { undo } from '@wordpress/icons';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useRef, Fragment } from '@wordpress/element';
+import { useState, Fragment } from '@wordpress/element';
 import {
 	Button,
 	DropdownMenu,
@@ -66,7 +66,7 @@ export default function MeasurementControls( {
 	measurement,
 	control = 'individual',
 	onChange,
-	onControl,
+	onControl = false,
 	step = 1,
 	max = 100,
 	min = 0,
@@ -96,6 +96,8 @@ export default function MeasurementControls( {
 		unlink: isBorderRadius ? radiusIndividualIcon : unlinkIcon,
 	}
 	const zero = ( allowEmpty ? '' : 0 );
+	const [ localControl, setLocalControl ] = useState( control );
+
 	/**
 	 * Build Toolbar Items.
 	 *
@@ -140,7 +142,7 @@ export default function MeasurementControls( {
 						</div>
 					) }
 					<div className="kadence-controls-content">
-						{ control !== 'individual' && (
+						{ localControl !== 'individual' && (
 							<RangeControl
 								value={ ( measurement ? measurement[ 0 ] : '' ) }
 								onChange={ ( value ) => onChange( [ value, value, value, value ] ) }
@@ -149,7 +151,7 @@ export default function MeasurementControls( {
 								step={ step }
 							/>
 						) }
-						{ control === 'individual' && (
+						{ localControl === 'individual' && (
 							<Fragment>
 								<MeasurementSingleControl
 									placement="top"
@@ -224,14 +226,14 @@ export default function MeasurementControls( {
 								) }
 							</div>
 						) }
-						{ onControl && (
+						{ localControl && (
 							<div className="kadence-units kadence-locked">
-								{ control !== 'individual' ? (
+								{ localControl !== 'individual' ? (
 									<Tooltip text={ __( 'Individual', 'kadence-blocks' ) }>
 										<Button
 											className="is-single"
 											isSmall
-											onClick={ () => onControl( 'individual' ) }
+											onClick={ () => setLocalControl( 'individual' ) }
 										>
 											{ measureIcons.link }
 										</Button>
@@ -241,7 +243,7 @@ export default function MeasurementControls( {
 										<Button
 											className="is-single"
 											isSmall
-											onClick={ () => onControl( 'linked' ) }
+											onClick={ () => setLocalControl( 'linked' ) }
 										>
 											{ measureIcons.unlink }
 										</Button>

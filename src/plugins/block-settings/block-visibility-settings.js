@@ -40,7 +40,7 @@ function KadenceVisibilitySettings({blockSlug, blockName, options}) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_settings_blocks: JSON.stringify(config)});
 
         settingModel.save().then(response => {
-            createErrorNotice(__(blockName + ' ' + __('block defaults saved!', 'kadence-blocks')), {
+            createErrorNotice( blockName + ' ' + __('block visibility saved!', 'kadence-blocks'), {
                 type: 'snackbar',
             })
 

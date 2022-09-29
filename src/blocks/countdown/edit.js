@@ -39,6 +39,7 @@ import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
+	setBlockDefaults
 } from '@kadence/helpers';
 
 /**
@@ -179,21 +180,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		evergreenStrict,
 	} = attributes;
 
-	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ itemBorderWidthControl, setItemBorderWidthControl ] = useState( 'individual' );
-	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
-	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
-	const [ previewExpired, setPreviewExpired ] = useState( false );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
-
-	let dateSettings = {};
-
 	useEffect( () => {
 		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			attributes = setBlockDefaults( 'kadence/countdown', attributes);
 
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
@@ -225,6 +214,18 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
 		}
 	}, [] );
+
+	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
+	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
+	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ itemBorderWidthControl, setItemBorderWidthControl ] = useState( 'individual' );
+	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
+	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
+	const [ previewExpired, setPreviewExpired ] = useState( false );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	let dateSettings = {};
 
 	const getTimestamp = ( value, theTimeOffset ) => {
 		const userTimezoneOffset = -1 * ( new Date().getTimezoneOffset() / 60 );

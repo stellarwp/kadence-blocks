@@ -84,7 +84,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceAccordion/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Accordion'} blockSlug={'accordion'} options={[
+								<KadenceVisibilitySettings blockName={ __('Accordion', 'kadence-blocks' ) } blockSlug={'accordion'} options={[
 									{ key: 'paneControl', label: __( 'Enable Pane Close/Open Settings', 'kadence-blocks' ) },
 									{ key: 'titleColors', label: __( 'Enable Title Color Settings', 'kadence-blocks' ) },
 									{ key: 'titleIcon', label: __( 'Enable Title Trigger Icon Settings', 'kadence-blocks' ) },
@@ -102,7 +102,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceAdvancedBtn/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Advanced Button'} blockSlug={'advancedbtn'} options={[
+								<KadenceVisibilitySettings blockName={ __('Advanced Button', 'kadence-blocks' ) } blockSlug={'advancedbtn'} options={[
 									{ key: 'countSettings', label: __( 'Enable Count Settings', 'kadence-blocks' ) },
 									{ key: 'sizeSettings', label: __( 'Enable Size Settings', 'kadence-blocks' ) },
 									{ key: 'colorSettings', label: __( 'Enable Color Settings', 'kadence-blocks' ) },
@@ -113,24 +113,24 @@ function KadenceConfig() {
 						</div>
 
 						{/* Advanced Form */}
-						<div className="kt-blocks-control-row">
-							<KadenceAdvancedForm />
-							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Advanced Form'} blockSlug={'advanced-form'} options={[
-									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
-									// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
-									// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
-									// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },
-									// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },
-								]}/>
-							)}
-						</div>
+						{/*<div className="kt-blocks-control-row">*/}
+						{/*	<KadenceAdvancedForm />*/}
+						{/*	{'admin' === user && (*/}
+						{/*		<KadenceVisibilitySettings blockName={ __('Advanced Form', 'kadence-blocks' )} blockSlug={'advanced-form'} options={[*/}
+						{/*			{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },*/}
+						{/*			// { key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },*/}
+						{/*			// { key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },*/}
+						{/*			// { key: 'labelStyle', label: __( 'Enable Label Style Settings', 'kadence-blocks' ) },*/}
+						{/*			// { key: 'visibilitySettings', label: __( 'Enable Visibility Settings', 'kadence-blocks' ) },*/}
+						{/*		]}/>*/}
+						{/*	)}*/}
+						{/*</div>*/}
 
 						{/*Advanced Gallery*/}
 						<div className="kt-blocks-control-row">
 							<KadenceGallery/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Advanced Gallery'} blockSlug={'advancedgallery'} options={[
+								<KadenceVisibilitySettings blockName={ __('Advanced Gallery', 'kadence-blocks') } blockSlug={'advancedgallery'} options={[
 									{ key: 'gutterSettings', label: __( 'Enable Gutter Settings', 'kadence-blocks' ) },
 									{ key: 'lightboxSettings', label: __( 'Enable Lightbox Settings', 'kadence-blocks' ) },
 									{ key: 'styleSettings', label: __( 'Enable Image Style Settings', 'kadence-blocks' ) },
@@ -161,7 +161,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceCountdown/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Countdown'} blockSlug={'countdown'} options={[
+								<KadenceVisibilitySettings blockName={ __('Countdown', 'kadence-blocks' ) } blockSlug={'countdown'} options={[
 									{ key: 'containerSettings', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
 									{ key: 'itemStyle', label: __( 'Enable Item Style Settings', 'kadence-blocks' ) },
 									{ key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
@@ -175,7 +175,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceCountup />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Count Up'} blockSlug={'countup'} options={[
+								<KadenceVisibilitySettings blockName={ __( 'Count Up', 'kadence-blocks' ) } blockSlug={'countup'} options={[
 									{ key: 'titleStyle', label: __( 'Enable Title Style Settings', 'kadence-blocks' ) },
 									{ key: 'numberStyle', label: __( 'Enable Number Style Settings', 'kadence-blocks' ) },
 								]}/>
@@ -186,7 +186,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceGooglemaps />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Google Maps'} blockSlug={'googlemaps'} options={[
+								<KadenceVisibilitySettings blockName={ __('Google Maps', 'kadence-blocks' ) } blockSlug={'googlemaps'} options={[
 									{ key: 'apiSettings', label: __( 'Enable API Settings', 'kadence-blocks' ) },
 									{ key: 'containerStyle', label: __( 'Enable Container Style Settings', 'kadence-blocks' ) },
 									{ key: 'mapLocation', label: __( 'Enable Map Location Settings', 'kadence-blocks' ) },
@@ -198,7 +198,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceIcon />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Icon'} blockSlug={'icon'} options={[
+								<KadenceVisibilitySettings blockName={ __('Icon', 'kadence-blocks' ) } blockSlug={'icon'} options={[
 									{ key: 'iconSpacing', label: __( 'Enable Icon Spacing Settings', 'kadence-blocks' ) },
 								]}/>
 							)}
@@ -208,7 +208,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceIconList/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Icon List'} blockSlug={'iconlist'} options={[
+								<KadenceVisibilitySettings blockName={ __('Icon List', 'kadence-blocks' ) } blockSlug={'iconlist'} options={[
 									{ key: 'column', label: __( 'Enable List Column Settings', 'kadence-blocks' ) },
 									{ key: 'spacing', label: __( 'Enable List Spacing Settings', 'kadence-blocks' ) },
 									{ key: 'textStyle', label: __( 'Enable Text Style Settings', 'kadence-blocks' ) },
@@ -222,7 +222,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceInfoBox/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Info Box'} blockSlug={'infobox'} options={[
+								<KadenceVisibilitySettings blockName={ __('Info Box', 'kadence-blocks' ) } blockSlug={'infobox'} options={[
 									{ key: 'containerSettings', label: __( 'Enable Container Settings', 'kadence-blocks' ) },
 									{ key: 'mediaSettings', label: __( 'Enable Media Settings', 'kadence-blocks' ) },
 									{ key: 'titleSettings', label: __( 'Enable Title Settings', 'kadence-blocks' ) },
@@ -237,7 +237,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceLottie />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Lottie'} blockSlug={'lottie'} options={[
+								<KadenceVisibilitySettings blockName={ __('Lottie', 'kadence-blocks' ) } blockSlug={'lottie'} options={[
 									{ key: 'sourceFile', label: __( 'Enable Source File Settings', 'kadence-blocks' ) },
 									{ key: 'playbackSettings', label: __( 'Enable Playback Settings', 'kadence-blocks' ) },
 									{ key: 'sizeControl', label: __( 'Enable Size Control Settings', 'kadence-blocks' ) },
@@ -249,7 +249,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadencePosts />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Posts'} blockSlug={'posts'} options={[
+								<KadenceVisibilitySettings blockName={ __('Posts', 'kadence-blocks' ) } blockSlug={'posts'} options={[
 									{ key: 'layoutSettings', label: __( 'Enable Layout Settings', 'kadence-blocks' ) },
 									{ key: 'imageSettings', label: __( 'Enable Image Settings', 'kadence-blocks' ) },
 									{ key: 'categorySettings', label: __( 'Enable Category Settings', 'kadence-blocks' ) },
@@ -264,7 +264,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceRowLayout/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Row Layout'} blockSlug={'rowlayout'} options={[
+								<KadenceVisibilitySettings blockName={ __('Row Layout', 'kadence-blocks' ) } blockSlug={'rowlayout'} options={[
 									{ key: 'columnResize', label: __( 'Control Individual Settings Groups', 'kadence-blocks' ) },
 									{ key: 'basicLayout', label: __( 'Enable Basic Layout Controls', 'kadence-blocks' ) },
 									{ key: 'paddingMargin', label: __( 'Enable Padding/Margin Settings', 'kadence-blocks' ) },
@@ -283,7 +283,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceColumn/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Section'} blockSlug={'container'} options={[
+								<KadenceVisibilitySettings blockName={ __('Section', 'kadence-blocks' ) } blockSlug={'container'} options={[
 									{ key: 'container', label: __( 'Enable Container Settings', 'kadence-blocks' ) },
 									{ key: 'textAlign', label: __( 'Enable Text Align Control', 'kadence-blocks' ) },
 									{ key: 'textColor', label: __( 'Enable Text Color Control', 'kadence-blocks' ) },
@@ -296,7 +296,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceShowMore />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Show More'} blockSlug={'show-more'} options={[
+								<KadenceVisibilitySettings blockName={ __('Show More', 'kadence-blocks' ) } blockSlug={'show-more'} options={[
 									{ key: 'showMoreSettings', label: __( 'Enable Show More Settings', 'kadence-blocks' ) },
 									{ key: 'spacingSettings', label: __( 'Enable Spacing Settings', 'kadence-blocks' ) },
 									{ key: 'expandSettings', label: __( 'Enable Expand Settings', 'kadence-blocks' ) },
@@ -308,7 +308,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceSpacer/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Spacer / Divider'} blockSlug={'spacer'} options={[
+								<KadenceVisibilitySettings blockName={ __('Spacer/Divider', 'kadence-blocks' ) } blockSlug={'spacer'} options={[
 									{ key: 'spacerHeightUnits', label: __( 'Enable Height Units', 'kadence-blocks' ) },
 									{ key: 'spacerHeight', label: __( 'Enable Height Control', 'kadence-blocks' ) },
 									{ key: 'dividerToggle', label: __( 'Enable Divider Toggle Control', 'kadence-blocks' ) },
@@ -321,7 +321,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceTableOfContents />
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Table Of Contents'} blockSlug={'table-of-contents'} options={[
+								<KadenceVisibilitySettings blockName={ __('Table Of Contents', 'kadence-blocks' ) } blockSlug={'table-of-contents'} options={[
 									{ key: 'allowedHeaders', label: __( 'Enable Allowed Headers Settings', 'kadence-blocks' ) },
 									{ key: 'titleSettings', label: __( 'Enable Title Settings', 'kadence-blocks' ) },
 									{ key: 'collapsibleSettings', label: __( 'Enable Collapsible Settings', 'kadence-blocks' ) },
@@ -337,7 +337,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceTabs/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Tabs'} blockSlug={'tabs'} options={[
+								<KadenceVisibilitySettings blockName={ __('Tabs', 'kadence-blocks' ) } blockSlug={'tabs'} options={[
 									{ key: 'tabLayout', label: __( 'Enable Layout Settings', 'kadence-blocks' ) },
 									{ key: 'tabContent', label: __( 'Enable Content Settings', 'kadence-blocks' ) },
 									{ key: 'titleColor', label: __( 'Enable Title Color Settings', 'kadence-blocks' ) },
@@ -353,7 +353,7 @@ function KadenceConfig() {
 						<div className="kt-blocks-control-row">
 							<KadenceTestimonials/>
 							{'admin' === user && (
-								<KadenceVisibilitySettings blockName={'Testimonials'} blockSlug={'testimonials'} options={[
+								<KadenceVisibilitySettings blockName={ __('Testimonials', 'kadence-blocks' ) } blockSlug={'testimonials'} options={[
 									{ key: 'layoutSettings', label: __( 'Enable Layout Settings', 'kadence-blocks' ) },
 									{ key: 'styleSettings', label: __( 'Enable Style Settings', 'kadence-blocks' ) },
 									{ key: 'columnSettings', label: __( 'Enable Column Settings', 'kadence-blocks' ) },
@@ -376,7 +376,7 @@ function KadenceConfig() {
 						) )}
 						<h3>{__( 'Components', 'kadence-blocks' )}</h3>
 						<KadenceFontFamily/>
-						<KadenceVisibilitySettings blockName={'Design Library'} blockSlug={'designlibrary'} showBlockWideSettings={false}
+						<KadenceVisibilitySettings blockName={ __('Design Library', 'kadence-blocks' ) } blockSlug={'designlibrary'} showBlockWideSettings={false}
 												   options={[
 													   { key: 'show', label: __( 'Show Design Library Button For', 'kadence-blocks' ) },
 													   { key: 'wire', label: __( 'Show Wireframe Library For', 'kadence-blocks' ) },
