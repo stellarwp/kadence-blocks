@@ -53,7 +53,7 @@ function KadenceRowLayoutDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);
@@ -66,7 +66,7 @@ function KadenceRowLayoutDefault(props) {
             config['kadence/rowlayout'] = {};
         }
         config['kadence/rowlayout'][key] = value;
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const clearDefaults = (key) => {
@@ -77,13 +77,13 @@ function KadenceRowLayoutDefault(props) {
         if (undefined !== config['kadence/rowlayout'][key]) {
             delete config['kadence/rowlayout'][key];
         }
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const clearAllDefaults = () => {
         const config = configuration;
         config['kadence/rowlayout'] = {};
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const rowConfig = (configuration && configuration['kadence/rowlayout'] ? configuration['kadence/rowlayout'] : {});

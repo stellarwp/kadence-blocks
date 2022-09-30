@@ -49,7 +49,7 @@ function KadenceAdvancedGalleryDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);
@@ -61,7 +61,7 @@ function KadenceAdvancedGalleryDefault(props) {
             config['kadence/advancedgallery'] = {};
         }
         config['kadence/advancedgallery'][key] = value;
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const galleryConfig = (configuration && configuration['kadence/advancedgallery'] ? configuration['kadence/advancedgallery'] : {});

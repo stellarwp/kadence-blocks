@@ -66,7 +66,7 @@ function KadenceColumnDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);
@@ -79,7 +79,7 @@ function KadenceColumnDefault(props) {
             config['kadence/column'] = {};
         }
         config['kadence/column'][key] = value;
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const clearDefaults = (key) => {
@@ -90,13 +90,13 @@ function KadenceColumnDefault(props) {
         if (undefined !== config['kadence/column'][key]) {
             delete config['kadence/column'][key];
         }
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const clearAllDefaults = () => {
         const config = configuration;
         config['kadence/column'] = {};
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const columnConfig = (configuration && configuration['kadence/column'] ? configuration['kadence/column'] : {});

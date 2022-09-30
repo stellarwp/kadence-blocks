@@ -62,7 +62,7 @@ function KadenceInfoBoxDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
 			setIsSaving(false);
-			setConfiguration(config);
+			setConfiguration({ ...config });
 			setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);
@@ -75,7 +75,7 @@ function KadenceInfoBoxDefault(props) {
             config['kadence/infobox'] = {};
         }
         config['kadence/infobox'][key] = value;
-		setConfiguration(config);
+		setConfiguration({ ...config });
     }
 
     const clearDefaults = (key) => {
@@ -86,13 +86,13 @@ function KadenceInfoBoxDefault(props) {
         if (undefined !== config['kadence/infobox'][key]) {
             delete config['kadence/infobox'][key];
         }
-		setConfiguration(config);
+		setConfiguration({ ...config });
     }
 
     const clearAllDefaults = () => {
         const config = configuration;
         config['kadence/infobox'] = {};
-		setConfiguration(config);
+		setConfiguration({ ...config });
     }
 
     const infoConfig = (configuration && configuration['kadence/infobox'] ? configuration['kadence/infobox'] : {});

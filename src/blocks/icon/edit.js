@@ -21,7 +21,11 @@ import {
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import {
+	KadenceColorOutput,
+	getPreviewSize,
+	setBlockDefaults
+} from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -74,6 +78,8 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
+			attributes = setBlockDefaults( 'kadence/icon', attributes);
+
 			if ( ! isUniqueID( uniqueID ) ) {
 				smallID = uniqueId( smallID );
 			}

@@ -21,7 +21,10 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-import { getPreviewSize } from '@kadence/helpers';
+import {
+	getPreviewSize,
+	setBlockDefaults
+} from '@kadence/helpers';
 import {
 	KadencePanelBody,
 	RangeControl,
@@ -135,6 +138,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	useEffect( () => {
 		if ( !uniqueID ) {
+			attributes = setBlockDefaults( 'kadence/posts', attributes);
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );

@@ -12,6 +12,7 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
+	setBlockDefaults
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -165,12 +166,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 
 	useEffect( () => {
 		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/table-of-contents' ] !== undefined && typeof blockConfigObject[ 'kadence/table-of-contents' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/table-of-contents' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/table-of-contents' ][ attribute ];
-				} );
-			}
+			attributes = setBlockDefaults( 'kadence/table-of-contents', attributes);
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );

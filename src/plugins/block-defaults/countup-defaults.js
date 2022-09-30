@@ -70,7 +70,7 @@ function KadenceCountup(props) {
             })
 
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);

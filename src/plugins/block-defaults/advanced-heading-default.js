@@ -43,7 +43,7 @@ function KadenceAdvancedHeadingDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
 			setIsSaving(false);
-			setConfiguration(config);
+			setConfiguration({ ...config });
 			setIsOpen(false);
 
             kadence_blocks_params.configuration = JSON.stringify(config);
@@ -56,7 +56,7 @@ function KadenceAdvancedHeadingDefault(props) {
             config['kadence/advancedheading'] = {};
         }
         config['kadence/advancedheading'][key] = value;
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
     const clearDefaults = (key) => {
         const config = configuration;
@@ -66,12 +66,12 @@ function KadenceAdvancedHeadingDefault(props) {
         if (undefined !== config['kadence/advancedheading'][key]) {
             delete config['kadence/advancedheading'][key];
         }
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
     const clearAllDefaults = () => {
         const config = configuration;
         config['kadence/advancedheading'] = {};
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
 

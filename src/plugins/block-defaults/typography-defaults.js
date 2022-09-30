@@ -52,7 +52,7 @@ function KadenceTypographyDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
             kadence_blocks_params.configuration = JSON.stringify(config);
         });
@@ -64,7 +64,7 @@ function KadenceTypographyDefault(props) {
             config['kadence/typography'] = {};
         }
         config['kadence/typography'][key] = value;
-		setConfiguration(config);
+		setConfiguration({ ...config });
     }
 
     const typoConfig = (configuration && configuration['kadence/typography'] ? configuration['kadence/typography'] : {});

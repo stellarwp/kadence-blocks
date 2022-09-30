@@ -54,7 +54,7 @@ function KadenceButtonDefault(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
             setIsSaving(false);
-            setConfiguration(config);
+            setConfiguration({ ...config });
             setIsOpen(false);
             kadence_blocks_params.configuration = JSON.stringify(config);
         });
@@ -65,7 +65,7 @@ function KadenceButtonDefault(props) {
             config['kadence/advancedbtn'] = {};
         }
         config['kadence/advancedbtn'][key] = value;
-        setConfiguration(config);
+        setConfiguration( { ...config } );
     }
     const clearDefaults = (key) => {
         const config = configuration;
@@ -75,12 +75,12 @@ function KadenceButtonDefault(props) {
         if (undefined !== config['kadence/advancedbtn'][key]) {
             delete config['kadence/advancedbtn'][key];
         }
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
     const clearAllDefaults = () => {
         const config = configuration;
         config['kadence/advancedbtn'] = {};
-        setConfiguration(config);
+        setConfiguration({ ...config });
     }
 
     const buttonConfig = (configuration && configuration['kadence/advancedbtn'] ? configuration['kadence/advancedbtn'] : {});
@@ -149,7 +149,8 @@ function KadenceButtonDefault(props) {
             }
             return item;
         });
-        saveConfigState('btns', newUpdate);
+
+        saveConfigState('btns', newUpdate );
     };
     const defineWidthType = (type) => {
         if ('full' === type) {
