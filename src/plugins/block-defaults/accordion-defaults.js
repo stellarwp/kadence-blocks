@@ -23,6 +23,8 @@ import {
 	topLeftIcon,
 	topRightIcon,
 } from '@kadence/icons';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 /**
  * Internal block libraries
  */
@@ -44,6 +46,7 @@ function KadenceAccordionDefault( props ) {
 	const [ titleBorderHoverColorControl, setTitleBorderHoverColorControl ] = useState( 'linked' );
 	const [ titleBorderActiveColorControl, setTitleBorderActiveColorControl ] = useState( 'linked' );
 	const [ titleTag, setTitleTag ] = useState( 'div' );
+	const {createErrorNotice} = useDispatch(noticesStore);
 
 	useEffect( () => {
 		const accordionConfig = ( configuration && configuration[ 'kadence/accordion' ] ? configuration[ 'kadence/accordion' ] : {} );
@@ -80,6 +83,9 @@ function KadenceAccordionDefault( props ) {
 		config[ blockID ] = settingArray;
 		const settingModel = new wp.api.models.Settings( { kadence_blocks_config_blocks: JSON.stringify( config ) } );
 		settingModel.save().then( response => {
+			createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+				type: 'snackbar',
+			})
 
 			setIsSaving( false );
 			setConfiguration( config );

@@ -28,6 +28,8 @@ import {
     ButtonGroup,
     Tooltip,
 } from '@wordpress/components';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 import {
     testimonialBasicIcon,
@@ -55,6 +57,7 @@ function KadenceTestimonialDefault(props) {
     const [iconPaddingControl, setIconPaddingControl] = useState('linked');
     const [user, setUser] = useState((kadence_blocks_params.user ? kadence_blocks_params.user : 'admin'));
     const [settings, setSettings] = useState({});
+    const {createErrorNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         const testimonialConfig = (configuration && configuration['kadence/testimonials'] ? configuration['kadence/testimonials'] : {});
@@ -125,6 +128,10 @@ function KadenceTestimonialDefault(props) {
         config[blockID] = settingArray;
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                type: 'snackbar',
+            });
+
             setIsSaving(false);
             setConfiguration({ ...config });
             setIsOpen(false);

@@ -20,6 +20,8 @@ import {
     ButtonGroup,
     Tooltip,
 } from '@wordpress/components';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 import {alignBottomIcon, alignMiddleIcon, alignTopIcon, iconListBlockIcon} from '@kadence/icons';
 import {linkedOrIndividual} from '@kadence/helpers';
@@ -30,6 +32,7 @@ function KadenceIconListDefault(props) {
     const [isSaving, setIsSaving] = useState(false);
     const [configuration, setConfiguration] = useState((kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {}));
     const [marginControl, setMarginControl] = useState('individual');
+    const {createErrorNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         const iconListConfig = (configuration && configuration['kadence/iconlist'] ? configuration['kadence/iconlist'] : {});
@@ -47,6 +50,10 @@ function KadenceIconListDefault(props) {
         config[blockID] = settingArray;
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                type: 'snackbar',
+            });
+
 			setIsSaving(false);
 			setConfiguration({ ...config });
 			setIsOpen(false);

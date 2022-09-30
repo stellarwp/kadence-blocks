@@ -34,12 +34,15 @@ import {
  * Internal block libraries
  */
 import {__} from '@wordpress/i18n';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 function KadenceTabsDefault(props) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [configuration, setConfiguration] = useState((kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {}));
+    const {createErrorNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         // Check for old defaults.
@@ -62,6 +65,10 @@ function KadenceTabsDefault(props) {
         config[blockID] = settingArray;
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                type: 'snackbar',
+            });
+
 			setIsSaving(false);
 			setConfiguration({ ...config });
 			setIsOpen(false);

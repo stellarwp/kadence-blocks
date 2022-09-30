@@ -89,7 +89,7 @@ function KadenceIcon(props) {
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
 
         settingModel.save().then(response => {
-            createErrorNotice(__('Icon block defaults saved!', 'kadence-blocks'), {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
                 type: 'snackbar',
             })
 

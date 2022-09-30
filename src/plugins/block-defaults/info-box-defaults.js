@@ -20,6 +20,8 @@ import {
     SelectControl,
     Modal,
 } from '@wordpress/components';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 import {infoboxIcon} from '@kadence/icons';
 import {linkedOrIndividual} from "@kadence/helpers";
@@ -35,6 +37,7 @@ function KadenceInfoBoxDefault(props) {
     const [mediaBorderControl, setMediaBorderControl] = useState('linked');
     const [mediaPaddingControl, setMediaPaddingControl] = useState('linked');
     const [mediaMarginControl, setMediaMarginControl] = useState('linked');
+    const {createErrorNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         const infoConfig = (configuration && configuration['kadence/infobox'] ? configuration['kadence/infobox'] : {});
@@ -61,6 +64,10 @@ function KadenceInfoBoxDefault(props) {
         config[blockID] = settingArray;
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                type: 'snackbar',
+            });
+
 			setIsSaving(false);
 			setConfiguration({ ...config });
 			setIsOpen(false);

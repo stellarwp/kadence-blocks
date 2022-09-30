@@ -22,6 +22,8 @@ import {
     Dashicon,
     Modal,
 } from '@wordpress/components';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 import {
     blockColumnIcon,
@@ -41,6 +43,7 @@ function KadenceColumnDefault(props) {
     const [configuration, setConfiguration] = useState((kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {}));
     const [borderWidthControl, setBorderWidthControl] = useState('individual');
     const [borderRadiusControl, setBorderRadiusControl] = useState('individual');
+    const {createErrorNotice} = useDispatch(noticesStore);
 
 
     useEffect(() => {
@@ -65,6 +68,10 @@ function KadenceColumnDefault(props) {
         config[blockID] = settingArray;
         const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
         settingModel.save().then(response => {
+            createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                type: 'snackbar',
+            })
+
             setIsSaving(false);
             setConfiguration({ ...config });
             setIsOpen(false);

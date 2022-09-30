@@ -14,6 +14,8 @@ import {
 } from '@wordpress/components';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
+import {useDispatch} from '@wordpress/data';
+import {store as noticesStore} from '@wordpress/notices';
 
 const kbColorUniqueIDs = [];
 /**
@@ -32,6 +34,7 @@ function KadenceColorDefault(props) {
     const [themeColors, setThemeColors] = useState([]);
     const [showMessage, setShowMessage] = useState(false);
     const [classSat, setClassSat] = useState('first');
+    const {createErrorNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         if (!colors) {
@@ -55,6 +58,10 @@ function KadenceColorDefault(props) {
             const config = kadenceColors;
             const settingModel = new wp.api.models.Settings({kadence_blocks_colors: JSON.stringify(config)});
             settingModel.save().then(response => {
+                createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+                    type: 'snackbar',
+                });
+
                 setIsSaving(false);
                 setKadenceColors(config);
 
