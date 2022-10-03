@@ -115,6 +115,7 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
     text-align: left;
     transition: all ease-in-out .2s;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .kt-accordion-panel-inner {
@@ -374,4 +375,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 	.kt-blocks-accordion-icon-trigger:after {
 		transform: rotate(45deg);
 	}
+}
+.kt-accordion-panel > .kt-accordion-panel-inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender > .block-editor-default-block-appender {
+    display: block;
 }

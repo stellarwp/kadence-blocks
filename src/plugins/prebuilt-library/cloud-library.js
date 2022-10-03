@@ -57,7 +57,7 @@ class CloudSections extends Component {
 		this.capitalizeFirstLetter = this.capitalizeFirstLetter.bind( this );
 		this.reloadTemplateData = this.reloadTemplateData.bind( this );
 		this.state = {
-			category: 'all',
+			category: {},
 			search: null,
 			tab: 'section',
 			items: false,
@@ -220,7 +220,7 @@ class CloudSections extends Component {
 			this.debouncedReloadTemplateData();
 		}
 		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'hide' );
+		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show' );
 		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
 		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 		const libraryItems = this.props.tab !== this.state.tab ? false : this.state.items;
@@ -233,6 +233,7 @@ class CloudSections extends Component {
 		const sideCatOptions = Object.keys( categoryItems ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categoryItems[key] ) }
 		} );
+		const getActiveCat = ( this.state.category[activePanel.activeTab] ? this.state.category[activePanel.activeTab] : 'all' );
 		const control = this;
 		let breakpointColumnsObj = {
 			default: 5,
@@ -290,9 +291,13 @@ class CloudSections extends Component {
 							{ sideCatOptions.map( ( category, index ) =>
 								<Button
 									key={ `${ category.value }-${ index }` }
-									className={ 'kb-category-button' + ( this.state.category === category.value ? ' is-pressed' : '' ) }
-									aria-pressed={ this.state.category === category.value }
-									onClick={ () => this.setState( { category: category.value } ) }
+									className={ 'kb-category-button' + ( getActiveCat === category.value ? ' is-pressed' : '' ) }
+									aria-pressed={ getActiveCat === category.value }
+									onClick={ () => {
+										let newCat = this.state.category;
+										newCat[activePanel.activeTab] = category.value;
+										this.setState( { category: newCat } );
+								} }
 								>
 									{ category.label }
 								</Button>
@@ -315,9 +320,13 @@ class CloudSections extends Component {
 							/>
 							<SelectControl
 								className={ "kb-library-header-cat-select" }
-								value={ this.state.category }
+								value={ getActiveCat }
 								options={ catOptions }
-								onChange={ value => this.setState( { category: value } ) }
+								onChange={ value => {
+									let newCat = this.state.category;
+									newCat[activePanel.activeTab] = value;
+									this.setState( { category: newCat } );
+								}}
 							/>
 						</div>
 						<div className="kb-library-header-right">
@@ -424,7 +433,7 @@ class CloudSections extends Component {
 							const pro = control.state.items[key].pro;
 							const locked = libraryItems[key].locked;
 							const descriptionId = `${ slug }_kb_cloud__item-description`;
-							if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
+							if ( ( 'all' === getActiveCat || Object.keys( categories ).includes( getActiveCat ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
 								return (
 									<div className="kb-css-masonry-inner">
 										<Button

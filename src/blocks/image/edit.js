@@ -133,7 +133,7 @@ export function ImageEdit( {
 	} = attributes;
 	function getDynamic() {
 		let contextPost = null;
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			contextPost = context.postId;
 		}
 		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['url'] && attributes.kadenceDynamic['url'].enable ) {
@@ -160,7 +160,7 @@ export function ImageEdit( {
 		} else {
 			ktimageUniqueIDs.push( uniqueID );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,

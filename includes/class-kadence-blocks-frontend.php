@@ -1611,8 +1611,36 @@ class Kadence_Blocks_Frontend {
 		if ( ! empty( $attr['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attr['maxWidth'][0] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'margin-left', 'auto' );
+			$css->add_property( 'margin-right', 'auto' );
+			// Backward compatablity.
 			$css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'flex', '1 ' . $attr['maxWidth'][0] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->add_property( 'flex', '0 1 ' . $attr['maxWidth'][0] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'max-width', 'unset' );
+			$css->add_property( 'margin-left', 'unset' );
+			$css->add_property( 'margin-right', 'unset' );
+		}
+		if ( ! empty( $attr['sticky'] ) && true === $attr['sticky'] ) {
+			$css->set_selector( '#wrapper.site' );
+			$css->add_property( 'overflow', 'clip' );
+			if ( ! empty( $attr['stickyOffset'][0] ) ) {
+				$css->set_selector( '.kadence-column' . $unique_id );
+				$css->add_property( '--kb-section-setting-offset', $attr['stickyOffset'][0] . ( isset( $attr['stickyOffsetUnit'] ) ? $attr['stickyOffsetUnit'] : 'px' ) );
+			}
+		}
+		if ( ! empty( $attr['stickyOffset'][1] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( '--kb-section-setting-offset', $attr['stickyOffset'][1] . ( isset( $attr['stickyOffsetUnit'] ) ? $attr['stickyOffsetUnit'] : 'px' ) );
+			$css->stop_media_query();
+		}
+		if ( ! empty( $attr['stickyOffset'][2] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( '--kb-section-setting-offset', $attr['stickyOffset'][2] . ( isset( $attr['stickyOffsetUnit'] ) ? $attr['stickyOffsetUnit'] : 'px' ) );
+			$css->stop_media_query();
 		}
 		if ( ! empty( $attr['sticky'] ) && true === $attr['sticky'] ) {
 			$css->set_selector( '#wrapper.site' );
@@ -1650,18 +1678,6 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['rightPadding'] ) ) {
 				$css->add_property( 'padding-right', $attr['rightPadding'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attr['topMargin'] ) ) {
-				$css->add_property( 'margin-top', $attr['topMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['bottomMargin'] ) ) {
-				$css->add_property( 'margin-bottom', $attr['bottomMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['rightMargin'] ) ) {
-				$css->add_property( 'margin-right', $attr['rightMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['leftMargin'] ) ) {
-				$css->add_property( 'margin-left', $attr['leftMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
 			}
 			if ( isset( $attr['border'] ) ) {
 				$alpha = ( isset( $attr['borderOpacity'] ) && ! empty( $attr['borderOpacity'] ) ? $attr['borderOpacity'] : 1 );
@@ -1701,6 +1717,21 @@ class Kadence_Blocks_Frontend {
 				} else {
 					$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
 				}
+			}
+		}
+		if ( isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) ) {
+			$css->set_selector( '.wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( isset( $attr['topMargin'] ) ) {
+				$css->add_property( 'margin-top', $attr['topMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['bottomMargin'] ) ) {
+				$css->add_property( 'margin-bottom', $attr['bottomMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['rightMargin'] ) ) {
+				$css->add_property( 'margin-right', $attr['rightMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['leftMargin'] ) ) {
+				$css->add_property( 'margin-left', $attr['leftMargin'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
 			}
 		}
 		// Hover Styles.
@@ -1826,9 +1857,9 @@ class Kadence_Blocks_Frontend {
 			}
 			$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
 			$css->add_property( 'align-self', $align );
-			$css->set_selector( '.kt-inner-column-height-full > .wp-block-kadence-column.kadence-column' . $unique_id );
+			$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
 			$css->add_property( 'align-self', 'auto' );
-			$css->set_selector( '.kt-inner-column-height-full > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'display', 'flex' );
 			$css->add_property( 'flex-direction', 'column' );
 			$css->add_property( 'justify-content', $align );
@@ -2064,10 +2095,27 @@ class Kadence_Blocks_Frontend {
 		$css->stop_media_query();
 		$css->start_media_query( $media_query['mobile'] );
 		if ( ! empty( $attr['maxWidth'][2] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attr['maxWidth'][2] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'margin-left', 'auto' );
+			$css->add_property( 'margin-right', 'auto' );
 			$css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'flex', '1 ' . $attr['maxWidth'][2] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-sm-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-sm-dir-vertical):not(.kb-section-md-dir-vertical) >.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->add_property( 'flex', '0 1 ' . $attr['maxWidth'][2] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'max-width', 'unset' );
+			$css->add_property( 'margin-left', 'unset' );
+			$css->add_property( 'margin-right', 'unset' );
+		} else if ( ! empty( $attr['maxWidth'][1] ) ) {
+			$css->set_selector( '.wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->add_property( 'max-width', $attr['maxWidth'][1] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'margin-left', 'auto' );
+			$css->add_property( 'margin-right', 'auto' );
+		} else if ( ! empty( $attr['maxWidth'][0] ) ) {
+			$css->set_selector( '.wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->add_property( 'max-width', $attr['maxWidth'][0] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'margin-left', 'auto' );
+			$css->add_property( 'margin-right', 'auto' );
 		}
 		if ( isset( $attr['collapseOrder'] ) ) {
 			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id );
@@ -2086,7 +2134,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( 'vertical' === $mobile_direction ) {
 			// If desktop horizonal remove margin.
-			if ( $desktop_direction === 'horizontal' ) {
+			if ( $desktop_direction === 'horizontal' || $tablet_direction === 'horizontal' ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'display', 'block' );
 				$css->add_property( 'margin-left', '0px' );
@@ -2145,7 +2193,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
-		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {
+		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( ! empty( $attr['height'][2] ) ) {
 				$css->add_property( 'min-height', $attr['height'][2] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
@@ -2162,18 +2210,6 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['rightPaddingM'] ) ) {
 				$css->add_property( 'padding-right', $attr['rightPaddingM'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attr['topMarginM'] ) ) {
-				$css->add_property( 'margin-top', $attr['topMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['bottomMarginM'] ) ) {
-				$css->add_property( 'margin-bottom', $attr['bottomMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['rightMarginM'] ) ) {
-				$css->add_property( 'margin-right', $attr['rightMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
-			if ( isset( $attr['leftMarginM'] ) ) {
-				$css->add_property( 'margin-left', $attr['leftMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
-			}
 			if ( isset( $attr['mobileBorderWidth'] ) && ! empty( $attr['mobileBorderWidth'] ) && is_array( $attr['mobileBorderWidth'] ) ) {
 				if ( isset( $attr['mobileBorderWidth'][0] ) && is_numeric( $attr['mobileBorderWidth'][0] ) ) {
 					$css->add_property( 'border-top-width', $attr['mobileBorderWidth'][0] . 'px' );
@@ -2187,6 +2223,21 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['mobileBorderWidth'][3] ) && is_numeric( $attr['mobileBorderWidth'][3] ) ) {
 					$css->add_property( 'border-left-width', $attr['mobileBorderWidth'][3] . 'px' );
 				}
+			}
+		}
+		if ( isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) ) {
+			$css->set_selector( '.wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( isset( $attr['topMarginM'] ) ) {
+				$css->add_property( 'margin-top', $attr['topMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['bottomMarginM'] ) ) {
+				$css->add_property( 'margin-bottom', $attr['bottomMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['rightMarginM'] ) ) {
+				$css->add_property( 'margin-right', $attr['rightMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
+			}
+			if ( isset( $attr['leftMarginM'] ) ) {
+				$css->add_property( 'margin-left', $attr['leftMarginM'] . ( isset( $attr['marginType'] ) ? $attr['marginType'] : 'px' ) );
 			}
 		}
 		$css->stop_media_query();

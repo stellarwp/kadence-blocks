@@ -54,6 +54,10 @@
 		1
 	  ]
 	},
+	"contentBorderRadius": {
+	  "type": "array",
+	  "default": [ 0, 0, 0, 0 ]
+    },
 	"contentBorderControl": {
 	  "type": "string",
 	  "default": "linked"

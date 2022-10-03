@@ -57,6 +57,9 @@ function kadence_gutenberg_editor_assets() {
 	wp_register_style( 'kadence-blocks-plugin-css', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_control_meta['version'] );
 	wp_set_script_translations( 'kadence-blocks-plugin-js', 'kadence-blocks' );
 
+	wp_set_script_translations( 'kadence-blocks-vendor', 'kadence-blocks' );
+
+
 	$blocks = array(
 		'accordion',
 		'advancedbtn',

@@ -488,12 +488,12 @@
 .kt-button:hover::before {
 	opacity: 1;
 }
-.editor-styles-wrapper .kt-button.kt-btn-size-small {
+.editor-styles-wrapper .kt-button-wrap .kt-button.kt-btn-size-small{
     font-size: 16px;
     padding: 4px 8px;
     border-width: 1px;
 }
-.editor-styles-wrapper .kt-button.kt-btn-size-large {
+.editor-styles-wrapper .kt-button-wrap .kt-button.kt-btn-size-large {
     font-size: 20px;
 	padding: 12px 24px;
 	border-width: 3px;

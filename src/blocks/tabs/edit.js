@@ -112,10 +112,11 @@ const kttabsUniqueIDs = [];
  */
 function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab } ) {
 
-	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform } = attributes;
+	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
 
 
 	const [ showPreset, setShowPreset ] = useState( false );
+	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
@@ -1086,6 +1087,24 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									max={ 100 }
 									step={ 1 }
 								/>
+								<MeasurementControls
+									label={ __( 'Content Border Radius (px)', 'kadence-blocks' ) }
+									measurement={ contentBorderRadius }
+									control={ contentBorderRadiusControl }
+									onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+									onControl={ ( value ) => setContentBorderRadiusControl( value ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+									] }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
+								/>
 							</KadencePanelBody>
 						) }
 						{ showSettings( 'titleColor', 'kadence/tabs' ) && (
@@ -1596,6 +1615,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							<div className="kt-tabs-content-wrap" style={ {
 								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
+								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
 								minHeight: minHeight + 'px',
 								backgroundColor: KadenceColorOutput( contentBgColor ),
 								borderColor: KadenceColorOutput( contentBorderColor ),

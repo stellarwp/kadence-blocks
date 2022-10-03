@@ -96,7 +96,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,

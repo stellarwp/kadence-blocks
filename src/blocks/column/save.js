@@ -14,6 +14,9 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align } = attributes;
+	const deskDirection = ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : false );
+	const tabDirection = ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : false );
+	const mobileDirection = ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : false );
 	const hasOverlay = ( overlay || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
 	const classes = classnames( {
 		[ `inner-column-${ id }` ]: id,
@@ -25,6 +28,9 @@ function Save( { attributes } ) {
 		'kb-section-is-sticky': undefined !== sticky && sticky,
 		'kb-section-has-overlay': undefined !== hasOverlay && hasOverlay,
 		[ `align${ align }`] : align === 'full' || align === 'wide',
+		[ `kb-section-dir-${ deskDirection }` ]: deskDirection,
+		[ `kb-section-md-dir-${ tabDirection }` ]: tabDirection,
+		[ `kb-section-sm-dir-${ mobileDirection }` ]: mobileDirection,
 	} );
 	let relAttr;
 	if ( linkTarget ) {

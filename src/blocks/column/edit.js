@@ -69,7 +69,7 @@ import {
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
-	TabPanel,
+	TabPanel
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 /**
@@ -86,7 +86,7 @@ function SectionEdit( {
 	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			contextPost = context.postId;
 		}
 		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['backgroundImg:0:bgImg'] && attributes.kadenceDynamic['backgroundImg:0:bgImg'].enable ) {
@@ -135,7 +135,7 @@ function SectionEdit( {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,

@@ -354,6 +354,7 @@ export default function Image( {
 	function onUpdateSelectImage( image ) {
 		setAttributes( {
 			url: image.url,
+			id: image.id ? image.id : undefined,
 			width: undefined,
 			height: undefined,
 			sizeSlug: undefined,
@@ -362,6 +363,7 @@ export default function Image( {
 	function clearImage() {
 		setAttributes( {
 			url: undefined,
+			id: undefined,
 			width: undefined,
 			height: undefined,
 			sizeSlug: undefined,

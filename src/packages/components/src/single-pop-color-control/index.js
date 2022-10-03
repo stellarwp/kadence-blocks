@@ -72,7 +72,7 @@ class SinglePopColorControl extends Component {
 		const colorVal = ( this.state.currentColor ? this.state.currentColor : this.props.value );
 		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
 		if ( currentColorString && currentColorString.startsWith( 'var(' ) ) {
-			currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( this.props.value.replace( 'var(', '' ).replace( ')', '' ) );
+			currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( this.props.value.replace( 'var(', '' ).split(',')[0].replace( ')', '' ) );
 		}
 		if ( '' === currentColorString ) {
 			currentColorString = this.props.default;

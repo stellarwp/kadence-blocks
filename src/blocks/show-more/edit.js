@@ -33,12 +33,18 @@ import { uniqueId } from 'lodash';
  */
 import { Fragment } from '@wordpress/element';
 
+/**
+* External dependencies
+*/
+import classnames from 'classnames';
+
 const ktShowMoreUniqueIDs = []
 
 export function Edit ({
 	attributes,
 	setAttributes,
 	clientId,
+    context,
   	previewDevice
 } ) {
 
@@ -61,7 +67,8 @@ export function Edit ({
 		paddingMobile,
 		paddingUnit,
 		enableFadeOut,
-		fadeOutSize
+		fadeOutSize,
+		inQueryBlock
 	} = attributes
 
 	useEffect( () => {
@@ -79,6 +86,18 @@ export function Edit ({
 			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
 		} else {
 			ktShowMoreUniqueIDs.push(uniqueID)
+		}
+
+		if (context && (context.queryId || Number.isFinite(context.queryId)) && context.postId) {
+			if (!inQueryBlock) {
+				setAttributes({
+					inQueryBlock: true,
+				});
+			}
+		} else if (inQueryBlock) {
+			setAttributes({
+				inQueryBlock: false,
+			});
 		}
 	}, [] );
 
@@ -119,7 +138,12 @@ export function Edit ({
 	const isExpanded = getPreviewSize( previewDevice, defaultExpandedDesktop, defaultExpandedTablet, defaultExpandedMobile );
 
 	const ref = useRef();
+	const classes = classnames( {
+		'kb-block-show-more-container': true,
+		[ `kb-block-show-more-container${ uniqueID }` ] : true
+	} );
 	const blockProps = useBlockProps( {
+		className: classes,
 		ref,
 	} );
 
@@ -130,11 +154,11 @@ export function Edit ({
 		return (
 			<div className="Class">
 				<style>{`
-        .kb-show-more-buttons .btn-area-wrap:last-of-type {
+        .kb-block-show-more-container${ uniqueID } .kb-show-more-buttons .btn-area-wrap:last-of-type {
        	display: ${ showHideMore ? 'inline' : 'none' };
        	}
 
-        .wp-block-kadence-show-more .kb-show-more-content:not(.is-selected, .has-child-selected) {
+        .kb-block-show-more-container${ uniqueID } .kb-show-more-content:not(.is-selected, .has-child-selected) {
 		   max-height: ${ isExpanded ? 'none' : ( previewPreviewHeight + heightType ) };
 		  -webkit-mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);
 		  mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);

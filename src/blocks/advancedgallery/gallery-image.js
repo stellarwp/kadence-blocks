@@ -92,6 +92,15 @@ function GalleryImage( props ) {
 		}
 	};
 
+	const onSelectCustomLink = () => {
+		if ( ! isSelected ) {
+			onSelect();
+		}
+		if ( captionSelected ) {
+			setCaptionSelected( false );
+		}
+	}
+
 	// const componentDidUpdate = ( prevProps ) => {
 	// 	if ( image && !url ) {
 	// 		setAttributes( {
@@ -204,6 +213,7 @@ function GalleryImage( props ) {
 			isSelected={captionSelected}
 			onChange={( newCaption ) => setAttributes( { caption: newCaption } )}
 			unstableOnFocus={ () => onSelectCaption}
+			onClick={ () => onSelectCaption}
 			inlineToolbar={captionSelected ? true : false}
 			allowedFormats={( linkTo === 'none' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) )}
 			keepPlaceholderOnFocus
@@ -301,10 +311,12 @@ function GalleryImage( props ) {
 			</figure>
 			{!thumbnail && linkTo === 'custom' && isSelected && !dynamicSource && (
 				<Fragment>
-					<div className="kb-gallery-custom-link block-editor-url-popover__row">
+					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => onSelectCustomLink()}>
 						<URLInput
 							aria-label={__( 'URL', 'kadence-blocks' )}
 							placeholder={__( 'Paste or type URL', 'kadence-blocks' )}
+							unstableOnFocus={ () => onSelectCustomLink() }
+							onClick={ () => onSelectCustomLink() }
 							className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
 							value={customLink}
 							onChange={value => setLinkAttributes( { customLink: value } )}

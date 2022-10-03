@@ -76,6 +76,22 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
+
+		if ( ! empty( $attributes['verticalAlignment'] ) ) {
+			if ( ! isset( $attributes['textAlignment'] ) || ( isset( $attributes['textAlignment'] ) && 'center' === $attributes['textAlignment'] ) ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
+				$css->add_property('justify-content', 'center' );
+			}
+			if ( isset( $attributes['textAlignment'] ) && 'right' === $attributes['textAlignment'] ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]' );
+				$css->add_property('justify-content', 'flex-end');
+			}
+			if ( isset( $attributes['textAlignment'] ) && 'left' === $attributes['textAlignment'] ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
+				$css->add_property('justify-content', 'flex-start');
+			}
+		}
+		
 		$css->set_selector( '.wp-block-kadence-icon.kt-svg-icons' . $unique_id );
 		$align_args = array(
 			'desktop_key' => 'textAlignment',

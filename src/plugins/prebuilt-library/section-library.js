@@ -211,7 +211,7 @@ class PrebuiltSections extends Component {
 			this.debouncedReloadTemplateData();
 		}
 		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'hide' );
+		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show' );
 		const savedGridSize = ( activePanel && activePanel['grid'] ? activePanel['grid'] : 'normal' );
 		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
 		const gridSize = ( this.state.gridSize ? this.state.gridSize : savedGridSize );

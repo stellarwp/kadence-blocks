@@ -93,12 +93,13 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . '.kt-tablet-svg-icon-list-columns-1 ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
 			$css->add_property( 'margin-bottom', $tablet_gap . 'px' );
 
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
-			$css->add_property( 'grid-row-gap', $tablet_gap . 'px' );
+			if ( ( ! empty( $attributes['columns'] ) && 1 !== $attributes['columns'] ) || ( ! empty( $attributes['tabletColumns'] ) && 1 !== $attributes['tabletColumns'] ) ) {
+				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
+				$css->add_property( 'grid-row-gap', $tablet_gap . 'px' );
 
-
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-			$css->add_property( 'margin', '0px' );
+				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
+				$css->add_property( 'margin', '0px' );
+			}
 
 			$css->set_media_state( 'desktop' );
 
@@ -107,11 +108,13 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . '.kt-mobile-svg-icon-list-columns-1 ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
 			$css->add_property( 'margin-bottom', $mobile_gap . 'px' );
 
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
-			$css->add_property( 'grid-row-gap', $mobile_gap . 'px' );
+			if ( ( ! empty( $attributes['columns'] ) && 1 !== $attributes['columns'] ) || ( ! empty( $attributes['tabletColumns'] ) && 1 !== $attributes['tabletColumns'] ) || ( ! empty( $attributes['mobileColumns'] ) && 1 !== $attributes['mobileColumns'] ) ) {
+				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
+				$css->add_property( 'grid-row-gap', $mobile_gap . 'px' );
 
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-			$css->add_property( 'margin', '0' );
+				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
+				$css->add_property( 'margin', '0px' );
+			}
 
 			$css->set_media_state( 'desktop' );
 

@@ -101,6 +101,55 @@ Release Date: April 20th, 2022
 * Add: Text Transform option on title in Count Up block
 * Fix: Only generate dynamic CSS for rtl sites when needed.
 
+= 2.4.14 =
+Release Date: September 6th, 2022
+* Update: Border radius control for tab content.
+* Update: Allow negative margin in icon block.
+* Update: Anchor generation to use remove_accents.
+* Fix: Possible issue with sections showing broken.
+* Fix: Issue with advanced text field and reveal animation.
+* Fix: Issue with show more and adding buttons into the content.
+* Fix: Issue with table of contents and apostrophe.
+* Fix: Show more height for tablet, mobile.
+* Fix: Issue with fullwidth show less button in show more block.
+* Fix: Responsive settings for divider height.
+
+= 2.4.13 =
+Release Date: July 29th, 2022
+* Update: Google Fonts.
+* Fix: Issue with safari and sticky section.
+
+= 2.4.12 =
+Release Date: July 6th, 2022
+* Update: Design Library defaults.
+* Update: Google Recaptcha Link.
+* Update: Show More block javascript.
+* Fix: Issue with FAQ schema rendering in posts page.
+* Fix: Issue with filters in css generation.
+* Fix: Issue with mobile collapse order.
+* Fix: Issue with icon list gap.
+* Fix: Issue with row vertical align center in admin.
+
+= 2.4.11 =
+Release Date: June 21st, 2022
+* Fix: Issue with some columns not updating markup correctly.
+
+= 2.4.10 =
+Release Date: June 15th, 2022
+* Fix: Issue with show more and icon buttons.
+* Fix: Issue with translations.
+* Fix: Issue with image css not applying to all devices.
+
+= 2.4.9 =
+Release Date: June 13th, 2022
+* Fix: Issue with widths in nested sections.
+* Fix: Issue with image block when replacing image.
+* Fix: Issue with gallery captions not being selectable.
+* Fix: Issue with gallery captions being lost.
+* Fix: Issue with inherit in font weights.
+* Fix: Possible issue with button video popup.
+* Fix: Issue with FAQ schema rendering in archive.
+
 = 2.4.8 =
 Release Date: June 3rd, 2022
 * Fix: Issue with section overlay.
