@@ -76,7 +76,7 @@ function KadenceConfig() {
 					<KadenceColors/>
 				</PanelBody>
 
-				{'admin' === this.state.user && (
+				{'admin' === user && (
 					<PanelBody
 						title={__('Block Defaults', 'kadence-blocks')}
 						initialOpen={false}
