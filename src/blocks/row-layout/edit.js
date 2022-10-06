@@ -55,6 +55,8 @@ import {
 	SmallResponsiveControl,
 	ResponsiveControl,
 	RangeControl,
+	MeasurementRangeControl,
+	ResponsiveMeasureRangeControl,
 	MeasurementControls,
 	IconPicker,
 	KadenceVideoControl,
@@ -81,6 +83,12 @@ import Overlay from './row-overlay';
 import RowBackground from './row-background';
 import ContentWidthIcon from './content-width-icons';
 import LayoutControls from './layout-controls';
+import StyleControls from './style-controls';
+import TwoColumnResizer from './twocolumnresizer';
+import ThreeColumnDrag from './threecolumndrag';
+import PaddingResizer from './padding-resizer';
+import { getGutterTotal, getPreviewGutterSize, getSpacingOptionName } from './utils';
+import { SPACING_SIZES_MAP } from './constants';
 /**
  * Import Css
  */
@@ -122,31 +130,17 @@ import {
 	image,
 	settings,
 	plusCircleFilled,
+	plusCircle,
 	closeSmall,
 } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
-/**
- * Returns the layouts configuration for a given number of columns.
- *
- * @param {number} columns Number of columns.
- *
- * @return {Object[]} Columns layout configuration.
- */
-const getColumnsTemplate = memoize( ( columns ) => {
-	return times( columns, n => [ 'kadence/column', { id: n + 1 } ] );
-} );
+
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 
 const ALLOWED_BLOCKS = [ 'kadence/column' ];
-const ALLOWED_MEDIA_TYPES = [ 'image' ];
-
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktrowUniqueIDs = [];
 /**
  * Build the row edit
  */
@@ -154,13 +148,14 @@ const ktrowUniqueIDs = [];
 	attributes,
 	setAttributes,
 	updateAlignment,
+	insertSection,
 	context,
 	updateColumns,
 	toggleSelection,
 	isSelected,
 	clientId,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && context.queryId && context.postId ) {
@@ -243,11 +238,48 @@ const ktrowUniqueIDs = [];
 		} else if ( columnGutter == 'widest' ) {
 			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
+		// Update from old padding settings.
+		if ( ( topPadding || rightPadding || bottomPadding || leftPadding ) ) {
+			setAttributes( { padding: [ ( ! topPadding ? 25 : topPadding ), rightPadding, ( ! bottomPadding ? 25 : bottomPadding ), leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
+		}
+		if ( ( topPaddingM || rightPaddingM || bottomPaddingM || leftPaddingM ) ) {
+			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
+		}
 		// Update from old gradient settings.
 		if ( currentOverlayTab == 'grad' ) {
 			const newDeskGradient = ( 'radial' === overlayGradType ? `radial-gradient(ellipse at ${ overlayBgImgPosition }, ${ ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ overlayGradLoc }%, ${ ( overlaySecond ? KadenceColorOutput( overlaySecond, ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) ) : '' ) } ${ overlayGradLocSecond }%)` : `linear-gradient(${ overlayGradAngle }deg, ${ ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ overlayGradLoc }%, ${ ( overlaySecond ? KadenceColorOutput( overlaySecond, ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) ) : '' ) } ${ overlayGradLocSecond }%)` );
 			setAttributes( {  overlayGradient: newDeskGradient, currentOverlayTab: 'gradient' } );
-		} 
+		}
+		if ( tabletOverlay && tabletOverlay[0] && tabletOverlay[ 0 ].currentOverlayTab && 'grad' === tabletOverlay[ 0 ].currentOverlayTab ) {
+			const saveTabletOverlay = ( value ) => {
+				const newUpdate = tabletOverlay.map( ( item, index ) => {
+					if ( 0 === index ) {
+						item = { ...item, ...value };
+					}
+					return item;
+				} );
+				setAttributes( {
+					tabletOverlay: newUpdate,
+				} );
+			};
+			const newTabGradient = ( 'radial' === tabletOverlay[ 0 ].overlayGradType ? `radial-gradient(ellipse at ${ tabletOverlay[ 0 ].overlayBgImgPosition }, ${ ( tabletOverlay[ 0 ].overlay ? KadenceColorOutput( tabletOverlay[ 0 ].overlay, ( undefined !== tabletOverlay[ 0 ].overlayFirstOpacity && '' !== tabletOverlay[ 0 ].overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ tabletOverlay[ 0 ].overlayGradLoc }%, ${ ( tabletOverlay[ 0 ].overlaySecond ? KadenceColorOutput( tabletOverlay[ 0 ].overlaySecond, ( undefined !== tabletOverlay[ 0 ].overlaySecondOpacity && '' !== tabletOverlay[ 0 ].overlaySecondOpacity ? tabletOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ tabletOverlay[ 0 ].overlayGradLocSecond }%)` : `linear-gradient(${ tabletOverlay[ 0 ].overlayGradAngle }deg, ${ ( tabletOverlay[ 0 ].overlay ? KadenceColorOutput( tabletOverlay[ 0 ].overlay, ( undefined !== overlayFirstOpacity && '' !== tabletOverlay[ 0 ].overlayFirstOpacity ? tabletOverlay[ 0 ].overlayFirstOpacity : 1 ) ) : '' ) } ${ tabletOverlay[ 0 ].overlayGradLoc }%, ${ ( tabletOverlay[ 0 ].overlaySecond ? KadenceColorOutput( tabletOverlay[ 0 ].overlaySecond, ( undefined !== tabletOverlay[ 0 ].overlaySecondOpacity && '' !== tabletOverlay[ 0 ].tabletOverlay[ 0 ].overlaySecondOpacity ? tabletOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ tabletOverlay[ 0 ].overlayGradLocSecond }%)` );
+			saveTabletOverlay( {  gradient: newTabGradient, currentOverlayTab: 'gradient' } );
+		}
+		if ( mobileOverlay && mobileOverlay[0] && mobileOverlay[ 0 ].currentOverlayTab && 'grad' === mobileOverlay[ 0 ].currentOverlayTab ) {
+			const saveMobileOverlay = ( value ) => {
+				const newUpdate = mobileOverlay.map( ( item, index ) => {
+					if ( 0 === index ) {
+						item = { ...item, ...value };
+					}
+					return item;
+				} );
+				setAttributes( {
+					mobileOverlay: newUpdate,
+				} );
+			};
+			const newMobileGradient = ( 'radial' === mobileOverlay[ 0 ].overlayGradType ? `radial-gradient(ellipse at ${ mobileOverlay[ 0 ].overlayBgImgPosition }, ${ ( mobileOverlay[ 0 ].overlay ? KadenceColorOutput( mobileOverlay[ 0 ].overlay, ( undefined !== mobileOverlay[ 0 ].overlayFirstOpacity && '' !== mobileOverlay[ 0 ].overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLoc }%, ${ ( mobileOverlay[ 0 ].overlaySecond ? KadenceColorOutput( mobileOverlay[ 0 ].overlaySecond, ( undefined !== mobileOverlay[ 0 ].overlaySecondOpacity && '' !== mobileOverlay[ 0 ].overlaySecondOpacity ? mobileOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLocSecond }%)` : `linear-gradient(${ mobileOverlay[ 0 ].overlayGradAngle }deg, ${ ( mobileOverlay[ 0 ].overlay ? KadenceColorOutput( mobileOverlay[ 0 ].overlay, ( undefined !== overlayFirstOpacity && '' !== mobileOverlay[ 0 ].overlayFirstOpacity ? mobileOverlay[ 0 ].overlayFirstOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLoc }%, ${ ( mobileOverlay[ 0 ].overlaySecond ? KadenceColorOutput( mobileOverlay[ 0 ].overlaySecond, ( undefined !== mobileOverlay[ 0 ].overlaySecondOpacity && '' !== mobileOverlay[ 0 ].mobileOverlay[ 0 ].overlaySecondOpacity ? mobileOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLocSecond }%)` );
+			saveMobileOverlay( {  gradient: newMobileGradient, currentOverlayTab: 'gradient' } );
+		}
 	}, [] );
 	const { innerItemCount } = useSelect(
 		( select ) => {
@@ -262,90 +294,19 @@ const ktrowUniqueIDs = [];
 			updateColumns( innerItemCount, columns );
 		}
 	}, [ innerItemCount, columns ] );
-	const [ firstWidth, setFirstWidth ] = useState( null );
-	const [ secondWidth, setSecondWidth ] = useState( null );
-	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual' );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	
-	const saveSlideItem = ( value, thisIndex ) => {
-		let currentItems = backgroundSlider;
-		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
-			currentItems = [ {
-				bgColor: '',
-				bgImg: '',
-				bgImgID: '',
-			} ];
-		}
-		const newUpdate = currentItems.map( ( item, index ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			backgroundSlider: newUpdate,
-		} );
-	};
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
-	const saveTabletBackground = ( value ) => {
-		const newUpdate = tabletBackground.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			tabletBackground: newUpdate,
-		} );
-	};
-	const saveTabletOverlay = ( value ) => {
-		const newUpdate = tabletOverlay.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			tabletOverlay: newUpdate,
-		} );
-	};
-	const saveMobileBackground = ( value ) => {
-		const newUpdate = mobileBackground.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			mobileBackground: newUpdate,
-		} );
-	};
-	const saveMobileOverlay = ( value ) => {
-		const newUpdate = mobileOverlay.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			mobileOverlay: newUpdate,
-		} );
-	};
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== topPadding ? topPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== topPaddingM ? topPaddingM : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding ? padding[1] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[3] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
 	const previewTopSepHeight = getPreviewSize( previewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
 	const previewTopSepWidth = getPreviewSize( previewDevice, ( undefined !== topSepWidth ? topSepWidth : '' ), ( undefined !== topSepWidthTab ? topSepWidthTab : '' ), ( undefined !== topSepWidthMobile ? topSepWidthMobile : '' ) );
 	const previewBottomSepHeight = getPreviewSize( previewDevice, ( undefined !== bottomSepHeight ? bottomSepHeight : '' ), ( undefined !== bottomSepHeightTab ? bottomSepHeightTab : '' ), ( undefined !== bottomSepHeightMobile ? bottomSepHeightMobile : '' ) );
 	const previewBottomSepWidth = getPreviewSize( previewDevice, ( undefined !== bottomSepWidth ? bottomSepWidth : '' ), ( undefined !== bottomSepWidthTab ? bottomSepWidthTab : '' ), ( undefined !== bottomSepWidthMobile ? bottomSepWidthMobile : '' ) );
-	// const layoutClass = ( ! colLayout ? 'equal' : colLayout );
-	// const tabLayoutClass = ( ! tabletLayout ? '' : tabletLayout );
-	// const mobileLayoutClass = ( ! mobileLayout ? '' : mobileLayout );
+
 	const previewLayout = getPreviewSize( previewDevice, ( ! colLayout ? 'equal' : colLayout ), ( ! tabletLayout ? '' : tabletLayout ), ( ! mobileLayout ? '' : mobileLayout ) );
 	let hasBorderRadius = false;
 	if ( undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0] ) {
@@ -360,66 +321,84 @@ const ktrowUniqueIDs = [];
 	if ( undefined !== borderRadius && undefined !== borderRadius[3] && borderRadius[3] ) {
 		hasBorderRadius = true;
 	}
-	const onResize = ( event, direction, elt ) => {
-		let firstCol;
-		let secondCol;
-		if ( columnsUnlocked ) {
-			firstCol = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
-			secondCol = Math.round( ( 100 - firstCol ) * 10 ) / 10;
-		} else {
-			firstCol = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
-			secondCol = 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 );
-		}
-		setFirstWidth( firstCol );
-		setSecondWidth( secondCol );
-		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
-		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
-	};
-	const onResizeStop = ( event, direction, elt, delta ) => {
-		let firstCol;
-		let secondCol;
-		if ( columnsUnlocked ) {
-			firstCol = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
-			secondCol = Math.round( ( 100 - firstCol ) * 10 ) / 10;
-		} else {
-			firstCol = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
-			secondCol = 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 );
-		}
-		setAttributes( { firstColumnWidth: firstCol } );
-		setAttributes( { secondColumnWidth: secondCol } );
-		setFirstWidth( null );
-		setSecondWidth( null );
-	};
-	const temporaryColumnWidth = firstWidth;
-	const temporarySecondColumnWidth = secondWidth;
-	const widthString = `${ temporaryColumnWidth || firstColumnWidth || colLayout }`;
-	const secondWidthString = `${ temporarySecondColumnWidth || secondColumnWidth || colLayout }`;
-	let thirdWidthString;
-	if ( 3 === columns ) {
-		if ( firstWidth ) {
-			thirdWidthString = Math.abs( Math.round( ( ( parseFloat( firstWidth ) + parseFloat( secondWidth ) ) - 100 ) * 10 ) / 10 );
-		} else if ( Math.abs( firstColumnWidth ) === parseFloat( firstColumnWidth ) ) {
-			thirdWidthString = Math.abs( Math.round( ( ( parseFloat( firstColumnWidth ) + parseFloat( secondColumnWidth ) ) - 100 ) * 10 ) / 10 );
-		} else {
-			thirdWidthString = colLayout;
-		}
-	} else {
-		thirdWidthString = colLayout;
-	}
+	const widthString = `${ firstColumnWidth || colLayout }`;
+	const secondWidthString = `${ secondColumnWidth || colLayout }`;
+	let thirdWidthNumber;
 	let widthNumber;
-	if ( widthString === parseFloat( widthString ) ) {
-		widthNumber = widthString + '%';
-	} else if ( 'left-golden' === widthString ) {
-		widthNumber = '66.67%';
-	} else if ( 'right-golden' === widthString ) {
-		widthNumber = '33.37%';
-	} else {
-		widthNumber = '50%';
+	let secondWidthNumber;
+	if ( 3 === columns ) {
+		if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
+			widthNumber = widthString;
+		} else if ( 'left-half' === widthString ) {
+			widthNumber = 50;
+		} else if ( 'right-half' === widthString ) {
+			widthNumber = 25;
+		} else if ( 'center-half' === widthString ) {
+			widthNumber = 25;
+		} else if ( 'center-wide' === widthString ) {
+			widthNumber = 20;
+		} else if ( 'center-exwide' === widthString ) {
+			widthNumber = 15;
+		} else if ( 'equal' === widthString ) {
+			widthNumber = 33.33;
+		}
+		if ( Math.abs( secondWidthString ) === parseFloat( secondWidthString ) ) {
+			secondWidthNumber = secondWidthString;
+		} else if ( 'left-half' === secondWidthString ) {
+			secondWidthNumber = 25;
+		} else if ( 'right-half' === secondWidthString ) {
+			secondWidthNumber = 25;
+		} else if ( 'center-half' === secondWidthString ) {
+			secondWidthNumber = 50;
+		} else if ( 'center-wide' === secondWidthString ) {
+			secondWidthNumber = 60;
+		} else if ( 'center-exwide' === secondWidthString ) {
+			secondWidthNumber = 70;
+		} else if ( 'equal' === secondWidthString ) {
+			secondWidthNumber = 33.33;
+		}
+		if ( Math.abs( firstColumnWidth ) === parseFloat( firstColumnWidth ) ) {
+			thirdWidthNumber = Math.abs( Math.round( ( ( parseFloat( firstColumnWidth ) + parseFloat( secondColumnWidth ) ) - 100 ) * 10 ) / 10 );
+		} else if ( 'left-half' === widthString ) {
+			thirdWidthNumber = 25;
+		} else if ( 'right-half' === widthString ) {
+			thirdWidthNumber = 50;
+		} else if ( 'center-half' === widthString ) {
+			thirdWidthNumber = 25;
+		} else if ( 'center-wide' === widthString ) {
+			thirdWidthNumber = 20;
+		} else if ( 'center-exwide' === widthString ) {
+			thirdWidthNumber = 15;
+		} else if ( 'equal' === widthString ) {
+			thirdWidthNumber = 33.33;
+		}
+	} else if ( 2 === columns ) {
+		if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
+			widthNumber = widthString;
+		} else if ( 'left-golden' === widthString ) {
+			widthNumber = 66.67;
+		} else if ( 'right-golden' === widthString ) {
+			widthNumber = 33.37;
+		} else if ( 'equal' === widthString ) {
+			widthNumber = 50;
+		}
+		if ( Math.abs( secondWidthString ) === parseFloat( secondWidthString ) ) {
+			secondWidthNumber = secondWidthString;
+		} else if ( 'left-golden' === secondWidthString ) {
+			secondWidthNumber = 33.37;
+		} else if ( 'right-golden' === secondWidthString ) {
+			secondWidthNumber = 66.67;
+		} else if ( 'equal' === secondWidthString ) {
+			secondWidthNumber = 50;
+		}
 	}
+	const columnGap = getPreviewGutterSize( previewDevice, columnGutter, customGutter, gutterType );
+	const rowGap = getPreviewGutterSize( previewDevice, columnGutter, customGutter, gutterType );
+	const gapTotal = getGutterTotal( columnGap, columns );
 	const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 	const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-	const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
+	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
 		[ `kb-row-id-${ uniqueID }` ]: uniqueID,
@@ -429,12 +408,11 @@ const ktrowUniqueIDs = [];
 		// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
 		[ `current-tab-${ currentTab }` ]: currentTab,
-		[ `kt-gutter-${ columnGutter }` ]: columnGutter,
 		[ `kt-v-gutter-${ collapseGutter }` ]: collapseGutter,
 		[ `kt-m-colapse-${ collapseOrder }` ]: collapseOrder,
 		[ `kt-custom-first-width-${ widthString }` ]: widthString,
 		[ `kt-custom-second-width-${ secondWidthString }` ]: secondWidthString,
-		[ `kt-custom-third-width-${ thirdWidthString }` ]: thirdWidthString,
+		[ `kt-custom-third-width-${ thirdWidthNumber }` ]: thirdWidthNumber,
 		[ hasBG ]: hasBG,
 		'has-border-radius' : hasBorderRadius,
 		'kt-inner-column-height-full': columnsInnerHeight,
@@ -443,8 +421,6 @@ const ktrowUniqueIDs = [];
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 		'kadence-has-rcp-display' : rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
 	} );
-	let layoutOptions;
-	let mobileLayoutOptions;
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __( 'Row', 'kadence-blocks' ), icon: rowIcon },
 		{ key: 'equal', col: 2, name: __( 'Two: Equal', 'kadence-blocks' ), icon: twoColIcon },
@@ -462,1509 +438,6 @@ const ktrowUniqueIDs = [];
 		{ key: 'equal', col: 5, name: __( 'Five: Equal', 'kadence-blocks' ), icon: fiveColIcon },
 		{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: sixColIcon },
 	];
-	const saveSliderSettings = ( value ) => {
-		let backgroundSlidSettings;
-		if ( undefined === backgroundSliderSettings || ( undefined !== backgroundSliderSettings && undefined === backgroundSliderSettings[ 0 ] ) ) {
-			backgroundSlidSettings = [ {
-				youTube: '',
-				local: '',
-				localID: '',
-				vimeo: '',
-				ratio: '16/9',
-				btns: false,
-				loop: true,
-				mute: true,
-			} ];
-		} else {
-			backgroundSlidSettings = backgroundSliderSettings;
-		}
-		const newUpdate = backgroundSlidSettings.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			backgroundSliderSettings: newUpdate,
-		} );
-	};
-	const saveVideoSettings = ( value ) => {
-		let bgVideo;
-		if ( undefined === backgroundVideo || ( undefined !== backgroundVideo && undefined === backgroundVideo[ 0 ] ) ) {
-			bgVideo = [ {
-				youTube: '',
-				local: '',
-				localID: '',
-				vimeo: '',
-				ratio: '16/9',
-				btns: false,
-				loop: true,
-				mute: true,
-			} ];
-		} else {
-			bgVideo = backgroundVideo;
-		}
-		const newUpdate = bgVideo.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			backgroundVideo: newUpdate,
-		} );
-	};
-	
-	if ( 2 === columns ) {
-		mobileLayoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: twoColIcon },
-			{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: twoLeftGoldenIcon },
-			{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: twoRightGoldenIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowIcon },
-		];
-	} else if ( 3 === columns ) {
-		mobileLayoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: threeColIcon },
-			{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: leftHalfIcon },
-			{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: rightHalfIcon },
-			{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
-			{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
-			{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
-			{ key: 'first-row', name: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
-			{ key: 'last-row', name: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
-			{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
-		];
-	} else if ( 4 === columns ) {
-		mobileLayoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fourColIcon },
-			{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
-			{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
-			{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFourIcon },
-		];
-	} else if ( 5 === columns ) {
-		mobileLayoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
-		];
-	} else if ( 6 === columns ) {
-		mobileLayoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: sixColIcon },
-			{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
-			{ key: 'three-grid', name: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },
-		];
-	} else {
-		mobileLayoutOptions = [
-			{ key: 'row', name: __( 'Single Row', 'kadence-blocks' ), icon: rowIcon },
-		];
-	}
-	const onSelectImage = img => {
-		setAttributes( {
-			bgImgID: img.id,
-			bgImg: img.url,
-		} );
-	};
-	const onSelectURL = img => {
-		setAttributes( {
-			bgImgID: img.id,
-			bgImg: img.url,
-		} );
-	};
-	const onSelectOverlayImage = img => {
-		setAttributes( {
-			overlayBgImgID: img.id,
-			overlayBgImg: img.url,
-		} );
-	};
-	const onRemoveMobileImage = () => {
-		saveMobileBackground( {
-			bgImgID: '',
-			bgImg: '',
-		} );
-	};
-	const onRemoveTabletImage = () => {
-		saveTabletBackground( {
-			bgImgID: '',
-			bgImg: '',
-		} );
-	};
-	const onRemoveImage = () => {
-		setAttributes( {
-			bgImgID: null,
-			bgImg: null,
-		} );
-	};
-	const onRemoveMobileOverlayImage = () => {
-		saveMobileOverlay( {
-			overlayBgImgID: '',
-			overlayBgImg: '',
-		} );
-	};
-	const onRemoveTabletOverlayImage = () => {
-		saveTabletOverlay( {
-			overlayBgImgID: '',
-			overlayBgImg: '',
-		} );
-	};
-	const onRemoveOverlayImage = () => {
-		setAttributes( {
-			overlayBgImgID: null,
-			overlayBgImg: null,
-		} );
-	};
-	const mobileControls = (
-		<>
-			<ToggleControl
-				label={ __( 'Set custom background for Mobile?', 'kadence-blocks' ) }
-				checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].enable : false ) }
-				onChange={ ( value ) => saveMobileBackground( { enable: value } ) }
-			/>
-			{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
-				<>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveMobileBackground( { bgColor: value } ) }
-					/>
-					{ '' === mobileBackground[ 0 ].bgImg && '' !== bgImg && (
-						<ToggleControl
-							label={ __( 'Force no image for mobile', 'kadence-blocks' ) }
-							checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].forceOverDesk : false ) }
-							onChange={ ( value ) => saveMobileBackground( { forceOverDesk: value } ) }
-						/>
-					) }
-					<KadenceBackgroundControl
-						label={ __( 'Background Image', 'kadence-blocks' ) }
-						hasImage={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? true : false ) }
-						imageURL={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
-						imageID={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgID ? mobileBackground[ 0 ].bgImgID : '' ) }
-						imagePosition={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgPosition ? mobileBackground[ 0 ].bgImgPosition : 'center center' ) }
-						imageSize={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgSize ? mobileBackground[ 0 ].bgImgSize : 'cover' ) }
-						imageRepeat={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgRepeat ? mobileBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
-						imageAttachment={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgAttachment ? mobileBackground[ 0 ].bgImgAttachment : 'scroll' ) }
-						imageAttachmentParallax={ true }
-						onRemoveImage={ onRemoveMobileImage }
-						onSaveImage={ ( img ) => {
-							saveMobileBackground( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						onSaveURL={ ( newURL ) => {
-							if ( newURL !== ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) ) {
-								saveMobileBackground( {
-									bgImgID: undefined,
-									bgImg: newURL,
-								} );
-							}
-						} }
-						onSavePosition={ value => saveMobileBackground( { bgImgPosition: value } ) }
-						onSaveSize={ value => saveMobileBackground( { bgImgSize: value } ) }
-						onSaveRepeat={ value => saveMobileBackground( { bgImgRepeat: value } ) }
-						onSaveAttachment={ value => saveMobileBackground( { bgImgAttachment: value } ) }
-						disableMediaButtons={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
-						dynamicAttribute="mobileBackground:0:bgImg"
-						isSelected={ isSelected }
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						name={ 'kadence/rowlayout' }
-						clientId={ clientId }
-					/>
-				</>
-			) }
-		</>
-	);
-	const mobileOverlayControls = (
-		<Fragment>
-			{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Mobile Background Overlay' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-mobile-bg-overlay' }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background overlay for mobile?', 'kadence-blocks' ) }
-						checked={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveMobileOverlay( { enable: value } ) }
-					/>
-					{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].enable && (
-						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-							activeClass="active-tab"
-							initialTabName={ mobileOverlay[ 0 ].currentOverlayTab }
-							onSelect={ value => saveMobileOverlay( { currentOverlayTab: value } ) }
-							tabs={ [
-								{
-									name: 'normal',
-									title: __( 'Normal', 'kadence-blocks' ),
-									className: 'kt-over-normal',
-								},
-								{
-									name: 'grad',
-									title: __( 'Gradient', 'kadence-blocks' ),
-									className: 'kt-over-grad',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'grad' === tab.name ) {
-											tabout = overMobileGradControls;
-										} else {
-											tabout = overMobileControls;
-										}
-									}
-									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					) }
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'border', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Border Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-border-settings' }
-				>
-					<PopColorControl
-						label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
-						value={ ( mobileBorder ? mobileBorder : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { mobileBorder: value } ) }
-					/>
-					<MeasurementControls
-						label={ __( 'Mobile Border Width', 'kadence-blocks' ) }
-						measurement={ mobileBorderWidth }
-						onChange={ ( value ) => setAttributes( { mobileBorderWidth: value } ) }
-						control={ borderWidthControl }
-						onControl={ ( value ) => setBorderWidthControl( value ) }
-						min={ 0 }
-						max={ 40 }
-						step={ 1 }
-						allowEmpty={ true }
-						unit={ 'px' }
-						units={ [ 'px' ] }
-						showUnit={ true }
-						preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Mobile Border Radius', 'kadence-blocks' ) }
-						measurement={ mobileBorderRadius }
-						control={ borderRadiusControl }
-						onChange={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
-						onControl={ ( value ) => setBorderRadiusControl( value ) }
-						min={ 0 }
-						max={ 500 }
-						step={ 1 }
-						allowEmpty={ true }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-						] }
-						firstIcon={ topLeftIcon }
-						secondIcon={ topRightIcon }
-						thirdIcon={ bottomRightIcon }
-						fourthIcon={ bottomLeftIcon }
-					/>
-				</KadencePanelBody>
-			) }
-		</Fragment>
-	);
-	const tabletControls = (
-		<>
-			<ToggleControl
-				label={ __( 'Set custom background for tablets?', 'kadence-blocks' ) }
-				checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].enable : false ) }
-				onChange={ ( value ) => saveTabletBackground( { enable: value } ) }
-			/>
-			{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
-				<>
-					<BackgroundTypeControl
-						label={ __( 'Type', 'kadence-blocks' ) }
-						type={ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].type ? tabletBackground[ 0 ].type : 'normal' }
-						onChange={ value => saveTabletBackground( { type: value } ) }
-						allowedTypes={ [ 'normal', 'gradient' ] }
-					/>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveTabletBackground( { bgColor: value } ) }
-					/>
-					{ '' === tabletBackground[ 0 ].bgImg && '' !== bgImg && (
-						<ToggleControl
-							label={ __( 'Force no image for tablet', 'kadence-blocks' ) }
-							checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].forceOverDesk : false ) }
-							onChange={ ( value ) => saveTabletBackground( { forceOverDesk: value } ) }
-						/>
-					) }
-					<KadenceBackgroundControl
-						label={ __( 'Background Image', 'kadence-blocks' ) }
-						hasImage={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? true : false ) }
-						imageURL={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
-						imageID={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgID ? tabletBackground[ 0 ].bgImgID : '' ) }
-						imagePosition={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgPosition ? tabletBackground[ 0 ].bgImgPosition : 'center center' ) }
-						imageSize={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgSize ? tabletBackground[ 0 ].bgImgSize : 'cover' ) }
-						imageRepeat={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgRepeat ? tabletBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
-						imageAttachment={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgAttachment ? tabletBackground[ 0 ].bgImgAttachment : 'scroll' ) }
-						imageAttachmentParallax={ true }
-						onRemoveImage={ onRemoveTabletImage }
-						onSaveImage={ ( img ) => {
-							saveTabletBackground( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						onSaveURL={ ( newURL ) => {
-							if ( newURL !== ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) ) {
-								saveTabletBackground( {
-									bgImgID: undefined,
-									bgImg: newURL,
-								} );
-							}
-						} }
-						onSavePosition={ value => saveTabletBackground( { bgImgPosition: value } ) }
-						onSaveSize={ value => saveTabletBackground( { bgImgSize: value } ) }
-						onSaveRepeat={ value => saveTabletBackground( { bgImgRepeat: value } ) }
-						onSaveAttachment={ value => saveTabletBackground( { bgImgAttachment: value } ) }
-						disableMediaButtons={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
-						dynamicAttribute="tabletBackground:0:bgImg"
-						isSelected={ isSelected }
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						name={ 'kadence/rowlayout' }
-						clientId={ clientId }
-					/>
-				</>
-			) }
-		</>
-	);
-	const tabletOverlayControls = (
-		<>
-			{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Tablet Background Overlay', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-tablet-bg-overlay' }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background overlay for tablets?', 'kadence-blocks' ) }
-						checked={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveTabletOverlay( { enable: value } ) }
-					/>
-					{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].enable && (
-						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-							activeClass="active-tab"
-							initialTabName={ tabletOverlay[ 0 ].currentOverlayTab }
-							onSelect={ value => saveTabletOverlay( { currentOverlayTab: value } ) }
-							tabs={ [
-								{
-									name: 'normal',
-									title: __( 'Normal', 'kadence-blocks' ),
-									className: 'kt-over-normal',
-								},
-								{
-									name: 'grad',
-									title: __( 'Gradient', 'kadence-blocks' ),
-									className: 'kt-over-grad',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'grad' === tab.name ) {
-											tabout = overTabGradControls;
-										} else {
-											tabout = overTabControls;
-										}
-									}
-									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					) }
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'border', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Border Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-border-settings' }
-				>
-					<PopColorControl
-						label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
-						value={ ( tabletBorder ? tabletBorder : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { tabletBorder: value } ) }
-					/>
-					<MeasurementControls
-						label={ __( 'Tablet Border Width', 'kadence-blocks' ) }
-						measurement={ tabletBorderWidth }
-						onChange={ ( value ) => setAttributes( { tabletBorderWidth: value } ) }
-						control={ borderWidthControl }
-						onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
-						min={ 0 }
-						max={ 40 }
-						step={ 1 }
-						allowEmpty={ true }
-						unit={ 'px' }
-						units={ [ 'px' ] }
-						showUnit={ true }
-						preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Tablet Border Radius', 'kadence-blocks' ) }
-						measurement={ tabletBorderRadius }
-						control={ borderRadiusControl }
-						onChange={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
-						onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
-						min={ 0 }
-						max={ 500 }
-						step={ 1 }
-						allowEmpty={ true }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-						] }
-						firstIcon={ topLeftIcon }
-						secondIcon={ topRightIcon }
-						thirdIcon={ bottomRightIcon }
-						fourthIcon={ bottomLeftIcon }
-					/>
-				</KadencePanelBody>
-			) }
-		</>
-	);
-	const slideControls = ( index ) => {
-		let bgSlider;
-		if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
-			bgSlider = [ {
-				bgColor: '',
-				bgImg: '',
-				bgImgID: '',
-			} ];
-		} else {
-			bgSlider = backgroundSlider;
-		}
-		return (
-			<SubsectionWrap
-				label={__( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
-			>
-				<PopColorControl
-					label={ __( 'Slide Background Color', 'kadence-blocks' ) }
-					value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
-					default={ '' }
-					onChange={ value => saveSlideItem( { bgColor: value }, index ) }
-				/>
-				<KadenceImageControl
-					label={__( 'Slide Background Image', 'kadence-blocks' )}
-					hasImage={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false )}
-					imageURL={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? bgSlider[ index ].bgImg : '' )}
-					imageID={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' )}
-					onRemoveImage={() => {
-						saveSlideItem( {
-							bgImgID: '',
-							bgImg: '',
-						}, index );
-					} }
-					onSaveImage={ img => {
-						saveSlideItem( {
-							bgImgID: img.id,
-							bgImg: img.url,
-						}, index );
-					} }
-					disableMediaButtons={ ( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false ) }
-				/>
-			</SubsectionWrap>
-		);
-	};
-	const deskControls = (
-		<>
-			<BackgroundTypeControl
-				label={ __( 'Type', 'kadence-blocks' ) }
-				type={ backgroundSettingTab }
-				onChange={ ( value ) => {
-					setAttributes( { backgroundSettingTab: value } );
-				} }
-			/>
-			{ 'slider' === backgroundSettingTab && (
-				<>
-					<RangeControl
-						label={ __( 'Slider Item Count', 'kadence-blocks' ) }
-						value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
-						onChange={ newcount => {
-							let newSlides;
-							if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
-								newSlides = [ {
-									bgColor: '',
-									bgImg: '',
-									bgImgID: '',
-								} ];
-							} else {
-								newSlides = backgroundSlider;
-							}
-							if ( newSlides.length < newcount ) {
-								const amount = Math.abs( newcount - newSlides.length );
-								{ times( amount, n => {
-									newSlides.push( {
-										bgColor: '',
-										bgImg: '',
-										bgImgID: '',
-									} );
-								} ); }
-								setAttributes( { backgroundSlider: newSlides } );
-							}
-							setAttributes( { backgroundSliderCount: newcount } );
-						} }
-						step={ 1 }
-						min={ 1 }
-						max={ 20 }
-					/>
-					{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
-					<KadenceRadioButtons
-						label={ __( 'Slider Image Size', 'kadence-blocks' ) }
-						value={ bgImgSize }
-						options={ [
-							{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-							{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-							{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgSize: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Slider Image Position', 'kadence-blocks' ) }
-						value={ bgImgPosition }
-						options={ [
-							{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-							{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-							{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-							{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-							{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-							{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-							{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-							{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-							{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgPosition: value } ) }
-					/>
-					<KadenceRadioButtons
-						label={ __( 'Slider Image Repeat', 'kadence-blocks' ) }
-						value={ bgImgRepeat }
-						options={ [
-							{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-							{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-							{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-							{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
-						checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
-						onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
-					/>
-					{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
-						<RangeControl
-							label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
-							value={ backgroundSliderSettings[ 0 ].speed }
-							onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
-							min={ 500 }
-							max={ 15000 }
-							step={ 10 }
-						/>
-					) }
-					<SelectControl
-						label={ __( 'Transition Style', 'kadence-blocks' ) }
-						options={ [
-							{
-								label: __( 'Fade', 'kadence-blocks' ),
-								value: 'fade',
-							},
-							{
-								label: __( 'Slide', 'kadence-blocks' ),
-								value: 'slide',
-							},
-						] }
-						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
-						onChange={ ( value ) => {
-							if ( 'slide' === value ) {
-								saveSliderSettings( { fade: false } );
-							} else {
-								saveSliderSettings( { fade: true } );
-							}
-						} }
-					/>
-					<RangeControl
-						label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
-						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
-						onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
-						min={ 100 }
-						max={ 2000 }
-						step={ 10 }
-					/>
-					<SelectControl
-						label={ __( 'Arrow Style', 'kadence-blocks' ) }
-						options={ [
-							{
-								label: __( 'White on Dark', 'kadence-blocks' ),
-								value: 'whiteondark',
-							},
-							{
-								label: __( 'Black on Light', 'kadence-blocks' ),
-								value: 'blackonlight',
-							},
-							{
-								label: __( 'Outline Black', 'kadence-blocks' ),
-								value: 'outlineblack',
-							},
-							{
-								label: __( 'Outline White', 'kadence-blocks' ),
-								value: 'outlinewhite',
-							},
-							{
-								label: __( 'None', 'kadence-blocks' ),
-								value: 'none',
-							},
-						] }
-						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
-						onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Dot Style' ) }
-						options={ [
-							{
-								label: __( 'Dark', 'kadence-blocks' ),
-								value: 'dark',
-							},
-							{
-								label: __( 'Light', 'kadence-blocks' ),
-								value: 'light',
-							},
-							{
-								label: __( 'Outline Dark', 'kadence-blocks' ),
-								value: 'outlinedark',
-							},
-							{
-								label: __( 'Outline Light', 'kadence-blocks' ),
-								value: 'outlinelight',
-							},
-							{
-								label: __( 'None', 'kadence-blocks' ),
-								value: 'none',
-							},
-						] }
-						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
-						onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
-					/>
-				</>
-			) }
-			{ 'video' === backgroundSettingTab && (
-				<>
-					{/* <SelectControl
-						label={ __( 'Background Video Type' ) }
-						options={ [
-							{
-								label: __( 'Local (MP4)' ),
-								value: 'local',
-							},
-							{
-								label: __( 'YouTube' ),
-								value: 'youtube',
-							},
-							{
-								label: __( 'Vimeo' ),
-								value: 'vimeo',
-							},
-						] }
-						value={ backgroundVideoType }
-						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-					/> */}
-					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
-						<Fragment>
-							<KadenceVideoControl
-								label={__( 'Background Video', 'kadence-blocks' )}
-								hasVideo={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? true : false ) }
-								videoURL={( backgroundVideo && backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' )}
-								videoID={( backgroundVideo && backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' )}
-								onRemoveVideo={() => {
-									saveVideoSettings( {
-										localID: '',
-										local: '',
-									} );
-								} }
-								onSaveVideo={ video => {
-									saveVideoSettings( {
-										localID: video.id,
-										local: video.url,
-									} );
-								} }
-								disableMediaButtons={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? true : false ) }
-							/>
-							<TextControl
-								label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
-								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
-								onChange={ value => saveVideoSettings( { local: value } ) }
-							/>
-						</Fragment>
-					) }
-					{ 'youtube' === backgroundVideoType && (
-						<TextControl
-							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-							onChange={ value => saveVideoSettings( { youtube: value } ) }
-						/>
-					) }
-					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
-						<SelectControl
-							label={ __( 'Background Video Ratio', 'kadence-blocks' ) }
-							options={ [
-								{
-									label: '16 / 9',
-									value: '16/9',
-								},
-								{
-									label: '4 / 3',
-									value: '4/3',
-								},
-								{
-									label: '3 / 2',
-									value: '3/2',
-								},
-							] }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
-							onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
-						/>
-					) }
-					<ToggleControl
-						label={ __( 'Mute Video', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
-						onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Loop Video', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
-						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-					/>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( bgColor ? bgColor : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { bgColor: value } ) }
-						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-					/>
-					<KadenceImageControl
-						label={__( 'Select Video Poster', 'kadence-blocks' )}
-						hasImage={( bgImgID ? true : false )}
-						imageURL={( bgImg ? bgImg : '' )}
-						imageID={( bgImgID ? bgImgID : '' )}
-						onRemoveImage={ onRemoveImage }
-						onSaveImage={ onSelectImage }
-						disableMediaButtons={ ( bgImg ? true : false ) }
-					/>
-				</>
-			) }
-			{ 'gradient' === backgroundSettingTab && (
-				<GradientControl
-					value={ gradient }
-					onChange={ value => setAttributes( { gradient: value } ) }
-					gradients={ [] }
-				/>
-			) }
-			{ 'normal' === backgroundSettingTab && (
-				<>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( bgColor ? bgColor : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { bgColor: value } ) }
-						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-					/>
-					<KadenceBackgroundControl
-						label={ __( 'Background Image', 'kadence-blocks' ) }
-						hasImage={ bgImg }
-						imageURL={ bgImg }
-						imageID={ bgImgID }
-						imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
-						imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
-						imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
-						imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
-						imageAttachmentParallax={ true }
-						onRemoveImage={ onRemoveImage }
-						onSaveImage={ ( img ) => {
-							setAttributes( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						onSaveURL={ ( newURL ) => {
-							if ( newURL !== bgImg ) {
-								setAttributes( {
-									bgImgID: undefined,
-									bgImg: newURL,
-								} );
-							}
-						} }
-						onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
-						onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
-						onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
-						onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
-						inlineImage={ backgroundInline }
-						onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
-						disableMediaButtons={ bgImg }
-						dynamicAttribute="bgImg"
-						isSelected={ isSelected }
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						name={ 'kadence/rowlayout' }
-						clientId={ clientId }
-					/>
-				</>
-			)}
-		</>
-	);
-const deskOverlayControls = (
-	<Fragment>
-		{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-			<KadencePanelBody
-				title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
-				initialOpen={ false }
-				panelName={ 'kb-row-bg-overlay' }
-			>
-				<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-					activeClass="active-tab"
-					initialTabName={ currentOverlayTab }
-					onSelect={ value => setAttributes( { currentOverlayTab: value } ) }
-					tabs={ [
-						{
-							name: 'normal',
-							title: __( 'Normal', 'kadence-blocks' ),
-							className: 'kt-over-normal',
-						},
-						{
-							name: 'grad',
-							title: __( 'Gradient', 'kadence-blocks' ),
-							className: 'kt-over-grad',
-						},
-					] }>
-					{
-						( tab ) => {
-							let tabout;
-							if ( tab.name ) {
-								if ( 'grad' === tab.name ) {
-									tabout = overGradControls;
-								} else {
-									tabout = overControls;
-								}
-							}
-							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-						}
-					}
-				</TabPanel>
-			</KadencePanelBody>
-		) }
-		{ showSettings( 'border', 'kadence/rowlayout' ) && (
-			<KadencePanelBody
-				title={ __( 'Border Settings', 'kadence-blocks' ) }
-				initialOpen={ false }
-				panelName={ 'kb-row-border-settings' }
-			>
-				<PopColorControl
-					label={ __( 'Border Color', 'kadence-blocks' ) }
-					value={ ( border ? border : '' ) }
-					default={ '' }
-					onChange={ value => setAttributes( { border: value } ) }
-				/>
-				<MeasurementControls
-					label={ __( 'Border Width', 'kadence-blocks' ) }
-					measurement={ borderWidth }
-					onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-					control={ borderWidthControl }
-					onControl={ ( value ) => setBorderWidthControl( value ) }
-					min={ 0 }
-					max={ 40 }
-					step={ 1 }
-					allowEmpty={ true }
-					unit={ 'px' }
-					units={ [ 'px' ] }
-					showUnit={ true }
-					preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-				/>
-				<MeasurementControls
-					label={ __( 'Border Radius', 'kadence-blocks' ) }
-					measurement={ borderRadius }
-					control={ borderRadiusControl }
-					onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-					onControl={ ( value ) => setBorderRadiusControl( value ) }
-					min={ 0 }
-					max={ 500 }
-					step={ 1 }
-					allowEmpty={ true }
-					controlTypes={ [
-						{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-						{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-					] }
-					firstIcon={ topLeftIcon }
-					secondIcon={ topRightIcon }
-					thirdIcon={ bottomRightIcon }
-					fourthIcon={ bottomLeftIcon }
-				/>
-			</KadencePanelBody>
-		) }
-	</Fragment>
-);
-	const overControls = (
-		<>
-			<PopColorControl
-				label={ __( 'Overlay Color', 'kadence-blocks' ) }
-				value={ ( overlay ? overlay : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( {overlay: value } ) }
-				opacityValue={ ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) }
-				onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
-			/>
-			<KadenceBackgroundControl
-				label={ __( 'Background Image', 'kadence-blocks' ) }
-				hasImage={ overlayBgImg }
-				imageURL={ overlayBgImg }
-				imageID={ overlayBgImgID }
-				imagePosition={ ( overlayBgImgPosition ? overlayBgImgPosition : 'center center' ) }
-				imageSize={ ( overlayBgImgSize ? overlayBgImgSize : 'cover' ) }
-				imageRepeat={ ( overlayBgImgRepeat ? overlayBgImgRepeat : 'no-repeat' ) }
-				imageAttachment={ ( overlayBgImgAttachment ? overlayBgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
-				onRemoveImage={ onRemoveOverlayImage }
-				onSaveImage={ ( img ) => {
-					setAttributes( {
-						overlayBgImgID: img.id,
-						overlayBgImg: img.url,
-					} );
-				} }
-				onSaveURL={ ( newURL ) => {
-					if ( newURL !== overlayBgImg ) {
-						setAttributes( {
-							overlayBgImgID: undefined,
-							overlayBgImg: newURL,
-						} );
-					}
-				} }
-				onSavePosition={ value => setAttributes( { overlayBgImgPosition: value } ) }
-				onSaveSize={ value => setAttributes( { overlayBgImgSize: value } ) }
-				onSaveRepeat={ value => setAttributes( { overlayBgImgRepeat: value } ) }
-				onSaveAttachment={ value => setAttributes( { overlayBgImgAttachment: value } ) }
-				disableMediaButtons={ overlayBgImg }
-				dynamicAttribute="overlayBgImg"
-				isSelected={ isSelected }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-				name={ 'kadence/rowlayout' }
-				clientId={ clientId }
-			/>
-		</>
-	);
-	const overGradControls = (
-		<div>
-			<PopColorControl
-				label={ __( 'Color', 'kadence-blocks' ) }
-				value={ ( overlay ? overlay : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { overlay: value } ) }
-				opacityValue={ ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) }
-				onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location', 'kadence-blocks' ) }
-				value={ overlayGradLoc }
-				onChange={ ( value ) => {
-					setAttributes( {
-						overlayGradLoc: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Second Color', 'kadence-blocks' ) }
-				value={ ( overlaySecond ? overlaySecond : '' ) }
-				default={ '#00B5E2' }
-				onChange={ value => setAttributes( { overlaySecond: value } ) }
-				opacityValue={ ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) }
-				onOpacityChange={ value => setAttributes( { overlaySecondOpacity: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location', 'kadence-blocks' ) }
-				value={ overlayGradLocSecond }
-				onChange={ ( value ) => {
-					setAttributes( {
-						overlayGradLocSecond: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<SelectControl
-				label={ __( 'Gradient Type', 'kadence-blocks' ) }
-				value={ overlayGradType }
-				options={ [
-					{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
-					{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
-				] }
-				onChange={ value => setAttributes( { overlayGradType: value } ) }
-			/>
-			{ overlayGradType && 'linear' === overlayGradType && (
-				<RangeControl
-					label={ __( 'Gradient Angle', 'kadence-blocks' ) }
-					value={ overlayGradAngle }
-					onChange={ ( value ) => {
-						setAttributes( {
-							overlayGradAngle: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 360 }
-				/>
-			) }
-			{ overlayGradType && 'radial' === overlayGradType && (
-				<SelectControl
-					label={ __( 'Gradient Position', 'kadence-blocks' ) }
-					value={ overlayBgImgPosition }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-						{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-						{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-						{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-						{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-						{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-					] }
-					onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
-				/>
-			) }
-		</div>
-	);
-	const overTabControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Overlay Color', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveTabletOverlay( { overlay: value } ) }
-			/>
-			<KadenceBackgroundControl
-				label={ __( 'Overlay Image', 'kadence-blocks' ) }
-				hasImage={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? true : false ) }
-				imageURL={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
-				imageID={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgID ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
-				imagePosition={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgPosition ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-				imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-				imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-				imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
-				onRemoveImage={ onRemoveTabletOverlayImage }
-				onSaveImage={ ( img ) => {
-					saveTabletOverlay( {
-						overlayBgImgID: img.id,
-						overlayBgImg: img.url,
-					} );
-				} }
-				onSaveURL={ ( newURL ) => {
-					if ( newURL !== ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) ) {
-						saveTabletOverlay( {
-							overlayBgImgID: undefined,
-							overlayBgImg: newURL,
-						} );
-					}
-				} }
-				onSavePosition={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
-				onSaveSize={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
-				onSaveRepeat={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
-				onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
-				disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
-				dynamicAttribute="tabletOverlay:0:overlayBgImg"
-				isSelected={ isSelected }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-				name={ 'kadence/rowlayout' }
-				clientId={ clientId }
-			/>
-			<SelectControl
-				label={ __( 'Blend Mode' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
-				options={ [
-					{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
-					{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
-					{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
-					{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
-					{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
-					{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
-					{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
-					{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
-					{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
-					{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
-					{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
-					{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
-					{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
-					{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
-
-				] }
-				onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
-			/>
-			<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
-		</div>
-	);
-	const overTabGradControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Color', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveTabletOverlay( { overlay: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLoc : 0 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayGradLoc: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Second Color', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
-				default={ '#00B5E2' }
-				onChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLocSecond : 100 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayGradLocSecond: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<SelectControl
-				label={ __( 'Gradient Type', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradType : 'linear' ) }
-				options={ [
-					{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
-					{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
-				] }
-				onChange={ value => saveTabletOverlay( { overlayGradType: value } ) }
-			/>
-			{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'linear' === tabletOverlay[ 0 ].overlayGradType && (
-				<RangeControl
-					label={ __( 'Gradient Angle', 'kadence-blocks' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradAngle : 180 ) }
-					onChange={ ( value ) => {
-						saveTabletOverlay( {
-							overlayGradAngle: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 360 }
-				/>
-			) }
-			{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'radial' === tabletOverlay[ 0 ].overlayGradType && (
-				<SelectControl
-					label={ __( 'Gradient Position', 'kadence-blocks' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-						{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-						{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-						{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-						{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-						{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
-				/>
-			) }
-			<SelectControl
-				label={ __( 'Blend Mode' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
-				options={ [
-					{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
-					{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
-					{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
-					{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
-					{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
-					{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
-					{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
-					{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
-					{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
-					{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
-					{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
-					{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
-					{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
-					{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
-
-				] }
-				onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
-			/>
-			<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
-		</div>
-	);
-	const overMobileControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Overlay Color', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveMobileOverlay( { overlay: value } ) }
-			/>
-			<KadenceBackgroundControl
-				label={ __( 'Overlay Image', 'kadence-blocks' ) }
-				hasImage={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? true : false ) }
-				imageURL={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
-				imageID={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgID ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
-				imagePosition={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgPosition ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-				imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-				imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-				imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
-				onRemoveImage={ onRemoveMobileOverlayImage }
-				onSaveImage={ ( img ) => {
-					saveMobileOverlay( {
-						overlayBgImgID: img.id,
-						overlayBgImg: img.url,
-					} );
-				} }
-				onSaveURL={ ( newURL ) => {
-					if ( newURL !== ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) ) {
-						saveMobileOverlay( {
-							overlayBgImgID: undefined,
-							overlayBgImg: newURL,
-						} );
-					}
-				} }
-				onSavePosition={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
-				onSaveSize={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
-				onSaveRepeat={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
-				onSaveAttachment={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
-				disableMediaButtons={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
-				dynamicAttribute="mobileOverlay:0:overlayBgImg"
-				isSelected={ isSelected }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-				name={ 'kadence/rowlayout' }
-				clientId={ clientId }
-			/>
-			<SelectControl
-				label={ __( 'Blend Mode', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
-				options={ [
-					{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
-					{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
-					{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
-					{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
-					{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
-					{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
-					{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
-					{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
-					{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
-					{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
-					{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
-					{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
-					{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
-					{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
-
-				] }
-				onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
-			/>
-			<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
-		</div>
-	);
-	const overMobileGradControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Color', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveMobileOverlay( { overlay: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradLoc : 0 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayGradLoc: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Second Color', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
-				default={ '#00B5E2' }
-				onChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
-			/>
-			<RangeControl
-				label={ __( 'Location', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradLocSecond : 100 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayGradLocSecond: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<SelectControl
-				label={ __( 'Gradient Type' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradType : 'linear' ) }
-				options={ [
-					{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
-					{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
-				] }
-				onChange={ value => saveMobileOverlay( { overlayGradType: value } ) }
-			/>
-			{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'linear' === mobileOverlay[ 0 ].overlayGradType && (
-				<RangeControl
-					label={ __( 'Gradient Angle', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradAngle : 180 ) }
-					onChange={ ( value ) => {
-						saveMobileOverlay( {
-							overlayGradAngle: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 360 }
-				/>
-			) }
-			{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'radial' === mobileOverlay[ 0 ].overlayGradType && (
-				<SelectControl
-					label={ __( 'Gradient Position', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-						{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-						{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-						{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-						{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-						{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
-				/>
-			) }
-			<SelectControl
-				label={ __( 'Blend Mode', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
-				options={ [
-					{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
-					{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
-					{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
-					{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
-					{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
-					{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
-					{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
-					{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
-					{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
-					{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
-					{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
-					{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
-					{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
-					{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
-
-				] }
-				onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
-			/>
-			<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
-		</div>
-	);
-	const colorControls = (
-		<KadencePanelBody
-			title={ __( 'Text Color Settings', 'kadence-blocks' ) }
-			initialOpen={ false }
-			panelName={ 'kb-row-text-color' }
-		>
-			<PopColorControl
-				label={ __( 'Text Color', 'kadence-blocks' ) }
-				value={ ( textColor ? textColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { textColor: value } ) }
-			/>
-			<PopColorControl
-				label={ __( 'Link Color', 'kadence-blocks' ) }
-				value={ ( linkColor ? linkColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { linkColor: value } ) }
-			/>
-			<PopColorControl
-				label={ __( 'Link Hover Color', 'kadence-blocks' ) }
-				value={ ( linkHoverColor ? linkHoverColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { linkHoverColor: value } ) }
-			/>
-		</KadencePanelBody>
-	);
 	const verticalAlignOptions = [
 		[
 			{
@@ -1997,14 +470,6 @@ const deskOverlayControls = (
 		[ `kt-layout-inner-wrap-id${ uniqueID }` ]: uniqueID,
 		[ `kb-grid-columns-${ columns }` ]: columns,
 	} );
-	const innerResizeClasses = classnames( {
-		//'innerblocks-wrap': true,
-		'kt-resizeable-column-container': true,
-		//'kb-theme-content-width': inheritMaxWidth,
-		[ `kt-resizeable-column-container${ uniqueID }` ]: uniqueID,
-		// [ `kb-grid-columns-${ columns }` ]: columns,
-
-	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerClasses,
@@ -2020,28 +485,6 @@ const deskOverlayControls = (
 			renderAppender: false,
 		}
 	);
-	const gutter = 30;
-	const gutterUnit = 'px';
-	const gutterPercentUnit = parseFloat( gutter/100 );
-	const firstCol = parseInt( ! firstColumnWidth ? widthNumber : firstColumnWidth );
-	const adjuster1 = -50*gutterPercentUnit;
-	const adjuster2 = -50*gutterPercentUnit;
-	const adjuster3 = -50*gutterPercentUnit;
-	const adjuster4 = -50*gutterPercentUnit;
-	const adjuster5 = 0;
-	const adjuster6 = 50*gutterPercentUnit;
-	const adjuster7 = 50*gutterPercentUnit;
-	const adjuster8 = 50*gutterPercentUnit;
-	const adjuster9 = 50*gutterPercentUnit;
-	// if ( firstCol < 35 ) {
-	// 	adjuster = gutterPercentUnit*( -70 + firstCol );
-	// } else if ( firstCol < 50 ) {
-	// 	adjuster = gutterPercentUnit* ( -60 + firstCol );
-	// } else if ( firstCol > 65 ) {
-	// 	adjuster = gutterPercentUnit* ( -30 + firstCol );
-	// } else if ( firstCol > 50 ) {
-	// 	adjuster = gutterPercentUnit* ( -40 + firstCol );
-	// }
 	return (
 		<Fragment>
 			<BlockControls>
@@ -2050,23 +493,6 @@ const deskOverlayControls = (
 					controls={ [ 'center', 'wide', 'full' ] }
 					onChange={ value => setAttributes( { align: value } ) }
 				/>
-				{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'background', 'kadence/rowlayout' ) && (
-					<Toolbar>
-						<MediaUpload
-							onSelect={ onSelectImage }
-							type="image"
-							value={ null }
-							render={ ( { open } ) => (
-								<Button
-									className="components-toolbar__control"
-									label={ __( 'Background Image', 'kadence-blocks' ) }
-									icon={ image }
-									onClick={ open }
-								/>
-							) }
-						/>
-					</Toolbar>
-				) }
 				<Toolbar>
 					<Button
 						className="kb-content-width"
@@ -2129,18 +555,24 @@ const deskOverlayControls = (
 						</Popover>
 					) }
 				</Toolbar>
-				{/* <ToolbarGroup
-					isCollapsed={ true }
-					icon={ <ContentWidthIcon value={ inheritMaxWidth } /> }
-					label={ __( 'Inner Content Width', 'kadence-blocks' )  }
-					controls={ contentWidthOptions }
-				/> */}
 				<ToolbarGroup
 					isCollapsed={ true }
 					icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
 					label={ __( 'Vertical Align', 'kadence-blocks' )  }
 					controls={ verticalAlignOptions }
 				/>
+				<Toolbar>
+					<Button
+						className="kb-row-add-section"
+						icon={ plusCircle }
+						onClick={ () => {
+							const newBlock = createBlock( 'kadence/column', {} );
+							insertSection( newBlock );
+						} }
+						label={  __( 'Add Another Section', 'kadence-blocks' ) }
+						showTooltip={ true }
+					/>
+				</Toolbar>
 			</BlockControls>
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<InspectorControls>
@@ -2176,113 +608,50 @@ const deskOverlayControls = (
 								setAttributes={setAttributes}
 								updateColumns={updateColumns}
 								innerItemCount={innerItemCount}
-								widthString={widthString}
+								widthString={ widthString }
+								previewDevice={ previewDevice }
 							/>
 						</>
 					) }
 					{ ( activeTab === 'style' ) && (
-						<>
-							{ showSettings( 'background', 'kadence/rowlayout' ) && (
-								<KadencePanelBody
-									title={ __( 'Background Settings', 'kadence-blocks' ) }
-									initialOpen={ true }
-									panelName={ 'kb-row-bg-settings' }
-								>
-									<SmallResponsiveControl
-										label={__( 'Background', 'kadence-blocks' )}
-										hasPadding={ true }
-										desktopChildren={ deskControls }
-										tabletChildren={ tabletControls }
-										mobileChildren={ mobileControls }
-									/>
-								</KadencePanelBody>
-							) }
-							{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-								<KadencePanelBody
-									title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
-									initialOpen={ false }
-									panelName={ 'kb-row-bg-overlay' }
-								>
-									<RangeControl
-										label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-										value={ overlayOpacity }
-										onChange={ ( value ) => {
-											setAttributes( {
-												overlayOpacity: value,
-											} );
-										} }
-										min={ 0 }
-										max={ 100 }
-									/>
-									<BackgroundTypeControl
-										label={ __( 'Overlay Type', 'kadence-blocks' ) }
-										type={ currentOverlayTab ? currentOverlayTab : 'normal' }
-										onChange={ value => setAttributes( { currentOverlayTab: value } ) }
-										allowedTypes={ [ 'normal', 'gradient' ] }
-									/>
-									{ ( 'gradient' === currentOverlayTab ) && (
-										<GradientControl
-											value={ overlayGradient }
-											onChange={ value => setAttributes( { overlayGradient: value } ) }
-											gradients={ [] }
-										/>
-									) }
-									{ ( 'gradient' !== currentOverlayTab ) && (
-										overControls
-									) }
-									<SelectControl
-										label={ __( 'Blend Mode' ) }
-										value={ overlayBlendMode }
-										options={ [
-											{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
-											{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
-											{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
-											{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
-											{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
-											{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
-											{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
-											{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
-											{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
-											{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
-											{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
-											{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
-											{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
-											{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
-
-										] }
-										onChange={ value => setAttributes( { overlayBlendMode: value } ) }
-									/>
-									<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
-								</KadencePanelBody>
-							) }
-							<ResponsiveControl
-								desktopChildren={ deskOverlayControls }
-								tabletChildren={ tabletOverlayControls }
-								mobileChildren={ mobileControls }
-							/>
-							<div className="kt-sidebar-settings-spacer"></div>
-							{ showSettings( 'textColor', 'kadence/rowlayout' ) && (
-								colorControls
-							) }
-						</>
+						<StyleControls
+							clientId={ clientId }
+							attributes={ attributes }
+							setAttributes={setAttributes}
+							isSelected={ isSelected }
+						/>
 					) }
 					{ ( activeTab === 'advanced' ) && (
 						<>
 							{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
 								<KadencePanelBody panelName={ 'kb-row-padding' }>
-									<ResponsiveMeasurementControls
+									<MeasurementRangeControl
 										label={__( 'Padding', 'kadence-blocks' )}
-										value={[ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ]}
-										tabletValue={ tabletPadding }
-										mobileValue={[ ( undefined !== topPaddingM ? topPaddingM : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) ]}
-										onChange={ ( value ) => setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } ) }
-										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
-										onChangeMobile={ ( value ) => setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } ) }
+										value={ undefined !== padding && undefined !== padding[0] ? padding : [ '', '', '', '' ] }
+										onChange={ ( value ) => setAttributes( { padding: value } ) }
 										min={ 0 }
 										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
 										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
 										unit={ paddingUnit }
 										allowEmpty={ true }
+										options={ SPACING_SIZES_MAP }
+										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+									/>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={ undefined !== padding && undefined !== padding[0] ? padding : [ '', '', '', '' ] }
+										tabletValue={ tabletPadding }
+										mobileValue={ undefined !== mobilePadding && undefined !== mobilePadding[0] ? mobilePadding : [ '', '', '', '' ] }
+										onChange={( value ) => setAttributes( { padding: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
+										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
+										min={ 0 }
+										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+										unit={ paddingUnit }
+										allowEmpty={ true }
+										options={ SPACING_SIZES_MAP }
 										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
 									/>
@@ -2476,44 +845,37 @@ const deskOverlayControls = (
 					) }
 				</InspectorControls>
 			) }
-			{ ( textColor || linkColor || linkHoverColor || columns || zIndex || kadenceBlockCSS ) && (
-				<style>
-					{ ( adjuster1 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-1"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster1 + gutterUnit } }` : '' ) }
-					{ ( adjuster2 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-2"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster2 + gutterUnit } }` : '' ) }
-					{ ( adjuster3 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-3"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster3 + gutterUnit } }` : '' ) }
-					{ ( adjuster4 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-4"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster4 + gutterUnit } }` : '' ) }
-					{ ( adjuster5 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-5"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster5 + gutterUnit } }` : '' ) }
-					{ ( adjuster6 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-6"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster6 + gutterUnit } }` : '' ) }
-					{ ( adjuster7 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-7"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster7 + gutterUnit } }` : '' ) }
-					{ ( adjuster8 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-8"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster8 + gutterUnit } }` : '' ) }
-					{ ( adjuster9 ? `.wp-block-kadence-rowlayout[class*=" kt-custom-first-width-9"].kb-row-id-${ uniqueID } > .kt-resizeable-column-container .editor-row-controls-container { right: ${ adjuster9 + gutterUnit } }` : '' ) }
-					{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-					{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-					{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-					{ columns && columns === 2 && (
-						<Fragment>
-							{ ( ( firstColumnWidth || temporaryColumnWidth ) && ( secondColumnWidth || temporarySecondColumnWidth ) ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, ${ parseFloat( widthString ) }% ) minmax(0, ${ parseFloat( secondWidthString ) }% ) }` : '' ) }
-						</Fragment>
-					) }
-					{ columns && columns === 3 && (
-						<Fragment>
-							{ ( firstColumnWidth || temporaryColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(1) { flex: 0 1 ${ parseFloat( widthString ) }%; }` : '' ) }
-							{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(2) { flex: 0 1 ${ parseFloat( secondWidthString ) }%; }` : '' ) }
-							{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(3) { flex: 0 1 ${ parseFloat( thirdWidthString ) }%; }` : '' ) }
-						</Fragment>
-					) }
-					{ zIndex && zIndex > 30 && (
-						<Fragment>
-							{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
-						</Fragment>
-					) }
-					{ kadenceBlockCSS && (
-						<Fragment>
-							{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
-						</Fragment>
-					)}
-				</style>
-			) }
+			<style>
+				{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+				{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+				{ columns && columns > 1 && (
+					<>
+						{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID } { column-gap:${ columnGap } }` : '' ) }
+					</>
+				) }
+				{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID } { row-gap:${ columnGap } }` : '' ) }
+				{ columns && columns === 2 && (
+					<>
+						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
+					</>
+				) }
+				{ columns && columns === 3 && (
+					<>
+						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
+					</>
+				) }
+				{ zIndex && zIndex > 30 && (
+					<>
+						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
+					</>
+				) }
+				{ kadenceBlockCSS && (
+					<>
+						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+					</>
+				)}
+			</style>
 			<RowBackground
 				backgroundClasses={ classes }
 				attributes={ attributes }
@@ -2530,19 +892,20 @@ const deskOverlayControls = (
 						</div>
 						<ButtonGroup aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
 							{ map( startlayoutOptions, ( { name, key, icon, col } ) => (
-								<Tooltip text={ name }>
-									<Button
-										key={ key }
-										className="kt-layout-btn"
-										isSmall
-										onClick={ () => setAttributes( {
+								<Button
+									key={ key }
+									className="kt-layout-btn"
+									isSmall
+									label={ name }
+									icon={ icon }
+									onClick={ () => {
+										updateColumns( columns, col );
+										setAttributes( {
 											colLayout: key,
 											columns: col,
 										} ) }
-									>
-										{ icon }
-									</Button>
-								</Tooltip>
+									}
+								/>
 							) ) }
 						</ButtonGroup>
 						<PrebuiltModal
@@ -2561,247 +924,43 @@ const deskOverlayControls = (
 						</svg>
 					</div>
 				) }
-				<div style={ { height: '1px' } }></div>
-				{ colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && (
-					<ResizableBox
-						size={ {
-							height: previewPaddingTop,
-						} }
-						minHeight="0"
-						handleClasses={ {
-							top: 'wp-block-kadence-rowlayout-handler-top',
-							bottom: 'wp-block-kadence-rowlayout-handler-bottom',
-						} }
-						enable={ {
-							top: true,
-							right: false,
-							bottom: false,
-							left: false,
-							topRight: false,
-							bottomRight: false,
-							bottomLeft: false,
-							topLeft: false,
-						} }
-						className={ 'kt-top-padding-resize kt-padding-resize-box' }
-						onResize={ ( event, direction, elt, delta ) => {
-							event.preventDefault();
-							editorDocument.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
-						} }
-						onResizeStop={ ( event, direction, elt, delta ) => {
-							if ( 'Mobile' === previewDevice ) {
-								setAttributes( {
-									topPaddingM: parseInt( previewPaddingTop + delta.height, 10 ),
-								} );
-							} else if ( 'Tablet' === previewDevice ) {
-								setAttributes( {
-									tabletPadding: [ parseInt( previewPaddingTop + delta.height, 10 ), ( tabletPadding ? tabletPadding[ 1 ] : '' ), ( tabletPadding ? tabletPadding[ 2 ] : '' ), ( tabletPadding ? tabletPadding[ 3 ] : '' ) ],
-								} );
-							} else {
-								setAttributes( {
-									topPadding: parseInt( previewPaddingTop + delta.height, 10 ),
-								} );
-							}
-							toggleSelection( true );
-						} }
-						onResizeStart={ () => {
-							toggleSelection( false );
-						} }
-					>
-						{ uniqueID && (
-							<div className="kt-row-padding">
-								<span id={ `row-top-${ uniqueID }` } >
-									{ previewPaddingTop + 'px' }
-								</span>
-							</div>
-						) }
-					</ResizableBox>
-				) }
-				{ colLayout && ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
-					<Fragment>
-						{ uniqueID && (
-							<div className="kt-row-padding kb-static-row-padding" style={ {
-								paddingTop: previewPaddingTop + ( paddingUnit ? paddingUnit : 'px' ),
-							} }>
-								<div className={ 'kb-row-padding-container' }>
-									<span id={ `row-top-${ uniqueID }` } >
-										{ previewPaddingTop + ( paddingUnit ? paddingUnit : 'px' ) }
-									</span>
-								</div>
-							</div>
-						) }
-					</Fragment>
+				{ colLayout && (
+					<PaddingResizer
+						previewDevice={ previewDevice }
+						edge={ 'top' }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						toggleSelection={ toggleSelection }
+					/>
 				) }
 				{ colLayout && (
-					<Fragment>
-						<div { ...innerBlocksProps } />
-						{/* <div className={ `innerblocks-wrap${ ( inheritMaxWidth ? ' kb-theme-content-width' : '' ) }` } id={ `kt-layout-id${ uniqueID }` } style={ {
-							maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-							paddingLeft: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
-							paddingRight: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
-						} }> */}
+					<>
 						{ colLayout && 'row' !== colLayout && columns && 2 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
-							<div className={ innerResizeClasses } style={ {
-								left: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
-								right: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
-							} }>
-								<ContainerDimensions>
-									{ ( { width } ) =>
-										<ResizableBox
-											className="editor-row-first-column__resizer"
-											size={ { width: ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) } }
-											minWidth="10%"
-											maxWidth="90%"
-											enable={ {
-												right: true,
-											} }
-											handleClasses={ {
-												right: 'components-resizable-box__handle components-resizable-box__handle-right',
-											} }
-											handleWrapperClass="editor-row-controls-container"
-											grid={ ( columnsUnlocked ? [ width / 1000, 1 ] : [ width / 20, 1 ] ) }
-											onResize={ onResize }
-											onResizeStop={ onResizeStop }
-											axis="x"
-										>
-											<span className="editor-row-controls-container">
-												{ columnsUnlocked && (
-													<Tooltip text={ __( 'Switch to 5% step resizing' ) }>
-														<Button
-															className="kt-fluid-grid-btn"
-															isSmall
-															onClick={ () => setAttributes( { columnsUnlocked: false } ) }
-														>
-															{
-																<svg viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414"><path d="M4.217,10.611l0,2.7l-3.31,-3.311l3.31,-3.311l0,2.7l11.566,0l0,-2.7l3.31,3.311l-3.31,3.311l0,-2.7l-11.566,0Z" /></svg>
-															}
-														</Button>
-													</Tooltip>
-												) }
-												{ ! columnsUnlocked && (
-													<Tooltip text={ __( 'Switch to fluid resizing' ) }>
-														<Button
-															className="kt-fluid-grid-btn"
-															isSmall
-															onClick={ () => setAttributes( { columnsUnlocked: true } ) }
-														>
-															{
-																<svg viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="1.5">
-																	<path d="M13.967,10.611l0.001,-1.222l1.815,0l0,-2.7l3.31,3.311l-3.31,3.311l0,-2.7l-1.816,0Z"
-																	/>
-																	<path d="M8.918,10.611l-0.022,-1.222l2.15,0l-0.031,1.222l-2.097,0Z" />
-																	<path d="M4.217,10.611l0,2.7l-3.31,-3.311l3.31,-3.311l0,2.7l1.693,0l-0.028,1.222l-1.665,0Z"
-																	/>
-																	<circle cx="12.427" cy="9.997" r="1.419" fill="none" stroke="#0085ba" />
-																	<circle cx="7.456" cy="9.997" r="1.419" fill="none" stroke="#0085ba" />
-																</svg>
-															}
-														</Button>
-													</Tooltip>
-												) }
-												<span id={ `left-column-width-${ uniqueID }` } className="left-column-width-size column-width-size-handle" >
-													{ ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) }
-												</span>
-												<span id={ `right-column-width-${ uniqueID }` } className="right-column-width-size column-width-size-handle" >
-													{ ( ! firstColumnWidth ? Math.abs( parseFloat( widthNumber ) - 100 ) + '%' : ( Math.round( ( 100 - firstColumnWidth ) * 10 ) / 10 ) + '%' ) }
-												</span>
-											</span>
-										</ResizableBox>
-									}
-								</ContainerDimensions>
-							</div>
+							<TwoColumnResizer
+								attributes={ attributes }
+								setAttributes={ setAttributes }
+							/>
 						) }
-						{/* { colLayout && 'row' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ colLayout && 'row' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<ThreeColumnDrag
-								uniqueID={ uniqueID }
-								onSetFirstCol={ value => setFirstWidth( value ) }
-								onSetSecondCol={ value => setSecondWidth( value ) }
-								onSetAttributes={ value => setAttributes( value ) }
-								firstColumnWidth={ firstColumnWidth }
-								secondColumnWidth={ secondColumnWidth }
+								attributes={ attributes }
+								setAttributes={ setAttributes }
 								widthString={ widthString }
 								secondWidthString={ secondWidthString }
-								columnsUnlocked={ columnsUnlocked }
-								leftPadding={ previewPaddingLeft }
-								rightPadding={ previewPaddingRight }
 							/>
-						) } */}
-
-					{/* // 	<InnerBlocks
-					// 		template={ getColumnsTemplate( columns ) }
-					// 		templateLock="all"
-					// 		orientation="horizontal"
-					// 		renderAppender={ false }
-					// 		allowedBlocks={ ALLOWED_BLOCKS } />
-					// </div> */}
-					</Fragment>
-				) }
-				{ colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && (
-					<ResizableBox
-						size={ {
-							height: previewPaddingBottom,
-						} }
-						minHeight="0"
-						handleClasses={ {
-							top: 'wp-block-kadence-rowlayout-handler-top',
-							bottom: 'wp-block-kadence-rowlayout-handler-bottom',
-						} }
-						enable={ {
-							top: false,
-							right: false,
-							bottom: true,
-							left: false,
-							topRight: false,
-							bottomRight: false,
-							bottomLeft: false,
-							topLeft: false,
-						} }
-						className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
-						onResize={ ( event, direction, elt, delta ) => {
-							editorDocument.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
-						} }
-						onResizeStop={ ( event, direction, elt, delta ) => {
-							if ( 'Mobile' === previewDevice ) {
-								setAttributes( {
-									bottomPaddingM: parseInt( previewPaddingBottom + delta.height, 10 ),
-								} );
-							} else if ( 'Tablet' === previewDevice ) {
-								setAttributes( {
-									tabletPadding: [ ( tabletPadding ? tabletPadding[ 0 ] : '' ), ( tabletPadding ? tabletPadding[ 1 ] : '' ), parseInt( previewPaddingBottom + delta.height, 10 ), ( tabletPadding ? tabletPadding[ 3 ] : '' ) ],
-								} );
-							} else {
-								setAttributes( {
-									bottomPadding: parseInt( previewPaddingBottom + delta.height, 10 ),
-								} );
-							}
-						} }
-						onResizeStart={ () => {
-						} }
-					>
-						{ uniqueID && (
-							<div className="kt-row-padding">
-								<span id={ `row-bottom-${ uniqueID }` } >
-									{ previewPaddingBottom + 'px' }
-								</span>
-							</div>
 						) }
-					</ResizableBox>
+						<div { ...innerBlocksProps } />
+					</>
 				) }
-				{ colLayout && ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
-					<Fragment>
-						{ uniqueID && (
-							<div className="kt-row-padding kb-static-row-padding" style={ {
-								paddingBottom: previewPaddingBottom + ( paddingUnit ? paddingUnit : 'px' ),
-							} }>
-								<div className={ 'kb-row-padding-container' }>
-									<span id={ `row-bottom-${ uniqueID }` } >
-										{ previewPaddingBottom + ( paddingUnit ? paddingUnit : 'px' ) }
-									</span>
-								</div>
-							</div>
-						) }
-					</Fragment>
+				{ colLayout && (
+					<PaddingResizer
+						previewDevice={ previewDevice }
+						edge={ 'bottom' }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						toggleSelection={ toggleSelection }
+					/>
 				) }
-				<div style={ { height: '1px' } }></div>
 				{ colLayout && 'none' !== bottomSep && '' !== bottomSep && (
 					<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ {
 						height: previewBottomSepHeight + 'px',
@@ -2871,8 +1030,6 @@ const RowLayoutEditContainerWrapper = withDispatch(
 				];
 			} else {
 				if ( 1 === ( previousColumns - newColumns ) ) {
-					console.log( innerBlocks );
-					console.log( innerBlocks.length );
 					const lastItem = innerBlocks.length - 1;
 					if ( ! innerBlocks[lastItem].innerBlocks.length ) {
 						innerBlocks = dropRight(
@@ -2888,6 +1045,13 @@ const RowLayoutEditContainerWrapper = withDispatch(
 			}
 
 			replaceInnerBlocks( clientId, innerBlocks );
+		},
+		insertSection( newBlock ) {
+			const { clientId } = ownProps;
+			const { insertBlock } = dispatch( blockEditorStore );
+			const { getBlock } = registry.select( blockEditorStore );
+			const block = getBlock( clientId );
+			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
 		},
 	} )
 )( RowLayoutEditContainer );

@@ -5,6 +5,52 @@
     max-width: 100%;
     min-height: 0px;
     min-width: 0px;
+	.kadence-controls-content {
+		gap: 12px;
+	}
+	.kadence-controls-content .components-base-control {
+		margin-bottom: 0;
+		flex: 10 0 0;
+	}
+	.kadence-control-toggle-advanced.only-icon {
+		flex: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 10px;
+		font-weight: 600;
+		font-style: normal;
+		text-transform: uppercase;
+		height: 30px;
+		line-height: 1.2;
+		border: 1px solid #CBD5E0;
+		border-radius: 2px;
+		background: transparent;
+		color: #4A5568;
+		padding: 4px;
+		box-shadow: none;
+		white-space: normal;
+		svg {
+			width: 20px;
+		}
+		&.is-primary {
+			border-color: var(--wp-admin-theme-color, #00669b);
+			background: var(--wp-admin-theme-color, #00669b);
+			color: #fff;
+			box-shadow: none;
+		}
+	}
+}
+.block-editor-block-inspector .components-custom-gradient-picker__item .kadence-select-large .components-select-control__input {
+	height: 40px;
+	min-height: 40px;
+}
+.kadence-gradient-position-control .kadence-gradient-position_header .kadence-gradient-position__label {
+	margin: 0px 0px 8px;
+	display:block;
+}
+.kadence-gradient-position-control .components-unit-control-wrapper {
+    flex-grow: 1;
 }
 // .kadence-gradient-control .components-custom-gradient-picker__gradient-bar .components-custom-gradient-picker__control-point-button {
 //     border-radius: 50%;
@@ -53,12 +99,22 @@
 .kadence-gradient-control .components-custom-gradient-picker__gradient-bar:not(.has-gradient) {
 	opacity: 0.4;
 }
+.kadence-select-no-margin-after {
 
+}
+.kadence-gradient-control {
+	.components-custom-gradient-picker__ui-line .components-base-control {
+		margin-bottom: 0;
+	}
+	.components-custom-gradient-picker__ui-line .components-base-control .components-base-control__field {
+		margin-bottom: 0;
+	}
+}
 .kadence-gradient-control .components-custom-gradient-picker__gradient-bar {
 	border-radius: 2px;
     width: 100%;
     height: 48px;
-	margin-bottom: 10px;
+	margin-bottom: 16px;
 	padding-right: 0;
 
 	.components-custom-gradient-picker__markers-container {

@@ -15,7 +15,7 @@ module.exports = {
 		'icons': './src/packages/icons/src/index.js',
 		'components': './src/packages/components/src/index.js',
 		'helpers': './src/packages/helpers/src/index.js',
-		'blocks-googlemaps': './src/blocks/googlemaps/index.js',
+		'blocks-googlemaps': './src/blocks/googlemaps/block.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',
 		'blocks-image': './src/blocks/image/index.js',
 		'blocks-spacer': './src/blocks/spacer/index.js',

@@ -35,7 +35,6 @@ export function getGradientAstWithDefault( value ) {
 		gradientAST = gradientParser.parse( value )[ 0 ];
 		gradientAST.value = value;
 	} catch ( error ) {
-		console.log( error );
 		gradientAST = gradientParser.parse( DEFAULT_GRADIENT )[ 0 ];
 		gradientAST.value = DEFAULT_GRADIENT;
 	}

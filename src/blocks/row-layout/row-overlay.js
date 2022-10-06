@@ -49,7 +49,7 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 	const previewOverlayGradient = getPreviewSize( previewDevice, ( undefined !== overlayGradient ? overlayGradient : '' ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].gradient && tabletOverlay[0].enable ? tabletOverlay[0].gradient : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].gradient && mobileOverlay[0].enable ? mobileOverlay[0].gradient : '' ) );
 	return (
 		<Fragment>
-			{ ( ! previewCurrentOverlayTab || 'grad' !== previewCurrentOverlayTab || 'gradient' !== previewCurrentOverlayTab ) && (
+			{ ( ! previewCurrentOverlayTab || ( 'grad' !== previewCurrentOverlayTab && 'gradient' !== previewCurrentOverlayTab ) ) && (
 				<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ previewOverlayImage && previewOverlayAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
 					backgroundColor: ( previewOverlayColor ? previewOverlayColor : undefined ),
 					backgroundImage: ( previewOverlayImage ? previewOverlayImage : undefined ),

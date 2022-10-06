@@ -28,6 +28,9 @@ export function serializeGradientOrientation( type, orientation ) {
 		if ( ! orientation || ! orientation[0] || orientation[0].type !== 'shape' ) {
 			return;
 		}
+		if ( '%' === orientation[0].at.value.x.type ) {
+			return `${ orientation[0].value } at ${ orientation[0].at.value.x.value }% ${ orientation[0].at.value.y.value }%`;
+		}
 		return `${ orientation[0].value } at ${ orientation[0].at.value.x.value } ${ orientation[0].at.value.y.value }`;
 	}
 	if ( ! orientation || orientation.type !== 'angular' ) {

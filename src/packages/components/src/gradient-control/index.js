@@ -8,13 +8,12 @@ import './editor.scss';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { AnglePickerControl, Flex,__experimentalVStack as VStack, SelectControl } from '@wordpress/components';
+import { AnglePickerControl, Flex, FlexItem,__experimentalUnitControl as UnitControl, SelectControl, Button } from '@wordpress/components';
 /**
  * Internal dependencies
  */
+ import { settings } from '@wordpress/icons';
 import CustomGradientBar from './gradient-bar';
-// import { Flex } from '../flex';
-// import { VStack } from '../v-stack';
 import {
 	getGradientAstWithDefault,
 	getLinearGradientRepresentation,
@@ -30,6 +29,7 @@ import {
 	DEFAULT_GRADIENT,
 	DEFAULT_RADIAL_GRADIENT_POSITION,
 	GRADIENT_POSITION_OPTIONS,
+	DEFAULT_RADIAL_GRADIENT_SHAPE,
 } from './constants';
 // import {
 // 	AccessoryWrapper,
@@ -73,7 +73,6 @@ const GradientTypePicker = ( { gradientAST, hasGradient, onChange } ) => {
 	};
 
 	const onSetRadialGradient = () => {
-		console.log( gradientAST );
 		onChange(
 			serializeGradient( {
 				...gradientAST,
@@ -94,22 +93,30 @@ const GradientTypePicker = ( { gradientAST, hasGradient, onChange } ) => {
 
 	return (
 		<SelectControl
-			__nextHasNoMarginBottom
-			className="components-custom-gradient-picker__type-picker"
+			className="components-custom-gradient-picker__type-picker kadence-select-large"
 			label={ __( 'Type' ) }
 			labelPosition="top"
 			onChange={ handleOnChange }
 			options={ GRADIENT_OPTIONS }
-			size="__unstable-large"
+			//size="__unstable-large"
 			value={ hasGradient && type }
 		/>
 	);
 };
 const GradientPositionPicker = ( { gradientAST, hasGradient, onChange } ) => {
-	console.log( gradientAST );
 	let position = DEFAULT_RADIAL_GRADIENT_POSITION;
+	let positionLeft = '50%';
+	let positionTop = '50%';
+	let positionType = 'position-keyword';
 	if ( gradientAST?.orientation && gradientAST?.orientation[0]?.at?.value?.x?.value ) {
-		position = gradientAST.orientation[0].at.value.x.value + ' ' + gradientAST.orientation[0].at.value.y.value;
+		positionType = gradientAST.orientation[0].at.value.x.type;
+		if ( positionType !== 'position-keyword' ) {
+			position = gradientAST.orientation[0].at.value.x.value + '% ' + gradientAST.orientation[0].at.value.y.value + '%';
+			positionLeft = gradientAST.orientation[0].at.value.x.value + '%';
+			positionTop = gradientAST.orientation[0].at.value.y.value + '%';
+		} else {
+			position = gradientAST.orientation[0].at.value.x.value + ' ' + gradientAST.orientation[0].at.value.y.value;
+		}
 	}
 	const onPositionChange = ( newPosition ) => {
 		const positionArray = newPosition.split( ' ' );
@@ -118,7 +125,7 @@ const GradientPositionPicker = ( { gradientAST, hasGradient, onChange } ) => {
 				...gradientAST,
 				orientation: [ {
 					type: 'shape',
-					value: 'ellipse',
+					value: gradientAST.orientation[0].value,
 					at: {
 						type: 'position',
 						value: {
@@ -136,15 +143,215 @@ const GradientPositionPicker = ( { gradientAST, hasGradient, onChange } ) => {
 			} )
 		);
 	};
+	const onLeftPositionChange = ( left ) => {
+		onChange(
+			serializeGradient( {
+				...gradientAST,
+				orientation: [ {
+					type: 'shape',
+					value: gradientAST.orientation[0].value,
+					at: {
+						type: 'position',
+						value: {
+							x: {
+								type: '%',
+								value: parseInt( left, 10 ),
+							},
+							y: gradientAST.orientation[0].at.value.y,
+						}
+					}
+				} ],
+			} )
+		);
+	};
+	const onTopPositionChange = ( top ) => {
+		onChange(
+			serializeGradient( {
+				...gradientAST,
+				orientation: [ {
+					type: 'shape',
+					value: gradientAST.orientation[0].value,
+					at: {
+						type: 'position',
+						value: {
+							x: gradientAST.orientation[0].at.value.x,
+							y: {
+								type: '%',
+								value: parseInt( top, 10 ),
+							}
+						}
+					}
+				} ],
+			} )
+		);
+	};
+	
+	const onPositionTypeChange = ( type ) => {
+		const positionArray = position.split( ' ' );
+		let positionX = '%' === type ? 50 : 'center';
+		let positionY = '%' === type ? 50 : 'center';
+		if ( positionArray[0] ) {
+			switch ( positionArray[ 0 ] ) {
+				case 'left':
+					positionX = 0;
+					break;
+				case 'right':
+					positionX = '100';
+					break;
+				case 'center':
+					positionX = 50;
+					break;
+				case 0:
+					positionY = 'left';
+					break;
+				case 100:
+					positionY = 'right';
+					break;
+				case 50:
+					positionY = 'center';
+					break;
+			}
+		}
+		if ( positionArray[1] ) {
+			switch ( positionArray[ 1 ] ) {
+				case 'top':
+					positionY = 0;
+					break;
+				case 'bottom':
+					positionY = 100;
+					break;
+				case 'center':
+					positionY = 50;
+					break;
+				case 0:
+					positionY = 'top';
+					break;
+				case 100:
+					positionY = 'bottom';
+					break;
+				case 50:
+					positionY = 'center';
+					break;
+			}
+		}
+		onChange(
+			serializeGradient( {
+				...gradientAST,
+				orientation: [ {
+					type: 'shape',
+					value: gradientAST.orientation[0].value,
+					at: {
+						type: 'position',
+						value: {
+							x: {
+								type: type,
+								value: positionX
+							},
+							y: {
+								type: type,
+								value: positionY
+							}
+						}
+					}
+				} ],
+			} )
+		);
+	};
+	if ( ! hasGradient ) {
+		return;
+	}
+	return (
+		<div className={ `components-base-control kadence-gradient-position-control` }>
+				<Flex
+					justify="space-between"
+					className={ 'kadence-gradient-position_header' }
+				>
+					<FlexItem>
+						<label className="kadence-gradient-position__label">{ __( 'Position', 'kadence-blocks' ) }</label>
+					</FlexItem>
+				</Flex>
+				{ positionType === 'position-keyword' && (
+					<div className={ 'kadence-controls-content' }>
+						<SelectControl
+							className="components-custom-gradient-picker__position-picker"
+							// label={ __( 'Position', 'kadence-blocks' ) }
+							// labelPosition="top"
+							onChange={ onPositionChange }
+							options={ GRADIENT_POSITION_OPTIONS }
+							value={ position }
+						/>
+						<Button
+							className={'kadence-control-toggle-advanced only-icon'}
+							label={ __( 'Set custom position', 'kadence-blocks' ) }
+							icon={ settings }
+							onClick={ () => onPositionTypeChange( '%' ) }
+							isPressed={ false }
+							isTertiary={ true }
+						/>
+					</div>
+				) }
+				{ positionType !== 'position-keyword' && (
+					<div className={ 'kadence-controls-content' }>
+						<UnitControl
+							labelPosition="left"
+							label={ __( 'Left', 'kadence-blocks' ) }
+							max={ 100 }
+							min={ 0 }
+							units={ [ { value: '%', label: '%' } ] }
+							value={ positionLeft }
+							onChange={ onLeftPositionChange }
+						/>
+						<UnitControl
+							labelPosition="left"
+							label={ __( 'Top', 'kadence-blocks' ) }
+							max={ 100 }
+							min={ 0 }
+							value={ positionTop }
+							units={ [ { value: '%', label: '%' } ] }
+							onChange={ onTopPositionChange }
+						/>
+						<Button
+							className={'kadence-control-toggle-advanced only-icon'}
+							label={ __( 'Set standard position', 'kadence-blocks' ) }
+							icon={ settings }
+							onClick={ () => onPositionTypeChange( 'position-keyword' ) }
+							isPrimary={true}
+							isPressed={ true }
+						/>
+					</div>
+				) }
+			</div>
+	);
+};
+const GradientShapePicker = ( { gradientAST, hasGradient, onChange } ) => {
+	console.log( gradientAST );
+	let shape = DEFAULT_RADIAL_GRADIENT_SHAPE;
+	if ( gradientAST?.orientation && gradientAST?.orientation[0]?.type && 'shape' === gradientAST?.orientation && gradientAST?.orientation[0]?.type && gradientAST?.orientation && gradientAST?.orientation[0]?.value ) {
+		shape = gradientAST?.orientation && gradientAST?.orientation[0]?.value;
+	}
+	const onShapeChange = ( newShape ) => {
+		onChange(
+			serializeGradient( {
+				...gradientAST,
+				orientation: [ {
+					type: 'shape',
+					value: newShape,
+					at: gradientAST.orientation[0].at,
+				} ],
+			} )
+		);
+	};
 	return (
 		<SelectControl
-			className="components-custom-gradient-picker__position-picker"
-			label={ __( 'Position', 'kadence-blocks' ) }
+			className="components-custom-gradient-picker__shape-picker kadence-select-large"
+			label={ __( 'Shape', 'kadence-blocks' ) }
 			labelPosition="top"
-			onChange={ onPositionChange }
-			options={ GRADIENT_POSITION_OPTIONS }
-			size="__unstable-large"
-			value={ hasGradient && position }
+			onChange={ onShapeChange }
+			options={ [
+				{ value: 'ellipse', label: __( 'Ellipse', 'kadence-blocks'  ) },
+				{ value: 'circle', label: __( 'Circle', 'kadence-blocks'  ) },
+			] }
+			value={ hasGradient && shape }
 		/>
 	);
 };
@@ -166,7 +373,6 @@ export default function CustomGradientPicker( {
 		color: getStopCssColor( colorStop ),
 		position: parseInt( colorStop.length.value ),
 	} ) );
-	console.log( gradientAST );
 	return (
 		<div className={ 'components-base-control components-custom-gradient-picker kadence-gradient-control' }>
 			<CustomGradientBar
@@ -206,8 +412,8 @@ export default function CustomGradientPicker( {
 					</div>
 				) }
 				{ gradientAST.type === 'radial-gradient' && (
-					<div className='components-custom-gradient-picker__item components-custom-gradient-picker-position'>
-						<GradientPositionPicker
+					<div className='components-custom-gradient-picker__item components-custom-gradient-picker-shape'>
+						<GradientShapePicker
 							gradientAST={ gradientAST }
 							hasGradient={ hasGradient }
 							onChange={ onChange }
@@ -215,6 +421,20 @@ export default function CustomGradientPicker( {
 					</div>
 				) }
 			</Flex>
+			{ gradientAST.type === 'radial-gradient' && (
+				<Flex
+					gap={ 3 }
+					className="components-custom-gradient-picker__ui-line"
+				>
+					<div className='components-custom-gradient-picker__item components-custom-gradient-picker-position'>
+						<GradientPositionPicker
+							gradientAST={ gradientAST }
+							hasGradient={ hasGradient }
+							onChange={ onChange }
+						/>
+					</div>
+				</Flex>
+			) }
 		</div>
 	);
 }

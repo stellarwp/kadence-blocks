@@ -33,6 +33,7 @@ import {
 	closeSmall,
 	plusCircleFilled,
 } from '@wordpress/icons';
+import BackgroundSizeControl from '../background-size-control';
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * Basic Background Control.
@@ -136,7 +137,7 @@ class BackgroundControl extends Component {
 							value={ ( imagePosition ? imagePosition : 'center center' ) }
 							onChange={ value => onSavePosition( value ) }
 						/>
-						<KadenceRadioButtons
+						<BackgroundSizeControl
 							label={ __( 'Background Image Size', 'kadence-blocks' ) }
 							value={ ( imageSize ? imageSize : 'cover' ) }
 							options={ [

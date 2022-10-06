@@ -32,6 +32,7 @@ export const RADIAL_GRADIENT_ORIENTATION = [ {
 	}
 } ];
 
+export const DEFAULT_RADIAL_GRADIENT_SHAPE = 'ellipse';
 export const GRADIENT_OPTIONS = [
 	{ value: 'linear-gradient', label: __( 'Linear', 'kadence-blocks'  ) },
 	{ value: 'radial-gradient', label: __( 'Radial', 'kadence-blocks'  ) },

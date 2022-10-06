@@ -573,11 +573,33 @@ function kadence_blocks_admin_theme_content_width() {
 	global $content_width;
 	if ( isset( $content_width ) ) {
 		echo '<style id="kt-block-content-width">';
-		echo '.wp-block-kadence-rowlayout > .innerblocks-wrap.kb-theme-content-width {
+		echo '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 			max-width:' . esc_attr( $content_width ) . 'px;
 		}';
 		echo '</style>';
 	}
+	echo '<style id="kb-global-styles">';
+	echo ':root {
+		--global-kb-spacing-xxs: 0.5rem;
+		--global-kb-spacing-xs: 1rem;
+		--global-kb-spacing-sm: 1.5rem;
+		--global-kb-spacing-md: 2rem;
+		--global-kb-spacing-lg: 3rem;
+		--global-kb-spacing-xl: 4rem;
+		--global-kb-spacing-xxl: 5rem;
+		--global-kb-spacing-xxxl: 6.5rem;
+		--global-kb-spacing-xxxxl: 8rem;
+		--global-row-edge-sm: 15px;
+		--global-row-edge-theme: var(--global-content-edge-padding);
+		--global-kb-gutter-sm: 1rem;
+		--global-kb-gutter-md: 2rem;
+		--global-kb-gutter-lg: 3rem;
+		--global-kb-gutter-xl: 5rem;
+	}';
+	echo ':root .post-content-style-boxed {
+		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
+	}';
+	echo '</style>';
 	if ( ! class_exists( 'Kadence\Theme' ) ) {
 		echo '<style id="kt-block-global-colors">';
 		echo ':root {

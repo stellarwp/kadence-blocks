@@ -235,14 +235,6 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-form',
 			)
 		);
-		// register_block_type(
-		// 	KADENCE_BLOCKS_PATH . 'dist/blocks/icon/block.json',
-		// 	array(
-		// 		'render_callback' => array( $this, 'render_icon_css' ),
-		// 		'editor_script'   => 'kadence-blocks-icon',
-		// 		'editor_style'    => 'kadence-blocks-icon',
-		// 	)
-		// );
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/info-box/block.json',
 			array(
