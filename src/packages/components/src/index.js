@@ -69,3 +69,6 @@ export { default as MeasurementSingleControl } from './measurement/single-input-
 /* Color */
 export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette'
 export { default as BorderColorControls } from './color/border-color-control'
+
+/* Block Defaults */
+export { default as KadenceBlockDefaults } from './block-defaults';
