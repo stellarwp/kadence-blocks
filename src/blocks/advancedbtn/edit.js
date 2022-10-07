@@ -24,7 +24,8 @@ import {
 	WebfontLoader,
 	BoxShadowControl,
 	DynamicTextControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
@@ -1871,6 +1872,12 @@ function KadenceAdvancedButton( props ) {
 									)}
 								</>
 							}
+
+							{( activeTab === 'advanced' ) && (
+								<>
+									<KadenceBlockDefaults attributes={attributes} blockSlug={ 'kadence/advancedbtn' } />
+								</>
+							)}
 						</InspectorControls>
 						<InspectorAdvancedControls>
 							<ToggleControl
