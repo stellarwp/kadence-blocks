@@ -13,7 +13,7 @@ import classnames from 'classnames';
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
-	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align } = attributes;
+	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align, direction } = attributes;
 	const deskDirection = ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : false );
 	const tabDirection = ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : false );
 	const mobileDirection = ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : false );
