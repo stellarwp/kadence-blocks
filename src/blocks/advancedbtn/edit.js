@@ -1875,7 +1875,7 @@ function KadenceAdvancedButton( props ) {
 
 							{( activeTab === 'advanced' ) && (
 								<>
-									<KadenceBlockDefaults attributes={attributes} blockSlug={ 'kadence/advancedbtn' } />
+									<KadenceBlockDefaults attributes={attributes} blockSlug={ 'kadence/advancedbtn' } excludedAttrs={ [ 'btnCount'] } preventMultiple={ [ 'btns' ] } />
 								</>
 							)}
 						</InspectorControls>
