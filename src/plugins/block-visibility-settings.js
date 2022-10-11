@@ -13,12 +13,20 @@ import { map } from 'lodash';
 import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
+import {
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon,
+} from '@kadence/icons';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 
-function KadenceVisibilitySettings( { blockSlug, blockName, options, showBlockWideSettings = true } ) {
+function KadenceVisibilitySettings( { blockSlug, blockName, options, icon, showBlockWideSettings = true } ) {
 
 	const [ isOpen, setIsOpen ] = useState( false );
 	const [ hasChanges, setHasChanges ] = useState( false );
@@ -38,7 +46,7 @@ function KadenceVisibilitySettings( { blockSlug, blockName, options, showBlockWi
 		const settingModel = new wp.api.models.Settings( { kadence_blocks_settings_blocks: JSON.stringify( config ) } );
 
 		settingModel.save().then( response => {
-			createErrorNotice( __( blockName + ' ' + __( 'block defaults saved!', 'kadence-blocks' ) ), {
+			createErrorNotice( __( 'Block visibility saved!', 'kadence-blocks' ), {
 				type: 'snackbar',
 			} );
 
@@ -77,8 +85,14 @@ function KadenceVisibilitySettings( { blockSlug, blockName, options, showBlockWi
 	return (
 		<Fragment>
 			<Tooltip text="Block Settings Visibility">
-				<Button className="kt-block-settings" onClick={() => setIsOpen( true )}>
-					<Dashicon icon="visibility"/>
+				<Button className="kb-block-settings-visibility" onClick={() => setIsOpen( true )}>
+					<div className="kt-block-defaults">
+						<span className="kt-block-icon">{icon}</span>
+						{blockName}
+					</div>
+					<div className="kt-block-settings">
+						<Dashicon icon="visibility"/>
+					</div>
 				</Button>
 			</Tooltip>
 

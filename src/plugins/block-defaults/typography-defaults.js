@@ -11,11 +11,10 @@ import {
     Button,
     Tooltip,
     Modal,
+    Dashicon
 } from '@wordpress/components';
 
-const {
-    applyFilters,
-} = wp.hooks;
+import { applyFilters } from "@wordpress/hooks";
 import Select from 'react-select';
 import {fontFamilyIcon} from '@kadence/icons';
 
@@ -137,11 +136,17 @@ function KadenceTypographyDefault(props) {
     return (
         <Fragment>
             <Tooltip text="Block Defaults">
-                <Button className="kt-block-defaults" onClick={() => setIsOpen(true)}>
-                    <span className="kt-block-icon">{fontFamilyIcon}</span>
-                    {__('Font Family Options')}
+                <Button className="kb-block-settings-visibility" onClick={() => setIsOpen( true )}>
+                    <div className="kt-block-defaults">
+                        <span className="kt-block-icon">{fontFamilyIcon}</span>
+                        {__('Font Family Options')}
+                    </div>
+                    <div className="kt-block-settings">
+                        <Dashicon icon="visibility"/>
+                    </div>
                 </Button>
             </Tooltip>
+
             {isOpen ?
                 <Modal
                     className="kt-block-defaults-modal kt-font-family-modal"
