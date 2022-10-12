@@ -45,6 +45,7 @@ const ANCHOR_REGEX = /[\s#]/g;
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Internal block libraries
  */
@@ -499,7 +500,7 @@ function KadenceAdvancedButton( props ) {
 							)}
 						</span>
 					</span>
-				{isButtonSelected && (
+				{isButtonSelected && !hideLink && (
 					<URLInputInline
 						url={btns[ index ].link}
 						onChangeUrl={value => {
@@ -537,7 +538,7 @@ function KadenceAdvancedButton( props ) {
 								blockAttributes={attributes}
 								buttonIndex={index}
 							/>
-							{moveable && (
+							{moveable && !lockBtnCount && (
 								<DropdownMenu
 									className="block-editor-block-settings-menu kadence-blocks-button-item__move-menu_item"
 									icon={code}
@@ -569,22 +570,24 @@ function KadenceAdvancedButton( props ) {
 								</DropdownMenu>
 							)}
 						</div>
-						<div className="kadence-blocks-button-item-controls kadence-blocks-button-item__inline-menu">
-							<Button
-								icon={pages}
-								onClick={ () => onDuplicateButton( index )}
-								className="kadence-blocks-button-item__duplicate"
-								label={__( 'Duplicate Button', 'kadence-blocks' )}
-								disabled={!isButtonSelected}
-							/>
-							<Button
-								icon={close}
-								onClick={ () => onRemoveButton( index )}
-								className="kadence-blocks-button-item__remove"
-								label={__( 'Remove Button', 'kadence-blocks' )}
-								disabled={!isButtonSelected || 1 === btns.length || lockBtnCount}
-							/>
-						</div>
+						{ !lockBtnCount && (
+							<div className="kadence-blocks-button-item-controls kadence-blocks-button-item__inline-menu">
+								<Button
+									icon={pages}
+									onClick={ () => onDuplicateButton( index )}
+									className="kadence-blocks-button-item__duplicate"
+									label={__( 'Duplicate Button', 'kadence-blocks' )}
+									disabled={!isButtonSelected}
+								/>
+								<Button
+									icon={close}
+									onClick={ () => onRemoveButton( index )}
+									className="kadence-blocks-button-item__remove"
+									label={__( 'Remove Button', 'kadence-blocks' )}
+									disabled={!isButtonSelected || 1 === btns.length}
+								/>
+							</div>
+						) }
 					</Fragment>
 				)}
 			</div>
@@ -691,7 +694,7 @@ function KadenceAdvancedButton( props ) {
 						) )}
 					</ButtonGroup>
 				</Fragment>
-				{!lockBtnCount && (
+				{!hideLink && (
 					<URLInputControl
 						label={__( 'Button Link', 'kadence-blocks' )}
 						url={btns[ index ].link}
@@ -1875,7 +1878,7 @@ function KadenceAdvancedButton( props ) {
 
 							{( activeTab === 'advanced' ) && (
 								<>
-									<KadenceBlockDefaults attributes={attributes} blockSlug={ 'kadence/advancedbtn' } excludedAttrs={ [ 'btnCount'] } preventMultiple={ [ 'btns' ] } />
+									<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedbtn' } excludedAttrs={ [ 'btnCount', 'lockBtnCount', 'hideLink' ] } preventMultiple={ [ 'btns' ] } />
 								</>
 							)}
 						</InspectorControls>

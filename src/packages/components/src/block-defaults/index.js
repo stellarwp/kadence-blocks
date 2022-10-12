@@ -2,7 +2,7 @@ import {useEffect, useState} from '@wordpress/element';
 import {useSelect} from '@wordpress/data';
 import KadencePanelBody from '../panel-body/index.js';
 import {__} from "@wordpress/i18n";
-import {omit, head, get} from 'lodash';
+import {omit, head, get, isEqual} from 'lodash';
 import {useDispatch} from '@wordpress/data';
 import {store as noticesStore} from '@wordpress/notices';
 import {
@@ -10,7 +10,8 @@ import {
     Modal,
     __experimentalConfirmDialog as ConfirmDialog
 } from '@wordpress/components';
-
+import apiFetch from '@wordpress/api-fetch';
+import { SafeParseJSON } from '@kadence/helpers'
 /**
  * Display Kadence Block Default settings -- intended for use in Inspector Controls.
  *
@@ -22,52 +23,61 @@ import {
  *
  * @public
  */
-export default function KadenceBlockDefaults({attributes, blockSlug, excludedAttrs = [], preventMultiple = []}) {
+export default function KadenceBlockDefaults({attributes, defaultAttributes = {}, blockSlug, excludedAttrs = [], preventMultiple = []}) {
 
-    const alwaysExclude = ['uniqueID'];
+	const alwaysExclude = ['uniqueID', 'inQueryBlock'];
 
-    const {createErrorNotice} = useDispatch(noticesStore);
+	const {createErrorNotice} = useDispatch(noticesStore);
 
-    const [isOpenResetConfirm, setIsOpenResetConfirm] = useState(false);
-    const [isOpenSaveConfirm, setIsOpenSaveConfirm] = useState(false);
-    const [isOpenModify, setIsOpenModify] = useState(false);
+	const [isOpenResetConfirm, setIsOpenResetConfirm] = useState(false);
+	const [isOpenSaveConfirm, setIsOpenSaveConfirm] = useState(false);
+	const [isOpenModify, setIsOpenModify] = useState(false);
 
-    const currentDefaults = JSON.parse(get(kadence_blocks_params, ['configuration'], {}));
-    const currentBlockDefaults = get(currentDefaults, blockSlug, {});
+	const currentDefaults = SafeParseJSON(get(kadence_blocks_params, ['configuration'], {}), true );
+	const currentBlockDefaults = get(currentDefaults, blockSlug, {});
 
-    const [tmpDefaults, setTmpDefaults] = useState(currentBlockDefaults);
-    const hasConfig = Object.keys(currentBlockDefaults).length !== 0;
+	const [tmpDefaults, setTmpDefaults] = useState(currentBlockDefaults);
+	const hasConfig = Object.keys(currentBlockDefaults).length !== 0;
 
-    const calculate = () => {
-        const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
+	const calculate = () => {
+		const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
 
-        let newConfig = omit(attributes, allExcludedAttrs);
+		let newConfig = omit(attributes, allExcludedAttrs);
 
-        if (preventMultiple !== []) {
+		if (preventMultiple !== []) {
 
-            preventMultiple.forEach((item) => {
-                newConfig[preventMultiple] = [head(newConfig[preventMultiple])];
-            });
+			preventMultiple.forEach((item) => {
+				newConfig[item] = [head(newConfig[item])];
+			});
 
-        }
-
-        return newConfig;
-    }
+		}
+		// Since block attributes have their defaults set in the editor, lets check if the default is the same default as the block and exclude those to keep the settings simpler.
+		Object.keys(newConfig).map((key, index) => {
+			if ( undefined !== defaultAttributes[key] && undefined !== defaultAttributes[key].default ) {
+				if ( isEqual(newConfig[key], defaultAttributes[key].default ) ) {
+					delete(newConfig[key])
+				}
+			}
+		});
+		return newConfig;
+	}
 
     const reset = () => {
-        const config = (kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {});
+        const config = (kadence_blocks_params.configuration ? SafeParseJSON(kadence_blocks_params.configuration, true) : {});
         config[blockSlug] = {};
 
-        const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
-        settingModel.save().then(response => {
-            createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'POST',
+			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
+		} ).then( () => {
+			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
                 type: 'snackbar',
             })
-
             setIsOpenResetConfirm(false);
             kadence_blocks_params.configuration = JSON.stringify(config);
             setTmpDefaults({});
-        });
+		});
 
     }
 
@@ -75,36 +85,36 @@ export default function KadenceBlockDefaults({attributes, blockSlug, excludedAtt
 
         const newConfig = calculate();
 
-        const config = (kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {});
+        const config = (kadence_blocks_params.configuration ? SafeParseJSON(kadence_blocks_params.configuration, true) : {});
         config[blockSlug] = newConfig;
-
-        const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
-        settingModel.save().then(response => {
-            createErrorNotice(__('Block default saved', 'kadence-blocks'), {
-                type: 'snackbar',
-            })
-
-            setIsOpenSaveConfirm(false);
-            kadence_blocks_params.configuration = JSON.stringify(config);
-            setTmpDefaults(newConfig);
-        });
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'POST',
+			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
+		} ).then( () => {
+			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+				type: 'snackbar',
+			})
+			setIsOpenSaveConfirm(false);
+			kadence_blocks_params.configuration = JSON.stringify(config);
+			setTmpDefaults(newConfig);
+		});
     }
 
     const saveModified = () => {
 
-        const newConfig = calculate();
-
-        const config = (kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {});
+        const config = (kadence_blocks_params.configuration ? SafeParseJSON(kadence_blocks_params.configuration, true) : {});
         config[blockSlug] = tmpDefaults;
-
-        const settingModel = new wp.api.models.Settings({kadence_blocks_config_blocks: JSON.stringify(config)});
-        settingModel.save().then(response => {
-            createErrorNotice(__('Block default saved', 'kadence-blocks'), {
-                type: 'snackbar',
-            })
-
-            kadence_blocks_params.configuration = JSON.stringify(config);
-        });
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'POST',
+			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
+		} ).then( () => {
+			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+				type: 'snackbar',
+			})
+			kadence_blocks_params.configuration = JSON.stringify(config);
+		});
     }
 
     return (

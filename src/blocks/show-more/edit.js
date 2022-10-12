@@ -322,6 +322,7 @@ export function Edit ({
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							lockBtnCount: true,
+							hideLink: true,
 							hAlign: 'left',
 							thAlign: "",
 							mhAlign: "",

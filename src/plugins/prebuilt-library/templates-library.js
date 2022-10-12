@@ -30,7 +30,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { KadenceTryParseJSON } from '@kadence/helpers'
+import { SafeParseJSON } from '@kadence/helpers'
 
 /**
  * Internal block libraries
@@ -46,7 +46,7 @@ class TemplatesLibrary extends Component {
 			category: 'all',
 			starting: true,
 			search: null,
-			items: kadence_blocks_params.library_templates ? KadenceTryParseJSON( kadence_blocks_params.library_templates, false ) : false,
+			items: kadence_blocks_params.library_templates ? SafeParseJSON( kadence_blocks_params.library_templates, false ) : false,
 			errorItems: false,
 			isImporting: false,
 			isLoading: false,
@@ -119,7 +119,7 @@ class TemplatesLibrary extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_templates_object', o );
 					kadence_blocks_params.library_templates = filteredLibraryItems;
@@ -162,7 +162,7 @@ class TemplatesLibrary extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_templates_object', o );
 					kadence_blocks_params.library_templates = filteredLibraryItems;

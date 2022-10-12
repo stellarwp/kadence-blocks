@@ -55,7 +55,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { KadenceTryParseJSON } from '@kadence/helpers'
+import { SafeParseJSON } from '@kadence/helpers'
 
 /**
  * Wire Sections.
@@ -183,7 +183,7 @@ class WireSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					const cats = { 'category': 'Category' };
 					{ Object.keys( o ).map( function( key, index ) {
@@ -225,7 +225,7 @@ class WireSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					const cats = { 'category': 'Category' };
 					{ Object.keys( o ).map( function( key, index ) {
@@ -254,7 +254,7 @@ class WireSections extends Component {
 			this.props.onReload();
 			this.debouncedReloadTemplateData();
 		}
-		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		const activePanel = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show' );
 		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
 		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
@@ -314,7 +314,7 @@ class WireSections extends Component {
 								className={ 'kb-trigger-sidebar' }
 								icon={ previous }
 								onClick={ () => {
-									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									activeSidebar['sidebar'] = 'hide';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
 									this.setState( { sidebar: 'hide' } );
@@ -392,7 +392,7 @@ class WireSections extends Component {
 									className={ 'kb-trigger-sidebar' }
 									icon={ next }
 									onClick={ () => {
-										const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+										const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 										activeSidebar['sidebar'] = 'show';
 										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
 										this.setState( { sidebar: 'show' } );
@@ -418,7 +418,7 @@ class WireSections extends Component {
 									className={ 'kb-grid-btns kb-trigger-large-grid-size' + ( gridSize === 'large' ? ' is-pressed' : '' ) }
 									aria-pressed={ gridSize === 'large' }
 									onClick={ () => {
-										const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+										const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 										activeSidebar['grid'] = 'large';
 										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
 										this.setState( { gridSize: 'large' } );
@@ -436,7 +436,7 @@ class WireSections extends Component {
 									className={ 'kb-grid-btns kb-trigger-normal-grid-size' + ( gridSize === 'normal' ? ' is-pressed' : '' ) }
 									aria-pressed={ gridSize === 'normal' }
 									onClick={ () => {
-										const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+										const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 										activeSidebar['grid'] = 'normal';
 										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
 										this.setState( { gridSize: 'normal' } );
