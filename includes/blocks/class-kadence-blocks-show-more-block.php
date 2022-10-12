@@ -39,6 +39,13 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
+	 * Block determines in scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -57,7 +64,6 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
 
@@ -148,7 +154,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'display', 'none' );
 			$css->set_media_state( 'desktop' );
 
-			// If default expanded on tablet, but not on mobile
+			// If default expanded on tablet, but not on mobile.
 			if ( ! isset( $attributes['defaultExpandedMobile'] ) || ( isset( $attributes['defaultExpandedMobile'] ) && ! $attributes['defaultExpandedMobile'] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
@@ -179,59 +185,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
-
 		return $css->css_output();
-	}
-
-	/**
-	 * Generate HTML for this block
-	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 *
-	 * @return mixed
-	 */
-	public function build_html( $attributes, $unique_id, $content ) {
-		$show_more_container_id = 'kb-block-show-more-container' . esc_attr( $unique_id );
-		$show_more_id           = str_replace( array( '-' ), '', $unique_id );
-
-		$show_hide_more = isset( $attributes['showHideMore'] ) && $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $show_more_id . ".style.display = 'inline-flex';";
-		$preview_height = ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( ! empty( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' );
-		$maskvalue      = 'none';
-
-		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
-			$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)';
-		}
-
-		$content = $content . "<script>
-			var showMoreContainer" . $show_more_id . " = document.querySelector('." . $show_more_container_id . " > .wp-block-kadence-column');
-			var buttons" . $show_more_id . " = document.querySelectorAll('." . $show_more_container_id . " > .wp-block-kadence-advancedbtn > .kt-btn-wrap');
-			var showMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[0];
-			var hideMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[1];
-			showMoreButton" . $show_more_id . ".addEventListener('click', function(e) {
-				e.preventDefault();
-				showMoreContainer" . $show_more_id . ".style.maxHeight = 'none';
-				showMoreContainer" . $show_more_id . ".style['mask-image'] = 'none';
-				showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = 'none';
-				showMoreButton" . $show_more_id . ".style.display = 'none';
-				" . $show_hide_more . "
-				return false;
-			});
-			hideMoreButton" . $show_more_id . ".addEventListener('click', function (e) {
-				e.preventDefault();
-				showMoreContainer" . $show_more_id . ".style.maxHeight =  '" . $preview_height . "';
-				showMoreButton" . $show_more_id . ".style.display = 'inline-flex';
-				hideMoreButton" . $show_more_id . ".style.display = 'none';
-				showMoreContainer" . $show_more_id . ".style['mask-image'] = '" . $maskvalue . "';
-				showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = '" . $maskvalue . "';
-				return false;
-			});
-		</script>";
-
-
-		return $content;
-
 	}
 
 	/**
@@ -247,7 +201,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		wp_register_script( 'kadence-show-more', KADENCE_BLOCKS_URL . 'includes/assets/js/show-more.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-show-more', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-show-more.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 
 }

@@ -32,7 +32,14 @@ class Kadence_Blocks_Abstract_Block {
 	protected $block_name = '';
 
 	/**
-	 * Block determines in scripts need to be loaded for block.
+	 * Block determines if style needs to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = true;
+
+	/**
+	 * Block determines if scripts need to be loaded for block.
 	 *
 	 * @var string
 	 */
@@ -111,8 +118,10 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function output_head_data( $block ) {
 		// Check and enqueue styles if needed.
-		if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+		if ( $this->has_style ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+			}
 		}
 		if ( $this->has_script ) {
 			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
@@ -140,8 +149,10 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $content the blocks content.
 	 */
 	public function render_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+		if ( $this->has_style ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+			}
 		}
 		if ( $this->has_script ) {
 			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
