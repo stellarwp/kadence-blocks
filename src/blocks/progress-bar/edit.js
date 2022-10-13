@@ -101,7 +101,7 @@ export function Edit( {
 		labelFont,
 		labelMinHeight,
 		label,
-		labelAlign, 
+		labelAlign,
 		labelPosition
 
 	} = attributes;
@@ -154,7 +154,7 @@ export function Edit( {
 	const previewBarBorderRight = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 1 ] ? containerBorder[ 1 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 1 ] ? containerTabletBorder[ 1 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 1 ] ? containerMobileBorder[ 1 ] : '' ) );
 	const previewBarBorderBottom = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 2 ] ? containerBorder[ 2 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 2 ] ? containerTabletBorder[ 2 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 2 ] ? containerMobileBorder[ 2 ] : '' ) );
 	const previewBarBorderLeft = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 3 ] ? containerBorder[ 3 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 3 ] ? containerTabletBorder[ 3 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 3 ] ? containerMobileBorder[ 3 ] : '' ) );
-	
+
 	const previewContainerMaxWidth = getPreviewSize( previewDevice, ( undefined !== containerMaxWidth ? containerMaxWidth : '' ), ( undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '' ), ( undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '' ) );
 
 	const previewLabelFont = getPreviewSize( previewDevice, ( undefined !== labelFont.size && undefined !== labelFont.size[ 0 ] && '' !== labelFont.size[ 0 ] ? labelFont.size[ 0 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 1 ] && '' !== labelFont.size[ 1 ] ? labelFont.size[ 1 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 2 ] && '' !== labelFont.size[ 2 ] ? labelFont.size[ 2 ] : '' ) );
@@ -187,9 +187,23 @@ export function Edit( {
 
 	];
 
+	const progressLabelStyles = {
+		textAlign	 : previewLabelAlign,
+		fontWeight   : labelFont.weight,
+		fontStyle    : labelFont.style,
+		color        : KadenceColorOutput( labelFont.color ),
+		fontSize     : ( previewLabelFont ? previewLabelFont + labelFont.sizeType : undefined ),
+		lineHeight   : ( previewLabelLineHeight ? previewLabelLineHeight + labelFont.lineType : undefined ),
+		letterSpacing: labelFont.letterSpacing + 'px',
+		textTransform: ( labelFont.textTransform ? labelFont.textTransform : undefined ),
+		fontFamily   : ( labelFont.family ? labelFont.family : '' ),
+		padding      : ( labelFont.padding ? labelFont.padding[ 0 ] + 'px ' + labelFont.padding[ 1 ] + 'px ' + labelFont.padding[ 2 ] + 'px ' + labelFont.padding[ 3 ] + 'px' : '' ),
+		margin       : ( labelFont.margin ? labelFont.margin[ 0 ] + 'px ' + labelFont.margin[ 1 ] + 'px ' + labelFont.margin[ 2 ] + 'px ' + labelFont.margin[ 3 ] + 'px' : '' ),
+	};
+
 	const [animate,setAnimate] = useState(0.0)
 	const container = document.createElement('div');
-	const ProgressCircle = ({animate}) => { 
+	const ProgressCircle = ({animate}) => {
 		const circle = useMemo(()=>
 		new Circle(container,{
 			color: KadenceColorOutput( borderColor , borderOpacity ),
@@ -211,7 +225,7 @@ export function Edit( {
 		return <div ref={node} />;
 	};
 
-	const ProgressSemicircle = ({animate}) => { 
+	const ProgressSemicircle = ({animate}) => {
 		const semicircle = useMemo(()=>
 		new SemiCircle(container,{
 			color: KadenceColorOutput( borderColor , borderOpacity ),
@@ -240,39 +254,6 @@ export function Edit( {
 	};
 	const [ labelPaddingControl, setLabelPaddingControl ] = useState( 'linked' );
 	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
-
-
-	const ProgressBarLabel = () => {
-		return (
-			<div className="kt-progress-label-wrap" style={{
-				minHeight: ( previewLabelMinHeight ? previewLabelMinHeight + 'px' : undefined ),
-			}}>
-				<RichText
-					tagName={'h' + labelFont.level}
-					value={label}
-					onChange={value => {
-						setAttributes( { label: value } );
-					}}
-					placeholder={__( 'Progress', 'kadence-blocks' )}
-					style={{
-						textAlign	 :previewLabelAlign,
-						fontWeight   : labelFont.weight,
-						fontStyle    : labelFont.style,
-						color        : KadenceColorOutput( labelFont.color ),
-						fontSize     : ( previewLabelFont ? previewLabelFont + labelFont.sizeType : undefined ),
-						lineHeight   : ( previewLabelLineHeight ? previewLabelLineHeight + labelFont.lineType : undefined ),
-						letterSpacing: labelFont.letterSpacing + 'px',
-						textTransform: ( labelFont.textTransform ? labelFont.textTransform : undefined ),
-						fontFamily   : ( labelFont.family ? labelFont.family : '' ),
-						padding      : ( labelFont.padding ? labelFont.padding[ 0 ] + 'px ' + labelFont.padding[ 1 ] + 'px ' + labelFont.padding[ 2 ] + 'px ' + labelFont.padding[ 3 ] + 'px' : '' ),
-						margin       : ( labelFont.margin ? labelFont.margin[ 0 ] + 'px ' + labelFont.margin[ 1 ] + 'px ' + labelFont.margin[ 2 ] + 'px ' + labelFont.margin[ 3 ] + 'px' : '' ),
-					}}
-					className={'kt-progress-label'}
-				/>
-			</div>
-		)
-	}
-
 
 	return (
 		<div { ...blockProps }>
@@ -363,13 +344,13 @@ export function Edit( {
 					/>
 				</PanelBody>
 
-				
+
 				<PanelBody
 					title={ __( 'Progress Bar Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 					panelName={'kb-testimonials-bar-settings'}
 				>
-					
+
 					<PopColorControl
 						label={ __( 'Bar Background', 'kadence-blocks' ) }
 						colorValue={ ( barBackground ? barBackground : '#4A5568' ) }
@@ -414,7 +395,7 @@ export function Edit( {
 						units={ [ '%' ] }
 						onUnit={ ( value ) => setAttributes( { containerBorderType: value } ) }
 					/>
-					
+
 				</PanelBody>
 
 				<PanelBody
@@ -432,7 +413,7 @@ export function Edit( {
 							<Fragment>
 								<SelectControl
 									label={__( 'Label Position', 'kadence-blocks' )}
-									options={ 
+									options={
 										[{ value: 'above', label: __( 'Above', 'kadence-blocks' )},
 										{ value: 'below', label: __( 'Below', 'kadence-blocks' )},]
 									}
@@ -537,8 +518,21 @@ export function Edit( {
 			}>
 
 				{displayLabel && labelPosition === 'above' && (
-						<ProgressBarLabel/>
-				)}	
+					<div className="kt-progress-label-wrap" style={{
+						minHeight: ( previewLabelMinHeight ? previewLabelMinHeight + 'px' : undefined ),
+					}}>
+						<RichText
+							tagName={'h' + labelFont.level}
+							value={ label }
+							onChange={ ( value ) => {
+								setAttributes( { label: value } );
+							} }
+							placeholder={__( 'Progress', 'kadence-blocks' )}
+							style={ progressLabelStyles }
+							className={'kt-progress-label'}
+						/>
+					</div>
+				)}
 
 					{(barType === "line") &&
 						<div class="progress-bar__container" style={{
@@ -568,12 +562,25 @@ export function Edit( {
 						<div class="semicircle-bars">
 							<ProgressSemicircle animate={animate} />
 						</div>
-					}	
+					}
 				{displayLabel && labelPosition === 'below' && (
-						<ProgressBarLabel/>
-				)}	
+					<div className="kt-progress-label-wrap" style={{
+						minHeight: ( previewLabelMinHeight ? previewLabelMinHeight + 'px' : undefined ),
+					}}>
+						<RichText
+							tagName={'h' + labelFont.level}
+							value={ label }
+							onChange={ ( value ) => {
+								setAttributes( { label: value } );
+							} }
+							placeholder={__( 'Progress', 'kadence-blocks' )}
+							style={ progressLabelStyles }
+							className={'kt-progress-label'}
+						/>
+					</div>
+				)}
 				</div>
-				
+
 			</div>
 	);
 }
