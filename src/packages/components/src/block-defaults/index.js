@@ -16,6 +16,7 @@ import { SafeParseJSON } from '@kadence/helpers'
  * Display Kadence Block Default settings -- intended for use in Inspector Controls.
  *
  * @param {object} attributes Block attributes.
+ * @param {object} defaultAttributes The blocks default attributs for comparison on what is new.
  * @param {string} blockSlug Block slug.
  * @param {object} attributeNamePair Key value pair of attribute name and attribute label.
  * @param {array} excludedAttrs Keys to exclude from saved block defaults. An array of strings.
@@ -25,7 +26,12 @@ import { SafeParseJSON } from '@kadence/helpers'
  */
 export default function KadenceBlockDefaults({attributes, defaultAttributes = {}, blockSlug, excludedAttrs = [], preventMultiple = []}) {
 
-	const alwaysExclude = ['uniqueID', 'inQueryBlock'];
+	const [ user, setUser ] = useState( ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ) );
+	if( user !== 'admin' ) {
+		return null;
+	}
+
+	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor' ];
 
 	const {createErrorNotice} = useDispatch(noticesStore);
 
@@ -63,8 +69,8 @@ export default function KadenceBlockDefaults({attributes, defaultAttributes = {}
 	}
 
     const reset = () => {
-        const config = (kadence_blocks_params.configuration ? SafeParseJSON(kadence_blocks_params.configuration, true) : {});
-        config[blockSlug] = {};
+        let config = (kadence_blocks_params.configuration ? SafeParseJSON(kadence_blocks_params.configuration, true) : {});
+		config = omit(config, blockSlug);
 
 		apiFetch( {
 			path: '/wp/v2/settings',
