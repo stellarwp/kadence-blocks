@@ -15,6 +15,7 @@ import getQuery from './get-query';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -32,6 +33,7 @@ import {
 	TypographyControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import {
@@ -825,6 +827,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								/>
 							)}
 						</KadencePanelBody>
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/posts' } />
 					</>
 				}
 			</KadenceInspectorControls>
