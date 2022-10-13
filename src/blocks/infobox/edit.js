@@ -8,7 +8,7 @@
  * Import Css
  */
 import './editor.scss';
-
+import metadata from './block.json';
 /**
  * Import Icons
  */
@@ -39,7 +39,8 @@ import {
 	ResponsiveRangeControls,
 	InspectorControlTabs,
 	ResponsiveAlignControls,
-	ResponsiveControl
+	ResponsiveControl,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -2862,6 +2863,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 							)}
 						</>
 					}
+
+					{( activeTab === 'advanced') && (
+						<>
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/infobox' } excludedAttrs={ [ 'link', 'linkTitle' ] } />
+						</>
+					)}
 				</InspectorControls>
 			)}
 			<div className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}

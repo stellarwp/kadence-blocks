@@ -38,13 +38,16 @@ import {
 	IconControl,
 	IconRender,
 	KadencePanelBody,
-	MeasurementControls
+	MeasurementControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
+
 import {
 	createBlock,
 } from '@wordpress/blocks';
@@ -130,8 +133,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				Object.keys( oldBlockConfig ).map( ( attribute ) => {
 					attributes[ attribute ] = oldBlockConfig[ attribute ];
 				} );
-			}
-			if ( showPresets ) {
+			} else {
 				setShowPreset( true );
 			}
 			setAttributes( {
@@ -1547,6 +1549,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								/>
 							</KadencePanelBody>
 						) }
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tabs' } excludedAttrs={ [ 'currentTab', 'tabCount' ] } preventMultiple={ [ 'titles' ] } />
+
 					</InspectorControls>
 				) }
 				<div className={ classes } >

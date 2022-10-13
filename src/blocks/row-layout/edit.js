@@ -65,7 +65,8 @@ import {
 	KadenceRadioButtons,
 	VerticalAlignmentIcon,
 	BackgroundControl as KadenceBackgroundControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -81,6 +82,7 @@ import LayoutControls from './layout-controls';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -2651,6 +2653,8 @@ const deskOverlayControls = (
 									</KadencePanelBody>
 								</Fragment>
 							) }
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
 						</>
 					) }
 				</InspectorControls>

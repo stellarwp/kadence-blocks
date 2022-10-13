@@ -33,7 +33,8 @@ import {
 	ResponsiveAlignControls,
 	WebfontLoader,
 	InspectorControlTabs,
-	MeasurementControls
+	MeasurementControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -46,6 +47,7 @@ import {
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Internal block libraries
  */
@@ -1244,6 +1246,8 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 										onChange={(value) => setAttributes({vsmobile: value})}
 									/>
 								</KadencePanelBody>
+
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ [ 'date', 'timestamp' ] } />
 
 							</>
 						}

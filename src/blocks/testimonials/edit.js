@@ -8,7 +8,7 @@
  * Import Css
  */
 import './editor.scss';
-
+import metadata from './block.json';
 /**
  * Import Icons
  */
@@ -42,10 +42,16 @@ import {
     IconRender,
     KadenceMediaPlaceholder,
     MeasurementControls,
-    InspectorControlTabs
+    InspectorControlTabs,
+    KadenceBlockDefaults
 } from '@kadence/components';
 
-import {getPreviewSize, KadenceColorOutput, showSettings} from '@kadence/helpers';
+import {
+    getPreviewSize,
+    KadenceColorOutput,
+    showSettings,
+    setBlockDefaults
+} from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -180,6 +186,8 @@ function KadenceTestimonials({
 
         let smallID = '_' + clientId.substr(2, 9);
         if (!uniqueID) {
+            attributes = setBlockDefaults( 'kadence/testimonials', attributes);
+
             setAttributes({
                 uniqueID: smallID,
             });
@@ -2136,6 +2144,12 @@ function KadenceTestimonials({
                                 )}
                             </>
                         }
+
+                        {( activeTab === 'advanced') && (
+                            <>
+                                <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'itemsCount' ] } preventMultiple={ [ 'testimonials' ] } />
+                            </>
+                        )}
 
                     </InspectorControls>
                 </Fragment>

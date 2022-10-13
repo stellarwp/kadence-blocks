@@ -18,6 +18,7 @@ import {
 	ResponsiveAlignControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 /**
@@ -25,6 +26,7 @@ import {
  */
 import { __ } from '@wordpress/i18n';
 import { useState, Component, Fragment } from '@wordpress/element';
+import metadata from './block.json';
 
 import {
 	TextControl,
@@ -533,6 +535,12 @@ function Inspector( {
 					</KadencePanelBody>
 				</>
 			}
+
+			{( activeTab === 'advanced' ) && (
+				<>
+					<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countup' } />
+				</>
+			)}
 
 		</KadenceInspectorControls>
 	);

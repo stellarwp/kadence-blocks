@@ -20,6 +20,7 @@ import {
 	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -32,6 +33,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -514,6 +516,9 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 				{ ( activeTab === 'advanced' ) &&
 					<>
 						{ renderAdvancedSettings }
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/icon' } excludedAttrs={ [ 'iconCount' ] } preventMultiple={ [ 'icons' ] } />
+
 					</>
 				}
 			</KadenceInspectorControls>

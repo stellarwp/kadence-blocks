@@ -41,6 +41,7 @@ import {
 	RangeControl,
 	IconPicker,
 	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -53,6 +54,7 @@ import {
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 import {
 	createBlock,
@@ -172,15 +174,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
 					}
 				} );
+			} else {
+				setShowPreset( true );
 			}
 			if ( blockConfigObject[ 'kadence/pane' ] !== undefined && typeof blockConfigObject[ 'kadence/pane' ] === 'object' ) {
 				if ( blockConfigObject[ 'kadence/pane' ].titleTag !== undefined ) {
 					setTitleTag( blockConfigObject[ 'kadence/pane' ].titleTag );
 				}
 			}
-			if ( showPresets ) {
-				setShowPreset( true );
-			}
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
@@ -1111,6 +1113,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									</KadencePanelBody>
 								</>
 							)}
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/accordion' } />
+
 						</>
 					}
 				</InspectorControls>

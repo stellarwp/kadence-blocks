@@ -6,7 +6,7 @@
  * Internal dependencies
  */
 import Inspector from './inspector';
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, setBlockDefaults } from '@kadence/helpers';
 import { WebfontLoader } from '@kadence/components';
 
 /**
@@ -87,11 +87,10 @@ function KadenceCounterUp( {
 
 	useEffect( () => {
 		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			attributes = setBlockDefaults( 'kadence/countup', attributes);
 
 			setAttributes( {
 				uniqueID  : '_' + clientId.substr( 2, 9 ),
-				numberFont: [ ...numberFont ],
 			} );
 			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbCountUpUniqueIDs.includes( uniqueID ) ) {

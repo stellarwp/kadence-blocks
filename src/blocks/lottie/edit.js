@@ -6,6 +6,7 @@
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 /**
@@ -43,6 +44,7 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components'
 import { setBlockDefaults } from '@kadence/helpers';
 
@@ -510,6 +512,8 @@ export function Edit( {
 								max={ 1000 }
 							/>
 						</KadencePanelBody>
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/lottie' } />
 					</>
 				}
 

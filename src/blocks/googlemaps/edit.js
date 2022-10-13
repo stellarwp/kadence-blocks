@@ -6,6 +6,7 @@
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -37,7 +38,8 @@ import {
 	RangeControl,
 	InspectorControlTabs,
 	KadencePanelBody,
-	KadenceInspectorControls
+	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -572,8 +574,14 @@ export function Edit( {
 					</>
 				)}
 
+				{ activeTab === 'advanced' && (
+					<>
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/googlemaps' } />
+					</>
+				)}
 
-			</KadenceInspectorControls>
+
+					</KadenceInspectorControls>
 
 			<div style={ {
 				marginTop: ('' !== previewMarginTop ? previewMarginTop + marginUnit : undefined),

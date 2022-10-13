@@ -38,7 +38,8 @@ import {
 	ResponsiveAlignControls,
 	BoxShadowControl,
 	BackgroundControl as KadenceBackgroundControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -48,6 +49,7 @@ import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpe
 import ColumnStyleCopyPaste from './copy-paste-style';
 
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Import WordPress
  */
@@ -799,6 +801,9 @@ function SectionEdit( {
 										onChange={( value ) => setAttributes( { vsmobile: value } )}
 									/>
 								</KadencePanelBody>
+
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/column' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+
 							</>
 						}
 

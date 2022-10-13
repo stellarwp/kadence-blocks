@@ -5,7 +5,8 @@
 /**
  * Import Css
  */
-import './editor.scss'
+import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -19,7 +20,8 @@ import {
 	ResponsiveMeasurementControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadencePanelBody
+	KadencePanelBody,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { setBlockDefaults } from '@kadence/helpers';
 
@@ -279,6 +281,7 @@ export function Edit ({
 							title={__( 'Expand Settings', 'kadence-blocks' )}
 							panelName={ 'expandSettings'}
 							blockSlug={ 'kadence/show-more' }
+							initialOpen={ false }
 						>
 							<ToggleControl
 								label={__( 'Default Expanded on Desktop', 'kadence-blocks' )}
@@ -296,6 +299,8 @@ export function Edit ({
 								onChange={( value ) => setAttributes( { defaultExpandedMobile: value } )}
 							/>
 						</KadencePanelBody>
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/show-more' } />
 					</>
 				}
 			</KadenceInspectorControls>

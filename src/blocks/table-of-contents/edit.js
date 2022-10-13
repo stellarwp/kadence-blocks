@@ -26,6 +26,7 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 
@@ -46,6 +47,7 @@ import {
 	bottomLeftIcon,
 	bottomRightIcon,
 } from '@kadence/icons';
+import metadata from './block.json';
 
 /**
  * Internal dependencies
@@ -166,7 +168,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 
 	useEffect( () => {
 		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/table-of-contents', attributes);
+			attributes = setBlockDefaults( 'kadence/tableofcontents', attributes);
 
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
@@ -762,6 +764,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									onChange={value => setAttributes({enableDynamicSearch: value})}
 								/>
 							</KadencePanelBody>
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tableofcontents' } />
 						</>
 					}
 

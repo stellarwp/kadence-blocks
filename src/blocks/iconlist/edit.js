@@ -32,13 +32,16 @@ import {
 	URLInputControl,
 	DynamicTextControl,
 	MeasurementControls,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
+
 /**
  * Import Block Specific.
  */
@@ -897,6 +900,9 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 										)}
 									</KadencePanelBody>
 								)}
+
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/iconlist' } excludedAttrs={ [ 'listCount' ] } preventMultiple={ [ 'items' ] } />
+
 							</>
 						}
 

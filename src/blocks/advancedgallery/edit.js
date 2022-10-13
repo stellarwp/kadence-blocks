@@ -23,7 +23,8 @@ import {
 	KadenceMediaPlaceholder,
 	DynamicGalleryControl,
 	MeasurementControls,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import Slider from 'react-slick';
 import { applyFilters } from '@wordpress/hooks';
@@ -93,6 +94,7 @@ import {
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 const linkOptions = [
 	{ value: 'attachment', label: __( 'Attachment Page', 'kadence-blocks' ) },
@@ -1647,7 +1649,14 @@ function GalleryEdit( props ) {
 							)}
 						</>
 					}
-				</InspectorControls>
+
+					{( activeTab === 'advanced' ) && (
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedgallery' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+
+					)}
+
+					</InspectorControls>
 			)}
 		</>
 	);
