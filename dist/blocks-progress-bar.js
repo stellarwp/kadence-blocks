@@ -87,6 +87,8 @@ function Edit(_ref) {
     className,
     clientId
   } = _ref;
+
+  /*These are all the variables we have defined in block.json*/
   const {
     uniqueID,
     align,
@@ -100,10 +102,6 @@ function Edit(_ref) {
     marginUnit,
     barBackground,
     barBackgroundOpacity,
-    containerBorder,
-    containerTabletBorder,
-    containerMobileBorder,
-    containerBorderType,
     borderColor,
     borderOpacity,
     barType,
@@ -116,7 +114,13 @@ function Edit(_ref) {
     labelMinHeight,
     label,
     labelAlign,
-    labelPosition
+    labelPosition,
+    progressAmount,
+    duration,
+    progressWidth,
+    progressWidthTablet,
+    progressWidthMobile,
+    progressWidthType
   } = attributes;
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!uniqueID) {
@@ -162,10 +166,7 @@ function Edit(_ref) {
   const previewPaddingRight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== paddingDesktop ? paddingDesktop[1] : '', undefined !== paddingTablet ? paddingTablet[1] : '', undefined !== paddingMobile ? paddingMobile[1] : '');
   const previewPaddingBottom = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== paddingDesktop ? paddingDesktop[2] : '', undefined !== paddingTablet ? paddingTablet[2] : '', undefined !== paddingMobile ? paddingMobile[2] : '');
   const previewPaddingLeft = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== paddingDesktop ? paddingDesktop[3] : '', undefined !== paddingTablet ? paddingTablet[3] : '', undefined !== paddingMobile ? paddingMobile[3] : '');
-  const previewBarBorderTop = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[0] ? containerBorder[0] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[0] ? containerTabletBorder[0] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[0] ? containerMobileBorder[0] : '');
-  const previewBarBorderRight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[1] ? containerBorder[1] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[1] ? containerTabletBorder[1] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[1] ? containerMobileBorder[1] : '');
-  const previewBarBorderBottom = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[2] ? containerBorder[2] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[2] ? containerTabletBorder[2] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[2] ? containerMobileBorder[2] : '');
-  const previewBarBorderLeft = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[3] ? containerBorder[3] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[3] ? containerTabletBorder[3] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[3] ? containerMobileBorder[3] : '');
+  const previewProgressWidth = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== progressWidth ? progressWidth : '', undefined !== progressWidthTablet ? progressWidthTablet : '', undefined !== progressWidthMobile ? progressWidthMobile : '');
   const previewContainerMaxWidth = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerMaxWidth ? containerMaxWidth : '', undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '', undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '');
   const previewLabelFont = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelFont.size && undefined !== labelFont.size[0] && '' !== labelFont.size[0] ? labelFont.size[0] : '', undefined !== labelFont.size && undefined !== labelFont.size[1] && '' !== labelFont.size[1] ? labelFont.size[1] : '', undefined !== labelFont.size && undefined !== labelFont.size[2] && '' !== labelFont.size[2] ? labelFont.size[2] : '');
   const previewLabelLineHeight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[0] && '' !== labelFont.lineHeight[0] ? labelFont.lineHeight[0] : '', undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[1] && '' !== labelFont.lineHeight[1] ? labelFont.lineHeight[1] : '', undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[2] && '' !== labelFont.lineHeight[2] ? labelFont.lineHeight[2] : '');
@@ -200,15 +201,40 @@ function Edit(_ref) {
   const [animate, setAnimate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0.0);
   const container = document.createElement('div');
 
-  const ProgressCircle = _ref2 => {
+  const ProgressLine = _ref2 => {
     let {
       animate
     } = _ref2;
+    const line = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => new progressbar_js__WEBPACK_IMPORTED_MODULE_10__.Line(container, {
+      color: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
+      strokeWidth: previewProgressWidth,
+      duration: duration * 1000,
+      trailWidth: 3,
+      trailColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity)
+    }), []);
+    const node = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(node => {
+      if (node) {
+        node.appendChild(container);
+      }
+    }, []);
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      line.animate(animate);
+    }, [animate, line]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      ref: node
+    });
+  };
+
+  const ProgressCircle = _ref3 => {
+    let {
+      animate
+    } = _ref3;
     const circle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => new progressbar_js__WEBPACK_IMPORTED_MODULE_10__.Circle(container, {
       color: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
-      strokeWidth: previewBarBorderTop,
-      fill: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
-      duration: 1200
+      strokeWidth: previewProgressWidth,
+      duration: duration * 1000,
+      trailWidth: 3,
+      trailColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity)
     }), []);
     const node = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(node => {
       if (node) {
@@ -223,15 +249,16 @@ function Edit(_ref) {
     });
   };
 
-  const ProgressSemicircle = _ref3 => {
+  const ProgressSemicircle = _ref4 => {
     let {
       animate
-    } = _ref3;
+    } = _ref4;
     const semicircle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => new progressbar_js__WEBPACK_IMPORTED_MODULE_10__.SemiCircle(container, {
       color: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
-      strokeWidth: previewBarBorderTop,
-      fill: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
-      duration: 1200
+      strokeWidth: previewProgressWidth,
+      duration: 1200,
+      trailWidth: 3,
+      trailColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity)
     }), []);
     const node = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(node => {
       if (node) {
@@ -299,12 +326,12 @@ function Edit(_ref) {
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Bar Layout', 'kadence-blocks')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, {
     className: "kt-style-btn-group kb-info-layouts",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Bar Layout', 'kadence-blocks')
-  }, (0,lodash__WEBPACK_IMPORTED_MODULE_8__.map)(layoutPresetOptions, _ref4 => {
+  }, (0,lodash__WEBPACK_IMPORTED_MODULE_8__.map)(layoutPresetOptions, _ref5 => {
     let {
       name,
       key,
       icon
-    } = _ref4;
+    } = _ref5;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
       key: key,
       className: "kt-style-btn",
@@ -400,7 +427,7 @@ function Edit(_ref) {
     initialOpen: false,
     panelName: 'kb-testimonials-bar-settings'
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.PopColorControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Bar Background', 'kadence-blocks'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Background', 'kadence-blocks'),
     colorValue: barBackground ? barBackground : '#4A5568',
     colorDefault: '#4A5568',
     opacityValue: barBackgroundOpacity,
@@ -411,7 +438,7 @@ function Edit(_ref) {
       barBackgroundOpacity: value
     })
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.PopColorControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Border Color', 'kadence-blocks'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Color', 'kadence-blocks'),
     colorValue: borderColor ? borderColor : '#4A5568',
     colorDefault: '#4A5568',
     opacityValue: borderOpacity,
@@ -421,41 +448,53 @@ function Edit(_ref) {
     onOpacityChange: value => setAttributes({
       borderOpacity: value
     })
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.ResponsiveMeasurementControls, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Bar Border', 'kadence-blocks'),
-    control: barType === "circle" ? 'slider' : borderControl,
-    tabletControl: borderControl,
-    mobileControl: borderControl,
-    value: containerBorder,
-    tabletValue: containerTabletBorder,
-    mobileValue: containerMobileBorder,
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.ResponsiveRangeControls, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Width', 'kadence-blocks'),
+    value: progressWidth,
+    tabletValue: progressWidthTablet,
+    mobileValue: progressWidthMobile,
     onChange: value => {
       setAttributes({
-        containerBorder: value
+        progressWidth: value
       });
     },
     onChangeTablet: value => {
       setAttributes({
-        containerTabletBorder: value
+        progressWidthTablet: value
       });
     },
     onChangeMobile: value => {
       setAttributes({
-        containerMobileBorder: value
+        progressWidthMobile: value
       });
     },
-    onChangeControl: value => setBorderControl(value),
-    onChangeTabletControl: value => setBorderControl(value),
-    onChangeMobileControl: value => setBorderControl(value),
     allowEmpty: true,
     min: 0,
     max: 50,
     step: 1,
-    unit: containerBorderType,
+    unit: progressWidthType,
     units: ['%'],
     onUnit: value => setAttributes({
-      containerBorderType: value
+      progressWidthType: value
     })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Range', 'kadence-blocks'),
+    value: progressAmount,
+    onChange: value => setAttributes({
+      progressAmount: value
+    }),
+    min: 1,
+    max: 100,
+    step: 1
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Animation Duration', 'kadence-blocks'),
+    value: duration,
+    onChange: value => setAttributes({
+      duration: value
+    }),
+    min: 0.1,
+    max: 25,
+    step: 0.1
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Label Settings', 'kadence-blocks'),
     initialOpen: false,
@@ -612,30 +651,17 @@ function Edit(_ref) {
       maxWidth: '' !== previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : undefined
     }
   }, displayLabel && labelPosition === 'above' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressBarLabel, null), barType === "line" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "progress-bar__container",
-    style: {
-      backgroundColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
-      borderTopWidth: previewBarBorderTop + containerBorderType,
-      borderBottomWidth: previewBarBorderBottom + containerBorderType,
-      borderRightWidth: previewBarBorderRight + containerBorderType,
-      borderLeftWidth: previewBarBorderLeft + containerBorderType,
-      borderColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
-      borderStyle: "solid"
-    }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "progressbar-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    class: "progress-bar__text"
-  }))), barType === "circle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    class: "line-bars"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressLine, {
+    animate: progressAmount / 100
+  })), barType === "circle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "circle-bars"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressCircle, {
-    animate: animate
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    onClick: () => setAnimate(Math.random())
-  }, "Click Me")), barType === "semicircle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    animate: progressAmount / 100
+  })), barType === "semicircle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "semicircle-bars"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressSemicircle, {
-    animate: animate
+    animate: progressAmount / 100
   })), displayLabel && labelPosition === 'below' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressBarLabel, null)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
@@ -1842,7 +1868,7 @@ module.exports = window["wp"]["i18n"];
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"apiVersion":2,"name":"kadence/progress-bar","title":"Progress Bar","category":"kadence-blocks","description":"Kadence progress bar","textdomain":"kadence-blocks","keywords":["kb","progress bar"],"attributes":{"align":{"type":"string"},"id":{"type":"number"},"width":{"type":"number","default":"0"},"uniqueID":{"type":"string"},"marginDesktop":{"type":"array","default":["","","",""]},"marginTablet":{"type":"array","default":["","","",""]},"marginMobile":{"type":"array","default":["","","",""]},"marginUnit":{"type":"string","default":"px"},"paddingDesktop":{"type":"array","default":["","","",""]},"paddingTablet":{"type":"array","default":["","","",""]},"paddingMobile":{"type":"array","default":["","","",""]},"paddingUnit":{"type":"string","default":"px"},"barBackground":{"type":"string","default":"#4A5568"},"barBackgroundOpacity":{"type":"number","default":1},"containerBorder":{"type":"array","default":[0,0,0,0]},"containerTabletBorder":{"type":"array","default":["","","",""]},"containerMobileBorder":{"type":"array","default":["","","",""]},"containerBorderType":{"type":"string","default":"px"},"borderColor":{"type":"string","default":"#4A5568"},"borderOpacity":{"type":"number","default":1},"barType":{"enum":["line","circle"],"default":"line"},"containerMaxWidth":{"type":"number","default":200},"tabletContainerMaxWidth":{"type":"number"},"mobileContainerMaxWidth":{"type":"number"},"containerMaxWidthUnits":{"type":"string","default":"px"},"displayLabel":{"type":"boolean","default":true},"labelFont":{"type":"object","default":{"color":"","level":6,"size":["","",""],"sizeType":"px","lineHeight":["","",""],"linetype":"px","letterSpacing":"","textTransform":"","family":"","google":false,"style":"","weight":"","variant":"","subset":"","loadGoogle":true,"padding":[0,0,0,0],"margin":[0,0,15,0]}},"labelAlign":{"type":"array","default":["","",""]},"labelMinHeight":{"type":"array","default":["","",""]},"label":{"type":"string","default":""},"labelPosition":{"enum":["above","below"],"default":"below"}},"editorScript":"file:editor.js"}');
+module.exports = JSON.parse('{"apiVersion":2,"name":"kadence/progress-bar","title":"Progress Bar","category":"kadence-blocks","description":"Kadence progress bar","textdomain":"kadence-blocks","keywords":["kb","progress bar"],"attributes":{"align":{"type":"string"},"id":{"type":"number"},"width":{"type":"number","default":"0"},"uniqueID":{"type":"string"},"marginDesktop":{"type":"array","default":["","","",""]},"marginTablet":{"type":"array","default":["","","",""]},"marginMobile":{"type":"array","default":["","","",""]},"marginUnit":{"type":"string","default":"px"},"paddingDesktop":{"type":"array","default":["","","",""]},"paddingTablet":{"type":"array","default":["","","",""]},"paddingMobile":{"type":"array","default":["","","",""]},"paddingUnit":{"type":"string","default":"px"},"barBackground":{"type":"string","default":"#4A5568"},"barBackgroundOpacity":{"type":"number","default":1},"progressWidth":{"type":"string","default":"3"},"progressWidthTablet":{"type":"string","default":""},"progressWidthMobile":{"type":"string","default":""},"progressWidthType":{"type":"string","default":"px"},"borderColor":{"type":"string","default":"#4A5568"},"borderOpacity":{"type":"number","default":1},"barType":{"enum":["line","circle"],"default":"line"},"containerMaxWidth":{"type":"number","default":200},"tabletContainerMaxWidth":{"type":"number"},"mobileContainerMaxWidth":{"type":"number"},"containerMaxWidthUnits":{"type":"string","default":"px"},"displayLabel":{"type":"boolean","default":true},"labelFont":{"type":"object","default":{"color":"","level":6,"size":["","",""],"sizeType":"px","lineHeight":["","",""],"linetype":"px","letterSpacing":"","textTransform":"","family":"","google":false,"style":"","weight":"","variant":"","subset":"","loadGoogle":true,"padding":[0,0,0,0],"margin":[0,0,15,0]}},"labelAlign":{"type":"array","default":["","",""]},"labelMinHeight":{"type":"array","default":["","",""]},"label":{"type":"string","default":""},"labelPosition":{"enum":["above","below"],"default":"below"},"progressAmount":{"type":"integer","default":50},"duration":{"type":"number","default":2.5}},"editorScript":"file:editor.js"}');
 
 /***/ })
 

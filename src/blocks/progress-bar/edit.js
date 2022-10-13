@@ -53,7 +53,8 @@ import {
 	SelectControl,
 	ButtonGroup,
 	Button,
-	ToggleControl
+	ToggleControl,
+	RangeControl
 } from '@wordpress/components';
 import {
 	Circle,
@@ -73,6 +74,7 @@ export function Edit( {
 	clientId,
 } ) {
 
+	/*These are all the variables we have defined in block.json*/
 	const {
 		uniqueID,
 		align,
@@ -86,10 +88,6 @@ export function Edit( {
 		marginUnit,
 		barBackground,
 		barBackgroundOpacity,
-		containerBorder,
-		containerTabletBorder,
-		containerMobileBorder,
-		containerBorderType,
 		borderColor,
 		borderOpacity,
 		barType,
@@ -102,7 +100,13 @@ export function Edit( {
 		labelMinHeight,
 		label,
 		labelAlign, 
-		labelPosition
+		labelPosition,
+		progressAmount,
+		duration,
+		progressWidth,
+		progressWidthTablet,
+		progressWidthMobile,
+		progressWidthType
 
 	} = attributes;
 
@@ -150,11 +154,8 @@ export function Edit( {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const previewBarBorderTop = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 0 ] ? containerBorder[ 0 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 0 ] ? containerTabletBorder[ 0 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 0 ] ? containerMobileBorder[ 0 ] : '' ) );
-	const previewBarBorderRight = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 1 ] ? containerBorder[ 1 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 1 ] ? containerTabletBorder[ 1 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 1 ] ? containerMobileBorder[ 1 ] : '' ) );
-	const previewBarBorderBottom = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 2 ] ? containerBorder[ 2 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 2 ] ? containerTabletBorder[ 2 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 2 ] ? containerMobileBorder[ 2 ] : '' ) );
-	const previewBarBorderLeft = getPreviewSize( previewDevice, ( undefined !== containerBorder && undefined !== containerBorder[ 3 ] ? containerBorder[ 3 ] : '' ), ( undefined !== containerTabletBorder && undefined !== containerTabletBorder[ 3 ] ? containerTabletBorder[ 3 ] : '' ), ( undefined !== containerMobileBorder && undefined !== containerMobileBorder[ 3 ] ? containerMobileBorder[ 3 ] : '' ) );
-	
+	const previewProgressWidth = getPreviewSize( previewDevice, ( undefined !== progressWidth ? progressWidth : '' ), ( undefined !== progressWidthTablet ? progressWidthTablet : '' ), ( undefined !== progressWidthMobile ? progressWidthMobile : '' ) );
+
 	const previewContainerMaxWidth = getPreviewSize( previewDevice, ( undefined !== containerMaxWidth ? containerMaxWidth : '' ), ( undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '' ), ( undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '' ) );
 
 	const previewLabelFont = getPreviewSize( previewDevice, ( undefined !== labelFont.size && undefined !== labelFont.size[ 0 ] && '' !== labelFont.size[ 0 ] ? labelFont.size[ 0 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 1 ] && '' !== labelFont.size[ 1 ] ? labelFont.size[ 1 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 2 ] && '' !== labelFont.size[ 2 ] ? labelFont.size[ 2 ] : '' ) );
@@ -189,13 +190,36 @@ export function Edit( {
 
 	const [animate,setAnimate] = useState(0.0)
 	const container = document.createElement('div');
+	const ProgressLine = ({animate}) => { 
+		const line = useMemo(()=>
+		new Line(container,{
+			color: KadenceColorOutput( borderColor , borderOpacity ),
+			strokeWidth: previewProgressWidth,
+			duration: duration * 1000,
+			trailWidth: 3,
+			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
+
+		}),[]);
+		const node = useCallback( node => {
+			if ( node ) {
+				node.appendChild( container );
+			}
+		}, [] );
+
+		useEffect( () => {
+			line.animate( animate );
+		}, [ animate, line ] );
+
+		return <div ref={node} />;
+	};
 	const ProgressCircle = ({animate}) => { 
 		const circle = useMemo(()=>
 		new Circle(container,{
 			color: KadenceColorOutput( borderColor , borderOpacity ),
-			strokeWidth: previewBarBorderTop,
-			fill: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-			duration: 1200,
+			strokeWidth: previewProgressWidth,
+			duration: duration * 1000,
+			trailWidth: 3,
+			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
 
 		}),[]);
 		const node = useCallback( node => {
@@ -215,9 +239,10 @@ export function Edit( {
 		const semicircle = useMemo(()=>
 		new SemiCircle(container,{
 			color: KadenceColorOutput( borderColor , borderOpacity ),
-			strokeWidth: previewBarBorderTop,
-			fill: KadenceColorOutput( barBackground , barBackgroundOpacity ),
+			strokeWidth: previewProgressWidth,
 			duration: 1200,
+			trailWidth: 3,
+			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
 
 		}),[]);
 		const node = useCallback( node => {
@@ -363,7 +388,7 @@ export function Edit( {
 					/>
 				</PanelBody>
 
-				
+			 {/* These are the wordpress and Kadence components mostly that are imported at the top */}
 				<PanelBody
 					title={ __( 'Progress Bar Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
@@ -371,7 +396,7 @@ export function Edit( {
 				>
 					
 					<PopColorControl
-						label={ __( 'Bar Background', 'kadence-blocks' ) }
+						label={ __( 'Progress Background', 'kadence-blocks' ) }
 						colorValue={ ( barBackground ? barBackground : '#4A5568' ) }
 						colorDefault={ '#4A5568' }
 						opacityValue={ barBackgroundOpacity }
@@ -379,40 +404,51 @@ export function Edit( {
 						onOpacityChange={ value => setAttributes( { barBackgroundOpacity: value } ) }
 					/>
 					<PopColorControl
-						label={ __( 'Border Color', 'kadence-blocks' ) }
+						label={ __( 'Progress Color', 'kadence-blocks' ) }
 						colorValue={ ( borderColor ? borderColor : '#4A5568' ) }
 						colorDefault={ '#4A5568' }
 						opacityValue={ borderOpacity }
 						onColorChange={ value => setAttributes( { borderColor: value } ) }
 						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 					/>
-					<ResponsiveMeasurementControls
-						label={ __( 'Bar Border', 'kadence-blocks' ) }
-						control={(barType==="circle" ? 'slider': borderControl) }
-						tabletControl={ borderControl }
-						mobileControl={ borderControl }
-						value={ containerBorder }
-						tabletValue={ containerTabletBorder }
-						mobileValue={ containerMobileBorder }
+					<ResponsiveRangeControls
+						label={ __( 'Progress Width', 'kadence-blocks' ) }
+						value={ progressWidth }
+						tabletValue={ progressWidthTablet }
+						mobileValue={ progressWidthMobile }
 						onChange={ ( value ) => {
-							setAttributes( { containerBorder: value } );
+							setAttributes( { progressWidth: value } );
 						} }
 						onChangeTablet={ ( value ) => {
-							setAttributes( { containerTabletBorder: value } );
+							setAttributes( { progressWidthTablet: value } );
 						} }
 						onChangeMobile={ ( value ) => {
-							setAttributes( { containerMobileBorder: value } );
+							setAttributes( { progressWidthMobile: value } );
 						} }
-						onChangeControl={ ( value ) => setBorderControl( value ) }
-						onChangeTabletControl={ ( value ) => setBorderControl( value ) }
-						onChangeMobileControl={ ( value ) => setBorderControl( value ) }
+						
 						allowEmpty={ true }
 						min={ 0 }
 						max={ 50 }
 						step={ 1 }
-						unit={ containerBorderType }
+						unit={ progressWidthType }
 						units={ [ '%' ] }
-						onUnit={ ( value ) => setAttributes( { containerBorderType: value } ) }
+						onUnit={ ( value ) => setAttributes( { progressWidthType: value } ) }
+					/>
+					<RangeControl
+						label={__( 'Progress Range', 'kadence-blocks' )}
+						value={progressAmount}
+						onChange={( value ) => setAttributes( { progressAmount: value } )}
+						min={1}
+						max={100}
+						step={1}
+					/>
+					<RangeControl
+						label={__( 'Animation Duration', 'kadence-blocks' )}
+						value={duration}
+						onChange={( value ) => setAttributes( { duration: value } )}
+						min={0.1}
+						max={25}
+						step={0.1}
 					/>
 					
 				</PanelBody>
@@ -541,32 +577,20 @@ export function Edit( {
 				)}	
 
 					{(barType === "line") &&
-						<div class="progress-bar__container" style={{
-							backgroundColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-							borderTopWidth: previewBarBorderTop + containerBorderType,
-							borderBottomWidth: previewBarBorderBottom + containerBorderType,
-							borderRightWidth: previewBarBorderRight + containerBorderType,
-							borderLeftWidth: previewBarBorderLeft + containerBorderType,
-							borderColor:  KadenceColorOutput( borderColor , borderOpacity ),
-							borderStyle: "solid"
-							}}>
-							<div class="progressbar-1">
-								<span class="progress-bar__text"></span>
-							</div>
+						<div class="line-bars">
+							<ProgressLine animate={progressAmount / 100} />
 						</div>
 					}
 
 					{(barType === "circle") &&
 						<div class="circle-bars">
-							<ProgressCircle animate={animate} />
-
-							<button onClick={()=> setAnimate(Math.random())}>Click Me</button>
+							<ProgressCircle animate={progressAmount / 100}/>
 						</div>
 					}
 
 					{(barType === "semicircle") &&
 						<div class="semicircle-bars">
-							<ProgressSemicircle animate={animate} />
+							<ProgressSemicircle animate={progressAmount / 100} />
 						</div>
 					}	
 				{displayLabel && labelPosition === 'below' && (

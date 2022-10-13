@@ -93,19 +93,19 @@
 		"type": "number",
 		"default": 1
 	},
-	"containerBorder": {
-		"type": "array",
-		"default": [ 0, 0, 0, 0 ]
+	"progressWidth": {
+		"type": "string",
+		"default": "3"
 	},
-	"containerTabletBorder": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
+	"progressWidthTablet": {
+		"type": "string",
+		"default": ""
 	},
-	"containerMobileBorder": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
+	"progressWidthMobile": {
+		"type": "string",
+		"default": ""
 	},
-	"containerBorderType": {
+	"progressWidthType": {
 		"type": "string",
 		"default": "px"
 	},
@@ -199,8 +199,15 @@
 	"labelPosition": {
 		"enum": [  "above", "below" ],
 		"default": "below"
+	},
+	"progressAmount":{
+		"type": "integer",
+		"default": 50
+	},
+	"duration":{
+		"type": "number",
+	  	"default": 2.5
 	}
-
 
   },
   
