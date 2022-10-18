@@ -106,8 +106,9 @@ export function Edit( {
 		progressWidth,
 		progressWidthTablet,
 		progressWidthMobile,
-		progressWidthType
-
+		progressWidthType,
+		progressBorderRadius,
+		
 
 	} = attributes;
 
@@ -156,6 +157,8 @@ export function Edit( {
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
 	const previewProgressWidth = getPreviewSize( previewDevice, ( undefined !== progressWidth ? progressWidth : '' ), ( undefined !== progressWidthTablet ? progressWidthTablet : '' ), ( undefined !== progressWidthMobile ? progressWidthMobile : '' ) );
+	const previewProgressBorderRadius = getPreviewSize( previewDevice, ( undefined !== progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( undefined !== progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( undefined !== progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) );
+
 
 	const previewContainerMaxWidth = getPreviewSize( previewDevice, ( undefined !== containerMaxWidth ? containerMaxWidth : '' ), ( undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '' ), ( undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '' ) );
 
@@ -211,8 +214,11 @@ export function Edit( {
 			color: KadenceColorOutput( borderColor , borderOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: duration * 1000,
-			trailWidth: 3,
+			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
+			svgStyle: {
+				borderRadius: previewProgressBorderRadius + "px",
+			}
 
 		}),[]);
 		const node = useCallback( node => {
@@ -233,9 +239,11 @@ export function Edit( {
 			color: KadenceColorOutput( borderColor , borderOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: duration * 1000,
-			trailWidth: 3,
+			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-
+			svgStyle: {
+				borderRadius: previewProgressBorderRadius + "px",
+			}
 		}),[]);
 		const node = useCallback( node => {
 			if ( node ) {
@@ -256,9 +264,11 @@ export function Edit( {
 			color: KadenceColorOutput( borderColor , borderOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: 1200,
-			trailWidth: 3,
+			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-
+			svgStyle: {
+				borderRadius: previewProgressBorderRadius + "px",
+			}
 		}),[]);
 		const node = useCallback( node => {
 			if ( node ) {
@@ -315,22 +325,21 @@ export function Edit( {
 					title={ __( 'Size Controls', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
-					<ResponsiveMeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-						control={ paddingControl }
-						tabletValue={ paddingTablet }
-						mobileValue={ paddingMobile }
-						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
-						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-						onChangeControl={ ( value ) => setPaddingControl( value ) }
-						min={ 0 }
-						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ paddingUnit }
-						units={ [ 'px', 'em', 'rem', '%' ] }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					<ResponsiveRangeControls
+						label={__( 'Width', 'kadence-blocks' )}
+						value={containerMaxWidth}
+						onChange={value => setAttributes( { containerMaxWidth: value } )}
+						tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
+						onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
+						mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
+						onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
+						min={0}
+						max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
+						step={1}
+						unit={containerMaxWidthUnits}
+						onUnit={ ( value ) => setAttributes( { containerMaxWidthUnits: value } )}
+						reset={ () => setAttributes( { containerMaxWidth: 200 , tabletContainerMaxWidth: '' , mobileContainerMaxWidth: '' })}
+						units={[ 'px', 'vh' , '%' ]}
 					/>
 					<ResponsiveMeasurementControls
 						label={ __( 'Margin', 'kadence-blocks' ) }
@@ -352,22 +361,7 @@ export function Edit( {
 						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 					/>
 
-					<ResponsiveRangeControls
-						label={__( 'Max-width', 'kadence-blocks' )}
-						value={containerMaxWidth}
-						onChange={value => setAttributes( { containerMaxWidth: value } )}
-						tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
-						onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
-						mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
-						onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
-						min={0}
-						max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
-						step={1}
-						unit={containerMaxWidthUnits}
-						onUnit={ ( value ) => setAttributes( { containerMaxWidthUnits: value } )}
-						reset={ () => setAttributes( { containerMaxWidth: 200 , tabletContainerMaxWidth: '' , mobileContainerMaxWidth: '' })}
-						units={[ 'px', 'vh' , '%' ]}
-					/>
+					
 				</PanelBody>
 
 			 {/* These are the wordpress and Kadence components mostly that are imported at the top */}
@@ -394,7 +388,7 @@ export function Edit( {
 						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 					/>
 					<ResponsiveRangeControls
-						label={ __( 'Progress Width', 'kadence-blocks' ) }
+						label={ __( 'Progress Thickness', 'kadence-blocks' ) }
 						value={ progressWidth }
 						tabletValue={ progressWidthTablet }
 						mobileValue={ progressWidthMobile }
@@ -412,9 +406,39 @@ export function Edit( {
 						min={ 0 }
 						max={ 50 }
 						step={ 1 }
-						unit={ progressWidthType }
-						units={ [ '%' ] }
-						onUnit={ ( value ) => setAttributes( { progressWidthType: value } ) }
+						
+					/>
+					<ResponsiveRangeControls
+						label={__( 'Width', 'kadence-blocks' )}
+						value={containerMaxWidth}
+						onChange={value => setAttributes( { containerMaxWidth: value } )}
+						tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
+						onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
+						mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
+						onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
+						min={0}
+						max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
+						step={1}
+						unit={containerMaxWidthUnits}
+						onUnit={ ( value ) => setAttributes( { containerMaxWidthUnits: value } )}
+						reset={ () => setAttributes( { containerMaxWidth: 200 , tabletContainerMaxWidth: '' , mobileContainerMaxWidth: '' })}
+						units={[ 'px', 'vh' , '%' ]}
+					/>
+					<ResponsiveRangeControls
+						label={ __( 'Border Radius', 'kadence-blocks' ) }
+						value={ progressBorderRadius[0] }
+						tabletValue={ progressBorderRadius[1] }
+						mobileValue={ progressBorderRadius[2] }
+						onChange={( value ) => setAttributes( { progressBorderRadius: [ value, ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
+						onChangeTablet={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), value, ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
+						onChangeMobile={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), value ] } )}
+
+						
+						allowEmpty={ true }
+						min={ 0 }
+						max={ 50 }
+						step={ 1 }
+						unit={ "px" }
 					/>
 					<RangeControl
 						label={__( 'Progress Range', 'kadence-blocks' )}
@@ -545,12 +569,8 @@ export function Edit( {
 					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
 					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+					maxWidth: ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' )
 
-					maxWidth: ( '' !== previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : undefined)
 				}
 			}>
 

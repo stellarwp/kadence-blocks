@@ -94,15 +94,15 @@
       "default": 1
     },
     "progressWidth": {
-      "type": "string",
+      "type": "number",
       "default": "3"
     },
     "progressWidthTablet": {
-      "type": "string",
+      "type": "number",
       "default": ""
     },
     "progressWidthMobile": {
-      "type": "string",
+      "type": "number",
       "default": ""
     },
     "progressWidthType": {
@@ -122,7 +122,8 @@
         "line",
         "circle"
       ],
-      "default": "line"
+      "default": "line",
+      "type": "string"
     },
     "containerMaxWidth": {
       "type": "number",
@@ -207,7 +208,8 @@
         "above",
         "below"
       ],
-      "default": "below"
+      "default": "below",
+      "type": "string"
     },
     "progressAmount": {
       "type": "integer",
@@ -216,6 +218,14 @@
     "duration": {
       "type": "number",
       "default": 2.5
+    },
+    "progressBorderRadius": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        ""
+      ]
     }
   },
   "editorScript": "file:editor.js"

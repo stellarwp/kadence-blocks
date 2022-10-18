@@ -58,7 +58,8 @@
         "embed",
         "javascript"
       ],
-      "default": "embed"
+      "default": "embed",
+      "type": "string"
     },
     "showMarker": {
       "type": "boolean",
@@ -69,7 +70,8 @@
         "roadmap",
         "satellite"
       ],
-      "default": "roadmap"
+      "default": "roadmap",
+      "type": "string"
     },
     "mapFilter": {
       "enum": [
@@ -79,7 +81,8 @@
         "saturate",
         "sepia"
       ],
-      "default": "standard"
+      "default": "standard",
+      "type": "string"
     },
     "mapStyle": {
       "enum": [
@@ -89,7 +92,8 @@
         "saturate",
         "custom"
       ],
-      "default": "standard"
+      "default": "standard",
+      "type": "string"
     },
     "showControls": {
       "type": "boolean",

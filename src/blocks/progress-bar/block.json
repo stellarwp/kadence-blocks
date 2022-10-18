@@ -94,15 +94,15 @@
 		"default": 1
 	},
 	"progressWidth": {
-		"type": "string",
+		"type": "number",
 		"default": "3"
 	},
 	"progressWidthTablet": {
-		"type": "string",
+		"type": "number",
 		"default": ""
 	},
 	"progressWidthMobile": {
-		"type": "string",
+		"type": "number",
 		"default": ""
 	},
 	"progressWidthType": {
@@ -119,11 +119,12 @@
 	},
 	"barType": {
 		"enum": [ "line", "circle" ],
-		"default": "line"
+		"default": "line",
+		"type": "string"
 	},
 	"containerMaxWidth": {
 		"type": "number",
-		"default": 200
+		"default": 0
 	},
 	"tabletContainerMaxWidth": {
 		"type": "number"
@@ -198,7 +199,8 @@
 	},
 	"labelPosition": {
 		"enum": [  "above", "below" ],
-		"default": "below"
+		"default": "below",
+		"type": "string"
 	},
 	"progressAmount":{
 		"type": "integer",
@@ -207,7 +209,16 @@
 	"duration":{
 		"type": "number",
 	  	"default": 2.5
+	},
+	"progressBorderRadius":{
+		"type":"array",
+		"default": [
+			"",
+			"",
+			""
+		  ]
 	}
+	
 
   },
   

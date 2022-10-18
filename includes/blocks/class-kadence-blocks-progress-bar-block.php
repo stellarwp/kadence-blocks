@@ -36,7 +36,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance Control
@@ -58,30 +58,43 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
-		// Add title font
-		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) && isset( $attributes['titleFont'][0]['family'] ) ) {
-			$title_font = $attributes['titleFont'][0];
-
-			$font_variant = ( ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : '' );
-			$font_subset  = ( ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : '' );
-
-			$css->maybe_add_google_font( $title_font['family'], $font_variant, $font_subset );
-		}
+		wp_enqueue_script( 'kadence-blocks-' . $this->block_name );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
-			$css->add_property( 'font-weight', $title_font['weight'] );
-		}
-		if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $title_font['textTransform'] );
-		}
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id  );
+		$css->render_responsive_size($attributes, array('containerMaxWidth','tabletContainerMaxWidth','mobileContainerMaxWidth'), 'max-width', 'containerMaxWidthUnits');
+		$css->add_property('height', '60px');
+		$css->add_property('background-color', 'red');
+		$css->add_property('width','100%');
+		$margin_args= array(
+			'desktop_key' => 'marginDesktop',
+			'tablet_key'  => 'marginTablet',
+			'mobile_key'  => 'marginMobile',
+		);
+		$css->render_measure_output($attributes, 'marginDestop', 'margin', $margin_args);
 
-		$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
-		$css->add_property( 'font-size', '50px' );
+		// Add title font
+		// if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) && isset( $attributes['titleFont'][0]['family'] ) ) {
+		// 	$title_font = $attributes['titleFont'][0];
+
+		// 	$font_variant = ( ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : '' );
+		// 	$font_subset  = ( ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : '' );
+
+		// 	$css->maybe_add_google_font( $title_font['family'], $font_variant, $font_subset );
+		// }
 
 
 		return $css->css_output();
+	}
+
+	public function build_html( $attributes, $unique_id, $content ) {
+
+		$content .= '<script src="/wp-content/plugins/kadence-blocks/includes/assets/js/progressBar.min.js"></script>';
+
+	
+		return $content;
+
 	}
 
 	/**
@@ -99,7 +112,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-//		wp_register_script( 'kadence-countup', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countup.min.js', array( 'countup' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/progressBar.min.js', array( '' ), KADENCE_BLOCKS_VERSION, false );
 
 	}
 }
