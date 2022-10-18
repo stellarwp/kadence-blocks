@@ -27,6 +27,9 @@ import KadenceColors from './block-defaults/color-palette-defaults';
  */
 import KadenceFontFamily from './block-defaults/typography-defaults';
 import KadenceVisibilitySettings from './block-visibility-settings';
+import ExportDefaults from './block-defaults/export-defaults';
+import ImportDefaults from './block-defaults/import-defaults';
+import ResetDefaults from './block-defaults/reset-defaults';
 
 /**
  * Build the row edit
@@ -58,6 +61,7 @@ function KadenceConfig() {
 				</PanelBody>
 
 				{'admin' === user && (
+					<>
 					<PanelBody
 						title={__('Block Visibility', 'kadence-blocks')}
 						initialOpen={false}
@@ -552,6 +556,29 @@ function KadenceConfig() {
 						</div>
 					</PanelBody>
 
+					<PanelBody
+						title={__('Export Block Defaults', 'kadence-blocks')}
+						initialOpen={ false }
+					>
+						<ExportDefaults />
+					</PanelBody>
+
+					<PanelBody
+						title={__('Import Block Defaults', 'kadence-blocks')}
+						initialOpen={ false }
+					>
+						<ImportDefaults />
+					</PanelBody>
+
+					<PanelBody
+						title={__('Reset Block Defaults', 'kadence-blocks')}
+						initialOpen={ false }
+					>
+						<ResetDefaults />
+					</PanelBody>
+
+
+					</>
 					// End check for user = admin.
 				)}
 
