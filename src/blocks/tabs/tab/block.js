@@ -5,7 +5,10 @@
  */
 
 import metadata from './block.json';
-import { InnerBlocks } from '@wordpress/block-editor';
+import {
+	InnerBlocks,
+	useBlockProps
+} from '@wordpress/block-editor';
 
 /**
  * Import Icons
@@ -49,8 +52,13 @@ registerBlockType( 'kadence/tab', {
 	edit,
 	save( { attributes } ) {
 		const { id, uniqueID } = attributes;
+
+		const blockProps = useBlockProps.save( {
+			className: `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }`
+		} );
+
 		return (
-			<div className={ `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }` }>
+			<div {...blockProps}>
 				<div className={ 'kt-tab-inner-content-inner' } >
 					<InnerBlocks.Content />
 				</div>

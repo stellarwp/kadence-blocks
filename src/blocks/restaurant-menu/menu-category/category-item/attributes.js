@@ -15,7 +15,7 @@ export default {
 		type: 'String',
 	},
 	displayTitle: {
-		type: 'Boolean',
+		type: 'boolean',
 		default: true,
 	},
 	title: {
@@ -60,7 +60,7 @@ export default {
 		} ],
 	},
 	displayText: {
-		type: 'Boolean',
+		type: 'boolean',
 		default: true,
 	},
 	contentText: {
@@ -105,7 +105,7 @@ export default {
 		} ],
 	},
 	displayAmount: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	amount: {

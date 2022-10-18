@@ -43,6 +43,7 @@ body.admin-bar {
 	}
 }
 .kb-section-is-sticky > .kt-inside-inner-col { position: sticky; top: calc( var(--kb-admin-bar-visible, 0px ) + var( --kb-section-setting-offset, 0px ) ); }
+.kt-inside-inner-col > .kb-section-is-sticky { position: sticky; top: calc( var(--kb-admin-bar-visible, 0px ) + var( --kb-section-setting-offset, 0px ) ); }
 // Fix issue with cover block.
 .kt-inside-inner-col> .wp-block-cover {
     height: auto;

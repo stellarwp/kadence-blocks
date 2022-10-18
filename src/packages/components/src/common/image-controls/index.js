@@ -8,6 +8,10 @@
 import KadenceMediaPlaceholder from '../media-placeholder';
 import DynamicImageControl from '../../dynamic-image-control';
 /**
+ * Import Css
+ */
+ import './editor.scss';
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -76,7 +80,11 @@ class KadenceImageControl extends Component {
 									value={ ( imageID ? imageID : '' ) }
 									render={ ( { open } ) => (
 										<Button
-											className={ 'components-button components-icon-button kt-cta-upload-btn' }
+											className={ 'components-button components-icon-button kt-cta-upload-btn kb-sidebar-image' }
+											style={ {
+												backgroundImage: 'url("' + imageURL + '")',
+												backgroundSize: 'cover',
+											} }
 											onClick={ open }
 											icon={ image }
 										>

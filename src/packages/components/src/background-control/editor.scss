@@ -1,8 +1,10 @@
 .kadence-image-background-control{
-	margin-bottom: 24px;
 	.kadence-image-upload {
 		margin: 0;
 		min-height: 0;
+		border: 1px solid #CBD5E0;
+		border-radius: 2px;
+		box-shadow: none;
 		.components-placeholder__fieldset {
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -61,4 +63,7 @@
 }
 .block-editor-media-placeholder__dynamic-input-container svg {
     max-width: 14px;
+}
+.kadence-image-upload {
+    margin-bottom: 24px;
 }

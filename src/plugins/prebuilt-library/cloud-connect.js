@@ -40,7 +40,7 @@ import LazyLoad from 'react-lazy-load';
 /**
  * Internal dependencies
  */
- import { KadenceTryParseJSON } from '@kadence/helpers'
+ import { SafeParseJSON } from '@kadence/helpers'
 /**
  * Internal block libraries
  */
@@ -61,7 +61,7 @@ class CloudConnect extends Component {
 		apiFetch( { path: '/wp/v2/settings' } ).then( ( res ) => {
 			this.setState( {
 				isLoading: false,
-				cloudSettings: KadenceTryParseJSON( res.kadence_blocks_cloud ),
+				cloudSettings: SafeParseJSON( res.kadence_blocks_cloud ),
 			} );
 		} );
 	}
@@ -96,7 +96,7 @@ class CloudConnect extends Component {
 		.done( function( response, status, stately ) {
 			if ( response ) {
 				//console.log( response );
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					const cloudSettings = control.state.cloudSettings;
 					if ( ! cloudSettings.connections ) {

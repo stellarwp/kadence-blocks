@@ -16,6 +16,18 @@
 .kadence-range-control-range .components-range-control__root svg {
     margin-top: 2px;
 }
+.kadence-range-control-inner {
+	.components-base-control__field {
+		margin: 0;
+		display: flex;
+	}
+	.components-range-control__wrapper {
+		height: 32px;
+	}
+	.components-input-control__input {
+		height: 32px;
+	}
+}
 .kadence-controls-content .measure-input-wrap .input-setting-toggle {
 	height: 14px;
 	.components-button.input-setting-toggle-btn {
@@ -225,7 +237,7 @@
 }
 .kadence-units .kadence-units-group .components-button {
     min-width: 20px;
-    height: 30px;
+    height: 32px;
     border: 1px solid #e2e4e7;
     background-color: #fff;
     display: flex;

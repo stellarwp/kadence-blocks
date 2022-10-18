@@ -27,7 +27,7 @@ const attributes = {
 		default: 30,
 	},
 	autoPlay: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	autoSpeed: {
@@ -129,11 +129,11 @@ const attributes = {
 		default: 1,
 	},
 	displayMedia: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	displayTitle: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	titleFont: {
@@ -159,7 +159,7 @@ const attributes = {
 		} ],
 	},
 	displayContent: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	contentFont: {
@@ -182,7 +182,7 @@ const attributes = {
 		} ],
 	},
 	displayName: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	nameFont: {
@@ -205,7 +205,7 @@ const attributes = {
 		} ],
 	},
 	displayOccupation: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	occupationFont: {
@@ -228,7 +228,7 @@ const attributes = {
 		} ],
 	},
 	displayRating: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	ratingStyles: {
@@ -243,7 +243,7 @@ const attributes = {
 		} ],
 	},
 	displayIcon: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	iconStyles: {
@@ -265,7 +265,7 @@ const attributes = {
 		} ],
 	},
 	displayShadow: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	shadow: {
@@ -296,7 +296,7 @@ const attributes = {
 		default: [ '', '', '' ],
 	},
 	showPresets: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	wrapperPaddingType: {
@@ -328,11 +328,11 @@ const attributes = {
 		default: 'px',
 	},
 	inQueryBlock: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	useBlockQuoteTags: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 };

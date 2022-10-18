@@ -6,6 +6,7 @@
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 /**
@@ -18,10 +19,7 @@ import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
 import { has, get } from 'lodash';
 
-const {
-	InspectorControls,
-	BlockControls,
-} = wp.blockEditor;
+import { BlockControls } from '@wordpress/block-editor';
 
 const { apiFetch } = wp;
 import {
@@ -44,8 +42,11 @@ import {
 	KadenceSelectPosts,
 	ResponsiveMeasurementControls,
 	KadencePanelBody,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components'
+import { setBlockDefaults } from '@kadence/helpers';
 
 const ktlottieUniqueIDs = [];
 
@@ -127,12 +128,8 @@ export function Edit( {
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-					uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
-				} );
-			}
+			attributes = setBlockDefaults( 'kadence/lottie', attributes);
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
@@ -263,11 +260,12 @@ export function Edit( {
 					onChange={ ( value ) => setAttributes( { align: value } ) }
 				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/lottie' }>
 
 				<InspectorControlTabs
 					panelName={ 'lottie' }
 					setActiveTab={ setActiveTab }
+					allowedTabs={ [ 'general', 'advanced' ] }
 					activeTab={ activeTab }
 				/>
 
@@ -276,7 +274,8 @@ export function Edit( {
 						<KadencePanelBody
 							title={ __('Source File', 'kadence-blocks') }
 							initialOpen={ true }
-							panelName={ 'kb-lottie-source-file' }
+							panelName={ 'sourceFile' }
+							blockSlug={ 'kadence/lottie' }
 						>
 
 							<SelectControl
@@ -333,7 +332,8 @@ export function Edit( {
 						<KadencePanelBody
 							title={ __( 'Playback Settings', 'kadence-blocks' ) }
 							initialOpen={ true }
-							panelName={ 'kb-lottie-playback-settings' }
+							panelName={ 'playbackSettings' }
+							blockSlug={ 'kadence/lottie' }
 						>
 							<ToggleControl
 								label={ __( 'Show Controls', 'kadence-blocks' ) }
@@ -458,12 +458,12 @@ export function Edit( {
 					</>
 				}
 
-
-				{ ( activeTab === 'style' ) &&
+				{ ( activeTab === 'advanced' ) &&
 					<>
 						<KadencePanelBody
 							title={ __( 'Size Controls', 'kadence-blocks' ) }
-							panelName={ 'kb-lottie-size' }
+							panelName={ 'sizeControl' }
+							blockSlug={ 'kadence/lottie' }
 						>
 							<ResponsiveMeasurementControls
 								label={ __( 'Padding', 'kadence-blocks' ) }
@@ -512,15 +512,12 @@ export function Edit( {
 								max={ 1000 }
 							/>
 						</KadencePanelBody>
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/lottie' } />
 					</>
 				}
 
-				{ ( activeTab === 'advanced' ) &&
-					<>
-					</>
-				}
-
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div className={ containerClasses } style={
 				{
 					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),

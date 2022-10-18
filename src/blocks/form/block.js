@@ -492,7 +492,7 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				recaptchaVersion: {
@@ -500,7 +500,7 @@ registerBlockType( 'kadence/form', {
 					default: 'v3',
 				},
 				honeyPot: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				mailerlite: {
@@ -956,7 +956,7 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				recaptchaVersion: {
@@ -964,7 +964,7 @@ registerBlockType( 'kadence/form', {
 					default: 'v3',
 				},
 				honeyPot: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				mailerlite: {
@@ -1412,7 +1412,7 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				recaptchaVersion: {
@@ -1420,7 +1420,7 @@ registerBlockType( 'kadence/form', {
 					default: 'v3',
 				},
 				honeyPot: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 			},
@@ -1816,11 +1816,11 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				honeyPot: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 			},
@@ -2182,11 +2182,11 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				honeyPot: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 			},
@@ -2548,7 +2548,7 @@ registerBlockType( 'kadence/form', {
 					default: '',
 				},
 				recaptcha: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 			},

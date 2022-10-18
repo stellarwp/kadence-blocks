@@ -9,27 +9,32 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "icon": "fe_aperture",
-		  "link": "",
-		  "target": "_self",
-		  "size": 50,
-		  "width": 2,
-		  "title": "",
-		  "color": "#444444",
-		  "background": "transparent",
-		  "border": "#444444",
-		  "borderRadius": 0,
-		  "borderWidth": 2,
-		  "padding": 20,
-		  "style": "default",
-		  "marginTop": 0,
-		  "marginRight": 0,
-		  "marginBottom": 0,
-		  "marginLeft": 0,
-		  "hColor": "",
-		  "hBackground": "",
-		  "hBorder": "",
-		  "linkTitle": ""
+			"icon": "fe_aperture",
+			"link": "",
+			"target": "_self",
+			"size": 50,
+			"width": 2,
+			"title": "",
+			"color": "palette4",
+			"background": "transparent",
+			"border": "palette4",
+			"borderRadius": 0,
+			"borderWidth": 2,
+			"padding": [ 20, 20, 20, 20 ],
+			"paddingUnit" : "px",
+			"style": "default",
+			"margin": [ "", "", "", "" ],
+			"marginUnit" : "px",
+			"hColor": "",
+			"hBackground": "",
+			"hBorder": "",
+			"linkTitle": "",
+			"tabletSize": "",
+			"mobileSize": "",
+			"tabletMargin": [ "", "", "", "" ],
+			"mobileMargin": [ "", "", "", "" ],
+			"tabletPadding": [ "", "", "", "" ],
+			"mobilePadding": [ "", "", "", "" ]
 		}
 	  ]
 	},
@@ -59,7 +64,7 @@
 	  "type": "string"
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

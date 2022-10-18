@@ -20,6 +20,10 @@ import metadata from './block.json';
  */
 import edit from './edit';
 /**
+ * Import edit
+ */
+ import deprecated from './deprecated';
+/**
  * Import save
  */
 import save from './save';
@@ -51,14 +55,18 @@ registerBlockType( 'kadence/accordion', {
 		__( 'pane', 'kadence-blocks' ),
 		'KB',
 	],
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
-			return { 'data-align': blockAlignment };
-		}
+	// getEditWrapperProps( { blockAlignment } ) {
+	// 	if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
+	// 		return { 'data-align': blockAlignment };
+	// 	}
+	// },
+	icon: {
+		src: accordionBlockIcon,
 	},
 	icon: {
 		src: accordionBlockIcon,
 	},
 	edit,
 	save,
+	
 } );

@@ -37,9 +37,11 @@ import {
 	MeasurementControls,
 	KadencePanelBody,
 	WebfontLoader,
+	KadenceWebfontLoader,
 	RangeControl,
 	IconPicker,
 	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -52,6 +54,7 @@ import {
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 import {
 	createBlock,
@@ -63,11 +66,11 @@ import {
 	Fragment,
 } from '@wordpress/element';
 import {
-	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
+	useInnerBlocksProps,
 	useBlockProps
 } from '@wordpress/block-editor';
 
@@ -104,11 +107,10 @@ const getPanesTemplate = memoize( ( panes ) => {
  * Build the row edit
  */
 function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane } ) {
-
 	const {
 		uniqueID,
 		paneCount,
-		blockAlignment,
+		align,
 		openPane,
 		titleStyles,
 		contentPadding,
@@ -172,15 +174,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
 					}
 				} );
+			} else {
+				setShowPreset( true );
 			}
 			if ( blockConfigObject[ 'kadence/pane' ] !== undefined && typeof blockConfigObject[ 'kadence/pane' ] === 'object' ) {
 				if ( blockConfigObject[ 'kadence/pane' ].titleTag !== undefined ) {
 					setTitleTag( blockConfigObject[ 'kadence/pane' ].titleTag );
 				}
 			}
-			if ( showPresets ) {
-				setShowPreset( true );
-			}
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
@@ -441,77 +443,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		},
 	};
 	const config = ( titleStyles[ 0 ].google ? lgconfig : '' );
-	const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${uniqueID} kt-accordion-has-${paneCount}-panes kt-accordion-block kt-pane-header-alignment-${titleAlignment}` );
-	const normalSettings = (
-		<>
-			<PopColorControl
-				label={__( 'Title Color', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { color: value } )}
-			/>
-			<PopColorControl
-				label={__( 'Title Background', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { background: value } )}
-			/>
-			<BorderColorControls
-				label={__( 'Title Border Color' )}
-				values={titleStyles[ 0 ].border}
-				control={titleBorderColorControl}
-				onChange={( value ) => saveTitleStyles( { border: value } )}
-				onControl={( value ) => setTitleBorderColorControl( value )}
-			/>
-		</>
-	);
-	const hoverSettings = (
-		<>
-			<PopColorControl
-				label={__( 'Hover Color', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { colorHover: value } )}
-			/>
-			<PopColorControl
-				label={__( 'Hover Background', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { backgroundHover: value } )}
-			/>
-			<BorderColorControls
-				label={__( 'Hover Border Color' )}
-				values={titleStyles[ 0 ].borderHover}
-				control={titleBorderHoverColorControl}
-				onChange={( value ) => saveTitleStyles( { borderHover: value } )}
-				onControl={( value ) => setTitleBorderHoverColorControl( value )}
-			/>
-		</>
-	);
-	const activeSettings = (
-		<>
-			<PopColorControl
-				label={__( 'Active Color', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { colorActive: value } )}
-			/>
-			<PopColorControl
-				label={__( 'Active Background', 'kadence-blocks' )}
-				value={( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' )}
-				default={''}
-				onChange={( value ) => saveTitleStyles( { backgroundActive: value } )}
-			/>
-			<BorderColorControls
-				label={__( 'Active Border Color' )}
-				colorDefault={( titleStyles[ 0 ].border && titleStyles[ 0 ].border[ 0 ] ? KadenceColorOutput( titleStyles[ 0 ].border[ 0 ] ) : '#444444' )}
-				values={titleStyles[ 0 ].borderActive}
-				control={titleBorderActiveColorControl}
-				onChange={( value ) => saveTitleStyles( { borderActive: value } )}
-				onControl={( value ) => setTitleBorderActiveColorControl( value )}
-			/>
-		</>
-	);
+	const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${uniqueID} kt-accordion-has-${paneCount}-panes kt-accordion-block kt-pane-header-alignment-${ titleAlignment }` );
 	const accordionIconSet = [];
 	accordionIconSet.basic = <>
 		<rect x="77.002" y="12.507" width="13.982" height="74.986" fill="#444"/>
@@ -566,7 +498,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 
 	const renderIconSet = svg => (
 		<svg className="accord-icon" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round"
-			 strokeMiterlimit="1.414" style={{ fill: '#000000' }}>		</svg>
+			 strokeMiterlimit="1.414" style={{ fill: '#000000' }}>
+			{accordionIconSet[ svg ]}
+		</svg>
 	);
 	const renderCSS = (
 		<style>
@@ -579,7 +513,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${'' !== previewTitlePaddingRight ? `padding-right:${previewTitlePaddingRight + previewTitlePaddingType};` : ''}
 					${'' !== previewTitlePaddingBottom ? `padding-bottom:${previewTitlePaddingBottom + previewTitlePaddingType};` : ''}
 					${'' !== previewTitlePaddingLeft ? `padding-left:${previewTitlePaddingLeft + previewTitlePaddingType};` : ''}
-					margin-top:${( titleStyles[ 0 ].marginTop > 32 ? titleStyles[ 0 ].marginTop : 0 )}px;
 					border-width:${titleStyles[ 0 ].borderWidth[ 0 ]}px ${titleStyles[ 0 ].borderWidth[ 1 ]}px ${titleStyles[ 0 ].borderWidth[ 2 ]}px ${titleStyles[ 0 ].borderWidth[ 3 ]}px;
 					border-radius:${titleStyles[ 0 ].borderRadius[ 0 ]}px ${titleStyles[ 0 ].borderRadius[ 1 ]}px ${titleStyles[ 0 ].borderRadius[ 2 ]}px ${titleStyles[ 0 ].borderRadius[ 3 ]}px;
 					font-size:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
@@ -589,6 +522,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					font-family:${titleStyles[ 0 ].family};
 					font-style:${titleStyles[ 0 ].style};
 					font-weight:${titleStyles[ 0 ].weight};
+				}
+				.kt-accordion-${uniqueID} .wp-block-kadence-pane {
+					margin-top:${( titleStyles[ 0 ].marginTop ? titleStyles[ 0 ].marginTop : 0 )}px;
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-blocks-accordion-title {
 					line-height:${titleStyles[ 0 ].lineHeight[ 0 ]}${titleStyles[ 0 ].lineType};
@@ -649,16 +585,32 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		</style>
 	);
 
-	const blockProps = useBlockProps( {} );
-
+	const blockProps = useBlockProps( { 'data-align': ( 'full' === align || 'wide' === align || 'center' === align ? align : undefined ) } );
+	const innerClasses = classnames( {
+		'kt-accordion-inner-wrap': true,
+		[ `kt-accordion-${ uniqueID }` ]: uniqueID,
+		[ `kt-start-active-pane-${ openPane + 1 }` ]: true,
+		[ `kt-accodion-icon-style-${ iconStyle && showIcon ? iconStyle : 'none' }` ]: true,
+		[ `kt-accodion-icon-side-${ iconSide ? iconSide : 'right' }` ]: true,
+	} );
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: innerClasses,
+		},
+		{
+			allowedBlocks: ALLOWED_BLOCKS,
+			templateLock: false,
+			template: getPanesTemplate( ( 0 === realPaneCount ? paneCount : realPaneCount ) ),
+		}
+	);
 	return (
 		<div {...blockProps}>
 			{renderCSS}
 			<BlockControls>
 				<BlockAlignmentToolbar
-					value={blockAlignment}
+					value={align}
 					controls={[ 'center', 'wide', 'full' ]}
-					onChange={value => setAttributes( { blockAlignment: value } )}
+					onChange={value => setAttributes( { align: value } )}
 				/>
 				<AlignmentToolbar
 					value={titleAlignment}
@@ -731,53 +683,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									</Fragment>
 								)}
 							</KadencePanelBody>
-							{ showSettings( 'titleColors', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Pane Title Color Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-pane-title-color-settings'}
-								>
-									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'normal',
-													  title    : __( 'Normal' ),
-													  className: 'kt-normal-tab',
-												  },
-												  {
-													  name     : 'hover',
-													  title    : __( 'Hover' ),
-													  className: 'kt-hover-tab',
-												  },
-												  {
-													  name     : 'active',
-													  title    : __( 'Active' ),
-													  className: 'kt-active-tab',
-												  },
-											  ]}>
-										{ ( tab ) => {
-												let tabout;
-
-												if ( tab.name ) {
-													if ( 'hover' === tab.name ) {
-														tabout = hoverSettings;
-													} else if ( 'active' === tab.name ) {
-														tabout = activeSettings;
-													} else {
-														tabout = normalSettings;
-													}
-												}
-												return (
-													<div className={tab.className} key={tab.className}>
-														{tabout}
-													</div>
-												);
-											}
-										}
-									</TabPanel>
-								</KadencePanelBody>
-							) }
 							{ showSettings( 'titleIcon', 'kadence/accordion' ) && (
 								<KadencePanelBody
 									title={ __( 'Pane Title Trigger Icon', 'kadence-blocks' ) }
@@ -883,56 +788,53 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					}
 					{ ( activeTab === 'style' ) &&
 						<>
-							{ showSettings( 'titleSpacing', 'kadence/accordion' ) && (
+							{ showSettings( 'titleColors', 'kadence/accordion' ) && (
 								<KadencePanelBody
-									title={__( 'Pane Title Spacing', 'kadence-blocks' )}
-									panelName={'kb-accordion-pane-title-spacing'}
+									title={__( 'Pane Title Colors', 'kadence-blocks' )}
+									initialOpen={true}
+									panelName={'kb-accordion-pane-title-color-settings'}
 								>
-									<ResponsiveMeasurementControls
-										label={__( 'Pane Title Padding', 'kadence-blocks' )}
-										control={titlePaddingControl}
-										tabletControl={titlePaddingControl}
-										mobileControl={titlePaddingControl}
-										value={titleStyles[ 0 ].padding}
-										tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
-										mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
-										onChange={( value ) => {
-											saveTitleStyles( { padding: value } );
-										}}
-										onChangeTablet={( value ) => {
-											saveTitleStyles( { paddingTablet: value } );
-										}}
-										onChangeMobile={( value ) => {
-											saveTitleStyles( { paddingMobile: value } );
-										}}
-										onChangeControl={( value ) => setTitlePaddingControl( value )}
-										onChangeTabletControl={( value ) => setTitlePaddingControl( value )}
-										onChangeMobileControl={( value ) => setTitlePaddingControl( value )}
-										allowEmpty={true}
-										min={titlePaddingMin}
-										max={titlePaddingMax}
-										step={titlePaddingStep}
-										unit={undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px'}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => {
-											saveTitleStyles( { paddingType: value } );
-										}}
+									<PopColorControl
+										label={__( 'Title Color', 'kadence-blocks' )}
+										value={( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' )}
+										onChange={( value ) => saveTitleStyles( { color: value } )}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' )}
+										onChange2={( value ) => saveTitleStyles( { colorHover: value } )}
+										swatchLabel3={__( 'Active Color', 'kadence-blocks' )}
+										value3={( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' )}
+										onChange3={( value ) => saveTitleStyles( { colorActive: value } )}
 									/>
-									<RangeControl
-										label={__( 'Pane Spacer Between', 'kadence-blocks' )}
-										value={titleStyles[ 0 ].marginTop}
-										onChange={( value ) => saveTitleStyles( { marginTop: value } )}
-										min={1}
-										max={120}
+									<PopColorControl
+										label={__( 'Title Background', 'kadence-blocks' )}
+										value={( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' )}
+										onChange={( value ) => saveTitleStyles( { background: value } )}
+										swatchLabel2={__( 'Hover Background', 'kadence-blocks' )}
+										value2={( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' )}
+										onChange2={( value ) => saveTitleStyles( { backgroundHover: value } )}
+										swatchLabel3={__( 'Active Background', 'kadence-blocks' )}
+										value3={( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' )}
+										onChange3={( value ) => saveTitleStyles( { backgroundActive: value } )}
 									/>
 								</KadencePanelBody>
-							)}
+							) }
 							{ showSettings( 'titleBorder', 'kadence/accordion' ) && (
 								<KadencePanelBody
 									title={__( 'Pane Title Border', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-accordion-pane-title-border'}
 								>
+									<BorderColorControls
+										label={__( 'Title Border Color' )}
+										values={titleStyles[ 0 ].border}
+										onChange={( value ) => saveTitleStyles( { border: value } )}
+										swatchLabel2={__( 'Hover Border', 'kadence-blocks' )}
+										value2={( titleStyles[ 0 ].borderHover ? titleStyles[ 0 ].borderHover : '' )}
+										onChange2={( value ) => saveTitleStyles( { borderHover: value } )}
+										swatchLabel3={__( 'Active Border', 'kadence-blocks' )}
+										value3={( titleStyles[ 0 ].borderActive ? titleStyles[ 0 ].borderActive : '' )}
+										onChange3={( value ) => saveTitleStyles( { borderActive: value } )}
+									/>
 									<MeasurementControls
 										label={__( 'Pane Title Border Width (px)', 'kadence-blocks' )}
 										measurement={titleStyles[ 0 ].borderWidth}
@@ -1008,38 +910,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 							)}
 							{ showSettings( 'paneContent', 'kadence/accordion' ) && (
 								<KadencePanelBody
-									title={__( 'Inner Content Settings', 'kadence-blocks' )}
+									title={__( 'Inner Content Styling', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-accordion-inner-content-settings'}
 								>
-									<ResponsiveMeasurementControls
-										label={__( 'Inner Content Padding', 'kadence-blocks' )}
-										control={contentPaddingControl}
-										tabletControl={contentPaddingControl}
-										mobileControl={contentPaddingControl}
-										value={contentPadding}
-										tabletValue={contentTabletPadding}
-										mobileValue={contentMobilePadding}
-										onChange={( value ) => {
-											setAttributes( { contentPadding: value } );
-										}}
-										onChangeTablet={( value ) => {
-											setAttributes( { contentTabletPadding: value } );
-										}}
-										onChangeMobile={( value ) => {
-											setAttributes( { contentMobilePadding: value } );
-										}}
-										onChangeControl={( value ) => setContentPaddingControl( value )}
-										onChangeTabletControl={( value ) => setContentPaddingControl( value )}
-										onChangeMobileControl={( value ) => setContentPaddingControl( value )}
-										allowEmpty={true}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={contentPaddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { contentPaddingType: value } )}
-									/>
 									<PopColorControl
 										label={__( 'Inner Content Background', 'kadence-blocks' )}
 										value={( contentBgColor ? contentBgColor : '' )}
@@ -1086,10 +960,94 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					}
 					{( activeTab === 'advanced' ) &&
 						<>
+						{ showSettings( 'titleSpacing', 'kadence/accordion' ) && (
+								<KadencePanelBody
+									title={__( 'Pane Title Padding', 'kadence-blocks' )}
+									panelName={'kb-accordion-pane-title-spacing'}
+									initialOpen={ true }
+								>
+									<ResponsiveMeasurementControls
+										label={__( 'Pane Title Padding', 'kadence-blocks' )}
+										control={titlePaddingControl}
+										tabletControl={titlePaddingControl}
+										mobileControl={titlePaddingControl}
+										value={titleStyles[ 0 ].padding}
+										tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
+										mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
+										onChange={( value ) => {
+											saveTitleStyles( { padding: value } );
+										}}
+										onChangeTablet={( value ) => {
+											saveTitleStyles( { paddingTablet: value } );
+										}}
+										onChangeMobile={( value ) => {
+											saveTitleStyles( { paddingMobile: value } );
+										}}
+										onChangeControl={( value ) => setTitlePaddingControl( value )}
+										onChangeTabletControl={( value ) => setTitlePaddingControl( value )}
+										onChangeMobileControl={( value ) => setTitlePaddingControl( value )}
+										allowEmpty={true}
+										min={titlePaddingMin}
+										max={titlePaddingMax}
+										step={titlePaddingStep}
+										unit={undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px'}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => {
+											saveTitleStyles( { paddingType: value } );
+										}}
+									/>
+									<RangeControl
+										label={__( 'Pane Space Between', 'kadence-blocks' )}
+										value={ titleStyles[ 0 ].marginTop }
+										onChange={( value ) => saveTitleStyles( { marginTop: value } )}
+										min={ 0 }
+										max={ 120 }
+										unit={ 'px' }
+										showUnit={ true }
+									/>
+								</KadencePanelBody>
+							)}
+							{ showSettings( 'paneContent', 'kadence/accordion' ) && (
+								<KadencePanelBody
+									title={__( 'Inner Content Padding', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-accordion-inner-padding-settings'}
+								>
+									<ResponsiveMeasurementControls
+										label={__( 'Inner Content Padding', 'kadence-blocks' )}
+										control={contentPaddingControl}
+										tabletControl={contentPaddingControl}
+										mobileControl={contentPaddingControl}
+										value={contentPadding}
+										tabletValue={contentTabletPadding}
+										mobileValue={contentMobilePadding}
+										onChange={( value ) => {
+											setAttributes( { contentPadding: value } );
+										}}
+										onChangeTablet={( value ) => {
+											setAttributes( { contentTabletPadding: value } );
+										}}
+										onChangeMobile={( value ) => {
+											setAttributes( { contentMobilePadding: value } );
+										}}
+										onChangeControl={( value ) => setContentPaddingControl( value )}
+										onChangeTabletControl={( value ) => setContentPaddingControl( value )}
+										onChangeMobileControl={( value ) => setContentPaddingControl( value )}
+										allowEmpty={true}
+										min={paddingMin}
+										max={paddingMax}
+										step={paddingStep}
+										unit={contentPaddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { contentPaddingType: value } )}
+									/>
+								</KadencePanelBody>
+							) }
 							{ showSettings( 'titleTag', 'kadence/accordion' ) && (
 								<KadencePanelBody
 									title={__( 'Title Tag Settings', 'kadence-blocks' )}
 									panelName={'kb-accordion-title-tag-settings'}
+									initialOpen={ false }
 								>
 									<SelectControl
 										label={__( 'Title Tag', 'kadence-blocks' )}
@@ -1110,43 +1068,54 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 								</KadencePanelBody>
 							)}
 							{ showSettings( 'structure', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Structure Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-structure-settings'}
-								>
-									<RangeControl
-										label={__( 'Content Minimum Height', 'kadence-blocks' )}
-										value={minHeight}
-										onChange={( value ) => {
-											setAttributes( {
-												minHeight: value,
-											} );
-										}}
-										min={0}
-										max={1000}
-									/>
-									<RangeControl
-										label={__( 'Max Width', 'kadence-blocks' )}
-										value={maxWidth}
-										onChange={( value ) => {
-											setAttributes( {
-												maxWidth: value,
-											} );
-										}}
-										min={0}
-										max={2000}
-									/>
-									<ToggleControl
-										label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
-										checked={faqSchema}
-										onChange={( value ) => {
-											updateFaqSchema( value );
-											setAttributes( { faqSchema: value } );
-										}}
-									/>
-								</KadencePanelBody>
+								<>
+									<KadencePanelBody
+										title={__( 'Structure Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-accordion-structure-settings'}
+									>
+										<RangeControl
+											label={__( 'Content Minimum Height', 'kadence-blocks' )}
+											value={minHeight}
+											onChange={( value ) => {
+												setAttributes( {
+													minHeight: value,
+												} );
+											}}
+											min={0}
+											max={1000}
+										/>
+										<RangeControl
+											label={__( 'Max Width', 'kadence-blocks' )}
+											value={maxWidth}
+											onChange={( value ) => {
+												setAttributes( {
+													maxWidth: value,
+												} );
+											}}
+											min={0}
+											max={2000}
+										/>
+									</KadencePanelBody>
+									<KadencePanelBody
+										title={__( 'FAQ Schema', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-accordion-faq-settings'}
+									>
+										<ToggleControl
+											label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
+											checked={faqSchema}
+											onChange={( value ) => {
+												updateFaqSchema( value );
+												setAttributes( { faqSchema: value } );
+											}}
+										/>
+									</KadencePanelBody>
+								</>
 							)}
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/accordion' } />
+
 						</>
 					}
 				</InspectorControls>
@@ -1174,23 +1143,16 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						</ButtonGroup>
 					</div>
 				)}
-				{!showPreset && (
+				{ ! showPreset && (
 					<Fragment>
 						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
-						<div className="kt-accordion-wrap" style={{
+						<div className="kt-accordion-wrap" style={ {
 							maxWidth: maxWidth + 'px',
-						}}>
-							{titleStyles[ 0 ].google && (
-								<WebfontLoader config={config}>
-								</WebfontLoader>
-							)}
-							<div
-								className={`kt-accordion-inner-wrap kt-accordion-${uniqueID} kt-start-active-pane-${openPane + 1} kt-accodion-icon-style-${( iconStyle && showIcon ? iconStyle : 'none' )} kt-accodion-icon-side-${( iconSide ? iconSide : 'right' )}`}>
-								<InnerBlocks
-									template={getPanesTemplate( ( 0 === realPaneCount ? paneCount : realPaneCount ) )}
-									templateLock={false}
-									allowedBlocks={ALLOWED_BLOCKS}/>
-							</div>
+						} }>
+							{ titleStyles && titleStyles[ 0 ] && titleStyles[ 0 ].google && (
+								<KadenceWebfontLoader typography={ titleStyles } clientId={ clientId } id={ 'titleStyles' } />
+							) }
+							<div { ...innerBlocksProps } />
 						</div>
 						<div className="kt-accordion-add-selecter">
 							<Button

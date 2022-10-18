@@ -54,6 +54,10 @@
 		1
 	  ]
 	},
+	"contentBorderRadius": {
+	  "type": "array",
+	  "default": [ 0, 0, 0, 0 ]
+    },
 	"contentBorderControl": {
 	  "type": "string",
 	  "default": "linked"
@@ -236,7 +240,7 @@
 	  "default": ""
 	},
 	"showPresets": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"subtitleFont": {
@@ -282,7 +286,7 @@
 	  ]
 	},
 	"enableSubtitle": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"widthType": {

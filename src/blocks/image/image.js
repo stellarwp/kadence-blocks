@@ -44,7 +44,7 @@ import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
 import { KadenceColorOutput } from '@kadence/helpers';
 import { isExternalImage } from './edit';
-
+import metadata from './block.json';
 /**
  * Module constants
  */
@@ -62,7 +62,8 @@ import {
 	ResponsiveRangeControls,
 	DropShadowControl,
 	ImageSizeControl as KadenceImageSizeControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	bottomLeftIcon,
@@ -354,6 +355,7 @@ export default function Image( {
 	function onUpdateSelectImage( image ) {
 		setAttributes( {
 			url: image.url,
+			id: image.id ? image.id : undefined,
 			width: undefined,
 			height: undefined,
 			sizeSlug: undefined,
@@ -362,6 +364,7 @@ export default function Image( {
 	function clearImage() {
 		setAttributes( {
 			url: undefined,
+			id: undefined,
 			width: undefined,
 			height: undefined,
 			sizeSlug: undefined,
@@ -1142,6 +1145,12 @@ export default function Image( {
 						</KadencePanelBody>
 					</>
 				}
+
+				{ ( activeTab === 'advanced' ) && (
+					<>
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/image' } excludedAttrs={ [ 'url', 'id', 'caption', 'alt' ] } />
+					</>
+				)}
 
 			</InspectorControls>
 			<InspectorAdvancedControls>

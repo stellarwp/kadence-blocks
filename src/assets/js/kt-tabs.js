@@ -1,183 +1,194 @@
-/**
- * Tabs that can create an accordion for mobile.
- */
-jQuery( function( $ ) {
-	$( '.kt-tabs-wrap' ).each( function( a ) {
-		var ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active a' ).attr( 'data-tab' );
-		var ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
-			role: 'tablist',
-		} );
-		$( this ).find( '> .kt-tabs-content-wrap > .kt-tab-inner-content' ).attr( {
-			role: 'tabpanel',
-			'aria-hidden': 'true',
-		} );
-		$( this ).find( '> .kt-tabs-title-list a' ).each( function( b ) {
-			var tabId = $( this ).attr( 'data-tab' );
-			var tabName = $( this ).parent().attr( 'id' );
-			$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).attr( 'aria-labelledby', tabName );
-		} );
-		$( this ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + ktStartTab ).attr( 'aria-hidden', 'false' );
-		$( this ).find( '> .kt-tabs-title-list li:not(.kt-tab-title-active) a' ).each( function() {
-			$( this ).attr( {
-				role: 'tab',
-				'aria-selected': 'false',
-				tabindex: '-1',
-				'aria-controls': $( this ).parent().attr( 'id' ),
-			} ).parent().attr( 'role', 'presentation' );
-		} );
-		$( this ).find( '> .kt-tabs-title-list li.kt-tab-title-active a' ).attr( {
-			role: 'tab',
-			'aria-selected': 'true',
-			'aria-controls': $( this ).find( '> .kt-tabs-title-list li.kt-tab-title-active a' ).parent().attr( 'id' ),
-			tabindex: '0',
-		} ).parent().attr( 'role', 'presentation' );
-		$( ktTabsList ).on( 'keydown', 'a', function( e ) {
-			switch ( e.which ) {
-				case 37: case 38:
-					if ( $( this ).parent().prev().length != 0 ) {
-						$( this ).parent().prev().find( '> a' ).click();
-					} else {
-						$( ktTabsList ).find( 'li:last > a' ).click();
-					}
-					break;
-				case 39: case 40:
-					if ( $( this ).parent().next().length != 0 ) {
-						$( this ).parent().next().find( '> a' ).click();
-					} else {
-						$( ktTabsList ).find( 'li:first > a' ).click();
-					}
-					break;
-			}
-		} );
-		var resizeEvent = window.document.createEvent( 'UIEvents' );
-		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
-		window.dispatchEvent( resizeEvent );
-	} );
-	$( '.kt-tabs-title-list li a' ).on( 'click', function( e ) {
-		e.preventDefault();
-		var tabId = $( this ).attr( 'data-tab' );
+(function() {
+	'use strict';
+	window.KBTabs = {
+		setupTabs: function() {
+			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
+			ktTabWraps.forEach((thisElem) => {
+				thisElem.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
+					subElem.setAttribute('role', 'tabpanel');
+					subElem.setAttribute('aria-hidden', 'true');
+				});
+		
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
+					var parentId = subElem.parentElement.getAttribute("id");
+					var isActive = subElem.parentElement.classList.contains('kt-tab-title-active');
+		
+					subElem.setAttribute('role', 'tab');
+					subElem.setAttribute('aria-controls', parentId);
+					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');
+					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
+		
+					// Set attr on the related content tab
+					var tabId = subElem.getAttribute('data-tab');
+					var contentTab = thisElem.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
+					contentTab.setAttribute('aria-labelledby', parentId);
+					contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+				});
+		
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list a').forEach((anchor) => {
+					anchor.addEventListener('keydown', function(evt) {
+						const listItem = this.parentElement;
+						switch ( evt.which ) {
+							case 37: 
+							case 38:
+								if (listItem.previousElementSibling) {
+									listItem.previousElementSibling.querySelector('a').click();
+								} else {
+									listItem.parentElement.querySelector('li:last-of-type > a' ).click();
+								}
+								break;
+							case 39: 
+							case 40:
+								if (listItem.nextElementSibling) {
+									listItem.nextElementSibling.querySelector('a').click();
+								} else {
+									listItem.parentElement.querySelector('li:first-of-type > a' ).click();
+								}
+								break;
+						}
+					});
+				});
+				var resizeEvent = new Event('resize');
+				window.dispatchEvent(resizeEvent);
+			});
+		
+			var ktTabButtons = document.querySelectorAll('.kt-tabs-title-list li a');
+			ktTabButtons.forEach((thisElem) => {
+				thisElem.addEventListener('click', function(evt) {
+					evt.preventDefault();
+					const newActiveTabId = thisElem.getAttribute('data-tab');
+					const tabWrap = thisElem.closest('.kt-tabs-wrap');
+					window.KBTabs.setActiveTab(tabWrap, newActiveTabId);
+				});
+			});
+		
+			var ktAccordions = document.querySelectorAll('.kt-create-accordion');
+			ktAccordions.forEach((thisElem) => {
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
+					var tabId = listItem.querySelector('a').getAttribute('data-tab');
+		
+					var activeClass = listItem.classList.contains('kt-tab-title-active') ? 'kt-tab-title-active' : 'kt-tab-title-inactive';
+					var iconClass = listItem.classList.contains('kt-tabs-svg-show-only') ? 'kt-tabs-svg-show-only' : 'kt-tabs-svg-show-always';
+					var iconSideClass = listItem.classList.contains('kt-tabs-icon-side-top') ? 'kt-tabs-icon-side-top' : '';
+					
+					const closestTabWrap = listItem.closest('.kt-tabs-wrap');
+					const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
+		
+					const newElem = window.document.createElement('div');
+					newElem.className = 'kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeClass + ' ' + iconClass + ' ' + iconSideClass;
+					newElem.innerHTML = listItem.innerHTML;
+		
+					ktContentWrap.insertBefore(newElem, ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId));
+					
+					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('role')
+				});
+			});
+		
+			var ktAccordionAnchor = document.querySelectorAll('.kt-tabs-accordion-title a');
+			ktAccordionAnchor.forEach((thisElem) => {
+				thisElem.addEventListener('click', function(evt) {
+		
+					evt.preventDefault();
 
-		$( this ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
-			.addClass( 'kt-tab-title-inactive' )
-			.removeClass( 'kt-tab-title-active' )
-			.find( 'a.kt-tab-title' ).attr( {
-				tabindex: '-1',
-				'aria-selected': 'false',
-			} );
-		$( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-			return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-		} ).addClass( 'kt-active-tab-' + tabId );
-		$( this ).parent( 'li' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-		$( this ).attr( {
-			tabindex: '0',
-			'aria-selected': 'true',
-		} ).focus();
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabId + ')' ).attr( 'aria-hidden', 'true' );
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).attr( 'aria-hidden', 'false' );
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabId + ')' ).addClass( 'kt-tab-title-inactive' ).removeClass( 'kt-tab-title-active' ).attr( {
-			tabindex: '-1',
-			'aria-selected': 'false',
-		} );
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' ).attr( {
-			tabindex: '0',
-			'aria-selected': 'true',
-		} );
-		var resizeEvent = window.document.createEvent( 'UIEvents' );
-		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
-		window.dispatchEvent( resizeEvent );
-		var tabEvent = window.document.createEvent( 'UIEvents' );
-		tabEvent.initUIEvent( 'kadence-tabs-open', true, false, window, 0 );
-		window.dispatchEvent( tabEvent );
-	} );
-	$( '.kt-create-accordion' ).find( '> .kt-tabs-title-list .kt-title-item' ).each( function() {
-		var tabId = $( this ).find( 'a' ).attr( 'data-tab' );
-		var activeclass;
-		var iconclass;
-		var iconsideclass;
-		if ( $( this ).hasClass( 'kt-tab-title-active' ) ) {
-			activeclass = 'kt-tab-title-active';
-		} else {
-			activeclass = 'kt-tab-title-inactive';
-		}
-		if ( $( this ).hasClass( 'kt-tabs-svg-show-only' ) ) {
-			iconclass = 'kt-tabs-svg-show-only';
-		} else {
-			iconclass = 'kt-tabs-svg-show-always';
-		}
-		if ( $( this ).hasClass( 'kt-tabs-icon-side-top' ) ) {
-			iconsideclass = 'kt-tabs-icon-side-top';
-		} else {
-			iconsideclass = '';
-		}
-		$( this ).closest( '.kt-tabs-wrap' ).find( '> .kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).before( '<div class="kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeclass + ' ' + iconclass + ' ' + iconsideclass + '">' + $( this ).html() + '</div>' );
-		$( this ).closest( '.kt-tabs-wrap' ).find( '> .kt-tabs-content-wrap > .kt-tabs-accordion-title-' + tabId + '  a' ).removeAttr( 'role' );
-	} );
-	$( '.kt-tabs-accordion-title a' ).on( 'click', function( e ) {
-		e.preventDefault();
-		var tabId = $( this ).attr( 'data-tab' );
-		if ( $( this ).parent( '.kt-tabs-accordion-title' ).hasClass( 'kt-tab-title-active' ) ) {
-			$( this ).closest( '.kt-tabs-wrap' ).removeClass( 'kt-active-tab-' + tabId );
-			$( this ).parent( '.kt-tabs-accordion-title' ).removeClass( 'kt-tab-title-active' ).addClass( 'kt-tab-title-inactive' );
-		} else {
-			// $( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tab-title-active' )
-			// 	.addClass( 'kt-tab-title-inactive' )
-			// 	.removeClass( 'kt-tab-title-active' );
-			// $( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-			// 	return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-			// } ).addClass( 'kt-active-tab-' + tabId );
-			$( this ).closest( '.kt-tabs-wrap' ).addClass( 'kt-active-tab-' + tabId );
-			//$( this ).closest( '.kt-tabs-wrap' ).find( 'ul .kt-title-item-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-			$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-		}
-		var resizeEvent = window.document.createEvent( 'UIEvents' );
-		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
-		window.dispatchEvent( resizeEvent );
-		var tabEvent = window.document.createEvent( 'UIEvents' );
-		tabEvent.initUIEvent( 'kadence-tabs-open', true, false, window, 0 );
-		window.dispatchEvent( tabEvent );
-	} );
-	function kt_anchor_tabs() {
-		if ( window.location.hash != '' ) {
-			if ( $( window.location.hash + '.kt-title-item' ).length ) {
-				var tabid = window.location.hash.substring(1);
-				var tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
-				// remove active.
-				$( '#' + tabid ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
-					.addClass( 'kt-tab-title-inactive' )
-					.removeClass( 'kt-tab-title-active' )
-					.find( 'a.kt-tab-title' ).attr( {
-						tabindex: '-1',
-						'aria-selected': 'false',
-					} );
-				// Set active
-				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-					return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-				} ).addClass( 'kt-active-tab-' + tabnumber );
-
-				$( '#' + tabid ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-				$( '#' + tabid ).find( 'a.kt-tab-title' ).attr( {
-					tabindex: '0',
-					'aria-selected': 'true',
-				} ).focus();
-				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabnumber + ')' ).attr( 'aria-hidden', 'true' );
-				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + tabnumber ).attr( 'aria-hidden', 'false' );
-				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabnumber + ')' ).addClass( 'kt-tab-title-inactive' ).removeClass( 'kt-tab-title-active' ).attr( {
-					tabindex: '-1',
-					'aria-selected': 'false',
-				} );
-				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabnumber ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' ).attr( {
-					tabindex: '0',
-					'aria-selected': 'true',
-				} );
-				if ( ( $( window ).width() <= 767 && $( '#' + tabid ).closest( '.kt-tabs-wrap' ).hasClass( 'kt-tabs-mobile-layout-accordion' ) ) || ( $( window ).width() > 767 && $( window ).width() <= 1024 && $( '#' + tabid ).closest( '.kt-tabs-wrap' ).hasClass( 'kt-tabs-tablet-layout-accordion' ) ) ) {
-					// Anchor scroll won't work because anchor is hidden, manually add.
-					$([document.documentElement, document.body]).animate({
-						scrollTop: $( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabnumber ).offset().top - 20
-					}, 600);
-				}
+					var tabId = thisElem.getAttribute('data-tab');
+					var accTitle = thisElem.parentElement;
+					var tabWrap = thisElem.closest('.kt-tabs-wrap');
+		
+					if ( accTitle.classList.contains( 'kt-tab-title-active' ) ) {
+						tabWrap.classList.remove('kt-active-tab-' + tabId);
+						accTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+					} else {
+						tabWrap.classList.add('kt-active-tab-' + tabId);
+						accTitle.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+					}
+		
+					var resizeEvent = new Event('resize');
+					window.dispatchEvent(resizeEvent);
+					var tabEvent = new Event('kadence-tabs-open');
+					window.dispatchEvent(tabEvent);
+				});
+			});
+			window.KBTabs.setActiveWithHash();
+		},
+		setActiveWithHash: function() {
+			if ( window.location.hash == '' ) {
+				return;
 			}
+				
+			var tabTitleItems = window.document.querySelector(window.location.hash + '.kt-title-item');
+			if (!tabTitleItems) {
+				return;
+			}
+		
+			var currentTab = window.document.querySelector('#' + window.location.hash.substring(1));
+		
+			// Trigger tab change.
+			var tabNumber = currentTab.querySelector('a').getAttribute('data-tab');
+			var tabWrap = currentTab.closest('.kt-tabs-wrap');
+			window.KBTabs.setActiveTab(tabWrap, tabNumber);
+		
+			if((window.KBTabs.isMobileSize() && tabWrap.classList.contains('kt-tabs-mobile-layout-accordion')) || (window.KBTabs.isTabletSize() && tabWrap.classList.contains('kt-tabs-tablet-layout-accordion'))) {
+				tabWrap.querySelector('.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber)
+					.scrollIntoView({behavior: "smooth"});
+			}
+		},
+		isMobileSize: function() {
+			return window.innerWidth <= 767;
+		},
+		isTabletSize: function() {
+			return window.innerWidth > 767 && window.innerWidth <= 1024;
+		},
+		setActiveTab: function( wrapper, tabNumber ) {
+
+			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
+			prevActiveAnchor.parentElement.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
+			prevActiveAnchor.setAttribute('tabindex', '-1');
+			prevActiveAnchor.setAttribute('aria-selected', 'false');
+			
+			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
+			const newActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' a');
+			newActiveAnchor.parentElement.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+			newActiveAnchor.setAttribute('tabindex', '0');
+			newActiveAnchor.setAttribute('aria-selected', 'true');
+			newActiveAnchor.focus();
+
+			window.KBTabs.setAriaAttributesForTabs(wrapper, tabNumber);
+
+			var resizeEvent = new Event('resize');
+			window.dispatchEvent(resizeEvent);
+			var tabEvent = new Event('kadence-tabs-open');
+			window.dispatchEvent(tabEvent);
+		},
+		setAriaAttributesForTabs: function( wrapper, tabNumber ) {
+			wrapper.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabNumber + ')')
+				.forEach((subElem) => subElem.setAttribute('aria-hidden', 'true'));
+			wrapper.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber )
+				.setAttribute( 'aria-hidden', 'false');
+			// Accordion tabs
+			wrapper.querySelectorAll('.kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabNumber + ')')
+				.forEach((tab) => {
+					tab.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+					tab.setAttribute('tabindex', '-1');
+					tab.setAttribute('aria-selected', 'false');
+				});
+			const activeAccordionTab = wrapper.querySelector('.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber);
+			if(activeAccordionTab) {
+				activeAccordionTab.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+				activeAccordionTab.setAttribute('tabindex', '0');
+				activeAccordionTab.setAttribute('aria-selected', 'true');
+			}
+		},
+		
+		init: function() {
+			window.KBTabs.setupTabs()
+			window.addEventListener( 'hashchange', window.KBTabs.setActiveWithHash, false );
 		}
 	}
-	window.addEventListener( 'hashchange', kt_anchor_tabs, false );
-	kt_anchor_tabs();
-} );
+	if ( 'loading' === document.readyState ) {
+		// The DOM has not yet been loaded.
+		document.addEventListener( 'DOMContentLoaded', window.KBTabs.init );
+	} else {
+		// The DOM has already been loaded.
+		window.KBTabs.init();
+	}
+})();

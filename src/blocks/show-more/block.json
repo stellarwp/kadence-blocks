@@ -5,6 +5,7 @@
   "title": "Show More",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
+  "usesContext": [ "postId", "queryId" ],
   "attributes": {
 	"align": {
 	  "type": "string"
@@ -116,6 +117,10 @@
 	"paddingUnit": {
 	  "type": "string",
 	  "default": "px"
-	}
+	},
+	  "inQueryBlock": {
+		  "type": "boolean",
+		  "default": false
+	  }
   }
 }

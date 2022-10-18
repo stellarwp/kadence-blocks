@@ -38,7 +38,7 @@
 	  "default": 30
 	},
 	"autoPlay": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"autoSpeed": {
@@ -169,11 +169,11 @@
 	  "default": 1
 	},
 	"displayMedia": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"displayTitle": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"titleFont": {
@@ -219,7 +219,7 @@
 	  ]
 	},
 	"displayContent": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"contentFont": {
@@ -252,7 +252,7 @@
 	  ]
 	},
 	"displayName": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"nameFont": {
@@ -285,7 +285,7 @@
 	  ]
 	},
 	"displayOccupation": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"occupationFont": {
@@ -318,7 +318,7 @@
 	  ]
 	},
 	"displayRating": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"ratingStyles": {
@@ -340,7 +340,7 @@
 	  ]
 	},
 	"displayIcon": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"iconStyles": {
@@ -379,7 +379,7 @@
 	  ]
 	},
 	"displayShadow": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"shadow": {
@@ -424,7 +424,7 @@
 	  ]
 	},
 	"showPresets": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"wrapperPaddingType": {
@@ -481,11 +481,11 @@
 	  "default": "px"
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"useBlockQuoteTags": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	}
   },

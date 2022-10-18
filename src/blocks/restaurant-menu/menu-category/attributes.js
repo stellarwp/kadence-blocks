@@ -19,7 +19,7 @@ export default {
 		default: ''
  	},
 	displayTitle: {
-		type: 'bool',
+		type: 'boolean',
 		default: true,
 	},
 	title: {
@@ -88,7 +88,7 @@ export default {
 		default: [ 50, '', '' ],
 	},
 	catTitle: {
-		type: 'Boolean',
+		type: 'boolean',
 		default: true,
 	},
 	hAlign: {

@@ -67,7 +67,7 @@ registerBlockType( 'kadence/pane', {
 						<span className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
 								<IconSpanTag
-									className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` }
+									extraClass={ `kt-btn-side-${ iconSide }` }
 									name={ icon }
 								/>
 							) }
@@ -78,7 +78,7 @@ registerBlockType( 'kadence/pane', {
 							/>
 							{ icon && 'right' === iconSide && (
 								<IconSpanTag
-									className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` }
+									extraClass={ `kt-btn-side-${ iconSide }` }
 									name={ icon }
 								/>
 							) }

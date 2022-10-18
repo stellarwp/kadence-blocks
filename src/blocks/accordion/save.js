@@ -10,9 +10,9 @@ import {
 
 function KadenceAccordionSave( { attributes } ) {
 
-	const { uniqueID, paneCount, blockAlignment, maxWidth, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide, openPane } = attributes;
-	const classes = classnames( `align${( blockAlignment ? blockAlignment : 'none' )}` );
-	const innerClasses = classnames( `kt-accordion-wrap kt-accordion-wrap kt-accordion-id${uniqueID} kt-accordion-has-${paneCount}-panes kt-active-pane-${openPane} kt-accordion-block kt-pane-header-alignment-${titleAlignment} kt-accodion-icon-style-${( iconStyle && showIcon ? iconStyle : 'none' )} kt-accodion-icon-side-${( iconSide ? iconSide : 'right' )}` );
+	const { uniqueID, paneCount, align, maxWidth, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide, openPane } = attributes;
+	const classes = classnames( `align${( align ? align : 'none' )}` );
+	const innerClasses = classnames( `kt-accordion-wrap kt-accordion-id${uniqueID} kt-accordion-has-${paneCount}-panes kt-active-pane-${openPane} kt-accordion-block kt-pane-header-alignment-${ titleAlignment ? titleAlignment : 'left' } kt-accodion-icon-style-${( iconStyle && showIcon ? iconStyle : 'none' )} kt-accodion-icon-side-${( iconSide ? iconSide : 'right' )}` );
 
 	const blockProps = useBlockProps.save( {
 		className: classes,

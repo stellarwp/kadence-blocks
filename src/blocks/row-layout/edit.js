@@ -56,11 +56,17 @@ import {
 	RangeControl,
 	MeasurementControls,
 	IconPicker,
+	SubsectionWrap,
+	KadenceImageControl,
+	BackgroundTypeControl,
+	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	KadenceRadioButtons,
 	VerticalAlignmentIcon,
-	BackgroundControl as KadenceBackgroundControl
+	BackgroundControl as KadenceBackgroundControl,
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -71,10 +77,12 @@ import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';
 import ContentWidthIcon from './content-width-icons';
+import LayoutControls from './layout-controls';
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -105,7 +113,11 @@ import {
 import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
+	blockDefault,
+	styles,
+	brush,
 	image,
+	settings,
 } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
 /**
@@ -146,7 +158,7 @@ const ktrowUniqueIDs = [];
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			contextPost = context.postId;
 		}
 		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['bgImg'] && attributes.kadenceDynamic['bgImg'].enable ) {
@@ -206,7 +218,7 @@ const ktrowUniqueIDs = [];
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,
@@ -240,6 +252,8 @@ const ktrowUniqueIDs = [];
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+	
 	const saveSlideItem = ( value, thisIndex ) => {
 		let currentItems = backgroundSlider;
 		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
@@ -315,13 +329,10 @@ const ktrowUniqueIDs = [];
 		{ key: 'vw', name: 'vw' },
 	];
 	const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
-	const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
 	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
 	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 	const paddingMin = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0 : 0 );
-	const paddingMax = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 );
-	const paddingStep = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 );
 	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== topPadding ? topPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== topPaddingM ? topPaddingM : '' ) );
 	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ) );
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
@@ -407,7 +418,6 @@ const ktrowUniqueIDs = [];
 	const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 	const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-	const selectColLayout = ( columns && ( 2 === columns || 3 === columns ) ? widthString : colLayout );
 	const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
@@ -561,45 +571,7 @@ const ktrowUniqueIDs = [];
 			{ topSVGDivider[ svg ] }
 		</svg>
 	);
-	if ( 2 === columns ) {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: twoColIcon },
-			{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: twoLeftGoldenIcon },
-			{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: twoRightGoldenIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowIcon },
-		];
-	} else if ( 3 === columns ) {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: threeColIcon },
-			{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: leftHalfIcon },
-			{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: rightHalfIcon },
-			{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
-			{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
-			{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
-		];
-	} else if ( 4 === columns ) {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fourColIcon },
-			{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
-			{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFourIcon },
-		];
-	} else if ( 5 === columns ) {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
-		];
-	} else if ( 6 === columns ) {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: sixCol },
-			{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },
-		];
-	} else {
-		layoutOptions = [
-			{ key: 'equal', name: __( 'Single Row', 'kadence-blocks' ), icon: rowIcon },
-		];
-	}
+	
 	if ( 2 === columns ) {
 		mobileLayoutOptions = [
 			{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: twoColIcon },
@@ -760,42 +732,6 @@ const ktrowUniqueIDs = [];
 							onChange={ value => setAttributes( { collapseOrder: value } ) }
 						/>
 					) }
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Mobile Padding/Margin', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-mobile-padding' }
-				>
-					<MeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						measurement={ [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ] }
-						onChange={ ( value ) => setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } ) }
-						min={ paddingMin }
-						max={ paddingMax }
-						step={ paddingStep }
-						allowEmpty={ true }
-						unit={ paddingUnit }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						measurement={ [ ( undefined !== topMarginM ? topMarginM : '' ), 'auto', ( undefined !== bottomMarginM ? bottomMarginM : '' ), 'auto' ] }
-						onChange={ ( value ) => {
-							setAttributes( { topMarginM: value[ 0 ], bottomMarginM: value[ 2 ] } );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-						allowEmpty={ true }
-						unit={ marginUnit }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-					/>
 				</KadencePanelBody>
 			) }
 			{ showSettings( 'background', 'kadence/rowlayout' ) && (
@@ -987,42 +923,6 @@ const ktrowUniqueIDs = [];
 					) }
 				</KadencePanelBody>
 			) }
-			{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Tablet Padding/Margin', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-tablet-padding' }
-				>
-					<MeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						measurement={ tabletPadding }
-						onChange={ ( value ) => setAttributes( { tabletPadding: value } ) }
-						min={ paddingMin }
-						max={ paddingMax }
-						step={ paddingStep }
-						allowEmpty={ true }
-						unit={ paddingUnit }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						measurement={ [ ( undefined !== topMarginT ? topMarginT : '' ), 'auto', ( undefined !== bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
-						onChange={ ( value ) => {
-							setAttributes( { topMarginT: value[ 0 ], bottomMarginT: value[ 2 ] } );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-						allowEmpty={ true }
-						unit={ marginUnit }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-					/>
-				</KadencePanelBody>
-			) }
 			{ showSettings( 'background', 'kadence/rowlayout' ) && (
 				<KadencePanelBody
 					title={ __( 'Tablet Background', 'kadence-blocks' ) }
@@ -1197,678 +1097,502 @@ const ktrowUniqueIDs = [];
 			bgSlider = backgroundSlider;
 		}
 		return (
-			<Fragment>
-				<h2>{ __( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }</h2>
-				<div className="kt-inner-sub-section">
-					<PopColorControl
-						label={ __( 'Slide Background Color', 'kadence-blocks' ) }
-						value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveSlideItem( { bgColor: value }, index ) }
-					/>
-					{ ( undefined === bgSlider[ index ] || undefined === bgSlider[ index ].bgImg || '' === bgSlider[ index ].bgImg ) && (
-						<MediaUpload
-							onSelect={ img => {
-								saveSlideItem( {
-									bgImgID: img.id,
-									bgImg: img.url,
-								}, index );
-							} }
-							type="image"
-							value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
-							render={ ( { open } ) => (
-								<Button
-									className={ 'components-button components-icon-button kt-cta-upload-btn' }
-									onClick={ open }
-								>
-									<Dashicon icon="format-image" />
-									{ __( 'Slide Select Image', 'kadence-blocks' ) }
-								</Button>
-							) }
-						/>
-					) }
-					{ undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImg && (
-						<Fragment>
-							<MediaUpload
-								onSelect={ media => {
-									saveSlideItem( {
-										bgImgID: media.id,
-										bgImg: media.url,
-									}, index );
-								} }
-								type="image"
-								value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
-								allowedTypes={ [ 'image' ] }
-								render={ ( { open } ) => (
-									<Tooltip text={ __( 'Edit Image', 'kadence-blocks' ) }>
-										<Button
-											style={ {
-												backgroundImage: 'url("' + bgSlider[ index ].bgImg + '")',
-												backgroundSize: 'cover',
-											} }
-											className={ 'kb-sidebar-image' }
-											onClick={ open }
-										>
-											{ __( 'Edit Image' ) }
-										</Button>
-									</Tooltip>
-								) }
-							/>
-							<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-								<Button
-									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-									onClick={ () => {
-										saveSlideItem( {
-											bgImgID: '',
-											bgImg: '',
-										}, index );
-									} }
-								>
-									<Dashicon icon="no-alt" />
-								</Button>
-							</Tooltip>
-						</Fragment>
-					) }
-				</div>
-			</Fragment>
+			<SubsectionWrap
+				label={__( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
+			>
+				<PopColorControl
+					label={ __( 'Slide Background Color', 'kadence-blocks' ) }
+					value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
+					default={ '' }
+					onChange={ value => saveSlideItem( { bgColor: value }, index ) }
+				/>
+				<KadenceImageControl
+					label={__( 'Slide Background Image', 'kadence-blocks' )}
+					hasImage={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false )}
+					imageURL={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? bgSlider[ index ].bgImg : '' )}
+					imageID={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' )}
+					onRemoveImage={() => {
+						saveSlideItem( {
+							bgImgID: '',
+							bgImg: '',
+						}, index );
+					} }
+					onSaveImage={ img => {
+						saveSlideItem( {
+							bgImgID: img.id,
+							bgImg: img.url,
+						}, index );
+					} }
+					disableMediaButtons={ ( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false ) }
+					setAttributes={setAttributes}
+					{...attributes}
+				/>
+			</SubsectionWrap>
 		);
 	};
 	const deskControls = (
-		<Fragment>
-			{ showSettings( 'basicLayout', 'kadence/rowlayout' ) && (
-				<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
+		<>
+			<BackgroundTypeControl
+				label={ __( 'Type', 'kadence-blocks' ) }
+				type={ backgroundSettingTab }
+				onTypeChange={ ( value ) => {
+					setAttributes( { backgroundSettingTab: value } );
+				} }
+			/>
+			{ 'slider' === backgroundSettingTab && (
+				<>
 					<RangeControl
-						label={ __( 'Columns', 'kadence-blocks' ) }
-						value={ columns }
-						onChange={ ( nextColumns ) => {
-							updateColumns( innerItemCount, nextColumns );
-							setAttributes( {
-								columns: nextColumns,
-								colLayout: 'equal',
-								firstColumnWidth: undefined,
-								secondColumnWidth: undefined,
-								tabletLayout: 'inherit',
-								mobileLayout: 'row',
-							} );
+						label={ __( 'Slider Item Count', 'kadence-blocks' ) }
+						value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
+						onChange={ newcount => {
+							let newSlides;
+							if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
+								newSlides = [ {
+									bgColor: '',
+									bgImg: '',
+									bgImgID: '',
+								} ];
+							} else {
+								newSlides = backgroundSlider;
+							}
+							if ( newSlides.length < newcount ) {
+								const amount = Math.abs( newcount - newSlides.length );
+								{ times( amount, n => {
+									newSlides.push( {
+										bgColor: '',
+										bgImg: '',
+										bgImgID: '',
+									} );
+								} ); }
+								setAttributes( { backgroundSlider: newSlides } );
+							}
+							setAttributes( { backgroundSliderCount: newcount } );
 						} }
+						step={ 1 }
 						min={ 1 }
-						max={ 6 }
+						max={ 20 }
 					/>
-					{ columns > 1 && (
-						<Fragment>
-							<p className="components-base-control__label">{ __( 'Layout', 'kadence-blocks' ) }</p>
-							<ButtonGroup className="kb-column-layout" aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
-								{ map( layoutOptions, ( { name, key, icon } ) => (
-									<Tooltip text={ name }>
-										<Button
-											key={ key }
-											className="kt-layout-btn"
-											isSmall
-											isPrimary={ selectColLayout === key }
-											aria-pressed={ selectColLayout === key }
-											onClick={ () => {
-												setAttributes( {
-													colLayout: key,
-												} );
-												setAttributes( {
-													firstColumnWidth: undefined,
-													secondColumnWidth: undefined,
-												} );
-											} }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-						</Fragment>
-					) }
-					{ columns > 1 && (
-						<SelectControl
-							label={ __( 'Column Gutter', 'kadence-blocks' ) }
-							value={ columnGutter }
-							options={ [
-								{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
-								{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
-								{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
-								{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
-								{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
-								{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
-								{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
-							] }
-							onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
+					{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
+					<KadenceRadioButtons
+						label={ __( 'Slider Image Size', 'kadence-blocks' ) }
+						value={ bgImgSize }
+						options={ [
+							{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+							{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+							{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgSize: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Slider Image Position', 'kadence-blocks' ) }
+						value={ bgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+							{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+							{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+							{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+							{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+							{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgPosition: value } ) }
+					/>
+					<KadenceRadioButtons
+						label={ __( 'Slider Image Repeat', 'kadence-blocks' ) }
+						value={ bgImgRepeat }
+						options={ [
+							{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+							{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+							{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+							{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
+						checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
+						onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
+					/>
+					{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
+						<RangeControl
+							label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
+							value={ backgroundSliderSettings[ 0 ].speed }
+							onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
+							min={ 500 }
+							max={ 15000 }
+							step={ 10 }
 						/>
 					) }
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Padding/Margin', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-padding' }
-				>
-					<MeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						measurement={ [ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ] }
-						onChange={ ( value ) => setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } ) }
-						min={ paddingMin }
-						max={ paddingMax }
-						step={ paddingStep }
-						allowEmpty={ true }
-						unit={ paddingUnit }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						measurement={ [ ( undefined !== topMargin ? topMargin : '' ), 'auto', ( undefined !== bottomMargin ? bottomMargin : '' ), 'auto' ] }
-						onChange={ ( value ) => {
-							setAttributes( { topMargin: value[ 0 ], bottomMargin: value[ 2 ] } );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-						allowEmpty={ true }
-						unit={ marginUnit }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-						showUnit={ true }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-					/>
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'background', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Background Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-bg-settings' }
-				>
-					<TabPanel className="kt-inspect-tabs"
-						initialTabName={ backgroundSettingTab }
-						activeClass="active-tab"
-						onSelect={ onTabBackgroundSelect }
-						tabs={ [
+					<SelectControl
+						label={ __( 'Transition Style', 'kadence-blocks' ) }
+						options={ [
 							{
-								name: 'normal',
-								title: <Dashicon icon="format-image" />,
-								className: 'kt-desk-tab',
+								label: __( 'Fade', 'kadence-blocks' ),
+								value: 'fade',
 							},
 							{
-								name: 'slider',
-								title: <Dashicon icon="slides" />,
-								className: 'kt-tablet-tab',
+								label: __( 'Slide', 'kadence-blocks' ),
+								value: 'slide',
 							},
-							{
-								name: 'video',
-								title: <Dashicon icon="format-video" />,
-								className: 'kt-mobile-tab',
-							},
-						] }>
-						{
-							( tab ) => {
-								let tabout;
-								if ( tab.name ) {
-									if ( 'slider' === tab.name ) {
-										tabout = (
-											<Fragment>
-												<RangeControl
-													label={ __( 'Background Slider Image Count', 'kadence-blocks' ) }
-													value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
-													onChange={ newcount => {
-														let newSlides;
-														if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
-															newSlides = [ {
-																bgColor: '',
-																bgImg: '',
-																bgImgID: '',
-															} ];
-														} else {
-															newSlides = backgroundSlider;
-														}
-														if ( newSlides.length < newcount ) {
-															const amount = Math.abs( newcount - newSlides.length );
-															{ times( amount, n => {
-																newSlides.push( {
-																	bgColor: '',
-																	bgImg: '',
-																	bgImgID: '',
-																} );
-															} ); }
-															setAttributes( { backgroundSlider: newSlides } );
-														}
-														setAttributes( { backgroundSliderCount: newcount } );
-													} }
-													step={ 1 }
-													min={ 1 }
-													max={ 20 }
-												/>
-												{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
-												<KadenceRadioButtons
-													label={ __( 'Slider Image Size', 'kadence-blocks' ) }
-													value={ bgImgSize }
-													options={ [
-														{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-														{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-														{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgSize: value } ) }
-												/>
-												<SelectControl
-													label={ __( 'Slider Image Position', 'kadence-blocks' ) }
-													value={ bgImgPosition }
-													options={ [
-														{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-														{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-														{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-														{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-														{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-														{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-														{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-														{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-														{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgPosition: value } ) }
-												/>
-												<KadenceRadioButtons
-													label={ __( 'Slider Image Repeat', 'kadence-blocks' ) }
-													value={ bgImgRepeat }
-													options={ [
-														{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-														{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
-													checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
-													onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
-												/>
-												{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
-													<RangeControl
-														label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
-														value={ backgroundSliderSettings[ 0 ].speed }
-														onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
-														min={ 500 }
-														max={ 15000 }
-														step={ 10 }
-													/>
-												) }
-												<SelectControl
-													label={ __( 'Transition Style', 'kadence-blocks' ) }
-													options={ [
-														{
-															label: __( 'Fade', 'kadence-blocks' ),
-															value: 'fade',
-														},
-														{
-															label: __( 'Slide', 'kadence-blocks' ),
-															value: 'slide',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
-													onChange={ ( value ) => {
-														if ( 'slide' === value ) {
-															saveSliderSettings( { fade: false } );
-														} else {
-															saveSliderSettings( { fade: true } );
-														}
-													} }
-												/>
-												<RangeControl
-													label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
-													onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
-													min={ 100 }
-													max={ 2000 }
-													step={ 10 }
-												/>
-												<SelectControl
-													label={ __( 'Arrow Style', 'kadence-blocks' ) }
-													options={ [
-														{
-															label: __( 'White on Dark', 'kadence-blocks' ),
-															value: 'whiteondark',
-														},
-														{
-															label: __( 'Black on Light', 'kadence-blocks' ),
-															value: 'blackonlight',
-														},
-														{
-															label: __( 'Outline Black', 'kadence-blocks' ),
-															value: 'outlineblack',
-														},
-														{
-															label: __( 'Outline White', 'kadence-blocks' ),
-															value: 'outlinewhite',
-														},
-														{
-															label: __( 'None', 'kadence-blocks' ),
-															value: 'none',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
-													onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
-												/>
-												<SelectControl
-													label={ __( 'Dot Style' ) }
-													options={ [
-														{
-															label: __( 'Dark', 'kadence-blocks' ),
-															value: 'dark',
-														},
-														{
-															label: __( 'Light', 'kadence-blocks' ),
-															value: 'light',
-														},
-														{
-															label: __( 'Outline Dark', 'kadence-blocks' ),
-															value: 'outlinedark',
-														},
-														{
-															label: __( 'Outline Light', 'kadence-blocks' ),
-															value: 'outlinelight',
-														},
-														{
-															label: __( 'None', 'kadence-blocks' ),
-															value: 'none',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
-													onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
-												/>
-											</Fragment>
-										);
-									} else if ( 'video' === tab.name ) {
-										tabout = (
-											<Fragment>
-												{/* <SelectControl
-													label={ __( 'Background Video Type' ) }
-													options={ [
-														{
-															label: __( 'Local (MP4)' ),
-															value: 'local',
-														},
-														{
-															label: __( 'YouTube' ),
-															value: 'youtube',
-														},
-														{
-															label: __( 'Vimeo' ),
-															value: 'vimeo',
-														},
-													] }
-													value={ backgroundVideoType }
-													onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-												/> */}
-												{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
-													<Fragment>
-														<MediaUpload
-															onSelect={ video => {
-																saveVideoSettings( {
-																	localID: video.id,
-																	local: video.url,
-																} );
-															} }
-															type="video"
-															allowedTypes={ [ 'video' ] }
-															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' ) }
-															render={ ( { open } ) => (
-																<Button
-																	className={ 'components-button components-icon-button kt-cta-upload-btn' }
-																	onClick={ open }
-																>
-																	<Dashicon icon="format-image" />
-																	{ __( 'Select Video', 'kadence-blocks' ) }
-																</Button>
-															) }
-														/>
-														{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
-															<Tooltip text={ __( 'Remove Video', 'kadence-blocks' ) }>
-																<Button
-																	className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-																	onClick={ () => {
-																		saveVideoSettings( {
-																			localID: '',
-																			local: '',
-																		} );
-																	} }
-																>
-																	<Dashicon icon="no-alt" />
-																</Button>
-															</Tooltip>
-														) }
-														<TextControl
-															label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
-															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
-															onChange={ value => saveVideoSettings( { local: value } ) }
-														/>
-													</Fragment>
-												) }
-												{ 'youtube' === backgroundVideoType && (
-													<TextControl
-														label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-														value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-														onChange={ value => saveVideoSettings( { youtube: value } ) }
-													/>
-												) }
-												{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
-													<SelectControl
-														label={ __( 'Background Video Ratio', 'kadence-blocks' ) }
-														options={ [
-															{
-																label: __( '16 / 9' ),
-																value: '16/9',
-															},
-															{
-																label: __( '4 / 3' ),
-																value: '4/3',
-															},
-															{
-																label: __( '3 / 2' ),
-																value: '3/2',
-															},
-														] }
-														value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
-														onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
-													/>
-												) }
-												<ToggleControl
-													label={ __( 'Mute Video', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
-													onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Loop Video', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
-													onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-													onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-												/>
-												<PopColorControl
-													label={ __( 'Background Color', 'kadence-blocks' ) }
-													value={ ( bgColor ? bgColor : '' ) }
-													default={ '' }
-													onChange={ value => setAttributes( { bgColor: value } ) }
-													onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-												/>
-												<MediaUpload
-													onSelect={ onSelectImage }
-													type="image"
-													value={ bgImgID }
-													render={ ( { open } ) => (
-														<Button
-															className={ 'components-button components-icon-button kt-cta-upload-btn' }
-															onClick={ open }
-														>
-															<Dashicon icon="format-image" />
-															{ __( 'Select Video Poster', 'kadence-blocks' ) }
-														</Button>
-													) }
-												/>
-												{ bgImg && (
-													<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-														<Button
-															className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-															onClick={ onRemoveImage }
-														>
-															<Dashicon icon="no-alt" />
-														</Button>
-													</Tooltip>
-												) }
-											</Fragment>
-										);
-									} else {
-										tabout = (
-											<Fragment>
-												<PopColorControl
-													label={ __( 'Background Color', 'kadence-blocks' ) }
-													value={ ( bgColor ? bgColor : '' ) }
-													default={ '' }
-													onChange={ value => setAttributes( { bgColor: value } ) }
-													onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-												/>
-												<KadenceBackgroundControl
-													label={ __( 'Background Image', 'kadence-blocks' ) }
-													hasImage={ bgImg }
-													imageURL={ bgImg }
-													imageID={ bgImgID }
-													imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
-													imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
-													imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
-													imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
-													imageAttachmentParallax={ true }
-													onRemoveImage={ onRemoveImage }
-													onSaveImage={ ( img ) => {
-														setAttributes( {
-															bgImgID: img.id,
-															bgImg: img.url,
-														} );
-													} }
-													onSaveURL={ ( newURL ) => {
-														if ( newURL !== bgImg ) {
-															setAttributes( {
-																bgImgID: undefined,
-																bgImg: newURL,
-															} );
-														}
-													} }
-													onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
-													onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
-													onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
-													onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
-													inlineImage={ backgroundInline }
-													onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
-													disableMediaButtons={ bgImg }
-													dynamicAttribute="bgImg"
-													isSelected={ isSelected }
-													attributes={ attributes }
-													setAttributes={ setAttributes }
-													name={ 'kadence/rowlayout' }
-													clientId={ clientId }
-												/>
-											</Fragment>
-										);
-									}
-								}
-								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-							}
-						}
-					</TabPanel>
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-bg-overlay' }
-				>
-					<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-						activeClass="active-tab"
-						initialTabName={ currentOverlayTab }
-						onSelect={ onOverlayTabSelect }
-						tabs={ [
-							{
-								name: 'normal',
-								title: __( 'Normal', 'kadence-blocks' ),
-								className: 'kt-over-normal',
-							},
-							{
-								name: 'grad',
-								title: __( 'Gradient', 'kadence-blocks' ),
-								className: 'kt-over-grad',
-							},
-						] }>
-						{
-							( tab ) => {
-								let tabout;
-								if ( tab.name ) {
-									if ( 'grad' === tab.name ) {
-										tabout = overGradControls;
-									} else {
-										tabout = overControls;
-									}
-								}
-								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-							}
-						}
-					</TabPanel>
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'border', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Border Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-border-settings' }
-				>
-					<PopColorControl
-						label={ __( 'Border Color', 'kadence-blocks' ) }
-						value={ ( border ? border : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { border: value } ) }
-					/>
-					<MeasurementControls
-						label={ __( 'Border Width', 'kadence-blocks' ) }
-						measurement={ borderWidth }
-						onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-						control={ borderWidthControl }
-						onControl={ ( value ) => setBorderWidthControl( value ) }
-						min={ 0 }
-						max={ 40 }
-						step={ 1 }
-						allowEmpty={ true }
-						unit={ 'px' }
-						units={ [ 'px' ] }
-						showUnit={ true }
-						preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-					/>
-					<MeasurementControls
-						label={ __( 'Border Radius', 'kadence-blocks' ) }
-						measurement={ borderRadius }
-						control={ borderRadiusControl }
-						onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-						onControl={ ( value ) => setBorderRadiusControl( value ) }
-						min={ 0 }
-						max={ 500 }
-						step={ 1 }
-						allowEmpty={ true }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ topLeftIcon }
-						secondIcon={ topRightIcon }
-						thirdIcon={ bottomRightIcon }
-						fourthIcon={ bottomLeftIcon }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
+						onChange={ ( value ) => {
+							if ( 'slide' === value ) {
+								saveSliderSettings( { fade: false } );
+							} else {
+								saveSliderSettings( { fade: true } );
+							}
+						} }
 					/>
-				</KadencePanelBody>
+					<RangeControl
+						label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
+						onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
+						min={ 100 }
+						max={ 2000 }
+						step={ 10 }
+					/>
+					<SelectControl
+						label={ __( 'Arrow Style', 'kadence-blocks' ) }
+						options={ [
+							{
+								label: __( 'White on Dark', 'kadence-blocks' ),
+								value: 'whiteondark',
+							},
+							{
+								label: __( 'Black on Light', 'kadence-blocks' ),
+								value: 'blackonlight',
+							},
+							{
+								label: __( 'Outline Black', 'kadence-blocks' ),
+								value: 'outlineblack',
+							},
+							{
+								label: __( 'Outline White', 'kadence-blocks' ),
+								value: 'outlinewhite',
+							},
+							{
+								label: __( 'None', 'kadence-blocks' ),
+								value: 'none',
+							},
+						] }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
+						onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Dot Style' ) }
+						options={ [
+							{
+								label: __( 'Dark', 'kadence-blocks' ),
+								value: 'dark',
+							},
+							{
+								label: __( 'Light', 'kadence-blocks' ),
+								value: 'light',
+							},
+							{
+								label: __( 'Outline Dark', 'kadence-blocks' ),
+								value: 'outlinedark',
+							},
+							{
+								label: __( 'Outline Light', 'kadence-blocks' ),
+								value: 'outlinelight',
+							},
+							{
+								label: __( 'None', 'kadence-blocks' ),
+								value: 'none',
+							},
+						] }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
+						onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
+					/>
+				</>
 			) }
-		</Fragment>
+			{ 'video' === backgroundSettingTab && (
+				<>
+					{/* <SelectControl
+						label={ __( 'Background Video Type' ) }
+						options={ [
+							{
+								label: __( 'Local (MP4)' ),
+								value: 'local',
+							},
+							{
+								label: __( 'YouTube' ),
+								value: 'youtube',
+							},
+							{
+								label: __( 'Vimeo' ),
+								value: 'vimeo',
+							},
+						] }
+						value={ backgroundVideoType }
+						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
+					/> */}
+					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+						<Fragment>
+							<MediaUpload
+								onSelect={ video => {
+									saveVideoSettings( {
+										localID: video.id,
+										local: video.url,
+									} );
+								} }
+								type="video"
+								allowedTypes={ [ 'video' ] }
+								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' ) }
+								render={ ( { open } ) => (
+									<Button
+										className={ 'components-button components-icon-button kt-cta-upload-btn' }
+										onClick={ open }
+									>
+										<Dashicon icon="format-image" />
+										{ __( 'Select Video', 'kadence-blocks' ) }
+									</Button>
+								) }
+							/>
+							{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
+								<Tooltip text={ __( 'Remove Video', 'kadence-blocks' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ () => {
+											saveVideoSettings( {
+												localID: '',
+												local: '',
+											} );
+										} }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+							) }
+							<TextControl
+								label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
+								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
+								onChange={ value => saveVideoSettings( { local: value } ) }
+							/>
+						</Fragment>
+					) }
+					{ 'youtube' === backgroundVideoType && (
+						<TextControl
+							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
+							onChange={ value => saveVideoSettings( { youtube: value } ) }
+						/>
+					) }
+					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
+						<SelectControl
+							label={ __( 'Background Video Ratio', 'kadence-blocks' ) }
+							options={ [
+								{
+									label: __( '16 / 9' ),
+									value: '16/9',
+								},
+								{
+									label: __( '4 / 3' ),
+									value: '4/3',
+								},
+								{
+									label: __( '3 / 2' ),
+									value: '3/2',
+								},
+							] }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
+							onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
+						/>
+					) }
+					<ToggleControl
+						label={ __( 'Mute Video', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
+						onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Loop Video', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
+						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+					/>
+					<PopColorControl
+						label={ __( 'Background Color', 'kadence-blocks' ) }
+						value={ ( bgColor ? bgColor : '' ) }
+						default={ '' }
+						onChange={ value => setAttributes( { bgColor: value } ) }
+						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
+					/>
+					<MediaUpload
+						onSelect={ onSelectImage }
+						type="image"
+						value={ bgImgID }
+						render={ ( { open } ) => (
+							<Button
+								className={ 'components-button components-icon-button kt-cta-upload-btn' }
+								onClick={ open }
+							>
+								<Dashicon icon="format-image" />
+								{ __( 'Select Video Poster', 'kadence-blocks' ) }
+							</Button>
+						) }
+					/>
+					{ bgImg && (
+						<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
+							<Button
+								className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+								onClick={ onRemoveImage }
+							>
+								<Dashicon icon="no-alt" />
+							</Button>
+						</Tooltip>
+					) }
+				</>
+			) }
+			{ 'normal' === backgroundSettingTab && (
+				<>
+					<PopColorControl
+						label={ __( 'Background Color', 'kadence-blocks' ) }
+						value={ ( bgColor ? bgColor : '' ) }
+						default={ '' }
+						onChange={ value => setAttributes( { bgColor: value } ) }
+						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
+					/>
+					<KadenceBackgroundControl
+						label={ __( 'Background Image', 'kadence-blocks' ) }
+						hasImage={ bgImg }
+						imageURL={ bgImg }
+						imageID={ bgImgID }
+						imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
+						imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
+						imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
+						imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
+						imageAttachmentParallax={ true }
+						onRemoveImage={ onRemoveImage }
+						onSaveImage={ ( img ) => {
+							setAttributes( {
+								bgImgID: img.id,
+								bgImg: img.url,
+							} );
+						} }
+						onSaveURL={ ( newURL ) => {
+							if ( newURL !== bgImg ) {
+								setAttributes( {
+									bgImgID: undefined,
+									bgImg: newURL,
+								} );
+							}
+						} }
+						onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
+						onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
+						onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
+						onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
+						inlineImage={ backgroundInline }
+						onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
+						disableMediaButtons={ bgImg }
+						dynamicAttribute="bgImg"
+						isSelected={ isSelected }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						name={ 'kadence/rowlayout' }
+						clientId={ clientId }
+					/>
+				</>
+			)}
+		</>
 	);
+const deskOverlayControls = (
+	<Fragment>
+		{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
+			<KadencePanelBody
+				title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
+				initialOpen={ false }
+				panelName={ 'kb-row-bg-overlay' }
+			>
+				<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+					activeClass="active-tab"
+					initialTabName={ currentOverlayTab }
+					onSelect={ onOverlayTabSelect }
+					tabs={ [
+						{
+							name: 'normal',
+							title: __( 'Normal', 'kadence-blocks' ),
+							className: 'kt-over-normal',
+						},
+						{
+							name: 'grad',
+							title: __( 'Gradient', 'kadence-blocks' ),
+							className: 'kt-over-grad',
+						},
+					] }>
+					{
+						( tab ) => {
+							let tabout;
+							if ( tab.name ) {
+								if ( 'grad' === tab.name ) {
+									tabout = overGradControls;
+								} else {
+									tabout = overControls;
+								}
+							}
+							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+						}
+					}
+				</TabPanel>
+			</KadencePanelBody>
+		) }
+		{ showSettings( 'border', 'kadence/rowlayout' ) && (
+			<KadencePanelBody
+				title={ __( 'Border Settings', 'kadence-blocks' ) }
+				initialOpen={ false }
+				panelName={ 'kb-row-border-settings' }
+			>
+				<PopColorControl
+					label={ __( 'Border Color', 'kadence-blocks' ) }
+					value={ ( border ? border : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { border: value } ) }
+				/>
+				<MeasurementControls
+					label={ __( 'Border Width', 'kadence-blocks' ) }
+					measurement={ borderWidth }
+					onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+					control={ borderWidthControl }
+					onControl={ ( value ) => setBorderWidthControl( value ) }
+					min={ 0 }
+					max={ 40 }
+					step={ 1 }
+					allowEmpty={ true }
+					unit={ 'px' }
+					units={ [ 'px' ] }
+					showUnit={ true }
+					preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+				/>
+				<MeasurementControls
+					label={ __( 'Border Radius', 'kadence-blocks' ) }
+					measurement={ borderRadius }
+					control={ borderRadiusControl }
+					onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+					onControl={ ( value ) => setBorderRadiusControl( value ) }
+					min={ 0 }
+					max={ 500 }
+					step={ 1 }
+					allowEmpty={ true }
+					controlTypes={ [
+						{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+						{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+					] }
+					firstIcon={ topLeftIcon }
+					secondIcon={ topRightIcon }
+					thirdIcon={ bottomRightIcon }
+					fourthIcon={ bottomLeftIcon }
+				/>
+			</KadencePanelBody>
+		) }
+	</Fragment>
+);
 	const overControls = (
 		<Fragment>
 			<RangeControl
@@ -2480,301 +2204,6 @@ const ktrowUniqueIDs = [];
 			/>
 		</KadencePanelBody>
 	);
-	const tabControls = (
-		<TabPanel className="kt-inspect-tabs"
-			activeClass="active-tab"
-			initialTabName={ currentTab }
-			onSelect={ onTabSelect }
-			tabs={ [
-				{
-					name: 'desk',
-					title: <Dashicon icon="desktop" />,
-					className: 'kt-desk-tab',
-				},
-				{
-					name: 'tablet',
-					title: <Dashicon icon="tablet" />,
-					className: 'kt-tablet-tab',
-				},
-				{
-					name: 'mobile',
-					title: <Dashicon icon="smartphone" />,
-					className: 'kt-mobile-tab',
-				},
-			] }>
-			{
-				( tab ) => {
-					let tabout;
-					if ( tab.name ) {
-						if ( 'mobile' === tab.name ) {
-							tabout = mobileControls;
-						} else if ( 'tablet' === tab.name ) {
-							tabout = tabletControls;
-						} else {
-							tabout = deskControls;
-						}
-					}
-					return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-				}
-			}
-		</TabPanel>
-	);
-	const bottomSepSizesMobile = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
-				value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeightMobile: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
-				value={ ( bottomSepWidthMobile ? bottomSepWidthMobile : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepWidthMobile: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const bottomSepSizesTablet = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
-				value={ ( bottomSepHeightTab ? bottomSepHeightTab : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeightTab: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
-				value={ ( bottomSepWidthTab ? bottomSepWidthTab : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepWidthTab: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const bottomSepSizes = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
-				value={ bottomSepHeight }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeight: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
-				value={ ( bottomSepWidth ? bottomSepWidth : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepWidth: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const topSepSizesMobile = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
-				value={ ( topSepHeightMobile ? topSepHeightMobile : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepHeightMobile: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
-				value={ ( topSepWidthMobile ? topSepWidthMobile : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepWidthMobile: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const topSepSizesTablet = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
-				value={ ( topSepHeightTab ? topSepHeightTab : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepHeightTab: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
-				value={ ( topSepWidthTab ? topSepWidthTab : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepWidthTab: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const topSepSizes = (
-		<Fragment>
-			<RangeControl
-				label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
-				value={ topSepHeight }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepHeight: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
-			<RangeControl
-				label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
-				value={ ( topSepWidth ? topSepWidth : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						topSepWidth: value,
-					} );
-				} }
-				min={ 100 }
-				max={ 400 }
-			/>
-		</Fragment>
-	);
-	const topDividerSettings = (
-		<Fragment>
-			<IconPicker
-				icons={ [
-					'ct',
-					'cti',
-					'ctd',
-					'ctdi',
-					'sltl',
-					'sltr',
-					'crv',
-					'crvi',
-					'crvl',
-					'crvli',
-					'crvr',
-					'crvri',
-					'wave',
-					'wavei',
-					'waves',
-					'wavesi',
-					'mtns',
-					'littri',
-					'littrii',
-					'threelevels',
-					'threelevelsi',
-				] }
-				iconsPerPage={ 30 }
-				value={ ( topSep === 'none' ? '' : topSep ) }
-				onChange={ value => setAttributes( { topSep: value } ) }
-				appendTo="body"
-				showSearch={ false }
-				renderFunc={ renderTopSVGDivider }
-				theme="dividers"
-				noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
-				isMulti={ false }
-			/>
-			<PopColorControl
-				label={ __( 'Divider Color' ) }
-				value={ ( topSepColor ? topSepColor : '' ) }
-				default={ '#ffffff' }
-				onChange={ value => setAttributes( { topSepColor: value } ) }
-			/>
-			<SmallResponsiveControl
-				label={ __( 'Size Controls', 'kadence-blocks' ) }
-				desktopChildren={ topSepSizes }
-				tabletChildren={ topSepSizesTablet }
-				mobileChildren={ topSepSizesMobile }
-			/>
-		</Fragment>
-	);
-	const bottomDividerSettings = (
-		<Fragment>
-			<IconPicker
-				icons={ [
-					'ct',
-					'cti',
-					'ctd',
-					'ctdi',
-					'sltl',
-					'sltr',
-					'crv',
-					'crvi',
-					'crvl',
-					'crvli',
-					'crvr',
-					'crvri',
-					'wave',
-					'wavei',
-					'waves',
-					'wavesi',
-					'mtns',
-					'littri',
-					'littrii',
-					'threelevels',
-					'threelevelsi',
-				] }
-				iconsPerPage={ 30 }
-				value={ ( bottomSep === 'none' ? '' : bottomSep ) }
-				onChange={ value => setAttributes( { bottomSep: value } ) }
-				appendTo="body"
-				showSearch={ false }
-				renderFunc={ renderBottomSVGDivider }
-				theme="dividers"
-				noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
-				isMulti={ false }
-			/>
-			<PopColorControl
-				label={ __( 'Divider Color', 'kadence-blocks' ) }
-				value={ ( bottomSepColor ? bottomSepColor : '' ) }
-				default={ '#ffffff' }
-				onChange={ value => setAttributes( { bottomSepColor: value } ) }
-			/>
-			<SmallResponsiveControl
-				label={ __( 'Size Controls', 'kadence-blocks' ) }
-				desktopChildren={ bottomSepSizes }
-				tabletChildren={ bottomSepSizesTablet }
-				mobileChildren={ bottomSepSizesMobile }
-			/>
-		</Fragment>
-	);
 	const verticalAlignOptions = [
 		[
 			{
@@ -2925,7 +2354,7 @@ const ktrowUniqueIDs = [];
 												setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
 											} }
 											min={ 0 }
-											max={ widthMax }
+											max={ ( maxWidthUnit === 'px' ? 2000 : 100 ) }
 											step={ 1 }
 											unit={ maxWidthUnit ? maxWidthUnit : 'px' }
 											onUnit={ ( value ) => {
@@ -2954,308 +2383,279 @@ const ktrowUniqueIDs = [];
 			</BlockControls>
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<InspectorControls>
-					<ResponsiveControl
-						desktopChildren={ deskControls }
-						tabletChildren={ tabletControls }
-						mobileChildren={ mobileControls }
-					/>
-					<div className="kt-sidebar-settings-spacer"></div>
-					{ showSettings( 'dividers', 'kadence/rowlayout' ) && (
-						<KadencePanelBody
-							title={ __( 'Dividers', 'kadence-blocks' ) }
-							initialOpen={ false }
-							panelName={ 'kb-row-dividers' }
-						>
-							<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={ [
-									{
-										name: 'bottomdivider',
-										title: __( 'Bottom', 'kadence-blocks' ),
-										className: 'kt-bottom-tab',
-									},
-									{
-										name: 'topdivider',
-										title: __( 'Top', 'kadence-blocks' ),
-										className: 'kt-top-tab',
-									},
-								] }>
+					<InspectorControlTabs
+						panelName={ 'rowlayout' }
+						setActiveTab={ setActiveTab }
+						activeTab={ activeTab }
+						tabs= {
+							[
 								{
-									( tab ) => {
-										let tabout;
-										if ( tab.name ) {
-											if ( 'topdivider' === tab.name ) {
-												tabout = topDividerSettings;
-											} else {
-												tabout = bottomDividerSettings;
-											}
-										}
-										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-									}
-								}
-							</TabPanel>
-						</KadencePanelBody>
+									key  : 'general',
+									title: __( 'Layout', 'kadence-blocks' ),
+									icon : blockDefault,
+								},
+								{
+									key  : 'style',
+									title: __( 'Style', 'kadence-blocks' ),
+									icon : brush,
+								},
+								{
+									key  : 'advanced',
+									title: __( 'Advanced', 'kadence-blocks' ),
+									icon : settings,
+								},
+							]
+						}
+					/>
+					{ ( activeTab === 'general' ) && (
+						<>
+							<LayoutControls
+								clientId={ clientId }
+								attributes={ attributes }
+								setAttributes={setAttributes}
+								updateColumns={updateColumns}
+								innerItemCount={innerItemCount}
+								widthString={widthString}
+							/>
+						</>
 					) }
-					{ showSettings( 'textColor', 'kadence/rowlayout' ) && (
-						colorControls
-					) }
-					{ showSettings( 'structure', 'kadence/rowlayout' ) && (
-						<Fragment>
+					{ ( activeTab === 'style' ) && (
+						<>
+						{ showSettings( 'background', 'kadence/rowlayout' ) && (
 							<KadencePanelBody
-								title={ __( 'Structure Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-row-structure-settings' }
+								title={ __( 'Background Settings', 'kadence-blocks' ) }
+								initialOpen={ true }
+								panelName={ 'kb-row-bg-settings' }
 							>
-								<SelectControl
-									label={ __( 'Container HTML tag', 'kadence-blocks' ) }
-									value={ htmlTag }
-									options={ [
-										{ value: 'div', label: 'div' },
-										{ value: 'header', label: 'header' },
-										{ value: 'section', label: 'section' },
-										{ value: 'article', label: 'article' },
-										{ value: 'main', label: 'main' },
-										{ value: 'aside', label: 'aside' },
-										{ value: 'footer', label: 'footer' },
-									] }
-									onChange={ value => setAttributes( { htmlTag: value } ) }
-								/>
-								<div class="row-min-height-settings">
-									<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type', 'kadence-blocks' ) }>
-										{ map( heightTypes, ( { name, key } ) => (
-											<Button
-												key={ key }
-												className="kt-size-btn"
-												isSmall
-												isPrimary={ minHeightUnit === key }
-												aria-pressed={ minHeightUnit === key }
-												onClick={ () => setAttributes( { minHeightUnit: key } ) }
-											>
-												{ name }
-											</Button>
-										) ) }
-									</ButtonGroup>
-									<h2 className="kt-heading-size-title">{ __( 'Minimum Height', 'kadence-blocks' ) }</h2>
-									<TabPanel className="kt-size-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'desk',
-												title: <Dashicon icon="desktop" />,
-												className: 'kt-desk-tab',
-											},
-											{
-												name: 'tablet',
-												title: <Dashicon icon="tablet" />,
-												className: 'kt-tablet-tab',
-											},
-											{
-												name: 'mobile',
-												title: <Dashicon icon="smartphone" />,
-												className: 'kt-mobile-tab',
-											},
-										] }>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<RangeControl
-																label={ __( 'Mobile Min Height', 'kadence-blocks' ) }
-																value={ minHeightMobile }
-																onChange={ ( value ) => {
-																	setAttributes( {
-																		minHeightMobile: value,
-																	} );
-																} }
-																min={ 0 }
-																max={ heightMax }
-															/>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<RangeControl
-																label={ __( 'Tablet Min Height', 'kadence-blocks' ) }
-																value={ minHeightTablet }
-																onChange={ ( value ) => {
-																	setAttributes( {
-																		minHeightTablet: value,
-																	} );
-																} }
-																min={ 0 }
-																max={ heightMax }
-															/>
-														);
-													} else {
-														tabout = (
-															<RangeControl
-																label={ __( 'Min Height', 'kadence-blocks' ) }
-																value={ minHeight }
-																onChange={ ( value ) => {
-																	setAttributes( {
-																		minHeight: value,
-																	} );
-																} }
-																min={ 0 }
-																max={ heightMax }
-															/>
-														);
-													}
-												}
-												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-											}
-										}
-									</TabPanel>
-								</div>
-								<ToggleControl
-									label={ __( 'Content Max Width Inherit from Theme?', 'kadence-blocks' ) }
-									checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
-									onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
-								/>
-								{ inheritMaxWidth !== true && (
-									<Fragment>
-										<ResponsiveRangeControls
-											label={ __( 'Custom Content Max Width', 'kadence-blocks' ) }
-											value={ maxWidth ? maxWidth : '' }
-											onChange={ value => {
-												setAttributes( { maxWidth: value } );
-											} }
-											tabletValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ) }
-											onChangeTablet={ ( value ) => {
-												setAttributes( { responsiveMaxWidth: [ value, ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) ] } );
-											} }
-											mobileValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) }
-											onChangeMobile={ ( value ) => {
-												setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
-											} }
-											min={ 0 }
-											max={ widthMax }
-											step={ 1 }
-											unit={ maxWidthUnit ? maxWidthUnit : 'px' }
-											onUnit={ ( value ) => {
-												setAttributes( { maxWidthUnit: value } );
-											} }
-											units={ [ 'px', '%', 'vw' ] }
-										/>
-									</Fragment>
-								) }
-								<ToggleControl
-									label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
-									checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
-									onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
-								/>
-								<RangeControl
-									label={ __( 'Z-Index Control', 'kadence-blocks' ) }
-									value={ zIndex }
-									onChange={ ( value ) => {
-										setAttributes( {
-											zIndex: value,
-										} );
-									} }
-									min={ -200 }
-									max={ 2000 }
+								<SmallResponsiveControl
+									label={__( 'Background', 'kadence-blocks' )}
+									hasPadding={ true }
+									desktopChildren={ deskControls }
+									tabletChildren={<div className="kt-sidebar-settings-spacer"></div>}
+									mobileChildren={<div className="kt-sidebar-settings-spacer"></div>}
 								/>
 							</KadencePanelBody>
-							<KadencePanelBody
-								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-row-visibility-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
-									checked={ ( undefined !== vsdesk ? vsdesk : false ) }
-									onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
-								/>
-								<ToggleControl
-									label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
-									checked={ ( undefined !== vstablet ? vstablet : false ) }
-									onChange={ ( value ) => setAttributes( { vstablet: value } ) }
-								/>
-								<ToggleControl
-									label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
-									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
-									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
-								/>
-								<h2>{ __( 'User Visibility Settings', 'kadence-blocks' ) }</h2>
-								<ToggleControl
-									label={ __( 'Hide from Logged in Users', 'kadence-blocks' ) }
-									checked={ ( undefined !== loggedIn ? loggedIn : false ) }
-									onChange={ ( value ) => setAttributes( { loggedIn: value } ) }
-								/>
-								{ loggedIn && (
-									<Fragment>
-										<div className="components-base-control">
-											<span className="kadence-sidebar-label">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</span>
-											<div className="kt-meta-select-wrap">
-												<Select
-													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-													value={ loggedInUser }
-													isMulti={ true }
-													maxMenuHeight={ 200 }
-													isClearable={ true }
-													placeholder={ '' }
-													onChange={ value => setAttributes( { loggedInUser: value } ) }
-												/>
-											</div>
-										</div>
-										<div className="components-base-control">
-											<span className="kadence-sidebar-label">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</span>
-											<div className="kt-meta-select-wrap">
-												<Select
-													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-													value={ loggedInShow }
-													isMulti={ true }
-													maxMenuHeight={ 200 }
-													isClearable={ true }
-													placeholder={ '' }
-													onChange={ value => setAttributes( { loggedInShow: value } ) }
-												/>
-											</div>
-										</div>
-									</Fragment>
-								) }
-								<ToggleControl
-									label={ __( 'Hide from Loggedout Users', 'kadence-blocks' ) }
-									checked={ ( undefined !== loggedOut ? loggedOut : false ) }
-									onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
-								/>
-								{ kadence_blocks_params && kadence_blocks_params.rcp_access && (
-									<Fragment>
-										<ToggleControl
-											label={ __( 'Restrict based on Membership', 'kadence-blocks' ) }
-											checked={ ( undefined !== rcpMembership ? rcpMembership : false ) }
-											onChange={ ( value ) => setAttributes( { rcpMembership: value } ) }
+						) }
+							<ResponsiveControl
+								desktopChildren={ deskOverlayControls }
+								tabletChildren={ tabletControls }
+								mobileChildren={ mobileControls }
+							/>
+							<div className="kt-sidebar-settings-spacer"></div>
+							{ showSettings( 'textColor', 'kadence/rowlayout' ) && (
+								colorControls
+							) }
+						</>
+					) }
+					{ ( activeTab === 'advanced' ) && (
+						<>
+							{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
+								<KadencePanelBody panelName={ 'kb-row-padding' }>
+									<ResponsiveMeasurementControls
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={[ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ]}
+										tabletValue={ tabletPadding }
+										mobileValue={[ ( undefined !== topPaddingM ? topPaddingM : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) ]}
+										onChange={ ( value ) => setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
+										onChangeMobile={ ( value ) => setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } ) }
+										min={ 0 }
+										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+										unit={ paddingUnit }
+										allowEmpty={ true }
+										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Margin', 'kadence-blocks' )}
+										value={[ ( undefined !== topMargin ? topMargin : '' ), 'auto', ( undefined !== bottomMargin ? bottomMargin : '' ), 'auto' ]}
+										tabletValue={ [ ( undefined !== topMarginT ? topMarginT : '' ), 'auto', ( undefined !== bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
+										mobileValue={[ ( undefined !== topMarginM ? topMarginM : '' ), 'auto', ( undefined !== bottomMarginM ? bottomMarginM : '' ), 'auto' ]}
+										onChange={ ( value ) => {
+											setAttributes( { topMargin: value[ 0 ], bottomMargin: value[ 2 ] } );
+										} }
+										onChangeTablet={ ( value ) => {
+											setAttributes( { topMarginT: value[ 0 ], bottomMarginT: value[ 2 ] } );
+										} }
+										onChangeMobile={ ( value ) => {
+											setAttributes( { topMarginM: value[ 0 ], bottomMarginM: value[ 2 ] } );
+										} }
+										min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+										max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+										step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+										unit={ marginUnit }
+										allowEmpty={ true }
+										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+										onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+									/>
+								</KadencePanelBody>
+							) }
+							<div className="kt-sidebar-settings-spacer"></div>
+							{ showSettings( 'structure', 'kadence/rowlayout' ) && (
+								<Fragment>
+									<KadencePanelBody
+										title={ __( 'Structure Settings', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-row-structure-settings' }
+									>
+										<SelectControl
+											label={ __( 'Container HTML tag', 'kadence-blocks' ) }
+											value={ htmlTag }
+											options={ [
+												{ value: 'div', label: 'div' },
+												{ value: 'header', label: 'header' },
+												{ value: 'section', label: 'section' },
+												{ value: 'article', label: 'article' },
+												{ value: 'main', label: 'main' },
+												{ value: 'aside', label: 'aside' },
+												{ value: 'footer', label: 'footer' },
+											] }
+											onChange={ value => setAttributes( { htmlTag: value } ) }
 										/>
-										{ rcpMembership && (
+										<ResponsiveRangeControls
+											label={ __( 'Minimum Height', 'kadence-blocks' ) }
+											value={ minHeight ? minHeight : '' }
+											onChange={ value => {
+												setAttributes( { minHeight: value } );
+											} }
+											tabletValue={ ( undefined !== minHeightTablet ? minHeightTablet : '' ) }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { minHeightTablet: value } );
+											} }
+											mobileValue={ ( undefined !== minHeightMobile ? minHeightMobile : '' ) }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { minHeightMobile: value } );
+											} }
+											min={ 0 }
+											max={ ( minHeightUnit === 'px' ? 2000 : 200 ) }
+											step={ 1 }
+											unit={ minHeightUnit ? minHeightUnit : 'px' }
+											onUnit={ ( value ) => {
+												setAttributes( { minHeightUnit: value } );
+											} }
+											units={ [ 'px', 'vw', 'vh' ] }
+										/>
+										<ToggleControl
+											label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
+											checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
+											onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
+										/>
+										<RangeControl
+											label={ __( 'Z-Index Control', 'kadence-blocks' ) }
+											value={ zIndex }
+											onChange={ ( value ) => {
+												setAttributes( {
+													zIndex: value,
+												} );
+											} }
+											min={ -200 }
+											max={ 2000 }
+										/>
+									</KadencePanelBody>
+									<KadencePanelBody
+										title={ __( 'Visibility Settings', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-row-visibility-settings' }
+									>
+										<ToggleControl
+											label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
+											checked={ ( undefined !== vsdesk ? vsdesk : false ) }
+											onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
+										/>
+										<ToggleControl
+											label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
+											checked={ ( undefined !== vstablet ? vstablet : false ) }
+											onChange={ ( value ) => setAttributes( { vstablet: value } ) }
+										/>
+										<ToggleControl
+											label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
+											checked={ ( undefined !== vsmobile ? vsmobile : false ) }
+											onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+										/>
+										<h2>{ __( 'User Visibility Settings', 'kadence-blocks' ) }</h2>
+										<ToggleControl
+											label={ __( 'Hide from Logged in Users', 'kadence-blocks' ) }
+											checked={ ( undefined !== loggedIn ? loggedIn : false ) }
+											onChange={ ( value ) => setAttributes( { loggedIn: value } ) }
+										/>
+										{ loggedIn && (
 											<Fragment>
-												<SelectControl
-													label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
-													value={ rcpAccess }
-													options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
-													onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
-												/>
 												<div className="components-base-control">
-													<span className="kadence-sidebar-label">{ __( 'Specific Memberships', 'kadence-blocks' ) }</span>
+													<span className="kadence-sidebar-label">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</span>
 													<div className="kt-meta-select-wrap">
 														<Select
-															options={ ( kadence_blocks_params && kadence_blocks_params.rcp_levels ? kadence_blocks_params.rcp_levels : [] ) }
-															value={ rcpMembershipLevel }
+															options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+															value={ loggedInUser }
 															isMulti={ true }
 															maxMenuHeight={ 200 }
 															isClearable={ true }
-															placeholder={ 'Any Membership' }
-															onChange={ value => setAttributes( { rcpMembershipLevel: value } ) }
+															placeholder={ '' }
+															onChange={ value => setAttributes( { loggedInUser: value } ) }
+														/>
+													</div>
+												</div>
+												<div className="components-base-control">
+													<span className="kadence-sidebar-label">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</span>
+													<div className="kt-meta-select-wrap">
+														<Select
+															options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+															value={ loggedInShow }
+															isMulti={ true }
+															maxMenuHeight={ 200 }
+															isClearable={ true }
+															placeholder={ '' }
+															onChange={ value => setAttributes( { loggedInShow: value } ) }
 														/>
 													</div>
 												</div>
 											</Fragment>
 										) }
-									</Fragment>
+										<ToggleControl
+											label={ __( 'Hide from Loggedout Users', 'kadence-blocks' ) }
+											checked={ ( undefined !== loggedOut ? loggedOut : false ) }
+											onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
+										/>
+										{ kadence_blocks_params && kadence_blocks_params.rcp_access && (
+											<Fragment>
+												<ToggleControl
+													label={ __( 'Restrict based on Membership', 'kadence-blocks' ) }
+													checked={ ( undefined !== rcpMembership ? rcpMembership : false ) }
+													onChange={ ( value ) => setAttributes( { rcpMembership: value } ) }
+												/>
+												{ rcpMembership && (
+													<Fragment>
+														<SelectControl
+															label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
+															value={ rcpAccess }
+															options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
+															onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
+														/>
+														<div className="components-base-control">
+															<span className="kadence-sidebar-label">{ __( 'Specific Memberships', 'kadence-blocks' ) }</span>
+															<div className="kt-meta-select-wrap">
+																<Select
+																	options={ ( kadence_blocks_params && kadence_blocks_params.rcp_levels ? kadence_blocks_params.rcp_levels : [] ) }
+																	value={ rcpMembershipLevel }
+																	isMulti={ true }
+																	maxMenuHeight={ 200 }
+																	isClearable={ true }
+																	placeholder={ 'Any Membership' }
+																	onChange={ value => setAttributes( { rcpMembershipLevel: value } ) }
+																/>
+															</div>
+														</div>
+													</Fragment>
+												) }
+											</Fragment>
 
-								) }
-							</KadencePanelBody>
-						</Fragment>
+										) }
+									</KadencePanelBody>
+								</Fragment>
+							) }
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
+						</>
 					) }
 				</InspectorControls>
 			) }

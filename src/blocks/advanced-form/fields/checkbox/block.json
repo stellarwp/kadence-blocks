@@ -1,0 +1,45 @@
+{
+  "name": "kadence/advanced-form-checkbox",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"label": {
+	  "type": "string",
+	  "default": ""
+	},
+	"showLabel": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"required": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"ariaDescription": {
+	  "type": "string",
+	  "default": ""
+	},
+	"helpText": {
+	  "type": "string",
+	  "default": ""
+	},
+	"options": {
+	  "type": "array",
+	  "default": [
+		{"value": "", "label": ""}
+	  ]
+	},
+	"width": {
+	  "type": "array",
+	  "default": [
+		"100",
+		"",
+		""
+	  ]
+	}
+  },
+  "editorScript": "file:editor.js",
+  "parent": [
+	"kadence/advanced-form"
+  ]
+}
