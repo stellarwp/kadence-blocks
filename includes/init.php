@@ -77,6 +77,7 @@ function kadence_gutenberg_editor_assets() {
 		'infobox',
 		'lottie',
 		'posts',
+		'progress-bar',
 		'row-layout',
 		'show-more',
 		'spacer',

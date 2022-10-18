@@ -33,6 +33,7 @@ module.exports = {
 		'blocks-form': './src/blocks/form/block.js',
 		'blocks-table-of-contents': './src/blocks/table-of-contents/index.js',
 		'blocks-posts': './src/blocks/posts/block.js',
+		'blocks-progress-bar': './src/blocks/progress-bar/index.js',
 		'blocks-show-more': './src/blocks/show-more/index.js',
 		'blocks-countdown': './src/blocks/countdown/block.js',
 		'blocks-testimonials': './src/blocks/testimonials/block.js',
