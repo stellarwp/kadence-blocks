@@ -17,6 +17,7 @@ import {
 	InnerBlocks,
 	InspectorControls,
 	useBlockProps,
+	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -109,7 +110,14 @@ function PaneEdit( {
 	const blockProps = useBlockProps( {
 		className: `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }`
 	} );
-
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: 'kt-accordion-panel-inner',
+		},
+		{
+			templateLock: false,
+		}
+	);
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
@@ -165,8 +173,7 @@ function PaneEdit( {
 				</div>
 			</HtmlTagOut>
 			<div className={ 'kt-accordion-panel' } >
-				<div className={ 'kt-accordion-panel-inner' } >
-					<InnerBlocks templateLock={ false } />
+				<div {...innerBlocksProps} >
 				</div>
 			</div>
 		</div>

@@ -20,7 +20,7 @@
 				}
 				var first_string = encodeURIComponent( headings[ i ].content ).toString().normalize().replace(/[^\w\s]/gi, '');
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					var second_string = heading_items[ n ].textContent.replace(/–/g, '-').replace(/—/g, '-').replace(/…/g, '...').replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, '"').replace(/”/g, '"');
+					var second_string = heading_items[ n ].textContent.replace(/–/g, '-').replace(/—/g, '-').replace(/…/g, '...').replace(/′/g, "'" ).replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, '"').replace(/”/g, '"');
 					second_string = encodeURIComponent( second_string ).toString().normalize().replace(/[^\w\s]/gi, '');
 					if ( first_string === second_string ) {
 						if ( ! heading_items[ n ].getAttribute( 'id' ) ) {

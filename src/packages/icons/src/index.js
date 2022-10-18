@@ -40,6 +40,10 @@ export { default as infoLeftAboveIcon } from './info-left-above'
 export { default as infoLeftIcon } from './info-left'
 export { default as infoTopOverlayIcon } from './info-top-overlay'
 export { default as infoLeftOverlayIcon } from './info-left-overlay'
+export { default as slider } from './slider'
+export { default as video } from './video'
+export { default as gradient } from './gradient'
+export { default as brush } from './brush'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
@@ -135,6 +139,22 @@ export { default as twoColumnIcon } from './block-icons/table-of-contents/two-co
 export { default as threeColumnIcon } from './block-icons/table-of-contents/three-column'
 export { default as bulletsIcon } from './block-icons/table-of-contents/bullets'
 export { default as numberedIcon } from './block-icons/table-of-contents/numbered'
+
+// Advanced From
+export { default as advancedFormIcon } from './block-icons/advanced-form/block'
+export { default as acceptInputIcon } from './block-icons/advanced-form/accept'
+export { default as checkboxInputIcon } from './block-icons/advanced-form/checkbox'
+export { default as dateInputIcon } from './block-icons/advanced-form/date'
+export { default as emailInputIcon } from './block-icons/advanced-form/email'
+export { default as fileInputIcon } from './block-icons/advanced-form/file'
+export { default as hiddenInputIcon } from './block-icons/advanced-form/hidden'
+export { default as numberInputIcon } from './block-icons/advanced-form/number'
+export { default as phoneInputIcon } from './block-icons/advanced-form/phone'
+export { default as radioInputIcon } from './block-icons/advanced-form/radio'
+export { default as selectInputIcon } from './block-icons/advanced-form/select'
+export { default as textInputIcon } from './block-icons/advanced-form/text'
+export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
+export { default as timeInputIcon } from './block-icons/advanced-form/time'
 
 // Progress Bar Icons
 export { default as progressIcon } from './block-icons/progress-bar/primary-icon'

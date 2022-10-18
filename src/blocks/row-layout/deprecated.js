@@ -328,7 +328,7 @@ export default [
 				default: 'px',
 			},
 			columnsUnlocked: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			tabletBackground: {
@@ -402,7 +402,7 @@ export default [
 				} ],
 			},
 			columnsInnerHeight: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			topSepWidth: {
@@ -418,7 +418,7 @@ export default [
 				default: '',
 			},
 			backgroundInline: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			backgroundSettingTab: {
@@ -474,15 +474,15 @@ export default [
 				default: 'px',
 			},
 			inheritMaxWidth: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			isPrebuiltModal: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			minHeightTablet: {
@@ -498,19 +498,19 @@ export default [
 				default: '',
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			loggedIn: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			loggedInUser: {
@@ -520,7 +520,7 @@ export default [
 				type: 'array',
 			},
 			loggedOut: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			borderWidth: {
@@ -726,8 +726,8 @@ export default [
 				return (
 					<div className="kb-bg-slide-contain">
 						<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
-							backgroundColor: ( '' !== bgSlider[ index ].bgColor ? KadenceColorOutput( bgSlider[ index ].bgColor ) : undefined ),
-							backgroundImage: ( '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
+							backgroundColor: ( bgSlider[ index ] && '' !== bgSlider[ index ].bgColor ? KadenceColorOutput( bgSlider[ index ].bgColor ) : undefined ),
+							backgroundImage: ( bgSlider[ index ] && '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
 							backgroundSize: bgImgSize ? bgImgSize : undefined,
 							backgroundPosition: bgImgPosition ? bgImgPosition : undefined,
 							backgroundRepeat: bgImgRepeat ? bgImgRepeat : undefined,
@@ -1131,7 +1131,7 @@ export default [
 				default: 'px',
 			},
 			columnsUnlocked: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			tabletBackground: {
@@ -1205,7 +1205,7 @@ export default [
 				} ],
 			},
 			columnsInnerHeight: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			topSepWidth: {
@@ -1221,7 +1221,7 @@ export default [
 				default: '',
 			},
 			backgroundInline: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			backgroundSettingTab: {
@@ -1277,7 +1277,7 @@ export default [
 				default: 'px',
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 		},
@@ -1410,8 +1410,8 @@ export default [
 				return (
 					<div className="kb-bg-slide-contain">
 						<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
-							backgroundColor: ( '' !== bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : undefined ),
-							backgroundImage: ( '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
+							backgroundColor: ( bgSlider[ index ] && '' !== bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : undefined ),
+							backgroundImage: ( bgSlider[ index ] && '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
 							backgroundSize: bgImgSize ? bgImgSize : undefined,
 							backgroundPosition: bgImgPosition ? bgImgPosition : undefined,
 							backgroundRepeat: bgImgRepeat ? bgImgRepeat : undefined,

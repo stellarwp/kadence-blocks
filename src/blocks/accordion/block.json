@@ -14,7 +14,7 @@
 	  "default": 2
 	},
 	"showPresets": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"openPane": {
@@ -22,11 +22,11 @@
 	  "default": 0
 	},
 	"startCollapsed": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"linkPaneCollapse": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"minHeight": {
@@ -77,6 +77,10 @@
 	  "type": "string",
 	  "default": "none"
 	},
+	"align": {
+		"type": "string",
+	  	"default": "none"
+	},
 	"titleStyles": {
 	  "type": "array",
 	  "default": [ {
@@ -112,7 +116,7 @@
 	  } ]
 	},
 	"showIcon": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"iconStyle": {
@@ -132,7 +136,7 @@
 	  "default": "right"
 	},
 	"faqSchema": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

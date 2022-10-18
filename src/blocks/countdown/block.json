@@ -52,15 +52,15 @@
 	  "default": 30
 	},
 	"evergreenStrict": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"enableTimer": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"revealOnLoad": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"units": {
@@ -77,11 +77,11 @@
 	  "default": "block"
 	},
 	"timeNumbers": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"countdownDivider": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"preLabel": {
@@ -297,15 +297,15 @@
 	  "default": [ "", "", "", "" ]
 	},
 	"vsdesk": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"vstablet": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"vsmobile": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

@@ -27,29 +27,47 @@ import {
 import classnames from 'classnames';
 import memoize from 'memize';
 import { times, filter, map } from 'lodash';
-import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, WebfontLoader, IconControl, IconRender, KadencePanelBody, MeasurementControls } from '@kadence/components';
+import {
+	KadenceColorOutput,
+	showSettings
+} from '@kadence/helpers';
+import {
+	PopColorControl,
+	TypographyControls,
+	WebfontLoader,
+	IconControl,
+	IconRender,
+	KadencePanelBody,
+	MeasurementControls,
+	KadenceBlockDefaults
+} from '@kadence/components';
+
 /**
  * Import Css
  */
 import './editor.scss';
-const {
+import metadata from './block.json';
+
+import {
 	createBlock,
-} = wp.blocks;
+} from '@wordpress/blocks';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-const {
-	Component,
+import {
+	useState,
 	Fragment,
-} = wp.element;
-const {
+	useRef,
+	useEffect
+} from '@wordpress/element';
+import {
 	InnerBlocks,
 	InspectorControls,
 	RichText,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
-} = wp.blockEditor;
+	useBlockProps
+} from '@wordpress/block-editor';
 import {
 	Button,
 	ButtonGroup,
@@ -61,9 +79,9 @@ import {
 	SelectControl,
 	TextControl,
 } from '@wordpress/components';
-const {
+import {
 	applyFilters,
-} = wp.hooks;
+} from '@wordpress/hooks';
 /**
  * Internal block libraries
  */
@@ -95,64 +113,43 @@ const kttabsUniqueIDs = [];
 /**
  * Build the row edit
  */
-class KadenceTabs extends Component {
-	constructor() {
-		super( ...arguments );
-		this.showSettings = this.showSettings.bind( this );
-		this.onMoveForward = this.onMoveForward.bind( this );
-		this.onMoveBack = this.onMoveBack.bind( this );
-		this.state = {
-			hovered: 'false',
-			showPreset: false,
-			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
-			settings: {},
-		};
-	}
-	componentDidMount() {
-		if ( ! this.props.attributes.uniqueID ) {
+function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab } ) {
+
+	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
+
+
+	const [ showPreset, setShowPreset ] = useState( false );
+	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
+
+	useEffect( () => {
+		if ( ! uniqueID ) {
 			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/tabs' ];
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/tabs' ] !== undefined && typeof blockConfigObject[ 'kadence/tabs' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/tabs' ] ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/tabs' ][ attribute ];
+					attributes[ attribute ] = blockConfigObject[ 'kadence/tabs' ][ attribute ];
 				} );
 			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
 				Object.keys( oldBlockConfig ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = oldBlockConfig[ attribute ];
+					attributes[ attribute ] = oldBlockConfig[ attribute ];
 				} );
+			} else {
+				setShowPreset( true );
 			}
-			if ( this.props.attributes.showPresets ) {
-				this.setState( { showPreset: true } );
-			}
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
-			kttabsUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		} else if ( kttabsUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
-			kttabsUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
+			kttabsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( kttabsUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );			kttabsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
-			kttabsUniqueIDs.push( this.props.attributes.uniqueID );
+			kttabsUniqueIDs.push( uniqueID );
 		}
-	}
-	showSettings( key ) {
-		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
-			return true;
-		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
-			return true;
-		}
-		return false;
-	}
-	saveArrayUpdate( value, index ) {
-		const { attributes, setAttributes } = this.props;
-		const { titles } = attributes;
+	}, [] );
 
+	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...value };
@@ -164,41 +161,41 @@ class KadenceTabs extends Component {
 			titles: newItems,
 		} );
 	}
-	onMove( oldIndex, newIndex ) {
-		const titles = [ ...this.props.attributes.titles ];
-		titles.splice( newIndex, 1, this.props.attributes.titles[ oldIndex ] );
-		titles.splice( oldIndex, 1, this.props.attributes.titles[ newIndex ] );
-		this.props.setAttributes( { titles: titles, currentTab: parseInt( newIndex + 1 ) } );
-		if ( this.props.attributes.startTab === ( oldIndex + 1 ) ) {
-			this.props.setAttributes( { startTab: ( newIndex + 1 ) } );
-		} else if ( this.props.attributes.startTab === ( newIndex + 1 ) ) {
-			this.props.setAttributes( { startTab: ( oldIndex + 1 ) } );
+
+	const onMove = ( oldIndex, newIndex ) => {
+		const newTitles = [ ...titles ];
+		newTitles.splice( newIndex, 1, titles[ oldIndex ] );
+		newTitles.splice( oldIndex, 1, titles[ newIndex ] );
+		setAttributes( { titles: newTitles, currentTab: parseInt( newIndex + 1 ) } );
+		if ( startTab === ( oldIndex + 1 ) ) {
+			setAttributes( { startTab: ( newIndex + 1 ) } );
+		} else if ( startTab === ( newIndex + 1 ) ) {
+			setAttributes( { startTab: ( oldIndex + 1 ) } );
 		}
-		//this.props.moveTab( this.props.tabsBlock.innerBlocks[ oldIndex ].clientId, newIndex );
-		this.props.moveTab( oldIndex, newIndex );
-		this.props.resetOrder();
-		this.props.setAttributes( { currentTab: parseInt( newIndex + 1 ) } );
+		//moveTab( tabsBlock.innerBlocks[ oldIndex ].clientId, newIndex );
+		moveTab( oldIndex, newIndex );
+		resetOrder();
+		setAttributes( { currentTab: parseInt( newIndex + 1 ) } );
 	}
 
-	onMoveForward( oldIndex ) {
+	const onMoveForward = ( oldIndex ) => {
 		return () => {
-			if ( oldIndex === this.props.realTabsCount - 1 ) {
+			if ( oldIndex === realTabsCount - 1 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex + 1 );
+			onMove( oldIndex, oldIndex + 1 );
 		};
 	}
 
-	onMoveBack( oldIndex ) {
+	const onMoveBack = ( oldIndex ) => {
 		return () => {
 			if ( oldIndex === 0 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex - 1 );
+			onMove( oldIndex, oldIndex - 1 );
 		};
 	}
-	render() {
-		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform }, clientId, className, setAttributes } = this.props;
+
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -392,7 +389,9 @@ class KadenceTabs extends Component {
 		const lineStep = ( lineType === 'px' ? 1 : 0.1 );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-		const classes = classnames( className, `kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
+
+		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
+
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
@@ -579,7 +578,7 @@ class KadenceTabs extends Component {
 									value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : '' ) }
 									unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 									onChange={ value => {
-										this.saveArrayUpdate( { text: value }, index );
+										saveArrayUpdate( { text: value }, index );
 									} }
 									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 									className={ 'kt-title-text' }
@@ -597,7 +596,7 @@ class KadenceTabs extends Component {
 										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : '' ) }
 										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 										onChange={ value => {
-											this.saveArrayUpdate( { text: value }, index );
+											saveArrayUpdate( { text: value }, index );
 										} }
 										allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 										className={ 'kt-title-text' }
@@ -612,7 +611,7 @@ class KadenceTabs extends Component {
 										value={ ( undefined !== titles[ index ] && undefined !== titles[ index ].subText ? titles[ index ].subText : '' ) }
 										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 										onChange={ value => {
-											this.saveArrayUpdate( { subText: value }, index );
+											saveArrayUpdate( { subText: value }, index );
 										} }
 										allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 										className={ 'kt-title-sub-text' }
@@ -639,7 +638,7 @@ class KadenceTabs extends Component {
 							{ index !== 0 && (
 								<Button
 									icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
-									onClick={ index === 0 ? undefined : this.onMoveBack( index ) }
+									onClick={ index === 0 ? undefined : onMoveBack( index ) }
 									className="kadence-blocks-tab-item__move-back"
 									label={ ( 'vtabs' === layout ? __( 'Move Item Up', 'kadence-blocks' ) : __( 'Move Item Back', 'kadence-blocks' ) ) }
 									aria-disabled={ index === 0 }
@@ -649,7 +648,7 @@ class KadenceTabs extends Component {
 							{ ( index + 1 ) !== tabCount && (
 								<Button
 									icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
-									onClick={ ( index + 1 ) === tabCount ? undefined : this.onMoveForward( index ) }
+									onClick={ ( index + 1 ) === tabCount ? undefined : onMoveForward( index ) }
 									className="kadence-blocks-tab-item__move-forward"
 									label={ ( 'vtabs' === layout ? __( 'Move Item Down', 'kadence-blocks' ) : __( 'Move Item Forward', 'kadence-blocks' ) ) }
 									aria-disabled={ ( index + 1 ) === tabCount }
@@ -660,8 +659,8 @@ class KadenceTabs extends Component {
 								<Button
 									icon="no-alt"
 									onClick={ () => {
-										const removeClientId = this.props.tabsBlock.innerBlocks[ index ].clientId;
-										const currentItems = filter( this.props.attributes.titles, ( item, i ) => index !== i );
+										const removeClientId = tabsBlock.innerBlocks[ index ].clientId;
+										const currentItems = filter( titles, ( item, i ) => index !== i );
 										const newCount = tabCount - 1;
 										let newStartTab;
 										if ( startTab === ( index + 1 ) ) {
@@ -671,9 +670,9 @@ class KadenceTabs extends Component {
 										} else {
 											newStartTab = startTab;
 										}
-										this.props.removeTab( index );
+										removeTab( index );
 										setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
-										this.props.resetOrder();
+										resetOrder();
 									} }
 									className="kadence-blocks-tab-item__remove"
 									label={ __( 'Remove Item', 'kadence-blocks' ) }
@@ -703,7 +702,7 @@ class KadenceTabs extends Component {
 						value={ titles[ index ] && titles[ index ].anchor ? titles[ index ].anchor : '' }
 						onChange={ ( nextValue ) => {
 							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-							this.saveArrayUpdate( { anchor: nextValue }, index );
+							saveArrayUpdate( { anchor: nextValue }, index );
 						} } />
 				</KadencePanelBody>
 			);
@@ -718,7 +717,7 @@ class KadenceTabs extends Component {
 					<IconControl
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
 						onChange={ value => {
-							this.saveArrayUpdate( { icon: value }, index );
+							saveArrayUpdate( { icon: value }, index );
 						} }
 					/>
 					<SelectControl
@@ -730,14 +729,14 @@ class KadenceTabs extends Component {
 							{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
-							this.saveArrayUpdate( { iconSide: value }, index );
+							saveArrayUpdate( { iconSide: value }, index );
 						} }
 					/>
 					<ToggleControl
 						label={ __( 'Show Only Icon?', 'kadence-blocks' ) }
 						checked={ ( titles[ index ] && titles[ index ].onlyIcon ? titles[ index ].onlyIcon : false ) }
 						onChange={ value => {
-							this.saveArrayUpdate( { onlyIcon: value }, index );
+							saveArrayUpdate( { onlyIcon: value }, index );
 						} }
 					/>
 				</KadencePanelBody>
@@ -1005,8 +1004,15 @@ class KadenceTabs extends Component {
 				}` }
 			</style>
 		);
+
+		const ref = useRef();
+		const blockProps = useBlockProps( {
+			ref,
+			className: 'wp-block-kadence-tabs'
+		} );
+
 		return (
-			<Fragment>
+			<div {...blockProps}>
 				{ renderCSS }
 				<BlockControls>
 					<BlockAlignmentToolbar
@@ -1021,12 +1027,12 @@ class KadenceTabs extends Component {
 						} }
 					/>
 				</BlockControls>
-				{ this.showSettings( 'allSettings' ) && (
+				{ showSettings( 'allSettings', 'kadence/tabs' ) && (
 					<InspectorControls>
-						{ this.showSettings( 'tabLayout' ) && (
+						{ showSettings( 'tabLayout', 'kadence/tabs' ) && (
 							tabControls
 						) }
-						{ ! this.showSettings( 'tabLayout' ) && (
+						{ ! showSettings( 'tabLayout', 'kadence/tabs' ) && (
 							<KadencePanelBody panelName={ 'kb-tab-layout' }>
 								<h2>{ __( 'Set Initial Open Tab', 'kadence-blocks' ) }</h2>
 								<ButtonGroup aria-label={ __( 'Initial Open Tab', 'kadence-blocks' ) }>
@@ -1045,7 +1051,7 @@ class KadenceTabs extends Component {
 								</ButtonGroup>
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'tabContent' ) && (
+						{ showSettings( 'tabContent', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1083,9 +1089,27 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
+								<MeasurementControls
+									label={ __( 'Content Border Radius (px)', 'kadence-blocks' ) }
+									measurement={ contentBorderRadius }
+									control={ contentBorderRadiusControl }
+									onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+									onControl={ ( value ) => setContentBorderRadiusControl( value ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+									] }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
+								/>
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'titleColor' ) && (
+						{ showSettings( 'titleColor', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Title Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1128,7 +1152,7 @@ class KadenceTabs extends Component {
 								</TabPanel>
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'titleSpacing' ) && (
+						{ showSettings( 'titleSpacing', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Title Width/Spacing/Border', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1367,7 +1391,7 @@ class KadenceTabs extends Component {
 								/>
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'titleFont' ) && (
+						{ showSettings( 'titleFont', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Title Font Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1409,7 +1433,7 @@ class KadenceTabs extends Component {
 								/>
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'titleIcon' ) && (
+						{ showSettings( 'titleIcon', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Title Icon Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1426,7 +1450,7 @@ class KadenceTabs extends Component {
 								{ times( tabCount, n => renderTitleSettings( n ) ) }
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'subtitle' ) && (
+						{ showSettings( 'subtitle', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Subtitle Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1486,7 +1510,7 @@ class KadenceTabs extends Component {
 								) }
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'titleAnchor' ) && (
+						{ showSettings( 'titleAnchor', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Tab Anchor Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1495,7 +1519,7 @@ class KadenceTabs extends Component {
 								{ times( tabCount, n => renderAnchorSettings( n ) ) }
 							</KadencePanelBody>
 						) }
-						{ this.showSettings( 'structure' ) && (
+						{ showSettings( 'structure', 'kadence/tabs' ) && (
 							<KadencePanelBody
 								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -1525,10 +1549,13 @@ class KadenceTabs extends Component {
 								/>
 							</KadencePanelBody>
 						) }
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tabs' } excludedAttrs={ [ 'currentTab', 'tabCount' ] } preventMultiple={ [ 'titles' ] } />
+
 					</InspectorControls>
 				) }
 				<div className={ classes } >
-					{ this.state.showPreset && (
+					{ showPreset && (
 						<div className="kt-select-starter-style-tabs">
 							<div className="kt-select-starter-style-tabs-title">
 								{ __( 'Select Initial Style' ) }
@@ -1541,7 +1568,7 @@ class KadenceTabs extends Component {
 										isSmall
 										onClick={ () => {
 											setInitalLayout( key );
-											this.setState( { showPreset: false } );
+											setShowPreset( false );
 										} }
 									>
 										{ icon }
@@ -1550,7 +1577,7 @@ class KadenceTabs extends Component {
 							</ButtonGroup>
 						</div>
 					) }
-					{ ! this.state.showPreset && (
+					{ ! showPreset && (
 						<div className="kt-tabs-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
@@ -1561,7 +1588,7 @@ class KadenceTabs extends Component {
 									onClick={ () => {
 										const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
 										setAttributes( { tabCount: tabCount + 1 } );
-										this.props.insertTab( newBlock );
+										insertTab( newBlock );
 										//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 										const newtabs = titles;
 										newtabs.push( {
@@ -1572,7 +1599,7 @@ class KadenceTabs extends Component {
 											subText: '',
 										} );
 										setAttributes( { titles: newtabs } );
-										this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
+										saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 									} }
 								>
 									<Dashicon icon="plus" />
@@ -1593,6 +1620,7 @@ class KadenceTabs extends Component {
 							<div className="kt-tabs-content-wrap" style={ {
 								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
+								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
 								minHeight: minHeight + 'px',
 								backgroundColor: KadenceColorOutput( contentBgColor ),
 								borderColor: KadenceColorOutput( contentBorderColor ),
@@ -1605,9 +1633,8 @@ class KadenceTabs extends Component {
 						</div>
 					) }
 				</div>
-			</Fragment>
+			</div>
 		);
-	}
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {

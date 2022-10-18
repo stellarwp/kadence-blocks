@@ -87,10 +87,21 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
 	text-transform: uppercase;
 	font-weight: bold;
     color: #999;
+	margin-bottom: 0.5em;
 }
 .kt-accordion-wrap .kt-accordion-header-wrap {
 	margin:0;
 	padding:0;
+}
+.kt-accordion-add-selecter {
+    margin-top: 0.5em;
+}
+.wp-block-kadence-accordion, .wp-block-kadence-pane {
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
+.wp-block-kadence-accordion .kt-accordion-inner-wrap > .wp-block-kadence-pane:first-child {
+	margin-top: 0;
 }
 .kt-blocks-accordion-header {
     align-content: space-between;
@@ -104,6 +115,7 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
     text-align: left;
     transition: all ease-in-out .2s;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .kt-accordion-panel-inner {
@@ -363,4 +375,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 	.kt-blocks-accordion-icon-trigger:after {
 		transform: rotate(45deg);
 	}
+}
+.kt-accordion-panel > .kt-accordion-panel-inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender > .block-editor-default-block-appender {
+    display: block;
 }

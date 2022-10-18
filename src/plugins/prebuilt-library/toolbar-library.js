@@ -20,7 +20,7 @@ import {
 /**
  * Internal dependencies
  */
-import { KadenceTryParseJSON } from '@kadence/helpers';
+import { SafeParseJSON } from '@kadence/helpers';
 import { kadenceBlocksIcon } from '@kadence/icons';
 /**
  * Add Prebuilt Library button to Gutenberg toolbar
@@ -35,7 +35,7 @@ class ToolbarLibrary extends Component {
 		};
 	}
 	componentDidMount() {
-		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
+		const blockSettings = ( kadence_blocks_params.configuration ? SafeParseJSON( kadence_blocks_params.configuration, true ) : {} );
 		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/designlibrary' ] } );
 		}

@@ -295,9 +295,7 @@ class Kadence_Blocks_Settings {
 	public function activation_redirect() {
 		if ( get_option( 'kadence_blocks_redirect_on_activation', false ) ) {
 			delete_option( 'kadence_blocks_redirect_on_activation' );
-			if ( ! isset( $_GET['activate-multi'] ) ) {
-				wp_safe_redirect( $this->settings_link() );
-			}
+			// @todo add admin notice for optional data share.
 		}
 	}
 	/**
@@ -368,12 +366,8 @@ class Kadence_Blocks_Settings {
 	 * Add option page menu
 	 */
 	public function add_menu() {
-		if ( apply_filters( 'kadence_blocks_admin_menu_options', true ) ) {
-			$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), $this->settings_user_capabilities(), 'kadence_blocks', array( $this, 'config_page' ) );
-		} else {
-			add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
-			$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ) );
-		}
+		add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
+		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
@@ -578,6 +572,39 @@ class Kadence_Blocks_Settings {
 				'show_in_rest'      => true,
 				'default'           => false,
 			)
+		);
+		register_setting(
+				'kadence_blocks_convertkit_api',
+				'kadence_blocks_convertkit_api',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
+		register_setting(
+				'kadence_blocks_activecampaign_api_key',
+				'kadence_blocks_activecampaign_api_key',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
+		register_setting(
+				'kadence_blocks_activecampaign_api_base',
+				'kadence_blocks_activecampaign_api_base',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
 		);
 	}
 	/**

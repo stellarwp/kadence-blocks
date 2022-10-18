@@ -17,7 +17,7 @@ const attributes = {
 		default: 'div',
 	},
 	hideLabel: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	icon: {

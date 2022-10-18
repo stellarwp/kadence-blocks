@@ -116,6 +116,15 @@
 					height: 18px;
 					z-index: 1;
 				}
+				&.is-active + .dashicons-saved {
+					position: absolute;
+					left: 5px;
+					top: 5px;
+					width: 18px;
+					font-size: 18px;
+					height: 18px;
+					z-index: 1;
+				}
 				&:after {
 					content: "";
 					position: absolute;

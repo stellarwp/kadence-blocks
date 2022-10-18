@@ -39,7 +39,7 @@ import { compose } from '@wordpress/compose';
  /**
   * Internal dependencies
   */
-import { KadenceTryParseJSON } from '@kadence/helpers';
+import { SafeParseJSON } from '@kadence/helpers';
 
 /**
  * Single Template Pages.
@@ -117,7 +117,7 @@ class SingleTemplateLibrary extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					control.setState( { items: o, errorItems: false, isLoading: false } );
 				} else {
@@ -159,7 +159,7 @@ class SingleTemplateLibrary extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = KadenceTryParseJSON( response, false );
+				const o = SafeParseJSON( response, false );
 				if ( o ) {
 					control.setState( { items: o, errorItems: false, isLoading: false } );
 				} else {

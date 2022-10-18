@@ -1,0 +1,55 @@
+{
+  "name": "kadence/advanced-form-number",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"label": {
+	  "type": "string",
+	  "default": ""
+	},
+	"placeholder": {
+	  "type": "string",
+	  "default": ""
+	},
+	"showLabel": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"required": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"value": {
+	  "type": "string",
+	  "default": ""
+	},
+	"maxValue": {
+	  "type": "number",
+	  "default": ""
+	},
+	"minValue": {
+	  "type": "number",
+	  "default": ""
+	},
+	"ariaDescription": {
+	  "type": "string",
+	  "default": ""
+	},
+	"width": {
+	  "type": "array",
+	  "default": [
+		"100",
+		"",
+		""
+	  ]
+	},
+	"helpText": {
+	  "type": "string",
+	  "default": ""
+	}
+  },
+  "editorScript": "file:editor.js",
+  "parent": [
+	"kadence/advanced-form"
+  ]
+}

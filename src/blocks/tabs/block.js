@@ -299,7 +299,7 @@ registerBlockType( 'kadence/tabs', {
 					default: '',
 				},
 				showPresets: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				subtitleFont: {
@@ -325,7 +325,7 @@ registerBlockType( 'kadence/tabs', {
 					} ],
 				},
 				enableSubtitle: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				widthType: {

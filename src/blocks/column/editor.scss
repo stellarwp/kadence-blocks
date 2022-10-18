@@ -7,11 +7,12 @@
 
 // New horizontal column.
 .wp-block-kadence-column {
-	margin-left: auto;
-	margin-right: auto;
 	margin-top: 0px;
     margin-bottom: 0px;
 	width: 100%;
+}
+.wp-block-kadence-column * {
+	box-sizing: border-box;
 }
 .wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-middle {
 	display: flex;
@@ -95,4 +96,8 @@
     top: 0;
     bottom: 0;
 	transition: all .3s ease-in-out;
+}
+.wp-block-kadence-column.kb-has-max-width > .kadence-inner-column-inner {
+    margin-left:auto;
+    margin-right:auto;
 }

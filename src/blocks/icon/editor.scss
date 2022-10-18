@@ -89,15 +89,61 @@ i.fipicon-angle-left:before {
 .kt-svg-style-stacked .kt-svg-icon {
 	border: 0px solid #444444;
 	transition: all .3s ease-in-out;
+	padding: 20px;
 }
 .kt-svg-icons.kb-icon-valign-top {
-    align-items: flex-start;
+  align-items: flex-start;
+  display: flex;
+
+  &.kb-icon-align-center {
+    justify-content: center;
+  }
+
+  &.kb-icon-align-right {
+    justify-content: flex-end;
+  }
+
+  &.kb-icon-align-left {
+    justify-content: flex-start;
+  }
 }
 .kt-svg-icons.kb-icon-valign-middle {
     align-items: center;
+    display: flex;
+
+  &.kb-icon-align-center {
+    justify-content: center;
+  }
+
+  &.kb-icon-align-right {
+    justify-content: flex-end;
+  }
+
+  &.kb-icon-align-left {
+    justify-content: flex-start;
+  }
 }
 .kt-svg-icons.kb-icon-valign-bottom {
     align-items: flex-end;
+    display: flex;
+	&.kb-icon-align-center {
+		justify-content: center;
+	}
+	&.kb-icon-align-right {
+		justify-content: flex-end;
+	}
+	&.kb-icon-align-left {
+		justify-content: flex-start;
+	}
+}
+.kt-svg-icons.kb-icon-halign-left {
+    justify-content: flex-start;
+}
+.kt-svg-icons.kb-icon-halign-center {
+    justify-content: center;
+}
+.kt-svg-icons.kb-icon-halign-right {
+    justify-content: flex-end;
 }
 .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"] > .wp-block {
     margin-bottom: 0;

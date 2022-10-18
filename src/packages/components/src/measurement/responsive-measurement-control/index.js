@@ -43,7 +43,7 @@ export default function ResponsiveMeasurementControls( {
 		mobileControl,
 		onChangeTabletControl,
 		tabletControl,
-		onChangeControl,
+		onChangeControl = false,
 		control,
 		step = 1,
 		max = 100,
@@ -54,7 +54,6 @@ export default function ResponsiveMeasurementControls( {
 		units = [ 'px', 'em', 'rem' ],
 		allowEmpty = true,
 		preset = '',
-		hasToggle = true,
 		isBorderRadius = false,
 		firstIcon = outlineTopIcon,
 		secondIcon = outlineRightIcon,
@@ -129,7 +128,7 @@ export default function ResponsiveMeasurementControls( {
 			measurement={ ( mobileValue ? mobileValue : [ '', '', '', '' ] ) }
 			control={ ( realMobileControl ? realMobileControl : 'individual' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeMobileControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => realOnChangeMobileControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -155,7 +154,7 @@ export default function ResponsiveMeasurementControls( {
 			measurement={ ( tabletValue ? tabletValue : [ '', '', '', '' ] ) }
 			control={ ( realTabletControl ? realTabletControl : 'individual' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeTabletControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => realOnChangeTabletControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -181,7 +180,7 @@ export default function ResponsiveMeasurementControls( {
 			measurement={ ( value ? value : [ '', '', '', '' ] ) }
 			control={ ( realDesktopControl ? realDesktopControl : 'individual' ) }
 			onChange={ ( size ) => onChange( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeDesktopControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => realOnChangeDesktopControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }

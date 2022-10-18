@@ -56,7 +56,7 @@ export default class extends Component {
 			<div className="components-base-control kadence-pop-color-control">
 				<div className="kadence-pop-color-container">
 					{ this.props.label && (
-						<h2 className="kadence-beside-label">{ this.props.label }</h2>
+						<label className="kadence-beside-label kadence-pop-color-label">{ this.props.label }</label>
 					) }
 					{ showClear && (
 						<Button

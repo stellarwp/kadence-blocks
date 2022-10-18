@@ -12,31 +12,36 @@ import { Icon } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { createRef, useEffect } from '@wordpress/element';
-
+import {
+	blockDefault,
+	brush,
+	settings,
+} from '@wordpress/icons';
 import './editor.scss';
 
-function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened } ) {
+function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened, tabs = null } ) {
 
 	const defaultTabs = [
 		{
 			key  : 'general',
 			title: __( 'General', 'kadence-blocks' ),
-			icon : 'block-default',
+			icon : blockDefault,
 		},
 		{
 			key  : 'style',
 			title: __( 'Style', 'kadence-blocks' ),
-			icon : 'admin-appearance',
+			icon : brush,
 		},
 		{
 			key  : 'advanced',
 			title: __( 'Advanced', 'kadence-blocks' ),
-			icon : 'admin-tools',
+			icon : settings,
 		},
 	];
 
 	const tabKeys = [ 'general', 'style', 'advanced' ];
 	const allowedTabKeys = allowedTabs ? allowedTabs : tabKeys;
+	const tabsMap = tabs ? tabs : defaultTabs;
 	const tabsContainer = createRef();
 
 	if ( activeTab !== openedTab ) {
@@ -62,15 +67,14 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 	return (
 		<div className="kadence-blocks-inspector-tabs" ref={ tabsContainer }>
-			{defaultTabs.map( ( {
-									key, title, icon,
-								}, i ) => {
+			{tabsMap.map( ( {
+				key, title, icon,
+			}, i ) => {
 				if ( allowedTabKeys.includes( key ) ) {
 					return (
 						<button
 							key={key}
-							aria-label={title + ' tab'}
-							data-label={title + ' tab'}
+							aria-label={title + ' ' + __( 'tab', 'kadence-blocks' ) }
 							onClick={() => switchTab( key )}
 							className={classnames( {
 								[ 'is-active' ]: key === activeTab,

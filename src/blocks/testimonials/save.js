@@ -9,6 +9,7 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
  * External dependencies
  */
 import { times } from 'lodash';
+import classnames from 'classnames';
 
 function Save( { attributes } ) {
 	const {
@@ -67,7 +68,23 @@ function Save( { attributes } ) {
 		maxWidth         : ( ( 'bubble' === style || 'inlineimage' === style || undefined === containerMaxWidth || '' === containerMaxWidth ) ? undefined : containerMaxWidth + 'px' ),
 	};
 
-	const blockProps = useBlockProps.save();
+	const blockProps = useBlockProps.save( {
+		className: classnames( {
+			[ `wp-block-kadence-testimonials` ]                                                                       : true,
+			[ `kt-testimonial-halign-${hAlign}` ]                                                                     : true,
+			[ `kt-testimonial-style-${style}` ]                                                                       : true,
+			[ `kt-testimonials-media-${( displayMedia ? 'on' : 'off' )}` ]                                            : true,
+			[ `kt-testimonials-icon-${( displayIcon ? 'on' : 'off' )}` ]                                              : true,
+			[ `kt-testimonial-columns-${columns[ 0 ]}` ]                                                              : true,
+			[ `kt-t-xxl-col-${columns[ 0 ]}` ]                                                                        : true,
+			[ `kt-t-xl-col-${columns[ 1 ]}` ]                                                                         : true,
+			[ `kt-t-lg-col-${columns[ 2 ]}` ]                                                                         : true,
+			[ `kt-t-md-col-${columns[ 3 ]}` ]                                                                         : true,
+			[ `kt-t-sm-col-${columns[ 4 ]}` ]                                                                         : true,
+			[ `kt-t-xs-col-${columns[ 5 ]}` ]                                                                         : true,
+			[ `kt-blocks-testimonials-wrap${uniqueID}${layout && layout === 'carousel' ? ' tns-carousel-wrap' : ''}` ]: true
+		} )
+	} );
 
 	const renderTestimonialIcon = ( index ) => {
 		return (
@@ -252,9 +269,9 @@ function Save( { attributes } ) {
 			</div>
 		);
 	};
+
 	return (
-		<div {...blockProps}
-			 className={`wp-block-kadence-testimonials kt-testimonial-halign-${hAlign} kt-testimonial-style-${style} kt-testimonials-media-${( displayMedia ? 'on' : 'off' )} kt-testimonials-icon-${( displayIcon ? 'on' : 'off' )} kt-testimonial-columns-${columns[ 0 ]} kt-t-xxl-col-${columns[ 0 ]} kt-t-xl-col-${columns[ 1 ]} kt-t-lg-col-${columns[ 2 ]} kt-t-md-col-${columns[ 3 ]} kt-t-sm-col-${columns[ 4 ]} kt-t-xs-col-${columns[ 5 ]} kt-blocks-testimonials-wrap${uniqueID}${layout && layout === 'carousel' ? ' tns-carousel-wrap' : ''}`}>
+		<div {...blockProps}>
 			{layout && layout === 'carousel' && (
 				<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle} kt-carousel-container-arrowstyle-${arrowStyle}`}>
 					<div className={`kt-blocks-carousel-init kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} data-columns-xxl={columns[ 0 ]} data-columns-xl={columns[ 1 ]}

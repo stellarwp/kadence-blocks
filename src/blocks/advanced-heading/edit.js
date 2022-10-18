@@ -22,6 +22,7 @@ import {
 	InlinePopColorControl,
 	ResponsiveAlignControls,
 	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 import {
@@ -40,6 +41,7 @@ import './markformat';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Internal block libraries
  */
@@ -892,7 +894,14 @@ function KadenceAdvancedHeading( props ) {
 							</KadencePanelBody>
 						</>
 					}
-				</InspectorControls>
+
+					{( activeTab === 'advanced' ) && (
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedheading' } excludedAttrs={ [ 'content' ] }  />
+
+					)}
+
+						</InspectorControls>
 			)}
 			<InspectorAdvancedControls>
 				<TextControl

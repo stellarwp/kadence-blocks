@@ -92,15 +92,15 @@ import {
 				default: '',
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 		},
@@ -233,15 +233,15 @@ import {
 				default: '',
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 		},

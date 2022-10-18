@@ -16,17 +16,19 @@ import {
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
+import './editor.scss';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
 export default function SmallResponsiveControl( {
-													label,
-													desktopChildren,
-													tabletChildren,
-													mobileChildren,
-												} ) {
+		label,
+		desktopChildren,
+		tabletChildren,
+		mobileChildren,
+		hasPadding = false,
+	} ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
@@ -70,7 +72,7 @@ export default function SmallResponsiveControl( {
 		desktopChildren
 	);
 	return (
-		<div className={ 'components-base-control kb-small-responsive-control' }>
+		<div className={ `components-base-control kb-small-responsive-control${ hasPadding ? ' responsive-title-area-spacing' : '' }` }>
 			<div className="kadence-title-bar">
 				{ label && (
 					<span className="kadence-control-title">{ label }</span>

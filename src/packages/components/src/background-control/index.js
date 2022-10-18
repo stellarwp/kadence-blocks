@@ -75,7 +75,7 @@ class BackgroundControl extends Component {
 			];
 		}
 		return (
-			<div className="kadence-image-background-control">
+			<div className="components-base-control kadence-image-background-control">
 				{ ! hasImage && (
 					<Fragment>
 						{ label && (
