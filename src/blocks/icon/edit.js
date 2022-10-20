@@ -20,7 +20,8 @@ import {
 	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	KadenceIconPicker
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -207,6 +208,16 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 				initialOpen={( 1 === iconCount ? true : false )}
 				panelName={'kb-icon-settings-' + index}
 			>
+
+				<KadenceIconPicker
+					value={icons[ index ].icon}
+					onChange={value => {
+						saveArrayUpdate( { icon: value }, index );
+					}}
+				/>
+
+				<br/><br/>
+
 				<IconControl
 					value={icons[ index ].icon}
 					onChange={value => {

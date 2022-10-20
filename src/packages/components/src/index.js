@@ -72,3 +72,5 @@ export { default as BorderColorControls } from './color/border-color-control'
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';
+
+export { default as KadenceIconPicker } from './icon-picker';
