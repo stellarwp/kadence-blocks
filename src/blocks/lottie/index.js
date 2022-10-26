@@ -5,9 +5,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 import edit from './edit';
 import metadata from './block.json';
-import save from './save';
 import transforms from './transforms';
-const { name } = metadata;
 import { lottieIcon } from '@kadence/icons';
 import { __, _x } from '@wordpress/i18n';
 
@@ -28,7 +26,6 @@ registerBlockType('kadence/lottie', {
 	icon: {
 		src: lottieIcon,
 	},
-	transforms,
 	edit,
-	save,
+	save: () => null,
 });
