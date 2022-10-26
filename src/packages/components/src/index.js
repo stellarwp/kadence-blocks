@@ -19,7 +19,7 @@ export { default as BackgroundSizeControl } from './background-size-control';
 export { default as BackgroundControl } from './background-control';
 export { default as BackgroundTypeControl } from './background-type-control';
 export { default as GradientControl } from './gradient-control';
-export { default as MeasurementRangeControl } from './measurement-range-control';
+export { default as MeasureRangeControl } from './measurement-range-control';
 export { default as ResponsiveMeasureRangeControl } from './measurement-range-control/responsive';
 export { default as KadenceFocalPicker } from './focal-picker';
 export { default as KadenceRadioButtons } from './common/radio-buttons';

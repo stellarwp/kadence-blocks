@@ -71,6 +71,27 @@
 		color:white;
 	}
 }
+.kadence-measure-range-control > .kadence-radio-range__header {
+	.kadence-radio-range__title {
+		flex-grow: 1;
+		display: flex;
+	}
+	.title-reset-wrap {
+		width: 20px;
+		overflow: hidden;
+	}
+	.components-button.is-small.has-icon.is-reset {
+		width: 20px;
+		min-width: 20px;
+		padding: 0;
+		margin: 0 0 0 -20px;
+	}
+	.kadence-radio-range__title:hover {
+		.components-button.is-small.has-icon.is-reset {
+			margin: 0 0px 0 0px;
+		}
+	}
+}
 .kadence-measure-range-control {
 	.kadence-range-popover-settings .components-base-control__field {
 		margin-bottom: 0;

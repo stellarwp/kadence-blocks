@@ -13,6 +13,10 @@ import { map, isEqual } from 'lodash';
 import MeasureRangeControl from './index';
 import { capitalizeFirstLetter } from '@kadence/helpers';
 import { undo } from '@wordpress/icons';
+/**
+ * Import Css
+ */
+ import './editor.scss';
 import {
 	Dashicon,
 	Button,
@@ -44,12 +48,8 @@ export default function ResponsiveMeasureRangeControl( {
 		mobileValue,
 		tabletValue,
 		value,
-		onChangeMobileControl,
-		mobileControl,
-		onChangeTabletControl,
-		tabletControl,
-		onChangeControl,
-		control,
+		onControl,
+		control = 'individual',
 		options = OPTIONS_MAP,
 		step = 1,
 		max = 100,
@@ -58,9 +58,6 @@ export default function ResponsiveMeasureRangeControl( {
 		onUnit,
 		showUnit = false,
 		units = [ 'px', 'em', 'rem' ],
-		allowEmpty = true,
-		preset = '',
-		hasToggle = true,
 		isBorderRadius = false,
 		disableCustomSizes = false,
 		firstIcon = outlineTopIcon,
@@ -69,16 +66,13 @@ export default function ResponsiveMeasureRangeControl( {
 		fourthIcon = outlineLeftIcon,
 		linkIcon = link,
 		unlinkIcon = linkOff,
+		deskDefault = [ '', '', '', '' ],
+		tabletDefault = [ '', '', '', '' ],
+		mobileDefault = [ '', '', '', '' ],
 		reset = true,
+		setCustomControl = null,
 	} ) {
 	const ref = useRef();
-	const [ localControl, setLocalControl ] = useState( 'individual' );
-	const realDesktopControl = control ? control : localControl;
-	const realMobileControl = mobileControl ? mobileControl : realDesktopControl;
-	const realTabletControl = tabletControl ? tabletControl : realDesktopControl;
-	const realOnChangeDesktopControl = onChangeControl ? onChangeControl : setLocalControl;
-	const realOnChangeTabletControl = onChangeTabletControl ? onChangeTabletControl : realOnChangeDesktopControl;
-	const realOnChangeMobileControl = onChangeMobileControl ? onChangeMobileControl : realOnChangeDesktopControl;
 	const measureIcons = {
 		first: isBorderRadius ? topLeftIcon : firstIcon,
 		second: isBorderRadius ? topRightIcon : secondIcon,
@@ -116,7 +110,6 @@ export default function ResponsiveMeasureRangeControl( {
 	}
 	const realControl = onControl ? control : theControl;
 	const realSetOnControl = onControl ? onControl : setTheControl;
-	const zero = ( allowEmpty ? true : false );
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
@@ -169,20 +162,19 @@ export default function ResponsiveMeasureRangeControl( {
 		<MeasureRangeControl
 			key={ 2 }
 			className="measure-mobile-size"
+			parentLabel={ label }
 			label={ ( subLabel ? __( 'Mobile:', 'kadence-blocks' ) + subLabel : undefined ) }
 			value={ ( mobileValue ? mobileValue : [ '', '', '', '' ] ) }
-			control={ ( realMobileControl ? realMobileControl : 'individual' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeMobileControl( sizeControl ) : undefined ) }
+			control={ realControl }
+			onControl={ ( value ) => realSetOnControl( value ) }
 			options={ options }
 			min={ min }
 			max={ max }
 			step={ step }
-			allowEmpty={ zero }
 			unit={ unit }
 			showUnit={ true }
 			units={ [ unit ] }
-			preset={ preset }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -196,20 +188,19 @@ export default function ResponsiveMeasureRangeControl( {
 		<MeasureRangeControl
 			key={ 1 }
 			className="measure-tablet-size"
+			parentLabel={ label }
 			label={ ( subLabel ? __( 'Tablet:', 'kadence-blocks' ) + subLabel : undefined ) }
 			value={ ( tabletValue ? tabletValue : [ '', '', '', '' ] ) }
-			control={ ( realTabletControl ? realTabletControl : 'individual' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeTabletControl( sizeControl ) : undefined ) }
+			control={ realControl }
+			onControl={ ( value ) => realSetOnControl( value ) }
 			options={ options }
 			min={ min }
 			max={ max }
 			step={ step }
-			allowEmpty={ zero }
 			unit={ unit }
 			showUnit={ true }
 			units={ [ unit ] }
-			preset={ preset }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -223,21 +214,22 @@ export default function ResponsiveMeasureRangeControl( {
 		<MeasureRangeControl
 			key={ 0 }
 			className="measure-desktop-size"
+			parentLabel={ label }
 			label={ ( subLabel ? subLabel : undefined ) }
 			value={ ( value ? value : [ '', '', '', '' ] ) }
-			// control={ ( realDesktopControl ? realDesktopControl : 'individual' ) }
 			onChange={ ( size ) => onChange( size ) }
-			//onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeDesktopControl( sizeControl ) : undefined ) }
+			control={ realControl }
+			onControl={ ( value ) => realSetOnControl( value ) }
+			setCustomControl={ realSetIsCustom }
+			customControl={ realIsCustomControl }
 			options={ options }
 			min={ min }
 			max={ max }
 			step={ step }
-			allowEmpty={ zero }
 			unit={ unit }
 			onUnit={ ( onUnit ? onUnit : undefined ) }
 			showUnit={ showUnit }
 			units={ units }
-			preset={ preset }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -247,28 +239,37 @@ export default function ResponsiveMeasureRangeControl( {
 			unlinkIcon={ unlinkIcon }
 		/>
 	);
+	let currentDefault = deskDefault;
+	if ( 'Mobile' === deviceType ) {
+		currentDefault = mobileDefault;
+	} else if ( 'Mobile' === deviceType ) {
+		currentDefault = tabletDefault;
+	}
 	return [
 		onChange && onChangeTablet && onChangeMobile && (
-			<div ref={ ref } className={ 'components-base-control kb-responsive-measure-control' }>
+			<div ref={ ref } className={ 'components-base-control kb-responsive-measure-control kadence-measure-range-control' }>
 				<Flex
 					justify="space-between"
-					className={ 'kadence-title-bar kadence-measure-range__header' }
+					className={ 'kadence-title-bar kadence-measure-range__header kadence-radio-range__header' }
 				>
-					{ reset && (
-						<Button
-							className="is-reset is-single"
-							isSmall
-							disabled={ ( ( isEqual( [ '', '', '', '' ], liveValue ) || isEqual( [ '', 'auto', '', 'auto' ], liveValue ) ) ? true : false ) }
-							icon={ undo }
-							onClick={ () => onReset() }
-						></Button>
-					) }
 					{ label && (
-						<FlexItem>
+						<div className="kadence-radio-range__title">
 							<label className="components-base-control__label">{ label }</label>
-						</FlexItem>
+							{ reset && (
+								<div className='title-reset-wrap'>
+									<Button
+										className="is-reset is-single"
+										label='reset'
+										isSmall
+										disabled={ ( ( isEqual( currentDefault, liveValue ) ) ? true : false ) }
+										icon={ undo }
+										onClick={ () => onReset() }
+									/>
+								</div>
+							) }
+						</div>
 					) }
-					<ButtonGroup className="kb-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
+					<ButtonGroup className="kb-responsive-options kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
 						{ map( devices, ( { name, key, title, itemClass } ) => (
 							<Button
 								key={ key }

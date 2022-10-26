@@ -89,6 +89,7 @@ export default function MeasureRangeControl( {
 	unlinkIcon = linkOff,
 	customControl = false,
 	setCustomControl = null,
+	parentLabel = null,
 	reset,
 } ) {
 	const measureIcons = {
@@ -197,7 +198,7 @@ export default function MeasureRangeControl( {
 					{ realControl === 'individual' && (
 						<>
 							<SingleMeasureRangeControl
-								parentLabel={ label }
+								parentLabel={ parentLabel ? parentLabel : label }
 								label={ __( 'Top', 'kadence-blocks' ) }
 								className={ 'kb-measure-box-top' }
 								value={ ( value ? value[ 0 ] : '' ) }
@@ -218,7 +219,7 @@ export default function MeasureRangeControl( {
 								isPopover={ true }
 							/>
 							<SingleMeasureRangeControl
-								parentLabel={ label }
+								parentLabel={ parentLabel ? parentLabel : label }
 								label={ __( 'Right', 'kadence-blocks' ) }
 								className={ 'kb-measure-box-right' }
 								value={ ( value ? value[ 1 ] : '' ) }
@@ -239,7 +240,7 @@ export default function MeasureRangeControl( {
 								isPopover={ true }
 							/>
 							<SingleMeasureRangeControl
-								parentLabel={ label }
+								parentLabel={ parentLabel ? parentLabel : label }
 								label={ __( 'Bottom', 'kadence-blocks' ) }
 								className={ 'kb-measure-box-bottom' }
 								value={ ( value ? value[ 2 ] : '' ) }
@@ -260,7 +261,7 @@ export default function MeasureRangeControl( {
 								isPopover={ true }
 							/>
 							<SingleMeasureRangeControl
-								parentLabel={ label }
+								parentLabel={ parentLabel ? parentLabel : label }
 								label={ __( 'Left', 'kadence-blocks' ) }
 								className={ 'kb-measure-box-left' }
 								value={ ( value ? value[ 3 ] : '' ) }
