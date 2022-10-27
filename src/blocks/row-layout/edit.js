@@ -71,7 +71,8 @@ import {
 	KadenceRadioButtons,
 	VerticalAlignmentIcon,
 	BackgroundControl as KadenceBackgroundControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -93,6 +94,7 @@ import { SPACING_SIZES_MAP } from './constants';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -158,7 +160,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			contextPost = context.postId;
 		}
 		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['bgImg'] && attributes.kadenceDynamic['bgImg'].enable ) {
@@ -218,7 +220,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,
@@ -841,6 +843,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 									</KadencePanelBody>
 								</Fragment>
 							) }
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
 						</>
 					) }
 				</InspectorControls>

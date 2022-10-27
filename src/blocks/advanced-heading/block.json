@@ -8,7 +8,7 @@
 	"content": {
 	  "type": "string",
 	  "source": "html",
-	  "selector": "h1,h2,h3,h4,h5,h6,p,span,div"
+	  "selector": "h1,h2,h3,h4,h5,h6,p.wp-block-kadence-advancedheading,span.wp-block-kadence-advancedheading,div.wp-block-kadence-advancedheading"
 	},
 	"level": {
 	  "type": "number",
@@ -340,7 +340,7 @@
 	  "type": "string"
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

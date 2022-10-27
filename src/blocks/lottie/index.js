@@ -9,12 +9,12 @@ import save from './save';
 import transforms from './transforms';
 const { name } = metadata;
 import { lottieIcon } from '@kadence/icons';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 registerBlockType('kadence/lottie', {
 	...metadata,
-	title: __( 'Lottie Animations', 'kadence-blocks' ),
-	description: __( 'Kadence lottie animation.', 'kadence-blocks' ),
+	title: _x( 'Lottie Animations', 'block title', 'kadence-blocks' ),
+	description: _x( 'Display lottie animations on your site', 'block description', 'kadence-blocks' ),
 	keywords: [
 		__( 'lottie', 'kadence-blocks' ),
 		__( 'animation', 'kadence-blocks' ),

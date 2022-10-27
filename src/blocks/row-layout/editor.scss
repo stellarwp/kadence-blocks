@@ -40,6 +40,9 @@
 .kt-inspect-tabs .components-button-group .kt-layout-btn.is-primary {
     z-index: 0;
 }
+.wp-block-kadence-rowlayout * {
+	box-sizing: border-box;
+}
 // Core Should fix this.
 .block-editor-media-placeholder__url-input-form input[type=url].block-editor-media-placeholder__url-input-field {
 	min-width:200px;

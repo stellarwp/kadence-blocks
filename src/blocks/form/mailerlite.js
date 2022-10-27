@@ -181,7 +181,7 @@ class MailerLiteControls extends Component {
 						<Fragment>
 								&nbsp;
 							<Button
-								isDefault
+								isSecondary
 								onClick={ this.removeAPI }
 							>
 								{ __( 'Remove', 'kadence-blocks-pro' ) }

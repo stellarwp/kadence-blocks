@@ -37,12 +37,14 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
+
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
+	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 */
@@ -53,7 +55,11 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				if ( is_array( $icon_value ) ) {
 					$css->set_selector( '.kt-svg-icons' . $unique_id . ' .kt-svg-item-' . $icon_key . ' .kb-svg-icon-wrap' );
 					$css->render_color_output( $icon_value, 'color', 'color' );
-					$css->render_responsive_size( $icon_value, array( 'size', 'tabletSize', 'mobileSize' ), 'font-size' );
+					$css->render_responsive_size( $icon_value, array(
+						'size',
+						'tabletSize',
+						'mobileSize'
+					), 'font-size' );
 					if ( isset( $icon_value['style'] ) && 'stacked' === $icon_value['style'] ) {
 						$css->render_color_output( $icon_value, 'background', 'background' );
 						$css->render_color_output( $icon_value, 'border', 'border-color' );
@@ -70,6 +76,22 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
+
+		if ( ! empty( $attributes['verticalAlignment'] ) ) {
+			if ( ! isset( $attributes['textAlignment'] ) || ( isset( $attributes['textAlignment'] ) && 'center' === $attributes['textAlignment'] ) ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
+				$css->add_property('justify-content', 'center' );
+			}
+			if ( isset( $attributes['textAlignment'] ) && 'right' === $attributes['textAlignment'] ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]' );
+				$css->add_property('justify-content', 'flex-end');
+			}
+			if ( isset( $attributes['textAlignment'] ) && 'left' === $attributes['textAlignment'] ) {
+				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
+				$css->add_property('justify-content', 'flex-start');
+			}
+		}
+		
 		$css->set_selector( '.wp-block-kadence-icon.kt-svg-icons' . $unique_id );
 		$align_args = array(
 			'desktop_key' => 'textAlignment',
@@ -77,7 +99,9 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'mobileTextAlignment',
 		);
 		$css->render_flex_align( $attributes, 'textAlignment', $align_args );
+
 		return $css->css_output();
 	}
 }
+
 Kadence_Blocks_Icon_Block::get_instance();

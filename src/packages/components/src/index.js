@@ -30,6 +30,7 @@ export { default as KadenceImageControl } from './common/image-controls';
 export { default as KadenceVideoControl } from './common/video-control';
 export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
+export { default as KadenceInspectorControls } from './inspector-controls';
 export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
@@ -73,3 +74,6 @@ export { default as MeasurementSingleControl } from './measurement/single-input-
 /* Color */
 export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette'
 export { default as BorderColorControls } from './color/border-color-control'
+
+/* Block Defaults */
+export { default as KadenceBlockDefaults } from './block-defaults';

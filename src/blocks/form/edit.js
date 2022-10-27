@@ -20,6 +20,7 @@ import {
 	BoxShadowControl,
 	MeasurementControls,
 	InspectorControlTabs,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
@@ -29,6 +30,7 @@ import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -64,7 +66,7 @@ import {
 } from '@wordpress/hooks';
 import { DELETE } from '@wordpress/keycodes';
 
-const RETRIEVE_KEY_URL = 'https://g.co/recaptcha/v3';
+const RETRIEVE_KEY_URL = 'https://www.google.com/recaptcha/admin';
 const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 
 const actionOptionsList = [
@@ -164,9 +166,9 @@ function KadenceForm( props ) {
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/column' ] !== undefined && typeof blockConfigObject[ 'kadence/column' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/column' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/column' ][ attribute ];
+				if ( blockConfigObject[ 'kadence/form' ] !== undefined && typeof blockConfigObject[ 'kadence/form' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/form' ] ).map( ( attribute ) => {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/form' ][ attribute ];
 					} );
 				}
 			}
@@ -1834,7 +1836,7 @@ function KadenceForm( props ) {
 											<>
 												&nbsp;
 												<Button
-													isDefault
+													isSecondary
 													onClick={() => removeKeys}
 												>
 													{__( 'Remove', 'kadence-blocks' )}
@@ -3563,6 +3565,12 @@ function KadenceForm( props ) {
 						)}
 					</>
 				}
+
+				{ (activeTab === 'advanced') && (
+					<>
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/form' } excludedAttrs={ [ 'postID' ] } />
+					</>
+				)}
 			</InspectorControls>
 			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}

@@ -36,7 +36,14 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
+
+	/**
+	 * Block determines in scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
 
 	/**
 	 * Instance Control
@@ -52,12 +59,11 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
 
@@ -84,22 +90,48 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn' );
 		$css->add_property( 'margin-top', '1em' );
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:last-child' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2)' );
 		$css->add_property( 'display', 'none' );
 
 
-		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
-		$css->add_property( 'max-height', (  isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250) .  ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+		$css->add_property( 'max-height', ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250) . ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
 		$css->add_property( 'overflow-y', 'hidden' );
 
-		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
-			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
-			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+		if ( isset( $attributes['heightTablet'] ) && ! empty( $attributes['heightTablet'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+			$css->add_property( 'max-height', $attributes['heightTablet'] .  ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
+			$css->set_media_state( 'desktop');
 		}
+		if ( isset( $attributes['heightMobile'] ) && ! empty( $attributes['heightMobile'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+			$css->add_property( 'max-height', $attributes['heightMobile'] .  ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
+			$css->set_media_state( 'desktop');
+		}
+
+		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
+			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
+			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
+		}
+
+		// Add open styles
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-column' );
+		$css->add_property( 'max-height', 'none' );
+		$css->add_property( '-webkit-mask-image', 'none' );
+		$css->add_property( 'mask-image', 'none' );
+
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(1)' );
+		$css->add_property( 'display', 'none' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2)' );
+		$css->add_property( 'display', 'inline-flex' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .kt-btn-wrap:nth-child(2)' );
+		$css->add_property( 'display', 'block' );
 
 		// Default expanded Desktop
 		if ( isset( $attributes['defaultExpandedDesktop'] ) && $attributes['defaultExpandedDesktop'] ) {
-			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 			$css->set_media_state( 'desktop' );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
@@ -122,16 +154,16 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'display', 'none' );
 			$css->set_media_state( 'desktop' );
 
-			// If default expanded on tablet, but not on mobile
+			// If default expanded on tablet, but not on mobile.
 			if ( ! isset( $attributes['defaultExpandedMobile'] ) || ( isset( $attributes['defaultExpandedMobile'] ) && ! $attributes['defaultExpandedMobile'] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 				$css->add_property( 'max-height', ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( isset( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' ) );
 				$css->add_property( 'overflow-y', 'hidden' );
 
-				if ( isset( $attributes['enableFadeOut']) && $attributes['enableFadeOut'] ) {
-					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
-					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+				if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
+					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
+					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
 				}
 
 				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
@@ -153,59 +185,23 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
-
 		return $css->css_output();
 	}
 
 	/**
-	 * Generate HTML for this block
-	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 *
-	 * @return mixed
+	 * Registers scripts and styles.
 	 */
-	public function build_html( $attributes, $unique_id, $content ) {
-		$show_more_container_id        = 'kb-block-show-more-container' . esc_attr( $unique_id );
-		$show_more_id = str_replace( array( '-' ), '', $unique_id );
-
-		$show_hide_more = isset( $attributes['showHideMore'] ) && $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $show_more_id . ".style.display = 'block';";
-		$preview_height = ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( ! empty( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' );
-		$maskvalue = 'none';
-
-		if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
-			$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)';
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
 		}
 
-		$content = $content . "<script>
-			var showMoreContainer" . $show_more_id . " = document.querySelector('." . $show_more_container_id . " > .wp-block-kadence-column');
-			var buttons" . $show_more_id . " = document.querySelectorAll('." . $show_more_container_id . " > .wp-block-kadence-advancedbtn div');
-			var showMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[0];
-			var hideMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[1];
-			showMoreButton" . $show_more_id . ".addEventListener('click', function(e) {
-				e.preventDefault();
-				showMoreContainer" . $show_more_id . ".style.maxHeight = 'none';
-				showMoreContainer" . $show_more_id . ".style['mask-image'] = 'none';
-				showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = 'none';
-				showMoreButton" . $show_more_id . ".style.display = 'none';
-				" . $show_hide_more . "
-				return false;
-			});
-			hideMoreButton" . $show_more_id . ".addEventListener('click', function (e) {
-				e.preventDefault();
-				showMoreContainer" . $show_more_id . ".style.maxHeight =  '" . $preview_height . "';
-				showMoreButton" . $show_more_id . ".style.display = 'block';
-				hideMoreButton" . $show_more_id . ".style.display = 'none';
-				showMoreContainer" . $show_more_id . ".style['mask-image'] = '" . $maskvalue . "';
-				showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = '" . $maskvalue . "';
-				return false;
-			});
-		</script>";
-
-
-		return $content;
-
+		wp_register_script( 'kadence-blocks-show-more', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-show-more.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 
 }

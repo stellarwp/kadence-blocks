@@ -57,21 +57,24 @@ function kadence_gutenberg_editor_assets() {
 	wp_register_style( 'kadence-blocks-plugin-css', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_control_meta['version'] );
 	wp_set_script_translations( 'kadence-blocks-plugin-js', 'kadence-blocks' );
 
+	wp_set_script_translations( 'kadence-blocks-vendor', 'kadence-blocks' );
+
+
 	$blocks = array(
 		'accordion',
-		'advanced-btn',
-		'advanced-gallery',
+		'advancedbtn',
+		'advancedgallery',
 		'advanced-heading',
 		'advanced-form',
 		'column',
-		'count-up',
+		'countup',
 		'countdown',
 		'form',
 		'googlemaps',
 		'icon',
-		'icon-list',
+		'iconlist',
 		'image',
-		'info-box',
+		'infobox',
 		'lottie',
 		'posts',
 		'row-layout',
@@ -270,7 +273,7 @@ function kadence_blocks_gutenberg_editor_plugin_enqueue() {
 	global $pagenow;
 	if ( $pagenow !== 'widgets.php' ) {
 		wp_enqueue_script( 'kadence-blocks-plugin-js' );
-		wp_enqueue_style( 'kadence-blocks-editor-plugin-css' );
+		wp_enqueue_style( 'kadence-blocks-plugin-css' );
 	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );

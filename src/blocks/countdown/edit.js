@@ -8,6 +8,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
+import { get } from 'lodash';
 
 /**
  * Import Icons
@@ -32,18 +33,21 @@ import {
 	ResponsiveAlignControls,
 	WebfontLoader,
 	InspectorControlTabs,
-	MeasurementControls
+	MeasurementControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
+	setBlockDefaults
 } from '@kadence/helpers';
 
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 /**
  * Internal block libraries
  */
@@ -178,21 +182,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		evergreenStrict,
 	} = attributes;
 
-	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ itemBorderWidthControl, setItemBorderWidthControl ] = useState( 'individual' );
-	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
-	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
-	const [ previewExpired, setPreviewExpired ] = useState( false );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
-
-	let dateSettings = {};
-
 	useEffect( () => {
 		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			attributes = setBlockDefaults( 'kadence/countdown', attributes);
 
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
@@ -224,6 +216,18 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
 		}
 	}, [] );
+
+	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
+	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
+	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ itemBorderWidthControl, setItemBorderWidthControl ] = useState( 'individual' );
+	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
+	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
+	const [ previewExpired, setPreviewExpired ] = useState( false );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	let dateSettings = {};
 
 	const getTimestamp = ( value, theTimeOffset ) => {
 		const userTimezoneOffset = -1 * ( new Date().getTimezoneOffset() / 60 );
@@ -269,8 +273,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		} );
 	};
 	const saveDate = ( value ) => {
-		const theTimezone = ( settings.timezone && settings.timezone.string ? settings.timezone.string : '' );
-		const theTimeOffset = ( settings.timezone && settings.timezone.offset ? settings.timezone.offset : 0 );
+		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
+		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
+
 		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
 		setAttributes( {
 			date      : value,
@@ -842,10 +847,11 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 
 						{( activeTab === 'style' ) &&
 							<>
-								{enableTimer && (
+							{ enableTimer && (
 									<KadencePanelBody
 										title={__( 'Count Item Settings', 'kadence-blocks' )}
-										panelName={'kb-countdown-item-settings'}
+										panelName={'itemStyle'}
+										blockSlug={ 'kadence/countdown' }
 									>
 										<PopColorControl
 											label={__( 'Background Color', 'kadence-blocks' )}
@@ -914,11 +920,12 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 										/>
 									</KadencePanelBody>
 								)}
-								{enableTimer && (
+								{ enableTimer && (
 									<KadencePanelBody
 										title={__( 'Number Settings', 'kadence-blocks' )}
 										initialOpen={false}
-										panelName={'kb-countdown-number-settings'}
+										panelName={'numberStyle'}
+										blockSlug={ 'kadence/countdown' }
 									>
 										<PopColorControl
 											label={__( 'Color', 'kadence-blocks' )}
@@ -966,11 +973,12 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 										/>
 									</KadencePanelBody>
 								)}
-								{enableTimer && (
+								{ enableTimer && (
 									<KadencePanelBody
 										title={__( 'Label Settings', 'kadence-blocks' )}
 										initialOpen={false}
-										panelName={'kb-countdown-label-settings'}
+										panelName={'labelStyle'}
+										blockSlug={ 'kadence/countdown' }
 									>
 										<PopColorControl
 											label={__( 'Color', 'kadence-blocks' )}
@@ -1129,116 +1137,117 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 							<>
 								<KadencePanelBody
 									title={__( 'Container Settings', 'kadence-blocks' )}
-									panelName={'kb-coutdown-container-settings'}
+									panelName={'containerSettings'}
+									blockSlug={ 'kadence/countdown' }
 								>
-									{showSettings( 'container', 'kadence/countdown' ) && (
-										<>
-											<PopColorControl
-												label={__( 'Background Color', 'kadence-blocks' )}
-												value={( background ? background : '' )}
-												default={''}
-												onChange={value => setAttributes( { background: value } )}
-											/>
-											<PopColorControl
-												label={__( 'Border Color', 'kadence-blocks' )}
-												value={( border ? border : '' )}
-												default={''}
-												onChange={value => setAttributes( { border: value } )}
-											/>
-											<ResponsiveMeasurementControls
-												label={__( 'Border Width', 'kadence-blocks' )}
-												value={borderWidth}
-												control={borderWidthControl}
-												tabletValue={tabletBorderWidth}
-												mobileValue={mobileBorderWidth}
-												onChange={( value ) => setAttributes( { borderWidth: value } )}
-												onChangeTablet={( value ) => setAttributes( { tabletBorderWidth: value } )}
-												onChangeMobile={( value ) => setAttributes( { mobileBorderWidth: value } )}
-												onChangeControl={( value ) => setBorderWidthControl( value )}
-												min={0}
-												max={40}
-												step={1}
-												unit={'px'}
-												units={[ 'px' ]}
-												showUnit={true}
-												preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
-											/>
-											<MeasurementControls
-												label={__( 'Border Radius', 'kadence-blocks' )}
-												measurement={borderRadius}
-												control={borderRadiusControl}
-												onChange={( value ) => setAttributes( { borderRadius: value } )}
-												onControl={( value ) => setBorderRadiusControl( value )}
-												min={0}
-												max={200}
-												step={1}
-												controlTypes={[
-													{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-													{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-												]}
-												firstIcon={topLeftIcon}
-												secondIcon={topRightIcon}
-												thirdIcon={bottomRightIcon}
-												fourthIcon={bottomLeftIcon}
-											/>
-											<ResponsiveMeasurementControls
-												label={__( 'Container Padding', 'kadence-blocks' )}
-												value={containerPadding}
-												control={paddingControl}
-												tabletValue={containerTabletPadding}
-												mobileValue={containerMobilePadding}
-												onChange={( value ) => setAttributes( { containerPadding: value } )}
-												onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
-												onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
-												onChangeControl={( value ) => setPaddingControl( value )}
-												min={paddingMin}
-												max={paddingMax}
-												step={paddingStep}
-												unit={paddingType}
-												units={[ 'px', 'em', 'rem', '%' ]}
-												onUnit={( value ) => setAttributes( { paddingType: value } )}
-											/>
-											<ResponsiveMeasurementControls
-												label={__( 'Container Margin', 'kadence-blocks' )}
-												value={containerMargin}
-												control={marginControl}
-												tabletValue={containerTabletMargin}
-												mobileValue={containerMobileMargin}
-												onChange={( value ) => setAttributes( { containerMargin: value } )}
-												onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-												onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-												onChangeControl={( value ) => setMarginControl( value )}
-												min={marginMin}
-												max={marginMax}
-												step={marginStep}
-												unit={marginType}
-												units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-												onUnit={( value ) => setAttributes( { marginType: value } )}
-											/>
-										</>
-									)}
+									<PopColorControl
+										label={__( 'Background Color', 'kadence-blocks' )}
+										value={( background ? background : '' )}
+										default={''}
+										onChange={value => setAttributes( { background: value } )}
+									/>
+									<PopColorControl
+										label={__( 'Border Color', 'kadence-blocks' )}
+										value={( border ? border : '' )}
+										default={''}
+										onChange={value => setAttributes( { border: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Border Width', 'kadence-blocks' )}
+										value={borderWidth}
+										control={borderWidthControl}
+										tabletValue={tabletBorderWidth}
+										mobileValue={mobileBorderWidth}
+										onChange={( value ) => setAttributes( { borderWidth: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletBorderWidth: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileBorderWidth: value } )}
+										onChangeControl={( value ) => setBorderWidthControl( value )}
+										min={0}
+										max={40}
+										step={1}
+										unit={'px'}
+										units={[ 'px' ]}
+										showUnit={true}
+										preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+									/>
+									<MeasurementControls
+										label={__( 'Border Radius', 'kadence-blocks' )}
+										measurement={borderRadius}
+										control={borderRadiusControl}
+										onChange={( value ) => setAttributes( { borderRadius: value } )}
+										onControl={( value ) => setBorderRadiusControl( value )}
+										min={0}
+										max={200}
+										step={1}
+										controlTypes={[
+											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+										]}
+										firstIcon={topLeftIcon}
+										secondIcon={topRightIcon}
+										thirdIcon={bottomRightIcon}
+										fourthIcon={bottomLeftIcon}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Container Padding', 'kadence-blocks' )}
+										value={containerPadding}
+										control={paddingControl}
+										tabletValue={containerTabletPadding}
+										mobileValue={containerMobilePadding}
+										onChange={( value ) => setAttributes( { containerPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
+										onChangeControl={( value ) => setPaddingControl( value )}
+										min={paddingMin}
+										max={paddingMax}
+										step={paddingStep}
+										unit={paddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { paddingType: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Container Margin', 'kadence-blocks' )}
+										value={containerMargin}
+										control={marginControl}
+										tabletValue={containerTabletMargin}
+										mobileValue={containerMobileMargin}
+										onChange={( value ) => setAttributes( { containerMargin: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
+										onChangeControl={( value ) => setMarginControl( value )}
+										min={marginMin}
+										max={marginMax}
+										step={marginStep}
+										unit={marginType}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { marginType: value } )}
+									/>
 								</KadencePanelBody>
+
 								<KadencePanelBody
-									title={__( 'Visibility Settings', 'kadence-blocks' )}
+									title={__('Visibility Settings', 'kadence-blocks')}
 									initialOpen={false}
-									panelName={'kb-countdown-visibility-settings'}
+									panelName={'visibilitySettings'}
+									blockSlug={ 'kadence/countdown' }
 								>
 									<ToggleControl
-										label={__( 'Hide on Desktop', 'kadence-blocks' )}
-										checked={( undefined !== vsdesk ? vsdesk : false )}
-										onChange={( value ) => setAttributes( { vsdesk: value } )}
+										label={__('Hide on Desktop', 'kadence-blocks')}
+										checked={(undefined !== vsdesk ? vsdesk : false)}
+										onChange={(value) => setAttributes({vsdesk: value})}
 									/>
 									<ToggleControl
-										label={__( 'Hide on Tablet', 'kadence-blocks' )}
-										checked={( undefined !== vstablet ? vstablet : false )}
-										onChange={( value ) => setAttributes( { vstablet: value } )}
+										label={__('Hide on Tablet', 'kadence-blocks')}
+										checked={(undefined !== vstablet ? vstablet : false)}
+										onChange={(value) => setAttributes({vstablet: value})}
 									/>
 									<ToggleControl
-										label={__( 'Hide on Mobile', 'kadence-blocks' )}
-										checked={( undefined !== vsmobile ? vsmobile : false )}
-										onChange={( value ) => setAttributes( { vsmobile: value } )}
+										label={__('Hide on Mobile', 'kadence-blocks')}
+										checked={(undefined !== vsmobile ? vsmobile : false)}
+										onChange={(value) => setAttributes({vsmobile: value})}
 									/>
 								</KadencePanelBody>
+
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ [ 'date', 'timestamp' ] } />
 
 							</>
 						}

@@ -38,6 +38,7 @@ registerBlockType( 'kadence/posts', {
 	...metadata,
 	title: __( 'Posts', 'kadence-blocks' ),
 	keywords: [
+		__( 'posts', 'kadence-blocks' ),
 		__( 'latest posts', 'kadence-blocks' ),
 		__( 'blog', 'kadence-blocks' ),
 		'KB',

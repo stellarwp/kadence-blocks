@@ -618,6 +618,9 @@ class Kadence_Blocks_CSS {
 		if ( empty( $weight ) ) {
 			return false;
 		}
+		if ( 'inherit' === $weight ) {
+			return false;
+		}
 		if ( 'regular' === $weight ) {
 			$weight_string = 'normal';
 		} else {

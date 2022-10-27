@@ -55,9 +55,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
@@ -68,19 +68,35 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$form_fields     = $this->get_form_fields( $attributes['id'] );
 		$form_attributes = $this->get_form_attributes( $attributes['id'] );
 
-		$form_attributes = json_decode(json_encode($form_attributes), true);
+		$form_attributes = json_decode( json_encode( $form_attributes ), true );
 
-		$field_style = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array( 'lineHeight' => '', 'fontSize' => '');
-		$label_style = isset( $form_attributes['labelFont'] ) ? $form_attributes['labelFont'] : array( 'lineHeight' => '', 'size' => '');
-		$help_style = isset( $form_attributes['helpFont'] ) ? $form_attributes['helpFont'] : array( 'lineHeight' => '', 'size' => '');
+		$field_style  = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array(
+			'lineHeight' => '',
+			'fontSize'   => ''
+		);
+		$label_style  = isset( $form_attributes['labelFont'] ) ? $form_attributes['labelFont'] : array(
+			'lineHeight' => '',
+			'size'       => ''
+		);
+		$help_style   = isset( $form_attributes['helpFont'] ) ? $form_attributes['helpFont'] : array(
+			'lineHeight' => '',
+			'size'       => ''
+		);
 		$submit_style = isset( $form_attributes['submit'] ) ? $form_attributes['submit'] : array();
-		$submit_font = isset( $form_attributes['submitFont'] ) ? $form_attributes['submitFont'] : array( 'lineHeight' => '', 'size' => '');
+		$submit_font  = isset( $form_attributes['submitFont'] ) ? $form_attributes['submitFont'] : array(
+			'lineHeight' => '',
+			'size'       => ''
+		);
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		// Input Styles
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form-field' );
-		$css->render_responsive_size( $field_style, array( 'rowGap', 'tabletRowGap', 'mobileRowGap' ), 'margin-bottom', 'rowGapType' );
+		$css->render_responsive_size( $field_style, array(
+			'rowGap',
+			'tabletRowGap',
+			'mobileRowGap'
+		), 'margin-bottom', 'rowGapType' );
 
 		/*
 		 *
@@ -104,7 +120,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_range( $field_style, 'borderRadius', 'border-radius' );
 		$css->render_color_output( $field_style, 'color', 'color' );
 
-		if ( isset($field_style['backgroundType']) && $field_style['backgroundType'] === 'gradient' ) {
+		if ( isset( $field_style['backgroundType'] ) && $field_style['backgroundType'] === 'gradient' ) {
 			$bg1 = ( ! isset( $field_style['background'] ) || 'transparent' === $field_style['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $field_style['background'], ( isset( $field_style['backgroundOpacity'] ) && is_numeric( $field_style['backgroundOpacity'] ) ? $field_style['backgroundOpacity'] : 1 ) ) );
 			$bg2 = ( isset( $field_style['gradient'][0] ) && ! empty( $field_style['gradient'][0] ) ? $css->render_color( $field_style['gradient'][0], ( isset( $field_style['gradient'][1] ) && is_numeric( $field_style['gradient'][1] ) ? $field_style['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $field_style['gradient'][1] ) && is_numeric( $field_style['gradient'][1] ) ? $field_style['gradient'][1] : 1 ) ) );
 
@@ -140,7 +156,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea:focus'
 		);
 		$css->render_color_output( $field_style, 'colorActive', 'color' );
-		if ( isset($field_style['backgroundActiveType']) && $field_style['backgroundActiveType'] === 'gradient' ) {
+		if ( isset( $field_style['backgroundActiveType'] ) && $field_style['backgroundActiveType'] === 'gradient' ) {
 			$bg1 = ( ! isset( $field_style['backgroundActive'] ) || 'transparent' === $field_style['backgroundActive'] ? 'rgba(255,255,255,0)' : $css->render_color( $field_style['backgroundActive'], ( isset( $field_style['backgroundOpacity'] ) && is_numeric( $field_style['backgroundOpacity'] ) ? $field_style['backgroundOpacity'] : 1 ) ) );
 			$bg2 = ( isset( $field_style['gradientActive'][0] ) && ! empty( $field_style['gradientActive'][0] ) ? $css->render_color( $field_style['gradientActive'][0], ( isset( $field_style['gradientActive'][1] ) && is_numeric( $field_style['gradientActive'][1] ) ? $field_style['gradientActive'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $field_style['gradientActive'][1] ) && is_numeric( $field_style['gradientActive'][1] ) ? $field_style['gradientActive'][1] : 1 ) ) );
 
@@ -230,7 +246,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $submit_style, 'padding', 'padding' );
 		$css->render_measure_output( $submit_style, 'margin', 'margin' );
 
-		if ( isset($submit_style['backgroundType']) && $submit_style['backgroundType'] === 'gradient' ) {
+		if ( isset( $submit_style['backgroundType'] ) && $submit_style['backgroundType'] === 'gradient' ) {
 			$bg1 = ( ! isset( $submit_style['background'] ) || 'transparent' === $submit_style['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $submit_style['background'], ( isset( $submit_style['backgroundOpacity'] ) && is_numeric( $submit_style['backgroundOpacity'] ) ? $submit_style['backgroundOpacity'] : 1 ) ) );
 			$bg2 = ( isset( $submit_style['gradient'][0] ) && ! empty( $submit_style['gradient'][0] ) ? $css->render_color( $submit_style['gradient'][0], ( isset( $submit_style['gradient'][1] ) && is_numeric( $submit_style['gradient'][1] ) ? $submit_style['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $submit_style['gradient'][1] ) && is_numeric( $submit_style['gradient'][1] ) ? $submit_style['gradient'][1] : 1 ) ) );
 
@@ -266,15 +282,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( isset( $submit_style['widthType'] ) && 'fixed' === $submit_style['widthType'] && isset( $submit_style['fixedWidth'] ) && is_array( $submit_style['fixedWidth'] ) && isset( $submit_style['fixedWidth'][0] ) && ! empty( $submit_style['fixedWidth'][0] ) ) {
-			$css->render_responsive_size($submit_style['fixedWidth'], array(0, 1, 2), 'width', 'px');
+			$css->render_responsive_size( $submit_style['fixedWidth'], array( 0, 1, 2 ), 'width', 'px' );
 		} else if ( isset( $submit_style['widthType'] ) && 'full' === $submit_style['widthType'] ) {
-			$css->add_property( 'width', '100%');
-		}
-
-		if ( isset( $_GET['die'] ) && $_GET['die'] == 1 ) {
-			echo '<pre>';
-			print_r( $form_attributes );
-			die();
+			$css->add_property( 'width', '100%' );
 		}
 
 
@@ -292,9 +302,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content ) {
 
-		$form_fields     = $this->get_form_fields( $attributes['id'] );
+		$form_fields = $this->get_form_fields( $attributes['id'] );
 
-		$form_attributes = json_decode(json_encode( $this->get_form_attributes( $attributes['id'] ) ), true);
+		$form_attributes = json_decode( json_encode( $this->get_form_attributes( $attributes['id'] ) ), true );
 
 		$formFrontend = new AdvancedFormFrontend( $form_fields, $form_attributes, $unique_id, $attributes['id'] );
 
@@ -328,12 +338,13 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return $this->form_attributes;
 		}
 
-		$post_meta = get_post_meta( $post_id);
+		$post_meta = get_post_meta( $post_id );
 		$form_meta = array();
-
-		foreach($post_meta as $meta_key => $meta_value ){
-			if( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
-				$form_meta[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize($meta_value[0]);
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset( $meta_value[0] ) ) {
+					$form_meta[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				}
 			}
 		}
 

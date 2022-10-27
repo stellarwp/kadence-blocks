@@ -46,7 +46,7 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import { KadenceTryParseJSON } from '@kadence/helpers';
+import { SafeParseJSON } from '@kadence/helpers';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
@@ -134,7 +134,7 @@ class PrebuiltModal extends Component {
 		} else {
 			this.setState( { actions: applyFilters( 'kadence.prebuilt_library_tabs', this.state.actions ) } );
 		}
-		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
+		const blockSettings = ( kadence_blocks_params.configuration ? SafeParseJSON( kadence_blocks_params.configuration, true ) : {} );
 		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
 			this.setState( { librarySettings: blockSettings[ 'kadence/designlibrary' ] } );
 		}
@@ -164,7 +164,7 @@ class PrebuiltModal extends Component {
 	}
 	render() {
 		const cloudSettings = this.state.cloudSettings;
-		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		const activePanel = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const active_saved_tab = ( activePanel && activePanel['activeTab'] ? activePanel['activeTab'] : 'section' )
 		const active_tab = ( this.state.section ? this.state.section : active_saved_tab );
 		let actions = this.state.actions;
@@ -211,7 +211,7 @@ class PrebuiltModal extends Component {
 														icon={ action.slug === 'cloud' ? plusCircle : undefined }
 														label={ action.slug === 'cloud' ? __( 'Cloud Connect', 'kadence-blocks' ) : undefined }
 														onClick={ () => {
-															const activeTab = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															const activeTab = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 															activeTab['activeTab'] = action.slug;
 															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
 															this.setState( { section: action.slug } );
@@ -227,7 +227,7 @@ class PrebuiltModal extends Component {
 														aria-pressed={ active_tab === action.slug }
 														icon={ action.slug === 'cloud' ? plusCircle : undefined }
 														onClick={ () => {
-															const activeTab = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															const activeTab = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 															activeTab['activeTab'] = action.slug;
 															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
 															this.setState( { section: action.slug } );

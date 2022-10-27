@@ -19,7 +19,7 @@ import {
 	useEntityBlockEditor,
 	useEntityProp,
 } from '@wordpress/core-data';
-import { store as editorStore } from '@wordpress/editor';
+import { store as editorStore } from '@wordpress/block-editor';
 import {
 	ResponsiveMeasurementControls,
 	KadencePanelBody,

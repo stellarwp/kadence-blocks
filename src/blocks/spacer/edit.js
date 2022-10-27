@@ -15,13 +15,15 @@ import {
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	InspectorControlTabs,
-	ResponsiveAlignControls
+	ResponsiveAlignControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
 
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -291,26 +293,31 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 						}
 
 						{( activeTab === 'advanced' ) &&
-							<KadencePanelBody
-								title={__( 'Visibility Settings', 'kadence-blocks' )}
-								panelName={'kb-visibility-settings'}
-							>
-								<ToggleControl
-									label={__( 'Hide on Desktop', 'kadence-blocks' )}
-									checked={( undefined !== vsdesk ? vsdesk : false )}
-									onChange={( value ) => setAttributes( { vsdesk: value } )}
-								/>
-								<ToggleControl
-									label={__( 'Hide on Tablet', 'kadence-blocks' )}
-									checked={( undefined !== vstablet ? vstablet : false )}
-									onChange={( value ) => setAttributes( { vstablet: value } )}
-								/>
-								<ToggleControl
-									label={__( 'Hide on Mobile', 'kadence-blocks' )}
-									checked={( undefined !== vsmobile ? vsmobile : false )}
-									onChange={( value ) => setAttributes( { vsmobile: value } )}
-								/>
-							</KadencePanelBody>
+							<>
+								<KadencePanelBody
+									title={__('Visibility Settings', 'kadence-blocks')}
+									panelName={'kb-visibility-settings'}
+								>
+									<ToggleControl
+										label={__('Hide on Desktop', 'kadence-blocks')}
+										checked={(undefined !== vsdesk ? vsdesk : false)}
+										onChange={(value) => setAttributes({vsdesk: value})}
+									/>
+									<ToggleControl
+										label={__('Hide on Tablet', 'kadence-blocks')}
+										checked={(undefined !== vstablet ? vstablet : false)}
+										onChange={(value) => setAttributes({vstablet: value})}
+									/>
+									<ToggleControl
+										label={__('Hide on Mobile', 'kadence-blocks')}
+										checked={(undefined !== vsmobile ? vsmobile : false)}
+										onChange={(value) => setAttributes({vsmobile: value})}
+									/>
+								</KadencePanelBody>
+
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
+													  blockSlug={'kadence/spacer'}/>
+							</>
 						}
 					</InspectorControls>
 				</Fragment>

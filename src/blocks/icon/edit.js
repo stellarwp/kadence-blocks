@@ -18,15 +18,22 @@ import {
 	InspectorControlTabs,
 	RangeControl,
 	KadenceRadioButtons,
-	ResponsiveAlignControls
+	ResponsiveAlignControls,
+	KadenceInspectorControls,
+	KadenceBlockDefaults
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import {
+	KadenceColorOutput,
+	getPreviewSize,
+	setBlockDefaults
+} from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Import Css
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Internal block libraries
@@ -34,7 +41,6 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 
 import {
-	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
@@ -74,6 +80,8 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
+			attributes = setBlockDefaults( 'kadence/icon', attributes);
+
 			if ( ! isUniqueID( uniqueID ) ) {
 				smallID = uniqueId( smallID );
 			}
@@ -90,7 +98,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		if ( context && context.queryId && context.postId ) {
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,
@@ -149,7 +157,9 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			<KadencePanelBody
 				title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Spacing Settings', 'kadence-blocks' )}
 				initialOpen={ ( 1 === iconCount ? true : false ) }
-				panelName={'kb-icon-settings-' + index}
+				panelName={'iconSpacing'}
+				index={index}
+				blockSlug={ 'kadence/icon' }
 			>
 				{ icons[ index ].style !== 'default' && (
 					<ResponsiveMeasurementControls
@@ -426,7 +436,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 					onChange={value => setAttributes( { textAlignment: value } )}
 				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/icon' }>
 
 				<InspectorControlTabs
 					panelName={ 'icon' }
@@ -506,9 +516,12 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 				{ ( activeTab === 'advanced' ) &&
 					<>
 						{ renderAdvancedSettings }
+
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/icon' } excludedAttrs={ [ 'iconCount' ] } preventMultiple={ [ 'icons' ] } />
+
 					</>
 				}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${previewTextAlign ? ' kb-icon-halign-' + previewTextAlign : ''}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`}>
 				{times( iconCount, n => renderIconsPreview( n ) )}
 			</div>

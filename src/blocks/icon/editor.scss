@@ -92,13 +92,49 @@ i.fipicon-angle-left:before {
 	padding: 20px;
 }
 .kt-svg-icons.kb-icon-valign-top {
-    align-items: flex-start;
+  align-items: flex-start;
+  display: flex;
+
+  &.kb-icon-align-center {
+    justify-content: center;
+  }
+
+  &.kb-icon-align-right {
+    justify-content: flex-end;
+  }
+
+  &.kb-icon-align-left {
+    justify-content: flex-start;
+  }
 }
 .kt-svg-icons.kb-icon-valign-middle {
     align-items: center;
+    display: flex;
+
+  &.kb-icon-align-center {
+    justify-content: center;
+  }
+
+  &.kb-icon-align-right {
+    justify-content: flex-end;
+  }
+
+  &.kb-icon-align-left {
+    justify-content: flex-start;
+  }
 }
 .kt-svg-icons.kb-icon-valign-bottom {
     align-items: flex-end;
+    display: flex;
+	&.kb-icon-align-center {
+		justify-content: center;
+	}
+	&.kb-icon-align-right {
+		justify-content: flex-end;
+	}
+	&.kb-icon-align-left {
+		justify-content: flex-start;
+	}
 }
 .kt-svg-icons.kb-icon-halign-left {
     justify-content: flex-start;

@@ -11,7 +11,7 @@ import { useEffect, useState } from '@wordpress/element';
 
 export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recaptchaVersion} ) {
 
-	const RETRIEVE_KEY_URL = 'https://g.co/recaptcha/v3';
+	const RETRIEVE_KEY_URL = 'https://www.google.com/recaptcha/admin';
 	const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 
 	const [ isSaving, setIsSaving ] = useState( false ) ;

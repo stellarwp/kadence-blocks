@@ -52,9 +52,9 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array              $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
-	 * @param string             $unique_id  the blocks attr ID.
+	 * @param array $attributes the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
@@ -118,10 +118,6 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 		}
-
-//		echo '<pre>';
-//		print_r($attributes['wrapperPadding']);
-//		die();
 
 		// Desktop wrapper padding T/B
 		if ( isset( $attributes['wrapperPadding'][0] ) && is_numeric( $attributes['wrapperPadding'][0] ) ) {

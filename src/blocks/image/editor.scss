@@ -6,6 +6,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 }
 .wp-block-kadence-image {
 	position: relative;
+	img {
+		max-width: 100%;
+	}
 	&.image-is-svg {
 		width: 100%;
 		img {

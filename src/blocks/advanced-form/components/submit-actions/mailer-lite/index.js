@@ -218,7 +218,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 					<>
 						&nbsp;
 						<Button
-							isDefault
+							isSecondary
 							onClick={() => removeAPI}
 						>
 							{__( 'Remove', 'kadence-blocks-pro' )}

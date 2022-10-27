@@ -79,7 +79,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
-    grid-gap: 30px 30px;
+    gap: 30px 30px;
 }
 .kt-testimonial-columns-1 .kt-testimonial-grid-wrap {
     grid-template-columns: 1fr;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class to Build the Icon Block.
+ * Abstract Class to Build Blocks.
  *
  * @package Kadence Blocks
  */
@@ -32,11 +32,19 @@ class Kadence_Blocks_Abstract_Block {
 	protected $block_name = '';
 
 	/**
-	 * Block determines in scripts need to be loaded for block.
+	 * Block determines if style needs to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = true;
+
+	/**
+	 * Block determines if scripts need to be loaded for block.
 	 *
 	 * @var string
 	 */
 	protected $has_script = false;
+
 	/**
 	 * Class Constructor.
 	 */
@@ -44,6 +52,7 @@ class Kadence_Blocks_Abstract_Block {
 		add_action( 'init', array( $this, 'on_init' ), 20 );
 		add_filter( 'kadence_blocks_blocks_to_generate_post_css', array( $this, 'add_block_to_post_generate_css' ) );
 	}
+
 	/**
 	 * On init startup register the block.
 	 */
@@ -57,6 +66,7 @@ class Kadence_Blocks_Abstract_Block {
 			)
 		);
 	}
+
 	/**
 	 * Add Class name to list of blocks to render in header.
 	 *
@@ -64,10 +74,12 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function add_block_to_post_generate_css( $block_class_array ) {
 		if ( ! isset( $block_class_array[ $this->namespace . '/' . $this->block_name ] ) ) {
-			$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' .  str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
+			$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' . str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
 		}
+
 		return $block_class_array;
 	}
+
 	/**
 	 * Check if block stylesheet should render inline.
 	 *
@@ -84,6 +96,7 @@ class Kadence_Blocks_Abstract_Block {
 			}
 		}
 	}
+
 	/**
 	 * Check if block should render inline.
 	 *
@@ -94,8 +107,10 @@ class Kadence_Blocks_Abstract_Block {
 		if ( ( doing_filter( 'the_content' ) && ! is_feed() ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, $name, $unique_id ) || is_customize_preview() ) {
 			return true;
 		}
+
 		return false;
 	}
+
 	/**
 	 * Render Block CSS in Page Head.
 	 *
@@ -103,8 +118,10 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function output_head_data( $block ) {
 		// Check and enqueue styles if needed.
-		if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+		if ( $this->has_style ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+			}
 		}
 		if ( $this->has_script ) {
 			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
@@ -124,15 +141,18 @@ class Kadence_Blocks_Abstract_Block {
 			}
 		}
 	}
+
 	/**
 	 * Render Block CSS
 	 *
-	 * @param array  $attributes the blocks attribtues.
+	 * @param array $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
 	 */
 	public function render_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+		if ( $this->has_style ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+			}
 		}
 		if ( $this->has_script ) {
 			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
@@ -142,28 +162,31 @@ class Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$css_class = Kadence_Blocks_CSS::get_instance();
-			$content = $this->build_html( $attributes, $unique_id, $content );
+			$content   = $this->build_html( $attributes, $unique_id, $content );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_' . str_replace('-', '_', $this->block_name) . '_render_block_attributes', $attributes );
+				$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
 				$css        = $this->build_css( $attributes, $css_class, $unique_id );
 				if ( ! empty( $css ) ) {
 					$content = '<style>' . $css . '</style>' . $content;
 				}
 			}
 		}
+
 		return $content;
 	}
+
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
+	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 		return '';
 	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -176,6 +199,7 @@ class Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content ) {
 		return $content;
 	}
+
 	/**
 	 * Registers scripts and styles.
 	 */
@@ -189,10 +213,11 @@ class Kadence_Blocks_Abstract_Block {
 		}
 		wp_register_style( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'dist/style-blocks-' . $this->block_name . '.css', array(), KADENCE_BLOCKS_VERSION );
 	}
+
 	/**
 	 * Registers and enqueue's script.
 	 *
-	 * @param string  $handle the handle for the script.
+	 * @param string $handle the handle for the script.
 	 */
 	public function enqueue_script( $handle ) {
 		if ( ! wp_script_is( $handle, 'registered' ) ) {
@@ -200,10 +225,11 @@ class Kadence_Blocks_Abstract_Block {
 		}
 		wp_enqueue_script( $handle );
 	}
+
 	/**
 	 * Registers and enqueue's styles.
 	 *
-	 * @param string  $handle the handle for the script.
+	 * @param string $handle the handle for the script.
 	 */
 	public function enqueue_style( $handle ) {
 		if ( ! wp_style_is( $handle, 'registered' ) ) {

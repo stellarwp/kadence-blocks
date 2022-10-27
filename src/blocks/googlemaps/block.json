@@ -54,6 +54,7 @@
 	  "default": ""
 	},
 	"apiType": {
+	  "type": "string",
 	  "enum": ["embed", "javascript"],
 	  "default": "embed"
 	},
@@ -62,14 +63,17 @@
 	  "default": true
 	},
 	"mapType": {
+	  "type": "string",
 	  "enum": ["roadmap", "satellite"],
 	  "default": "roadmap"
 	},
 	"mapFilter": {
+	  "type": "string",
 	  "enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
 	  "default": "standard"
 	},
 	"mapStyle": {
+	  "type": "string",
 	  "enum": ["standard", "shades_of_grey", "invert", "saturate", "custom"],
 	  "default": "standard"
 	},
