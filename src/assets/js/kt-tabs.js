@@ -138,7 +138,7 @@
 		isTabletSize: function() {
 			return window.innerWidth > 767 && window.innerWidth <= 1024;
 		},
-		setActiveTab: function( wrapper, tabNumber ) {
+		setActiveTab: function( wrapper, tabNumber, moveFocus = true ) {
 
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
 			prevActiveAnchor.parentElement.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
@@ -150,7 +150,9 @@
 			newActiveAnchor.parentElement.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
 			newActiveAnchor.setAttribute('tabindex', '0');
 			newActiveAnchor.setAttribute('aria-selected', 'true');
-			newActiveAnchor.focus();
+			if ( moveFocus ) {
+				newActiveAnchor.focus();
+			}
 
 			window.KBTabs.setAriaAttributesForTabs(wrapper, tabNumber);
 
