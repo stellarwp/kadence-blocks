@@ -55,7 +55,6 @@ import {
 	SmallResponsiveControl,
 	ResponsiveControl,
 	RangeControl,
-	MeasurementRangeControl,
 	ResponsiveMeasureRangeControl,
 	MeasurementControls,
 	IconPicker,
@@ -66,6 +65,7 @@ import {
 	KadenceImageControl,
 	BackgroundTypeControl,
 	ResponsiveMeasurementControls,
+	MeasureRangeControl,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	KadenceRadioButtons,
@@ -625,20 +625,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						<>
 							{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
 								<KadencePanelBody panelName={ 'kb-row-padding' }>
-									<MeasurementRangeControl
-										label={__( 'Padding', 'kadence-blocks' )}
-										value={ undefined !== padding && undefined !== padding[0] ? padding : [ '', '', '', '' ] }
-										onChange={ ( value ) => setAttributes( { padding: value } ) }
-										min={ 0 }
-										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
-										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-										unit={ paddingUnit }
-										allowEmpty={ true }
-										options={ SPACING_SIZES_MAP }
-										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
-									/>
-									<ResponsiveMeasureRangeControl
+									<MeasureRangeControl
 										label={__( 'Padding', 'kadence-blocks' )}
 										value={ undefined !== padding && undefined !== padding[0] ? padding : [ '', '', '', '' ] }
 										tabletValue={ tabletPadding }
@@ -655,7 +642,24 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
 									/>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={ undefined !== padding && undefined !== padding[0] ? padding : [ 'sm', '', 'sm', '' ] }
+										tabletValue={ tabletPadding }
+										mobileValue={ undefined !== mobilePadding && undefined !== mobilePadding[0] ? mobilePadding : [ '', '', '', '' ] }
+										onChange={( value ) => setAttributes( { padding: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
+										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
+										min={ 0 }
+										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+										deskDefault={ [ 'sm', '', 'sm', '' ] }
+										unit={ paddingUnit }
+										options={ SPACING_SIZES_MAP }
+										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+									/>
+									<ResponsiveMeasureRangeControl
 										label={__( 'Margin', 'kadence-blocks' )}
 										value={[ ( undefined !== topMargin ? topMargin : '' ), 'auto', ( undefined !== bottomMargin ? bottomMargin : '' ), 'auto' ]}
 										tabletValue={ [ ( undefined !== topMarginT ? topMarginT : '' ), 'auto', ( undefined !== bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
