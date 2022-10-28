@@ -72,7 +72,8 @@ import {
 	VerticalAlignmentIcon,
 	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	PaddingVisualizer
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -88,7 +89,7 @@ import StyleControls from './style-controls';
 import TwoColumnResizer from './twocolumnresizer';
 import ThreeColumnDrag from './threecolumndrag';
 import PaddingResizer from './padding-resizer';
-import { getGutterTotal, getPreviewGutterSize, getSpacingOptionName } from './utils';
+import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
 import { SPACING_SIZES_MAP } from './constants';
 /**
  * Import Css
@@ -98,7 +99,7 @@ import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { useEffect, useState, useRef, Fragment } from '@wordpress/element';
 import {
 	MediaUpload,
 	InspectorControls,
@@ -136,7 +137,6 @@ import {
 	closeSmall,
 } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
-
 /**
  * Internal block libraries
  */
@@ -298,11 +298,21 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	}, [ innerItemCount, columns ] );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
+	const [ resizingVisually, setResizingVisually ] = useState( false );
+	const timeoutRef = useRef();
+	const clearTimer = () => {
+		if ( timeoutRef.current ) {
+			window.clearTimeout( timeoutRef.current );
+		}
+	};
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding ? padding[1] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[3] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
+	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
+	const paddingSidesDefault = hasBG ? 'sm' : '';
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[1] && '' !== padding[1] ? padding[1] : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
 	const previewTopSepHeight = getPreviewSize( previewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
 	const previewTopSepWidth = getPreviewSize( previewDevice, ( undefined !== topSepWidth ? topSepWidth : '' ), ( undefined !== topSepWidthTab ? topSepWidthTab : '' ), ( undefined !== topSepWidthMobile ? topSepWidthMobile : '' ) );
@@ -400,7 +410,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 	const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
 		[ `kb-row-id-${ uniqueID }` ]: uniqueID,
@@ -472,14 +481,16 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		[ `kt-layout-inner-wrap-id${ uniqueID }` ]: uniqueID,
 		[ `kb-grid-columns-${ columns }` ]: columns,
 	} );
+	const containerRef = useRef( null );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
+			ref: containerRef,
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				paddingLeft: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
-				paddingRight: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
-			}
+				paddingLeft: previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
+				paddingRight: previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
+			},
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
@@ -627,23 +638,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						<>
 							{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
 								<KadencePanelBody panelName={ 'kb-row-padding' }>
-									<MeasureRangeControl
-										label={__( 'Padding', 'kadence-blocks' )}
-										value={ undefined !== padding && undefined !== padding[0] ? padding : [ '', '', '', '' ] }
-										tabletValue={ tabletPadding }
-										mobileValue={ undefined !== mobilePadding && undefined !== mobilePadding[0] ? mobilePadding : [ '', '', '', '' ] }
-										onChange={( value ) => setAttributes( { padding: value } ) }
-										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
-										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
-										min={ 0 }
-										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
-										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-										unit={ paddingUnit }
-										allowEmpty={ true }
-										options={ SPACING_SIZES_MAP }
-										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
-									/>
 									<ResponsiveMeasureRangeControl
 										label={__( 'Padding', 'kadence-blocks' )}
 										value={ undefined !== padding && undefined !== padding[0] ? padding : [ 'sm', '', 'sm', '' ] }
@@ -939,6 +933,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }
+						finishedResizing={ () => {
+							setResizingVisually( true );
+							clearTimer();
+							timeoutRef.current = setTimeout( () => {
+								setResizingVisually( false );
+							}, 100 );
+						} }
 					/>
 				) }
 				{ colLayout && (
@@ -967,6 +968,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }
+						finishedResizing={ () => {
+							setResizingVisually( true );
+							clearTimer();
+							timeoutRef.current = setTimeout( () => {
+								setResizingVisually( false );
+							}, 100 );
+						} }
 					/>
 				) }
 				{ colLayout && 'none' !== bottomSep && '' !== bottomSep && (
@@ -978,6 +986,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						</svg>
 					</div>
 				) }
+				<PaddingVisualizer style={{
+					maxWidth:! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+				} }
+				selectedElementRef={ containerRef }
+				forceHide={ resizingVisually }
+				padding={ [ getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) ] } />
 			</RowBackground>
 		</Fragment>
 	);

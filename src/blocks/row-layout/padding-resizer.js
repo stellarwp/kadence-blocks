@@ -18,12 +18,13 @@ export default function PaddingResizer( {
 	attributes,
 	setAttributes,
 	toggleSelection,
+	finishedResizing,
 } ) {
 	const { leftPadding, rightPadding, topPadding, bottomPadding, tabletPadding, topPaddingM, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidthUnit, maxWidth, padding, mobilePadding } = attributes;
 	const index = ( edge === 'top' ? 0 : 2 );
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
-	const previewPaddingLabel = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionName( padding[ index ], paddingUnit ) : __( 'Unset', 'kadence-blocks' ) ), ( undefined !== tabletPadding ? tabletPadding[ index ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ index ] : '' ) );
-	const previewPadding = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionSize( padding[ index ] ) : '' ), ( undefined !== tabletPadding ? tabletPadding[ index ] : '' ), ( undefined !== topPaddingM ? topPaddingM : '' ) );
+	const previewPaddingLabel = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionName( padding[ index ], paddingUnit ) : __( 'Unset', 'kadence-blocks' ) ), ( undefined !== tabletPadding ? getSpacingOptionName( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding ? getSpacingOptionName( mobilePadding[ index ] ) : '' ) );
+	const previewPadding = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionSize( padding[ index ] ) : '' ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] ? getSpacingOptionSize( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] ? getSpacingOptionSize( mobilePadding[ index ] ) : '' ) );
 	let paddingType = 'variable';
 	if ( Number( padding[ index ] ) === parseFloat( padding[ index ] ) ) {
 		paddingType = 'normal';
@@ -56,6 +57,7 @@ export default function PaddingResizer( {
 						editorDocument.getElementById( 'row-' + edge + '-' + uniqueID ).innerHTML = parseInt( previewPadding + delta.height, 10 ) + 'px';
 					} }
 					onResizeStop={ ( event, direction, elt, delta ) => {
+						finishedResizing( true );
 						if ( 'Mobile' === previewDevice ) {
 							if ( edge === 'top' ) {
 								setAttributes( {
@@ -135,6 +137,7 @@ export default function PaddingResizer( {
 						editorDocument.getElementById( 'row-' + edge + '-' + uniqueID ).innerHTML = name;
 					} }
 					onResizeStop={ ( event, direction, elt, delta ) => {
+						finishedResizing( true );
 						const size = getSpacingValueFromSize( parseInt( previewPadding + delta.height, 10 ) );
 						if ( 'Mobile' === previewDevice ) {
 							if ( edge === 'top' ) {

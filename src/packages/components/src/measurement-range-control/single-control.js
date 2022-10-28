@@ -197,7 +197,7 @@ export default function SingleMeasureRangeControl( {
 	return [
 		onChange && (
 			<div 
-				className={ `components-base-control component-spacing-sizes-control kadence-single-measure-range-control ${ className ? ' ' + className : '' }` }>
+				className={ `components-base-control component-spacing-sizes-control kadence-single-measure-range-control${ className ? ' ' + className : '' }` }>
 				{ ! setCustomControl && label && (
 					<Flex
 						justify="space-between"
@@ -212,7 +212,12 @@ export default function SingleMeasureRangeControl( {
 					<div className={ 'kadence-controls-content' }>
 						{ isPopover && (
 							<>
-								<Button className={ 'kadence-popover-spacing-btn' } disabled={ ( value && 'auto' == value ? true : false ) } tabIndex="-1" onClick={ ( value && 'auto' == value ? '' : toggle ) }>
+								<Button
+									className={ 'kadence-popover-spacing-btn' }
+									disabled={ ( value && 'auto' == value ? true : false ) }
+									tabIndex="-1" 
+									onClick={ ( value && 'auto' == value ? '' : toggle ) }
+								>
 									{ parentLabel && label && (
 										<span className='kadence-placement-label'>{ label }</span>
 									) }
@@ -240,6 +245,7 @@ export default function SingleMeasureRangeControl( {
 							labelPosition={'top'}
 							min={ min }
 							max={ max }
+							disabled={ ( value && 'auto' == value ? true : false ) }
 							step={ step }
 							units={ controlUnits }
 							value={ value }

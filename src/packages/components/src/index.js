@@ -21,6 +21,7 @@ export { default as BackgroundTypeControl } from './background-type-control';
 export { default as GradientControl } from './gradient-control';
 export { default as MeasureRangeControl } from './measurement-range-control';
 export { default as ResponsiveMeasureRangeControl } from './measurement-range-control/responsive';
+export { default as PaddingVisualizer } from './visualizer/padding'
 export { default as KadenceFocalPicker } from './focal-picker';
 export { default as KadenceRadioButtons } from './common/radio-buttons';
 export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
