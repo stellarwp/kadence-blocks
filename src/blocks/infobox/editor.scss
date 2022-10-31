@@ -9,6 +9,22 @@
 //     margin-top:0;
 //     margin-bottom:0;
 // }
+.components-button-group.kb-info-layouts button.components-button.kt-style-btn {
+    border: 0;
+    height: auto;
+    border-radius: 0;
+    background: transparent !important;
+    padding: 0;
+    width: 33.33%;
+    border: 2px solid transparent;
+    box-shadow: none;
+	svg {
+		width: 100%;
+	}
+	&:hover {
+		border-color: #eeeeee;
+	}
+}
 .kb-inline-icon-control {
     min-width: 240px;
 }

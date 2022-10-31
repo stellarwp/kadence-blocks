@@ -1,0 +1,216 @@
+.components-custom-gradient-picker__item {
+	display: block;
+	flex:5 1 0%;
+	max-height: 100%;
+    max-width: 100%;
+    min-height: 0px;
+    min-width: 0px;
+	.kadence-controls-content {
+		gap: 12px;
+	}
+	.kadence-controls-content .components-base-control {
+		margin-bottom: 0;
+		flex: 10 0 0;
+	}
+	.kadence-control-toggle-advanced.only-icon {
+		flex: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 10px;
+		font-weight: 600;
+		font-style: normal;
+		text-transform: uppercase;
+		height: 30px;
+		line-height: 1.2;
+		border: 1px solid #CBD5E0;
+		border-radius: 2px;
+		background: transparent;
+		color: #4A5568;
+		padding: 4px;
+		box-shadow: none;
+		white-space: normal;
+		svg {
+			width: 20px;
+		}
+		&.is-primary {
+			border-color: var(--wp-admin-theme-color, #00669b);
+			background: var(--wp-admin-theme-color, #00669b);
+			color: #fff;
+			box-shadow: none;
+		}
+	}
+}
+.block-editor-block-inspector .components-custom-gradient-picker__item .kadence-select-large .components-select-control__input {
+	height: 40px;
+	min-height: 40px;
+}
+.kadence-gradient-position-control .kadence-gradient-position_header .kadence-gradient-position__label {
+	margin: 0px 0px 8px;
+	display:block;
+}
+.kadence-gradient-position-control .components-unit-control-wrapper {
+    flex-grow: 1;
+}
+// .kadence-gradient-control .components-custom-gradient-picker__gradient-bar .components-custom-gradient-picker__control-point-button {
+//     border-radius: 50%;
+//     width: 30px;
+//     height: 30px;
+//     bottom: 100%;
+//     top: auto;
+//     margin-left: -15px;
+// }
+.kadence-gradient-control .components-custom-gradient-picker__gradient-bar .components-custom-gradient-picker__control-point-dropdown {
+	position: absolute;
+    height: 16px;
+    width: 16px;
+    top: 16px;
+    display: flex;
+}
+.kadence-gradient-control .components-custom-gradient-picker__gradient-bar .components-custom-gradient-picker__control-point-button {
+	height: inherit;
+	width: inherit;
+	border-radius: 50%;
+	padding: 0;
+	box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) #fff,0 0 2px 0 rgba(0, 0, 0, 0.25);
+	outline: 2px solid transparent;
+	position: static;
+    top: auto;
+}
+// $grid-unit-20: 20px;
+// $grid-unit-60: 40px;
+// $radius-block-ui: 4px;
+// $grid-unit-15: 15px;
+// $grid-unit-30: 30px;
+// $grid-unit-10: 10px;
+// $border-width-tab: 1px;
+// $components-custom-gradient-picker__padding: $grid-unit-20; // 48px container, 16px handles inside, that leaves 32px padding, half of which is 1å6.
+
+// .components-custom-gradient-picker {
+// 	&:not(.is-next-has-no-margin) {
+// 		margin-top: $grid-unit-15;
+// 		margin-bottom: $grid-unit-30;
+// 	}
+// }
+
+// .components-custom-gradient-picker__gradient-bar:not(.has-gradient) {
+// 	opacity: 0.4;
+// }
+.kadence-gradient-control .components-custom-gradient-picker__gradient-bar:not(.has-gradient) {
+	opacity: 0.4;
+}
+.kadence-select-no-margin-after {
+
+}
+.kadence-gradient-control {
+	.components-custom-gradient-picker__ui-line .components-base-control {
+		margin-bottom: 0;
+	}
+	.components-custom-gradient-picker__ui-line .components-base-control .components-base-control__field {
+		margin-bottom: 0;
+	}
+}
+.kadence-gradient-control .components-custom-gradient-picker__gradient-bar {
+	border-radius: 2px;
+    width: 100%;
+    height: 48px;
+	margin-bottom: 16px;
+	padding-right: 0;
+
+	.components-custom-gradient-picker__markers-container {
+		position: relative;
+		width: calc(100% - 48px);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.components-custom-gradient-picker__control-point-dropdown {
+		position: absolute;
+		height: 16px;
+		width: 16px;
+		top: 16px;
+		display: flex;
+	}
+
+	.components-custom-gradient-picker__insert-point-dropdown {
+		position: relative;
+
+		// Same size as the .components-custom-gradient-picker__control-point-dropdown parent
+		height: inherit;
+		width: inherit;
+		min-width: 16px;
+		border-radius: 50%;
+
+		background: #fff;
+		padding: 2px;
+
+		color: #111;
+
+		svg {
+			height: 100%;
+			width: 100%;
+		}
+	}
+}
+.kadence-gradient-control .components-angle-picker-control .components-input-control__container .components-input-control__input {
+    height: 32px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+// 	.components-custom-gradient-picker__control-point-button {
+// 		// Same size as the .components-custom-gradient-picker__control-point-dropdown parent
+// 		height: inherit;
+// 		width: inherit;
+// 		border-radius: 50%;
+// 		padding: 0;
+
+// 		// Shadow and stroke.
+// 		box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) #fff, 0 0 4px 0 rgba(#000, 0.25);
+
+// 		// Windows High Contrast mode will show this outline, but not the box-shadow.
+// 		outline: 2px solid transparent;
+
+// 		&:focus,
+// 		&.is-active {
+// 			box-shadow: inset 0 0 0 calc(var(--wp-admin-border-width-focus) * 2) #fff, 0 0 4px 0 rgba(#000, 0.25);
+
+// 			// Windows High Contrast mode will show this outline, but not the box-shadow.
+// 			outline: $border-width-tab solid transparent;
+// 		}
+// 	}
+// }
+
+// .components-custom-gradient-picker__remove-control-point-wrapper {
+// 	padding-bottom: $grid-unit-10;
+// }
+
+// .components-custom-gradient-picker__inserter {
+// 	/*rtl:ignore*/
+// 	direction: ltr;
+// }
+
+// .components-custom-gradient-picker__liner-gradient-indicator {
+// 	display: inline-block;
+// 	flex: 0 auto;
+// 	width: 20px;
+// 	height: 20px;
+// }
+
+// .components-custom-gradient-picker .components-custom-gradient-picker__toolbar {
+// 	border: none;
+
+// 	// Work-around to target the inner button containers rendered by <ToolbarGroup />
+// 	> div + div {
+// 		margin-left: 1px;
+// 	}
+
+// 	button {
+// 		&.is-pressed {
+// 			> svg {
+// 				background: #fff;
+// 				border: 1px solid #565656;
+// 				border-radius: 2px;
+// 			}
+// 		}
+// 	}
+// }
