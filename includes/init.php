@@ -590,8 +590,9 @@ function kadence_blocks_admin_theme_content_width() {
 		--global-kb-spacing-lg: 3rem;
 		--global-kb-spacing-xl: 4rem;
 		--global-kb-spacing-xxl: 5rem;
-		--global-kb-spacing-xxxl: 6.5rem;
-		--global-kb-spacing-xxxxl: 8rem;
+		--global-kb-spacing-3xl: 6.5rem;
+		--global-kb-spacing-4xl: 8rem;
+		--global-kb-spacing-5xl: 10rem;
 		--global-row-edge-sm: 15px;
 		--global-row-edge-theme: var(--global-content-edge-padding);
 		--global-kb-gutter-sm: 1rem;

@@ -313,7 +313,6 @@ div.kb-blocks-bg-video {
 // When using CSS grid, margins do not collapse on the container.
 .kadence-inner-column-inner {
 	border: 0 solid transparent;
-	transition: all 0.3s ease;
 }
 .wp-block-kadence-rowlayout .block-editor-block-list__layout {
 	margin-left: 0;
@@ -414,8 +413,8 @@ div.kb-blocks-bg-video {
 	justify-content: flex-end;
 }
 .kt-row-has-bg > .innerblocks-wrap {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: var(--global-kb-spacing-sm, 1.5rem);
+    padding-right: var(--global-kb-spacing-sm, 1.5rem);
 }
 .block-editor-block-list__block[data-align="full"] > .is-block-content > .wp-block-kadence-rowlayout {
 	padding-left: 46px;

@@ -73,9 +73,9 @@ import {
 	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
-	PaddingVisualizer
+	SpacingVisualizer
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -241,10 +241,10 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
 		// Update from old padding settings.
-		if ( ( topPadding || rightPadding || bottomPadding || leftPadding ) ) {
+		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
 			setAttributes( { padding: [ ( ! topPadding ? 25 : topPadding ), rightPadding, ( ! bottomPadding ? 25 : bottomPadding ), leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
-		if ( ( topPaddingM || rightPaddingM || bottomPaddingM || leftPaddingM ) ) {
+		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
 		}
 		// Update from old gradient settings.
@@ -314,6 +314,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
 	const previewTopSepHeight = getPreviewSize( previewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
 	const previewTopSepWidth = getPreviewSize( previewDevice, ( undefined !== topSepWidth ? topSepWidth : '' ), ( undefined !== topSepWidthTab ? topSepWidthTab : '' ), ( undefined !== topSepWidthMobile ? topSepWidthMobile : '' ) );
 	const previewBottomSepHeight = getPreviewSize( previewDevice, ( undefined !== bottomSepHeight ? bottomSepHeight : '' ), ( undefined !== bottomSepHeightTab ? bottomSepHeightTab : '' ), ( undefined !== bottomSepHeightMobile ? bottomSepHeightMobile : '' ) );
@@ -498,6 +500,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			renderAppender: false,
 		}
 	);
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 	return (
 		<Fragment>
 			<BlockControls>
@@ -654,6 +658,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										options={ SPACING_SIZES_MAP }
 										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
 									<ResponsiveMeasureRangeControl
 										label={__( 'Margin', 'kadence-blocks' )}
@@ -674,8 +680,11 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 										unit={ marginUnit }
 										allowEmpty={ true }
+										options={ SPACING_SIZES_MAP }
 										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 										onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
 									/>
 								</KadencePanelBody>
 							) }
@@ -986,12 +995,20 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						</svg>
 					</div>
 				) }
-				<PaddingVisualizer style={{
-					maxWidth:! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				} }
-				selectedElementRef={ containerRef }
-				forceHide={ resizingVisually }
-				padding={ [ getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) ] } />
+				<SpacingVisualizer
+					style={{
+						maxWidth:! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+					} }
+					type="inside"
+					forceHide={ resizingVisually }
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) ] } 
+				/>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, ( marginUnit ? marginUnit : 'px' ) ), 0, getSpacingOptionOutput( previewMarginBottom, ( marginUnit ? marginUnit : 'px' ) ), 0 ] }
+				/>
 			</RowBackground>
 		</Fragment>
 	);

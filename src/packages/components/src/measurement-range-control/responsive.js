@@ -71,6 +71,8 @@ export default function ResponsiveMeasureRangeControl( {
 		mobileDefault = [ '', '', '', '' ],
 		reset = true,
 		setCustomControl = null,
+		onMouseOver,
+		onMouseOut,
 	} ) {
 	const ref = useRef();
 	const measureIcons = {
@@ -150,11 +152,11 @@ export default function ResponsiveMeasureRangeControl( {
 	}
 	const onReset = () => {
 		if ( deviceType === 'Tablet' ) {
-			onChangeTablet( [ '', '', '', '' ] );
+			onChangeTablet( tabletDefault );
 		} else if ( deviceType === 'Mobile' ) {
-			onChangeMobile( [ '', '', '', '' ] );
+			onChangeMobile( mobileDefault );
 		} else {
-			onChange( [ '', '', '', '' ] );
+			onChange( deskDefault );
 		}
 	}
 	const output = {};
@@ -175,6 +177,7 @@ export default function ResponsiveMeasureRangeControl( {
 			unit={ unit }
 			showUnit={ true }
 			units={ [ unit ] }
+			defaultValue={ mobileDefault }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -182,6 +185,8 @@ export default function ResponsiveMeasureRangeControl( {
 			fourthIcon={ fourthIcon }
 			linkIcon={ linkIcon }
 			unlinkIcon={ unlinkIcon }
+			onMouseOver={ onMouseOver }
+			onMouseOut={ onMouseOut }
 		/>
 	);
 	output.Tablet = (
@@ -199,6 +204,7 @@ export default function ResponsiveMeasureRangeControl( {
 			max={ max }
 			step={ step }
 			unit={ unit }
+			defaultValue={ tabletDefault }
 			showUnit={ true }
 			units={ [ unit ] }
 			isBorderRadius={ isBorderRadius }
@@ -208,6 +214,8 @@ export default function ResponsiveMeasureRangeControl( {
 			fourthIcon={ fourthIcon }
 			linkIcon={ linkIcon }
 			unlinkIcon={ unlinkIcon }
+			onMouseOver={ onMouseOver }
+			onMouseOut={ onMouseOut }
 		/>
 	);
 	output.Desktop = (
@@ -223,6 +231,7 @@ export default function ResponsiveMeasureRangeControl( {
 			setCustomControl={ realSetIsCustom }
 			customControl={ realIsCustomControl }
 			options={ options }
+			defaultValue={ deskDefault }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -237,6 +246,8 @@ export default function ResponsiveMeasureRangeControl( {
 			fourthIcon={ fourthIcon }
 			linkIcon={ linkIcon }
 			unlinkIcon={ unlinkIcon }
+			onMouseOver={ onMouseOver }
+			onMouseOut={ onMouseOut }
 		/>
 	);
 	let currentDefault = deskDefault;

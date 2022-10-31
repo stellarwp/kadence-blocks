@@ -410,6 +410,60 @@
 		"align": {
 			"type": "string",
 			"default": ""
+		},
+		"padding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"margin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobileMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		}
 	},
 	"supports": {

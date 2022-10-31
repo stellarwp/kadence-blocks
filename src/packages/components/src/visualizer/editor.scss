@@ -1,4 +1,4 @@
-.kb__padding-visualizer-wrap {
+.kb__spacing-visualizer {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -8,7 +8,7 @@
 	pointer-events: none;
 	box-sizing: border-box;
 }
-.kb__padding-visualizer {
+.kb__spacing-visualizer {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -20,13 +20,4 @@
 	border-style: solid;
 	pointer-events: none;
 	box-sizing: border-box;
-}
-.kb-block-editor-block-popover {
-	z-index: 31;
-}
-.kb-block-editor-block-popover .components-popover__content {
-    outline: 0;
-    border: 0;
-    box-shadow: none;
-    background: transparent;
 }

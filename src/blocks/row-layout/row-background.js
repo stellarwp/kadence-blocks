@@ -111,8 +111,8 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	const blockProps = useBlockProps( {
 		className: backgroundClasses,
 		style: { 
-			marginBottom: previewMarginBottom + marginUnit,
-			marginTop: previewMarginTop + marginUnit,
+			marginBottom: getSpacingOptionOutput( previewMarginBottom, ( marginUnit ? marginUnit : 'px' ) ),
+			marginTop: getSpacingOptionOutput( previewMarginTop, ( marginUnit ? marginUnit : 'px' ) ),
 			borderColor: ( previewBorderColor ? KadenceColorOutput( previewBorderColor ) : undefined ),
 			borderTopWidth: ( previewBorderTop ? previewBorderTop + 'px' : undefined ),
 			borderRightWidth: ( previewBorderRight ? previewBorderRight + 'px' : undefined ),

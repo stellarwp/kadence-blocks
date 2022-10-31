@@ -59,17 +59,24 @@ export const OPTIONS_MAP = [
 		name:  __( '2X Large', 'kadence-blocks' ),
 	},
 	{
-		value: 'xxxl',
-		output: 'var(--global-kb-spacing-xxxl, 6.5rem)',
+		value: '3xl',
+		output: 'var(--global-kb-spacing-3xl, 6.5rem)',
 		size: 104,
 		label:  __( '3XL', 'kadence-blocks' ),
 		name:  __( '3X Large', 'kadence-blocks' ),
 	},
 	{
-		value: 'xxxxl',
-		output: 'var(--global-kb-spacing-xxxl, 8rem)',
+		value: '4xl',
+		output: 'var(--global-kb-spacing-4xl, 8rem)',
 		size: 128,
 		label:  __( '4XL', 'kadence-blocks' ),
 		name:  __( '4X Large', 'kadence-blocks' ),
+	},
+	{
+		value: '5xl',
+		output: 'var(--global-kb-spacing-5xl, 10rem)',
+		size: 160,
+		label:  __( '5XL', 'kadence-blocks' ),
+		name:  __( '5X Large', 'kadence-blocks' ),
 	},
 ];

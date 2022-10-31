@@ -7,7 +7,8 @@
  */
  import { useInstanceId } from '@wordpress/compose';
  import { useState, useEffect } from '@wordpress/element';
- import SingleMeasureRangeControl from './single-control'
+ import SingleMeasureRangeControl from './single-control';
+ import { map, isEqual } from 'lodash';
 /**
  * Import Css
  */
@@ -74,7 +75,7 @@ export default function MeasureRangeControl( {
 	min = 0,
 	beforeIcon = '',
 	help = '',
-	defaultValue = 0,
+	defaultValue = [ '', '', '', '' ],
 	control = 'individual',
 	unit = '',
 	onUnit,
@@ -91,6 +92,8 @@ export default function MeasureRangeControl( {
 	setCustomControl = null,
 	parentLabel = null,
 	reset,
+	onMouseOver,
+	onMouseOut,
 } ) {
 	const measureIcons = {
 		first: isBorderRadius ? topLeftIcon : firstIcon,
@@ -111,7 +114,7 @@ export default function MeasureRangeControl( {
 		if ( typeof reset === 'function' ){
 			reset();
 		} else {
-			onChange( [ '', '', '', '' ] );
+			onChange( defaultValue );
 		}
 	}
 	const onSetIsCustom = () => {
@@ -144,9 +147,23 @@ export default function MeasureRangeControl( {
 						justify="space-between"
 						className={ 'kadence-radio-range__header' }
 					>
-						<FlexItem>
-							<label className="components-base-control__label">{ label }</label>
-						</FlexItem>
+						{ label && (
+							<div className="kadence-radio-range__title">
+								<label className="components-base-control__label">{ label }</label>
+								{ reset && (
+									<div className='title-reset-wrap'>
+										<Button
+											className="is-reset is-single"
+											label='reset'
+											isSmall
+											disabled={ ( ( isEqual( defaultValue, value ) ) ? true : false ) }
+											icon={ undo }
+											onClick={ () => onReset() }
+										/>
+									</div>
+								) }
+							</div>
+						) }
 						{ ! disableCustomSizes && (
 							<Button
 								className={'kadence-radio-item radio-custom only-icon'}
@@ -185,13 +202,15 @@ export default function MeasureRangeControl( {
 								unit={ unit }
 								units={ units }
 								onUnit={ onUnit }
-								defaultValue={ defaultValue }
+								defaultValue={ defaultValue[0] }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
 								customControl={ realIsCustomControl }
 								isPopover={ false }
 								isSingle={ true }
+								onMouseOver={ onMouseOver }
+								onMouseOut={ onMouseOut }
 							/>
 						</>
 					) }
@@ -202,7 +221,9 @@ export default function MeasureRangeControl( {
 								label={ __( 'Top', 'kadence-blocks' ) }
 								className={ 'kb-measure-box-top' }
 								value={ ( value ? value[ 0 ] : '' ) }
-								onChange={ ( newVal ) => onChange( [ newVal, ( value && undefined !== value[ 1 ] ? value[ 1 ] : '' ), ( value && undefined !== value[ 2 ] ? value[ 2 ] : '' ), ( value && undefined !== value[ 3 ] ? value[ 3 ] : '' ) ] ) }
+								onChange={ ( newVal ) => {
+									onChange( [ newVal, ( value && undefined !== value[ 1 ] ? value[ 1 ] : '' ), ( value && undefined !== value[ 2 ] ? value[ 2 ] : '' ), ( value && undefined !== value[ 3 ] ? value[ 3 ] : '' ) ] );
+								} }
 								min={ min }
 								max={ max }
 								options={ options }
@@ -211,12 +232,14 @@ export default function MeasureRangeControl( {
 								unit={ unit }
 								units={ units }
 								onUnit={ onUnit }
-								defaultValue={ defaultValue }
+								defaultValue={ defaultValue[0] }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
 								customControl={ realIsCustomControl }
 								isPopover={ true }
+								onMouseOver={ onMouseOver }
+								onMouseOut={ onMouseOut }
 							/>
 							<SingleMeasureRangeControl
 								parentLabel={ parentLabel ? parentLabel : label }
@@ -232,12 +255,14 @@ export default function MeasureRangeControl( {
 								unit={ unit }
 								units={ units }
 								onUnit={ onUnit }
-								defaultValue={ defaultValue }
+								defaultValue={ defaultValue[1] }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
 								customControl={ realIsCustomControl }
 								isPopover={ true }
+								onMouseOver={ onMouseOver }
+								onMouseOut={ onMouseOut }
 							/>
 							<SingleMeasureRangeControl
 								parentLabel={ parentLabel ? parentLabel : label }
@@ -253,12 +278,14 @@ export default function MeasureRangeControl( {
 								unit={ unit }
 								units={ units }
 								onUnit={ onUnit }
-								defaultValue={ defaultValue }
+								defaultValue={ defaultValue[2] }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
 								customControl={ realIsCustomControl }
 								isPopover={ true }
+								onMouseOver={ onMouseOver }
+								onMouseOut={ onMouseOut }
 							/>
 							<SingleMeasureRangeControl
 								parentLabel={ parentLabel ? parentLabel : label }
@@ -274,18 +301,23 @@ export default function MeasureRangeControl( {
 								unit={ unit }
 								units={ units }
 								onUnit={ onUnit }
-								defaultValue={ defaultValue }
+								defaultValue={ defaultValue[3] }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
 								customControl={ realIsCustomControl }
 								isPopover={ true }
+								onMouseOver={ onMouseOver }
+								onMouseOut={ onMouseOut }
 							/>
 							{ realIsCustomControl && (
 								<div className={ 'kadence-measure-control-select-wrapper' }>
 									<select
 										className={ 'kadence-measure-control-select components-unit-control__select' }
-										onChange={ onUnit }
+										onChange={ ( event ) => {
+											console.log( event.target.value );
+											onUnit( event.target.value );
+										} }
 										value={ unit }
 									>
 										{ units.map( ( option ) => (

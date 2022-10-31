@@ -39,9 +39,11 @@ import {
 	BoxShadowControl,
 	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput } from '@kadence/helpers';
 
 /**
  * Blocks Specific.
@@ -85,7 +87,7 @@ function SectionEdit( {
 	context,
 	className,
 } ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -148,6 +150,25 @@ function SectionEdit( {
 				inQueryBlock: false,
 			} );
 		}
+		// Update Old Styles
+		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
+			setAttributes( { padding: [ topPadding, rightPadding, bottomPadding, leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
+		}
+		if ( ( '' !== topPaddingT || '' !== rightPaddingT || '' !== bottomPaddingT || '' !== leftPaddingT ) ) {
+			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
+		}
+		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
+			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
+		}
+		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
+			setAttributes( { margin: [ topMargin, rightMargin, bottomMargin, leftMargin ], topMargin:'', rightMargin:'', bottomMargin:'', leftMargin:'' } );
+		}
+		if ( ( '' !== topMarginT || '' !== rightMarginT || '' !== bottomMarginT || '' !== leftMarginT ) ) {
+			setAttributes( { tabletMargin: [ topMarginT, rightMarginT, bottomMarginT, leftMarginT ], topMarginT:'', rightMarginT:'', bottomMarginT:'',leftMarginT:'' } );
+		}
+		if ( ( '' !== topMarginM || '' !== rightMarginM || '' !== bottomMarginM || '' !== leftMarginM ) ) {
+			setAttributes( { mobileMargin: [ topMarginM, rightMarginM, bottomMarginM, leftMarginM ], topMarginM:'', rightMarginM:'', bottomMarginM:'',leftMarginM:'' } );
+		}
 		debounce( getDynamic, 200 );
 	}, [] );
 	const { hasInnerBlocks, inRowBlock } = useSelect(
@@ -169,10 +190,9 @@ function SectionEdit( {
 	);
 	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual' );
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 	const saveShadow = ( value ) => {
 		const newUpdate = shadow.map( ( item, index ) => {
 			if ( 0 === index ) {
@@ -266,22 +286,18 @@ function SectionEdit( {
 	};
 	const gutterMax = ( gutterUnit !== 'px' ? 12 : 200 );
 	const gutterStep = ( gutterUnit !== 'px' ? 0.1 : 1 );
-	const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
-	const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
-	const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
-	const paddingMin = ( paddingType === 'em' || paddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( paddingType === 'em' || paddingType === 'rem' ? 12 : 200 );
-	const paddingStep = ( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 );
 	const previewPaddingType = ( undefined !== paddingType ? paddingType : 'px' );
 	const previewMarginType = ( undefined !== marginType ? marginType : 'px' );
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== rightMarginT ? rightMarginT : '' ), ( undefined !== rightMarginM ? rightMarginM : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== leftMargin ? leftMargin : '' ), ( undefined !== leftMarginT ? leftMarginT : '' ), ( undefined !== leftMarginM ? leftMarginM : '' ) );
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== topPadding ? topPadding : '' ), ( undefined !== topPaddingT ? topPaddingT : '' ), ( undefined !== topPaddingM ? topPaddingM : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== rightPaddingT ? rightPaddingT : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== bottomPaddingT ? bottomPaddingT : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== leftPaddingT ? leftPaddingT : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
+	// Margin
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[0] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[0] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[1] && '' !== margin[1] ? margin[1] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[1] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[2] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2] : '' ), ( undefined !== mobileMargin ? mobileMargin[2] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[3] && '' !== margin[3] ? ( margin[3] ) : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[3] : '' ) );
+
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[1] && '' !== padding[1] ? padding[1] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[3] && '' !== padding[3] ? ( padding[3] ) : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewBorderTop = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
 	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
 	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
@@ -742,7 +758,60 @@ function SectionEdit( {
 
 						{( activeTab === 'advanced') &&
 							<>
-							{ inRowBlock && (
+								{showSettings( 'paddingMargin', 'kadence/column' ) && (
+									<KadencePanelBody
+										title={__( 'Padding/Margin', 'kadence-blocks' )}
+										panelName={'kb-col-padding-margin'}
+									>
+										<ResponsiveMeasureRangeControl
+											label={__( 'Padding', 'kadence-blocks' )}
+											value={ padding }
+											tabletValue={tabletPadding}
+											mobileValue={mobilePadding}
+											onChange={( value ) => {
+												setAttributes( { padding: value } );
+											}}
+											onChangeTablet={( value ) => {
+												setAttributes( { tabletPadding: value } );
+											}}
+											onChangeMobile={( value ) => {
+												setAttributes( { mobilePadding: value } );
+											}}
+											min={ 0 }
+											max={ ( paddingType === 'em' || paddingType === 'rem' ? 24 : 500 ) }
+											step={ ( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 ) }
+											unit={ paddingType }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+											onUnit={( value ) => setAttributes( { paddingType: value } )}
+											onMouseOver={ paddingMouseOver.onMouseOver }
+											onMouseOut={ paddingMouseOver.onMouseOut }
+										/>
+										<ResponsiveMeasureRangeControl
+											label={__( 'Margin', 'kadence-blocks' )}
+											value={margin}
+											tabletValue={tabletMargin}
+											mobileValue={mobileMargin}
+											onChange={( value ) => {
+												setAttributes( { margin: value } );
+											}}
+											onChangeTablet={( value ) => {
+												setAttributes( { tabletMargin: value } );
+											}}
+											onChangeMobile={( value ) => {
+												setAttributes( { mobileMargin: value } );
+											}}
+											min={ ( marginType === 'em' || marginType === 'rem' ? -24 : -500 ) }
+											max={ ( marginType === 'em' || marginType === 'rem' ? 24 : 500 ) }
+											step={ ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 ) }
+											unit={ marginType }
+											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+											onUnit={ ( value ) => setAttributes( { marginType: value } ) }
+											onMouseOver={ marginMouseOver.onMouseOver }
+											onMouseOut={ marginMouseOver.onMouseOut }
+										/>
+									</KadencePanelBody>
+								)}
+								{ inRowBlock && (
 									<KadencePanelBody
 										title={ __( 'Sticky Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
@@ -809,65 +878,9 @@ function SectionEdit( {
 
 						{ ( activeTab === 'style' ) &&
 							<>
-								{showSettings( 'paddingMargin', 'kadence/column' ) && (
-									<KadencePanelBody
-										title={__( 'Padding/Margin', 'kadence-blocks' )}
-										panelName={'kb-col-padding-margin'}
-									>
-										<ResponsiveMeasurementControls
-											label={__( 'Padding', 'kadence-blocks' )}
-											control={paddingControl}
-											value={[ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ]}
-											tabletValue={[ ( undefined !== topPaddingT ? topPaddingT : '' ), ( undefined !== rightPaddingT ? rightPaddingT : '' ), ( undefined !== bottomPaddingT ? bottomPaddingT : '' ), ( undefined !== leftPaddingT ? leftPaddingT : '' ) ]}
-											mobileValue={[ ( undefined !== topPaddingM ? topPaddingM : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) ]}
-											onChange={( value ) => {
-												setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } );
-											}}
-											onChangeTablet={( value ) => {
-												setAttributes( { topPaddingT: value[ 0 ], rightPaddingT: value[ 1 ], bottomPaddingT: value[ 2 ], leftPaddingT: value[ 3 ] } );
-											}}
-											onChangeMobile={( value ) => {
-												setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } );
-											}}
-											onChangeControl={( value ) => setPaddingControl( value )}
-											allowEmpty={true}
-											min={paddingMin}
-											max={paddingMax}
-											step={paddingStep}
-											unit={paddingType}
-											units={[ 'px', 'em', 'rem', '%' ]}
-											onUnit={( value ) => setAttributes( { paddingType: value } )}
-										/>
-										<ResponsiveMeasurementControls
-											label={__( 'Margin', 'kadence-blocks' )}
-											control={marginControl}
-											value={[ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ]}
-											tabletValue={[ ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== rightMarginT ? rightMarginT : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== leftMarginT ? leftMarginT : '' ) ]}
-											mobileValue={[ ( undefined !== topMarginM ? topMarginM : '' ), ( undefined !== rightMarginM ? rightMarginM : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ), ( undefined !== leftMarginM ? leftMarginM : '' ) ]}
-											onChange={( value ) => {
-												setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
-											}}
-											onChangeTablet={( value ) => {
-												setAttributes( { topMarginT: value[ 0 ], rightMarginT: value[ 1 ], bottomMarginT: value[ 2 ], leftMarginT: value[ 3 ] } );
-											}}
-											onChangeMobile={( value ) => {
-												setAttributes( { topMarginM: value[ 0 ], rightMarginM: value[ 1 ], bottomMarginM: value[ 2 ], leftMarginM: value[ 3 ] } );
-											}}
-											onChangeControl={( value ) => setMarginControl( value )}
-											allowEmpty={true}
-											min={marginMin}
-											max={marginMax}
-											step={marginStep}
-											unit={marginType}
-											units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-											onUnit={( value ) => setAttributes( { marginType: value } )}
-										/>
-									</KadencePanelBody>
-								)}
-
 								<KadencePanelBody
 									title={__( 'Background Settings', 'kadence-blocks' )}
-									initialOpen={ !showSettings( 'paddingMargin', 'kadence/column' ) }
+									initialOpen={ true }
 									panelName={'kb-col-bg-settings'}
 								>
 									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
@@ -1144,20 +1157,21 @@ function SectionEdit( {
 									initialOpen={false}
 									panelName={'kb-col-border-settings'}
 								>
-									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'normal',
-													  title    : __( 'Normal', 'kadence-blocks' ),
-													  className: 'kt-normal-tab',
-												  },
-												  {
-													  name     : 'hover',
-													  title    : __( 'Hover', 'kadence-blocks' ),
-													  className: 'kt-hover-tab',
-												  },
-											  ]}>
+									<TabPanel
+										className="kt-inspect-tabs kt-hover-tabs"
+										activeClass="active-tab"
+										tabs={[
+											{
+												name     : 'normal',
+												title    : __( 'Normal', 'kadence-blocks' ),
+												className: 'kt-normal-tab',
+											},
+											{
+												name     : 'hover',
+												title    : __( 'Hover', 'kadence-blocks' ),
+												className: 'kt-hover-tab',
+											},
+										]}>
 										{
 											( tab ) => {
 												let tabout;
@@ -1480,14 +1494,14 @@ function SectionEdit( {
 			</InspectorAdvancedControls>
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),
-				paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + previewPaddingType : undefined ),
-				paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + previewPaddingType : undefined ),
-				paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + previewPaddingType : undefined ),
-				paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + previewPaddingType : undefined ),
-				marginLeft: ( undefined !== previewMarginLeft ? previewMarginLeft + previewMarginType : undefined ),
-				marginRight: ( undefined !== previewMarginRight ? previewMarginRight + previewMarginType : undefined ),
-				marginTop: ( undefined !== previewMarginTop ? previewMarginTop + previewMarginType : undefined ),
-				marginBottom: ( undefined !== previewMarginBottom ? previewMarginBottom + previewMarginType : undefined ),
+				paddingLeft: ( undefined !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) : undefined ),
+				paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingType ) : undefined ),
+				paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingType ) : undefined ),
+				paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ) : undefined ),
+				marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
+				marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
+				marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
+				marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
 				textAlign: ( previewAlign ? previewAlign : undefined ),
 				backgroundColor: backgroundString,
 				backgroundImage: ( hasBackgroundImage ? `url( ${ backgroundImg[ 0 ].bgImg} )` : undefined ),
@@ -1504,6 +1518,22 @@ function SectionEdit( {
 				boxShadow: ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? ( undefined !== shadow[ 0 ].inset && shadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 1 ) ) : undefined ),
 			} } { ...innerBlocksProps }>
 			</div>
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) ] }
+			/>
+			<SpacingVisualizer
+				type="inside"
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginType ), getSpacingOptionOutput( previewMarginRight, previewMarginType ), getSpacingOptionOutput( previewMarginBottom, previewMarginType ), getSpacingOptionOutput( previewMarginLeft, previewMarginType ) ] }
+			/>
 		</div>
 	);
 }

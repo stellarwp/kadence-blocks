@@ -96,6 +96,8 @@ export default function SingleMeasureRangeControl( {
 	isPopover = false,
 	isSingle = false,
 	parentLabel = null,
+	onMouseOver,
+	onMouseOut,
 } ) {
 	const [ isCustom, setIsCustom ] = useState( false );
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -111,6 +113,9 @@ export default function SingleMeasureRangeControl( {
 		setIsOpen( false );
 	}
 	const getNewPresetValue = ( newSize ) => {
+		if ( undefined === newSize ) {
+			return '';
+		}
 		const size = parseInt( newSize, 10 );
 		if ( size === 0 ) {
 			return '0';
@@ -161,7 +166,13 @@ export default function SingleMeasureRangeControl( {
 				className={ 'components-spacing-sizes-control__range-control' }
 				beforeIcon={ beforeIcon }
 				value={ currentValue }
-				onChange={ ( newVal ) => onChange( getNewPresetValue( newVal ) ) }
+				onChange={ ( newVal ) => {
+					if ( undefined === newVal ) {
+						onChange( defaultValue );
+					} else {
+						onChange( getNewPresetValue( newVal ) )
+					}
+				}}
 				min={ 0 }
 				max={ options.length - 1 }
 				marks={ marks }
@@ -171,9 +182,11 @@ export default function SingleMeasureRangeControl( {
 				aria-valuenow={ currentValue }
 				aria-valuetext={ options[ currentValue ]?.label }
 				renderTooltipContent={ customTooltipContent }
-				initialPosition={ defaultValue }
+				initialPosition={ defaultValue ? defaultValue : 0 }
 				allowReset={ ( isPopover || isSingle ) ? true : false  }
 				hideLabelFromVision={ ( isPopover || isSingle ) ? false : true }
+				onMouseOver={ onMouseOver }
+				onMouseOut={ onMouseOut }
 				onMouseDown={ ( event ) => {
 					// If mouse down is near start of range set initial value to 0, which
 					// prevents the user have to drag right then left to get 0 setting.
@@ -217,6 +230,8 @@ export default function SingleMeasureRangeControl( {
 									disabled={ ( value && 'auto' == value ? true : false ) }
 									tabIndex="-1" 
 									onClick={ ( value && 'auto' == value ? '' : toggle ) }
+									onMouseOver={ onMouseOver }
+									onMouseOut={ onMouseOut }
 								>
 									{ parentLabel && label && (
 										<span className='kadence-placement-label'>{ label }</span>
@@ -251,6 +266,8 @@ export default function SingleMeasureRangeControl( {
 							value={ value }
 							disableUnits={ parentLabel ? true : false }
 							onChange={ ( newVal ) => onChangeCustom( newVal ) }
+							onMouseOver={ onMouseOver }
+							onMouseOut={ onMouseOut }
 						/>
 						{ ! disableCustomSizes && (
 							<ButtonGroup className="kadence-radio-container-control">
