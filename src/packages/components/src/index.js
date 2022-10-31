@@ -50,7 +50,6 @@ export { default as TextHighlight } from './links/text-highlight';
 
 /* Icons */
 export { default as GenIcon } from './icons/gen-icon';
-export { default as IconControl } from './icons/icon-control';
 export { default as IconRender } from './icons/icon-render';
 export { default as IconSpanTag } from './icons/icon-span-tag';
 export { default as IconPicker } from './icons/icon-picker';
@@ -78,3 +77,5 @@ export { default as BorderColorControls } from './color/border-color-control'
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';
+
+export { default as KadenceIconPicker } from './icon-picker';

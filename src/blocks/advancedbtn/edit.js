@@ -16,7 +16,7 @@ import {
 	SmallResponsiveControl,
 	ResponsiveRangeControls,
 	IconRender,
-	IconControl,
+	KadenceIconPicker,
 	KadencePanelBody,
 	URLInputControl,
 	URLInputInline,
@@ -1013,7 +1013,7 @@ function KadenceAdvancedButton( props ) {
 					<Fragment>
 						<h2 className="kt-tool">{__( 'Icon Settings', 'kadence-blocks' )}</h2>
 						<div className="kt-select-icon-container">
-							<IconControl
+							<KadenceIconPicker
 								value={btns[ index ].icon}
 								onChange={value => {
 									saveArrayUpdate( { icon: value }, index );

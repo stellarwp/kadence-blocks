@@ -28,7 +28,7 @@ import {
 	ResponsiveMeasurementControls,
 	RangeControl,
 	KadencePanelBody,
-	IconControl,
+	KadenceIconPicker,
 	IconRender,
 	URLInputControl,
 	WebfontLoader,
@@ -1515,7 +1515,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						renderContent={() => (
 							<Fragment>
 								<div className="kb-inline-icon-control">
-									<IconControl
+									<KadenceIconPicker
 										value={mediaIcon[ 0 ].icon}
 										onChange={value => saveMediaIcon( { icon: value } )}
 									/>
@@ -2043,7 +2043,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									)}
 									{'icon' === mediaType && (
 										<>
-											<IconControl
+											<KadenceIconPicker
 												value={mediaIcon[ 0 ].icon}
 												onChange={value => saveMediaIcon( { icon: value } )}
 											/>
@@ -2098,7 +2098,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												onChange={value => saveMediaIcon( { hoverAnimation: value } )}
 											/>
 											{mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-												<IconControl
+												<KadenceIconPicker
 													value={mediaIcon[ 0 ].flipIcon}
 													onChange={value => saveMediaIcon( { flipIcon: value } )}
 												/>

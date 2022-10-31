@@ -4,7 +4,7 @@
  * Registering a basic block with Gutenberg.
  */
 
-import { KadencePanelBody, IconControl, IconRender } from '@kadence/components';
+import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
 
 import { __ } from '@wordpress/i18n';
 import {
@@ -126,7 +126,7 @@ function PaneEdit( {
 					initialOpen={ false }
 					panelName={ 'kb-pane-title-icon' }
 				>
-					<IconControl
+					<KadenceIconPicker
 						value={ icon }
 						onChange={ value => setAttributes( { icon: value } ) }
 					/>

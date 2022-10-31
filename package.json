@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
-    "@fonticonpicker/react-fonticonpicker": "^1.2.0",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@react-google-maps/api": "^2.12.0",
     "@wordpress/icons": "^9.7.0",
