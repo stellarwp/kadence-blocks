@@ -10,7 +10,6 @@ import {
 import {__} from '@wordpress/i18n'
 import {applyFilters} from '@wordpress/hooks'
 import {useState, useEffect, useMemo} from '@wordpress/element'
-import {default as IconRender} from '../icons/icon-render'
 import {default as GenIcon} from '../icons/gen-icon'
 
 export default function KadenceIconPicker({value, onChange}) {
@@ -44,7 +43,8 @@ export default function KadenceIconPicker({value, onChange}) {
 
             if (filter === 'all' || groupIndex === parseInt(filter)) {
 
-                { iconNames[label].map((icon, iconIndex) => {
+                {
+                    iconNames[label].map((icon, iconIndex) => {
 
                         if (search === '' || icon.includes(search)) {
 
@@ -68,38 +68,68 @@ export default function KadenceIconPicker({value, onChange}) {
     }, [search, filter])
 
     const styles = `
+        .kadence-icon-picker {
+            margin-bottom: 24px;
+        }
+        .kadence-icon-picker-selection {
+            display: inline-flex;
+        }
         .kadence-icon-picker-search {
-        	padding: 10px;
+        	position: fixed;
+            z-index: 999;
+            background-color: #fff;
+            padding: 10px 10px 5px 10px;
+            width: 305px;
         }
 		.kadence-icon-picker-container {
-			min-width: 260px;
+			min-width: 305px;
 			height: 50vh;
 			max-height: 400px;
 		}
 		.kadence-icon-picker-container .components-panel__body button.is-secondary, .kadence-icon-picker button.is-secondary {
 		    margin-right: 7px;
 		    margin-bottom: 7px;
-		    color: #000;
 		    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 		}
+		.kadence-icon-picker-content {
+		    padding-top: 150px;
+		}
+		.kadence-icon-picker-link {
+		    display: inline-flex;
+		    padding-left: 10px;
+		    background: #f5f5f5;
+		    margin-right: 1px;
+		    margin-bottom: 1px;
+		    color: #424242;
+		    padding-top: 7px;
+		    padding-bottom: 7px;
+		}
+        a.kadence-icon-picker-link:hover {
+            background: #e5e5e5;
+        }   
 		`
 
     return (
-        <>
+        <div className={'kadence-icon-picker'}>
             <style>{styles}</style>
 
 
-            <div className={ 'kadence-icon-picker' }>
-                <span>{ value == '' ? __('Select Icon', 'kadence-blocks') : __('Change Icon', 'kadence-blocks') }</span>
+            <div className={'kadence-icon-picker-selection'}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    {value == '' ? __('Select Icon', 'kadence-blocks') : __('Change Icon', 'kadence-blocks')}
+                </div>
 
-                <Button
+                <a
+                    href={'#'}
                     variant="secondary"
-                    onClick={toggleVisible}
+                    onClick={() => toggleVisible()}
                     ref={setPopoverAnchor}
-                    style={ { float: 'right' } }
+                    className={'kadence-icon-picker-link'}
+                    style={{marginLeft: '25px'}}
                 >
-                    <GenIcon name={value} icon={iconOptions[value]} style={ { marginTop: '3px'} }/>
-                </Button>
+                    <GenIcon className={`kt-svg-icon-list-single kt-svg-icon-list-single-${value}`} name={value}
+                             icon={iconOptions[value]}/>
+                </a>
 
             </div>
 
@@ -107,7 +137,7 @@ export default function KadenceIconPicker({value, onChange}) {
                 <Popover
                     headerTitle={__('Select Icon', 'kadence-blocks')}
                     noArrow={false}
-                    expandOnMobile={true}
+                    // expandOnMobile={true}
                     onClose={toggleVisible}
                     placement="bottom-end"
                     referenceElement={popoverAnchor}
@@ -131,46 +161,50 @@ export default function KadenceIconPicker({value, onChange}) {
                             />
 
                         </div>
+                        <div className={'kadence-icon-picker-content'}>
 
-                        {  Object.keys(results).length === 0 &&
-                            <p>{__('No icons found', 'kadence-blocks')}</p>
-                        }
+                            {Object.keys(results).length === 0 &&
+                                <div style={ { padding: '15px' } }>
+                                    <p>{__('No icons found', 'kadence-blocks')}</p>
+                                </div>
+                            }
 
+                            {Object.keys(results).map((groupKey) => {
 
-                        {Object.keys(results).map((groupKey) => {
+                                return (
 
-                            return (
+                                    <PanelBody
+                                        title={results[groupKey].label}
+                                    >
 
-                                <PanelBody
-                                    title={results[groupKey].label}
-                                >
+                                        {Object.keys(results[groupKey].icons).map((iconKey) => {
 
-                                    {Object.keys(results[groupKey].icons).map((iconKey) => {
+                                            return (
+                                                <a
+                                                    className={'kadence-icon-picker-link'}
+                                                    variant="secondary"
+                                                    onClick={() => {
+                                                        onChange(iconKey)
+                                                        toggleVisible()
+                                                    }}
+                                                >
+                                                    <GenIcon
+                                                        className={`kt-svg-icon-list-single kt-svg-icon-list-single-${value}`}
+                                                        name={iconKey}
+                                                        icon={results[groupKey].icons[iconKey]}
+                                                    />
+                                                </a>
+                                            )
+                                        })}
 
-                                        return (
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => {
-                                                    onChange(iconKey)
-                                                    toggleVisible()
-                                                }}
-                                            >
-                                                <GenIcon
-                                                    name={iconKey}
-                                                    icon={results[groupKey].icons[iconKey]}
-                                                />
-                                            </Button>
-                                        )
-                                    })}
+                                    </PanelBody>
+                                )
 
-                                </PanelBody>
-                            )
-
-                        })}
-
+                            })}
+                        </div>
                     </div>
                 </Popover>
             }
-        </>
+        </div>
     )
 }
