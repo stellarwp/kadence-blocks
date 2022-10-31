@@ -584,8 +584,14 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 				</div>
 			);
 		};
+
+		const blockProps = useBlockProps( {
+			className: className,
+			'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
+		} );
+
 		return (
-			<div className={ className }>
+			<div {...blockProps}>
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
