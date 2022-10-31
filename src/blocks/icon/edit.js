@@ -8,7 +8,6 @@ import { times, map } from 'lodash';
 import {
 	PopColorControl,
 	StepControls,
-	IconControl,
 	IconRender,
 	KadencePanelBody,
 	URLInputControl,
@@ -20,7 +19,8 @@ import {
 	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	KadenceIconPicker
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -207,12 +207,14 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 				initialOpen={( 1 === iconCount ? true : false )}
 				panelName={'kb-icon-settings-' + index}
 			>
-				<IconControl
+
+				<KadenceIconPicker
 					value={icons[ index ].icon}
 					onChange={value => {
 						saveArrayUpdate( { icon: value }, index );
 					}}
 				/>
+
 				<ResponsiveRangeControls
 					label={__( 'Icon Size', 'kadence-blocks' )}
 					value={icons[ index ].size ? icons[ index ].size : ''}
@@ -245,6 +247,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 						max={4}
 					/>
 				) }
+
 				<KadenceRadioButtons
 					label={__( 'Icon Style', 'kadence-blocks' )}
 					value={icons[ index ].style}

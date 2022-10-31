@@ -38,7 +38,7 @@ import {
     ResponsiveRangeControls,
     KadencePanelBody,
     WebfontLoader,
-    IconControl,
+    KadenceIconPicker,
     IconRender,
     KadenceMediaPlaceholder,
     MeasurementControls,
@@ -668,7 +668,7 @@ function KadenceTestimonials({
                 />
                 {'icon' === testimonials[index].media && (
                     <Fragment>
-                        <IconControl
+                        <KadenceIconPicker
                             value={testimonials[index].icon}
                             onChange={value => {
                                 saveTestimonials({icon: value}, index);
@@ -1367,7 +1367,7 @@ function KadenceTestimonials({
                                         />
                                         {displayIcon && (
                                             <Fragment>
-                                                <IconControl
+                                                <KadenceIconPicker
                                                     value={iconStyles[0].icon}
                                                     onChange={value => {
                                                         saveIconStyles({icon: value});

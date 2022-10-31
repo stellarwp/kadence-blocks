@@ -25,7 +25,7 @@ import {
 	PopColorControl,
 	StepControls,
 	TypographyControls,
-	IconControl,
+	KadenceIconPicker,
 	ResponsiveRangeControls,
 	IconRender,
 	KadencePanelBody,
@@ -410,7 +410,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 					allowClear={true}
 					{...attributes}
 				/>
-				<IconControl
+				<KadenceIconPicker
 					value={items[ index ].icon}
 					onChange={value => {
 						saveListItem( { icon: value }, index );
@@ -797,7 +797,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 										panelName={'kb-icon-all-styles'}
 									>
 										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
-										<IconControl
+										<KadenceIconPicker
 											value={items[ 0 ].icon}
 											onChange={value => {
 												if ( value !== items[ 0 ].icon ) {

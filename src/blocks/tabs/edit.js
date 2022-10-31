@@ -35,7 +35,7 @@ import {
 	PopColorControl,
 	TypographyControls,
 	WebfontLoader,
-	IconControl,
+	KadenceIconPicker,
 	IconRender,
 	KadencePanelBody,
 	MeasurementControls,
@@ -714,7 +714,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					initialOpen={ false }
 					panelName={ 'kb-tab-icon-' + index }
 				>
-					<IconControl
+					<KadenceIconPicker
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
 						onChange={ value => {
 							saveArrayUpdate( { icon: value }, index );
