@@ -44,7 +44,6 @@ export { default as TextHighlight } from './links/text-highlight';
 
 /* Icons */
 export { default as GenIcon } from './icons/gen-icon';
-export { default as IconControl } from './icons/icon-control';
 export { default as IconRender } from './icons/icon-render';
 export { default as IconSpanTag } from './icons/icon-span-tag';
 export { default as IconPicker } from './icons/icon-picker';
