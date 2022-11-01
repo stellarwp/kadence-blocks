@@ -155,7 +155,7 @@ function SectionEdit( {
 			setAttributes( { padding: [ topPadding, rightPadding, bottomPadding, leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
 		if ( ( '' !== topPaddingT || '' !== rightPaddingT || '' !== bottomPaddingT || '' !== leftPaddingT ) ) {
-			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
+			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
 		}
 		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );

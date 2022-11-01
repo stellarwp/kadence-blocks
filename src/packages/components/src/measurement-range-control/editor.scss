@@ -188,3 +188,17 @@
 		}
 	}
 }
+.kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-single-unit-control {
+    display: flex;
+	.components-unit-control-wrapper {
+		flex: 1;
+	}
+}
+
+.kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-measure-control-select-wrapper {
+    height: 32px;
+}
+
+.kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-measure-control-select-wrapper .kadence-measure-control-select {
+    width: 26px;
+}

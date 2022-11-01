@@ -194,6 +194,7 @@ export default function MeasureRangeControl( {
 							<SingleMeasureRangeControl
 								value={ ( value ? value[ 0 ] : '' ) }
 								onChange={ ( newVal ) => onChange( [ newVal, newVal, newVal, newVal ] ) }
+								className={ 'kb-measure-input-all-inputs' }
 								min={ min }
 								max={ max }
 								options={ options }

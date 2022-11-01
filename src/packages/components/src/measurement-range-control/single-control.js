@@ -125,12 +125,12 @@ export default function SingleMeasureRangeControl( {
 	const onChangeCustom = ( newSize ) => {
 		const isNumeric = ! isNaN( parseFloat( newSize ) );
 		const nextValue = isNumeric ? parseFloat( newSize ) : undefined;
-		if ( onUnit && ! parentLabel ) {
-			const newUnit = newSize.replace(/[0-9]/g, '');
-			if ( newUnit !== unit ) {
-				onUnit( newUnit );
-			}
-		}
+		// if ( onUnit && ! parentLabel ) {
+		// 	const newUnit = newSize.replace(/[0-9]/g, '');
+		// 	if ( newUnit !== unit ) {
+		// 		onUnit( newUnit );
+		// 	}
+		// }
 		onChange( nextValue );
 	};
 	const marks = options.map( ( newValue, index ) => ( {
@@ -159,6 +159,7 @@ export default function SingleMeasureRangeControl( {
 	} else if ( label && addParent ) {
 		rangeLabel = addParent + label + ' ' + currentValueLabel
 	}
+	console.log( unit );
 	const customRange = (
 		<>
 			<CoreRangeControl
@@ -254,7 +255,7 @@ export default function SingleMeasureRangeControl( {
 					</div>
 				) }
 				{ realIsCustomControl && (
-					<div className={ 'kadence-controls-content' }>
+					<div className={ 'kadence-controls-content kadence-single-unit-control' }>
 						<UnitControl
 							label={ parentLabel && label ? label : undefined }
 							labelPosition={'top'}
@@ -264,11 +265,29 @@ export default function SingleMeasureRangeControl( {
 							step={ step }
 							units={ controlUnits }
 							value={ value }
-							disableUnits={ parentLabel ? true : false }
+							disableUnits={ true }
 							onChange={ ( newVal ) => onChangeCustom( newVal ) }
 							onMouseOver={ onMouseOver }
 							onMouseOut={ onMouseOut }
 						/>
+						{ ! parentLabel && (
+							<div className={ 'kadence-measure-control-select-wrapper' }>
+								<select
+									className={ 'kadence-measure-control-select components-unit-control__select' }
+									onChange={ ( event ) => {
+										console.log( event.target.value );
+										onUnit( event.target.value );
+									} }
+									value={ unit }
+								>
+									{ units.map( ( option ) => (
+										<option value={ option } key={ option }>
+											{ option }
+										</option>
+									) ) }
+								</select>
+							</div>
+						) }
 						{ ! disableCustomSizes && (
 							<ButtonGroup className="kadence-radio-container-control">
 								<Button
