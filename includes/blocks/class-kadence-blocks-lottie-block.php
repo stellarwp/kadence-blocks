@@ -107,10 +107,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
 			}
+
 			// Include lottie interactive if using scroll animation.
 			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true || isset( $attributes['waitUntilInView'] ) && $attributes['waitUntilInView'] === true ) {
-
-
 				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
 					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
 				}
@@ -125,9 +124,10 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				$content = $content . "
 				<script>
-						let lottiePlayer" . $player_simple_style_id . " = document.getElementById( '" . $player_style_id . "');
 						
 						var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
+							let lottiePlayer" . $player_simple_style_id . " = document.getElementById( '" . $player_style_id . "');
+							
 							if (typeof LottieInteractivity !== 'undefined') {					
 								lottiePlayer" . $player_simple_style_id . ".addEventListener('ready', () => {
 								  LottieInteractivity.create({
@@ -149,7 +149,6 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				</script>";
 
 			}
-
 
 			$playerProps = array();
 
