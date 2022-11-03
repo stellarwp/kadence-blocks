@@ -159,7 +159,7 @@ export default function SingleMeasureRangeControl( {
 	} else if ( label && addParent ) {
 		rangeLabel = addParent + label + ' ' + currentValueLabel
 	}
-	console.log( unit );
+
 	const customRange = (
 		<>
 			<CoreRangeControl
