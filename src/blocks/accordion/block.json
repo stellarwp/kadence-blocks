@@ -55,7 +55,7 @@
 	},
 	"contentPadding": {
 	  "type": "array",
-	  "default": [ 20, 20, 20, 20 ]
+	  "default": [ "20", "20", "20", "20" ]
 	},
 	"contentTabletPadding": {
 	  "type": "array",
