@@ -14,7 +14,7 @@
  */
  import './editor.scss';
 
-export default function SpacingVisualizer( { style, type = 'inside', spacing, forceShow = false, forceHide = false } ) {
+export default function SpacingVisualizer( { style, type = 'inside', spacing, forceShow = false, forceHide = false, offset= true } ) {
 	const outputSpacing = {
 		top: spacing[0],
 		right: spacing[1],
@@ -41,10 +41,10 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 				borderRightWidth: spacingRight,
 				borderBottomWidth: spacingBottom,
 				borderLeftWidth: spacingLeft,
-				top: spacingTop ? `calc(${ spacingTop } * -1)` : 0,
-				right: spacingRight ? `calc(${ spacingRight } * -1)` : 0,
-				bottom: spacingBottom ? `calc(${ spacingBottom } * -1)` : 0,
-				left: spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
+				top: offset && spacingTop ? `calc(${ spacingTop } * -1)` : 0,
+				// right: spacingRight ? `calc(${ spacingRight } * -1)` : 0,
+				bottom: offset && spacingBottom ? `calc(${ spacingBottom } * -1)` : 0,
+				// left: spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
 			};
 		} else {
 			return {
@@ -59,6 +59,12 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 					: 0,
 				borderLeftWidth: outputSpacing?.left
 					? outputSpacing?.left
+					: 0,
+				marginLeft: style?.marginLeft
+					? style.marginLeft
+					: 0,
+				marginRight: style?.marginRight
+					? style.marginRight
 					: 0,
 			};
 		}
