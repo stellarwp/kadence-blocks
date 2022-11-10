@@ -5,7 +5,8 @@ import {
  * Return the proper preview size, given the current preview device
  */
 export default ( device, desktopSize, tabletSize, mobileSize ) => {
-	const output = useMemo( () => {
+
+	return useMemo( () => {
 		if ( device === 'Mobile' ) {
 			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
 				return mobileSize;
@@ -19,6 +20,5 @@ export default ( device, desktopSize, tabletSize, mobileSize ) => {
 		}
 		return undefined !== desktopSize ? desktopSize : '';
 	}, [ device, desktopSize, tabletSize, mobileSize ] );
-	
-	return output;
+
 };

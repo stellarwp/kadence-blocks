@@ -1228,7 +1228,7 @@ export default function Image( {
 			// Disable reason: Image itself is not meant to be interactive, but
 			// should direct focus to block.
 			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
-		<>
+		<div>
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
@@ -1294,7 +1294,7 @@ export default function Image( {
 				forceShow={ paddingMouseOver.isMouseOver }
 				spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
 			/>
-		</>
+		</div>
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
 	if ( useRatio ){

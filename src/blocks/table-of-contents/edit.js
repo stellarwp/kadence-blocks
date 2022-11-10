@@ -12,7 +12,9 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
-	setBlockDefaults
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -26,9 +28,9 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
-
 
 /**
  * Import Icons
@@ -162,9 +164,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
 	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
 	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const [ containerMarginControl, setContainerMarginControl ] = useState( 'linked' );
-	const [ containerTabletMarginControl, setContainerTabletMarginControl ] = useState( 'linked' );
-	const [ containerMobileMarginControl, setContainerMobileMarginControl ] = useState( 'linked' );
+
+	const marginMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -211,21 +212,6 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			setBorderRadiusControl( 'linked' );
 		} else {
 			setBorderRadiusControl( 'individual' );
-		}
-		if ( containerMargin && containerMargin[ 0 ] === containerMargin[ 1 ] && containerMargin[ 0 ] === containerMargin[ 2 ] && containerMargin[ 0 ] === containerMargin[ 3 ] ) {
-			setContainerMarginControl( 'linked' );
-		} else {
-			setContainerMarginControl( 'individual' );
-		}
-		if ( containerTabletMargin && containerTabletMargin[ 0 ] === containerTabletMargin[ 1 ] && containerTabletMargin[ 0 ] === containerTabletMargin[ 2 ] && containerTabletMargin[ 0 ] === containerTabletMargin[ 3 ] ) {
-			setContainerTabletMarginControl( 'linked' );
-		} else {
-			setContainerTabletMarginControl( 'individual' );
-		}
-		if ( containerMobileMargin && containerMobileMargin[ 0 ] === containerMobileMargin[ 1 ] && containerMobileMargin[ 0 ] === containerMobileMargin[ 2 ] && containerMobileMargin[ 0 ] === containerMobileMargin[ 3 ] ) {
-			setContainerMobileMarginControl( 'linked' );
-		} else {
-			setContainerMobileMarginControl( 'individual' );
 		}
 		if ( undefined !== startClosed && startClosed ) {
 			setShowContent( false );
@@ -873,26 +859,22 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									max={1400}
 									step={1}
 								/>
-								<ResponsiveMeasurementControls
+								<ResponsiveMeasureRangeControl
 									label={__( 'Container Margin', 'kadence-blocks' )}
 									value={containerMargin}
-									control={containerMarginControl}
 									onChange={( value ) => setAttributes( { containerMargin: value } )}
-									onChangeControl={( value ) => setContainerMarginControl( value )}
 									tabletValue={containerTabletMargin}
-									tabletControl={containerTabletMarginControl}
 									onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-									onChangeTabletControl={( value ) => setContainerTabletMarginControl( value )}
 									mobileValue={containerMobileMargin}
-									mobileControl={containerMobileMarginControl}
 									onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-									onChangeMobileControl={( value ) => setContainerMobileMarginControl( value )}
 									min={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -2 : -200 )}
 									max={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 12 : 200 )}
 									step={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 )}
 									unit={containerMarginUnit}
 									units={[ 'px', 'em', 'rem' ]}
 									onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
+									onMouseOver={ marginMouseOver.onMouseOver }
+									onMouseOut={ marginMouseOver.onMouseOut }
 								/>
 							</KadencePanelBody>
 						</>
@@ -924,10 +906,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			<nav className={classes}>
 				<div className="kb-table-of-content-wrap" style={{
 					padding        : ( containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
-					marginTop      : ( previewMarginTop ? previewMarginTop + previewMarginUnit : undefined ),
-					marginRight    : ( previewMarginRight ? previewMarginRight + previewMarginUnit : undefined ),
-					marginBottom   : ( previewMarginBottom ? previewMarginBottom + previewMarginUnit : undefined ),
-					marginLeft     : ( previewMarginLeft ? previewMarginLeft + previewMarginUnit : undefined ),
+					marginTop      : ( previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+					marginRight    : ( previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+					marginBottom   : ( previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+					marginLeft     : ( previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
 					borderWidth    : ( containerBorder ? containerBorder[ 0 ] + 'px ' + containerBorder[ 1 ] + 'px ' + containerBorder[ 2 ] + 'px ' + containerBorder[ 3 ] + 'px' : '' ),
 					backgroundColor: KadenceColorOutput( containerBackground ),
 					borderColor    : KadenceColorOutput( containerBorderColor ),

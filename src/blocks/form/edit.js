@@ -3586,13 +3586,7 @@ function KadenceForm( props ) {
 				marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ) : undefined ),
 			}}>
 				<SpacingVisualizer
-					style={ {
-						marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),
-						marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ) : undefined ),
-						marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ) : undefined ),
-						marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ) : undefined ),
-					} }
-					type="inside"
+					type="outside"
 					forceShow={ marginMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) ] }
 				/>

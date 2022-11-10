@@ -1840,162 +1840,169 @@ function GalleryEdit( props ) {
 	};
 
 	return (
-		<>
-		<div {...blockProps} >
-			{buildCSS}
-			{controls}
-			{sidebarControls}
-			{noticeUI}
-			{showCaption && captionStyles[ 0 ].google && (
-				<WebfontLoader config={config}>
-				</WebfontLoader>
-			)}
-			{type && type === 'fluidcarousel' && (
-				<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
-					<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
-						{theImages.length !== 1 && (
-							<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...fluidCarouselSettings}>
-								{theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
-								} )}
-							</Slider>
-						)}
-						{theImages.length === 1 && (
-							theImages.map( ( img, index ) => {
-								return renderGalleryImages( img, index );
-							} )
-						)}
-					</div>
-				</div>
-			)}
-			{type && type === 'slider' && (
-				<div className={galleryClassNames}>
-					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
-						{theImages.length !== 1 && (
-							<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
-								{theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
-								} )}
-							</Slider>
-						)}
-						{theImages.length === 1 && (
-							theImages.map( ( img, index ) => {
-								return renderGalleryImages( img, index );
-							} )
-						)}
-					</div>
-				</div>
-			)}
-			{type && type === 'thumbslider' && (
-				<div className={galleryClassNames}>
-					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
-						{theImages.length !== 1 && (
-							<>
-								<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
+		<div>
+			<div {...blockProps} >
+				<SpacingVisualizer
+					// style={ {
+					// 	marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+					// 	marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					// 	marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					// 	marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					// } }
+					type="outside"
+					offset={ false }
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				/>
+				{buildCSS}
+				{controls}
+				{sidebarControls}
+				{noticeUI}
+				{showCaption && captionStyles[ 0 ].google && (
+					<WebfontLoader config={config}>
+					</WebfontLoader>
+				)}
+				{type && type === 'fluidcarousel' && (
+					<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
+						<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
+							{theImages.length !== 1 && (
+								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...fluidCarouselSettings}>
 									{theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} )}
 								</Slider>
-								<Slider
-									className={`kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}
-									ref={ (slider) => setSliderThumbs(slider)}
-									asNavFor={sliderSlides}
-									{...thumbsliderthumbsSettings}>
+							)}
+							{theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
+									return renderGalleryImages( img, index );
+								} )
+							)}
+						</div>
+					</div>
+				)}
+				{type && type === 'slider' && (
+					<div className={galleryClassNames}>
+						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
+							{theImages.length !== 1 && (
+								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
 									{theImages.map( ( img, index ) => {
-										return renderGalleryImages( img, index, true );
+										return renderGalleryImages( img, index );
 									} )}
 								</Slider>
-							</>
-						)}
-						{theImages.length === 1 && (
-							theImages.map( ( img, index ) => {
-								return renderGalleryImages( img, index );
-							} )
-						)}
-					</div>
-				</div>
-			)}
-			{type && type === 'carousel' && (
-				<div className={galleryClassNames}
-					 data-columns-xxl={columns[ 0 ]}
-					 data-columns-xl={columns[ 1 ]}
-					 data-columns-lg={columns[ 2 ]}
-					 data-columns-md={columns[ 3 ]}
-					 data-columns-sm={columns[ 4 ]}
-					 data-columns-xs={columns[ 5 ]}
-				>
-					<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
-						{theImages.length > columns[ 0 ] && (
-							<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...carouselSettings}>
-								{theImages.map( ( img, index ) => {
+							)}
+							{theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
 									return renderGalleryImages( img, index );
-								} )}
-							</Slider>
-						)}
-						{theImages.length <= columns[ 0 ] && (
-							theImages.map( ( img, index ) => {
-								return renderGalleryImages( img, index );
-							} )
-						)}
+								} )
+							)}
+						</div>
 					</div>
-				</div>
-			)}
-			{type && type === 'masonry' && (
-				<Masonry
-					className={galleryClassNames}
-					elementType={'ul'}
-					data-columns-xxl={columns[ 0 ]}
-					data-columns-xl={columns[ 1 ]}
-					data-columns-lg={columns[ 2 ]}
-					data-columns-md={columns[ 3 ]}
-					data-columns-sm={columns[ 4 ]}
-					data-columns-xs={columns[ 5 ]}
-					options={{
-						transitionDuration: 0,
-					}}
-					disableImagesLoaded={false}
-					enableResizableChildren={true}
-					updateOnEachImageLoad={false}
-				>
-					{theImages.map( ( img, index ) => {
-						return renderGalleryImages( img, index );
-					} )}
-				</Masonry>
-			)}
-			{type && type === 'grid' && (
-				<ul
-					className={galleryClassNames}
-					data-columns-xxl={columns[ 0 ]}
-					data-columns-xl={columns[ 1 ]}
-					data-columns-lg={columns[ 2 ]}
-					data-columns-md={columns[ 3 ]}
-					data-columns-sm={columns[ 4 ]}
-					data-columns-xs={columns[ 5 ]}
-				>
-					{theImages.map( ( img, index ) => {
-						return renderGalleryImages( img, index );
-					} )}
-				</ul>
-			)}
-			{type && type === 'tiles' && (
-				<ul
-					className={galleryClassNames}
-				>
-					{theImages.map( ( img, index ) => {
-						return renderGalleryImages( img, index );
-					} )}
-				</ul>
-			)}
-			{isSelected && !dynamicSource && (
-				addMediaPlaceholder
-			)}
-		</div>
-		<SpacingVisualizer
-			type="outside"
-			forceShow={ marginMouseOver.isMouseOver }
-			spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
-		/>
-	</>
+				)}
+				{type && type === 'thumbslider' && (
+					<div className={galleryClassNames}>
+						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
+							{theImages.length !== 1 && (
+								<>
+									<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
+										{theImages.map( ( img, index ) => {
+											return renderGalleryImages( img, index );
+										} )}
+									</Slider>
+									<Slider
+										className={`kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}
+										ref={ (slider) => setSliderThumbs(slider)}
+										asNavFor={sliderSlides}
+										{...thumbsliderthumbsSettings}>
+										{theImages.map( ( img, index ) => {
+											return renderGalleryImages( img, index, true );
+										} )}
+									</Slider>
+								</>
+							)}
+							{theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
+									return renderGalleryImages( img, index );
+								} )
+							)}
+						</div>
+					</div>
+				)}
+				{type && type === 'carousel' && (
+					<div className={galleryClassNames}
+						 data-columns-xxl={columns[ 0 ]}
+						 data-columns-xl={columns[ 1 ]}
+						 data-columns-lg={columns[ 2 ]}
+						 data-columns-md={columns[ 3 ]}
+						 data-columns-sm={columns[ 4 ]}
+						 data-columns-xs={columns[ 5 ]}
+					>
+						<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
+							{theImages.length > columns[ 0 ] && (
+								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...carouselSettings}>
+									{theImages.map( ( img, index ) => {
+										return renderGalleryImages( img, index );
+									} )}
+								</Slider>
+							)}
+							{theImages.length <= columns[ 0 ] && (
+								theImages.map( ( img, index ) => {
+									return renderGalleryImages( img, index );
+								} )
+							)}
+						</div>
+					</div>
+				)}
+				{type && type === 'masonry' && (
+					<Masonry
+						className={galleryClassNames}
+						elementType={'ul'}
+						data-columns-xxl={columns[ 0 ]}
+						data-columns-xl={columns[ 1 ]}
+						data-columns-lg={columns[ 2 ]}
+						data-columns-md={columns[ 3 ]}
+						data-columns-sm={columns[ 4 ]}
+						data-columns-xs={columns[ 5 ]}
+						options={{
+							transitionDuration: 0,
+						}}
+						disableImagesLoaded={false}
+						enableResizableChildren={true}
+						updateOnEachImageLoad={false}
+					>
+						{theImages.map( ( img, index ) => {
+							return renderGalleryImages( img, index );
+						} )}
+					</Masonry>
+				)}
+				{type && type === 'grid' && (
+					<ul
+						className={galleryClassNames}
+						data-columns-xxl={columns[ 0 ]}
+						data-columns-xl={columns[ 1 ]}
+						data-columns-lg={columns[ 2 ]}
+						data-columns-md={columns[ 3 ]}
+						data-columns-sm={columns[ 4 ]}
+						data-columns-xs={columns[ 5 ]}
+					>
+						{theImages.map( ( img, index ) => {
+							return renderGalleryImages( img, index );
+						} )}
+					</ul>
+				)}
+				{type && type === 'tiles' && (
+					<ul
+						className={galleryClassNames}
+					>
+						{theImages.map( ( img, index ) => {
+							return renderGalleryImages( img, index );
+						} )}
+					</ul>
+				)}
+				{isSelected && !dynamicSource && (
+					addMediaPlaceholder
+				)}
+			</div>
+	</div>
 	);
 }
 
