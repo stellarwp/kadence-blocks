@@ -33,7 +33,6 @@ import {
 	PopColorControl,
 	BorderColorControls,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	MeasurementControls,
 	KadencePanelBody,
 	WebfontLoader,
@@ -41,13 +40,15 @@ import {
 	RangeControl,
 	IconPicker,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl
 } from '@kadence/components';
 import {
 	getPreviewSize,
 	KadenceColorOutput,
 	getPreviewDevice,
 	showSettings,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -509,10 +510,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					color: ${KadenceColorOutput( titleStyles[ 0 ].color )};
 					border-color: ${KadenceColorOutput( titleStyles[ 0 ].border[ 0 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 1 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 2 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 3 ] )};
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].background )};
-					${'' !== previewTitlePaddingTop ? `padding-top:${previewTitlePaddingTop + previewTitlePaddingType};` : ''}
-					${'' !== previewTitlePaddingRight ? `padding-right:${previewTitlePaddingRight + previewTitlePaddingType};` : ''}
-					${'' !== previewTitlePaddingBottom ? `padding-bottom:${previewTitlePaddingBottom + previewTitlePaddingType};` : ''}
-					${'' !== previewTitlePaddingLeft ? `padding-left:${previewTitlePaddingLeft + previewTitlePaddingType};` : ''}
+					${'' !== previewTitlePaddingTop ? `padding-top:${ getSpacingOptionOutput( previewTitlePaddingTop, previewTitlePaddingType ) };` : ''}
+					${'' !== previewTitlePaddingRight ? `padding-right:${ getSpacingOptionOutput(previewTitlePaddingRight, previewTitlePaddingType ) };` : ''}
+					${'' !== previewTitlePaddingBottom ? `padding-bottom:${ getSpacingOptionOutput( previewTitlePaddingBottom, previewTitlePaddingType ) };` : ''}
+					${'' !== previewTitlePaddingLeft ? `padding-left:${ getSpacingOptionOutput( previewTitlePaddingLeft, previewTitlePaddingType ) };` : ''}
 					border-width:${titleStyles[ 0 ].borderWidth[ 0 ]}px ${titleStyles[ 0 ].borderWidth[ 1 ]}px ${titleStyles[ 0 ].borderWidth[ 2 ]}px ${titleStyles[ 0 ].borderWidth[ 3 ]}px;
 					border-radius:${titleStyles[ 0 ].borderRadius[ 0 ]}px ${titleStyles[ 0 ].borderRadius[ 1 ]}px ${titleStyles[ 0 ].borderRadius[ 2 ]}px ${titleStyles[ 0 ].borderRadius[ 3 ]}px;
 					font-size:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
@@ -534,10 +535,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					height:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
 				}
 				.kt-accordion-${uniqueID} .kt-accordion-panel-inner {
-					${'' !== previewContentPaddingTop ? `padding-top:${previewContentPaddingTop + previewPaddingType};` : ''}
-					${'' !== previewContentPaddingRight ? `padding-right:${previewContentPaddingRight + previewPaddingType};` : ''}
-					${'' !== previewContentPaddingBottom ? `padding-bottom:${previewContentPaddingBottom + previewPaddingType};` : ''}
-					${'' !== previewContentPaddingLeft ? `padding-left:${previewContentPaddingLeft + previewPaddingType};` : ''}
+					${'' !== previewContentPaddingTop ? `padding-top:${ getSpacingOptionOutput(previewContentPaddingTop, previewPaddingType ) };` : ''}
+					${'' !== previewContentPaddingRight ? `padding-right:${ getSpacingOptionOutput(previewContentPaddingRight, previewPaddingType ) };` : ''}
+					${'' !== previewContentPaddingBottom ? `padding-bottom:${ getSpacingOptionOutput(previewContentPaddingBottom, previewPaddingType) };` : ''}
+					${'' !== previewContentPaddingLeft ? `padding-left:${ getSpacingOptionOutput( previewContentPaddingLeft, previewPaddingType ) };` : ''}
 					background-color: ${KadenceColorOutput( contentBgColor )};
 					border-color: ${KadenceColorOutput( contentBorderColor )};
 					border-width:${contentBorder[ 0 ]}px ${contentBorder[ 1 ]}px ${contentBorder[ 2 ]}px ${contentBorder[ 3 ]}px;
@@ -966,11 +967,8 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									panelName={'kb-accordion-pane-title-spacing'}
 									initialOpen={ true }
 								>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Pane Title Padding', 'kadence-blocks' )}
-										control={titlePaddingControl}
-										tabletControl={titlePaddingControl}
-										mobileControl={titlePaddingControl}
 										value={titleStyles[ 0 ].padding}
 										tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
 										mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
@@ -983,18 +981,13 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										onChangeMobile={( value ) => {
 											saveTitleStyles( { paddingMobile: value } );
 										}}
-										onChangeControl={( value ) => setTitlePaddingControl( value )}
-										onChangeTabletControl={( value ) => setTitlePaddingControl( value )}
-										onChangeMobileControl={( value ) => setTitlePaddingControl( value )}
-										allowEmpty={true}
 										min={titlePaddingMin}
 										max={titlePaddingMax}
 										step={titlePaddingStep}
-										unit={undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px'}
+										unit={ contentPaddingType }
 										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => {
-											saveTitleStyles( { paddingType: value } );
-										}}
+										onUnit={( value ) => saveTitleStyles( { paddingType: value } ) }
+
 									/>
 									<RangeControl
 										label={__( 'Pane Space Between', 'kadence-blocks' )}
@@ -1013,14 +1006,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									initialOpen={false}
 									panelName={'kb-accordion-inner-padding-settings'}
 								>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Inner Content Padding', 'kadence-blocks' )}
-										control={contentPaddingControl}
-										tabletControl={contentPaddingControl}
-										mobileControl={contentPaddingControl}
-										value={contentPadding}
-										tabletValue={contentTabletPadding}
-										mobileValue={contentMobilePadding}
+										value={ contentPadding }
+										tabletValue={contentPaddingControl}
+										mobileValue={contentPaddingControl}
 										onChange={( value ) => {
 											setAttributes( { contentPadding: value } );
 										}}
@@ -1030,15 +1020,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										onChangeMobile={( value ) => {
 											setAttributes( { contentMobilePadding: value } );
 										}}
-										onChangeControl={( value ) => setContentPaddingControl( value )}
-										onChangeTabletControl={( value ) => setContentPaddingControl( value )}
-										onChangeMobileControl={( value ) => setContentPaddingControl( value )}
-										allowEmpty={true}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={contentPaddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
+										min={ paddingMin }
+										max={ paddingMax }
+										step={ paddingStep }
+										unit={ contentPaddingType }
+										units={ [ 'px', 'em', 'rem', '%' ] }
 										onUnit={( value ) => setAttributes( { contentPaddingType: value } )}
 									/>
 								</KadencePanelBody>

@@ -42,7 +42,11 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import { KadenceColorOutput } from '@kadence/helpers';
+import {
+	KadenceColorOutput,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
+} from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
 /**
@@ -63,7 +67,9 @@ import {
 	DropShadowControl,
 	ImageSizeControl as KadenceImageSizeControl,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
 import {
 	bottomLeftIcon,
@@ -87,7 +93,7 @@ export default function Image( {
 	containerRef,
 	context,
 	clientId,
-	previewDevice,
+	previewDevice
 } ) {
 	const {
 		url = '',
@@ -155,6 +161,10 @@ export default function Image( {
 		}
 		return desktopSize;
 	};
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
@@ -963,7 +973,7 @@ export default function Image( {
 							title={ __( 'Spacing Settings', 'kadence-blocks' ) }
 							panelName={ 'kb-image-spacing' }
 						>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={ __( 'Padding', 'kadence-blocks' ) }
 								value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
 								control={ paddingControl }
@@ -979,8 +989,10 @@ export default function Image( {
 								unit={ paddingUnit }
 								units={ [ 'px', 'em', 'rem', '%' ] }
 								onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
 							/>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={ __( 'Margin', 'kadence-blocks' ) }
 								value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
 								control={ marginControl }
@@ -998,6 +1010,8 @@ export default function Image( {
 								unit={ marginUnit }
 								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
 
@@ -1229,15 +1243,15 @@ export default function Image( {
 					maskSize: ( hasMask ? theMaskSize : undefined ),
 					maskPosition: ( hasMask ? theMaskPosition : undefined ),
 
-					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+					paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 
 					borderColor: ( '' !== borderColor ? KadenceColorOutput( borderColor ) : undefined ),
 					borderStyle: 'solid',
@@ -1264,6 +1278,22 @@ export default function Image( {
 				} }
 			/>
 			{ temporaryURL && <Spinner /> }
+			<SpacingVisualizer
+				type="inside"
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+			/>
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+			/>
 		</>
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);

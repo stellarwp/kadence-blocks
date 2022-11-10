@@ -26,6 +26,7 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
+import { mouseOverVisualizer, getSpacingOptionOutput } from '@kadence/helpers';
 
 /* global wp */
 

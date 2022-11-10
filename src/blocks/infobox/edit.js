@@ -25,7 +25,6 @@ import { debounce, map, get } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	RangeControl,
 	KadencePanelBody,
 	KadenceIconPicker,
@@ -40,7 +39,9 @@ import {
 	InspectorControlTabs,
 	ResponsiveAlignControls,
 	ResponsiveControl,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -48,6 +49,8 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -172,6 +175,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -1711,9 +1716,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											}
 										}
 									</TabPanel>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Container Padding', 'kadence-blocks' )}
-										control={containerPaddingControl}
 										tabletControl={containerPaddingControl}
 										mobileControl={containerPaddingControl}
 										value={containerPadding}
@@ -1728,16 +1732,14 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										onChangeMobile={( value ) => {
 											setAttributes( { containerMobilePadding: value } );
 										}}
-										onChangeControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeTabletControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeMobileControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										allowEmpty={true}
 										min={paddingMin}
 										max={paddingMax}
 										step={paddingStep}
 										unit={containerPaddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
 										onUnit={( value ) => setAttributes( { containerPaddingType: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
 									<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
 										{map( marginTypes, ( { name, key } ) => (
@@ -2878,10 +2880,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					 background   : ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
 					 borderRadius : containerBorderRadius + 'px',
 					 borderWidth  : ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					 paddingTop   : ( '' !== previewContainerPaddingTop ? previewContainerPaddingTop + previewPaddingType : undefined ),
-					 paddingRight : ( '' !== previewContainerPaddingRight ? previewContainerPaddingRight + previewPaddingType : undefined ),
-					 paddingBottom: ( '' !== previewContainerPaddingBottom ? previewContainerPaddingBottom + previewPaddingType : undefined ),
-					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? previewContainerPaddingLeft + previewPaddingType : undefined ),
+					 paddingTop   : ( '' !== previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ) : undefined ),
+					 paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
+					 paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
+					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
 					 maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
 					 marginTop    : ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
 					 marginRight  : ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
@@ -3087,6 +3089,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						</div>
 					)}
 				</div>
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) ] }
+				/>
 			</div>
 		</div>
 	);

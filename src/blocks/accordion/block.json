@@ -96,7 +96,7 @@
 		"variant": "",
 		"subset": "",
 		"loadGoogle": true,
-		"padding": [ 10, 14, 10, 14 ],
+		"padding": [ "10", "14", "10", "14" ],
 		"marginTop": 8,
 		"color": "#555555",
 		"background": "#f2f2f2",

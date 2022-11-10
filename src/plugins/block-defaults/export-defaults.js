@@ -27,9 +27,6 @@ function ExportDefaults() {
     const downloadName = 'kadence_blocks_defaults' + '.json';
     const downloadData = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
 
-    console.log('kadence_blocks_params');
-    console.log(kadence_blocks_params);
-
     return (
         <Fragment>
 

@@ -12,13 +12,13 @@
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	RangeControl,
 	KadencePanelBody,
 	ResponsiveAlignControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl
 } from '@kadence/components';
 
 /**
@@ -43,10 +43,12 @@ import {
 function Inspector( {
 						attributes,
 						setAttributes,
+						numberPaddingMouseOver,
+						numberMarginMouseOver,
+						titlePaddingMouseOver,
+						titleMarginMouseOver
 					} ) {
 
-	const [ titlePaddingControl, setTitlePaddingControl ] = useState( 'individual' );
-	const [ titleMarginControl, setTitleMarginControl ] = useState( 'individual' );
 	const [ numberPaddingControl, setNumberPaddingControl ] = useState( 'individual' );
 	const [ numberMarginControl, setNumberMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -345,39 +347,39 @@ function Inspector( {
 									fontSubset={titleFont[ 0 ].subset}
 									onFontSubset={( value ) => saveTitleFont( { subset: value } )}
 								/>
-								<ResponsiveMeasurementControls
+								<ResponsiveMeasureRangeControl
 									label={__( 'Title Padding', 'kadence-blocks' )}
 									value={titlePadding}
-									control={titlePaddingControl}
 									tabletValue={titleTabletPadding}
 									mobileValue={titleMobilePadding}
 									onChange={( value ) => setAttributes( { titlePadding: value } )}
 									onChangeTablet={( value ) => setAttributes( { titleTabletPadding: value } )}
 									onChangeMobile={( value ) => setAttributes( { titleMobilePadding: value } )}
-									onChangeControl={( value ) => setTitlePaddingControl( value )}
 									min={0}
 									max={( titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 200 )}
 									step={( titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0.1 : 1 )}
 									unit={titlePaddingType}
 									units={[ 'px', 'em', 'rem', '%' ]}
 									onUnit={( value ) => setAttributes( { titlePaddingType: value } )}
+									onMouseOver={ titlePaddingMouseOver.onMouseOver }
+									onMouseOut={ titlePaddingMouseOver.onMouseOut }
 								/>
-								<ResponsiveMeasurementControls
+								<ResponsiveMeasureRangeControl
 									label={__( 'Title Margin', 'kadence-blocks' )}
 									value={titleMargin}
-									control={titleMarginControl}
 									tabletValue={titleTabletMargin}
 									mobileValue={titleMobileMargin}
 									onChange={( value ) => setAttributes( { titleMargin: value } )}
 									onChangeTablet={( value ) => setAttributes( { titleTabletMargin: value } )}
 									onChangeMobile={( value ) => setAttributes( { titleMobileMargin: value } )}
-									onChangeControl={( value ) => setTitleMarginControl( value )}
 									min={( titleMarginType === 'em' || titleMarginType === 'rem' ? -12 : -200 )}
 									max={( titleMarginType === 'em' || titleMarginType === 'rem' ? 12 : 200 )}
 									step={( titleMarginType === 'em' || titleMarginType === 'rem' ? 0.1 : 1 )}
 									unit={titleMarginType}
 									units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 									onUnit={( value ) => setAttributes( { titleMarginType: value } )}
+									onMouseOver={ titleMarginMouseOver.onMouseOver }
+									onMouseOut={ titleMarginMouseOver.onMouseOut }
 								/>
 							</>
 						}
@@ -498,39 +500,39 @@ function Inspector( {
 							fontSubset={numberFont[ 0 ].subset}
 							onFontSubset={( value ) => saveNumberFont( { subset: value } )}
 						/>
-						<ResponsiveMeasurementControls
+						<ResponsiveMeasureRangeControl
 							label={__( 'Number Padding', 'kadence-blocks' )}
 							value={numberPadding}
-							control={numberPaddingControl}
 							tabletValue={numberTabletPadding}
 							mobileValue={numberMobilePadding}
 							onChange={( value ) => setAttributes( { numberPadding: value } )}
 							onChangeTablet={( value ) => setAttributes( { numberTabletPadding: value } )}
 							onChangeMobile={( value ) => setAttributes( { numberMobilePadding: value } )}
-							onChangeControl={( value ) => setNumberPaddingControl( value )}
 							min={0}
 							max={( numberPaddingType === 'em' || numberPaddingType === 'rem' ? 12 : 200 )}
 							step={( numberPaddingType === 'em' || numberPaddingType === 'rem' ? 0.1 : 1 )}
 							unit={numberPaddingType}
 							units={[ 'px', 'em', 'rem', '%' ]}
 							onUnit={( value ) => setAttributes( { numberPaddingType: value } )}
+							onMouseOver={ numberPaddingMouseOver.onMouseOver }
+							onMouseOut={ numberPaddingMouseOver.onMouseOut }
 						/>
-						<ResponsiveMeasurementControls
+						<ResponsiveMeasureRangeControl
 							label={__( 'Number Margin', 'kadence-blocks' )}
 							value={numberMargin}
-							control={numberMarginControl}
 							tabletValue={numberTabletMargin}
 							mobileValue={numberMobileMargin}
 							onChange={( value ) => setAttributes( { numberMargin: value } )}
 							onChangeTablet={( value ) => setAttributes( { numberTabletMargin: value } )}
 							onChangeMobile={( value ) => setAttributes( { numberMobileMargin: value } )}
-							onChangeControl={( value ) => setNumberMarginControl( value )}
 							min={( numberMarginType === 'em' || numberMarginType === 'rem' ? -12 : -200 )}
 							max={( numberMarginType === 'em' || numberMarginType === 'rem' ? 12 : 200 )}
 							step={( numberMarginType === 'em' || numberMarginType === 'rem' ? 0.1 : 1 )}
 							unit={numberMarginType}
 							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 							onUnit={( value ) => setAttributes( { numberMarginType: value } )}
+							onMouseOver={ numberMarginMouseOver.onMouseOver }
+							onMouseOut={ numberMarginMouseOver.onMouseOut }
 						/>
 					</KadencePanelBody>
 				</>

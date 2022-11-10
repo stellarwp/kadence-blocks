@@ -12,7 +12,6 @@ import { times, filter, map } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	ResponsiveRangeControls,
 	URLInputControl,
@@ -20,11 +19,18 @@ import {
 	BoxShadowControl,
 	MeasurementControls,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import {
+	getPreviewSize,
+	KadenceColorOutput,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
+} from '@kadence/helpers';
 
 /**
  * Import Css
@@ -290,6 +296,8 @@ function KadenceForm( props ) {
 	const [ isSaving, setIsSaving ] = useState( false );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const marginMouseOver = mouseOverVisualizer();
 
 	const fudnctionNfame = ( prevProps ) => {
 		// Deselect field when deselecting the block
@@ -3518,34 +3526,31 @@ function KadenceForm( props ) {
 							initialOpen={false}
 							panelName={'kb-form-container-settings'}
 						>
-							<ResponsiveMeasurementControls
-								label={__( 'Container Margin', 'kadence-blocks' )}
-								control={deskMarginControl}
-								tabletControl={tabletMarginControl}
-								mobileControl={mobileMarginControl}
-								value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
-								tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
-								mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
-								onChange={( value ) => {
-									setAttributes( { containerMargin: value } );
-								}}
-								onChangeTablet={( value ) => {
-									setAttributes( { tabletContainerMargin: value } );
-								}}
-								onChangeMobile={( value ) => {
-									setAttributes( { mobileContainerMargin: value } );
-								}}
-								onChangeControl={( value ) => setDeskMarginControl( value )}
-								onChangeTabletControl={( value ) => setTabletMarginControl( value )}
-								onChangeMobileControl={( value ) => setMobileMarginControl( value )}
-								allowEmpty={true}
-								min={containerMarginMin}
-								max={containerMarginMax}
-								step={containerMarginStep}
-								unit={containerMarginType}
-								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setAttributes( { containerMarginType: value } )}
-							/>
+						<ResponsiveMeasureRangeControl
+							label={__( 'Container Margin', 'kadence-blocks' )}
+							tabletControl={tabletMarginControl}
+							mobileControl={mobileMarginControl}
+							value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
+							tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
+							mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
+							onChange={( value ) => {
+								setAttributes( { containerMargin: value } );
+							}}
+							onChangeTablet={( value ) => {
+								setAttributes( { tabletContainerMargin: value } );
+							}}
+							onChangeMobile={( value ) => {
+								setAttributes( { mobileContainerMargin: value } );
+							}}
+							min={containerMarginMin}
+							max={containerMarginMax}
+							step={containerMarginStep}
+							unit={containerMarginType}
+							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+							onUnit={( value ) => setAttributes( { containerMarginType: value } )}
+							onMouseOver={ marginMouseOver.onMouseOver }
+							onMouseOut={ marginMouseOver.onMouseOut }
+						/>
 						</KadencePanelBody>
 						{actions.includes( 'mailerlite' ) && (
 							<MailerLiteControls
@@ -3575,11 +3580,22 @@ function KadenceForm( props ) {
 			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{
-				marginLeft  : ( undefined !== previewContainerMarginLeft ? previewContainerMarginLeft + previewContainerMarginType : undefined ),
-				marginRight : ( undefined !== previewContainerMarginRight ? previewContainerMarginRight + previewContainerMarginType : undefined ),
-				marginTop   : ( undefined !== previewContainerMarginTop ? previewContainerMarginTop + previewContainerMarginType : undefined ),
-				marginBottom: ( undefined !== previewContainerMarginBottom ? previewContainerMarginBottom + previewContainerMarginType : undefined ),
+				marginLeft  : ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),
+				marginRight : ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ) : undefined ),
+				marginTop   : ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ) : undefined ),
+				marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ) : undefined ),
 			}}>
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),
+						marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ) : undefined ),
+						marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ) : undefined ),
+						marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ) : undefined ),
+					} }
+					type="inside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) ] }
+				/>
 				<div id={`kb-form-${uniqueID}`} className={'kb-form'} style={{
 					marginRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 					marginLeft : ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),

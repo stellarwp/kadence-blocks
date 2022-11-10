@@ -17,13 +17,18 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import { ToggleControl, RangeControl } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
-	ResponsiveMeasurementControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
 	KadencePanelBody,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
-import { setBlockDefaults } from '@kadence/helpers';
+import {
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
+} from '@kadence/helpers';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
@@ -106,6 +111,9 @@ export function Edit ({
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -240,27 +248,26 @@ export function Edit ({
 							panelName={ 'spacingSettings'}
 							blockSlug={ 'kadence/show-more' }
 						>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={[ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ]}
-								control={paddingControl}
 								tabletValue={paddingTablet}
 								mobileValue={paddingMobile}
 								onChange={( value ) => setAttributes( { paddingDesktop: value } )}
 								onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
-								onChangeControl={( value ) => setPaddingControl( value )}
 								min={0}
 								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
 								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 								unit={paddingUnit}
 								units={[ 'px', 'em', 'rem', '%' ]}
 								onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
 							/>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={__( 'Margin', 'kadence-blocks' )}
 								value={[ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ]}
-								control={marginControl}
 								tabletValue={marginTablet}
 								mobileValue={marginMobile}
 								onChange={( value ) => {
@@ -268,13 +275,14 @@ export function Edit ({
 								}}
 								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-								onChangeControl={( value ) => setMarginControl( value )}
 								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
 								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
 								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 								unit={marginUnit}
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 								onUnit={( value ) => setAttributes( { marginUnit: value } )}
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -307,15 +315,15 @@ export function Edit ({
 			<FadeOut/>
 			<div {...blockProps}
 				style={ {
-				marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-				marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-				marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-				marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+				marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-				paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-				paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-				paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-				paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+				paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+				paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+				paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 			} }>
 				{ createElement( InnerBlocks, {
 					templateLock: "all",
@@ -569,6 +577,22 @@ export function Edit ({
 						}],
 					],
 				}) }
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					} }
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				/>
 			</div>
 		</Fragment>
 	)

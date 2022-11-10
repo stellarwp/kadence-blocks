@@ -11,6 +11,9 @@ import Masonry from 'react-masonry-component';
 import {
 	KadenceColorOutput,
 	showSettings,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	getPreviewSize
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -24,7 +27,9 @@ import {
 	DynamicGalleryControl,
 	MeasurementControls,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
 import Slider from 'react-slick';
 import { applyFilters } from '@wordpress/hooks';
@@ -76,7 +81,7 @@ import {
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -211,10 +216,27 @@ function GalleryEdit( props ) {
 		}
 	}, [] );
 
+	const { previewDevice } = useSelect(
+		( select ) => {
+			return {
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[0] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[0] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[0] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[1] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[1] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[1] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[2] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[2] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[2] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[3] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[3] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[3] : '' ) );
+
 	const blockProps = useBlockProps( {
 		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
 		style: {
-			margin: ( undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 1 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 2 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 3 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' : undefined ),
+			marginTop: getSpacingOptionOutput( previewMarginTop, marginUnit ),
+			marginRight: getSpacingOptionOutput( previewMarginRight, marginUnit ),
+			marginBottom: getSpacingOptionOutput( previewMarginBottom, marginUnit ),
+			marginLeft: getSpacingOptionOutput( previewMarginLeft, marginUnit )
 		},
 	} );
 
@@ -490,16 +512,13 @@ function GalleryEdit( props ) {
 			margin: newUpdate,
 		} );
 	};
+
+	const marginMouseOver = mouseOverVisualizer();
+
 	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
 	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
 	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
-	const marginTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: 'em', name: 'em' },
-		{ key: '%', name: '%' },
-		{ key: 'vh', name: 'vh' },
-		{ key: 'rem', name: 'rem' },
-	];
+
 	const columnControlTypes = [
 		{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
 		{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
@@ -1562,89 +1581,78 @@ function GalleryEdit( props ) {
 									initialOpen={false}
 									panelName={'kb-gallery-spacing'}
 								>
-									<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
-										{map( marginTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={marginUnit === key}
-												aria-pressed={marginUnit === key}
-												onClick={() => setAttributes( { marginUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-									<h2 className="kt-heading-size-title">{__( 'Margin', 'kadence-blocks' )}</h2>
-									<TabPanel className="kt-size-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'desk',
-													  title    : <Dashicon icon="desktop"/>,
-													  className: 'kt-desk-tab',
-												  },
-												  {
-													  name     : 'tablet',
-													  title    : <Dashicon icon="tablet"/>,
-													  className: 'kt-tablet-tab',
-												  },
-												  {
-													  name     : 'mobile',
-													  title    : <Dashicon icon="smartphone"/>,
-													  className: 'kt-mobile-tab',
-												  },
-											  ]}>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<MeasurementControls
-																label={__( 'Mobile Margin', 'kadence-blocks' )}
-																measurement={margin[ 0 ].mobile}
-																control={marginMobileControl}
-																onChange={( value ) => saveMargin( { mobile: value } )}
-																onControl={( value ) => setMarginMobileControl( value )}
-																min={marginMin}
-																max={marginMax}
-																step={marginStep}
-															/>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<MeasurementControls
-																label={__( 'Tablet Margin', 'kadence-blocks' )}
-																measurement={margin[ 0 ].tablet}
-																control={marginTabletControl}
-																onChange={( value ) => saveMargin( { tablet: value } )}
-																onControl={( value ) => setMarginTabletControl( value )}
-																min={marginMin}
-																max={marginMax}
-																step={marginStep}
-															/>
-														);
-													} else {
-														tabout = (
-															<MeasurementControls
-																label={__( 'Margin', 'kadence-blocks' )}
-																measurement={margin[ 0 ].desk}
-																control={marginDeskControl}
-																onChange={( value ) => saveMargin( { desk: value } )}
-																onControl={( value ) => setMarginDeskControl( value )}
-																min={marginMin}
-																max={marginMax}
-																step={marginStep}
-															/>
-														);
-													}
-												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
-											}
-										}
-									</TabPanel>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Margin', 'kadence-blocks' )}
+										value={margin[ 0 ].desk}
+										tabletValue={margin[ 0 ].tablet}
+										mobileValue={margin[ 0 ].mobile}
+										onChange={( value ) => {
+											saveMargin( { desk: value } )
+										}}
+										onChangeTablet={( value ) => {
+											saveMargin( { tablet: value } )
+										}}
+										onChangeMobile={( value ) => {
+											saveMargin( { mobile: value } )
+										}}
+										min={ marginMin }
+										max={ marginMax }
+										step={ marginStep }
+										unit={ marginUnit }
+										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+										onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
+									/>
+
+									{/*		( tab ) => {*/}
+									{/*			let tabout;*/}
+									{/*			if ( tab.name ) {*/}
+									{/*				if ( 'mobile' === tab.name ) {*/}
+									{/*					tabout = (*/}
+									{/*						<MeasurementControls*/}
+									{/*							label={__( 'Mobile Margin', 'kadence-blocks' )}*/}
+									{/*							measurement={margin[ 0 ].mobile}*/}
+									{/*							control={marginMobileControl}*/}
+									{/*							onChange={( value ) => saveMargin( { mobile: value } )}*/}
+									{/*							onControl={( value ) => setMarginMobileControl( value )}*/}
+									{/*							min={marginMin}*/}
+									{/*							max={marginMax}*/}
+									{/*							step={marginStep}*/}
+									{/*						/>*/}
+									{/*					);*/}
+									{/*				} else if ( 'tablet' === tab.name ) {*/}
+									{/*					tabout = (*/}
+									{/*						<MeasurementControls*/}
+									{/*							label={__( 'Tablet Margin', 'kadence-blocks' )}*/}
+									{/*							measurement={margin[ 0 ].tablet}*/}
+									{/*							control={marginTabletControl}*/}
+									{/*							onChange={( value ) => saveMargin( { tablet: value } )}*/}
+									{/*							onControl={( value ) => setMarginTabletControl( value )}*/}
+									{/*							min={marginMin}*/}
+									{/*							max={marginMax}*/}
+									{/*							step={marginStep}*/}
+									{/*						/>*/}
+									{/*					);*/}
+									{/*				} else {*/}
+									{/*					tabout = (*/}
+									{/*						<MeasurementControls*/}
+									{/*							label={__( 'Margin', 'kadence-blocks' )}*/}
+									{/*							measurement={margin[ 0 ].desk}*/}
+									{/*							control={marginDeskControl}*/}
+									{/*							onChange={( value ) => saveMargin( { desk: value } )}*/}
+									{/*							onControl={( value ) => setMarginDeskControl( value )}*/}
+									{/*							min={marginMin}*/}
+									{/*							max={marginMax}*/}
+									{/*							step={marginStep}*/}
+									{/*						/>*/}
+									{/*					);*/}
+									{/*				}*/}
+									{/*			}*/}
+									{/*			return <div className={tab.className} key={tab.className}>{tabout}</div>;*/}
+									{/*		}*/}
+									{/*	}*/}
+									{/*</TabPanel>*/}
 								</KadencePanelBody>
 							)}
 						</>
@@ -1832,6 +1840,7 @@ function GalleryEdit( props ) {
 	};
 
 	return (
+		<>
 		<div {...blockProps} >
 			{buildCSS}
 			{controls}
@@ -1981,6 +1990,12 @@ function GalleryEdit( props ) {
 				addMediaPlaceholder
 			)}
 		</div>
+		<SpacingVisualizer
+			type="outside"
+			forceShow={ marginMouseOver.isMouseOver }
+			spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+		/>
+	</>
 	);
 }
 
