@@ -312,6 +312,19 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
+			if ( ! empty( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && ( ( ! empty( $attributes['tabletBackground'][0]['enable'] ) && true == $attributes['tabletBackground'][0]['enable'] ) || ( ! empty( $attributes['mobileBackground'][0]['enable'] ) && true == $attributes['mobileBackground'][0]['enable'] ) ) && apply_filters( 'kadence_blocks_rowlayout_prevent_preload_for_mobile', true ) ) {
+				if ( ! empty( $attributes['tabletBackground'][0]['enable'] ) && 'true' == $attributes['tabletBackground'][0]['enable'] ) {
+					$size = 1024;
+				} else {
+					$size = 767;
+				}
+				if ( ! empty( $attributes['bgImg'] ) ) {
+					$content = str_replace( 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" poster="' . $attributes['bgImg'] . '" playsinline autoplay', 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . $attributes['uniqueID'] . '" class="kb-blocks-bg-video" poster=" ' . $attributes['bgImg'] . '" playsinline preload="none"', $content );
+				} else {
+					$content = str_replace( 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" playsinline autoplay', 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . $attributes['uniqueID'] . '" class="kb-blocks-bg-video" playsinline preload="none"', $content );
+				}
+ 				$content = $content . '<script>if( window.innerWidth > ' . $size . ' ){document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").removeAttribute("preload");document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").setAttribute("autoplay","");}</script>';
+ 			}
 		}
 
 		return $content;
@@ -1208,7 +1221,7 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'width', $attr['topSepWidth'] . '%' );
 				}
 				if ( ! empty( $attr['topSepColor'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg'  );
 					$css->add_property( 'fill', $css->render_color( $attr['topSepColor'] ) . '!important' );
 				}
 			}

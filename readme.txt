@@ -106,6 +106,11 @@ Release Date: April 20th, 2022
 * Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
 
+= 2.4.21 =
+Release Date: November 11th, 2022
+* Fix: Issue with bottom separator color in row layout.
+* Fix: Issue with possible js error in video background.
+
 = 2.4.20 =
 Release Date: November 9th, 2022
 * Fix: Issue with Reusable Blocks and endlessly looping in editor.
