@@ -71,7 +71,7 @@ class SinglePopColorControl extends Component {
 		const convertedOpacityValue = ( 100 === this.props.opacityUnit ? convertOpacity( this.state.currentOpacity ) : this.state.currentOpacity );
 		const colorVal = ( this.state.currentColor ? this.state.currentColor : this.props.value );
 		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
-		if ( currentColorString && currentColorString.startsWith( 'var(' ) ) {
+		if ( ! this.state.isPalette && currentColorString && currentColorString.startsWith( 'var(' ) ) {
 			currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( this.props.value.replace( 'var(', '' ).split(',')[0].replace( ')', '' ) );
 		}
 		if ( '' === currentColorString ) {
@@ -85,7 +85,39 @@ class SinglePopColorControl extends Component {
 				currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
 			}
 		}
-		return (
+		 let previewColorString = currentColorString;
+		 if (this.state.isPalette && colorVal) {
+			 switch (colorVal) {
+				 case 'palette1':
+					 previewColorString = 'var(--global-palette1,#2B6CB0)';
+					 break;
+				 case 'palette2':
+					 previewColorString = 'var(--global-palette2,#215387)';
+					 break;
+				 case 'palette3':
+					 previewColorString = 'var(--global-palette3,#1A202C)';
+					 break;
+				 case 'palette4':
+					 previewColorString = 'var(--global-palette4,#2D3748)';
+					 break;
+				 case 'palette5':
+					 previewColorString = 'var(--global-palette5,#4A5568)';
+					 break;
+				 case 'palette6':
+					 previewColorString = 'var(--global-palette6,#718096)';
+					 break;
+				 case 'palette7':
+					 previewColorString = 'var(--global-palette7,#EDF2F7)';
+					 break;
+				 case 'palette8':
+					 previewColorString = 'var(--global-palette8,#F7FAFC)';
+					 break;
+				 case 'palette9':
+					 previewColorString = 'var(--global-palette9,#ffffff)';
+					 break;
+			 }
+		 }
+		 return (
 			<div className="single-pop-color">
 				{ this.state.isVisible && (
 					<Popover position="top left" className="kadence-pop-color-popover" onClose={ toggleClose }>
@@ -164,8 +196,8 @@ class SinglePopColorControl extends Component {
 						showTooltip={ true }
 						label={ this.props.label }
 						>
-						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ currentColorString } />
-						{ '' === currentColorString && this.state.inherit && (
+						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ previewColorString } />
+						{ '' === previewColorString && this.state.inherit && (
 							<span className="color-indicator-icon">{ ColorIcons.inherit }</span>
 						) }
 						{ ( this.props.value && this.props.value.startsWith( 'palette' )  ) && (
@@ -180,8 +212,8 @@ class SinglePopColorControl extends Component {
 						showTooltip={ true }
 						label={ this.props.label }
 						>
-						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ currentColorString } />
-						{ '' === currentColorString && this.state.inherit && (
+						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ previewColorString } />
+						{ '' === previewColorString && this.state.inherit && (
 							<span className="color-indicator-icon">{ ColorIcons.inherit }</span>
 						) }
 						{ ( this.props.value && this.props.value.startsWith( 'palette' )  ) && (

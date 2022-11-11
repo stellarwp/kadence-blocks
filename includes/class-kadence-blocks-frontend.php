@@ -1047,12 +1047,18 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['bgColor'] ) || isset( $attr['bgImg'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderWidth'] ) || isset( $attr['borderRadius'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id );
-			if ( isset( $attr['topMargin'] ) ) {
+			if ( isset( $attr['topMargin'] ) && $css->is_variable_value( $attr['topMargin'] ) ) {
+				$css->add_property( 'margin-top', $css->get_variable_value( $attr['topMargin'] ) );
+			} else if( isset( $attr['topMargin'] ) ){
 				$css->add_property( 'margin-top', $attr['topMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
 			}
-			if ( isset( $attr['bottomMargin'] ) ) {
+
+			if ( isset( $attr['bottomMargin'] ) && $css->is_variable_value( $attr['bottomMargin'] ) ) {
+				$css->add_property( 'margin-bottom', $css->get_variable_value( $attr['bottomMargin'] ) );
+			} else if ( isset( $attr['bottomMargin'] ) ) {
 				$css->add_property( 'margin-bottom', $attr['bottomMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
 			}
+
 			if ( isset( $attr['border'] ) ) {
 				$css->add_property( 'border-color', $css->render_color( $attr['border'] ) );
 			}
@@ -1363,7 +1369,12 @@ class Kadence_Blocks_Frontend {
 					} else {
 						$bg_attach = 'scroll';
 					}
-					$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' ) );
+
+					$is_important = ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' );
+					if ( isset( $attr['backgroundInline'] ) && true === $attr['backgroundInline'] ) {
+						$is_important = '!important';
+					}
+					$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . $is_important );
 					$css->add_property( 'background-size', ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) );
 					$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', $bg_attach );
@@ -1519,7 +1530,11 @@ class Kadence_Blocks_Frontend {
 					} else {
 						$bg_attach = 'scroll';
 					}
-					$css->add_property( 'background-image', sprintf( "url('%s')", $mobile_background['bgImg'] ) . ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' ) );
+					$is_important = ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' );
+					if ( isset( $attr['backgroundInline'] ) && true === $attr['backgroundInline'] ) {
+						$is_important = '!important';
+					}
+					$css->add_property( 'background-image', sprintf( "url('%s')", $mobile_background['bgImg'] ) . $is_important );
 					$css->add_property( 'background-size', ( ! empty( $mobile_background['bgImgSize'] ) ? $mobile_background['bgImgSize'] : 'cover' ) );
 					$css->add_property( 'background-position', ( ! empty( $mobile_background['bgImgPosition'] ) ? $mobile_background['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', $bg_attach );
@@ -1662,6 +1677,16 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( '--kb-section-setting-offset', $attr['stickyOffset'][2] . ( isset( $attr['stickyOffsetUnit'] ) ? $attr['stickyOffsetUnit'] : 'px' ) );
 			$css->stop_media_query();
 		}
+
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		$css->render_measure_output( $attr, 'padding', 'padding', array(
+			'unit_key' => 'paddingType'
+		) );
+
+		$css->render_measure_output( $attr, 'margin', 'margin', array(
+			'unit_key' => 'marginType'
+		) );
+
 		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || ! empty( $attr['height'][0] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( ! empty( $attr['height'][0] ) ) {
