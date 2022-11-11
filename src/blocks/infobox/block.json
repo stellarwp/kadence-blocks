@@ -491,6 +491,24 @@
 		""
 	  ]
 	},
+	"tabletContainerMargin": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"mobileContainerMargin": {
+	  "type": "array",
+	  "default": [
+	    "",
+	    "",
+	    "",
+	    ""
+	  ]
+	},
 	"containerMarginUnit": {
 	  "type": "string",
 	  "default": "px"

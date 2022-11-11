@@ -29,7 +29,9 @@ import memoize from 'memize';
 import { times, filter, map } from 'lodash';
 import {
 	KadenceColorOutput,
-	showSettings
+	showSettings,
+	getSpacingOptionOutput,
+	getPreviewSize
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -39,7 +41,8 @@ import {
 	IconRender,
 	KadencePanelBody,
 	MeasurementControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
 
 /**
@@ -113,9 +116,9 @@ const kttabsUniqueIDs = [];
 /**
  * Build the row edit
  */
-function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab } ) {
+function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
 
-	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
+	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, tabletInnerPadding, mobileInnerPadding, innerPaddingType, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
 
 
 	const [ showPreset, setShowPreset ] = useState( false );
@@ -148,6 +151,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			kttabsUniqueIDs.push( uniqueID );
 		}
 	}, [] );
+
+	const previewInnerPaddingTop = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[0] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 0 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 0 ] : '' ) );
+	const previewInnerPaddingRight = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[1] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 1 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 1 ] : '' ) );
+	const previewInnerPaddingBottom = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[2] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 2 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 2 ] : '' ) );
+	const previewInnerPaddingLeft = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[3] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 3 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 3 ] : '' ) );
 
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
@@ -1063,15 +1071,20 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									default={ '' }
 									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
-								<MeasurementControls
-									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
-									measurement={ innerPadding }
-									control={ innerPaddingControl }
-									onChange={ ( value ) => setAttributes( { innerPadding: value } ) }
-									onControl={ ( value ) => setAttributes( { innerPaddingControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
+								<ResponsiveMeasureRangeControl
+									label={__( 'Container Padding', 'kadence-blocks' )}
+									value={ innerPadding }
+									onChange={( value ) => setAttributes( { innerPadding: value } )}
+									tabletValue={ tabletInnerPadding }
+									onChangeTablet={( value ) => setAttributes( { tabletInnerPadding: value } )}
+									mobileValue={mobileInnerPadding}
+									onChangeMobile={( value ) => setAttributes( { mobileInnerPadding: value } )}
+									min={( innerPaddingType === 'em' || innerPaddingType === 'rem' ? -2 : -200 )}
+									max={( innerPaddingType === 'em' || innerPaddingType === 'rem' ? 12 : 200 )}
+									step={( innerPaddingType === 'em' || innerPaddingType === 'rem' ? 0.1 : 1 )}
+									unit={innerPaddingType}
+									units={[ 'px', 'em', 'rem' ]}
+									onUnit={( value ) => setAttributes( { innerPaddingType: value } )}
 								/>
 								<PopColorControl
 									label={ __( 'Border Color', 'kadence-blocks' ) }
@@ -1618,7 +1631,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								</WebfontLoader>
 							) }
 							<div className="kt-tabs-content-wrap" style={ {
-								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
+								paddingTop: getSpacingOptionOutput( previewInnerPaddingTop, innerPaddingType ),
+								paddingBottom: getSpacingOptionOutput( previewInnerPaddingBottom, innerPaddingType ),
+								paddingLeft: getSpacingOptionOutput( previewInnerPaddingLeft, innerPaddingType ),
+								paddingRight: getSpacingOptionOutput( previewInnerPaddingRight, innerPaddingType ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
 								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
 								minHeight: minHeight + 'px',
@@ -1648,6 +1664,7 @@ export default compose( [
 			tabsBlock: block,
 			realTabsCount: block.innerBlocks.length,
 			tabsInner: getBlockOrder( clientId ),
+			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

@@ -157,6 +157,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		hAlignMobile,
 		hAlignTablet,
 		containerMargin,
+		tabletContainerMargin,
+		mobileContainerMargin,
 		containerMarginUnit,
 		linkNoFollow,
 		linkSponsored,
@@ -170,13 +172,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
 	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
-	const [ containerMarginControl, setContainerMarginControl ] = useState( 'linked' );
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -223,11 +225,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else {
 			setContainerPaddingControl( 'individual' );
 		}
-		if ( containerMargin && containerMargin[ 0 ] && containerMargin[ 0 ] === containerMargin[ 1 ] && containerMargin[ 0 ] === containerMargin[ 2 ] && containerMargin[ 0 ] === containerMargin[ 3 ] ) {
-			setContainerMarginControl( 'linked' );
-		} else {
-			setContainerMarginControl( 'individual' );
-		}
 
 		if ( context && context.queryId && context.postId ) {
 			if ( !inQueryBlock ) {
@@ -264,6 +261,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const previewContainerPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
 	const previewContainerPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
 	const previewContainerPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
+
+	const previewContainerMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+	const previewContainerMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+	const previewContainerMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+	const previewContainerMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
 
 	const previewTitleFontSize = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
 	const previewTitleLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
@@ -316,6 +318,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 0,
 				containerPadding        : [ 20, 20, 20, 20 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -370,6 +374,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 30,
 				containerPadding        : [ 20, 20, 20, 20 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -440,6 +446,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 0,
 				containerPadding        : [ 24, 24, 24, 24 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -510,6 +518,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 20,
 				containerPadding        : [ 24, 24, 24, 24 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'left',
 				mediaIcon               : [ {
@@ -1741,30 +1751,28 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										onMouseOver={ paddingMouseOver.onMouseOver }
 										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
-									<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
-										{map( marginTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={containerMarginUnit === key}
-												aria-pressed={containerMarginUnit === key}
-												onClick={() => setAttributes( { containerMarginUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-									<MeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Margin', 'kadence-blocks' )}
-										measurement={containerMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										control={containerMarginControl}
-										onControl={( value ) => this.setState( { containerMarginControl: value } )}
+										value={containerMargin}
+										tabletValue={tabletContainerMargin}
+										mobileValue={mobileContainerMargin}
+										onChange={( value ) => {
+											setAttributes( { containerMargin: value } );
+										}}
+										onChangeTablet={( value ) => {
+											setAttributes( { tabletContainerMargin: value } );
+										}}
+										onChangeMobile={( value ) => {
+											setAttributes( { mobileContainerMargin: value } );
+										}}
 										min={marginMin}
 										max={marginMax}
 										step={marginStep}
-										allowEmpty={true}
+										unit={containerMarginUnit}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
 									/>
 									<ButtonGroup className="kt-size-type-options" aria-label={__( 'Max Width Type', 'kadence-blocks' )}>
 										{map( widthTypes, ( { name, key } ) => (
@@ -2885,10 +2893,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					 paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
 					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
 					 maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
-					 marginTop    : ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
-					 marginRight  : ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
-					 marginBottom : ( containerMargin && '' !== containerMargin[ 2 ] ? containerMargin[ 2 ] + containerMarginUnit : undefined ),
-					 marginLeft   : ( containerMargin && '' !== containerMargin[ 3 ] ? containerMargin[ 3 ] + containerMarginUnit : undefined ),
+					 marginTop    : getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ),
+					 marginRight  : getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ),
+					 marginBottom : getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ),
+					 marginLeft   : getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ),
 				 }}>
 				{'none' !== mediaType && (
 					<div className={'kt-blocks-info-box-media-container'} style={{
@@ -3093,6 +3101,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					type="inside"
 					forceShow={ paddingMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) ] }
+				/>
+				<SpacingVisualizer
+					// style={ {
+					// 	marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
+					// 	marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+					// 	marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+					// 	marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					// } }
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) ] }
 				/>
 			</div>
 		</div>

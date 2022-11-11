@@ -39,13 +39,31 @@
 	  "default": "underline"
 	},
 	"containerPadding": {
-	  "type": "array",
-	  "default": [
-		20,
-		20,
-		20,
-		20
-	  ]
+	 "type": "array",
+	 "default": [
+	  20,
+	  20,
+	  20,
+	  20
+	 ]
+	},
+	"tabletContainerPadding": {
+	 "type": "array",
+	 "default": [
+	  "",
+	  "",
+	  "",
+	  ""
+	 ]
+	},
+	"mobileContainerPadding": {
+	 "type": "array",
+	 "default": [
+	  "",
+	  "",
+	  "",
+	  ""
+	 ]
 	},
 	"containerPaddingUnit": {
 	  "type": "string",
