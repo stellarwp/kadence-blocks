@@ -1387,7 +1387,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{'icon' === mediaType && 'drawborder' === mediaIcon[ 0 ].hoverAnimation && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ KadenceColorOutput( mediaStyle[ 0 ].border ) }; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }

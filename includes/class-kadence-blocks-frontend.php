@@ -84,6 +84,9 @@ class Kadence_Blocks_Frontend {
 	 * @return mixed Returns the block content.
 	 */
 	public function conditionally_render_block( $block_content, $block ) {
+		if ( is_admin() ) {
+			return $block_content;
+		}
 		if ( 'kadence/rowlayout' === $block['blockName'] && isset( $block['attrs'] ) ) {
 			if ( isset( $block['attrs']['loggedIn'] ) && $block['attrs']['loggedIn'] && is_user_logged_in() ) {
 				$hide = true;
@@ -1255,11 +1258,11 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) || isset( $attr['maxWidth'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			if ( isset( $attr['topPadding'] ) || isset( $attr['paddingUnit'] ) ) {
-				$css->add_property( 'padding-top', ( isset( $attr['topPadding'] ) ? $attr['topPadding'] : '25' ) . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( ( isset( $attr['topPadding'] ) && is_numeric( $attr['topPadding'] ) ) || ! empty( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-top', ( ( isset( $attr['topPadding'] ) && is_numeric( $attr['topPadding'] ) ) ? $attr['topPadding'] : '25' )  . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
-			if ( isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) ) {
-				$css->add_property( 'padding-bottom', ( isset( $attr['bottomPadding'] ) ? $attr['bottomPadding'] : '25' ) . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( ( isset( $attr['bottomPadding'] ) && is_numeric( $attr['bottomPadding'] ) ) || ! empty( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-bottom', ( ( isset( $attr['bottomPadding'] ) && is_numeric( $attr['bottomPadding'] ) ) ? $attr['bottomPadding'] : '25' ) . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['leftPadding'] ) ) {
 				$css->add_property( 'padding-left', $attr['leftPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );

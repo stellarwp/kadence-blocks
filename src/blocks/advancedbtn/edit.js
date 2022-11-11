@@ -35,6 +35,66 @@ import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import { times, filter, map } from 'lodash';
 
+const defaultBtns = [ {
+	text: '',
+	link: '',
+	target: '_self',
+	size: '',
+	paddingBT: '',
+	paddingLR: '',
+	color: '#555555',
+	background: '',
+	border: '#555555',
+	backgroundOpacity: 1,
+	borderOpacity: 1,
+	borderRadius: '',
+	borderWidth: '',
+	colorHover: '#ffffff',
+	backgroundHover: '#444444',
+	borderHover: '#444444',
+	backgroundHoverOpacity: 1,
+	borderHoverOpacity: 1,
+	icon: '',
+	iconSide: 'right',
+	iconHover: false,
+	cssClass: '',
+	noFollow: false,
+	gap: 5,
+	responsiveSize: [ '', '' ],
+	gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
+	gradientHover: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
+	btnStyle: 'basic',
+	btnSize: 'standard',
+	backgroundType: 'solid',
+	backgroundHoverType: 'solid',
+	width: [ '', '', '' ],
+	responsivePaddingBT: [ '', '' ],
+	responsivePaddingLR: [ '', '' ],
+	boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
+	boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
+	sponsored: false,
+	download: false,
+	tabletGap: '',
+	mobileGap: '',
+	inheritStyles: '',
+	iconSize: [ '', '', '' ],
+	iconPadding: [ '', '', '', '' ],
+	iconTabletPadding: [ '', '', '', '' ],
+	iconMobilePadding: [ '', '', '', '' ],
+	onlyIcon: [ false, '', '' ],
+	iconColor: '',
+	iconColorHover: '',
+	sizeType: 'px',
+	iconSizeType: 'px',
+	label: '',
+	marginUnit: 'px',
+	margin: [ '', '', '', '' ],
+	tabletMargin: [ '', '', '', '' ],
+	mobileMargin: [ '', '', '', '' ],
+	anchor: '',
+	borderStyle: '',
+} ];
+
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
 	position : 'bottom right',
@@ -148,7 +208,11 @@ function KadenceAdvancedButton( props ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/advancedbtn' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedbtn' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/advancedbtn' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedbtn' ][ attribute ];
+					if ( attribute === 'btns' ) {
+						attributes[ attribute ][0] = {...attributes[ attribute ][0], ...blockConfigObject[ 'kadence/advancedbtn' ][ attribute ][0] };
+					} else {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/advancedbtn' ][ attribute ];
+					}
 				} );
 			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
 				Object.keys( oldBlockConfig ).map( ( attribute ) => {
@@ -306,6 +370,11 @@ function KadenceAdvancedButton( props ) {
 			margin: newUpdate,
 		} );
 	};
+	let defaultBtnAttributes = defaultBtns;
+	const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+	if ( blockConfigObject[ 'kadence/advancedbtn' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedbtn' ] === 'object' && undefined !== blockConfigObject[ 'kadence/advancedbtn' ][ 'btns' ] ) {
+		defaultBtnAttributes[0] = {...defaultBtns[0], ...blockConfigObject[ 'kadence/advancedbtn' ][ 'btns' ][0] };
+	}
 	const marginMouseOver = mouseOverVisualizer();
 	const buttonMarginMouseOver = mouseOverVisualizer();
 	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 0 ] ? margin[ 0 ].tablet[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 0 ] ? margin[ 0 ].mobile[ 0 ] : '' ) );
@@ -691,7 +760,7 @@ function KadenceAdvancedButton( props ) {
 											inheritStyles      : key,
 										}, index );
 									} else {
-										saveArrayUpdate( { inheritStyles: key }, index );
+										saveArrayUpdate( { color: defaultBtnAttributes[0].color, background: defaultBtnAttributes[0].background, backgroundType: defaultBtnAttributes[0].backgroundType, border: defaultBtnAttributes[0].border, colorHover: defaultBtnAttributes[0].colorHover, backgroundHover: defaultBtnAttributes[0].backgroundHover, backgroundHoverType: defaultBtnAttributes[0].backgroundHoverType, borderHover: defaultBtnAttributes[0].borderHover, inheritStyles: key }, index );
 									}
 								}}
 							>
