@@ -25,10 +25,9 @@ import { debounce, map, get } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	RangeControl,
 	KadencePanelBody,
-	IconControl,
+	KadenceIconPicker,
 	IconRender,
 	URLInputControl,
 	WebfontLoader,
@@ -40,7 +39,9 @@ import {
 	InspectorControlTabs,
 	ResponsiveAlignControls,
 	ResponsiveControl,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -48,6 +49,8 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -154,6 +157,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		hAlignMobile,
 		hAlignTablet,
 		containerMargin,
+		tabletContainerMargin,
+		mobileContainerMargin,
 		containerMarginUnit,
 		linkNoFollow,
 		linkSponsored,
@@ -167,11 +172,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
 	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
-	const [ containerMarginControl, setContainerMarginControl ] = useState( 'linked' );
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -187,9 +194,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktinfoboxUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				ktinfoboxUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			ktinfoboxUniqueIDs.push( uniqueID );
 		}
@@ -217,11 +225,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			setContainerPaddingControl( 'linked' );
 		} else {
 			setContainerPaddingControl( 'individual' );
-		}
-		if ( containerMargin && containerMargin[ 0 ] && containerMargin[ 0 ] === containerMargin[ 1 ] && containerMargin[ 0 ] === containerMargin[ 2 ] && containerMargin[ 0 ] === containerMargin[ 3 ] ) {
-			setContainerMarginControl( 'linked' );
-		} else {
-			setContainerMarginControl( 'individual' );
 		}
 
 		if ( context && context.queryId && context.postId ) {
@@ -259,6 +262,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const previewContainerPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
 	const previewContainerPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
 	const previewContainerPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
+
+	const previewContainerMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+	const previewContainerMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+	const previewContainerMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+	const previewContainerMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
 
 	const previewTitleFontSize = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
 	const previewTitleLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
@@ -311,6 +319,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 0,
 				containerPadding        : [ 20, 20, 20, 20 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -365,6 +375,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 30,
 				containerPadding        : [ 20, 20, 20, 20 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -435,6 +447,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 0,
 				containerPadding        : [ 24, 24, 24, 24 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -505,6 +519,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 				containerBorderRadius   : 20,
 				containerPadding        : [ 24, 24, 24, 24 ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'left',
 				mediaIcon               : [ {
@@ -1371,7 +1387,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{'icon' === mediaType && 'drawborder' === mediaIcon[ 0 ].hoverAnimation && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ KadenceColorOutput( mediaStyle[ 0 ].border ) }; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
 					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
@@ -1515,7 +1531,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						renderContent={() => (
 							<Fragment>
 								<div className="kb-inline-icon-control">
-									<IconControl
+									<KadenceIconPicker
 										value={mediaIcon[ 0 ].icon}
 										onChange={value => saveMediaIcon( { icon: value } )}
 									/>
@@ -1711,9 +1727,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											}
 										}
 									</TabPanel>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Container Padding', 'kadence-blocks' )}
-										control={containerPaddingControl}
 										tabletControl={containerPaddingControl}
 										mobileControl={containerPaddingControl}
 										value={containerPadding}
@@ -1728,41 +1743,37 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										onChangeMobile={( value ) => {
 											setAttributes( { containerMobilePadding: value } );
 										}}
-										onChangeControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeTabletControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeMobileControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										allowEmpty={true}
 										min={paddingMin}
 										max={paddingMax}
 										step={paddingStep}
 										unit={containerPaddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
 										onUnit={( value ) => setAttributes( { containerPaddingType: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
-									<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
-										{map( marginTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={containerMarginUnit === key}
-												aria-pressed={containerMarginUnit === key}
-												onClick={() => setAttributes( { containerMarginUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-									<MeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Margin', 'kadence-blocks' )}
-										measurement={containerMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										control={containerMarginControl}
-										onControl={( value ) => this.setState( { containerMarginControl: value } )}
+										value={containerMargin}
+										tabletValue={tabletContainerMargin}
+										mobileValue={mobileContainerMargin}
+										onChange={( value ) => {
+											setAttributes( { containerMargin: value } );
+										}}
+										onChangeTablet={( value ) => {
+											setAttributes( { tabletContainerMargin: value } );
+										}}
+										onChangeMobile={( value ) => {
+											setAttributes( { mobileContainerMargin: value } );
+										}}
 										min={marginMin}
 										max={marginMax}
 										step={marginStep}
-										allowEmpty={true}
+										unit={containerMarginUnit}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
 									/>
 									<ButtonGroup className="kt-size-type-options" aria-label={__( 'Max Width Type', 'kadence-blocks' )}>
 										{map( widthTypes, ( { name, key } ) => (
@@ -2043,7 +2054,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									)}
 									{'icon' === mediaType && (
 										<>
-											<IconControl
+											<KadenceIconPicker
 												value={mediaIcon[ 0 ].icon}
 												onChange={value => saveMediaIcon( { icon: value } )}
 											/>
@@ -2098,7 +2109,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												onChange={value => saveMediaIcon( { hoverAnimation: value } )}
 											/>
 											{mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-												<IconControl
+												<KadenceIconPicker
 													value={mediaIcon[ 0 ].flipIcon}
 													onChange={value => saveMediaIcon( { flipIcon: value } )}
 												/>
@@ -2878,15 +2889,15 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					 background   : ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
 					 borderRadius : containerBorderRadius + 'px',
 					 borderWidth  : ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					 paddingTop   : ( '' !== previewContainerPaddingTop ? previewContainerPaddingTop + previewPaddingType : undefined ),
-					 paddingRight : ( '' !== previewContainerPaddingRight ? previewContainerPaddingRight + previewPaddingType : undefined ),
-					 paddingBottom: ( '' !== previewContainerPaddingBottom ? previewContainerPaddingBottom + previewPaddingType : undefined ),
-					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? previewContainerPaddingLeft + previewPaddingType : undefined ),
+					 paddingTop   : ( '' !== previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ) : undefined ),
+					 paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
+					 paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
+					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
 					 maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
-					 marginTop    : ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
-					 marginRight  : ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
-					 marginBottom : ( containerMargin && '' !== containerMargin[ 2 ] ? containerMargin[ 2 ] + containerMarginUnit : undefined ),
-					 marginLeft   : ( containerMargin && '' !== containerMargin[ 3 ] ? containerMargin[ 3 ] + containerMarginUnit : undefined ),
+					 marginTop    : getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ),
+					 marginRight  : getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ),
+					 marginBottom : getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ),
+					 marginLeft   : getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ),
 				 }}>
 				{'none' !== mediaType && (
 					<div className={'kt-blocks-info-box-media-container'} style={{
@@ -3087,6 +3098,22 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						</div>
 					)}
 				</div>
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) ] }
+				/>
+				<SpacingVisualizer
+					// style={ {
+					// 	marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
+					// 	marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+					// 	marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+					// 	marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					// } }
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) ] }
+				/>
 			</div>
 		</div>
 	);

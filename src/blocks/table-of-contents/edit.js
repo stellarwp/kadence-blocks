@@ -12,7 +12,9 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
-	setBlockDefaults
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -26,9 +28,9 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
-
 
 /**
  * Import Icons
@@ -130,6 +132,9 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		contentMargin,
 		contentTextTransform,
 		containerPadding,
+		tabletContainerPadding,
+		mobileContainerPadding,
+		containerPaddingUnit,
 		containerBorder,
 		containerBorderColor,
 		containerBackground,
@@ -160,11 +165,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const [ titleBorderControl, setTitleBorderControl ] = useState( 'linked' );
 	const [ contentMarginControl, setContentMarginControl ] = useState( 'individual' );
 	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
-	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
 	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const [ containerMarginControl, setContainerMarginControl ] = useState( 'linked' );
-	const [ containerTabletMarginControl, setContainerTabletMarginControl ] = useState( 'linked' );
-	const [ containerMobileMarginControl, setContainerMobileMarginControl ] = useState( 'linked' );
+
+	const marginMouseOver = mouseOverVisualizer();
+	const paddingMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -175,10 +179,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			} );
 			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbtableUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				kbtableUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			kbtableUniqueIDs.push( uniqueID );
 		}
@@ -197,11 +201,6 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		} else {
 			setContainerBorderControl( 'individual' );
 		}
-		if ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] && containerPadding[ 0 ] === containerPadding[ 1 ] && containerPadding[ 0 ] === containerPadding[ 2 ] && containerPadding[ 0 ] === containerPadding[ 3 ] ) {
-			setContainerPaddingControl( 'linked' );
-		} else {
-			setContainerPaddingControl( 'individual' );
-		}
 		if ( undefined !== contentMargin && undefined !== contentMargin[ 0 ] && contentMargin[ 0 ] === contentMargin[ 1 ] && contentMargin[ 0 ] === contentMargin[ 2 ] && contentMargin[ 0 ] === contentMargin[ 3 ] ) {
 			setContentMarginControl( 'linked' );
 		} else {
@@ -211,21 +210,6 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			setBorderRadiusControl( 'linked' );
 		} else {
 			setBorderRadiusControl( 'individual' );
-		}
-		if ( containerMargin && containerMargin[ 0 ] === containerMargin[ 1 ] && containerMargin[ 0 ] === containerMargin[ 2 ] && containerMargin[ 0 ] === containerMargin[ 3 ] ) {
-			setContainerMarginControl( 'linked' );
-		} else {
-			setContainerMarginControl( 'individual' );
-		}
-		if ( containerTabletMargin && containerTabletMargin[ 0 ] === containerTabletMargin[ 1 ] && containerTabletMargin[ 0 ] === containerTabletMargin[ 2 ] && containerTabletMargin[ 0 ] === containerTabletMargin[ 3 ] ) {
-			setContainerTabletMarginControl( 'linked' );
-		} else {
-			setContainerTabletMarginControl( 'individual' );
-		}
-		if ( containerMobileMargin && containerMobileMargin[ 0 ] === containerMobileMargin[ 1 ] && containerMobileMargin[ 0 ] === containerMobileMargin[ 2 ] && containerMobileMargin[ 0 ] === containerMobileMargin[ 3 ] ) {
-			setContainerMobileMarginControl( 'linked' );
-		} else {
-			setContainerMobileMarginControl( 'individual' );
 		}
 		if ( undefined !== startClosed && startClosed ) {
 			setShowContent( false );
@@ -412,6 +396,11 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 2 ] ? containerTabletMargin[ 2 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 2 ] ? containerMobileMargin[ 2 ] : '' ) );
 	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 3 ] ? containerTabletMargin[ 3 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 3 ] ? containerMobileMargin[ 3 ] : '' ) );
 	const previewMarginUnit = ( containerMarginUnit ? containerMarginUnit : 'px' );
+	const previewPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 0 ] ? tabletContainerPadding[ 0 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 0 ] ? mobileContainerPadding[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 1 ] ? tabletContainerPadding[ 1 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 1 ] ? mobileContainerPadding[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 2 ] ? tabletContainerPadding[ 2 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 2 ] ? mobileContainerPadding[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 3 ] ? tabletContainerPadding[ 3 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 3 ] ? mobileContainerPadding[ 3 ] : '' ) );
+
 	const classes = classnames( className, `kb-table-of-content-nav kb-table-of-content-id${uniqueID}` );
 	const renderCSS = (
 		<style>
@@ -782,15 +771,22 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									default={''}
 									onChange={( value ) => setAttributes( { containerBackground: value } )}
 								/>
-								<MeasurementControls
+								<ResponsiveMeasureRangeControl
 									label={__( 'Container Padding', 'kadence-blocks' )}
-									measurement={containerPadding}
-									control={containerPaddingControl}
+									value={containerPadding}
 									onChange={( value ) => setAttributes( { containerPadding: value } )}
-									onControl={( value ) => setContainerPaddingControl( value )}
-									min={0}
-									max={100}
-									step={1}
+									tabletValue={tabletContainerPadding}
+									onChangeTablet={( value ) => setAttributes( { tabletContainerPadding: value } )}
+									mobileValue={mobileContainerPadding}
+									onChangeMobile={( value ) => setAttributes( { mobileContainerPadding: value } )}
+									min={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -2 : -200 )}
+									max={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 12 : 200 )}
+									step={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 0.1 : 1 )}
+									unit={containerPaddingUnit}
+									units={[ 'px', 'em', 'rem' ]}
+									onUnit={( value ) => setAttributes( { containerPaddingUnit: value } )}
+									onMouseOver={ paddingMouseOver.onMouseOver }
+									onMouseOut={ paddingMouseOver.onMouseOut }
 								/>
 								<PopColorControl
 									label={__( 'Border Color', 'kadence-blocks' )}
@@ -873,26 +869,22 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									max={1400}
 									step={1}
 								/>
-								<ResponsiveMeasurementControls
+								<ResponsiveMeasureRangeControl
 									label={__( 'Container Margin', 'kadence-blocks' )}
 									value={containerMargin}
-									control={containerMarginControl}
 									onChange={( value ) => setAttributes( { containerMargin: value } )}
-									onChangeControl={( value ) => setContainerMarginControl( value )}
 									tabletValue={containerTabletMargin}
-									tabletControl={containerTabletMarginControl}
 									onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-									onChangeTabletControl={( value ) => setContainerTabletMarginControl( value )}
 									mobileValue={containerMobileMargin}
-									mobileControl={containerMobileMarginControl}
 									onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-									onChangeMobileControl={( value ) => setContainerMobileMarginControl( value )}
 									min={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -2 : -200 )}
 									max={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 12 : 200 )}
 									step={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 )}
 									unit={containerMarginUnit}
 									units={[ 'px', 'em', 'rem' ]}
 									onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
+									onMouseOver={ marginMouseOver.onMouseOver }
+									onMouseOut={ marginMouseOver.onMouseOut }
 								/>
 							</KadencePanelBody>
 						</>
@@ -923,11 +915,14 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			{inspectorControls}
 			<nav className={classes}>
 				<div className="kb-table-of-content-wrap" style={{
-					padding        : ( containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
-					marginTop      : ( previewMarginTop ? previewMarginTop + previewMarginUnit : undefined ),
-					marginRight    : ( previewMarginRight ? previewMarginRight + previewMarginUnit : undefined ),
-					marginBottom   : ( previewMarginBottom ? previewMarginBottom + previewMarginUnit : undefined ),
-					marginLeft     : ( previewMarginLeft ? previewMarginLeft + previewMarginUnit : undefined ),
+					paddingTop	   : ( previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, containerPaddingUnit) : undefined ),
+					paddingRight	   : ( previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, containerPaddingUnit) : undefined ),
+					paddingBottom	   : ( previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, containerPaddingUnit) : undefined ),
+					paddingLeft	   : ( previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, containerPaddingUnit) : undefined ),
+					marginTop      : ( previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+					marginRight    : ( previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+					marginBottom   : ( previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+					marginLeft     : ( previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
 					borderWidth    : ( containerBorder ? containerBorder[ 0 ] + 'px ' + containerBorder[ 1 ] + 'px ' + containerBorder[ 2 ] + 'px ' + containerBorder[ 3 ] + 'px' : '' ),
 					backgroundColor: KadenceColorOutput( containerBackground ),
 					borderColor    : KadenceColorOutput( containerBorderColor ),
@@ -1034,7 +1029,7 @@ export default compose( [
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
-		const postContent = select( 'core/editor' ).getEditedPostContent();
+		const postContent = ( select( 'core/editor' ) ) ? select( 'core/editor' ).getEditedPostContent() : '';
 
 		const blockIndex = getBlockIndex( clientId );
 		const blockOrder = getBlockOrder();

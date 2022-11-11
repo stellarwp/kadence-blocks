@@ -36,4 +36,9 @@ registerBlockType( 'kadence/rowlayout', {
 	edit,
 	save,
 	deprecated,
+	supports: {
+		anchor: true,
+		ktdynamic: true,
+		kbcss: true,
+	  }
 });

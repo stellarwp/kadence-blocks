@@ -37,8 +37,12 @@ function kadence_blocks_is_rest() {
 	}
 	// (#4).
 	$rest_url = wp_parse_url( trailingslashit( rest_url( ) ) );
-	$current_url = wp_parse_url( add_query_arg( array( ) ) );
-	return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+	$current_url = wp_parse_url( add_query_arg( array() ) );
+
+	if ( isset( $current_url['path'] ) && isset( $rest_url['path'] ) ) {
+		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+	}
+	return false;
 }
 
 

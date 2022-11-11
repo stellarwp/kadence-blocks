@@ -76,10 +76,6 @@ import RowBackground from './row-background';
 import ContentWidthIcon from './content-width-icons';
 import renderSVGDivider from './render-svg-divider';
 /**
- * Import Css
- */
-import './editor.scss';
-/**
  * Import WordPress Internals
  */
 import { useEffect, useState, Fragment } from '@wordpress/element';
@@ -127,18 +123,11 @@ import { __ } from '@wordpress/i18n';
 	updateColumns,
 	innerItemCount,
 	widthString,
+	previewDevice,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
-	// Update from old setting.
-	if ( columnGutter == 'wide' ) {
-		setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
-	} else if ( columnGutter == 'narrow' ) {
-		setAttributes( { columnGutter: 'custom', customGutter: [ 20, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
-	} else if ( columnGutter == 'widest' ) {
-		setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
-	}
 	let layoutOptions;
 	let mobileLayoutOptions;
 	if ( 2 === columns ) {
@@ -258,6 +247,7 @@ import { __ } from '@wordpress/i18n';
 											options={ layoutOptions }
 											wrap={true}
 											hideLabel={true}
+											className={ 'kadence-row-layout-radio-btns' }
 											onChange={ value => {
 												setAttributes( {
 													colLayout: value,
@@ -273,6 +263,7 @@ import { __ } from '@wordpress/i18n';
 										value={ tabletLayout }
 										options={mobileLayoutOptions}
 										wrap={true}
+										className={ 'kadence-row-layout-radio-btns' }
 											hideLabel={true}
 										onChange={ value => {
 											setAttributes( {
@@ -284,6 +275,7 @@ import { __ } from '@wordpress/i18n';
 										value={mobileLayout}
 										options={mobileLayoutOptions}
 										wrap={true}
+										className={ 'kadence-row-layout-radio-btns' }
 											hideLabel={true}
 										onChange={ value => {
 											setAttributes( {
@@ -299,27 +291,27 @@ import { __ } from '@wordpress/i18n';
 										label={__( 'Column Gutter', 'kadence-blocks' )}
 										options={ [
 											{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
-											{ value: 'skinny', size:10, label: __('Sm', 'kadence-blocks' ) },
-											{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
-											{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
+											{ value: 'skinny', size:16, label: __('SM', 'kadence-blocks' ) },
+											{ value: 'default', size:32, label: __('MD', 'kadence-blocks' ) },
+											{ value: 'wider', size:64, label: __('LG', 'kadence-blocks' ) },
 										] }
 										value={ {
-											value: ( undefined !== columnGutter ? columnGutter : 'defualt' ),
-											size: ( undefined !== customGutter[0] ? customGutter[0] : 30 ),
+											value: ( undefined !== columnGutter ? columnGutter : 'default' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[0] ? customGutter[0] : 30 ),
 										} }
 										onChange={ ( value, size ) => {
 											setAttributes( { columnGutter: value, customGutter: [ size, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 										}}
 										tabletValue={ {
 											value: ( undefined !== tabletGutter ? tabletGutter : '' ),
-											size: ( undefined !== customGutter[1] ? customGutter[1] : '' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[1] ? customGutter[1] : '' ),
 										} }
 										onChangeTablet={ ( value, size ) => {
 											setAttributes( { tabletGutter: value, customGutter: [ ( customGutter[0] ? customGutter[0] : '' ), size, ( customGutter[2] ? customGutter[2] : '' ) ] } );
 										}}
 										mobileValue={ {
 											value: ( undefined !== mobileGutter ? mobileGutter : '' ),
-											size: ( undefined !== customGutter[2] ? customGutter[2] : '' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[2] ? customGutter[2] : '' ),
 										} }
 										onChangeMobile={ ( value, size ) => {
 											setAttributes( { mobileGutter: value, customGutter: [ ( customGutter[0] ? customGutter[0] : '' ), ( customGutter[1] ? customGutter[1] : '' ), size ] } );
@@ -335,7 +327,7 @@ import { __ } from '@wordpress/i18n';
 									/>
 								</>
 							)}
-							{ innerItemCount > 1 && (
+							{ ( innerItemCount > columns || previewDevice != 'Desktop' ) && (
 								<>
 									<ResponsiveRadioRangeControls
 										label={__( 'Row Gutter', 'kadence-blocks' )}
@@ -345,15 +337,24 @@ import { __ } from '@wordpress/i18n';
 											{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
 											{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
 										] }
-										value={ ( collapseGutter == 'custom' ? customRowGutter[0] : collapseGutter ) }
+										value={ {
+											value: ( undefined !== collapseGutter ? collapseGutter : 'default' ),
+											size: ( undefined !== customRowGutter && undefined !== customRowGutter[0] ? customRowGutter[0] : '' ),
+										} }
 										onChange={ ( value, size ) => {
 											setAttributes( { collapseGutter: value, customRowGutter: [ size, ( customRowGutter[1] ? customRowGutter[1] : '' ), ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
 										}}
-										tabletValue={ ( tabletRowGutter == 'custom' ? customRowGutter[1] : tabletRowGutter ) }
+										tabletValue={ {
+											value: ( undefined !== tabletRowGutter ? tabletRowGutter : '' ),
+											size: ( undefined !== customRowGutter && undefined !== customRowGutter[1] ? customRowGutter[1] : '' ),
+										} }
 										onChangeTablet={ ( value, size ) => {
 											setAttributes( { tabletRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), size, ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
 										}}
-										mobileValue={ ( mobileRowGutter == 'custom' ? customRowGutter[2] : mobileRowGutter ) }
+										mobileValue={ {
+											value: ( undefined !== mobileRowGutter ? mobileRowGutter : '' ),
+											size: ( undefined !== customRowGutter && undefined !== customRowGutter[2] ? customRowGutter[2] : '' ),
+										} }
 										onChangeMobile={ ( value, size ) => {
 											setAttributes( { mobileRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), ( customRowGutter[1] ? customRowGutter[1] : '' ), size ] } );
 										}}

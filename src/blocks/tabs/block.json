@@ -71,6 +71,28 @@
 		20
 	  ]
 	},
+	"tabletInnerPadding": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+        ""
+	 ]
+	},
+	"mobileInnerPadding": {
+	  "type": "array",
+	  "default": [
+	   "",
+	   "",
+	   "",
+	   ""
+	 ]
+	},
+	"innerPaddingType": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"innerPaddingControl": {
 	  "type": "string",
 	  "default": "linked"

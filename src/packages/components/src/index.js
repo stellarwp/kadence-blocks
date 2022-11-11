@@ -15,14 +15,20 @@ export { default as DynamicTextControl } from './dynamic-text-control';
 export { default as DynamicBackgroundControl } from './dynamic-background-control';
 export { default as DynamicGalleryControl } from './dynamic-gallery-control';
 export { default as DropShadowControl } from './drop-shadow-control';
+export { default as BackgroundSizeControl } from './background-size-control';
 export { default as BackgroundControl } from './background-control';
 export { default as BackgroundTypeControl } from './background-type-control';
+export { default as GradientControl } from './gradient-control';
+export { default as MeasureRangeControl } from './measurement-range-control';
+export { default as ResponsiveMeasureRangeControl } from './measurement-range-control/responsive';
+export { default as SpacingVisualizer } from './visualizer/spacing';
 export { default as KadenceFocalPicker } from './focal-picker';
 export { default as KadenceRadioButtons } from './common/radio-buttons';
 export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
 export { default as ImageSizeControl } from './common/image-size-controls';
 export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';
 export { default as KadenceImageControl } from './common/image-controls';
+export { default as KadenceVideoControl } from './common/video-control';
 export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
 export { default as KadenceInspectorControls } from './inspector-controls';
@@ -44,7 +50,6 @@ export { default as TextHighlight } from './links/text-highlight';
 
 /* Icons */
 export { default as GenIcon } from './icons/gen-icon';
-export { default as IconControl } from './icons/icon-control';
 export { default as IconRender } from './icons/icon-render';
 export { default as IconSpanTag } from './icons/icon-span-tag';
 export { default as IconPicker } from './icons/icon-picker';
@@ -72,3 +77,5 @@ export { default as BorderColorControls } from './color/border-color-control'
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';
+
+export { default as KadenceIconPicker } from './icon-picker';

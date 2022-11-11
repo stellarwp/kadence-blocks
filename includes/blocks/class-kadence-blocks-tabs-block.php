@@ -95,8 +95,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', $border_args );
 		}
 
-		$padding_args = array( 'tablet_key' => false, 'mobile_key' => false );
-		$css->render_measure_output( $attributes, 'innerPadding', 'padding', $padding_args );
+		$css->render_measure_output( $attributes, 'innerPadding', 'padding' );
 
 		if ( ! empty( $attributes['minHeight'] ) ) {
 			$css->add_property( 'min-height', $attributes['minHeight'] );

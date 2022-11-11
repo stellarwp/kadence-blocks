@@ -7,6 +7,8 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
+	getSpacingOptionOutput,
+	mouseOverVisualizer
 } from '@kadence/helpers';
 
 import {
@@ -16,7 +18,7 @@ import {
 	SmallResponsiveControl,
 	ResponsiveRangeControls,
 	IconRender,
-	IconControl,
+	KadenceIconPicker,
 	KadencePanelBody,
 	URLInputControl,
 	URLInputInline,
@@ -25,11 +27,73 @@ import {
 	BoxShadowControl,
 	DynamicTextControl,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import { times, filter, map } from 'lodash';
+
+const defaultBtns = [ {
+	text: '',
+	link: '',
+	target: '_self',
+	size: '',
+	paddingBT: '',
+	paddingLR: '',
+	color: '#555555',
+	background: '',
+	border: '#555555',
+	backgroundOpacity: 1,
+	borderOpacity: 1,
+	borderRadius: '',
+	borderWidth: '',
+	colorHover: '#ffffff',
+	backgroundHover: '#444444',
+	borderHover: '#444444',
+	backgroundHoverOpacity: 1,
+	borderHoverOpacity: 1,
+	icon: '',
+	iconSide: 'right',
+	iconHover: false,
+	cssClass: '',
+	noFollow: false,
+	gap: 5,
+	responsiveSize: [ '', '' ],
+	gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
+	gradientHover: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
+	btnStyle: 'basic',
+	btnSize: 'standard',
+	backgroundType: 'solid',
+	backgroundHoverType: 'solid',
+	width: [ '', '', '' ],
+	responsivePaddingBT: [ '', '' ],
+	responsivePaddingLR: [ '', '' ],
+	boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
+	boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
+	sponsored: false,
+	download: false,
+	tabletGap: '',
+	mobileGap: '',
+	inheritStyles: '',
+	iconSize: [ '', '', '' ],
+	iconPadding: [ '', '', '', '' ],
+	iconTabletPadding: [ '', '', '', '' ],
+	iconMobilePadding: [ '', '', '', '' ],
+	onlyIcon: [ false, '', '' ],
+	iconColor: '',
+	iconColorHover: '',
+	sizeType: 'px',
+	iconSizeType: 'px',
+	label: '',
+	marginUnit: 'px',
+	margin: [ '', '', '', '' ],
+	tabletMargin: [ '', '', '', '' ],
+	mobileMargin: [ '', '', '', '' ],
+	anchor: '',
+	borderStyle: '',
+} ];
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -135,7 +199,6 @@ function KadenceAdvancedButton( props ) {
 	const [ btnFocused, setBtnFocused ] = useState( 'false' );
 	const [ selectedButton, setSelectedButton ] = useState( null );
 	const [ buttonMarginControl, setButtonMarginControl ] = useState( 'individual' );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ iconPaddingControl, setIconPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -145,7 +208,11 @@ function KadenceAdvancedButton( props ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/advancedbtn' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedbtn' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/advancedbtn' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedbtn' ][ attribute ];
+					if ( attribute === 'btns' ) {
+						attributes[ attribute ][0] = {...attributes[ attribute ][0], ...blockConfigObject[ 'kadence/advancedbtn' ][ attribute ][0] };
+					} else {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/advancedbtn' ][ attribute ];
+					}
 				} );
 			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
 				Object.keys( oldBlockConfig ).map( ( attribute ) => {
@@ -157,10 +224,10 @@ function KadenceAdvancedButton( props ) {
 			} );
 			ktadvancedbuttonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktadvancedbuttonUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktadvancedbuttonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				ktadvancedbuttonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			}
 		} else {
 			ktadvancedbuttonUniqueIDs.push( uniqueID );
 		}
@@ -185,11 +252,6 @@ function KadenceAdvancedButton( props ) {
 			if ( forceFullwidth ) {
 				setAttributes( { widthType: 'full' } );
 			}
-		}
-		if ( margin && margin[ 0 ] && margin[ 0 ].desk && margin[ 0 ].desk[ 0 ] && margin[ 0 ].desk[ 0 ] === margin[ 0 ].desk[ 1 ] && margin[ 0 ].desk[ 0 ] === margin[ 0 ].desk[ 2 ] && margin[ 0 ].desk[ 0 ] === margin[ 0 ].desk[ 3 ] ) {
-			setMarginControl( 'linked' );
-		} else {
-			setMarginControl( 'individual' );
 		}
 
 		if ( context && context.queryId && context.postId ) {
@@ -308,6 +370,13 @@ function KadenceAdvancedButton( props ) {
 			margin: newUpdate,
 		} );
 	};
+	let defaultBtnAttributes = defaultBtns;
+	const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+	if ( blockConfigObject[ 'kadence/advancedbtn' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedbtn' ] === 'object' && undefined !== blockConfigObject[ 'kadence/advancedbtn' ][ 'btns' ] ) {
+		defaultBtnAttributes[0] = {...defaultBtns[0], ...blockConfigObject[ 'kadence/advancedbtn' ][ 'btns' ][0] };
+	}
+	const marginMouseOver = mouseOverVisualizer();
+	const buttonMarginMouseOver = mouseOverVisualizer();
 	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 0 ] ? margin[ 0 ].tablet[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 0 ] ? margin[ 0 ].mobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 1 ] ? margin[ 0 ].desk[ 1 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 1 ] ? margin[ 0 ].tablet[ 1 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 1 ] ? margin[ 0 ].mobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 2 ] ? margin[ 0 ].desk[ 2 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 2 ] ? margin[ 0 ].tablet[ 2 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 2 ] ? margin[ 0 ].mobile[ 2 ] : '' ) );
@@ -423,10 +492,10 @@ function KadenceAdvancedButton( props ) {
 							paddingRight : ( undefined !== btns[ index ].paddingLR && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingLR + 'px' : undefined ),
 							paddingTop   : ( undefined !== btns[ index ].paddingBT && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingBT + 'px' : undefined ),
 							paddingBottom: ( undefined !== btns[ index ].paddingBT && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingBT + 'px' : undefined ),
-							marginTop    : ( '' !== topBtnMargin ? topBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
-							marginRight  : ( '' !== rightBtnMargin ? rightBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
-							marginBottom : ( '' !== bottomBtnMargin ? bottomBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
-							marginLeft   : ( '' !== leftBtnMargin ? leftBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
+							marginTop    : ( '' !== topBtnMargin ? getSpacingOptionOutput( topBtnMargin, ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) ) : undefined ),
+							marginRight  : ( '' !== rightBtnMargin ? getSpacingOptionOutput( rightBtnMargin, ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) ) : undefined ),
+							marginBottom : ( '' !== bottomBtnMargin ? getSpacingOptionOutput( bottomBtnMargin, ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) ) : undefined ),
+							marginLeft   : ( '' !== leftBtnMargin ? getSpacingOptionOutput( leftBtnMargin, ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) ) : undefined ),
 							width        : ( undefined !== widthType && 'fixed' === widthType && undefined !== previewFixedWidth ? previewFixedWidth + ( undefined !== widthUnit ? widthUnit : 'px' ) : undefined ),
 							boxShadow    : ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						}}>
@@ -590,6 +659,12 @@ function KadenceAdvancedButton( props ) {
 						) }
 					</Fragment>
 				)}
+
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( topBtnMargin, btns[ index ].marginUnit ), getSpacingOptionOutput( rightBtnMargin, btns[ index ].marginUnit ), getSpacingOptionOutput( bottomBtnMargin, btns[ index ].marginUnit ), getSpacingOptionOutput( leftBtnMargin, btns[ index ].marginUnit ) ] }
+				/>
 			</div>
 		);
 	};
@@ -685,7 +760,7 @@ function KadenceAdvancedButton( props ) {
 											inheritStyles      : key,
 										}, index );
 									} else {
-										saveArrayUpdate( { inheritStyles: key }, index );
+										saveArrayUpdate( { color: defaultBtnAttributes[0].color, background: defaultBtnAttributes[0].background, backgroundType: defaultBtnAttributes[0].backgroundType, border: defaultBtnAttributes[0].border, colorHover: defaultBtnAttributes[0].colorHover, backgroundHover: defaultBtnAttributes[0].backgroundHover, backgroundHoverType: defaultBtnAttributes[0].backgroundHoverType, borderHover: defaultBtnAttributes[0].borderHover, inheritStyles: key }, index );
 									}
 								}}
 							>
@@ -924,7 +999,7 @@ function KadenceAdvancedButton( props ) {
 				)}
 				{showSettings( 'colorSettings', 'kadence/advancedbtn' ) && (
 					<Fragment>
-						<h2 className="kt-tab-wrap-title kt-color-settings-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
+						<h2 className="kt-tab-wrap-title kt-color-settings-title" style={ { marginBottom: '10px'} }>{__( 'Color Settings', 'kadence-blocks' )}</h2>
 						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 								  activeClass="active-tab"
 								  tabs={[
@@ -988,24 +1063,28 @@ function KadenceAdvancedButton( props ) {
 							min={0}
 							max={50}
 						/>
-						<ResponsiveMeasurementControls
+						<ResponsiveMeasureRangeControl
 							label={__( 'Button Margin', 'kadence-blocks' )}
 							value={undefined !== btns[ index ].margin ? btns[ index ].margin : [ '', '', '', '' ]}
-							control={buttonMarginControl}
 							tabletValue={undefined !== btns[ index ].tabletMargin ? btns[ index ].tabletMargin : [ '', '', '', '' ]}
 							mobileValue={undefined !== btns[ index ].mobileMargin ? btns[ index ].mobileMargin : [ '', '', '', '' ]}
 							onChange={( value ) => {
 								saveArrayUpdate( { margin: value }, index );
 							}}
-							onChangeTablet={( value ) => saveArrayUpdate( { tabletMargin: value }, index )}
-							onChangeMobile={( value ) => saveArrayUpdate( { mobileMargin: value }, index )}
-							onChangeControl={( value ) => setButtonMarginControl( value )}
-							min={0}
+							onChangeTablet={( value ) => {
+								saveArrayUpdate( { tabletMargin: value }, index )
+							}}
+							onChangeMobile={( value ) => {
+								saveArrayUpdate( { mobileMargin: value }, index )
+							}}
+							min={ 0 }
 							max={( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 12 : 200 )}
 							step={( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 0.1 : 1 )}
 							unit={undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px'}
 							units={[ 'px', 'em', 'rem' ]}
-							onUnit={( value ) => saveArrayUpdate( { marginUnit: value }, index )}
+							onUnit={( value ) => saveArrayUpdate( { marginUnit: value }, index ) }
+							onMouseOver={ buttonMarginMouseOver.onMouseOver }
+							onMouseOut={ buttonMarginMouseOver.onMouseOut }
 						/>
 					</Fragment>
 				)}
@@ -1013,10 +1092,13 @@ function KadenceAdvancedButton( props ) {
 					<Fragment>
 						<h2 className="kt-tool">{__( 'Icon Settings', 'kadence-blocks' )}</h2>
 						<div className="kt-select-icon-container">
-							<IconControl
+							<KadenceIconPicker
 								value={btns[ index ].icon}
 								onChange={value => {
-									saveArrayUpdate( { icon: value }, index );
+									console.log( 'value' );
+									console.log( value );
+									console.log( 'index: ' + index );
+									// saveArrayUpdate( { icon: value }, index );
 								}}
 							/>
 						</div>
@@ -1854,22 +1936,28 @@ function KadenceAdvancedButton( props ) {
 											initialOpen={false}
 											panelName={'kb-adv-btn-container-margin'}
 										>
-											<ResponsiveMeasurementControls
+											<ResponsiveMeasureRangeControl
 												label={__( 'Container Margin', 'kadence-blocks' )}
 												value={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ]}
-												control={ marginControl }
 												tabletValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ]}
 												mobileValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ]}
-												onChange={( value ) => saveMargin( { desk: value } )}
-												onChangeTablet={( value ) => saveMargin( { tablet: value } )}
-												onChangeMobile={( value ) => saveMargin( { mobile: value } )}
-												onChangeControl={( value ) => setMarginControl( value )}
-												min={marginMin}
-												max={marginMax}
-												step={marginStep}
-												unit={marginUnit}
+												onChange={( value ) => {
+													saveMargin( { desk: value } )
+												}}
+												onChangeTablet={( value ) => {
+													saveMargin( { tablet: value } )
+												}}
+												onChangeMobile={( value ) => {
+													saveMargin( { mobile: value } )
+												}}
+												min={ marginMin }
+												max={ marginMax }
+												step={ marginStep }
+												unit={ marginUnit }
 												units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-												onUnit={( value ) => setAttributes( { marginUnit: value } )}
+												onUnit={( value ) => setAttributes( { marginUnit: value } ) }
+												onMouseOver={ marginMouseOver.onMouseOver }
+												onMouseOut={ marginMouseOver.onMouseOut }
 											/>
 										</KadencePanelBody>
 									)}
@@ -1901,16 +1989,27 @@ function KadenceAdvancedButton( props ) {
 				<div id={`animate-id${uniqueID}`} className={'btn-inner-wrap aos-animate kt-animation-wrap'} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 					 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 					 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{
-					marginTop   : ( undefined !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight : ( undefined !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( undefined !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft  : ( undefined !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					marginTop   : ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight : ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft  : ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 				}}>
 					{renderPreviewArray}
 					{googleFont && (
 						<WebfontLoader config={config}>
 						</WebfontLoader>
 					)}
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					} }
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				/>
 				</div>
 			</div>
 		</div>

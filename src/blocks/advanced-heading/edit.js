@@ -22,13 +22,17 @@ import {
 	InlinePopColorControl,
 	ResponsiveAlignControls,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
 
 import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
+	getSpacingOptionOutput,
+	mouseOverVisualizer
 } from '@kadence/helpers';
 
 /**
@@ -148,6 +152,7 @@ function KadenceAdvancedHeading( props ) {
 		rightMargin,
 		tabletMargin,
 		mobileMargin,
+		margin,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -171,6 +176,9 @@ function KadenceAdvancedHeading( props ) {
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
@@ -204,6 +212,11 @@ function KadenceAdvancedHeading( props ) {
 			setAttributes( {
 				inQueryBlock: false,
 			} );
+		}
+
+		// Update Old Styles
+		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
+			setAttributes( { margin: [ topMargin, rightMargin, bottomMargin, leftMargin ], topMargin:'', rightMargin:'', bottomMargin:'', leftMargin:'' } );
 		}
 	}, [] );
 
@@ -251,10 +264,10 @@ function KadenceAdvancedHeading( props ) {
 	const lineMin = ( lineType !== 'px' ? 0.2 : 5 );
 	const lineMax = ( lineType !== 'px' ? 12 : 200 );
 	const lineStep = ( lineType !== 'px' ? 0.1 : 1 );
-	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== leftMargin ? leftMargin : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
+	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
 	const previewPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 0 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 0 ] : '' ) );
 	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
@@ -367,14 +380,14 @@ function KadenceAdvancedHeading( props ) {
 				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
 				fontFamily     : ( typography ? renderTypography : '' ),
-				paddingTop     : ( '' !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
-				paddingRight   : ( '' !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
-				paddingBottom  : ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
-				paddingLeft    : ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
-				marginTop      : ( '' !== previewMarginTop ? previewMarginTop + marginType : undefined ),
-				marginRight    : ( '' !== previewMarginRight ? previewMarginRight + marginType : undefined ),
-				marginBottom   : ( '' !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
-				marginLeft     : ( '' !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
+				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
+				paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
+				paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
+				paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
+				marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
+				marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
+				marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
+				marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
 				textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 			}}
 			className={classes}
@@ -411,14 +424,14 @@ function KadenceAdvancedHeading( props ) {
 				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
 				fontFamily     : ( typography ? renderTypography : '' ),
-				paddingTop     : ( '' !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
-				paddingRight   : ( '' !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
-				paddingBottom  : ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
-				paddingLeft    : ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
-				marginTop      : ( '' !== previewMarginTop ? previewMarginTop + marginType : undefined ),
-				marginRight    : ( '' !== previewMarginRight ? previewMarginRight + marginType : undefined ),
-				marginBottom   : ( '' !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
-				marginLeft     : ( '' !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
+				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
+				paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
+				paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
+				paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
+				marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
+				marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
+				marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
+				marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
 				textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 			}}
 			className={classes}
@@ -824,41 +837,39 @@ function KadenceAdvancedHeading( props ) {
 									title={__( 'Spacing Settings', 'kadence-blocks' )}
 									panelName={'kb-adv-heading-spacing-settings'}
 								>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Padding', 'kadence-blocks' )}
 										value={padding}
-										control={paddingControl}
 										tabletValue={tabletPadding}
 										mobileValue={mobilePadding}
 										onChange={( value ) => setAttributes( { padding: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
-										onChangeControl={( value ) => setPaddingControl( value )}
 										min={paddingMin}
 										max={paddingMax}
 										step={paddingStep}
 										unit={paddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
 										onUnit={( value ) => setAttributes( { paddingType: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
-									<ResponsiveMeasurementControls
+									<ResponsiveMeasureRangeControl
 										label={__( 'Margin', 'kadence-blocks' )}
-										value={[ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ]}
-										control={marginControl}
+										value={margin}
 										tabletValue={tabletMargin}
 										mobileValue={mobileMargin}
-										onChange={( value ) => {
-											setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
-										}}
+										onChange={( value ) => { setAttributes( { margin: value } ) }}
 										onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
-										onChangeControl={( value ) => setMarginControl( value )}
 										min={marginMin}
 										max={marginMax}
 										step={marginStep}
 										unit={marginType}
 										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 										onUnit={( value ) => setAttributes( { marginType: value } )}
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
 									/>
 								</KadencePanelBody>
 							)}
@@ -936,6 +947,23 @@ function KadenceAdvancedHeading( props ) {
 				<WebfontLoader config={sconfig}>
 				</WebfontLoader>
 			)}
+
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginType ), getSpacingOptionOutput( previewMarginRight, marginType ), getSpacingOptionOutput( previewMarginBottom, marginType ), getSpacingOptionOutput( previewMarginLeft, marginType ) ] }
+			/>
+			<SpacingVisualizer
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingType ), getSpacingOptionOutput( previewPaddingRight, paddingType ), getSpacingOptionOutput( previewPaddingBottom, paddingType ), getSpacingOptionOutput( previewPaddingLeft, paddingType ) ] }
+			/>
 		</div>
 	);
 

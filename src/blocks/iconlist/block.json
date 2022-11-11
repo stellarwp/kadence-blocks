@@ -79,6 +79,18 @@
 	  "type": "array",
 	  "default": [ 0, 0, 10, 0 ]
 	},
+	"tabletListMargin": {
+	  "type": "array",
+	  "default": [ "", "", "","" ]
+	},
+	"mobileListMargin": {
+	  "type": "array",
+	  "default": [ "", "", "","" ]
+	},
+	"listMarginType": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"iconAlign": {
 	  "type": "string",
 	  "default": "middle"

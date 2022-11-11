@@ -17,7 +17,9 @@ import { times, filter, map, get } from 'lodash';
 import {
 	KadenceColorOutput,
 	showSettings,
-	getPreviewSize
+	getPreviewSize,
+	mouseOverVisualizer,
+	getSpacingOptionOutput
 } from '@kadence/helpers';
 
 import {
@@ -25,7 +27,7 @@ import {
 	PopColorControl,
 	StepControls,
 	TypographyControls,
-	IconControl,
+	KadenceIconPicker,
 	ResponsiveRangeControls,
 	IconRender,
 	KadencePanelBody,
@@ -33,7 +35,9 @@ import {
 	DynamicTextControl,
 	MeasurementControls,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
 
 /**
@@ -86,10 +90,9 @@ const kticonlistUniqueIDs = [];
 
 function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId } ) {
 
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns } = attributes;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
@@ -121,27 +124,22 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 			} );
 			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kticonlistUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			}
 		} else {
 			kticonlistUniqueIDs.push( uniqueID );
-		}
-		if ( undefined !== listMargin && undefined !== listMargin[ 0 ] && listMargin[ 0 ] === listMargin[ 1 ] && listMargin[ 0 ] === listMargin[ 2 ] && listMargin[ 0 ] === listMargin[ 3 ] ) {
-			setMarginControl( 'linked' );
-		} else {
-			setMarginControl( 'individual' );
 		}
 
 	}, [] );
 
-	const componentDidUpdate = ( prevProps ) => {
-		// Deselect images when deselecting the block
-		if ( !isSelected && prevProps.isSelected ) {
-			setFocusIndex( null );
-		}
-	};
+	const previewListMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[0] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 0 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 0 ] : '' ) );
+	const previewListMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[1] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 1 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 1 ] : '' ) );
+	const previewListMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
+	const previewListMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[3] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 3 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 3 ] : '' ) );
+
+	const listMarginMouseOver = mouseOverVisualizer();
 
 	const createNewListItem = ( value, entireOld, previousIndex ) => {
 		const previousValue = entireOld.replace( value, '' );
@@ -410,7 +408,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 					allowClear={true}
 					{...attributes}
 				/>
-				<IconControl
+				<KadenceIconPicker
 					value={items[ index ].icon}
 					onChange={value => {
 						saveListItem( { icon: value }, index );
@@ -584,8 +582,14 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 				</div>
 			);
 		};
+
+		const blockProps = useBlockProps( {
+			className: className,
+			'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
+		} );
+
 		return (
-			<div className={ className }>
+			<div {...blockProps}>
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
@@ -707,15 +711,22 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 													) )}
 												</ButtonGroup>
 											</div>
-											<MeasurementControls
-												label={__( 'List Margin' )}
-												measurement={undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ]}
-												control={marginControl}
+											<ResponsiveMeasureRangeControl
+												label={__( 'List Margin', 'kadence-blocks' )}
+												value={ listMargin }
+												tabletValue={ tabletListMargin}
+												mobileValue={ mobileListMargin}
 												onChange={( value ) => setAttributes( { listMargin: value } )}
-												onControl={( value ) => setState( { marginControl: value } )}
-												min={-200}
-												max={200}
-												step={1}
+												onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
+												onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
+												min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
+												max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+												step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
+												unit={listMarginType}
+												units={[ 'px', 'em', 'rem', '%' ]}
+												onUnit={( value ) => setAttributes( { listMarginType: value } )}
+												onMouseOver={ listMarginMouseOver.onMouseOver }
+												onMouseOut={ listMarginMouseOver.onMouseOut }
 											/>
 										</Fragment>
 									)}
@@ -797,7 +808,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 										panelName={'kb-icon-all-styles'}
 									>
 										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
-										<IconControl
+										<KadenceIconPicker
 											value={items[ 0 ].icon}
 											onChange={value => {
 												if ( value !== items[ 0 ].icon ) {
@@ -931,7 +942,10 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 			<div ref={container}
 				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
 				 style={{
-					 margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
+					 marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType),
+					 marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType),
+					 marginBottom: getSpacingOptionOutput( previewListMarginBottom, listMarginType),
+					 marginLeft: getSpacingOptionOutput( previewListMarginLeft, listMarginType),
 				 }}>
 				{times( listCount, n => renderIconsPreview( n ) )}
 				{isSelected && (

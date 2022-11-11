@@ -356,7 +356,12 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
 
-		$response = wp_remote_get( $api_url );
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 20,
+			)
+		);
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
 			return '';
@@ -461,7 +466,12 @@ class Kadence_Blocks_Prebuilt_Library {
 		);
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
-		$response = wp_remote_get( $api_url );
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 20,
+			)
+		);
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
 			return '';
@@ -587,7 +597,12 @@ class Kadence_Blocks_Prebuilt_Library {
 			);
 			// Get the response.
 			$api_url  = add_query_arg( $args, 'https://www.kadencewp.com/kadence-blocks/wp-json/kadence-subscribe/v1/subscribe/' );
-			$response = wp_remote_get( $api_url );
+			$response = wp_remote_get(
+				$api_url,
+				array(
+					'timeout' => 20,
+				)
+			);
 			// Early exit if there was an error.
 			if ( is_wp_error( $response ) ) {
 				return wp_send_json( 'retryError' );

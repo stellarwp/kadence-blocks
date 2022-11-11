@@ -38,19 +38,23 @@ import {
     ResponsiveRangeControls,
     KadencePanelBody,
     WebfontLoader,
-    IconControl,
+    KadenceIconPicker,
     IconRender,
     KadenceMediaPlaceholder,
     MeasurementControls,
     InspectorControlTabs,
-    KadenceBlockDefaults
+    KadenceBlockDefaults,
+    ResponsiveMeasureRangeControl,
+    SpacingVisualizer,
 } from '@kadence/components';
 
 import {
     getPreviewSize,
     KadenceColorOutput,
     showSettings,
-    setBlockDefaults
+    setBlockDefaults,
+    mouseOverVisualizer,
+    getSpacingOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -154,9 +158,6 @@ function KadenceTestimonials({
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
-    const [containerPaddingControl, setContainerPaddingControl] = useState('linked');
-    const [tabletContainerPaddingControl, setTabletContainerPaddingControl] = useState('linked');
-    const [mobileContainerPaddingControl, setMobileContainerPaddingControl] = useState('linked');
     const [containerBorderControl, setContainerBorderControl] = useState('linked');
     const [mediaBorderControl, setMediaBorderControl] = useState('linked');
     const [mediaPaddingControl, setMediaPaddingControl] = useState('linked');
@@ -169,6 +170,8 @@ function KadenceTestimonials({
     const [iconPaddingControl, setIconPaddingControl] = useState('linked');
     const [showPreset, setShowPreset] = useState(false);
     const [wrapperPaddingControls, setWrapperPaddingControls] = useState('linked');
+
+    const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
     const {isUniqueID, isUniqueBlock, previewDevice} = useSelect(
@@ -235,21 +238,6 @@ function KadenceTestimonials({
             setContainerBorderControl('linked');
         } else {
             setContainerBorderControl('individual');
-        }
-        if (containerPadding[0] === containerPadding[1] && containerPadding[0] === containerPadding[2] && containerPadding[0] === containerPadding[3]) {
-            setContainerPaddingControl('linked');
-        } else {
-            setContainerPaddingControl('individual');
-        }
-        if (tabletContainerPadding[0] === tabletContainerPadding[1] && tabletContainerPadding[0] === tabletContainerPadding[2] && tabletContainerPadding[0] === tabletContainerPadding[3]) {
-            setTabletContainerPaddingControl('linked');
-        } else {
-            setTabletContainerPaddingControl('individual');
-        }
-        if (mobileContainerPadding[0] === mobileContainerPadding[1] && mobileContainerPadding[0] === mobileContainerPadding[2] && mobileContainerPadding[0] === mobileContainerPadding[3]) {
-            setMobileContainerPaddingControl('linked');
-        } else {
-            setMobileContainerPaddingControl('individual');
         }
         if (ratingStyles[0] && ratingStyles[0].margin && ratingStyles[0].margin[0] === ratingStyles[0].margin[1] && ratingStyles[0].margin[0] === ratingStyles[0].margin[2] && ratingStyles[0].margin[0] === ratingStyles[0].margin[3]) {
             setRatingMarginControl('linked');
@@ -668,7 +656,7 @@ function KadenceTestimonials({
                 />
                 {'icon' === testimonials[index].media && (
                     <Fragment>
-                        <IconControl
+                        <KadenceIconPicker
                             value={testimonials[index].icon}
                             onChange={value => {
                                 saveTestimonials({icon: value}, index);
@@ -927,10 +915,10 @@ function KadenceTestimonials({
         borderRightWidth: (containerBorderWidth && undefined !== containerBorderWidth[1] ? containerBorderWidth[1] + 'px' : undefined),
         borderBottomWidth: (containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] + 'px' : undefined),
         borderLeftWidth: (containerBorderWidth && undefined !== containerBorderWidth[3] ? containerBorderWidth[3] + 'px' : undefined),
-        paddingTop: (previewContainerPaddingTop ? previewContainerPaddingTop + (containerPaddingType ? containerPaddingType : 'px') : undefined),
-        paddingRight: (previewContainerPaddingRight ? previewContainerPaddingRight + (containerPaddingType ? containerPaddingType : 'px') : undefined),
-        paddingBottom: (previewContainerPaddingBottom ? previewContainerPaddingBottom + (containerPaddingType ? containerPaddingType : 'px') : undefined),
-        paddingLeft: (previewContainerPaddingLeft ? previewContainerPaddingLeft + (containerPaddingType ? containerPaddingType : 'px') : undefined),
+        paddingTop: (previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, (containerPaddingType ? containerPaddingType : 'px') ) : undefined),
+        paddingRight: (previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, (containerPaddingType ? containerPaddingType : 'px') ) : undefined),
+        paddingBottom: (previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, (containerPaddingType ? containerPaddingType : 'px') ) : undefined),
+        paddingLeft: (previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) : undefined),
         maxWidth: ('bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px'),
         minHeight: ('bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px'),
         marginTop: layout && layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
@@ -1127,6 +1115,11 @@ function KadenceTestimonials({
                         </div>
                     </div>
                 )}
+                <SpacingVisualizer
+                    type="inside"
+                    forceShow={ paddingMouseOver.isMouseOver }
+                    spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, containerPaddingType ) ] }
+                />
             </div>
         );
     };
@@ -1367,7 +1360,7 @@ function KadenceTestimonials({
                                         />
                                         {displayIcon && (
                                             <Fragment>
-                                                <IconControl
+                                                <KadenceIconPicker
                                                     value={iconStyles[0].icon}
                                                     onChange={value => {
                                                         saveIconStyles({icon: value});
@@ -1986,27 +1979,22 @@ function KadenceTestimonials({
                                             onOpacityChange={value => setAttributes({containerBorderOpacity: value})}
                                         />
                                         <div className="kt-spacer-sidebar-15"></div>
-                                        <ResponsiveMeasurementControls
+                                        <ResponsiveMeasureRangeControl
                                             label={__('Container Padding', 'kadence-blocks')}
-                                            control={containerPaddingControl}
-                                            tabletControl={tabletContainerPaddingControl}
-                                            mobileControl={mobileContainerPaddingControl}
                                             value={containerPadding}
                                             tabletValue={tabletContainerPadding}
                                             mobileValue={mobileContainerPadding}
                                             onChange={(value) => setAttributes({containerPadding: value})}
                                             onChangeTablet={(value) => setAttributes({tabletContainerPadding: value})}
                                             onChangeMobile={(value) => setAttributes({mobileContainerPadding: value})}
-                                            onChangeControl={(value) => setContainerPaddingControl(value)}
-                                            onChangeTabletControl={(value) => setTabletContainerPaddingControl(value)}
-                                            onChangeMobileControl={(value) => setMobileContainerPaddingControl(value)}
-                                            allowEmpty={true}
                                             min={0}
                                             max={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 200)}
                                             step={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 0.1 : 1)}
                                             unit={(containerPaddingType ? containerPaddingType : 'px')}
                                             units={['px', 'em', 'rem']}
                                             onUnit={(value) => setAttributes({containerPaddingType: value})}
+                                            onMouseOver={ paddingMouseOver.onMouseOver }
+                                            onMouseOut={ paddingMouseOver.onMouseOut }
                                         />
                                         <RangeControl
                                             label={__('Container Max Width (px)', 'kadence-blocks')}

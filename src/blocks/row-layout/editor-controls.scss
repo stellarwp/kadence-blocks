@@ -1,0 +1,98 @@
+ // Controls
+ .components-range-control.kt-icon-rangecontrol .components-base-control__label {
+    width: 30px;
+}
+ // Sidebar Buttons
+ .kt-cta-upload-btn {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+	border-radius: 4px;
+	display: inline-flex;
+}
+.kt-remove-img.kt-cta-upload-btn {
+    margin-left: 5px;
+}
+
+// Tabs
+.kt-inspect-tabs .components-button-group {
+	margin-bottom: 1em;
+	border:0;
+}
+// Tab Controls
+.edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body {
+	border-top:0;
+	margin-top: 6px;
+	margin-bottom: 0;
+}
+.edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body:not(:last-child) {
+    padding-bottom:0px
+}
+.kt-inspect-tabs {
+	padding-top: 10px;
+	.components-tab-panel__tabs {
+		border-bottom: 4px solid #ddd;
+		button {
+			justify-content: center;
+			background:transparent;
+			border:0;
+			border-bottom:4px solid transparent;
+			padding: 6px 16px;
+			margin-bottom: -4px;
+			outline:0;
+		}
+		button.active-tab {
+			border-bottom-color:#0085ba;
+			color:#0085ba;
+		}
+	}
+}
+.kt-inspect-tabs.kt-gradient-tabs {
+	padding-top: 0;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs {
+    margin-bottom: 15px;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs button {
+    background: transparent;
+    border: 0;
+    border: 1px solid #eee;
+    border-bottom: 4px solid transparent;
+    padding: 10px 16px 6px;
+    margin-bottom: -4px;
+    outline: 0;
+    color: #575757;
+    width: 50%;
+    font-size: 14px;
+    font-weight: bold;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs button.active-tab {
+    background: #0085ba;
+    color: white;
+}
+// Button Groups
+.components-button-group .kt-layout-btn{
+    height: 42px;
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid #eee;
+	padding: 2px;
+	margin-right: 5px;
+    margin-bottom: 5px;
+}
+.components-button-group .kt-layout-btn svg {
+    width:72px;
+    height:36px;
+}
+.kt-inspect-tabs {
+	.components-button-group .kt-layout-btn:hover, .components-button-group .kt-layout-btn.is-primary, .components-button-group .kt-layout-btn.is-primary:hover, .components-button-group .kt-layout-btn:focus:not(:disabled):not([aria-disabled=true]) {
+		border-color: #ddd;
+		background:transparent;
+		box-shadow:none;
+	}
+}
+.components-button-group .kt-layout-btn:hover svg rect {
+    fill: #9EAAB5;
+}
+.components-button-group .kt-layout-btn.is-primary svg rect {
+    fill: #738495;
+}

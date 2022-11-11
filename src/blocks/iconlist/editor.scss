@@ -119,3 +119,11 @@
 .kt-svg-icon-list-level-5 {
 	padding-left: 10rem;
 }
+
+.wp-block[data-align="center"] .wp-block-kadence-iconlist {
+	clear: both;
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	display: table;
+}

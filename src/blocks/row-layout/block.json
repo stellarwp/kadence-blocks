@@ -100,11 +100,11 @@
 	},
 	"topPadding": {
 	  "type": "number",
-	  "default": 25
+	  "default": ""
 	},
 	"bottomPadding": {
 	  "type": "number",
-	  "default": 25
+	  "default": ""
 	},
 	"leftPadding": {
 	  "type": "number",
@@ -654,6 +654,40 @@
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"gradient": {
+		"type": "string",
+		"default": ""
+	},
+	"overlayGradient": {
+		"type": "string",
+		"default": ""
+	},
+	"tabletBackgroundType": {
+		"type": "string",
+		"default": "normal"
+	},
+	"mobileBackgroundType": {
+		"type": "string",
+		"default": "normal"
+	},
+	"padding": {
+		"type": "array",
+		"default": [
+			"sm",
+			"",
+			"sm",
+			""
+		]
+	},
+	"mobilePadding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
 	}
   },
   "supports": {

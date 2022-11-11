@@ -82,8 +82,12 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			$css->add_property( 'display', 'block' );
 		}
 
+		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		$css->render_measure_output( $attributes, 'padding', 'padding' );
+		$css->render_measure_output( $attributes, 'margin', 'margin' );
+
 		// Style.
-		if ( isset( $attributes['size'] ) || isset( $attributes['lineHeight'] ) || isset( $attributes['typography'] ) || isset( $attributes['fontWeight'] ) || isset( $attributes['fontStyle'] ) || isset( $attributes['textTransform'] ) || isset( $attributes['letterSpacing'] ) || isset( $attributes['color'] ) || isset( $attributes['topMargin'] ) || isset( $attributes['rightMargin'] ) || isset( $attributes['bottomMargin'] ) || isset( $attributes['leftMargin'] ) || isset( $attributes['textShadow'] ) || isset( $attributes['align'] ) || isset( $attributes['padding'] ) ) {
+		if ( isset( $attributes['size'] ) || isset( $attributes['lineHeight'] ) || isset( $attributes['typography'] ) || isset( $attributes['fontWeight'] ) || isset( $attributes['fontStyle'] ) || isset( $attributes['textTransform'] ) || isset( $attributes['letterSpacing'] ) || isset( $attributes['color'] ) || isset( $attributes['topMargin'] ) || isset( $attributes['rightMargin'] ) || isset( $attributes['bottomMargin'] ) || isset( $attributes['leftMargin'] ) || isset( $attributes['textShadow'] ) || isset( $attributes['align'] ) ) {
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 			if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
 				$css->add_property( 'text-align', $attributes['align'] );
@@ -110,18 +114,31 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 				$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
 			}
 			if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
-				if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+						$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+					}
+				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+				} else if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
 					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 				}
 			}
 			if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
-				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+							$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+						}
+				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+				} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 				}
 			}
 			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable'] ) {
 				$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 			}
+
 			if ( isset( $attributes['topMargin'] ) && is_numeric( $attributes['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
 				// This fixes an issue where the background doesn't show over the top of the item that is above it.
@@ -138,18 +155,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			if ( isset( $attributes['leftMargin'] ) && is_numeric( $attributes['leftMargin'] ) ) {
 				$css->add_property( 'margin-left', $attributes['leftMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
 			}
-			if ( isset( $attributes['padding'] ) && is_array( $attributes['padding'] ) && isset( $attributes['padding'][0] ) && is_numeric( $attributes['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['padding'][0] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['padding'] ) && is_array( $attributes['padding'] ) && isset( $attributes['padding'][1] ) && is_numeric( $attributes['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['padding'][1] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['padding'] ) && is_array( $attributes['padding'] ) && isset( $attributes['padding'][2] ) && is_numeric( $attributes['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['padding'][2] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['padding'] ) && is_array( $attributes['padding'] ) && isset( $attributes['padding'][3] ) && is_numeric( $attributes['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['padding'][3] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
+
 		}
 		// Highlight.
 		if ( isset( $attributes['markBorder'] ) || isset( $attributes['markBorderWidth'] ) || isset( $attributes['markBorderStyle'] ) || isset( $attributes['markPadding'] ) || isset( $attributes['markLetterSpacing'] ) || isset( $attributes['markSize'] ) || isset( $attributes['markLineHeight'] ) || isset( $attributes['markTypography'] ) || isset( $attributes['markColor'] ) || isset( $attributes['markBG'] ) || isset( $attributes['markTextTransform'] ) ) {
@@ -219,7 +225,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}
-		if ( isset( $attributes['tabSize'] ) || isset( $attributes['tabLineHeight'] ) || isset( $attributes['tabletAlign'] ) || isset( $attributes['tabletMargin'] ) || isset( $attributes['tabletPadding'] ) ) {
+		if ( isset( $attributes['tabSize'] ) || isset( $attributes['tabLineHeight'] ) || isset( $attributes['tabletAlign'] ) ) {
 			// Tablet.
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -232,30 +238,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			if ( isset( $attributes['tabletAlign'] ) && ! empty( $attributes['tabletAlign'] ) ) {
 				$css->add_property( 'text-align', $attributes['tabletAlign'] . '!important' );
 			}
-			if ( isset( $attributes['tabletPadding'] ) && is_array( $attributes['tabletPadding'] ) && isset( $attributes['tabletPadding'][0] ) && is_numeric( $attributes['tabletPadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['tabletPadding'][0] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['tabletPadding'] ) && is_array( $attributes['tabletPadding'] ) && isset( $attributes['tabletPadding'][1] ) && is_numeric( $attributes['tabletPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['tabletPadding'][1] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['tabletPadding'] ) && is_array( $attributes['tabletPadding'] ) && isset( $attributes['tabletPadding'][2] ) && is_numeric( $attributes['tabletPadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['tabletPadding'][2] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['tabletPadding'] ) && is_array( $attributes['tabletPadding'] ) && isset( $attributes['tabletPadding'][3] ) && is_numeric( $attributes['tabletPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['tabletPadding'][3] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['tabletMargin'] ) && is_array( $attributes['tabletMargin'] ) && isset( $attributes['tabletMargin'][0] ) && is_numeric( $attributes['tabletMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['tabletMargin'][0] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['tabletMargin'] ) && is_array( $attributes['tabletMargin'] ) && isset( $attributes['tabletMargin'][1] ) && is_numeric( $attributes['tabletMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['tabletMargin'][1] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['tabletMargin'] ) && is_array( $attributes['tabletMargin'] ) && isset( $attributes['tabletMargin'][2] ) && is_numeric( $attributes['tabletMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['tabletMargin'][2] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['tabletMargin'] ) && is_array( $attributes['tabletMargin'] ) && isset( $attributes['tabletMargin'][3] ) && is_numeric( $attributes['tabletMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['tabletMargin'][3] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
+
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][1] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][1] ) ) {
@@ -282,7 +265,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			}
 			$css->set_media_state( 'desktop' );
 		}
-		if ( isset( $attributes['mobileSize'] ) || isset( $attributes['mobileLineHeight'] ) || isset( $attributes['mobileAlign'] ) || isset( $attributes['mobileMargin'] ) || isset( $attributes['mobilePadding'] ) ) {
+		if ( isset( $attributes['mobileSize'] ) || isset( $attributes['mobileLineHeight'] ) || isset( $attributes['mobileAlign'] ) ) {
 			// Mobile.
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -295,30 +278,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			if ( isset( $attributes['mobileAlign'] ) && ! empty( $attributes['mobileAlign'] ) ) {
 				$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
 			}
-			if ( isset( $attributes['mobilePadding'] ) && is_array( $attributes['mobilePadding'] ) && isset( $attributes['mobilePadding'][0] ) && is_numeric( $attributes['mobilePadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['mobilePadding'][0] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['mobilePadding'] ) && is_array( $attributes['mobilePadding'] ) && isset( $attributes['mobilePadding'][1] ) && is_numeric( $attributes['mobilePadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['mobilePadding'][1] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['mobilePadding'] ) && is_array( $attributes['mobilePadding'] ) && isset( $attributes['mobilePadding'][2] ) && is_numeric( $attributes['mobilePadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['mobilePadding'][2] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['mobilePadding'] ) && is_array( $attributes['mobilePadding'] ) && isset( $attributes['mobilePadding'][3] ) && is_numeric( $attributes['mobilePadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['mobilePadding'][3] . ( ! isset( $attributes['paddingType'] ) ? 'px' : $attributes['paddingType'] ) );
-			}
-			if ( isset( $attributes['mobileMargin'] ) && is_array( $attributes['mobileMargin'] ) && isset( $attributes['mobileMargin'][0] ) && is_numeric( $attributes['mobileMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['mobileMargin'][0] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['mobileMargin'] ) && is_array( $attributes['mobileMargin'] ) && isset( $attributes['mobileMargin'][1] ) && is_numeric( $attributes['mobileMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['mobileMargin'][1] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['mobileMargin'] ) && is_array( $attributes['mobileMargin'] ) && isset( $attributes['mobileMargin'][2] ) && is_numeric( $attributes['mobileMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['mobileMargin'][2] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['mobileMargin'] ) && is_array( $attributes['mobileMargin'] ) && isset( $attributes['mobileMargin'][3] ) && is_numeric( $attributes['mobileMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['mobileMargin'][3] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
+
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][2] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][2] ) ) {

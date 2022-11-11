@@ -21,12 +21,18 @@ import {
 } from '@wordpress/core-data';
 import { store as editorStore } from '@wordpress/block-editor';
 import {
-	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	InspectorControlTabs,
 	URLInputControl,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer
 } from '@kadence/components';
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import {
+	getPreviewSize,
+	KadenceColorOutput,
+	getSpacingOptionOutput,
+	mouseOverVisualizer
+} from '@kadence/helpers';
 
 import {
 	useBlockProps,
@@ -89,6 +95,9 @@ export function EditInner( props ) {
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	const [ marginDesktop, setMarginDesktop ] = useFormMeta( '_kad_form_marginDesktop' );
 	const [ marginTablet, setMarginTablet ] = useFormMeta( '_kad_form_marginTablet' );
@@ -445,41 +454,51 @@ export function EditInner( props ) {
 							title={__( 'Spacing', 'kadence-blocks' )}
 							initialOpen={true}
 						>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
-								value={paddingDesktop}
-								control={paddingControl}
-								tabletValue={paddingTablet}
-								mobileValue={paddingMobile}
-								onChange={( value ) => setMetaAttribute( value, 'paddingDesktop' )}
-								onChangeTablet={( value ) => setMetaAttribute( value, 'paddingTablet' )}
-								onChangeMobile={( value ) => setMetaAttribute( value, 'paddingMobile' )}
-								onChangeControl={( value ) => setPaddingControl( value )}
-								min={0}
-								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
-								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
-								unit={paddingUnit}
+								value={ paddingDesktop }
+								tabletValue={ paddingTablet }
+								mobileValue={ paddingMobile }
+								onChange={( value ) => {
+									setMetaAttribute( value, 'paddingDesktop' )
+								}}
+								onChangeTablet={( value ) => {
+									setMetaAttribute( value, 'paddingTablet' )
+								}}
+								onChangeMobile={( value ) => {
+									setMetaAttribute( value, 'paddingMobile' )
+								}}
+								min={ 0 }
+								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ paddingUnit }
 								units={[ 'px', 'em', 'rem', '%' ]}
-								onUnit={( value ) => setMetaAttribute( value, 'paddingUnit' )}
+								onUnit={( value ) => setMetaAttribute( value, 'paddingUnit' ) }
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
 							/>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={__( 'Margin', 'kadence-blocks' )}
-								value={marginDesktop}
-								control={marginControl}
-								tabletValue={marginTablet}
-								mobileValue={marginMobile}
+								value={ marginDesktop }
+								tabletValue={ marginTablet }
+								mobileValue={ marginMobile }
 								onChange={( value ) => {
 									setMetaAttribute( value, 'marginDesktop' );
 								}}
-								onChangeTablet={( value ) => setMetaAttribute( value, 'marginTablet' )}
-								onChangeMobile={( value ) => setMetaAttribute( value, 'marginMobile' )}
-								onChangeControl={( value ) => setMarginControl( value )}
-								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
-								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
-								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
-								unit={marginUnit}
+								onChangeTablet={( value ) => {
+									setMetaAttribute( value, 'marginTablet' )
+								}}
+								onChangeMobile={( value ) => {
+									setMetaAttribute( value, 'marginMobile' )
+								}}
+								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ marginUnit }
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setMetaAttribute( value, 'marginUnit' )}
+								onUnit={( value ) => setMetaAttribute( value, 'marginUnit' ) }
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
 					</>
@@ -490,15 +509,15 @@ export function EditInner( props ) {
 
 			<div className={containerClasses} style={
 				{
-					marginTop   : ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight : ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft  : ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-					paddingTop   : ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight : ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft  : ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+					paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 				}}
 			>
 				{( direct ) ?
@@ -564,6 +583,24 @@ export function EditInner( props ) {
 					/>
 				</div>
 			</div>
+
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+			/>
+			<SpacingVisualizer
+				type="inside"
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+			/>
+
 		</div>
 	);
 }

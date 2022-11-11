@@ -54,7 +54,7 @@
 .wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:not(.link) {
     text-decoration: none;
 }
-.kt-button::before {
+.kt-btn-wrap .kt-button::before {
     position: absolute;
 	content: "";
 	top: 0;
@@ -64,11 +64,13 @@
 	z-index: -1;
 	opacity: 0;
 	transition: all .3s ease-in-out;
+	display: block;
+	filter: none;
 }
 .kt-button:not(.kb-btn-global-inherit)::before {
 	background:#444444;
 }
-.kt-button:hover::before, .kt-button:focus::before {
+.kt-btn-wrap .kt-button:hover::before, .kt-btn-wrap .kt-button:focus::before {
 	opacity: 1;
 }
 .kt-btn-svg-icon.kt-btn-side-right {

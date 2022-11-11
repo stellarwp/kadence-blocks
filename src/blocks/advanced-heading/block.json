@@ -96,6 +96,15 @@
 	  "type": "number",
 	  "default": ""
 	},
+	"margin": {
+	  "type": "array",
+	    "default": [
+		  "",
+	      "",
+	      "",
+	      ""
+	    ]
+    },
 	"marginType": {
 	  "type": "string",
 	  "default": "px"

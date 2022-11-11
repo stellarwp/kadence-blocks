@@ -29,10 +29,10 @@ function KadenceTab( { attributes, setAttributes, clientId } ) {
 			} );
 			kttabUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kttabUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kttabUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				kttabUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			kttabUniqueIDs.push( uniqueID );
 		}

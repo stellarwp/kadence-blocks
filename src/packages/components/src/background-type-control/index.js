@@ -36,7 +36,7 @@ import { Button, ButtonGroup, Icon } from '@wordpress/components';
  export default function BackgroundTypeControl( {
 	label,
 	type,
-	onTypeChange,
+	onChange,
 	allowedTypes = null,
 	types = null,
 } ) {
@@ -87,7 +87,7 @@ import { Button, ButtonGroup, Icon } from '@wordpress/components';
 								<Button
 									key={ key }
 									label={ title }
-									onClick={ () => onTypeChange( key ) }
+									onClick={ () => onChange( key ) }
 									isTertiary={key !== type}
 									isPrimary={key === type}
 									className={ `kadence-radio-item${ ( key === type ? ' radio-is-active' : '' ) }` }
