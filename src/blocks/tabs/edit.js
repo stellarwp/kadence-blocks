@@ -122,7 +122,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
+	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'individual' );
 
 	useEffect( () => {
 		if ( ! uniqueID ) {

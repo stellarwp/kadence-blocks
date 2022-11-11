@@ -484,7 +484,10 @@ class Kadence_Blocks_Frontend {
 		$rest_url    = wp_parse_url( trailingslashit( rest_url() ) );
 		$current_url = wp_parse_url( add_query_arg( array() ) );
 
-		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+		if ( isset( $current_url['path'] ) && isset( $rest_url['path'] ) ) {
+			return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+		}
+		return false;
 	}
 
 	/**
@@ -1027,41 +1030,41 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 			if ( isset( $attr['tabletLayout'] ) && ! empty( $attr['tabletLayout'] ) ) {
 				if ( 'left-half' === $attr['tabletLayout'] ) {
-					$tabCol1 = '50';
-					$tabCol2 = '25';
-					$tabCol3 = '25';
+					$tabCol1 = '0 1 50%';
+					$tabCol2 = '0 1 25%';
+					$tabCol3 = '0 1 25%';
 				} elseif ( 'right-half' === $attr['tabletLayout'] ) {
-					$tabCol1 = '25';
-					$tabCol2 = '25';
-					$tabCol3 = '50';
+					$tabCol1 = '0 1 25%';
+					$tabCol2 = '0 1 25%';
+					$tabCol3 = '0 1 50%';
 				} elseif ( 'center-half' === $attr['tabletLayout'] ) {
-					$tabCol1 = '25';
-					$tabCol2 = '50';
-					$tabCol3 = '25';
+					$tabCol1 = '0 1 25%';
+					$tabCol2 = '0 1 50%';
+					$tabCol3 = '0 1 25%';
 				} elseif ( 'center-wide' === $attr['tabletLayout'] ) {
-					$tabCol1 = '20';
-					$tabCol2 = '60';
-					$tabCol3 = '20';
+					$tabCol1 = '0 1 20%';
+					$tabCol2 = '0 1 60%';
+					$tabCol3 = '0 1 20%';
 				} elseif ( 'center-exwide' === $attr['tabletLayout'] ) {
-					$tabCol1 = '15';
-					$tabCol2 = '70';
-					$tabCol3 = '15';
+					$tabCol1 = '0 1 15%';
+					$tabCol2 = '0 1 70%';
+					$tabCol3 = '0 1 15%';
 				} elseif ( 'row' === $attr['tabletLayout'] ) {
-					$tabCol1 = '100';
-					$tabCol2 = '100';
-					$tabCol3 = '100';
+					$tabCol1 = '0 1 100%';
+					$tabCol2 = '0 1 100%';
+					$tabCol3 = '0 1 100%';
 				} else {
-					$tabCol1 = '33.33';
-					$tabCol2 = '33.33';
-					$tabCol3 = '33.33';
+					$tabCol1 = '1';
+					$tabCol2 = '1';
+					$tabCol3 = '1';
 				}
 				$css->start_media_query( $media_query['tabletOnly'] );
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1' );
-				$css->add_property( 'flex', '0 1 ' . $tabCol1 . '%' );
+				$css->add_property( 'flex', $tabCol1 );
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2' );
-				$css->add_property( 'flex', '0 1 ' . $tabCol2 . '%' );
+				$css->add_property( 'flex', $tabCol2 );
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-3' );
-				$css->add_property( 'flex', '0 1 ' . $tabCol3 . '%' );
+				$css->add_property( 'flex', $tabCol3 );
 				$css->stop_media_query();
 			}
 		}
@@ -2026,6 +2029,8 @@ class Kadence_Blocks_Frontend {
 			} else {
 				$css->add_property( 'z-index', $attr['zIndex'] );
 			}
+			$css->set_selector( 'div:not(.kt-inside-inner-col) > .kadence-column' . $unique_id );
+			$css->add_property( 'position', 'relative' );
 		}
 		$css->start_media_query( $media_query['tablet'] );
 		if ( ! empty( $attr['maxWidth'][1] ) ) {

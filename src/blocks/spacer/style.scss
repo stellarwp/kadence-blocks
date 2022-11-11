@@ -82,3 +82,19 @@
         transform: perspective(1px) translate(0%, -50%);
     }
 }
+@media (max-width: 767px) {
+	.kvs-sm-false {
+		display:none !important;
+	}
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+	.kvs-md-false {
+		display:none !important;
+	}
+}
+@media screen and (min-width: 1025px) {
+  .kvs-lg-false {
+  display:none !important;
+
+    }
+}
