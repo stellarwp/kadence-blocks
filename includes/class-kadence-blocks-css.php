@@ -152,6 +152,66 @@ class Kadence_Blocks_CSS {
 	private static $instance = null;
 
 	/**
+	 * Spacing sites used in string based padding / margin.
+	 */
+	private $spacing_sizes = array (
+			'none' => array (
+				'value' => '0',
+				'label' => 'None',
+			),
+			'xxs' => array (
+				'value' => 'xxs',
+				'output' => 'var(--global-kb-spacing-xxs, 0.5rem)',
+				'size' => 8,
+			),
+			'xs' => array (
+				'value' => 'xs',
+				'output' => 'var(--global-kb-spacing-xs, 1rem)',
+				'size' => 16,
+			),
+			'sm' => array (
+				'value' => 'sm',
+				'output' => 'var(--global-kb-spacing-sm, 1.5rem)',
+				'size' => 24,
+			),
+			'md' => array (
+				'value' => 'md',
+				'output' => 'var(--global-kb-spacing-md, 2rem)',
+				'size' => 32,
+			),
+			'lg' => array (
+				'value' => 'lg',
+				'output' => 'var(--global-kb-spacing-lg, 3rem)',
+				'size' => 48,
+			),
+			'xl' => array (
+				'value' => 'xl',
+				'output' => 'var(--global-kb-spacing-xl, 4rem)',
+				'size' => 64,
+			),
+			'xxl' => array (
+				'value' => 'xxl',
+				'output' => 'var(--global-kb-spacing-xxl, 5rem)',
+				'size' => 80,
+			),
+			'3xl' => array (
+				'value' => '3xl',
+				'output' => 'var(--global-kb-spacing-3xl, 6.5rem)',
+				'size' => 104,
+			),
+			'4xl' => array (
+				'value' => '4xl',
+				'output' => 'var(--global-kb-spacing-4xl, 8rem)',
+				'size' => 128,
+			),
+			'5xl' => array (
+				'value' => '5xl',
+				'output' => 'var(--global-kb-spacing-5xl, 10rem)',
+				'size' => 160,
+			),
+	);
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -1587,23 +1647,31 @@ class Kadence_Blocks_CSS {
 		if ( isset( $attributes[ $args['desktop_key'] ] ) && is_array( $attributes[ $args['desktop_key'] ] ) ) {
 			if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_numeric( $attributes[ $args['desktop_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][0] ) && ! empty( $attributes[ $args['desktop_key'] ][0] ) ) {
+			} else if ( 'position' === $property && ! empty( $attributes[ $args['desktop_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] );
+			} else if ( ! empty( $attributes[ $args['desktop_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][0] ) );
 			}
 			if ( isset( $attributes[ $args['desktop_key'] ][1] ) && is_numeric( $attributes[ $args['desktop_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][1] ) && ! empty( $attributes[ $args['desktop_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] );
+			} else if ( ! empty( $attributes[ $args['desktop_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][1] ) ) {
+				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][1] ) );
 			}
 			if ( isset( $attributes[ $args['desktop_key'] ][2] ) && is_numeric( $attributes[ $args['desktop_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][2] ) && ! empty( $attributes[ $args['desktop_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] );
+			} else if ( ! empty( $attributes[ $args['desktop_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][2] ) ) {
+				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][2] ) );
 			}
 			if ( isset( $attributes[ $args['desktop_key'] ][3] ) && is_numeric( $attributes[ $args['desktop_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][3] ) && ! empty( $attributes[ $args['desktop_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] );
+			} else if ( ! empty( $attributes[ $args['desktop_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][3] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][3] ) );
 			}
 		}
 		$this->set_media_state( 'tablet' );
@@ -1612,21 +1680,29 @@ class Kadence_Blocks_CSS {
 				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][0] ) && ! empty( $attributes[ $args['tablet_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] );
+			} else if ( ! empty( $attributes[ $args['tablet_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][0] ) );
 			}
 			if ( isset( $attributes[ $args['tablet_key'] ][1] ) && is_numeric( $attributes[ $args['tablet_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][1] ) && ! empty( $attributes[ $args['tablet_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] );
+			} else if ( ! empty( $attributes[ $args['tablet_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][1] ) ) {
+				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][1] ) );
 			}
 			if ( isset( $attributes[ $args['tablet_key'] ][2] ) && is_numeric( $attributes[ $args['tablet_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][2] ) && ! empty( $attributes[ $args['tablet_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] );
+			} else if ( ! empty( $attributes[ $args['tablet_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][2] ) ) {
+				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][2] ) );
 			}
 			if ( isset( $attributes[ $args['tablet_key'] ][3] ) && is_numeric( $attributes[ $args['tablet_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][3] ) && ! empty( $attributes[ $args['tablet_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] );
+			} else if ( ! empty( $attributes[ $args['tablet_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][3] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][3] ) );
 			}
 		}
 		$this->set_media_state( 'mobile' );
@@ -1635,21 +1711,29 @@ class Kadence_Blocks_CSS {
 				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][0] ) && ! empty( $attributes[ $args['mobile_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] );
+			} else if ( ! empty( $attributes[ $args['mobile_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][0] ) );
 			}
 			if ( isset( $attributes[ $args['mobile_key'] ][1] ) && is_numeric( $attributes[ $args['mobile_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][1] ) && ! empty( $attributes[ $args['mobile_key'] ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] );
+			} else if ( ! empty( $attributes[ $args['mobile_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][1] ) ) {
+				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][1] ) );
 			}
 			if ( isset( $attributes[ $args['mobile_key'] ][2] ) && is_numeric( $attributes[ $args['mobile_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][2] ) && ! empty( $attributes[ $args['mobile_key'] ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] );
+			} else if ( ! empty( $attributes[ $args['mobile_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][2] ) ) {
+				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][2] ) );
 			}
 			if ( isset( $attributes[ $args['mobile_key'] ][3] ) && is_numeric( $attributes[ $args['mobile_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] . $unit );
 			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][3] ) && ! empty( $attributes[ $args['mobile_key'] ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] );
+			} else if ( ! empty( $attributes[ $args['mobile_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][3] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][3] ) );
 			}
 		}
 		$this->set_media_state( 'desktop' );
@@ -1869,4 +1953,15 @@ class Kadence_Blocks_CSS {
 		return self::$styles[ $this->_style_id ];
 	}
 
+	public function is_variable_value( $value ) {
+		return isset( $this->spacing_sizes[$value]['output'] );
+	}
+
+	public function get_variable_value( $value ) {
+		if( $this->is_variable_value( $value) ) {
+			return $this->spacing_sizes[$value]['output'];
+		}
+
+		return 0;
+	}
 }
