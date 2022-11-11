@@ -6,6 +6,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import edit from './edit';
 import metadata from './block.json';
 import transforms from './transforms';
+import deprecated from './deprecated';
 import { lottieIcon } from '@kadence/icons';
 import { __, _x } from '@wordpress/i18n';
 
@@ -27,5 +28,6 @@ registerBlockType('kadence/lottie', {
 		src: lottieIcon,
 	},
 	edit,
+	deprecated,
 	save: () => null,
 });
