@@ -516,6 +516,13 @@ class Kadence_Blocks_Frontend {
 
 
 		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-parallax.min.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
+		wp_localize_script(
+					'kadence-blocks-parallax-js',
+					'kadence_blocks_parallax',
+					array(
+						'speed' => apply_filters( 'kadence_blocks_parallax_speed', -0.1 ),
+					)
+		);
 		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'includes/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-slick-init.min.js', array(
@@ -1107,7 +1114,13 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'overflow', 'hidden' );
 			}
 			if ( isset( $attr['bgColor'] ) && ! empty( $attr['bgColor'] ) ) {
-				if ( isset( $attr['bgColorClass'] ) && empty( $attr['bgColorClass'] ) || ! isset( $attr['bgColorClass'] ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					if ( isset( $attr['bgColorClass'] ) && empty( $attr['bgColorClass'] ) || ! isset( $attr['bgColorClass'] ) ) {
+						$css->add_property( 'background-color', $css->render_color( $attr['bgColor'] ) );
+					}
+				} else if ( strpos( $attr['bgColor'], 'palette' ) === 0 ) {
+					$css->add_property( 'background-color', $css->render_color( $attr['bgColor'] ) );
+				} else if ( isset( $attr['bgColorClass'] ) && empty( $attr['bgColorClass'] ) || ! isset( $attr['bgColorClass'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attr['bgColor'] ) );
 				}
 			}
@@ -1145,7 +1158,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'color', $css->render_color( $attr['linkHoverColor'] ) );
 		}
 		if ( isset( $attr['bottomSep'] ) && 'none' != $attr['bottomSep'] ) {
-			if ( isset( $attr['bottomSepHeight'] ) || isset( $attr['bottomSepWidth'] ) ) {
+			if ( isset( $attr['bottomSepHeight'] ) || isset( $attr['bottomSepWidth'] ) || isset( $attr['bottomSepColor'] ) ) {
 				if ( isset( $attr['bottomSepHeight'] ) ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
 					$css->add_property( 'height', $attr['bottomSepHeight'] . 'px' );
@@ -1154,6 +1167,10 @@ class Kadence_Blocks_Frontend {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
 					$css->add_property( 'width', $attr['bottomSepWidth'] . '%' );
 				}
+			}
+			if ( ! empty( $attr['bottomSepColor'] ) ) {
+				$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+				$css->add_property( 'fill', $css->render_color( $attr['bottomSepColor'] ) . '!important' );
 			}
 			if ( isset( $attr['bottomSepHeightTab'] ) || isset( $attr['bottomSepWidthTab'] ) ) {
 				$css->start_media_query( $media_query['tablet'] );
@@ -1181,7 +1198,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $attr['topSep'] ) && 'none' != $attr['topSep'] ) {
-			if ( isset( $attr['topSepHeight'] ) || isset( $attr['topSepWidth'] ) ) {
+			if ( isset( $attr['topSepHeight'] ) || isset( $attr['topSepWidth'] )|| isset( $attr['topSepColor'] ) ) {
 				if ( isset( $attr['topSepHeight'] ) ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
 					$css->add_property( 'height', $attr['topSepHeight'] . 'px' );
@@ -1189,6 +1206,10 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['topSepWidth'] ) ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
 					$css->add_property( 'width', $attr['topSepWidth'] . '%' );
+				}
+				if ( ! empty( $attr['topSepColor'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+					$css->add_property( 'fill', $css->render_color( $attr['topSepColor'] ) . '!important' );
 				}
 			}
 			if ( isset( $attr['topSepHeightTab'] ) || isset( $attr['topSepWidthTab'] ) ) {
@@ -2073,9 +2094,9 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
-		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || ! empty( $attr['height'][1] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
+		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || ( isset( $attr['height'][1] ) && is_numeric( $attr['height'][1] ) ) || isset( $attr['tabletBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( ! empty( $attr['height'][1] ) ) {
+			if ( isset( $attr['height'][1] ) && is_numeric( $attr['height'][1] ) ) {
 				$css->add_property( 'min-height', $attr['height'][1] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['topPaddingT'] ) ) {
@@ -2218,9 +2239,9 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
-		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {
+		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || ( isset( $attr['height'][2] ) && is_numeric( $attr['height'][2] ) ) || isset( $attr['mobileBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( ! empty( $attr['height'][2] ) ) {
+			if ( isset( $attr['height'][2] ) && is_numeric( $attr['height'][2] ) ) {
 				$css->add_property( 'min-height', $attr['height'][2] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['topPaddingM'] ) ) {

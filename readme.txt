@@ -106,6 +106,45 @@ Release Date: April 20th, 2022
 * Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
 
+= 2.4.20 =
+Release Date: November 9th, 2022
+* Fix: Issue with Reusable Blocks and endlessly looping in editor.
+* Fix: Issue with toc in widget area.
+* Fix: Issue with background position in section when 0.
+* Fix: Issue with min height in section when 0.
+* Fix: Issue with inline font selector.
+* Fix: Issue with border on image block in firefox.
+
+ = 2.4.19 =
+ Release Date: November 1st, 2022
+ * Update: Prevent issue with RankMath in sitemap XML sitemap.
+ * Update: Image margin settings not applying correctly when aligned left or right.
+
+ = 2.4.18 =
+ Release Date: October 31st, 2022
+ * Update: Prevent issue with RankMath in sitemap XML sitemap.
+ * Fix: Gallery not pulling in alt text changes when updating in block.
+
+ = 2.4.17 =
+ Release Date: October 24th, 2022
+ * Fix: Issue with row padding not outputing 0.
+
+ = 2.4.16 =
+ Release Date: October 24th, 2022
+ * Update: Tabs js to not use jQuery.
+ * Update: Google Fonts.
+ * Update: Improve performance of Row Layout background videos. Prevent preload when hidden.
+ * Fix: Issue with variable colors in some selectors.
+ * Fix: Issue with info box icon hover background in editor.
+
+ = 2.4.15 =
+ Release Date: October 6th, 2022
+ * Update: timeout for cloud libraries.
+ * Fix: Parallax in Safari 16.
+ * Fix: zIndex issue with sections.
+ * Fix: Issue with some responsive row layouts.
+ * Fix: Issue with individual border radius for tab content.
+
 = 2.4.14 =
 Release Date: September 6th, 2022
 * Update: Border radius control for tab content.

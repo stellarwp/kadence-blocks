@@ -147,10 +147,10 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 			} );
 			kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
 		} else if ( kbpostsUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
+			}
 		} else {
 			kbpostsUniqueIDs.push( uniqueID );
 		}

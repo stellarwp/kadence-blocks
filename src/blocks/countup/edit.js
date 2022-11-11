@@ -103,9 +103,10 @@ function KadenceCounterUp( {
 			} );
 			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbCountUpUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			}
 		} else {
 			kbCountUpUniqueIDs.push( uniqueID );
 		}

@@ -14,7 +14,7 @@ import { Player, Controls } from '@lottiefiles/react-lottie-player';
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
 import { has, get } from 'lodash';
@@ -53,8 +53,6 @@ import {
 	getSpacingOptionOutput
 } from '@kadence/helpers';
 
-const ktlottieUniqueIDs = [];
-
 export function Edit( {
 	attributes,
 	setAttributes,
@@ -91,14 +89,24 @@ export function Edit( {
 		marginUnit,
 		label,
 	} = attributes;
-	const previewDevice = useSelect( ( select ) => {
-		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
-	}, [] );
+
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
 	const [ lottieAnimationsCacheKey, setLottieAnimationsCacheKey ] = useState( { key: Math.random() } );
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+	 [ clientId ]
+	);
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -133,19 +141,24 @@ export function Edit( {
 	} );
 
 	useEffect( () => {
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/lottie', attributes);
+		let smallID = '_' + clientId.substr( 2, 9 );
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		if ( ! uniqueID ) {
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
+			}
+
+			attributes = setBlockDefaults( 'kadence/lottie', attributes);
+			setAttributes( { uniqueID: smallID } );
+            addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
+			}
 		} else {
-			ktlottieUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
 	}, [] );
 	const containerClasses = classnames( {

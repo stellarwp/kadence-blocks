@@ -190,10 +190,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			ktaccordUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktaccordUniqueIDs.includes( uniqueID ) ) {
 			// This will force a rebuild of the unique ID when preview changes.
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktaccordUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				ktaccordUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			}
 		} else {
 			ktaccordUniqueIDs.push( uniqueID );
 		}

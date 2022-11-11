@@ -9,7 +9,7 @@ import { get, has, omit, pick, debounce } from 'lodash';
  */
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { compose } from '@wordpress/compose';
-import { useSelect, withSelect } from '@wordpress/data';
+import { useSelect, withSelect, useDispatch } from '@wordpress/data';
 import {
 	BlockAlignmentControl,
 	BlockControls,
@@ -113,7 +113,6 @@ export function ImageEdit( {
 	onReplace,
 	context,
 	clientId,
-	getPreviewDevice,
 } ) {
 	const {
 		url = '',
@@ -141,7 +140,21 @@ export function ImageEdit( {
 			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'url', contextPost );
 		}
 	}
+
+	const { addUniqueID } = useDispatch('kadenceblocks/data');
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect( () => {
+		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/image' ] !== undefined && typeof blockConfigObject[ 'kadence/image' ] === 'object' ) {
@@ -149,17 +162,21 @@ export function ImageEdit( {
 					attributes[ attribute ] = blockConfigObject[ 'kadence/image' ][ attribute ];
 				} );
 			}
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktimageUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
+			}
 		} else {
-			ktimageUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
@@ -172,11 +189,9 @@ export function ImageEdit( {
 				inQueryBlock: false,
 			} );
 		}
-		const debouncedContent = debounce( () => {
-			getDynamic();
-		}, 200 );
-		debouncedContent();
+		debounce( getDynamic, 200 );
 	}, [] );
+
 	const [ temporaryURL, setTemporaryURL ] = useState();
 	const altRef = useRef();
 	useEffect( () => {
@@ -385,7 +400,7 @@ export function ImageEdit( {
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
-					previewDevice={ getPreviewDevice }
+					previewDevice={ previewDevice }
 					attributes={ attributes }
 					setAttributes={ setAttributes }
 					isSelected={ isSelected }
@@ -459,10 +474,5 @@ export function ImageEdit( {
 	);
 }
 export default compose( [
-	withSelect( ( select, ownProps ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
 	withNotices,
 ] )( ImageEdit );

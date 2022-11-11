@@ -1255,10 +1255,10 @@ export default function Image( {
 
 					borderColor: ( '' !== borderColor ? KadenceColorOutput( borderColor ) : undefined ),
 					borderStyle: 'solid',
-					borderTopWidth: ( '' !== previewBorderTop ? previewBorderTop + borderWidthUnit : 'inherit' ),
-					borderRightWidth: ( '' !== previewBorderRight ? previewBorderRight + borderWidthUnit : 'inherit' ),
-					borderBottomWidth: ( '' !== previewBorderBottom ? previewBorderBottom + borderWidthUnit : 'inherit' ),
-					borderLeftWidth: ( '' !== previewBorderLeft ? previewBorderLeft + borderWidthUnit : 'inherit' ),
+					borderTopWidth: ( '' !== previewBorderTop ? previewBorderTop + borderWidthUnit : '0' ),
+					borderRightWidth: ( '' !== previewBorderRight ? previewBorderRight + borderWidthUnit : '0' ),
+					borderBottomWidth: ( '' !== previewBorderBottom ? previewBorderBottom + borderWidthUnit : '0' ),
+					borderLeftWidth: ( '' !== previewBorderLeft ? previewBorderLeft + borderWidthUnit : '0' ),
 					borderRadius:  ( '' !== borderRadius[0] ? borderRadius[0] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[1] ? borderRadius[1] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[2] ? borderRadius[2] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[3] ? borderRadius[3] + borderRadiusUnit : '0' ),
 
 					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor ) : undefined ),

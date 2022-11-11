@@ -12,8 +12,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n'
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { ToggleControl, RangeControl } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
@@ -45,14 +44,11 @@ import { Fragment } from '@wordpress/element';
 */
 import classnames from 'classnames';
 
-const ktShowMoreUniqueIDs = []
-
 export function Edit ({
 	attributes,
 	setAttributes,
 	clientId,
-    context,
-  	previewDevice
+    context
 } ) {
 
 	const {
@@ -78,21 +74,36 @@ export function Edit ({
 		inQueryBlock
 	} = attributes
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect( () => {
+		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			attributes = setBlockDefaults( 'kadence/show-more', attributes);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
+			setAttributes( { uniqueID: smallID } );
+			addUniqueID( smallID, clientId );
 		} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
-			setAttributes({
-				uniqueID: '_' + clientId.substr(2, 9),
-			})
-			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				setAttributes( { uniqueID: smallID } );
+				addUniqueID( smallID, clientId );
+			}
 		} else {
-			ktShowMoreUniqueIDs.push(uniqueID)
+			addUniqueID( smallID, clientId );
 		}
 
 		if (context && (context.queryId || Number.isFinite(context.queryId)) && context.postId) {
@@ -599,13 +610,4 @@ export function Edit ({
 
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( Edit );
+export default ( Edit );

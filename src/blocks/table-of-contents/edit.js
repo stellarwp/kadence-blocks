@@ -179,10 +179,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			} );
 			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbtableUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				kbtableUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			kbtableUniqueIDs.push( uniqueID );
 		}
@@ -1029,7 +1029,7 @@ export default compose( [
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
-		const postContent = select( 'core/editor' ).getEditedPostContent();
+		const postContent = ( select( 'core/editor' ) ) ? select( 'core/editor' ).getEditedPostContent() : '';
 
 		const blockIndex = getBlockIndex( clientId );
 		const blockOrder = getBlockOrder();

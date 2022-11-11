@@ -181,10 +181,10 @@ export function Edit( {
 			} );
 			ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktmapsUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
+				ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			}
 		} else {
 			ktmapsUniqueIDs.push( uniqueID );
 		}

@@ -10,6 +10,10 @@
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
     padding: 0;
 }
+.block-editor-block-list__block[data-type="kadence/advancedheading"] {
+    margin-bottom: 0;
+    margin-top: 0;
+}
 .wp-block-kadence-advancedheading {
 	display: block;
 }
@@ -123,7 +127,7 @@
     line-height: 1.6;
 }
 .components-popover.kt-popover-font-family .components-popover__content input.components-text-control__input {
-    min-height: 28px;
+    min-height: 30px;
     padding: 5px 4px;
 }
 .components-popover.kt-popover-font-family .components-popover__content  .components-select-control__input {
@@ -147,9 +151,23 @@
     border-left: none;
     box-shadow: none;
     display: block;
-    overflow: inherit;
+    overflow: visible;
     transition: none;
     width: 100%;
+}
+.components-popover.kt-popover-font-family .components-popover__content {
+    .components-input-control__label {
+        font-weight: 400 !important;
+        font-size: 10px;
+        color: #3c434a !important;
+    }
+    .components-flex.components-select-control {
+        gap:2px;
+    }
+    .components-toggle-control .components-flex.components-h-stack {
+        flex-direction: column-reverse;
+        gap: 0;
+    }
 }
 .kt-font-family-icon svg path {
     fill: currentColor;

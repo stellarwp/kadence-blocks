@@ -31,10 +31,10 @@ function KadenceCountdownInner ( props ) {
 			} );
 			kbcountInnerUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbcountInnerUniqueIDs.includes( uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbcountInnerUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if ( this.props.attributes.uniqueID != '_' + clientId.substr( 2, 9 ) ) {
+				this.props.setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				kbcountInnerUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			kbcountInnerUniqueIDs.push( uniqueID );
 		}

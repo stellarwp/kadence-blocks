@@ -1,5 +1,7 @@
 /**
  * Parallax Background.
+ *
+ * global kadence_blocks_parallax
  */
 var ktjarforEach = function ( array, callback, scope ) {
 	for ( var i = 0; i < array.length; i++ ) {
@@ -9,7 +11,7 @@ var ktjarforEach = function ( array, callback, scope ) {
 var myNodeList = document.querySelectorAll( '.kt-jarallax' );
 ktjarforEach( myNodeList, function( index, value ) {
 	jarallax( value, {
-		speed: 0.5,
+		speed: kadence_blocks_parallax.speed,
 		elementInViewport: value,
 	} );
 } );

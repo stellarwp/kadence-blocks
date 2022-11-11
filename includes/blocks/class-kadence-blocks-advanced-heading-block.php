@@ -114,12 +114,24 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 				$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
 			}
 			if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
-				if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+						$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+					}
+				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+				} else if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
 					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 				}
 			}
 			if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
-				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+							$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+						}
+				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+				} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 				}
 			}
