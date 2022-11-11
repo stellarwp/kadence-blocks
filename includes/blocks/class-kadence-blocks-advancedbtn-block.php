@@ -103,59 +103,16 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'text-transform', $attributes['textTransform'] );
 			}
 		}
-		if ( isset( $attributes['margin'] ) && is_array( $attributes['margin'] ) && is_array( $attributes['margin'][0] ) ) {
-			$margin = $attributes['margin'][0];
-			$unit   = ( isset( $attributes['marginUnit'] ) && ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
-			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) ) {
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['desk'][0] ) && is_numeric( $margin['desk'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['desk'][0] . $unit );
-				}
-				if ( isset( $margin['desk'][1] ) && is_numeric( $margin['desk'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['desk'][1] . $unit );
-				}
-				if ( isset( $margin['desk'][2] ) && is_numeric( $margin['desk'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['desk'][2] . $unit );
-				}
-				if ( isset( $margin['desk'][3] ) && is_numeric( $margin['desk'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['desk'][3] . $unit );
-				}
-			}
-			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) ) {
-				$css->set_media_state( 'tablet' );
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['tablet'][0] ) && is_numeric( $margin['tablet'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['tablet'][0] . $unit );
-				}
-				if ( isset( $margin['tablet'][1] ) && is_numeric( $margin['tablet'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['tablet'][1] . $unit );
-				}
-				if ( isset( $margin['tablet'][2] ) && is_numeric( $margin['tablet'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['tablet'][2] . $unit );
-				}
-				if ( isset( $margin['tablet'][3] ) && is_numeric( $margin['tablet'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['tablet'][3] . $unit );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) ) {
-				$css->set_media_state( 'mobile' );
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['mobile'][0] ) && is_numeric( $margin['mobile'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['mobile'][0] . $unit );
-				}
-				if ( isset( $margin['mobile'][1] ) && is_numeric( $margin['mobile'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['mobile'][1] . $unit );
-				}
-				if ( isset( $margin['mobile'][2] ) && is_numeric( $margin['mobile'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['mobile'][2] . $unit );
-				}
-				if ( isset( $margin['mobile'][3] ) && is_numeric( $margin['mobile'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['mobile'][3] . $unit );
-				}
-				$css->set_media_state( 'desktop' );
-			}
+
+		if ( isset( $attributes['margin'][0] ) ) {
+			$css->render_measure_output( $attributes['margin'][0], 'margin', 'margin', [
+				'desktop_key' => 'desk',
+				'tablet_key'  => 'tablet',
+				'mobile_key'  => 'mobile',
+				'unit_key'    => 'marginUnit'
+			] );
 		}
+
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
@@ -218,18 +175,10 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 					if ( isset( $btnvalue['boxShadow'] ) && is_array( $btnvalue['boxShadow'] ) && isset( $btnvalue['boxShadow'][0] ) && true === $btnvalue['boxShadow'][0] ) {
 						$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadow'][7] ) && true === $btnvalue['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadow'][3] ) && is_numeric( $btnvalue['boxShadow'][3] ) ? $btnvalue['boxShadow'][3] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][4] ) && is_numeric( $btnvalue['boxShadow'][4] ) ? $btnvalue['boxShadow'][4] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][5] ) && is_numeric( $btnvalue['boxShadow'][5] ) ? $btnvalue['boxShadow'][5] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadow'][6] ) && is_numeric( $btnvalue['boxShadow'][6] ) ? $btnvalue['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadow'][1] ) && ! empty( $btnvalue['boxShadow'][1] ) ? $btnvalue['boxShadow'][1] : '#000000' ), ( isset( $btnvalue['boxShadow'][2] ) && is_numeric( $btnvalue['boxShadow'][2] ) ? $btnvalue['boxShadow'][2] : 0.2 ) ) );
 					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][0] ) && is_numeric( $btnvalue['margin'][0] ) ) {
-						$css->add_property( 'margin-top', $btnvalue['margin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][1] ) && is_numeric( $btnvalue['margin'][1] ) ) {
-						$css->add_property( 'margin-right', $btnvalue['margin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][2] ) && is_numeric( $btnvalue['margin'][2] ) ) {
-						$css->add_property( 'margin-bottom', $btnvalue['margin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][3] ) && is_numeric( $btnvalue['margin'][3] ) ) {
-						$css->add_property( 'margin-left', $btnvalue['margin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
+
+					$css->render_measure_output( $btnvalue, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
+
+
 					$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus' );
 					if ( isset( $btnvalue['colorHover'] ) && ! empty( $btnvalue['colorHover'] ) ) {
 						$css->add_property( 'color', $css->render_color( $btnvalue['colorHover'] ) );
@@ -294,7 +243,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						}
 						$css->set_media_state( 'desktop' );
 					}
-					if ( ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][0] ) && ( is_numeric( $btnvalue['tabletMargin'][0] ) || is_numeric( $btnvalue['tabletMargin'][1] ) || is_numeric( $btnvalue['tabletMargin'][2] ) || is_numeric( $btnvalue['tabletMargin'][3] ) ) ) || ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) ) {
+					if ( ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) ) {
 						$css->set_media_state( 'tablet' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) {
@@ -305,18 +254,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][0] . 'px' );
 							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][0] . 'px' );
 						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][0] ) && is_numeric( $btnvalue['tabletMargin'][0] ) ) {
-							$css->add_property( 'margin-top', $btnvalue['tabletMargin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][1] ) && is_numeric( $btnvalue['tabletMargin'][1] ) ) {
-							$css->add_property( 'margin-right', $btnvalue['tabletMargin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][2] ) && is_numeric( $btnvalue['tabletMargin'][2] ) ) {
-							$css->add_property( 'margin-bottom', $btnvalue['tabletMargin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][3] ) && is_numeric( $btnvalue['tabletMargin'][3] ) ) {
-							$css->add_property( 'margin-left', $btnvalue['tabletMargin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
+
 						$css->set_media_state( 'desktop' );
 					}
 					// Mobile CSS.
@@ -337,7 +275,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						}
 						$css->set_media_state( 'desktop' );
 					}
-					if ( ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][0] ) && ( is_numeric( $btnvalue['mobileMargin'][0] ) || is_numeric( $btnvalue['mobileMargin'][1] ) || is_numeric( $btnvalue['mobileMargin'][2] ) || is_numeric( $btnvalue['mobileMargin'][3] ) ) ) || ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) ) {
+					if ( ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) ) {
 						$css->set_media_state( 'mobile' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) {
@@ -347,18 +285,6 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						if ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) {
 							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][1] . 'px' );
 							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][1] . 'px' );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][0] ) && is_numeric( $btnvalue['mobileMargin'][0] ) ) {
-							$css->add_property( 'margin-top', $btnvalue['mobileMargin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][1] ) && is_numeric( $btnvalue['mobileMargin'][1] ) ) {
-							$css->add_property( 'margin-right', $btnvalue['mobileMargin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][2] ) && is_numeric( $btnvalue['mobileMargin'][2] ) ) {
-							$css->add_property( 'margin-bottom', $btnvalue['mobileMargin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][3] ) && is_numeric( $btnvalue['mobileMargin'][3] ) ) {
-							$css->add_property( 'margin-left', $btnvalue['mobileMargin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
 						}
 						$css->set_media_state( 'desktop' );
 					}

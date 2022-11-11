@@ -184,104 +184,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		}
-		if ( isset( $attributes['containerPadding'] ) && is_array( $attributes['containerPadding'] ) ) {
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerPadding'][0] ) && is_numeric( $attributes['containerPadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['containerPadding'][0] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerPadding'][1] ) && is_numeric( $attributes['containerPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['containerPadding'][1] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerPadding'][2] ) && is_numeric( $attributes['containerPadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['containerPadding'][2] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerPadding'][3] ) && is_numeric( $attributes['containerPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['containerPadding'][3] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-		}
-		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerMargin'][0] ) && is_numeric( $attributes['containerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['containerMargin'][0] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][1] ) && is_numeric( $attributes['containerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['containerMargin'][1] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][2] ) && is_numeric( $attributes['containerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['containerMargin'][2] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][3] ) && is_numeric( $attributes['containerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['containerMargin'][3] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-		}
-		if ( isset( $attributes['containerTabletPadding'] ) && is_array( $attributes['containerTabletPadding'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerTabletPadding'][0] ) && is_numeric( $attributes['containerTabletPadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['containerTabletPadding'][0] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][1] ) && is_numeric( $attributes['containerTabletPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['containerTabletPadding'][1] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][2] ) && is_numeric( $attributes['containerTabletPadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['containerTabletPadding'][2] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][3] ) && is_numeric( $attributes['containerTabletPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['containerTabletPadding'][3] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		if ( isset( $attributes['containerMobilePadding'] ) && is_array( $attributes['containerMobilePadding'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerMobilePadding'][0] ) && is_numeric( $attributes['containerMobilePadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['containerMobilePadding'][0] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][1] ) && is_numeric( $attributes['containerMobilePadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['containerMobilePadding'][1] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][2] ) && is_numeric( $attributes['containerMobilePadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['containerMobilePadding'][2] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][3] ) && is_numeric( $attributes['containerMobilePadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['containerMobilePadding'][3] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		if ( isset( $attributes['containerTabletMargin'] ) && is_array( $attributes['containerTabletMargin'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerTabletMargin'][0] ) && is_numeric( $attributes['containerTabletMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['containerTabletMargin'][0] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletMargin'][1] ) && is_numeric( $attributes['containerTabletMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['containerTabletMargin'][1] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletMargin'][2] ) && is_numeric( $attributes['containerTabletMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['containerTabletMargin'][2] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletMargin'][3] ) && is_numeric( $attributes['containerTabletMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['containerTabletMargin'][3] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		if ( isset( $attributes['containerMobileMargin'] ) && is_array( $attributes['containerMobileMargin'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.kb-countdown-container-' . $unique_id );
-			if ( isset( $attributes['containerMobileMargin'][0] ) && is_numeric( $attributes['containerMobileMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['containerMobileMargin'][0] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobileMargin'][1] ) && is_numeric( $attributes['containerMobileMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['containerMobileMargin'][1] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobileMargin'][2] ) && is_numeric( $attributes['containerMobileMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['containerMobileMargin'][2] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobileMargin'][3] ) && is_numeric( $attributes['containerMobileMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['containerMobileMargin'][3] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
+
+		$css->render_measure_output( $attributes, 'containerPadding', 'padding', [ 'unit_key' => 'paddingType', 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ] );
+
+		$css->render_measure_output( $attributes, 'containerMargin', 'margin', [ 'unit_key' => 'marginType', 'tablet_key' => 'containerTabletMargin', 'mobile_key' => 'containerMobileMargin' ] );
+
 		if ( isset( $attributes['itemBackground'] ) || isset( $attributes['itemBorder'] ) || ( isset( $attributes['itemBorderRadius'] ) && is_array( $attributes['itemBorderRadius'] ) ) || ( isset( $attributes['itemBorderWidth'] ) && is_array( $attributes['itemBorderWidth'] ) ) || ( isset( $attributes['itemPadding'] ) && is_array( $attributes['itemPadding'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item:not( .kb-countdown-divider-item )' );
 			if ( isset( $attributes['itemBackground'] ) && ! empty( $attributes['itemBackground'] ) ) {

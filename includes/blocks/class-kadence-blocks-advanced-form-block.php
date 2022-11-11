@@ -90,6 +90,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
+		// Container
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
+		$css->render_measure_output( $form_attributes, 'padding', 'padding', [ 'desktop_key' => 'paddingDesktop', 'tablet_key' => 'paddingTablet', 'mobile_key' => 'paddingMobile' ] );
+		$css->render_measure_output( $form_attributes, 'margin', 'margin', [ 'desktop_key' => 'marginDesktop', 'tablet_key' => 'marginTablet', 'mobile_key' => 'marginMobile' ] );
+
 		// Input Styles
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form-field' );
 		$css->render_responsive_size( $field_style, array(

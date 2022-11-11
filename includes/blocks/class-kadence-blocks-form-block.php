@@ -101,56 +101,9 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
 		}
 
+		$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
+		$css->render_measure_output( $attributes, 'containerMargin', 'margin');
 
-		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['containerMargin'][0] ) && is_numeric( $attributes['containerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['containerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][1] ) && is_numeric( $attributes['containerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['containerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][2] ) && is_numeric( $attributes['containerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['containerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][3] ) && is_numeric( $attributes['containerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['containerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-		}
-		if ( isset( $attributes['tabletContainerMargin'] ) && is_array( $attributes['tabletContainerMargin'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['tabletContainerMargin'][0] ) && is_numeric( $attributes['tabletContainerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['tabletContainerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][1] ) && is_numeric( $attributes['tabletContainerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['tabletContainerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][2] ) && is_numeric( $attributes['tabletContainerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['tabletContainerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][3] ) && is_numeric( $attributes['tabletContainerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['tabletContainerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		if ( isset( $attributes['mobileContainerMargin'] ) && is_array( $attributes['mobileContainerMargin'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['mobileContainerMargin'][0] ) && is_numeric( $attributes['mobileContainerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['mobileContainerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][1] ) && is_numeric( $attributes['mobileContainerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['mobileContainerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][2] ) && is_numeric( $attributes['mobileContainerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['mobileContainerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][3] ) && is_numeric( $attributes['mobileContainerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['mobileContainerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
 		if ( isset( $attributes['style'] ) && is_array( $attributes['style'] ) && isset( $attributes['style'][0] ) && is_array( $attributes['style'][0] ) ) {
 			$style = $attributes['style'][0];
 			if ( isset( $style['rowGap'] ) && is_numeric( $style['rowGap'] ) ) {

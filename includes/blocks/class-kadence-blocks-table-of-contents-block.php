@@ -84,13 +84,18 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 
 		// Container.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
-		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
-			$css->add_property( 'margin', $css->render_measure( $attributes['containerMargin'], ( ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' ) ) );
-		}
+
+		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array(
+			'tablet_key'  => 'containerTabletMargin',
+			'mobile_key'  => 'containerMobileMargin',
+			'unit_key' => 'containerMarginUnit',
+		) );
+
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap' );
-		if ( isset( $attributes['containerPadding'] ) && is_array( $attributes['containerPadding'] ) ) {
-			$css->add_property( 'padding', $css->render_measure( $attributes['containerPadding'], ( isset( $attributes['containerPaddingUnit'] ) && ! empty( $attributes['containerPaddingUnit'] ) ? $attributes['containerPaddingUnit'] : 'px' ) ) );
-		}
+		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array(
+			'unit_key' => 'containerPaddingUnit',
+		) );
+
 		if ( isset( $attributes['containerBackground'] ) && ! empty( $attributes['containerBackground'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $attributes['containerBackground'] ) );
 		}
@@ -212,9 +217,6 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 		 */
 		$css->set_media_state( 'tablet' );
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
-		if ( isset( $attributes['containerTabletMargin'] ) && is_array( $attributes['containerTabletMargin'] ) ) {
-			$css->add_property( 'margin', $css->render_measure( $attributes['containerTabletMargin'], 'px' ) );
-		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
 		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][1] ) && ! empty( $attributes['titleSize'][1] ) ) {
 			$css->add_property( 'font-size', $attributes['titleSize'][1] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );
@@ -242,9 +244,6 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 		 */
 		$css->set_media_state( 'mobile' );
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
-		if ( isset( $attributes['containerMobileMargin'] ) && is_array( $attributes['containerMobileMargin'] ) ) {
-			$css->add_property( 'margin', $css->render_measure( $attributes['containerMobileMargin'], 'px' ) );
-		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
 		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][2] ) && ! empty( $attributes['titleSize'][2] ) ) {
 			$css->add_property( 'font-size', $attributes['titleSize'][2] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );

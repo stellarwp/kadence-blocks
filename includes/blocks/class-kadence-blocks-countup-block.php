@@ -119,10 +119,8 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
 				$css->add_property( 'font-size', '50px' );
 			}
-		} else {
-			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
-			$css->add_property( 'font-size', '50px' );
 		}
+
 		if ( isset( $attributes['titlePadding'] ) && is_array( $attributes['titlePadding'] ) ) {
 			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
 			if ( isset( $attributes['titlePadding'][0] ) && is_numeric( $attributes['titlePadding'][0] ) ) {
@@ -284,44 +282,46 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 
 		}
 
-		if ( isset( $attributes['numberColor'] ) || isset( $attributes['numberFont'] ) ) {
-			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-number' );
+		$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-number' );
 
-			if ( isset( $attributes['numberColor'] ) && ! empty( $attributes['numberColor'] ) ) {
-				$css->add_property( 'color', $css->render_color( $attributes['numberColor'] ) );
-			}
-
-			if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && is_array( $attributes['numberFont'][0] ) ) {
-				$number_font = $attributes['numberFont'][0];
-				if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && ! empty( $number_font['size'][0] ) ) {
-					$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
-				}
-				if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && ! empty( $number_font['lineHeight'][0] ) ) {
-					$css->add_property( 'line-height', $number_font['lineHeight'][0] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
-				}
-				if ( isset( $number_font['letterSpacing'] ) && ! empty( $number_font['letterSpacing'] ) ) {
-					$css->add_property( 'letter-spacing', $number_font['letterSpacing'] . 'px' );
-				}
-				if ( isset( $number_font['textTransform'] ) && ! empty( $number_font['textTransform'] ) ) {
-					$css->add_property( 'text-transform', $number_font['textTransform'] );
-				}
-				if ( isset( $number_font['family'] ) && ! empty( $number_font['family'] ) ) {
-					$css->add_property( 'font-family', $number_font['family'] );
-				}
-				if ( isset( $number_font['style'] ) && ! empty( $number_font['style'] ) ) {
-					$css->add_property( 'font-style', $number_font['style'] );
-				}
-				if ( isset( $number_font['weight'] ) && ! empty( $number_font['weight'] ) ) {
-					$css->add_property( 'font-weight', $number_font['weight'] );
-				}
-				if ( isset( $number_font['padding'] ) && is_array( $number_font['padding'] ) ) {
-					$css->add_property( 'padding', $number_font['padding'][0] . 'px ' . $number_font['padding'][1] . 'px ' . $number_font['padding'][2] . 'px ' . $number_font['padding'][3] . 'px' );
-				}
-				if ( isset( $number_font['margin'] ) && is_array( $number_font['margin'] ) ) {
-					$css->add_property( 'margin', $number_font['margin'][0] . 'px ' . $number_font['margin'][1] . 'px ' . $number_font['margin'][2] . 'px ' . $number_font['margin'][3] . 'px' );
-				}
-			}
+		if ( isset( $attributes['numberColor'] ) && ! empty( $attributes['numberColor'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['numberColor'] ) );
 		}
+
+		if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && is_array( $attributes['numberFont'][0] ) ) {
+			$number_font = $attributes['numberFont'][0];
+			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && ! empty( $number_font['size'][0] ) ) {
+				$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+			}
+			if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && ! empty( $number_font['lineHeight'][0] ) ) {
+				$css->add_property( 'line-height', $number_font['lineHeight'][0] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
+			}
+			if ( isset( $number_font['letterSpacing'] ) && ! empty( $number_font['letterSpacing'] ) ) {
+				$css->add_property( 'letter-spacing', $number_font['letterSpacing'] . 'px' );
+			}
+			if ( isset( $number_font['textTransform'] ) && ! empty( $number_font['textTransform'] ) ) {
+				$css->add_property( 'text-transform', $number_font['textTransform'] );
+			}
+			if ( isset( $number_font['family'] ) && ! empty( $number_font['family'] ) ) {
+				$css->add_property( 'font-family', $number_font['family'] );
+			}
+			if ( isset( $number_font['style'] ) && ! empty( $number_font['style'] ) ) {
+				$css->add_property( 'font-style', $number_font['style'] );
+			}
+			if ( isset( $number_font['weight'] ) && ! empty( $number_font['weight'] ) ) {
+				$css->add_property( 'font-weight', $number_font['weight'] );
+			}
+			if ( isset( $number_font['padding'] ) && is_array( $number_font['padding'] ) ) {
+				$css->add_property( 'padding', $number_font['padding'][0] . 'px ' . $number_font['padding'][1] . 'px ' . $number_font['padding'][2] . 'px ' . $number_font['padding'][3] . 'px' );
+			}
+			if ( isset( $number_font['margin'] ) && is_array( $number_font['margin'] ) ) {
+				$css->add_property( 'margin', $number_font['margin'][0] . 'px ' . $number_font['margin'][1] . 'px ' . $number_font['margin'][2] . 'px ' . $number_font['margin'][3] . 'px' );
+			}
+		} else {
+			$css->add_property( 'font-size', '50px' );
+		}
+
+
 		if ( isset( $attributes['numberPadding'] ) && is_array( $attributes['numberPadding'] ) ) {
 			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-number' );
 			if ( isset( $attributes['numberPadding'][0] ) && is_numeric( $attributes['numberPadding'][0] ) ) {

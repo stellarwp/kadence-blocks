@@ -113,36 +113,11 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
-			if ( isset( $attributes['containerPadding'] ) && is_array( $attributes['containerPadding'] ) ) {
-				if ( isset( $attributes['containerPadding'][0] ) && is_numeric( $attributes['containerPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attributes['containerPadding'][0] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-				}
-				if ( isset( $attributes['containerPadding'][1] ) && is_numeric( $attributes['containerPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $attributes['containerPadding'][1] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-				}
-				if ( isset( $attributes['containerPadding'][2] ) && is_numeric( $attributes['containerPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attributes['containerPadding'][2] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-				}
-				if ( isset( $attributes['containerPadding'][3] ) && is_numeric( $attributes['containerPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $attributes['containerPadding'][3] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-				}
-			}
-			if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) && isset( $attributes['containerMargin'][0] ) && is_numeric( $attributes['containerMargin'][0] ) ) {
-				$unit = ( isset( $attributes['containerMarginUnit'] ) && ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' );
-				$css->add_property( 'margin-top', $attributes['containerMargin'][0] . $unit );
-			}
-			if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) && isset( $attributes['containerMargin'][1] ) && is_numeric( $attributes['containerMargin'][1] ) ) {
-				$unit = ( isset( $attributes['containerMarginUnit'] ) && ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' );
-				$css->add_property( 'margin-right', $attributes['containerMargin'][1] . $unit );
-			}
-			if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) && isset( $attributes['containerMargin'][2] ) && is_numeric( $attributes['containerMargin'][2] ) ) {
-				$unit = ( isset( $attributes['containerMarginUnit'] ) && ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' );
-				$css->add_property( 'margin-bottom', $attributes['containerMargin'][2] . $unit );
-			}
-			if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) && isset( $attributes['containerMargin'][3] ) && is_numeric( $attributes['containerMargin'][3] ) ) {
-				$unit = ( isset( $attributes['containerMarginUnit'] ) && ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' );
-				$css->add_property( 'margin-left', $attributes['containerMargin'][3] . $unit );
-			}
+
+			$css->render_measure_output( $attributes, 'containerPadding', 'padding', [ 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ] );
+
+			$css->render_measure_output( $attributes, 'containerMargin', 'margin', [ 'unit_key' => 'containerMarginUnit' ] );
+
 			if ( isset( $attributes['containerBorderWidth'] ) && is_array( $attributes['containerBorderWidth'] ) ) {
 				if ( isset( $attributes['containerBorderWidth'][0] ) && is_numeric( $attributes['containerBorderWidth'][0] ) ) {
 					$css->add_property( 'border-top-width', $attributes['containerBorderWidth'][0] . 'px' );
@@ -162,42 +137,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $unit );
 			}
 		}
-		if ( isset( $attributes['containerTabletPadding'] ) && is_array( $attributes['containerTabletPadding'] ) ) {
-			$css->set_media_state( 'tablet' );
 
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
-			if ( isset( $attributes['containerTabletPadding'][0] ) && is_numeric( $attributes['containerTabletPadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['containerTabletPadding'][0] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][1] ) && is_numeric( $attributes['containerTabletPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['containerTabletPadding'][1] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][2] ) && is_numeric( $attributes['containerTabletPadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['containerTabletPadding'][2] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerTabletPadding'][3] ) && is_numeric( $attributes['containerTabletPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['containerTabletPadding'][3] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			$css->stop_media_query();
-		}
-		if ( isset( $attributes['containerMobilePadding'] ) && is_array( $attributes['containerMobilePadding'] ) ) {
-			$css->set_media_state( 'mobile' );
-
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
-			if ( isset( $attributes['containerMobilePadding'][0] ) && is_numeric( $attributes['containerMobilePadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['containerMobilePadding'][0] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][1] ) && is_numeric( $attributes['containerMobilePadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['containerMobilePadding'][1] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][2] ) && is_numeric( $attributes['containerMobilePadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['containerMobilePadding'][2] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMobilePadding'][3] ) && is_numeric( $attributes['containerMobilePadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['containerMobilePadding'][3] . ( isset( $attributes['containerPaddingType'] ) && ! empty( $attributes['containerPaddingType'] ) ? $attributes['containerPaddingType'] : 'px' ) );
-			}
-			$css->stop_media_query();
-		}
 		$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover' );
 		$border_hover = ( isset( $attributes['containerHoverBorder'] ) && ! empty( $attributes['containerHoverBorder'] ) ? $attributes['containerHoverBorder'] : '#eeeeee' );
 		$alpha        = ( isset( $attributes['containerHoverBorderOpacity'] ) && is_numeric( $attributes['containerHoverBorderOpacity'] ) ? $attributes['containerHoverBorderOpacity'] : 1 );

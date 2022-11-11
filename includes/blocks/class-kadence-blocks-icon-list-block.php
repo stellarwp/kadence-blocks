@@ -72,11 +72,10 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['listMargin'] ) && is_array( $attributes['listMargin'] ) && isset( $attributes['listMargin'][0] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues)' );
 			$css->add_property( 'margin-top', '0' );
-
-
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
-			$css->add_property( 'margin', $attributes['listMargin'][0] . 'px ' . $attributes['listMargin'][1] . 'px ' . $attributes['listMargin'][2] . 'px ' . $attributes['listMargin'][3] . 'px' );
 		}
+
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
+		$css->render_measure_output( $attributes, 'listMargin', 'margin');
 
 		if ( isset( $attributes['listGap'] ) && is_numeric( $attributes['listGap'] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );

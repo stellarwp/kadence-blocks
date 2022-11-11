@@ -68,20 +68,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Margins
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
+		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', array(
+			'tablet_key'  => 'marginTablet',
+			'mobile_key'  => 'marginMobile',
+			'unit_key' => 'marginUnit'
+		) );
 
-			if ( isset( $attributes[ 'margin' . $breakpoint ] ) && is_array( $attributes[ 'margin' . $breakpoint ] ) ) {
-				foreach ( $attributes[ 'margin' . $breakpoint ] as $key => $marginValue ) {
-					if ( is_numeric( $marginValue ) ) {
-						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attributes['marginUnit'] ) ? 'px' : $attributes['marginUnit'] ) );
-
-					}
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
 		$align = ( ! empty( $attributes['align'] ) ? $attributes['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
 			$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
@@ -124,21 +116,13 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
+
 		// Padding
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( isset( $attributes[ 'padding' . $breakpoint ] ) && is_array( $attributes[ 'padding' . $breakpoint ] ) ) {
-				foreach ( $attributes[ 'padding' . $breakpoint ] as $key => $paddingValue ) {
-					if ( is_numeric( $paddingValue ) ) {
-						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attributes['paddingUnit'] ) ? 'px' : $attributes['paddingUnit'] ) );
-
-					}
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
+		$css->render_measure_output( $attributes, 'paddingDesktop', 'padding', array(
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+			'unit_key' => 'paddingUnit'
+		) );
 
 		// Border Color
 		if ( isset( $attributes['borderColor'] ) ) {
