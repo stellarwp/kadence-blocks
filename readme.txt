@@ -100,6 +100,11 @@ Release Date: April 20th, 2022
 * Fix: Google Maps filer initial value issue.
 * Add: Text Transform option on title in Count Up block
 * Fix: Only generate dynamic CSS for rtl sites when needed.
+* Add: Responsive container margin on Info Box block.
+* Add: Responsive container padding on Table of Contents block.
+* Add: Responsive container margin on Icon List block.
+* Add: Responsive Inner Container padding on Tabs block.
+* Add: Support for external dotLottie files
 
 = 2.4.14 =
 Release Date: September 6th, 2022
