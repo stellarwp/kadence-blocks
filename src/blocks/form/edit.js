@@ -45,6 +45,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getWidgetIdFromBlock } from '@wordpress/widgets';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	RichText,
 	AlignmentToolbar,
@@ -256,19 +257,18 @@ function KadenceForm( props ) {
 		/**
 		 * Get settings
 		 */
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setSiteKey( response.kadence_blocks_recaptcha_site_key );
+			setSecretKey( response.kadence_blocks_recaptcha_secret_key );
 
-				setSiteKey( response.kadence_blocks_recaptcha_site_key );
-				setSecretKey( response.kadence_blocks_recaptcha_secret_key );
+			if ( '' !== siteKey && '' !== secretKey ) {
+				setIsSavedKey( true );
+			}
+		});
 
-				if ( '' !== siteKey && '' !== secretKey ) {
-					setIsSavedKey( true );
-				}
-			} );
-		} );
 	}, [] );
 
 	const [ actionOptions, setActionOptions ] = useState( null );

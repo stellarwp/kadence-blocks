@@ -8,7 +8,8 @@
  */
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
-const { apiFetch } = wp;
+import apiFetch from '@wordpress/api-fetch';
+
 import { KadencePanelBody } from '@kadence/components';
 /**
  * Internal block libraries
@@ -55,18 +56,17 @@ class MailerLiteControls extends Component {
 		/**
 		 * Get settings
 		 */
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
-				this.setState( {
-					api: response.kadence_blocks_mailerlite_api,
-				} );
-				if ( '' !== this.state.api ) {
-					this.setState( { isSavedAPI: true } );
-				}
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			this.setState( {
+				api: response.kadence_blocks_mailerlite_api,
 			} );
-		} );
+			if ( '' !== this.state.api ) {
+				this.setState( { isSavedAPI: true } );
+			}
+		});
 	}
 	getMailerLiteGroup() {
 		if ( ! this.state.api ) {

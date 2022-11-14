@@ -58,19 +58,19 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 	const [ listTagsLoaded, setListTagsLoaded ] = useState( false );
 
 	useEffect( () => {
-		let apiSettings;
-		wp.api.loadPromise.then( () => {
-			apiSettings = new wp.api.models.Settings();
-			apiSettings.fetch().then( response => {
-				setApi( response.kadence_blocks_activecampaign_api_key );
-				setApiBase( response.kadence_blocks_activecampaign_api_base );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setApi( response.kadence_blocks_activecampaign_api_key );
+			setApiBase( response.kadence_blocks_activecampaign_api_base );
 
-				if ( '' !== response.kadence_blocks_activecampaign_api_key && '' !== response.kadence_blocks_activecampaign_api_base ) {
-					setIsSavedApi( true );
-					setIsSavedApiBase( true );
-				}
-			} );
-		} );
+			if ( '' !== response.kadence_blocks_activecampaign_api_key && '' !== response.kadence_blocks_activecampaign_api_base ) {
+				setIsSavedApi( true );
+				setIsSavedApiBase( true );
+			}
+		});
+
 	}, [] );
 
 	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
