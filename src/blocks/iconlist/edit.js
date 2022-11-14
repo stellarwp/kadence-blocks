@@ -711,23 +711,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 													) )}
 												</ButtonGroup>
 											</div>
-											<ResponsiveMeasureRangeControl
-												label={__( 'List Margin', 'kadence-blocks' )}
-												value={ listMargin }
-												tabletValue={ tabletListMargin}
-												mobileValue={ mobileListMargin}
-												onChange={( value ) => setAttributes( { listMargin: value } )}
-												onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
-												onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
-												min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
-												max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
-												step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
-												unit={listMarginType}
-												units={[ 'px', 'em', 'rem', '%' ]}
-												onUnit={( value ) => setAttributes( { listMarginType: value } )}
-												onMouseOver={ listMarginMouseOver.onMouseOver }
-												onMouseOut={ listMarginMouseOver.onMouseOut }
-											/>
 										</Fragment>
 									)}
 								</KadencePanelBody>
@@ -802,9 +785,32 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 						{( activeTab === 'advanced' ) &&
 							<>
+								<KadencePanelBody>
+									<ResponsiveMeasureRangeControl
+										label={__( 'List Margin', 'kadence-blocks' )}
+										value={ listMargin }
+										tabletValue={ tabletListMargin}
+										mobileValue={ mobileListMargin}
+										onChange={( value ) => setAttributes( { listMargin: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
+										min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
+										max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+										step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
+										unit={listMarginType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { listMarginType: value } )}
+										onMouseOver={ listMarginMouseOver.onMouseOver }
+										onMouseOut={ listMarginMouseOver.onMouseOut }
+									/>
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+
 								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'Edit All Icon Styles Together' )}
+										initialOpen={ false }
 										panelName={'kb-icon-all-styles'}
 									>
 										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>

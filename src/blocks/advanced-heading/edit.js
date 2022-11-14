@@ -569,10 +569,7 @@ function KadenceAdvancedHeading( props ) {
 
 					{( activeTab === 'general' ) &&
 						<>
-							<KadencePanelBody
-								title={__( 'Settings', 'kadence-blocks' )}
-								panelName={'kb-adv-heading-settings'}
-							>
+							<KadencePanelBody>
 								<div className="kb-tag-level-control components-base-control">
 									<p className="kb-component-label">{__( 'HTML Tag', 'kadence-blocks' )}</p>
 									<ToolbarGroup
@@ -680,6 +677,86 @@ function KadenceAdvancedHeading( props ) {
 									/>
 								</KadencePanelBody>
 							)}
+							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Link Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-link-settings'}
+								>
+									<PopColorControl
+										label={__( 'Link Color', 'kadence-blocks' )}
+										swatchLabel={__( 'Link Color', 'kadence-blocks' )}
+										value={( linkColor ? linkColor : '' )}
+										default={''}
+										onChange={value => setAttributes( { linkColor: value } )}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( linkHoverColor ? linkHoverColor : '' )}
+										default2={''}
+										onChange2={value => setAttributes( { linkHoverColor: value } )}
+									/>
+									<SelectControl
+										label={__( 'Link Style', 'kadence-blocks' )}
+										value={linkStyle}
+										options={[
+											{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+											{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+											{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+										]}
+										onChange={value => setAttributes( { linkStyle: value } )}
+									/>
+									<URLInputControl
+										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
+										url={link}
+										onChangeUrl={value => setAttributes( { link: value } )}
+										additionalControls={true}
+										opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
+										onChangeTarget={value => setAttributes( { linkTarget: value } )}
+										linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
+										onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
+										linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
+										onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
+										dynamicAttribute={'link'}
+										allowClear={true}
+										{...props}
+									/>
+								</KadencePanelBody>
+							)}
+						</>
+					}
+
+					{( activeTab === 'style' ) &&
+						<>
+							<KadencePanelBody
+								title={__( 'Text Shadow Settings', 'kadence-blocks' )}
+								initialOpen={false}
+								panelName={'kb-adv-heading-text-shadow'}
+							>
+								<TextShadowControl
+									label={__( 'Text Shadow', 'kadence-blocks' )}
+									enable={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable ? textShadow[ 0 ].enable : false )}
+									color={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].color ? textShadow[ 0 ].color : 'rgba(0, 0, 0, 0.2)' )}
+									colorDefault={'rgba(0, 0, 0, 0.2)'}
+									hOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 )}
+									vOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 )}
+									blur={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 )}
+									onEnableChange={value => {
+										saveShadow( { enable: value } );
+									}}
+									onColorChange={value => {
+										saveShadow( { color: value } );
+									}}
+									onHOffsetChange={value => {
+										saveShadow( { hOffset: value } );
+									}}
+									onVOffsetChange={value => {
+										saveShadow( { vOffset: value } );
+									}}
+									onBlurChange={value => {
+										saveShadow( { blur: value } );
+									}}
+								/>
+							</KadencePanelBody>
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
 									title={__( 'Highlight Settings', 'kadence-blocks' )}
@@ -782,133 +859,59 @@ function KadenceAdvancedHeading( props ) {
 									/>
 								</KadencePanelBody>
 							)}
-							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
-								<KadencePanelBody
-									title={__( 'Link Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-adv-heading-link-settings'}
-								>
-									<PopColorControl
-										label={__( 'Link Color', 'kadence-blocks' )}
-										swatchLabel={__( 'Link Color', 'kadence-blocks' )}
-										value={( linkColor ? linkColor : '' )}
-										default={''}
-										onChange={value => setAttributes( { linkColor: value } )}
-										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
-										value2={( linkHoverColor ? linkHoverColor : '' )}
-										default2={''}
-										onChange2={value => setAttributes( { linkHoverColor: value } )}
-									/>
-									<SelectControl
-										label={__( 'Link Style', 'kadence-blocks' )}
-										value={linkStyle}
-										options={[
-											{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
-											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
-											{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
-											{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
-										]}
-										onChange={value => setAttributes( { linkStyle: value } )}
-									/>
-									<URLInputControl
-										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
-										url={link}
-										onChangeUrl={value => setAttributes( { link: value } )}
-										additionalControls={true}
-										opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
-										onChangeTarget={value => setAttributes( { linkTarget: value } )}
-										linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
-										onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
-										linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
-										onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
-										dynamicAttribute={'link'}
-										allowClear={true}
-										{...props}
-									/>
-								</KadencePanelBody>
-							)}
-						</>
-					}
-
-					{( activeTab === 'style' ) &&
-						<>
-							{showSettings( 'marginSettings', 'kadence/advancedheading' ) && (
-								<KadencePanelBody
-									title={__( 'Spacing Settings', 'kadence-blocks' )}
-									panelName={'kb-adv-heading-spacing-settings'}
-								>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Padding', 'kadence-blocks' )}
-										value={padding}
-										tabletValue={tabletPadding}
-										mobileValue={mobilePadding}
-										onChange={( value ) => setAttributes( { padding: value } )}
-										onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
-										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={paddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { paddingType: value } )}
-										onMouseOver={ paddingMouseOver.onMouseOver }
-										onMouseOut={ paddingMouseOver.onMouseOut }
-									/>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Margin', 'kadence-blocks' )}
-										value={margin}
-										tabletValue={tabletMargin}
-										mobileValue={mobileMargin}
-										onChange={( value ) => { setAttributes( { margin: value } ) }}
-										onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
-										onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
-										min={marginMin}
-										max={marginMax}
-										step={marginStep}
-										unit={marginType}
-										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-										onUnit={( value ) => setAttributes( { marginType: value } )}
-										onMouseOver={ marginMouseOver.onMouseOver }
-										onMouseOut={ marginMouseOver.onMouseOut }
-									/>
-								</KadencePanelBody>
-							)}
-							<KadencePanelBody
-								title={__( 'Text Shadow Settings', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-adv-heading-text-shadow'}
-							>
-								<TextShadowControl
-									label={__( 'Text Shadow', 'kadence-blocks' )}
-									enable={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable ? textShadow[ 0 ].enable : false )}
-									color={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].color ? textShadow[ 0 ].color : 'rgba(0, 0, 0, 0.2)' )}
-									colorDefault={'rgba(0, 0, 0, 0.2)'}
-									hOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 )}
-									vOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 )}
-									blur={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 )}
-									onEnableChange={value => {
-										saveShadow( { enable: value } );
-									}}
-									onColorChange={value => {
-										saveShadow( { color: value } );
-									}}
-									onHOffsetChange={value => {
-										saveShadow( { hOffset: value } );
-									}}
-									onVOffsetChange={value => {
-										saveShadow( { vOffset: value } );
-									}}
-									onBlurChange={value => {
-										saveShadow( { blur: value } );
-									}}
-								/>
-							</KadencePanelBody>
 						</>
 					}
 
 					{( activeTab === 'advanced' ) && (
+						<>
+							{showSettings('marginSettings', 'kadence/advancedheading') && (
+								<>
+									<KadencePanelBody panelName={'kb-row-padding'}>
+										<ResponsiveMeasureRangeControl
+											label={__('Padding', 'kadence-blocks')}
+											value={padding}
+											tabletValue={tabletPadding}
+											mobileValue={mobilePadding}
+											onChange={(value) => setAttributes({padding: value})}
+											onChangeTablet={(value) => setAttributes({tabletPadding: value})}
+											onChangeMobile={(value) => setAttributes({mobilePadding: value})}
+											min={paddingMin}
+											max={paddingMax}
+											step={paddingStep}
+											unit={paddingType}
+											units={['px', 'em', 'rem', '%']}
+											onUnit={(value) => setAttributes({paddingType: value})}
+											onMouseOver={paddingMouseOver.onMouseOver}
+											onMouseOut={paddingMouseOver.onMouseOut}
+										/>
+										<ResponsiveMeasureRangeControl
+											label={__('Margin', 'kadence-blocks')}
+											value={margin}
+											tabletValue={tabletMargin}
+											mobileValue={mobileMargin}
+											onChange={(value) => {
+												setAttributes({margin: value})
+											}}
+											onChangeTablet={(value) => setAttributes({tabletMargin: value})}
+											onChangeMobile={(value) => setAttributes({mobileMargin: value})}
+											min={marginMin}
+											max={marginMax}
+											step={marginStep}
+											unit={marginType}
+											units={['px', 'em', 'rem', '%', 'vh']}
+											onUnit={(value) => setAttributes({marginType: value})}
+											onMouseOver={marginMouseOver.onMouseOver}
+											onMouseOut={marginMouseOver.onMouseOut}
+										/>
+									</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedheading' } excludedAttrs={ [ 'content' ] }  />
+									<div className="kt-sidebar-settings-spacer"></div>
+								</>
+							)}
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedheading' } excludedAttrs={ [ 'content' ] }  />
+
+						</>
 
 					)}
 

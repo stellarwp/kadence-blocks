@@ -541,6 +541,13 @@ export function Edit( {
 								/>
 							)}
 
+						</KadencePanelBody>
+					</>
+				)}
+
+				{ activeTab === 'advanced' && (
+					<>
+						<KadencePanelBody>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={paddingDesktop}
@@ -576,11 +583,9 @@ export function Edit( {
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
-					</>
-				)}
 
-				{ activeTab === 'advanced' && (
-					<>
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/googlemaps' } />
 					</>
 				)}

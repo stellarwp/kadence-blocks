@@ -483,6 +483,38 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								onChange={( value ) => setAttributes( { loopStyle: value } )}
 							/>
 						</KadencePanelBody>
+
+					</>
+				}
+
+				{( activeTab === 'style' ) &&
+					<>
+						<KadencePanelBody
+							title={__( 'Title Size', 'kadence-blocks' )}
+							panelName={'titleSettings'}
+							blockSlug={ 'kadence/posts' }
+						>
+							<TypographyControls
+								fontGroup={'post-title'}
+								tagLevel={titleFont[ 0 ].level}
+								tagLowLevel={2}
+								tagHighLevel={7}
+								onTagLevel={( value ) => saveTitleFont( { level: value } )}
+								fontSize={titleFont[ 0 ].size}
+								onFontSize={( value ) => saveTitleFont( { size: value } )}
+								fontSizeType={titleFont[ 0 ].sizeType}
+								onFontSizeType={( value ) => saveTitleFont( { sizeType: value } )}
+								lineHeight={titleFont[ 0 ].lineHeight}
+								onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
+								lineHeightType={titleFont[ 0 ].lineType}
+								onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
+								reLetterSpacing={titleFont[ 0 ].letterSpacing}
+								onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
+								letterSpacingType={titleFont[ 0 ].letterType}
+								onLetterSpacingType={( value ) => saveTitleFont( { letterType: value } )}
+							/>
+						</KadencePanelBody>
+
 						<KadencePanelBody
 							title={__( 'Image Settings', 'kadence-blocks' )}
 							initialOpen={false}
@@ -627,36 +659,6 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								)}
 							</KadencePanelBody>
 						)}
-					</>
-				}
-
-				{( activeTab === 'style' ) &&
-					<>
-						<KadencePanelBody
-							title={__( 'Title Size', 'kadence-blocks' )}
-							panelName={'titleSettings'}
-							blockSlug={ 'kadence/posts' }
-						>
-							<TypographyControls
-								fontGroup={'post-title'}
-								tagLevel={titleFont[ 0 ].level}
-								tagLowLevel={2}
-								tagHighLevel={7}
-								onTagLevel={( value ) => saveTitleFont( { level: value } )}
-								fontSize={titleFont[ 0 ].size}
-								onFontSize={( value ) => saveTitleFont( { size: value } )}
-								fontSizeType={titleFont[ 0 ].sizeType}
-								onFontSizeType={( value ) => saveTitleFont( { sizeType: value } )}
-								lineHeight={titleFont[ 0 ].lineHeight}
-								onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
-								lineHeightType={titleFont[ 0 ].lineType}
-								onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
-								reLetterSpacing={titleFont[ 0 ].letterSpacing}
-								onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
-								letterSpacingType={titleFont[ 0 ].letterType}
-								onLetterSpacingType={( value ) => saveTitleFont( { letterType: value } )}
-							/>
-						</KadencePanelBody>
 					</>
 				}
 
