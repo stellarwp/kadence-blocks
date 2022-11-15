@@ -1648,7 +1648,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										measurement={containerBorderWidth}
 										control={containerBorderControl}
 										onChange={( value ) => setAttributes( { containerBorderWidth: value } )}
-										onControl={( value ) => this.setState( { containerBorderControl: value } )}
+										onControl={( value ) => setContainerBorderControl( value )}
 										min={0}
 										max={40}
 										step={1}
@@ -2032,7 +2032,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -2160,7 +2160,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -2308,7 +2308,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -2407,7 +2407,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										measurement={mediaStyle[ 0 ].padding}
 										control={mediaPaddingControl}
 										onChange={( value ) => saveMediaStyle( { padding: value } )}
-										onControl={( value ) => this.setState( { mediaPaddingControl: value } )}
+										onControl={( value ) => setMediaPaddingControl( value )}
 										min={0}
 										max={100}
 										step={1}
@@ -2417,7 +2417,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										measurement={mediaStyle[ 0 ].margin}
 										control={mediaMarginControl}
 										onChange={( value ) => saveMediaStyle( { margin: value } )}
-										onControl={( value ) => this.setState( { mediaMarginControl: value } )}
+										onControl={( value ) => setMediaMarginControl( value )}
 										min={-200}
 										max={200}
 										step={1}
