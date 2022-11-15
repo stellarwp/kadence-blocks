@@ -74,51 +74,40 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'margin-top', '0' );
 		}
 
+		$column_gap_props = array(
+			'columnGap' => array(
+				0 => ! empty( $attributes['columnGap'] ) ? $attributes['columnGap'] : '',
+				1 => ! empty( $attributes['tabletColumnGap'] ) ? $attributes['tabletColumnGap'] : '',
+				2 => ! empty( $attributes['mobileColumnGap'] ) ? $attributes['mobileColumnGap'] : '',
+			)
+		);
+
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
 		$css->render_measure_output( $attributes, 'listMargin', 'margin');
-
-		if ( isset( $attributes['listGap'] ) && is_numeric( $attributes['listGap'] ) ) {
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
-			$css->add_property( 'margin-bottom', $attributes['listGap'] . 'px' );
-
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
-			$css->add_property( 'grid-row-gap', $attributes['listGap'] . 'px' );
-
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-			$css->add_property( 'margin', '0px' );
-
-			$tablet_gap = ( isset( $attributes['listGapTablet'] ) && is_numeric( $attributes['listGapTablet'] ) ? $attributes['listGapTablet'] : $attributes['listGap'] );
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . '.kt-tablet-svg-icon-list-columns-1 ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
-			$css->add_property( 'margin-bottom', $tablet_gap . 'px' );
-
-			if ( ( ! empty( $attributes['columns'] ) && 1 !== $attributes['columns'] ) || ( ! empty( $attributes['tabletColumns'] ) && 1 !== $attributes['tabletColumns'] ) ) {
-				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
-				$css->add_property( 'grid-row-gap', $tablet_gap . 'px' );
-
-				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-				$css->add_property( 'margin', '0px' );
-			}
-
-			$css->set_media_state( 'desktop' );
-
-			$mobile_gap = ( isset( $attributes['listGapMobile'] ) && is_numeric( $attributes['listGapMobile'] ) ? $attributes['listGapMobile'] : $tablet_gap );
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . '.kt-mobile-svg-icon-list-columns-1 ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
-			$css->add_property( 'margin-bottom', $mobile_gap . 'px' );
-
-			if ( ( ! empty( $attributes['columns'] ) && 1 !== $attributes['columns'] ) || ( ! empty( $attributes['tabletColumns'] ) && 1 !== $attributes['tabletColumns'] ) || ( ! empty( $attributes['mobileColumns'] ) && 1 !== $attributes['mobileColumns'] ) ) {
-				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
-				$css->add_property( 'grid-row-gap', $mobile_gap . 'px' );
-
-				$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1):not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-				$css->add_property( 'margin', '0px' );
-			}
-
-			$css->set_media_state( 'desktop' );
+		$css->render_responsive_range( $column_gap_props, 'columnGap', 'column-gap' );
 
 
-		}
+		$list_gap_props = array(
+			'listGap' => array(
+				0 => ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '',
+				1 => ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : '',
+				2 => ! empty( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : '',
+			)
+		);
+
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
+		$css->render_responsive_range( $list_gap_props, 'listGap', 'margin-bottom' );
+
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
+		$css->render_responsive_range( $list_gap_props, 'listGap', 'grid-row-gap' );
+
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
+		$css->add_property( 'margin', '0px' );
+
+		$css->set_media_state( 'desktop' );
+
+
+
 		if ( ! empty( $attributes['listLabelGap'] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single' );
 			$css->add_property( 'margin-right', $attributes['listLabelGap'] . 'px' );
