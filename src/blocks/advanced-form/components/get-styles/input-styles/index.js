@@ -25,6 +25,7 @@ export default ( previewDevice, parentFieldStyle ) => {
 	styles.paddingLeft = ( 'custom' === parentFieldStyle.size && '' !== parentFieldStyle.deskPadding[ 3 ] ? parentFieldStyle.deskPadding[ 3 ] + 'px' : undefined );
 
 	styles.color = ( undefined !== parentFieldStyle.color ? KadenceColorOutput( parentFieldStyle.color ) : undefined );
+	styles.placeholderColor = ( undefined !== parentFieldStyle.placeholderColor ? KadenceColorOutput( parentFieldStyle.placeholderColor ) : undefined );
 
 	styles.borderRadius = ( undefined !== parentFieldStyle.borderRadius ? parentFieldStyle.borderRadius + 'px' : undefined );
 	styles.borderTopWidth = ( parentFieldStyle.borderWidth && '' !== parentFieldStyle.borderWidth[ 0 ] ? parentFieldStyle.borderWidth[ 0 ] + 'px' : undefined );

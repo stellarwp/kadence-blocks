@@ -42,6 +42,16 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 				color: ${previewStyles.color};
 				box-shadow: ${previewStyles.boxShadow};
 		}
+		
+		.wp-block-kadence-advanced-form_${id} input[type=text]::placeholder,
+		.wp-block-kadence-advanced-form_${id} input[type=number]::placeholder,
+		.wp-block-kadence-advanced-form_${id} input[type=date]::placeholder,
+		.wp-block-kadence-advanced-form_${id} input[type=email]::placeholder,
+		.wp-block-kadence-advanced-form_${id} input[type=tel]::placeholder,
+		.wp-block-kadence-advanced-form_${id} select::placeholder,
+		.wp-block-kadence-advanced-form_${id} textarea::placeholder {
+			color: ${previewStyles.placeholderColor};
+		}
 
 		.wp-block-kadence-advanced-form_${id} input[type="radio"]{
 			border-color: ${previewStyles.borderColor};

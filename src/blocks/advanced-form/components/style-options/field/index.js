@@ -640,27 +640,16 @@ export default function FieldStyles( { setAttributes, style } ) {
 				unit={'px'}
 				units={[ 'px' ]}
 			/>
-			{/*<ResponsiveRangeControls*/}
-			{/*	label={__( 'Field Column Gutter', 'kadence-blocks' )}*/}
-			{/*	value={( undefined !== style.gutter ? style.gutter : '' )}*/}
-			{/*	onChange={value => {*/}
-			{/*		saveStyle( { gutter: value } );*/}
-			{/*	}}*/}
-			{/*	tabletValue={( undefined !== style.tabletGutter ? style.tabletGutter : '' )}*/}
-			{/*	onChangeTablet={value => {*/}
-			{/*		saveStyle( { tabletGutter: value } );*/}
-			{/*	}}*/}
-			{/*	mobileValue={( undefined !== style.mobileGutter ? style.mobileGutter : '' )}*/}
-			{/*	onChangeMobile={value => {*/}
-			{/*		saveStyle( { mobileGutter: value } );*/}
-			{/*	}}*/}
-			{/*	min={0}*/}
-			{/*	max={50}*/}
-			{/*	step={2}*/}
-			{/*	showUnit={true}*/}
-			{/*	unit={'px'}*/}
-			{/*	units={[ 'px' ]}*/}
-			{/*/>*/}
+
+			<h2>{__( 'Placeholder Settings', 'kadence-blocks' )}</h2>
+			<PopColorControl
+				label={__( 'Placeholder Color', 'kadence-blocks' )}
+				value={( style.placeholderColor ? style.placeholderColor : '' )}
+				default={''}
+				onChange={value => {
+					saveStyle( { placeholderColor: value } );
+				}}
+			/>
 		</>
 	);
 

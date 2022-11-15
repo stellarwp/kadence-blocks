@@ -144,6 +144,20 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $field_style, 'padding', 'padding', [ 'desktop_key' => 'deskPadding' ] );
 
+		/*
+		 * Field Placeholder text
+		 */
+		$css->set_selector(
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=text]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=tel]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=number]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=date]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=time]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email]::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' select::placeholder,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea::placeholder'
+		);
+		$css->render_color_output( $field_style, 'placeholderColor', 'color' );
 
 		/*
 		 *
