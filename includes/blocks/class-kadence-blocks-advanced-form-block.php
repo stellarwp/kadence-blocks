@@ -316,10 +316,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param $attributes
 	 * @param $unique_id
 	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
-	public function build_html( $attributes, $unique_id, $content ) {
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		$form_fields = $this->get_form_fields( $attributes['id'] );
 

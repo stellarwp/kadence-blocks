@@ -688,12 +688,38 @@
 			"",
 			""
 		]
+	},
+	"margin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"tabletMargin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"mobileMargin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
 	}
   },
   "supports": {
 	"anchor": true,
 	"ktdynamic": true,
-	"kbcss": true,
-	"editorsKitBlockNavigator": true
+	"kbcss": true
   }
 }

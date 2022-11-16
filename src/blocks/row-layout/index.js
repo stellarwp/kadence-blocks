@@ -40,5 +40,5 @@ registerBlockType( 'kadence/rowlayout', {
 		anchor: true,
 		ktdynamic: true,
 		kbcss: true,
-	  }
+	}
 });
