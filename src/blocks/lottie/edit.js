@@ -8,7 +8,8 @@
 import './editor.scss';
 import metadata from './block.json';
 
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import '@dotlottie/player-component';
+
 /**
  * Internal block libraries
  */
@@ -203,21 +204,22 @@ export function Edit( {
 
 	}
 
-	const getAnimationUrl= (fileSrc, fileUrl, localFile, rest_url) => {
+	const getAnimationUrl= () => {
 		let url = '';
 
 		if( fileSrc === 'url') {
 			url = fileUrl;
 		} else {
-			url = rest_url + 'kb-lottieanimation/v1/animations/' + get(localFile, [0, 'value'], '')
+			url = rest_url + 'kb-lottieanimation/v1/animations/' + get(localFile, [0, 'value'], '') + '.json';
 		}
 
-		if( url === '' || url === rest_url + 'kb-lottieanimation/v1/animations/') {
+		if( url === '' || url === rest_url + 'kb-lottieanimation/v1/animations/.json') {
 			url = 'https://assets10.lottiefiles.com/packages/lf20_rqcjx8hr.json';
 		}
 
 		return url;
 	}
+
 	const UploadModal = () => {
 		const [ isOpen, setOpen ] = useState( false );
 		const [ lottieJsonError, setLottieJsonError ] = useState( false );
@@ -270,6 +272,38 @@ export function Edit( {
 			</>
 		);
 	};
+
+	let playerProps = {};
+
+	if(loop){
+		playerProps.loop = '';
+	}
+
+	if(playbackSpeed){
+		playerProps.speed = playbackSpeed;
+	}
+
+	if(showControls){
+		playerProps.controls = '';
+	}
+
+	if(autoplay){
+		playerProps.autoplay = '';
+	}
+
+	if(onlyPlayOnHover){
+		playerProps.hover = '';
+	}
+
+	if(bouncePlayback) {
+		playerProps.mode = 'bounce';
+	} else {
+		playerProps.mode = 'normal';
+	}
+
+	if( delay !== 0){
+		playerProps.intermission = 1000 * delay;
+	}
 
 	return (
 		<div { ...blockProps }>
@@ -334,6 +368,8 @@ export function Edit( {
 									/>
 
 									<UploadModal />
+
+									<br/><br/>
 								</>
 							}
 							<TextControl
@@ -460,7 +496,6 @@ export function Edit( {
 								step={ 0.1 }
 								min={ 0 }
 								max={ 60 }
-								help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 							/>
 							<RangeControl
 								label={ __( 'Limit Loops', 'kadence-blocks' ) }
@@ -549,24 +584,18 @@ export function Edit( {
 					paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 				}
 			}>
-				<Player
-					speed={ undefined !== playbackSpeed ? playbackSpeed : 1 }
-					autoplay={ autoplay ? true : false }
-					count={ loopLimit !== 0 ? loopLimit : 0 }
-					hover={ onlyPlayOnHover ? true : false }
-					loop={ loop ? true : false }
-					id={ 'kb-lottie-player' + uniqueID }
-					key={ rerenderKey }
-					src={ getAnimationUrl(fileSrc, fileUrl, localFile, rest_url) }
-					style={ {
+
+				<dotlottie-player
+					{...playerProps}
+					src={getAnimationUrl()}
+					key={rerenderKey}
+					id={'kb-lottie-player' + uniqueID}
+					style={{
 						maxWidth: (width === '0' ? 'auto' : width + 'px'),
-						// height: ( width === "0" ? 'auto' : width + 'px'),
 						margin: '0 auto'
-					} }
-				>
-					<Controls visible={ showControls ? true : false } buttons={['play', 'frame']} />
-				</Player>
-				
+					}}
+				/>
+
 				<SpacingVisualizer
 					style={ {
 						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),

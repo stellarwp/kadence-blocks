@@ -51,6 +51,7 @@ class Kadence_LottieAnimation_get_REST_Controller extends WP_REST_Controller {
 	 */
 	public function get_animation( $request ) {
 		$post_id = $request->get_param( self::PROP_END_POINT );
+		$post_id = str_replace( '.json', '', $post_id);
 
 		$post = get_post( $post_id );
 

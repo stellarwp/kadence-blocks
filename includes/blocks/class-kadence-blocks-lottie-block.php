@@ -83,6 +83,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
+
 	/**
 	 * Return dynamically generated HTML for block
 	 *
@@ -97,6 +98,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'kadence-blocks-lottieplayer-js' );
 		}
+
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id              = $attributes['uniqueID'];
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
@@ -107,6 +109,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
 			}
+
 			// Include lottie interactive if using scroll animation.
 			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true || isset( $attributes['waitUntilInView'] ) && $attributes['waitUntilInView'] === true ) {
 				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
@@ -123,27 +126,97 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				$content = $content . "
 				<script>
-					var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
-						if (typeof LottieInteractivity !== 'undefined') {
-							LottieInteractivity.create({
-								mode: 'scroll',
-								player: '#" . $player_style_id . "',
-								actions: [
-									{
-									visibility: [0,1.0],
-									type: '" . $play_type . "',
-									$frames
-									},
-								],
-							});
-							clearInterval(waitForLoittieInteractive" . $player_simple_style_id . ");
-						}
-					}, 125);
+						
+						var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
+							let lottiePlayer" . $player_simple_style_id . " = document.getElementById( '" . $player_style_id . "');
+							
+							if (typeof LottieInteractivity !== 'undefined') {					
+								lottiePlayer" . $player_simple_style_id . ".addEventListener('ready', () => {
+								  LottieInteractivity.create({
+									  player: lottiePlayer" . $player_simple_style_id . ".getLottie(),
+									  mode: 'scroll',
+									    actions: [
+									        {
+									            visibility: [0,1.0],
+												type: '" . $play_type . "',
+												$frames
+									        }
+									    ]
+									});
+								});
+	                            clearInterval(waitForLoittieInteractive" . $player_simple_style_id . ");
+							}
+						}, 125);
+
 				</script>";
+
 			}
+
+			$playerProps = array();
+
+			if( $attributes['loop'] ){
+				$playerProps['loop'] = 'true';
+			}
+
+			if( $attributes['playbackSpeed'] ){
+				$playerProps['speed'] = $attributes['playbackSpeed'];
+			}
+
+			if( $attributes['showControls'] ){
+				$playerProps['controls'] = 'true';
+			}
+
+			if( $attributes['autoplay'] ){
+				$playerProps['autoplay'] = 'true';
+			}
+
+			if( $attributes['onlyPlayOnHover'] ){
+				$playerProps['hover'] = 'true';
+			}
+
+			if( $attributes['bouncePlayback']) {
+				$playerProps['mode'] = 'bounce';
+			} else {
+				$playerProps['mode'] = 'normal';
+			}
+
+			if( $attributes['delay'] !== 0){
+				$playerProps['intermission'] = 1000 * $attributes['delay'];
+			}
+			$width = $attributes['width'] === '0' ? 'auto' : $attributes['width']  + 'px';
+
+			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . '">';
+				$content .= '<dotlottie-player ';
+
+					foreach( $playerProps as $key => $value ){
+						$content .= $key . '="' . $value . '" ';
+					}
+
+				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
+							id="kb-lottie-player' . $unique_id .'"
+							style="width: ' . $width . '; margin: 0 auto;"
+						></dotlottie-player>';
+			$content .= '</div>';
 		}
 
 		return $content;
+	}
+
+	public function getAnimationUrl( $attributes ) {
+		$url      = '';
+		$rest_url = get_rest_url();
+
+		if ( $attributes['fileSrc'] === 'url' ) {
+			$url = $attributes['fileUrl'];
+		} else {
+			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . $attributes['localFile'][0]['value'] . '.json';
+		}
+
+		if ( $url === '' || $url === $rest_url . 'kb-lottieanimation/v1/animations/' ) {
+			$url = 'https://assets10.lottiefiles.com/packages/lf20_rqcjx8hr.json';
+		}
+
+		return $url;
 	}
 
 	/**
@@ -160,7 +233,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-dotlottie-player-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-dotlottie.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
 	}
 
 
