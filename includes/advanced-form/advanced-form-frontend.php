@@ -69,6 +69,9 @@ class AdvancedFormFrontend {
 					case 'accept':
 						$this->accept_field( $block );
 						break;
+					case 'checkbox':
+						$this->checkbox_field( $block );
+						break;
 					default:
 						$this->append_response( '<p>' . $field_type . '</p>' );
 						break;
@@ -130,6 +133,35 @@ class AdvancedFormFrontend {
 	 *
 	 * @return void
 	 */
+	private function checkbox_field( $block ) {
+		$is_required = $this->is_required( $block, 'required', '' );
+		$name        = str_replace( ' ', '', strip_tags( $this->get_label( $block ) ) );
+
+		$this->append_response( '<div class="kb-advanced-form-field" class="' . $this->field_width_classes( $block ) . '">' );
+
+		$this->field_label( $block );
+
+		foreach ( $block['attrs']['options'] as $key => $option ) {
+			$id = $name . '_' . $key;
+			$is_checked = !empty( $option['selected'] );
+
+			$this->append_response( '<div>' );
+			$this->append_response( '<input class="kb-radio-style" type="checkbox" ' . $this->aria_described_by( $block ) . ' id="' . $id . '" name="' . $name . '" '. ($is_checked ? "checked" : "") .' value="' . $this->get_option_value( $option ) . '" ' . $is_required . '>' );
+			$this->append_response( '<label for="' . $id . '">' . $option['label'] . '</label>' );
+			$this->append_response( '</div>' );
+		}
+
+		$this->field_help_text( $block );
+
+		$this->append_response( '</div>' );
+
+	}
+
+	/**
+	 * @param $block array
+	 *
+	 * @return void
+	 */
 	private function radio_field( $block ) {
 		$is_required = $this->is_required( $block, 'required', '' );
 		$name        = str_replace( ' ', '', strip_tags( $this->get_label( $block ) ) );
@@ -140,9 +172,10 @@ class AdvancedFormFrontend {
 
 		foreach ( $block['attrs']['options'] as $key => $option ) {
 			$id = $name . '_' . $key;
+			$is_checked = !empty( $option['selected'] );
 
 			$this->append_response( '<div>' );
-			$this->append_response( '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $block ) . ' id="' . $id . '" name="' . $name . '" value="' . $this->get_option_value( $option ) . '" ' . $is_required . '>' );
+			$this->append_response( '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $block ) . ' ' . ( $is_checked ? 'checked' : '') . ' id="' . $id . '" name="' . $name . '" value="' . $this->get_option_value( $option ) . '" ' . $is_required . '>' );
 			$this->append_response( '<label for="' . $id . '">' . $option['label'] . '</label>' );
 			$this->append_response( '</div>' );
 		}

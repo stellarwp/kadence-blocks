@@ -12,7 +12,6 @@ import {
 	PanelBody,
 	Dashicon,
 	Button,
-	IconButton,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { times, filter, has } from 'lodash';
@@ -138,7 +137,7 @@ function FieldSelect( {
 								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
-								<IconButton
+								<Button
 									icon="arrow-up"
 									onClick={n === 0 ? undefined : onOptionMoveUp( n )}
 									className="kadence-blocks-list-item__move-up"
@@ -146,7 +145,7 @@ function FieldSelect( {
 									aria-disabled={n === 0}
 									disabled={n === 0}
 								/>
-								<IconButton
+								<Button
 									icon="arrow-down"
 									onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
 									className="kadence-blocks-list-item__move-down"
@@ -154,7 +153,7 @@ function FieldSelect( {
 									aria-disabled={( n + 1 ) === options.length}
 									disabled={( n + 1 ) === options.length}
 								/>
-								<IconButton
+								<Button
 									icon="no-alt"
 									onClick={() => removeOptionItem( n )}
 									className="kadence-blocks-list-item__remove"
@@ -231,10 +230,7 @@ function FieldSelect( {
 					<div className={'kb-form-multi'}>
 						{times( options.length, n => (
 							<div key={n}>
-								<TextControl
-									value={options[ n ].label}
-									onChange={( text ) => updateOption( n, { label: text } )}
-								/>
+								<input key={ 'text' + n } type={'text'} value={options[ n ].label} className={ 'ignore-field-styles' } onChange={( value ) => updateOption( n, { label: value.target.value } )}/>
 								<Button onClick={() => removeOptionItem( n )}>
 									<span className="dashicons dashicons-trash"></span>
 								</Button>
@@ -261,6 +257,7 @@ function FieldSelect( {
 					:
 					<select
 						multiple={multiSelect}
+						className={ 'ignore-field-styles' }
 					>
 						{ times( optionsWithPlaceholder.length, n => (
 								<option key={n} value={n} disabled={ has(optionsWithPlaceholder[n], 'disabled') ? optionsWithPlaceholder[ n ].disabled : false }>

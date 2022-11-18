@@ -17,12 +17,8 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 				margin-bottom: ${( previewRowGap ? previewRowGap : undefined )};
 			}
 
-			.wp-block-kadence-advanced-form_${id} input[type=text],
-			.wp-block-kadence-advanced-form_${id} input[type=number],
-			.wp-block-kadence-advanced-form_${id} input[type=date],
-			.wp-block-kadence-advanced-form_${id} input[type=email],
-			.wp-block-kadence-advanced-form_${id} input[type=tel],
-			.wp-block-kadence-advanced-form_${id} select,
+			.wp-block-kadence-advanced-form_${id} input:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form_${id} select:not(.ignore-field-styles),
 			.wp-block-kadence-advanced-form_${id} textarea {
 				line-height: ${previewStyles.lineHeight};
 				font-size: ${previewStyles.fontSize};
@@ -43,11 +39,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 				box-shadow: ${previewStyles.boxShadow};
 		}
 		
-		.wp-block-kadence-advanced-form_${id} input[type=text]::placeholder,
-		.wp-block-kadence-advanced-form_${id} input[type=number]::placeholder,
-		.wp-block-kadence-advanced-form_${id} input[type=date]::placeholder,
-		.wp-block-kadence-advanced-form_${id} input[type=email]::placeholder,
-		.wp-block-kadence-advanced-form_${id} input[type=tel]::placeholder,
+		.wp-block-kadence-advanced-form_${id} input::placeholder,
 		.wp-block-kadence-advanced-form_${id} select::placeholder,
 		.wp-block-kadence-advanced-form_${id} textarea::placeholder {
 			color: ${previewStyles.placeholderColor};
