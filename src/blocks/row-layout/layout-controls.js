@@ -145,6 +145,8 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'center-half', label: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
 			{ value: 'center-wide', label: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
 			{ value: 'center-exwide', label: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
+			{ value: 'first-row', label: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
+			{ value: 'last-row', label: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 		];
 	} else if ( 4 === columns ) {
@@ -152,6 +154,7 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: fourColIcon },
 			{ value: 'left-forty', label: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
 			{ value: 'right-forty', label: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFourIcon },
 		];
 	} else if ( 5 === columns ) {
@@ -162,6 +165,8 @@ import { __ } from '@wordpress/i18n';
 	} else if ( 6 === columns ) {
 		layoutOptions = [
 			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: sixCol },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
+			{ value: 'three-grid', label: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },
 		];
 	} else {
@@ -186,7 +191,6 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'center-exwide', label: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
 			{ value: 'first-row', label: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
 			{ value: 'last-row', label: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
-			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 		];
 	} else if ( 4 === columns ) {

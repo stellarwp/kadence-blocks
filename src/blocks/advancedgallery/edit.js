@@ -1575,93 +1575,52 @@ function GalleryEdit( props ) {
 									)}
 								</KadencePanelBody>
 							)}
-							{showSettings( 'spacingSettings', 'kadence/advancedgallery' ) && (
-								<KadencePanelBody
-									title={__( 'Gallery Spacing', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-gallery-spacing'}
-								>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Margin', 'kadence-blocks' )}
-										value={margin[ 0 ].desk}
-										tabletValue={margin[ 0 ].tablet}
-										mobileValue={margin[ 0 ].mobile}
-										onChange={( value ) => {
-											saveMargin( { desk: value } )
-										}}
-										onChangeTablet={( value ) => {
-											saveMargin( { tablet: value } )
-										}}
-										onChangeMobile={( value ) => {
-											saveMargin( { mobile: value } )
-										}}
-										min={ marginMin }
-										max={ marginMax }
-										step={ marginStep }
-										unit={ marginUnit }
-										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-										onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-										onMouseOver={ marginMouseOver.onMouseOver }
-										onMouseOut={ marginMouseOver.onMouseOut }
-									/>
 
-									{/*		( tab ) => {*/}
-									{/*			let tabout;*/}
-									{/*			if ( tab.name ) {*/}
-									{/*				if ( 'mobile' === tab.name ) {*/}
-									{/*					tabout = (*/}
-									{/*						<MeasurementControls*/}
-									{/*							label={__( 'Mobile Margin', 'kadence-blocks' )}*/}
-									{/*							measurement={margin[ 0 ].mobile}*/}
-									{/*							control={marginMobileControl}*/}
-									{/*							onChange={( value ) => saveMargin( { mobile: value } )}*/}
-									{/*							onControl={( value ) => setMarginMobileControl( value )}*/}
-									{/*							min={marginMin}*/}
-									{/*							max={marginMax}*/}
-									{/*							step={marginStep}*/}
-									{/*						/>*/}
-									{/*					);*/}
-									{/*				} else if ( 'tablet' === tab.name ) {*/}
-									{/*					tabout = (*/}
-									{/*						<MeasurementControls*/}
-									{/*							label={__( 'Tablet Margin', 'kadence-blocks' )}*/}
-									{/*							measurement={margin[ 0 ].tablet}*/}
-									{/*							control={marginTabletControl}*/}
-									{/*							onChange={( value ) => saveMargin( { tablet: value } )}*/}
-									{/*							onControl={( value ) => setMarginTabletControl( value )}*/}
-									{/*							min={marginMin}*/}
-									{/*							max={marginMax}*/}
-									{/*							step={marginStep}*/}
-									{/*						/>*/}
-									{/*					);*/}
-									{/*				} else {*/}
-									{/*					tabout = (*/}
-									{/*						<MeasurementControls*/}
-									{/*							label={__( 'Margin', 'kadence-blocks' )}*/}
-									{/*							measurement={margin[ 0 ].desk}*/}
-									{/*							control={marginDeskControl}*/}
-									{/*							onChange={( value ) => saveMargin( { desk: value } )}*/}
-									{/*							onControl={( value ) => setMarginDeskControl( value )}*/}
-									{/*							min={marginMin}*/}
-									{/*							max={marginMax}*/}
-									{/*							step={marginStep}*/}
-									{/*						/>*/}
-									{/*					);*/}
-									{/*				}*/}
-									{/*			}*/}
-									{/*			return <div className={tab.className} key={tab.className}>{tabout}</div>;*/}
-									{/*		}*/}
-									{/*	}*/}
-									{/*</TabPanel>*/}
-								</KadencePanelBody>
-							)}
 						</>
 					}
 
-					{( activeTab === 'advanced' ) && (
+					{(activeTab === 'advanced') && (
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedgallery' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+						<>
+							{showSettings('spacingSettings', 'kadence/advancedgallery') && (
 
+								<>
+									<KadencePanelBody>
+										<ResponsiveMeasureRangeControl
+											label={__('Margin', 'kadence-blocks')}
+											value={margin[0].desk}
+											tabletValue={margin[0].tablet}
+											mobileValue={margin[0].mobile}
+											onChange={(value) => {
+												saveMargin({desk: value})
+											}}
+											onChangeTablet={(value) => {
+												saveMargin({tablet: value})
+											}}
+											onChangeMobile={(value) => {
+												saveMargin({mobile: value})
+											}}
+											min={marginMin}
+											max={marginMax}
+											step={marginStep}
+											unit={marginUnit}
+											units={['px', 'em', 'rem', '%', 'vh']}
+											onUnit={(value) => setAttributes({marginUnit: value})}
+											onMouseOver={marginMouseOver.onMouseOver}
+											onMouseOut={marginMouseOver.onMouseOut}
+										/>
+
+									</KadencePanelBody>
+
+									<div className="kt-sidebar-settings-spacer"></div>
+
+								</>
+							)}
+
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
+												  blockSlug={'kadence/advancedgallery'}
+												  excludedAttrs={['images', 'imagesDynamic']}/>
+						</>
 					)}
 
 					</InspectorControls>

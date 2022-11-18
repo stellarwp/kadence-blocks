@@ -16,7 +16,10 @@ import {
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
-
+/**
+ * Import Css
+ */
+ import './editor.scss';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.

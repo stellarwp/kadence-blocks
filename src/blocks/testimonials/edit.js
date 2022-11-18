@@ -1347,6 +1347,177 @@ function KadenceTestimonials({
                                     </Fragment>
                                 )}
 
+                                <div className="kt-sidebar-settings-spacer"></div>
+
+                                {showSettings('individualSettings', 'kadence/testimonials') && (
+                                    <KadencePanelBody
+                                        title={__('Individual Settings', 'kadence-blocks')}
+                                        initialOpen={false}
+                                        panelName={'kb-testimonials-individual-settings'}
+                                    >
+                                        {renderSettings}
+                                    </KadencePanelBody>
+                                )}
+                            </>
+                        }
+
+                        {(activeTab === 'style') &&
+
+                            <>
+                                {showSettings('containerSettings', 'kadence/testimonials') && (
+                                    <KadencePanelBody
+                                        title={__('Container Settings', 'kadence-blocks')}
+                                        panelName={'kb-testimonials-container-settings'}
+                                    >
+                                        <div className="kt-spacer-sidebar-15"></div>
+                                        <MeasurementControls
+                                            label={__('Container Border Width (px)', 'kadence-blocks')}
+                                            measurement={containerBorderWidth}
+                                            control={containerBorderControl}
+                                            onChange={(value) => setAttributes({containerBorderWidth: value})}
+                                            onControl={(value) => setContainerBorderControl(value)}
+                                            min={0}
+                                            max={40}
+                                            step={1}
+                                        />
+                                        <RangeControl
+                                            label={__('Container Border Radius (px)', 'kadence-blocks')}
+                                            value={containerBorderRadius}
+                                            onChange={value => setAttributes({containerBorderRadius: value})}
+                                            step={1}
+                                            min={0}
+                                            max={200}
+                                        />
+                                        <PopColorControl
+                                            label={__('Container Background', 'kadence-blocks')}
+                                            value={(containerBackground ? containerBackground : '')}
+                                            default={''}
+                                            onChange={value => setAttributes({containerBackground: value})}
+                                            opacityValue={containerBackgroundOpacity}
+                                            onOpacityChange={value => setAttributes({containerBackgroundOpacity: value})}
+                                        />
+                                        <PopColorControl
+                                            label={__('Container Border', 'kadence-blocks')}
+                                            value={(containerBorder ? containerBorder : '')}
+                                            default={''}
+                                            onChange={value => setAttributes({containerBorder: value})}
+                                            opacityValue={containerBorderOpacity}
+                                            onOpacityChange={value => setAttributes({containerBorderOpacity: value})}
+                                        />
+                                        <div className="kt-spacer-sidebar-15"></div>
+
+                                        {containerMinHeight && (containerMinHeight[0] || containerMinHeight[1] || containerMinHeight[2]) && (
+                                            <div className="kt-btn-size-settings-container">
+                                                <h2 className="kt-beside-btn-group">{__('Inner Content Align', 'kadence-blocks')}</h2>
+                                                <ButtonGroup className="kt-button-size-type-options"
+                                                             aria-label={__('Inner Content Align', 'kadence-blocks')}>
+                                                    {map(VAlignOptions, ({name, icon, key}) => (
+                                                        <Tooltip text={name}>
+                                                            <Button
+                                                                key={key}
+                                                                className="kt-btn-size-btn"
+                                                                isSmall
+                                                                isPrimary={containerVAlign === key}
+                                                                aria-pressed={containerVAlign === key}
+                                                                onClick={() => setAttributes({containerVAlign: key})}
+                                                            >
+                                                                {icon}
+                                                            </Button>
+                                                        </Tooltip>
+                                                    ))}
+                                                </ButtonGroup>
+                                            </div>
+                                        )}
+                                    </KadencePanelBody>
+                                )}
+
+                                {showSettings('shadowSettings', 'kadence/testimonials') && (
+                                    <KadencePanelBody
+                                        title={__('Container Shadow', 'kadence-blocks')}
+                                        initialOpen={false}
+                                        panelName={'kb-testimonials-container-shadow'}
+                                    >
+                                        <ToggleControl
+                                            label={__('Enable Shadow', 'kadence-blocks')}
+                                            checked={displayShadow}
+                                            onChange={value => setAttributes({displayShadow: value})}
+                                        />
+                                        {displayShadow && (
+                                            <Fragment>
+                                                <PopColorControl
+                                                    label={__('Shadow Color', 'kadence-blocks')}
+                                                    value={(shadow[0].color ? shadow[0].color : '')}
+                                                    default={''}
+                                                    onChange={value => saveShadow({color: value})}
+                                                    opacityValue={shadow[0].opacity}
+                                                    onOpacityChange={value => saveShadow({opacity: value})}
+                                                    onArrayChange={(color, opacity) => saveShadow({
+                                                        color: color,
+                                                        opacity: opacity
+                                                    })}
+                                                />
+                                                <RangeControl
+                                                    label={__('Shadow Blur', 'kadence-blocks')}
+                                                    value={shadow[0].blur}
+                                                    onChange={value => saveShadow({blur: value})}
+                                                    min={0}
+                                                    max={100}
+                                                    step={1}
+                                                />
+                                                <RangeControl
+                                                    label={__('Shadow Spread', 'kadence-blocks')}
+                                                    value={shadow[0].spread}
+                                                    onChange={value => saveShadow({spread: value})}
+                                                    min={-100}
+                                                    max={100}
+                                                    step={1}
+                                                />
+                                                <RangeControl
+                                                    label={__('Shadow Vertical Offset', 'kadence-blocks')}
+                                                    value={shadow[0].vOffset}
+                                                    onChange={value => saveShadow({vOffset: value})}
+                                                    min={-100}
+                                                    max={100}
+                                                    step={1}
+                                                />
+                                                <RangeControl
+                                                    label={__('Shadow Horizontal Offset', 'kadence-blocks')}
+                                                    value={shadow[0].hOffset}
+                                                    onChange={value => saveShadow({hOffset: value})}
+                                                    min={-100}
+                                                    max={100}
+                                                    step={1}
+                                                />
+                                            </Fragment>
+                                        )}
+                                    </KadencePanelBody>
+                                )}
+                                {showSettings('wrapperSettings', 'kadence/testimonials') && (
+                                    <KadencePanelBody
+                                        title={__('Wrapper Padding', 'kadence-blocks')}
+                                        initialOpen={false}
+                                        panelName={'kb-testimonials-wrapper-padding'}
+                                    >
+                                        <ResponsiveMeasurementControls
+                                            label={__('Wrapper Padding', 'kadence-blocks')}
+                                            value={wrapperPadding}
+                                            control={wrapperPaddingControls}
+                                            tabletValue={wrapperTabletPadding}
+                                            mobileValue={wrapperMobilePadding}
+                                            onChange={(value) => setAttributes({wrapperPadding: value})}
+                                            onChangeTablet={(value) => setAttributes({wrapperTabletPadding: value})}
+                                            onChangeMobile={(value) => setAttributes({wrapperMobilePadding: value})}
+                                            onChangeControl={(value) => setWrapperPaddingControls(value)}
+                                            min={paddingMin}
+                                            max={paddingMax}
+                                            step={paddingStep}
+                                            unit={wrapperPaddingType}
+                                            units={['px', 'em', 'rem', '%']}
+                                            onUnit={(value) => setAttributes({wrapperPaddingType: value})}
+                                        />
+                                    </KadencePanelBody>
+                                )}
+
                                 {showSettings('iconSettings', 'kadence/testimonials') && (
                                     <KadencePanelBody
                                         title={__('Icon Settings', 'kadence-blocks')}
@@ -1920,221 +2091,56 @@ function KadenceTestimonials({
                                         )}
                                     </KadencePanelBody>
                                 )}
-
-                                <div className="kt-sidebar-settings-spacer"></div>
-
-                                {showSettings('individualSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Individual Settings', 'kadence-blocks')}
-                                        initialOpen={false}
-                                        panelName={'kb-testimonials-individual-settings'}
-                                    >
-                                        {renderSettings}
-                                    </KadencePanelBody>
-                                )}
-                            </>
-                        }
-
-                        {(activeTab === 'style') &&
-
-                            <>
-                                {showSettings('containerSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Container Settings', 'kadence-blocks')}
-                                        panelName={'kb-testimonials-container-settings'}
-                                    >
-                                        <div className="kt-spacer-sidebar-15"></div>
-                                        <MeasurementControls
-                                            label={__('Container Border Width (px)', 'kadence-blocks')}
-                                            measurement={containerBorderWidth}
-                                            control={containerBorderControl}
-                                            onChange={(value) => setAttributes({containerBorderWidth: value})}
-                                            onControl={(value) => setContainerBorderControl(value)}
-                                            min={0}
-                                            max={40}
-                                            step={1}
-                                        />
-                                        <RangeControl
-                                            label={__('Container Border Radius (px)', 'kadence-blocks')}
-                                            value={containerBorderRadius}
-                                            onChange={value => setAttributes({containerBorderRadius: value})}
-                                            step={1}
-                                            min={0}
-                                            max={200}
-                                        />
-                                        <PopColorControl
-                                            label={__('Container Background', 'kadence-blocks')}
-                                            value={(containerBackground ? containerBackground : '')}
-                                            default={''}
-                                            onChange={value => setAttributes({containerBackground: value})}
-                                            opacityValue={containerBackgroundOpacity}
-                                            onOpacityChange={value => setAttributes({containerBackgroundOpacity: value})}
-                                        />
-                                        <PopColorControl
-                                            label={__('Container Border', 'kadence-blocks')}
-                                            value={(containerBorder ? containerBorder : '')}
-                                            default={''}
-                                            onChange={value => setAttributes({containerBorder: value})}
-                                            opacityValue={containerBorderOpacity}
-                                            onOpacityChange={value => setAttributes({containerBorderOpacity: value})}
-                                        />
-                                        <div className="kt-spacer-sidebar-15"></div>
-                                        <ResponsiveMeasureRangeControl
-                                            label={__('Container Padding', 'kadence-blocks')}
-                                            value={containerPadding}
-                                            tabletValue={tabletContainerPadding}
-                                            mobileValue={mobileContainerPadding}
-                                            onChange={(value) => setAttributes({containerPadding: value})}
-                                            onChangeTablet={(value) => setAttributes({tabletContainerPadding: value})}
-                                            onChangeMobile={(value) => setAttributes({mobileContainerPadding: value})}
-                                            min={0}
-                                            max={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 200)}
-                                            step={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 0.1 : 1)}
-                                            unit={(containerPaddingType ? containerPaddingType : 'px')}
-                                            units={['px', 'em', 'rem']}
-                                            onUnit={(value) => setAttributes({containerPaddingType: value})}
-                                            onMouseOver={ paddingMouseOver.onMouseOver }
-                                            onMouseOut={ paddingMouseOver.onMouseOut }
-                                        />
-                                        <RangeControl
-                                            label={__('Container Max Width (px)', 'kadence-blocks')}
-                                            value={containerMaxWidth}
-                                            onChange={value => setAttributes({containerMaxWidth: value})}
-                                            step={5}
-                                            min={50}
-                                            max={2000}
-                                        />
-                                        <ResponsiveRangeControls
-                                            label={__('Container Min Height', 'kadence-blocks')}
-                                            value={(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : '')}
-                                            onChange={value => setAttributes({containerMinHeight: [value, (containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), (containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')]})}
-                                            tabletValue={(containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : '')}
-                                            onChangeTablet={(value) => setAttributes({containerMinHeight: [(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), value, (containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')]})}
-                                            mobileValue={(containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')}
-                                            onChangeMobile={(value) => setAttributes({containerMinHeight: [(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), (containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), value]})}
-                                            min={0}
-                                            max={600}
-                                            step={1}
-                                            unit={'px'}
-                                            showUnit={true}
-                                            units={['px']}
-                                        />
-                                        {containerMinHeight && (containerMinHeight[0] || containerMinHeight[1] || containerMinHeight[2]) && (
-                                            <div className="kt-btn-size-settings-container">
-                                                <h2 className="kt-beside-btn-group">{__('Inner Content Align', 'kadence-blocks')}</h2>
-                                                <ButtonGroup className="kt-button-size-type-options"
-                                                             aria-label={__('Inner Content Align', 'kadence-blocks')}>
-                                                    {map(VAlignOptions, ({name, icon, key}) => (
-                                                        <Tooltip text={name}>
-                                                            <Button
-                                                                key={key}
-                                                                className="kt-btn-size-btn"
-                                                                isSmall
-                                                                isPrimary={containerVAlign === key}
-                                                                aria-pressed={containerVAlign === key}
-                                                                onClick={() => setAttributes({containerVAlign: key})}
-                                                            >
-                                                                {icon}
-                                                            </Button>
-                                                        </Tooltip>
-                                                    ))}
-                                                </ButtonGroup>
-                                            </div>
-                                        )}
-                                    </KadencePanelBody>
-                                )}
-
-                                {showSettings('shadowSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Container Shadow', 'kadence-blocks')}
-                                        initialOpen={false}
-                                        panelName={'kb-testimonials-container-shadow'}
-                                    >
-                                        <ToggleControl
-                                            label={__('Enable Shadow', 'kadence-blocks')}
-                                            checked={displayShadow}
-                                            onChange={value => setAttributes({displayShadow: value})}
-                                        />
-                                        {displayShadow && (
-                                            <Fragment>
-                                                <PopColorControl
-                                                    label={__('Shadow Color', 'kadence-blocks')}
-                                                    value={(shadow[0].color ? shadow[0].color : '')}
-                                                    default={''}
-                                                    onChange={value => saveShadow({color: value})}
-                                                    opacityValue={shadow[0].opacity}
-                                                    onOpacityChange={value => saveShadow({opacity: value})}
-                                                    onArrayChange={(color, opacity) => saveShadow({
-                                                        color: color,
-                                                        opacity: opacity
-                                                    })}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Blur', 'kadence-blocks')}
-                                                    value={shadow[0].blur}
-                                                    onChange={value => saveShadow({blur: value})}
-                                                    min={0}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Spread', 'kadence-blocks')}
-                                                    value={shadow[0].spread}
-                                                    onChange={value => saveShadow({spread: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Vertical Offset', 'kadence-blocks')}
-                                                    value={shadow[0].vOffset}
-                                                    onChange={value => saveShadow({vOffset: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Horizontal Offset', 'kadence-blocks')}
-                                                    value={shadow[0].hOffset}
-                                                    onChange={value => saveShadow({hOffset: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                            </Fragment>
-                                        )}
-                                    </KadencePanelBody>
-                                )}
-                                {showSettings('wrapperSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Wrapper Padding', 'kadence-blocks')}
-                                        initialOpen={false}
-                                        panelName={'kb-testimonials-wrapper-padding'}
-                                    >
-                                        <ResponsiveMeasurementControls
-                                            label={__('Wrapper Padding', 'kadence-blocks')}
-                                            value={wrapperPadding}
-                                            control={wrapperPaddingControls}
-                                            tabletValue={wrapperTabletPadding}
-                                            mobileValue={wrapperMobilePadding}
-                                            onChange={(value) => setAttributes({wrapperPadding: value})}
-                                            onChangeTablet={(value) => setAttributes({wrapperTabletPadding: value})}
-                                            onChangeMobile={(value) => setAttributes({wrapperMobilePadding: value})}
-                                            onChangeControl={(value) => setWrapperPaddingControls(value)}
-                                            min={paddingMin}
-                                            max={paddingMax}
-                                            step={paddingStep}
-                                            unit={wrapperPaddingType}
-                                            units={['px', 'em', 'rem', '%']}
-                                            onUnit={(value) => setAttributes({wrapperPaddingType: value})}
-                                        />
-                                    </KadencePanelBody>
-                                )}
                             </>
                         }
 
                         {( activeTab === 'advanced') && (
                             <>
+                                <KadencePanelBody>
+                                    <ResponsiveMeasureRangeControl
+                                        label={__('Container Padding', 'kadence-blocks')}
+                                        value={containerPadding}
+                                        tabletValue={tabletContainerPadding}
+                                        mobileValue={mobileContainerPadding}
+                                        onChange={(value) => setAttributes({containerPadding: value})}
+                                        onChangeTablet={(value) => setAttributes({tabletContainerPadding: value})}
+                                        onChangeMobile={(value) => setAttributes({mobileContainerPadding: value})}
+                                        min={0}
+                                        max={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 200)}
+                                        step={(containerPaddingType === 'em' || containerPaddingType === 'rem' ? 0.1 : 1)}
+                                        unit={(containerPaddingType ? containerPaddingType : 'px')}
+                                        units={['px', 'em', 'rem']}
+                                        onUnit={(value) => setAttributes({containerPaddingType: value})}
+                                        onMouseOver={ paddingMouseOver.onMouseOver }
+                                        onMouseOut={ paddingMouseOver.onMouseOut }
+                                    />
+                                    <RangeControl
+                                        label={__('Container Max Width (px)', 'kadence-blocks')}
+                                        value={containerMaxWidth}
+                                        onChange={value => setAttributes({containerMaxWidth: value})}
+                                        step={5}
+                                        min={50}
+                                        max={2000}
+                                    />
+                                    <ResponsiveRangeControls
+                                        label={__('Container Min Height', 'kadence-blocks')}
+                                        value={(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : '')}
+                                        onChange={value => setAttributes({containerMinHeight: [value, (containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), (containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')]})}
+                                        tabletValue={(containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : '')}
+                                        onChangeTablet={(value) => setAttributes({containerMinHeight: [(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), value, (containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')]})}
+                                        mobileValue={(containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : '')}
+                                        onChangeMobile={(value) => setAttributes({containerMinHeight: [(containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), (containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), value]})}
+                                        min={0}
+                                        max={600}
+                                        step={1}
+                                        unit={'px'}
+                                        showUnit={true}
+                                        units={['px']}
+                                    />
+                                </KadencePanelBody>
+
+                                <div className="kt-sidebar-settings-spacer"></div>
+
                                 <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'itemsCount' ] } preventMultiple={ [ 'testimonials' ] } />
                             </>
                         )}

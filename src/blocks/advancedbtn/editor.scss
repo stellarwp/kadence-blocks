@@ -209,6 +209,9 @@
 .kt-box-shadow-subset .kt-advanced-color-settings-container {
     flex-direction: column-reverse;
 }
+.kt-box-shadow-subset input.components-text-control__input {
+    padding: 0 1px;
+}
 .edit-post-sidebar h2.kt-tab-wrap-title.kt-color-settings-title {
     text-align: center;
     background: #f2f2f2;

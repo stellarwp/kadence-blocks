@@ -90,7 +90,7 @@ const kticonlistUniqueIDs = [];
 
 function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId } ) {
 
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -139,6 +139,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 	const previewListMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
 	const previewListMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[3] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 3 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 3 ] : '' ) );
 
+	const previewColumnGap = getPreviewSize( getPreviewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
+	const previewListGap = getPreviewSize( getPreviewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
 
 	const createNewListItem = ( value, entireOld, previousIndex ) => {
@@ -674,14 +676,31 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 									)}
 									{ showSettings( 'spacing', 'kadence/iconlist' ) && (
 										<Fragment>
-											<RangeControl
+											<ResponsiveRangeControls
+												label={__( 'List Column Gap' )}
+												value={columnGap}
+												onChange={value => setAttributes( { columnGap: value } )}
+												tabletValue={( tabletColumnGap ? tabletColumnGap : '' )}
+												onChangeTablet={( value ) => setAttributes( { tabletColumnGap: value } )}
+												mobileValue={( mobileColumnGap ? mobileColumnGap : '' )}
+												onChangeMobile={( value ) => setAttributes( { mobileColumnGap: value } )}
+												min={0}
+												max={200}
+												step={1}
+												showUnit={false}
+											/>
+											<ResponsiveRangeControls
 												label={__( 'List Vertical Spacing' )}
 												value={listGap}
-												onChange={value => {
-													setAttributes( { listGap: value } );
-												}}
+												onChange={value => setAttributes( { listGap: value } )}
+												tabletValue={( tabletListGap ? tabletListGap : '' )}
+												onChangeTablet={( value ) => setAttributes( { tabletListGap: value } )}
+												mobileValue={( mobileListGap ? mobileListGap : '' )}
+												onChangeMobile={( value ) => setAttributes( { mobileListGap: value } )}
 												min={0}
 												max={60}
+												step={1}
+												showUnit={false}
 											/>
 											<RangeControl
 												label={__( 'List Horizontal Icon and Label Spacing' )}
@@ -711,23 +730,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 													) )}
 												</ButtonGroup>
 											</div>
-											<ResponsiveMeasureRangeControl
-												label={__( 'List Margin', 'kadence-blocks' )}
-												value={ listMargin }
-												tabletValue={ tabletListMargin}
-												mobileValue={ mobileListMargin}
-												onChange={( value ) => setAttributes( { listMargin: value } )}
-												onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
-												onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
-												min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
-												max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
-												step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
-												unit={listMarginType}
-												units={[ 'px', 'em', 'rem', '%' ]}
-												onUnit={( value ) => setAttributes( { listMarginType: value } )}
-												onMouseOver={ listMarginMouseOver.onMouseOver }
-												onMouseOut={ listMarginMouseOver.onMouseOut }
-											/>
 										</Fragment>
 									)}
 								</KadencePanelBody>
@@ -802,9 +804,32 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 						{( activeTab === 'advanced' ) &&
 							<>
+								<KadencePanelBody>
+									<ResponsiveMeasureRangeControl
+										label={__( 'List Margin', 'kadence-blocks' )}
+										value={ listMargin }
+										tabletValue={ tabletListMargin}
+										mobileValue={ mobileListMargin}
+										onChange={( value ) => setAttributes( { listMargin: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
+										min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
+										max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+										step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
+										unit={listMarginType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { listMarginType: value } )}
+										onMouseOver={ listMarginMouseOver.onMouseOver }
+										onMouseOut={ listMarginMouseOver.onMouseOut }
+									/>
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+
 								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'Edit All Icon Styles Together' )}
+										initialOpen={ false }
 										panelName={'kb-icon-all-styles'}
 									>
 										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
@@ -920,7 +945,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 					</InspectorControls>
 				) }
 				<style>
-					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap:not(:last-child) { margin-bottom: ${ listGap }px; }` }
+					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap { margin-bottom: ${ previewListGap }px; }` }
 					{ `body:not(.rtl) .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
 					{ `body.rtl .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-left: ${ listLabelGap }px; }` }
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
@@ -946,6 +971,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 					 marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType),
 					 marginBottom: getSpacingOptionOutput( previewListMarginBottom, listMarginType),
 					 marginLeft: getSpacingOptionOutput( previewListMarginLeft, listMarginType),
+					 columnGap: previewColumnGap + 'px'
 				 }}>
 				{times( listCount, n => renderIconsPreview( n ) )}
 				{isSelected && (

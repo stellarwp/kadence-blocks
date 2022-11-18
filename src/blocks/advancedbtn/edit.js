@@ -1930,42 +1930,44 @@ function KadenceAdvancedButton( props ) {
 											/>
 										</KadencePanelBody>
 									)}
-									{ showSettings( 'marginSettings', 'kadence/advancedbtn' ) && (
-										<KadencePanelBody
-											title={__( 'Container Margin', 'kadence-blocks' )}
-											initialOpen={false}
-											panelName={'kb-adv-btn-container-margin'}
-										>
-											<ResponsiveMeasureRangeControl
-												label={__( 'Container Margin', 'kadence-blocks' )}
-												value={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ]}
-												tabletValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ]}
-												mobileValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ]}
-												onChange={( value ) => {
-													saveMargin( { desk: value } )
-												}}
-												onChangeTablet={( value ) => {
-													saveMargin( { tablet: value } )
-												}}
-												onChangeMobile={( value ) => {
-													saveMargin( { mobile: value } )
-												}}
-												min={ marginMin }
-												max={ marginMax }
-												step={ marginStep }
-												unit={ marginUnit }
-												units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-												onUnit={( value ) => setAttributes( { marginUnit: value } ) }
-												onMouseOver={ marginMouseOver.onMouseOver }
-												onMouseOut={ marginMouseOver.onMouseOut }
-											/>
-										</KadencePanelBody>
-									)}
+
 								</>
 							}
 
 							{( activeTab === 'advanced' ) && (
 								<>
+									{showSettings('marginSettings', 'kadence/advancedbtn') && (
+										<>
+											<KadencePanelBody>
+												<ResponsiveMeasureRangeControl
+													label={__('Container Margin', 'kadence-blocks')}
+													value={undefined !== margin && undefined !== margin[0] && undefined !== margin[0].desk ? margin[0].desk : ['', '', '', '']}
+													tabletValue={undefined !== margin && undefined !== margin[0] && undefined !== margin[0].tablet ? margin[0].tablet : ['', '', '', '']}
+													mobileValue={undefined !== margin && undefined !== margin[0] && undefined !== margin[0].mobile ? margin[0].mobile : ['', '', '', '']}
+													onChange={(value) => {
+														saveMargin({desk: value})
+													}}
+													onChangeTablet={(value) => {
+														saveMargin({tablet: value})
+													}}
+													onChangeMobile={(value) => {
+														saveMargin({mobile: value})
+													}}
+													min={marginMin}
+													max={marginMax}
+													step={marginStep}
+													unit={marginUnit}
+													units={['px', 'em', 'rem', '%', 'vh']}
+													onUnit={(value) => setAttributes({marginUnit: value})}
+													onMouseOver={marginMouseOver.onMouseOver}
+													onMouseOut={marginMouseOver.onMouseOut}
+												/>
+											</KadencePanelBody>
+
+											<div className="kt-sidebar-settings-spacer"></div>
+										</>
+									)}
+
 									<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedbtn' } excludedAttrs={ [ 'btnCount', 'lockBtnCount', 'hideLink' ] } preventMultiple={ [ 'btns' ] } />
 								</>
 							)}

@@ -16,6 +16,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps } from '@wordpress/block-editor';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	TextControl,
 	TextareaControl,
@@ -165,13 +166,12 @@ export function Edit( {
 		/**
 		 * Get settings
 		 */
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
-				setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
-			} );
-		} );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
+		});
 
 		if ( ! uniqueID ) {
 			attributes = setBlockDefaults( 'kadence/googlemaps', attributes);
@@ -267,7 +267,7 @@ export function Edit( {
 								}}
 							/>
 
-							{apiType === 'javascript' ?
+							{apiType === 'javascript' && (
 								<>
 									<ToggleControl
 										label={__('Show Marker', 'kadence-blocks')}
@@ -282,7 +282,7 @@ export function Edit( {
 									{/*	onChange={ (value) => { setAttributes({ showControls: (value) }) } }*/}
 									{/*/>*/}
 								</>
-								: null}
+							) }
 
 							<RangeControl
 								label={__('Zoom', 'kadence-blocks')}
@@ -305,7 +305,8 @@ export function Edit( {
 										label: __('Satellite', 'kadence-blocks'),
 										value: 'satellite'
 									}
-								]}/>
+								]}
+							/>
 
 							<SelectControl
 								label={__('Map Filter', 'kadence-blocks')}
@@ -335,18 +336,20 @@ export function Edit( {
 										label: __('Sepia', 'kadence-blocks'),
 										value: 'sepia'
 									}
-								]}/>
+								]}
+							/>
 
-							{mapFilter !== 'standard' ?
+							{mapFilter !== 'standard' && (
 								<RangeControl
 									label={__('Map Filter Strength ', 'kadence-blocks')}
 									value={mapFilterAmount}
 									onChange={(value) => setAttributes({mapFilterAmount: value})}
 									min={0}
 									max={(mapFilter === 'saturate') ? 250 : 100}
-								/> : null}
+								/>
+							) }
 
-							{apiType === 'javascript' && mapType === 'roadmap' ?
+							{apiType === 'javascript' && mapType === 'roadmap' && (
 								<>
 									<SelectControl
 										label={__('Map Style', 'kadence-blocks')}
@@ -396,9 +399,10 @@ export function Edit( {
 												value: 'custom'
 											}
 										]}/>
-								</> : null}
+								</>
+							)}
 
-							{apiType === 'javascript' && mapType === 'roadmap' && mapStyle === 'custom' ?
+							{ apiType === 'javascript' && mapType === 'roadmap' && mapStyle === 'custom' && (
 								<>
 									<TextareaControl
 										label={__('Custom Map Style', 'kadence-blocks')}
@@ -410,7 +414,7 @@ export function Edit( {
 									<a href={'https://snazzymaps.com'}
 									   target={'_blank'}> {__('Visit Snazzy Maps', 'kadence-blocks')} </a>
 								</>
-								: null}
+							) }
 
 						</KadencePanelBody>
 
@@ -541,6 +545,13 @@ export function Edit( {
 								/>
 							)}
 
+						</KadencePanelBody>
+					</>
+				)}
+
+				{ activeTab === 'advanced' && (
+					<>
+						<KadencePanelBody>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={paddingDesktop}
@@ -576,11 +587,9 @@ export function Edit( {
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
-					</>
-				)}
 
-				{ activeTab === 'advanced' && (
-					<>
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/googlemaps' } />
 					</>
 				)}

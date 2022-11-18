@@ -822,7 +822,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 							{ showSettings( 'titleBorder', 'kadence/accordion' ) && (
 								<KadencePanelBody
 									title={__( 'Pane Title Border', 'kadence-blocks' )}
-									initialOpen={false}
+									initialOpen={true}
 									panelName={'kb-accordion-pane-title-border'}
 								>
 									<BorderColorControls

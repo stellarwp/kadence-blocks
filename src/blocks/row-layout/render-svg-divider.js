@@ -5,7 +5,7 @@
 /**
  * Build the row edit
  */
- function renderSVGDivider( svgName, placement ) {
+ function renderSVGDivider( svgName, placement, width = null ) {
 	const dividers = {
 		bottom: {
 			ct: <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />,
@@ -62,7 +62,7 @@
 		return;
 	}
 	return (
-		<svg viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: 'currentColor' } }>
+		<svg viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: 'currentColor', width: ( width ? width : undefined ) } }>
 			{ dividers[ placement ][ svgName ] }
 		</svg>
 	);	

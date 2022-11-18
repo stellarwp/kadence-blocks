@@ -60,8 +60,28 @@
 	  "default": ""
 	},
 	"listGap": {
-	  "type": "number",
-	  "default": 5
+	 "type": "number",
+	 "default": 5
+	},
+	"tabletListGap": {
+	 "type": "number",
+	 "default": ""
+	},
+	"mobileListGap": {
+	 "type": "number",
+	 "default": ""
+	},
+	"columnGap": {
+	 "type": "number",
+	 "default": 0
+	},
+	"tabletColumnGap": {
+	 "type": "number",
+	 "default": ""
+	},
+	"mobileColumnGap": {
+	 "type": "number",
+	 "default": ""
 	},
 	"listLabelGap": {
 	  "type": "number",

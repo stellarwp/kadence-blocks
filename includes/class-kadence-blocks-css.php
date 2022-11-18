@@ -69,6 +69,14 @@ class Kadence_Blocks_CSS {
 	protected $_tablet_media_query = array();
 
 	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $_tablet_only_media_query = array();
+
+	/**
 	 * The array that holds all of the css to output inside of the mobile media query
 	 *
 	 * @access protected
@@ -277,6 +285,8 @@ class Kadence_Blocks_CSS {
 			$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 			$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
+			$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
+			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
 			$this->media_queries    = $media_query;
 		}
 		return isset( $this->media_queries[ $device ] ) ? $this->media_queries[ $device ] : '';
@@ -345,7 +355,17 @@ class Kadence_Blocks_CSS {
 		}
 		return $this;
 	}
-
+	/**
+	 * Check to see if variable contains a number including 0.
+	 *
+	 * @access public
+	 *
+	 * @param  string $value - the css property.
+	 * @return boolean
+	 */
+	public function is_number( $value = null ) {
+		return isset( $value ) && is_numeric( $value );
+	}
 	/**
 	 * Adds a new rule to the css output
 	 *
@@ -370,6 +390,11 @@ class Kadence_Blocks_CSS {
 					$this->_tablet_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'tabletOnly' === $this->_media_state ) {
+				if ( ! isset( $this->_tablet_only_media_query[ $this->_selector ] ) ) {
+					$this->_tablet_only_media_query[ $this->_selector ] = '';
+				}
+				$this->_tablet_only_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} else {
 				$this->_css .= sprintf( $format, $property, $value, $prefix );
 			}
@@ -1601,7 +1626,7 @@ class Kadence_Blocks_CSS {
 		$args = wp_parse_args( $args, $defaults );
 		$unit = ! empty( $attributes[ $args['unit_key'] ] ) ? $attributes[ $args['unit_key'] ] : 'px';
 		if ( isset( $attributes[ $args['desktop_key'] ] ) && is_array( $attributes[ $args['desktop_key'] ] ) ) {
-			if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_numeric( $attributes[ $args['desktop_key'] ][0] ) ) {
+			if ( $this->is_number( $attributes[ $args['desktop_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] . $unit );
 			} else if ( 'position' === $property && ! empty( $attributes[ $args['desktop_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] );
@@ -1839,6 +1864,14 @@ class Kadence_Blocks_CSS {
 			}
 			$this->stop_media_query();
 		}
+		if ( isset( $this->_tablet_only_media_query ) && is_array( $this->_tablet_only_media_query ) && ! empty( $this->_tablet_only_media_query ) ) {
+			$this->start_media_query( $this->get_media_queries( 'tabletOnly' ) );
+			foreach ( $this->_tablet_only_media_query as $selector => $string ) {
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
 		if ( isset( $this->_mobile_media_query ) && is_array( $this->_mobile_media_query ) && ! empty( $this->_mobile_media_query ) ) {
 			$this->start_media_query( $this->get_media_queries( 'mobile' ) );
 			foreach ( $this->_mobile_media_query as $selector => $string ) {
@@ -1874,6 +1907,7 @@ class Kadence_Blocks_CSS {
 		$this->_selector_output = '';
 		$this->_selector_states = array();
 		$this->_tablet_media_query = array();
+		$this->_tablet_only_media_query = array();
 		$this->_mobile_media_query = array();
 		$this->_media_state = 'desktop';
 		$this->_css = '';

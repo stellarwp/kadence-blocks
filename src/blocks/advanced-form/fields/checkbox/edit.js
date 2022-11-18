@@ -11,8 +11,7 @@ import {
 	ToggleControl,
 	PanelBody,
 	Dashicon,
-	Button,
-	IconButton
+	Button
 } from '@wordpress/components';
 
 import { useState } from '@wordpress/element';
@@ -44,6 +43,10 @@ function FieldCheckbox( {
 			options: newOptions,
 		} );
 	};
+
+	const toggleSelected = ( index, value ) => {
+		updateOption( index, { selected: !options[ index ].selected } );
+	}
 
 	function onOptionMoveUp( oldIndex ) {
 		return () => {
@@ -84,11 +87,6 @@ function FieldCheckbox( {
 		const currentItems = filter( options, ( item, i ) => previousIndex !== i );
 		setAttributes( { options: currentItems } );
 	};
-
-	const setLabel = ( index, value ) => {
-		options[ index ].label = value;
-		setAttributes( { options: options } );
-	}
 
 	const classes = classNames( {
 		'kb-advanced-form-field': true,
@@ -138,7 +136,7 @@ function FieldCheckbox( {
 								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
-								<IconButton
+								<Button
 									icon="arrow-up"
 									onClick={n === 0 ? undefined : onOptionMoveUp( n )}
 									className="kadence-blocks-list-item__move-up"
@@ -146,7 +144,7 @@ function FieldCheckbox( {
 									aria-disabled={n === 0}
 									disabled={n === 0}
 								/>
-								<IconButton
+								<Button
 									icon="arrow-down"
 									onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
 									className="kadence-blocks-list-item__move-down"
@@ -154,7 +152,7 @@ function FieldCheckbox( {
 									aria-disabled={( n + 1 ) === options.length}
 									disabled={( n + 1 ) === options.length}
 								/>
-								<IconButton
+								<Button
 									icon="no-alt"
 									onClick={() => removeOptionItem( n )}
 									className="kadence-blocks-list-item__remove"
@@ -210,8 +208,8 @@ function FieldCheckbox( {
 						<div className={'kb-form-field kb-form-multi'}>
 							{times( options.length, n => (
 								<div className={'kb-checkbox-item'} key={n}>
-									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} value={options} checked={ false }/>
-									<TextControl value={options[ n ].label} onChange={( value ) => setLabel( n, value )}/>
+									<input key={ 'cb' + n} type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} onChange={( value ) => toggleSelected( n, value.target.value )} checked={ options[ n ].selected }/>
+									<input key={ 'text' + n} type={'text'} value={options[ n ].label} className={ 'ignore-field-styles' } onChange={( value ) => updateOption( n, { label: value.target.value } )}/>
 									<Button onClick={() => removeOptionItem( n )}>
 										<span className="dashicons dashicons-trash"></span>
 									</Button>
@@ -239,7 +237,7 @@ function FieldCheckbox( {
 					<>
 						{times( options.length , n => (
 							<div className={ 'kb-checkbox-item' } key={ n }>
-								<input type="checkbox" name={ 'kb_field' } className={ 'kb-sub-field kb-checkbox-style' } value={ options } checked={ false } />
+								<input type="checkbox" name={ 'kb_field' } className={ 'kb-sub-field kb-checkbox-style' } checked={ options[ n ].selected } />
 								<label htmlFor={ 'kb_field' }>{ options[ n ].label }</label>
 							</div>
 						) )}

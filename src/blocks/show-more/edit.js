@@ -96,7 +96,7 @@ export function Edit ({
 
 			setAttributes( { uniqueID: smallID } );
 			addUniqueID( smallID, clientId );
-		} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
+		} else if ( ! isUniqueID(uniqueID)) {
 			// This checks if we are just switching views, client ID the same means we don't need to update.
 			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
 				setAttributes( { uniqueID: smallID } );
@@ -254,11 +254,7 @@ export function Edit ({
 
 				{( activeTab === 'advanced' ) &&
 					<>
-						<KadencePanelBody
-							title={__( 'Spacing Settings', 'kadence-blocks' )}
-							panelName={ 'spacingSettings'}
-							blockSlug={ 'kadence/show-more' }
-						>
+						<KadencePanelBody>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={[ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ]}
@@ -296,6 +292,9 @@ export function Edit ({
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadencePanelBody
 							title={__( 'Expand Settings', 'kadence-blocks' )}
 							panelName={ 'expandSettings'}

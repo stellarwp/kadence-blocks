@@ -449,58 +449,55 @@ export function EditInner( props ) {
 
 				{( activeTab === 'advanced' ) &&
 					<>
-						<KadencePanelBody
-							panelName={'kb-advanced-form-size'}
-							title={__( 'Spacing', 'kadence-blocks' )}
-							initialOpen={true}
-						>
+						<KadencePanelBody panelName={'kb-row-padding'}>
 							<ResponsiveMeasureRangeControl
-								label={__( 'Padding', 'kadence-blocks' )}
-								value={ paddingDesktop }
-								tabletValue={ paddingTablet }
-								mobileValue={ paddingMobile }
-								onChange={( value ) => {
-									setMetaAttribute( value, 'paddingDesktop' )
+								label={__('Padding', 'kadence-blocks')}
+								value={paddingDesktop}
+								tabletValue={paddingTablet}
+								mobileValue={paddingMobile}
+								onChange={(value) => {
+									setMetaAttribute(value, 'paddingDesktop')
 								}}
-								onChangeTablet={( value ) => {
-									setMetaAttribute( value, 'paddingTablet' )
+								onChangeTablet={(value) => {
+									setMetaAttribute(value, 'paddingTablet')
 								}}
-								onChangeMobile={( value ) => {
-									setMetaAttribute( value, 'paddingMobile' )
+								onChangeMobile={(value) => {
+									setMetaAttribute(value, 'paddingMobile')
 								}}
-								min={ 0 }
-								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ paddingUnit }
-								units={[ 'px', 'em', 'rem', '%' ]}
-								onUnit={( value ) => setMetaAttribute( value, 'paddingUnit' ) }
-								onMouseOver={ paddingMouseOver.onMouseOver }
-								onMouseOut={ paddingMouseOver.onMouseOut }
+								min={0}
+								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
+								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'paddingUnit')}
+								onMouseOver={paddingMouseOver.onMouseOver}
+								onMouseOut={paddingMouseOver.onMouseOut}
 							/>
 							<ResponsiveMeasureRangeControl
-								label={__( 'Margin', 'kadence-blocks' )}
-								value={ marginDesktop }
-								tabletValue={ marginTablet }
-								mobileValue={ marginMobile }
-								onChange={( value ) => {
-									setMetaAttribute( value, 'marginDesktop' );
+								label={__('Margin', 'kadence-blocks')}
+								value={marginDesktop}
+								tabletValue={marginTablet}
+								mobileValue={marginMobile}
+								onChange={(value) => {
+									setMetaAttribute(value, 'marginDesktop');
 								}}
-								onChangeTablet={( value ) => {
-									setMetaAttribute( value, 'marginTablet' )
+								onChangeTablet={(value) => {
+									setMetaAttribute(value, 'marginTablet')
 								}}
-								onChangeMobile={( value ) => {
-									setMetaAttribute( value, 'marginMobile' )
+								onChangeMobile={(value) => {
+									setMetaAttribute(value, 'marginMobile')
 								}}
-								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ marginUnit }
-								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setMetaAttribute( value, 'marginUnit' ) }
-								onMouseOver={ marginMouseOver.onMouseOver }
-								onMouseOut={ marginMouseOver.onMouseOut }
+								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
+								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
+								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
+								unit={marginUnit}
+								units={['px', 'em', 'rem', '%', 'vh']}
+								onUnit={(value) => setMetaAttribute(value, 'marginUnit')}
+								onMouseOver={marginMouseOver.onMouseOver}
+								onMouseOut={marginMouseOver.onMouseOut}
 							/>
 						</KadencePanelBody>
+						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				}
 

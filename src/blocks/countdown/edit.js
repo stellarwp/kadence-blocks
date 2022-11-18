@@ -1142,6 +1142,45 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 
 						{( activeTab === 'advanced' ) &&
 							<>
+								<KadencePanelBody>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Container Padding', 'kadence-blocks' )}
+										value={containerPadding}
+										tabletValue={containerTabletPadding}
+										mobileValue={containerMobilePadding}
+										onChange={( value ) => setAttributes( { containerPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
+										min={paddingMin}
+										max={paddingMax}
+										step={paddingStep}
+										unit={paddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { paddingType: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
+									/>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Container Margin', 'kadence-blocks' )}
+										value={containerMargin}
+										tabletValue={containerTabletMargin}
+										mobileValue={containerMobileMargin}
+										onChange={( value ) => setAttributes( { containerMargin: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
+										min={marginMin}
+										max={marginMax}
+										step={marginStep}
+										unit={marginType}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { marginType: value } )}
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
+									/>
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+
 								<KadencePanelBody
 									title={__( 'Container Settings', 'kadence-blocks' )}
 									panelName={'containerSettings'}
@@ -1194,40 +1233,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 										secondIcon={topRightIcon}
 										thirdIcon={bottomRightIcon}
 										fourthIcon={bottomLeftIcon}
-									/>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Container Padding', 'kadence-blocks' )}
-										value={containerPadding}
-										tabletValue={containerTabletPadding}
-										mobileValue={containerMobilePadding}
-										onChange={( value ) => setAttributes( { containerPadding: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={paddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { paddingType: value } )}
-										onMouseOver={ paddingMouseOver.onMouseOver }
-										onMouseOut={ paddingMouseOver.onMouseOut }
-									/>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Container Margin', 'kadence-blocks' )}
-										value={containerMargin}
-										tabletValue={containerTabletMargin}
-										mobileValue={containerMobileMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-										min={marginMin}
-										max={marginMax}
-										step={marginStep}
-										unit={marginType}
-										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-										onUnit={( value ) => setAttributes( { marginType: value } )}
-										onMouseOver={ marginMouseOver.onMouseOver }
-										onMouseOut={ marginMouseOver.onMouseOut }
 									/>
 								</KadencePanelBody>
 

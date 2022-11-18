@@ -120,9 +120,17 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
-
-	public function build_html( $attributes, $unique_id, $content ) {
-
+	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		if ( ! is_array( $attributes ) ) {
 			return;

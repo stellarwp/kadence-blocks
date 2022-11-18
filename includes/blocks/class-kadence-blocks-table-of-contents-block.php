@@ -268,8 +268,17 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 
 		return $css->css_output();
 	}
-
-	public function build_html( $attributes, $unique_id, $content ) {
+	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {
 			wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );
