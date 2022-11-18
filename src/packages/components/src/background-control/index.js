@@ -101,9 +101,9 @@ class BackgroundControl extends Component {
 						{ label && (
 							<div class="components-kadence-image-background__label">{ label }</div>
 						) }
-						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic[ dynamicAttribute ] && this.props.attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
+						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && kadenceDynamic && kadenceDynamic[ dynamicAttribute ] && kadenceDynamic[ dynamicAttribute ].enable ? (
 							<div className="kb-dynamic-background-sidebar-top">
-								<DynamicBackgroundControl startOpen={ this.props.attributes.kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
+								<DynamicBackgroundControl startOpen={ kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
 							</div>
 						) : (
 							<Fragment>
