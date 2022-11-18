@@ -23,6 +23,10 @@
 					var contentTab = thisElem.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
 					contentTab.setAttribute('aria-labelledby', parentId);
 					contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+
+					if( isActive ){
+						contentTab.style.display = 'block';
+					}
 				});
 
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list a').forEach((anchor) => {
@@ -150,6 +154,16 @@
 			newActiveAnchor.parentElement.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
 			newActiveAnchor.setAttribute('tabindex', '0');
 			newActiveAnchor.setAttribute('aria-selected', 'true');
+
+			// Hide all tab panels.
+			wrapper.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
+				subElem.style.display = 'none';
+			});
+
+			// Show selected tab panel.
+			const newTabContent = wrapper.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber);
+			newTabContent.style.display = 'block';
+
 			if ( moveFocus ) {
 				newActiveAnchor.focus();
 			}

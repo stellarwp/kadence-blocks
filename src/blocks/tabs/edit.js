@@ -121,7 +121,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, tabletInnerPadding, mobileInnerPadding, innerPaddingType, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
 
-
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -1012,7 +1011,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					color: ${ KadenceColorOutput( titleColorActive ) } !important;
 					border-color: ${ KadenceColorOutput( titleBorderActive ) } !important;
 					background-color: ${ KadenceColorOutput( titleBgActive ) } !important;
-				}` }
+				}
+				.kt-tabs-id${ uniqueID } > .kt-tabs-wrap > .kt-tabs-content-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-tab="${ currentTab }"] {
+					display: block;
+				}
+				` }
 			</style>
 		);
 
