@@ -109,6 +109,10 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
 			if ( isset( $attributes['dividerHeight'] ) && ! empty( $attributes['dividerHeight'] ) ) {
 				$css->add_property( 'border-top-width', $attributes['dividerHeight'] . 'px' );
+
+				if( ! empty( $attributes['dividerHeight'] ) && $attributes['dividerHeight'] % 2 != 0 ){
+					$css->add_property( 'height', '1px' );
+				}
 			}
 			if ( ! empty( $attributes['dividerColor'] ) ) {
 				$alp_opacity = ( isset( $attributes['dividerOpacity'] ) && is_numeric( $attributes['dividerOpacity'] ) ? $attributes['dividerOpacity'] : 100 );
