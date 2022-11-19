@@ -120,13 +120,19 @@
     min-height: 40px;
 }
 .kadence-icon-picker-pop-theme-dividers .kadence-icon-picker-link svg {
-    width: initial;
     width: auto;
     height: auto;
+	max-height: 30px;
     transform: scale(1) !important;
 }
+.kadence-icon-picker-theme-dividers .kadence-icon-picker-link.kadence-icon-picker-selection-toggle .kadence-icon-picker-selection-value {
+	flex-grow: 1;
+}
 .kadence-icon-picker-theme-dividers .kadence-icon-picker-link.kadence-icon-picker-selection-toggle .kadence-icon-picker-selection-value svg {
-    width: calc(100% - 30px );
+	max-width: calc(100% - 30px);
+    width: auto;
+    max-height: 30px;
+    height: auto;
 }
 .kadence-icon-picker-pop-theme-dividers .kadence-icon-picker-link svg.kadence-row-divider-top {
     transform: rotate(180deg) !important;

@@ -7,7 +7,6 @@
  */
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import {
 	KadenceColorOutput,
 	getPreviewSize,
@@ -24,6 +23,7 @@ import {
 	RangeControl,
 	WebfontLoader,
 	BoxShadowControl,
+	KadenceIconPicker,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	InspectorControlTabs,
@@ -507,7 +507,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 													onChange={value => setAttributes({startClosed: value})}
 												/>
 												<h2>{__('Icon Style', 'kadence-blocks')}</h2>
-												<FontIconPicker
+												<KadenceIconPicker
 													icons={[
 														'arrow',
 														'arrowcircle',
@@ -518,12 +518,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 													]}
 													value={toggleIcon}
 													onChange={value => setAttributes({toggleIcon: value})}
-													appendTo="body"
 													renderFunc={renderIconSet}
-													theme="accordion"
+													theme="dividers"
 													showSearch={false}
-													noSelectedPlaceholder={__('Select Icon Set', 'kadence-blocks')}
-													isMulti={false}
+													placeholder={__('Select Icon Set', 'kadence-blocks')}
 												/>
 												<ToggleControl
 													label={__('Enable title to toggle as well as icon', 'kadence-blocks')}

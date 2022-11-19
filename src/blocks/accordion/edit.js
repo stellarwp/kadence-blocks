@@ -38,7 +38,7 @@ import {
 	WebfontLoader,
 	KadenceWebfontLoader,
 	RangeControl,
-	IconPicker,
+	KadenceIconPicker,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl
@@ -696,7 +696,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										onChange={ ( value ) => setAttributes( { showIcon: value } ) }
 									/>
 									<h2>{ __( 'Icon Style', 'kadence-blocks' ) }</h2>
-									<IconPicker
+									<KadenceIconPicker
 										icons={ [
 											'basic',
 											'basiccircle',
@@ -707,12 +707,12 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										] }
 										value={ iconStyle }
 										onChange={ value => setAttributes( { iconStyle: value } ) }
-										appendTo="body"
-										renderFunc={ renderIconSet }
-										theme="accordion"
 										showSearch={ false }
-										noSelectedPlaceholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
-										isMulti={ false }
+										renderFunc={ renderIconSet }
+										theme="dividers"
+										allowClear={ true }
+										placeholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
+										showSearch={ false }
 									/>
 									<SelectControl
 										label={ __( 'Icon Side', 'kadence-blocks' ) }

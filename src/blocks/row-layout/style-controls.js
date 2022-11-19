@@ -55,7 +55,6 @@ import {
 	ResponsiveControl,
 	RangeControl,
 	MeasurementControls,
-	IconPicker,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	StepControls,

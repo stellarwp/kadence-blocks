@@ -52,7 +52,6 @@ export { default as TextHighlight } from './links/text-highlight';
 export { default as GenIcon } from './icons/gen-icon';
 export { default as IconRender } from './icons/icon-render';
 export { default as IconSpanTag } from './icons/icon-span-tag';
-export { default as IconPicker } from './icons/icon-picker';
 
 /* Typography */
 export { default as TypographyControls } from './typography/typography-control';
