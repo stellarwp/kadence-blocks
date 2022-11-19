@@ -62,7 +62,7 @@
 		return;
 	}
 	return (
-		<svg viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: 'currentColor', width: ( width ? width : undefined ) } }>
+		<svg viewBox="0 0 1000 100" preserveAspectRatio="none" className={ `kadence-row-divider-${placement}` } style={ { fill: 'currentColor', width: ( width ? width : undefined ) } }>
 			{ dividers[ placement ][ svgName ] }
 		</svg>
 	);	

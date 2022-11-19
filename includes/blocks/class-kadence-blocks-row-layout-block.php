@@ -76,12 +76,12 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param object $css the css object.
 	 * @param int    $columns the amount of columns.
 	 * @param string $layout the layout of the row.
-	 * @param string $unique_id the $unique_id.
+	 * @param string $inner_selector the inner selector.
 	 * @param int    $column1 the first column width.
 	 * @param int    $column2 the second column width.
 	 * @param int    $column3 the third column width.
 	 */
-	public function get_template_columns( $css, $columns, $layout, $unique_id, $column1 = null, $column2 = null, $column3 = null ) {
+	public function get_template_columns( $css, $columns, $layout, $inner_selector, $column1 = null, $column2 = null, $column3 = null ) {
 		$grid_layout = 'minmax(0, 1fr)';
 		switch ( $columns ) {
 			case 2:
@@ -126,13 +126,15 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 							break;
 						case 'first-row':
 							$grid_layout = 'repeat(2, minmax(0, 1fr))';
-							$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > *:nth-child(3n+1)' );
+							$css->set_selector( $inner_selector . ' > *:nth-child(3n+1)' );
 							$css->add_property( 'grid-column', '1 / -1' );
+							$css->set_selector( $inner_selector );
 							break;
 						case 'last-row':
 							$grid_layout = 'repeat(2, minmax(0, 1fr))';
-							$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > *:nth-child(3n)' );
+							$css->set_selector( $inner_selector . ' > *:nth-child(3n)' );
 							$css->add_property( 'grid-column', '1 / -1' );
+							$css->set_selector( $inner_selector );
 							break;
 						case 'row':
 							$grid_layout = 'minmax(0, 1fr)';
@@ -166,13 +168,15 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 				switch ( $layout ) {
 					case 'first-row':
 						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > *:nth-child(5n+1)' );
+						$css->set_selector( $inner_selector . ' > *:nth-child(5n+1)' );
 						$css->add_property( 'grid-column', '1 / -1' );
+						$css->set_selector( $inner_selector );
 						break;
 					case 'last-row':
 						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > *:nth-child(5n)' );
+						$css->set_selector( $inner_selector . ' > *:nth-child(5n)' );
 						$css->add_property( 'grid-column', '1 / -1' );
+						$css->set_selector( $inner_selector );
 						break;
 					case 'row':
 						$grid_layout = 'minmax(0, 1fr)';
@@ -210,47 +214,11 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
-		// Vertical Alignment.
-		if ( ! empty( $attributes['verticalAlignment'] ) ) {
-			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			switch ( $attributes['verticalAlignment'] ) {
-				case 'middle':
-					$css->add_property( 'align-content', 'center' );
-					break;
-				case 'bottom':
-					$css->add_property( 'align-content', 'end' );
-					break;
-				case 'top':
-					$css->add_property( 'align-content', 'start' );
-					break;
-			}
-		}
-		// Layout.
-		//print_r( $attributes );
-		$columns = ( ! empty( $attributes['columns'] ) ? $attributes['columns'] : 2 );
-		$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
-		$column1  = ( ! empty( $attributes['firstColumnWidth'] ) ? $attributes['firstColumnWidth'] : '' );
-		$column2  = ( ! empty( $attributes['secondColumnWidth'] ) ? $attributes['secondColumnWidth'] : '' );
-		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $unique_id, $column1, $column2 );
-		$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-		$css->add_property( 'grid-template-columns', $grid_layout );
-		if ( ! empty( $attributes['tabletLayout'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $unique_id );
-			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			$css->add_property( 'grid-template-columns', $grid_layout );
-			$css->set_media_state( 'desktop' );
-		}
-		$mobile_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
-		$css->set_media_state( 'mobile' );
-		$grid_layout = $this->get_template_columns( $css, $columns, $mobile_layout, $unique_id );
-		$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-		$css->add_property( 'grid-template-columns', $grid_layout );
-		$css->set_media_state( 'desktop' );
-
+		$base_selector = '#kt-layout-id' . $unique_id;
+		$inner_selector = '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap';
 		// Margin, check for old attributes and use if present.
+		$css->set_selector( $base_selector );
 		if ( $css->is_number( $attributes['topMargin'] ) || $css->is_number( $attributes['bottomMargin'] ) || $css->is_number( $attributes['topMarginT'] ) || $css->is_number( $attributes['bottomMarginT'] ) || $css->is_number( $attributes['topMarginM'] ) || $css->is_number( $attributes['bottomMarginM'] ) ) {
-			$css->set_selector( '#kt-layout-id' . $unique_id );
 			if ( $css->is_number( $attributes['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' ) );
 			}
@@ -273,12 +241,29 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		} else {
-			$css->set_selector( '#kt-layout-id' . $unique_id );
 			$css->render_measure_output( $attributes, 'margin', 'margin' );
 		}
+
+		// Vertical Alignment.
+		$css->set_selector( $inner_selector );
+		if ( ! empty( $attributes['verticalAlignment'] ) ) {
+			switch ( $attributes['verticalAlignment'] ) {
+				case 'middle':
+					$css->add_property( 'align-content', 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( 'align-content', 'end' );
+					break;
+				case 'top':
+					$css->add_property( 'align-content', 'start' );
+					break;
+			}
+		}
+		// Gutter.
+		$css->render_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
+		$css->render_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
 		// Padding, check for old attributes and use if present.
-		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topMarginT'] ) || $css->is_number( $attributes['bottomMarginT'] ) || $css->is_number( $attributes['topMarginM'] ) || $css->is_number( $attributes['bottomMarginM'] ) ) {
-			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
+		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
 				$css->add_property( 'padding-top', ( $css->is_number( $attributes['topPadding'] ) ? $attributes['topPadding'] : '25' ) . ( ! empty( $attributes['paddingUnit'] ) ? $attributes['paddingUnit'] : 'px' ) );
 			}
@@ -319,11 +304,9 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		} else {
-			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
 			$css->render_measure_output( $attributes, 'padding', 'padding' );
 		}
 		// Min Height.
-		$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
 		if ( ! empty( $attributes['minHeight'] ) ) {
 			$css->add_property( 'min-height', $attributes['minHeight'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
 		}
@@ -342,18 +325,15 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 			global $content_width;
 			if ( isset( $content_width ) ) {
 				if ( class_exists( 'Kadence\Theme' ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
 					$css->add_property( 'max-width', 'var( --global-content-width, ' . absint( $content_width ) . 'px )' );
 					$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
 					$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
 				} else {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
 					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
 				}
 			}
 		} else {
 			if ( $css->is_number( $attributes['maxWidth'] ) ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
 				$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 				$css->add_property( 'margin-left', 'auto' );
 				$css->add_property( 'margin-right', 'auto' );
@@ -373,6 +353,26 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktop' );
 			}
 		}
+		// Layout.
+		$columns = ( ! empty( $attributes['columns'] ) ? $attributes['columns'] : 2 );
+		$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
+		$column1  = ( ! empty( $attributes['firstColumnWidth'] ) ? $attributes['firstColumnWidth'] : '' );
+		$column2  = ( ! empty( $attributes['secondColumnWidth'] ) ? $attributes['secondColumnWidth'] : '' );
+		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $column1, $column2 );
+		$css->add_property( 'grid-template-columns', $grid_layout );
+		if ( ! empty( $attributes['tabletLayout'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector );
+			$css->add_property( 'grid-template-columns', $grid_layout );
+			$css->set_media_state( 'desktop' );
+		}
+		$mobile_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
+		$css->set_media_state( 'mobile' );
+		$grid_layout = $this->get_template_columns( $css, $columns, $mobile_layout, $inner_selector );
+		$css->add_property( 'grid-template-columns', $grid_layout );
+		$css->set_media_state( 'desktop' );
+
+
 		if ( isset( $attributes['bgColor'] ) || isset( $attributes['bgImg'] ) || isset( $attributes['border'] ) || isset( $attributes['borderWidth'] ) || isset( $attributes['borderRadius'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id );
 			if ( isset( $attributes['border'] ) ) {
@@ -730,14 +730,8 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		$mobile_background = ( isset( $attributes['mobileBackground'] ) && is_array( $attributes['mobileBackground'] ) && isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
 		if ( isset( $attributes['topPaddingM'] ) || isset( $attributes['bottomPaddingM'] ) || isset( $attributes['leftPaddingM'] ) || isset( $attributes['rightPaddingM'] ) || isset( $attributes['topMarginM'] ) || isset( $attributes['bottomMarginM'] ) || isset( $attributes['mobileBorder'] ) || isset( $attributes['mobileBorderWidth'] ) || isset( $attributes['mobileBorderRadius'] ) || ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) || isset( $attributes['minHeightMobile'] ) || ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] == 'true' ) || isset( $attributes['responsiveMaxWidth'] ) ) {
 			$css->set_media_state( 'mobile' );
-			if ( isset( $attributes['topMarginM'] ) || isset( $attributes['bottomMarginM'] ) || isset( $attributes['mobileBorder'] ) || isset( $attributes['mobileBorderWidth'] ) || isset( $attributes['mobileBorderRadius'] ) ) {
+			if ( isset( $attributes['mobileBorder'] ) || isset( $attributes['mobileBorderWidth'] ) || isset( $attributes['mobileBorderRadius'] ) ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id );
-				if ( isset( $attributes['topMarginM'] ) ) {
-					$css->add_property( 'margin-top', $attributes['topMarginM'] . ( isset( $attributes['marginUnit'] ) && ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' ) );
-				}
-				if ( isset( $attributes['bottomMarginM'] ) ) {
-					$css->add_property( 'margin-bottom', $attributes['bottomMarginM'] . ( isset( $attributes['marginUnit'] ) && ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' ) );
-				}
 				if ( isset( $attributes['mobileBorder'] ) ) {
 					$css->add_property( 'border-color', $css->render_color( $attributes['mobileBorder'] ) );
 				}

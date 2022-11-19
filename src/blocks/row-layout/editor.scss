@@ -348,14 +348,22 @@ div.kb-blocks-bg-video {
 // Therefore, let's at least not add any additional margins here.
 // The goal is for the editor to look more like the front-end.
 //.block-editor-block-list__layout .block-editor-block-list__block[data-type="kadence/rowlayout"] > .block-editor-block-list__block-edit,
+.wp-block-kadence-rowlayout {
+	display: flex;
+	flex-direction: column;
+	> .innerblocks-wrap {
+		width: 100%;
+		flex-grow: 1;
+	}
+}
 .wp-block-kadence-rowlayout.kt-row-valign-middle>.innerblocks-wrap {
-	align-items: center;
+	align-content: center;
 }
 .wp-block-kadence-rowlayout.kt-row-valign-top>.innerblocks-wrap {
-	align-items: start;
+	align-content: start;
 }
 .wp-block-kadence-rowlayout.kt-row-valign-bottom>.innerblocks-wrap {
-	align-items: end;
+	align-content: end;
 }
 // Full height align middle.
 .wp-block-kadence-rowlayout.kt-row-valign-top.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner {
@@ -414,25 +422,15 @@ div.kb-blocks-bg-video {
 		margin: 0 auto;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
+		/* autoprefixer: ignore next */
 		grid-auto-rows: minmax(min-content, max-content);
 		column-gap: var(--global-row-gutter-md, 2rem);
 		row-gap: var(--global-row-gutter-md, 2rem);
-		&.kb-grid-columns-2 {
-			grid-template-columns: repeat(2, minmax(0, 1fr) );
-		}
-		&.kb-grid-columns-3 {
-			grid-template-columns: repeat(3, minmax(0, 1fr) );
-		}
-		&.kb-grid-columns-4 {
-			grid-template-columns: repeat(4, minmax(0, 1fr) );
-		}
-		&.kb-grid-columns-5 {
-			grid-template-columns: repeat(5, minmax(0, 1fr) );
-		}
-		&.kb-grid-columns-6 {
-			grid-template-columns: repeat(6, minmax(0, 1fr) );
-		}
 	}
+}
+.wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap {
+	/* autoprefixer: ignore next */
+	grid-auto-rows: minmax(0, 1fr);
 }
 // Three Columns
 .wp-block-kadence-rowlayout.kt-row-layout-first-row > .innerblocks-wrap {
@@ -613,7 +611,7 @@ div.kb-blocks-bg-video {
 .kadence-has-rcp-display {
 	border: 1px dashed #2091F9;
 }
-.wp-block:not(.is-selected):not(.has-child-selected) > .kadence-has-rcp-display:after {
+.wp-block-kadence-rowlayout:not(.is-selected):not(.has-child-selected) > .kadence-has-rcp-display:after {
 	background-color:#2091F9;
     content:"";
     height:100%;
@@ -624,6 +622,17 @@ div.kb-blocks-bg-video {
     mask-size:24px 24px;
     min-height:28px;
     min-width:28px;
+    position:absolute;
+    top:0;
+    width:100%;
+    z-index:1;
+}
+// Visibility
+.wp-block-kadence-rowlayout:not(.is-selected):not(.has-child-selected).kvs-false:after {
+    content:"";
+    height:100%;
+    left:0;
+	background: repeating-linear-gradient(135deg,rgba(0,0,0,.07),rgba(0,0,0,.07) 1px,transparent 2px,transparent 9px);
     position:absolute;
     top:0;
     width:100%;

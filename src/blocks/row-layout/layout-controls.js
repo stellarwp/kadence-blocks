@@ -55,7 +55,7 @@ import {
 	ResponsiveControl,
 	RangeControl,
 	MeasurementControls,
-	IconPicker,
+	KadenceIconPicker,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	StepControls,
@@ -421,7 +421,7 @@ import { __ } from '@wordpress/i18n';
 						initialOpen={ false }
 						panelName={ 'kb-row-dividers-top' }
 					>
-						<IconPicker
+						<KadenceIconPicker
 							icons={ [
 								'ct',
 								'cti',
@@ -445,15 +445,13 @@ import { __ } from '@wordpress/i18n';
 								'threelevels',
 								'threelevelsi',
 							] }
-							iconsPerPage={ 30 }
 							value={ ( topSep === 'none' ? '' : topSep ) }
 							onChange={ value => setAttributes( { topSep: value } ) }
-							appendTo="body"
 							showSearch={ false }
 							renderFunc={ svg => renderSVGDivider( svg, 'top' ) }
 							theme="dividers"
-							noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
-							isMulti={ false }
+							allowClear={ true }
+							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
 						/>
 						<PopColorControl
 							label={ __( 'Divider Color' ) }
@@ -507,7 +505,7 @@ import { __ } from '@wordpress/i18n';
 						initialOpen={ false }
 						panelName={ 'kb-row-dividers' }
 					>
-						<IconPicker
+						<KadenceIconPicker
 							icons={ [
 								'ct',
 								'cti',
@@ -531,15 +529,12 @@ import { __ } from '@wordpress/i18n';
 								'threelevels',
 								'threelevelsi',
 							] }
-							iconsPerPage={ 30 }
 							value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 							onChange={ value => setAttributes( { bottomSep: value } ) }
-							appendTo="body"
 							showSearch={ false }
 							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
 							theme="dividers"
-							noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
-							isMulti={ false }
+							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
 						/>
 						<PopColorControl
 							label={ __( 'Divider Color', 'kadence-blocks' ) }
