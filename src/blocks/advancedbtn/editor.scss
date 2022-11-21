@@ -393,30 +393,6 @@
     background: white;
     transform: translate(-50%, 0);
 }
-.kt-hover-tabs {
-    padding-top: 0;
-    margin-top: -5px;
-}
-.kt-hover-tabs  .components-tab-panel__tabs {
-    margin-bottom: 15px;
-}
-.kt-hover-tabs .components-tab-panel__tabs button.active-tab {
-    border-color: #0085ba;
-    color: #0085ba;
-}
-.kt-hover-tabs .components-tab-panel__tabs button {
-    background: transparent;
-    border: 0;
-    border: 1px solid #eee;
-    border-bottom: 4px solid transparent;
-    padding: 6px 16px;
-    margin-bottom: -4px;
-    outline: 0;
-    color: #575757;
-    width: 50%;
-    font-size: 14px;
-    font-weight: bold;
-}
 .wp-block-kadence-advancedbtn.kt-btn-align-left .btn-area-wrap form.blocks-button__inline-link {
     left: 0;
     transform: translate(0, 0);

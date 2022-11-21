@@ -1,132 +1,247 @@
 /**
- * BoxShadow Component
+ * Responsive Range Component
  *
  */
 
 /**
- * Import Externals
- */
-import PopColorControl from '../pop-color-control';
-/**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
-import { ToggleControl } from '@wordpress/components';
-/**
- * Build the BoxShadow controls
- * @returns {object} BoxShadow settings.
- */
-class BoxShadowControl extends Component {
-	constructor( label, enable = true, color, colorDefault, opacity, spread, blur, hOffset, vOffset, inset, onColorChange, onOpacityChange, onSpreadChange, onBlurChange, onHOffsetChange, onVOffsetChange, onInsetChange, onEnableChange ) {
-		super( ...arguments );
+ import { useSelect, useDispatch } from '@wordpress/data';
+ import { useState, useRef, useEffect } from '@wordpress/element';
+ import { __ } from '@wordpress/i18n';
+ import { map, isEqual } from 'lodash';
+ import BorderControl from '../border-control';
+ import { capitalizeFirstLetter } from '@kadence/helpers';
+ import { undo } from '@wordpress/icons';
+
+ import {
+	 Dashicon,
+	 Button,
+	 ButtonGroup,
+ } from '@wordpress/components';
+ import {
+	 outlineTopIcon,
+	 outlineRightIcon,
+	 outlineBottomIcon,
+	 outlineLeftIcon,
+ } from '@kadence/icons';
+ import { settings, link, linkOff } from '@wordpress/icons';
+ /**
+  * Build the Measure controls
+  * @returns {object} Measure settings.
+  */
+ export default function ResponsiveBorderControl( {
+		label,
+		onChange,
+		onChangeTablet,
+		onChangeMobile,
+		onControl,
+		mobileValue,
+		tabletValue,
+		value,
+		control = 'individual',
+		units = [ 'px', 'em', 'rem' ],
+		firstIcon = outlineTopIcon,
+		secondIcon = outlineRightIcon,
+		thirdIcon = outlineBottomIcon,
+		fourthIcon = outlineLeftIcon,
+		linkIcon = link,
+		unlinkIcon = linkOff,
+		styles = ['solid', 'dashed', 'dotted', 'double'],
+		deskDefault = {
+			top: ['','',''],
+			right: ['','',''],
+			bottom: ['','',''],
+			left: ['','',''],
+			unit: 'px',
+		},
+		tabletDefault = {
+			top: ['','',''],
+			right: ['','',''],
+			bottom: ['','',''],
+			left: ['','',''],
+			unit: 'px',
+		},
+		mobileDefault = {
+			top: ['','',''],
+			right: ['','',''],
+			bottom: ['','',''],
+			left: ['','',''],
+			unit: 'px',
+		},
+		reset = true,
+	 } ) {
+	 const ref = useRef();
+	 const measureIcons = {
+		first: firstIcon,
+		second: secondIcon,
+		third: thirdIcon,
+		fourth:  fourthIcon,
+		link:  linkIcon,
+		unlink: unlinkIcon,
 	}
-	render() {
-		return (
-			<div className="kt-box-shadow-container">
-				{ this.props.label && (
-					<div className="kt-box-shadow-label">
-						<h2 className="kt-beside-color-label">{ this.props.label }</h2>
-						{ this.props.onEnableChange && (
-							<ToggleControl
-								checked={ this.props.enable }
-								onChange={ value => this.props.onEnableChange( value ) }
-							/>
-						) }
-					</div>
-				) }
-				{ this.props.enable && (
-					<div className="kt-inner-sub-section">
-						<div className="kt-inner-sub-section-row">
-							<div className="kt-box-color-settings kt-box-shadow-subset">
-								<p className="kt-box-shadow-title">{ __( 'Color' ) }</p>
-								<PopColorControl
-									value={ ( this.props.color ? this.props.color : this.props.colorDefault ) }
-									default={ this.props.colorDefault }
-									onChange={ value => this.props.onColorChange( value ) }
-									opacityValue={ this.props.opacity }
-									onOpacityChange={ value => this.props.onOpacityChange( value ) }
-									onArrayChange={ this.props.onArrayChange ? ( color, opacity ) => this.props.onArrayChange( color, opacity ) : undefined }
-								/>
-							</div>
-							<div className="kt-box-x-settings kt-box-shadow-subset">
-								<p className="kt-box-shadow-title">{ __( 'X' ) }</p>
-								<div className="components-base-control kt-boxshadow-number-input">
-									<div className="components-base-control__field">
-										<input
-											value={ ( undefined !== this.props.hOffset ? this.props.hOffset : '' ) }
-											onChange={ event => this.props.onHOffsetChange( Number( event.target.value ) ) }
-											min={ -200 }
-											max={ 200 }
-											step={ 1 }
-											type="number"
-											className="components-text-control__input"
-										/>
-									</div>
-								</div>
-							</div>
-							<div className="kt-box-y-settings kt-box-shadow-subset">
-								<p className="kt-box-shadow-title">{ __( 'Y' ) }</p>
-								<div className="components-base-control kt-boxshadow-number-input">
-									<div className="components-base-control__field">
-										<input
-											value={ ( undefined !== this.props.vOffset ? this.props.vOffset : '' ) }
-											onChange={ event => this.props.onVOffsetChange( Number( event.target.value ) ) }
-											min={ -200 }
-											max={ 200 }
-											step={ 1 }
-											type="number"
-											className="components-text-control__input"
-										/>
-									</div>
-								</div>
-							</div>
-							<div className="kt-box-blur-settings kt-box-shadow-subset">
-								<p className="kt-box-shadow-title">{ __( 'Blur' ) }</p>
-								<div className="components-base-control kt-boxshadow-number-input">
-									<div className="components-base-control__field">
-										<input
-											value={ ( undefined !== this.props.blur ? this.props.blur : '' ) }
-											onChange={ event => this.props.onBlurChange( Number( event.target.value ) ) }
-											min={ 0 }
-											max={ 200 }
-											step={ 1 }
-											type="number"
-											className="components-text-control__input"
-										/>
-									</div>
-								</div>
-							</div>
-							<div className="kt-box-spread-settings kt-box-shadow-subset">
-								<p className="kt-box-shadow-title">{ __( 'Spread' ) }</p>
-								<div className="components-base-control kt-boxshadow-number-input">
-									<div className="components-base-control__field">
-										<input
-											value={ ( undefined !== this.props.spread ? this.props.spread : '' ) }
-											onChange={ event => this.props.onSpreadChange( Number( event.target.value ) ) }
-											min={ -200 }
-											max={ 200 }
-											step={ 1 }
-											type="number"
-											className="components-text-control__input"
-										/>
-									</div>
-								</div>
-							</div>
-						</div>
-						{ this.props.onInsetChange && (
-							<div className="kt-box-inset-settings">
-								<ToggleControl
-									label={ __( 'Inset' ) }
-									checked={ this.props.inset }
-									onChange={ value => this.props.onInsetChange( value ) }
-								/>
-							</div>
-						) }
-					</div>
-				) }
-			</div>
-		);
-	}
-}
-export default ( BoxShadowControl );
+	 const [ theControl, setTheControl ] = useState( control );
+	 const realControl = onControl ? control : theControl;
+	 const realSetOnControl = onControl ? onControl : setTheControl;
+	 const [ deviceType, setDeviceType ] = useState( 'Desktop' );
+	 const theDevice = useSelect( ( select ) => {
+		 return select( 'kadenceblocks/data' ).getPreviewDeviceType();
+	 }, [] );
+	 if ( theDevice !== deviceType ) {
+		 setDeviceType( theDevice );
+	 }
+	 const {
+		 setPreviewDeviceType,
+	 } = useDispatch( 'kadenceblocks/data' );
+	 const customSetPreviewDeviceType = ( device ) => {
+		 setPreviewDeviceType( capitalizeFirstLetter( device ) );
+		 setDeviceType( capitalizeFirstLetter( device ) );
+	 };
+	 const devices = [
+		 {
+			 name: 'Desktop',
+			 title: <Dashicon icon="desktop" />,
+			 itemClass: 'kb-desk-tab',
+		 },
+		 {
+			 name: 'Tablet',
+			 title: <Dashicon icon="tablet" />,
+			 itemClass: 'kb-tablet-tab',
+		 },
+		 {
+			 name: 'Mobile',
+			 key: 'mobile',
+			 title: <Dashicon icon="smartphone" />,
+			 itemClass: 'kb-mobile-tab',
+		 },
+	 ];
+	 let liveValue = ( value?.[0] ? value[0] : deskDefault );
+	 if ( deviceType === 'Tablet' ) {
+		 liveValue = ( tabletValue?.[0] ? tabletValue[0] : tabletDefault );
+	 } else if ( deviceType === 'Mobile' ) {
+		 liveValue = ( mobileValue?.[0] ? mobileValue[0] : mobileDefault );
+	 }
+	 const onReset = () => {
+		 if ( deviceType === 'Tablet' ) {
+			 onChangeTablet( [ tabletDefault ] );
+		 } else if ( deviceType === 'Mobile' ) {
+			 onChangeMobile( [ mobileDefault ] );
+		 } else {
+			 onChange( [ deskDefault ] );
+		 }
+	 }
+	 const output = {};
+	 output.Mobile = (
+		 <BorderControl
+			 value={ ( mobileValue ? mobileValue : undefined ) }
+			 onChange={ ( size ) => onChangeMobile( size ) }
+			 control={ realControl }
+			 onControl={ ( value ) => realSetOnControl( value ) }
+			 defaultValue={ mobileDefault }
+			 styles={ styles }
+			 units={ units }
+			 firstIcon={ firstIcon }
+			 secondIcon={ secondIcon }
+			 thirdIcon={ thirdIcon }
+			 fourthIcon={ fourthIcon }
+			 linkIcon={ linkIcon }
+			 unlinkIcon={ unlinkIcon }
+		 />
+	 );
+	 output.Tablet = (
+		 <BorderControl
+			value={ ( tabletValue ? tabletValue : undefined ) }
+			onChange={ ( size ) => onChangeTablet( size ) }
+			control={ realControl }
+			onControl={ ( value ) => realSetOnControl( value ) }
+			defaultValue={ tabletDefault }
+			styles={ styles }
+			units={ units }
+			firstIcon={ firstIcon }
+			secondIcon={ secondIcon }
+			thirdIcon={ thirdIcon }
+			fourthIcon={ fourthIcon }
+			linkIcon={ linkIcon }
+			unlinkIcon={ unlinkIcon }
+			 
+		 />
+	 );
+	 output.Desktop = (
+		<BorderControl
+			value={ ( value ? value : undefined ) }
+			onChange={ ( size ) => onChange( size ) }
+			control={ realControl }
+			onControl={ ( value ) => realSetOnControl( value ) }
+			defaultValue={ deskDefault }
+			styles={ styles }
+			units={ units }
+			firstIcon={ firstIcon }
+			secondIcon={ secondIcon }
+			thirdIcon={ thirdIcon }
+			fourthIcon={ fourthIcon }
+			linkIcon={ linkIcon }
+			unlinkIcon={ unlinkIcon }
+		/>
+	 );
+	 let currentDefault = deskDefault;
+	 if ( 'Mobile' === deviceType ) {
+		 currentDefault = mobileDefault;
+	 } else if ( 'Mobile' === deviceType ) {
+		 currentDefault = tabletDefault;
+	 }
+	 return [
+		 onChange && onChangeTablet && onChangeMobile && (
+			 <div ref={ ref } className={ 'components-base-control kb-responsive-border-control kadence-border-box-control' }>
+					<div
+						className={ 'kadence-border-control__header' }
+					>
+					 { label && (
+						 <div className="kadence-radio-range__title">
+							 <label className="components-base-control__label">{ label }</label>
+							 { reset && (
+								 <div className='title-reset-wrap'>
+									 <Button
+										 className="is-reset is-single"
+										 label='reset'
+										 isSmall
+										 disabled={ ( ( isEqual( currentDefault, liveValue ) ) ? true : false ) }
+										 icon={ undo }
+										 onClick={ () => onReset() }
+									 />
+								 </div>
+							 ) }
+						 </div>
+					 ) }
+					 <ButtonGroup className="kb-responsive-options kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
+						 { map( devices, ( { name, key, title, itemClass } ) => (
+							 <Button
+								 key={ key }
+								 className={ `kb-responsive-btn ${ itemClass }${ name === deviceType ? ' is-active' : '' }` }
+								 isSmall
+								 aria-pressed={ deviceType === name }
+								 onClick={ () => customSetPreviewDeviceType( name ) }
+							 >
+								 { title }
+							 </Button>
+						 ) ) }
+					 </ButtonGroup>
+					 { realSetOnControl && (
+						 <Button
+							 isSmall={ true }
+							 className={'kadence-radio-item border-control-toggle is-single only-icon'}
+							 label={ realControl !== 'individual' ? __( 'Individual', 'kadence-blocks' ) : __( 'Linked', 'kadence-blocks' )  }
+							 icon={ realControl !== 'individual' ? measureIcons.link : measureIcons.unlink }
+							 onClick={ () => realSetOnControl( realControl !== 'individual' ? 'individual' : 'linked' ) }
+							 isPressed={ realControl !== 'individual' ? true : false }
+							 isTertiary={ realControl !== 'individual' ? false : true }
+						 />
+					 ) }
+				 </div>
+				 <div className="kb-responsive-border-control-inner">
+					 { ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }
+				 </div>
+			 </div>
+		 ),
+	 ];
+ }
+ 
