@@ -55,6 +55,7 @@ import {
 	ResponsiveControl,
 	RangeControl,
 	MeasurementControls,
+	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	StepControls,
@@ -67,7 +68,9 @@ import {
 	GradientControl,
 	KadenceVideoControl,
 	SubsectionWrap,
-	InspectorControlTabs
+	InspectorControlTabs,
+	BorderControl,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -127,7 +130,7 @@ import { __ } from '@wordpress/i18n';
 	setAttributes,
 	isSelected,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -1284,6 +1287,39 @@ const deskBorderControls = (
 					initialOpen={ false }
 					panelName={ 'kb-row-border-settings' }
 				>
+					<ResponsiveBorderControl
+						label={__( 'Border', 'kadence-blocks' )}
+						value={borderStyle}
+						tabletValue={tabletBorderStyle}
+						mobileValue={mobileBorderStyle}
+						onChange={( value ) => setAttributes( { borderStyle: value } )}
+						onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+						onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+					/>
+					<ResponsiveMeasurementControls
+						label={__( 'Border Radius', 'kadence-blocks' )}
+						value={borderRadius}
+						tabletValue={tabletBorderRadius}
+						mobileValue={mobileBorderRadius}
+						onChange={( value ) => setAttributes( { borderRadius: value } )}
+						onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
+						onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
+						unit={'px'}
+						units={[ 'px' ]}
+						showUnit={true}
+						min={ 0 }
+						max={ 500 }
+						step={ 1 }
+						allowEmpty={ true }
+						controlTypes={ [
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+						] }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
+					/>
 					<SmallResponsiveControl
 						label={__( 'Border', 'kadence-blocks' )}
 						hasPadding={ true }
