@@ -1,3 +1,57 @@
+.components-base-control > .kadence-component__header {
+    margin-bottom: 8px;
+	color: #1e1e1e;
+    font-size: 13px;
+    font-weight: 500;
+	gap: 2px;
+	.kadence-component__header__title {
+		flex-grow: 1;
+		display: flex;
+		align-items: center;
+	}
+	.title-reset-wrap {
+		width: 20px;
+		overflow: hidden;
+	}
+	.components-button.is-small.has-icon.is-reset {
+		background: transparent;
+		height: auto;
+		border: 0;
+		box-shadow: none;
+		padding: 2px 4px;
+		outline: 0;
+		color: #A0AEC0;
+		font-size: 18px;
+		width: 20px;
+		min-width: 20px;
+		padding: 0;
+		margin: 0 0 0 -20px;
+		display: flex;
+	}
+	.kadence-component__header__title:hover {
+		.components-button.is-small.has-icon.is-reset {
+			margin: 0 0px 0 0px;
+		}
+	}
+	.components-button.has-icon.kadence-control-toggle {
+		background: transparent;
+		height: auto;
+		border: 0;
+		box-shadow: none;
+		padding: 2px 4px;
+		margin-bottom: 0;
+		outline: 0;
+		color: #A0AEC0;
+		width: auto;
+		font-size: 18px;
+		min-width: 0;
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+	}
+}
+
 .kadence-controls-content .components-spacing-sizes-control__range-control {
     flex-grow: 1;
 }
@@ -40,13 +94,6 @@
 .kadence-measure-range-control > .kadence-controls-content {
 	gap:2px;
 }
-.kadence-measure-range-control > .kadence-radio-range__header {
-    margin-bottom: 8px;
-	color: #1e1e1e;
-    font-size: 13px;
-    font-weight: 500;
-	gap: 2px;
-}
 .kadence-measure-range-control > .kadence-radio-range__header .components-flex-item {
     flex-grow: 1;
 }
@@ -71,27 +118,7 @@
 		color:white;
 	}
 }
-.kadence-measure-range-control > .kadence-radio-range__header {
-	.kadence-radio-range__title {
-		flex-grow: 1;
-		display: flex;
-	}
-	.title-reset-wrap {
-		width: 20px;
-		overflow: hidden;
-	}
-	.components-button.is-small.has-icon.is-reset {
-		width: 20px;
-		min-width: 20px;
-		padding: 0;
-		margin: 0 0 0 -20px;
-	}
-	.kadence-radio-range__title:hover {
-		.components-button.is-small.has-icon.is-reset {
-			margin: 0 0px 0 0px;
-		}
-	}
-}
+
 .kadence-measure-range-control {
 	.kadence-range-popover-settings .components-base-control__field {
 		margin-bottom: 0;

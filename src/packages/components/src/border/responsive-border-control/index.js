@@ -193,10 +193,10 @@
 		 onChange && onChangeTablet && onChangeMobile && (
 			 <div ref={ ref } className={ 'components-base-control kb-responsive-border-control kadence-border-box-control' }>
 					<div
-						className={ 'kadence-border-control__header' }
+						className={ 'kadence-border-control__header kadence-component__header' }
 					>
 					 { label && (
-						 <div className="kadence-radio-range__title">
+						 <div className="kadence-component__header__title kadence-radio-range__title">
 							 <label className="components-base-control__label">{ label }</label>
 							 { reset && (
 								 <div className='title-reset-wrap'>

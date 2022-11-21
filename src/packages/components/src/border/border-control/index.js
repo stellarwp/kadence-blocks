@@ -98,22 +98,22 @@ import SingleBorderControl from './single-control';
 	const max = value.unit !== 'px' ? 12 : 200;
 	const min = 0;
 	const onChangeAll = ( newBorder ) => {
-		value.top = newBorder;
-		value.bottom = newBorder;
-		value.right = newBorder;
-		value.left = newBorder;
-		const newVal = JSON.parse(JSON.stringify(value));
-		onChange( newVal );
+		currentObject.top = newBorder;
+		currentObject.bottom = newBorder;
+		currentObject.right = newBorder;
+		currentObject.left = newBorder;
+		const newVal = JSON.parse(JSON.stringify(currentObject));
+		onChange( [ newVal ] );
 	}
 	const onChangeSide = ( newBorder, side ) => {
-		value[side] = newBorder;
-		const newVal = JSON.parse(JSON.stringify(value));
-		onChange( newVal );
+		currentObject[side] = newBorder;
+		const newVal = JSON.parse(JSON.stringify(currentObject));
+		onChange( [ newVal ] );
 	}
 	const onChangeUnit = ( newUnit ) => {
-		value.unit = newUnit;
-		const newVal = JSON.parse(JSON.stringify(value));
-		onChange( newVal );
+		currentObject.unit = newUnit;
+		const newVal = JSON.parse(JSON.stringify(currentObject));
+		onChange( [ newVal ] );
 	}
 	const onReset = () => {
 		if ( typeof reset === 'function' ){

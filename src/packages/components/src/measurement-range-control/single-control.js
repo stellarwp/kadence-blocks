@@ -275,13 +275,12 @@ export default function SingleMeasureRangeControl( {
 								<select
 									className={ 'kadence-measure-control-select components-unit-control__select' }
 									onChange={ ( event ) => {
-										console.log( event.target.value );
 										onUnit( event.target.value );
 									} }
 									value={ unit }
 								>
 									{ units.map( ( option ) => (
-										<option value={ option } key={ option }>
+										<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
 											{ option }
 										</option>
 									) ) }

@@ -66,10 +66,6 @@ export function getGradientAstWithControlPoints(
 	gradientAST,
 	newControlPoints
 ) {
-	console.log('verify');
-	console.log(gradientAST);
-	console.log('points');
-	console.log(newControlPoints);
 	return {
 		...gradientAST,
 		colorStops: newControlPoints.map( ( { position, color } ) => {

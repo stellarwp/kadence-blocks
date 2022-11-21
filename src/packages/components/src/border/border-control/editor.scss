@@ -174,3 +174,8 @@
 .kadence-border-controls-grid-wrap .kadence-single-border-control {
     position: relative;
 }
+.kadence-single-border-control-wrap span.color-indicator-icon .dashicons-admin-site {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

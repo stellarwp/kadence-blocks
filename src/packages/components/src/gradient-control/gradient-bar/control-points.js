@@ -254,6 +254,24 @@ function GradientColorPickerDropdown( {
 		/>
 	);
 }
+function getReadableColor( value, colors ) {
+	if ( ! value ) {
+		return '';
+	}
+	if ( ! colors ) {
+		return value;
+	}
+	if ( value.startsWith( 'var(--global-' ) ) {
+		let slug = value.replace( 'var(--global-', '' );
+		slug = slug.substring(0,8);
+		slug = 'theme-' + slug;
+		const found = colors.find( ( option ) => option.slug === slug );
+		if ( found ) {
+			return found.color;
+		}
+	}
+	return value;
+}
 
 function ControlPoints( {
 	disableRemove,
@@ -316,6 +334,7 @@ function ControlPoints( {
 	const colors = useSetting( 'color.palette' );
 	return controlPoints.map( ( point, index ) => {
 		const initialPosition = point?.position;
+		const pointColor = getReadableColor( point.color, colors );
 		return (
 			ignoreMarkerPosition !== initialPosition && (
 				<GradientColorPickerDropdown
@@ -399,7 +418,7 @@ function ControlPoints( {
 						<div className="kadence-pop-gradient-color-picker">
 							{ ! disableCustomColors && (
 								<ColorPicker
-									color={ point.color }
+									color={ pointColor }
 									onChange={ ( color ) => {
 										onChange(
 											updateControlPointColor(
@@ -425,7 +444,7 @@ function ControlPoints( {
 									{ map( colors, ( { color, slug, name } ) => {
 										const style = { color };
 										const palette = slug.replace( 'theme-', '' );
-										const isActive = ( ( ! slug.startsWith( 'theme-palette' ) && point.color === color ) );
+										const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
 										return (
 											<div key={ color } className="kadence-color-palette__item-wrapper">
 												<Tooltip
@@ -465,7 +484,7 @@ function ControlPoints( {
 													/>
 												</Tooltip>
 												{ isActive && <Dashicon icon="admin-site" /> }
-												{ ! slug.startsWith( 'theme-palette' ) && point.color === color && <Dashicon icon="saved" /> }
+												{ ! slug.startsWith( 'theme-palette' ) && pointColor === color && <Dashicon icon="saved" /> }
 											</div>
 										);
 									} ) }
@@ -515,6 +534,8 @@ function InsertPoint( {
 	const [ alreadyInsertedPoint, setAlreadyInsertedPoint ] = useState( false );
 	const disableCustomColors = ! useSetting( 'color.custom' );
 	const colors = useSetting( 'color.palette' );
+	const [ tempColor, setTempColor ] = useState( '' );
+	const pointColor = getReadableColor( tempColor, colors ); 
 	return (
 		<GradientColorPickerDropdown
 			isRenderedInSidebar={ isRenderedInSidebar }
@@ -543,7 +564,9 @@ function InsertPoint( {
 				<div className="kadence-pop-gradient-color-picker">
 					{ ! disableCustomColors && (
 						<ColorPicker
+							color={ pointColor }
 							onChange={ ( color ) => {
+								setTempColor( colord( color.rgb ).toRgbString() );
 								if ( ! alreadyInsertedPoint ) {
 									onChange(
 										addControlPoint(
@@ -564,6 +587,7 @@ function InsertPoint( {
 								}
 							} }
 							onChangeComplete={ ( color ) => {
+								setTempColor( colord( color.rgb ).toRgbString() );
 								if ( ! alreadyInsertedPoint ) {
 									onChange(
 										addControlPoint(
@@ -590,6 +614,7 @@ function InsertPoint( {
 							{ map( colors, ( { color, slug, name } ) => {
 								const style = { color };
 								const palette = slug.replace( 'theme-', '' );
+								const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
 								return (
 									<div key={ color } className="kadence-color-palette__item-wrapper">
 										<Tooltip
@@ -599,9 +624,10 @@ function InsertPoint( {
 											}>
 											<Button
 												type="button"
-												className={ `kadence-color-palette__item` }
+												className={ `kadence-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
 												style={ style }
 												onClick={ () => {
+													setTempColor( colord( color ).toRgbString() );
 													if ( slug.startsWith( 'theme-palette' ) ) {
 														if ( ! alreadyInsertedPoint ) {
 															onChange(
@@ -649,6 +675,8 @@ function InsertPoint( {
 													sprintf( __( 'Color code: %s', 'kadence-blocks' ), color ) }
 											/>
 										</Tooltip>
+										{ isActive && <Dashicon icon="admin-site" /> }
+										{ ! slug.startsWith( 'theme-palette' ) && pointColor === color && <Dashicon icon="saved" /> }
 									</div>
 								);
 							} ) }

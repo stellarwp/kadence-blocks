@@ -632,6 +632,10 @@
 		""
 	  ]
 	},
+	"borderRadiusUnit": {
+		"type": "string",
+		"default": "px"
+	},
 	"border": {
 	  "type": "string",
 	  "default": ""

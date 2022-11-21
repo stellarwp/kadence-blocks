@@ -51,14 +51,6 @@ import { settings, link, linkOff } from '@wordpress/icons';
 import { OPTIONS_MAP } from './constants';
 import { isCustomOption, getOptionIndex, getOptionFromSize, getOptionSize } from './utils';
 
-let icons = {
-	px: pxIcon,
-	em: emIcon,
-	rem: remIcon,
-	vh: vhIcon,
-	vw: vwIcon,
-	percent: percentIcon,
-};
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -145,10 +137,10 @@ export default function MeasureRangeControl( {
 				{ label && (
 					<Flex
 						justify="space-between"
-						className={ 'kadence-radio-range__header' }
+						className={ 'kadence-component__header kadence-radio-range__header' }
 					>
 						{ label && (
-							<div className="kadence-radio-range__title">
+							<div className="kadence-component__header__title kadence-radio-range__title">
 								<label className="components-base-control__label">{ label }</label>
 								{ reset && (
 									<div className='title-reset-wrap'>
@@ -316,13 +308,12 @@ export default function MeasureRangeControl( {
 									<select
 										className={ 'kadence-measure-control-select components-unit-control__select' }
 										onChange={ ( event ) => {
-											console.log( event.target.value );
 											onUnit( event.target.value );
 										} }
 										value={ unit }
 									>
 										{ units.map( ( option ) => (
-											<option value={ option } key={ option }>
+											<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
 												{ option }
 											</option>
 										) ) }

@@ -130,7 +130,7 @@ import { __ } from '@wordpress/i18n';
 	setAttributes,
 	isSelected,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -354,50 +354,6 @@ import { __ } from '@wordpress/i18n';
 			) }
 		</>
 	);
-	const mobileBorderControls = (
-		<>
-			<PopColorControl
-				label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
-				value={ ( mobileBorder ? mobileBorder : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { mobileBorder: value } ) }
-			/>
-			<MeasurementControls
-				label={ __( 'Mobile Border Width', 'kadence-blocks' ) }
-				measurement={ mobileBorderWidth }
-				onChange={ ( value ) => setAttributes( { mobileBorderWidth: value } ) }
-				control={ borderWidthControl }
-				onControl={ ( value ) => setBorderWidthControl( value ) }
-				min={ 0 }
-				max={ 40 }
-				step={ 1 }
-				allowEmpty={ true }
-				unit={ 'px' }
-				units={ [ 'px' ] }
-				showUnit={ true }
-				preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-			/>
-			<MeasurementControls
-				label={ __( 'Mobile Border Radius', 'kadence-blocks' ) }
-				measurement={ mobileBorderRadius }
-				control={ borderRadiusControl }
-				onChange={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
-				onControl={ ( value ) => setBorderRadiusControl( value ) }
-				min={ 0 }
-				max={ 500 }
-				step={ 1 }
-				allowEmpty={ true }
-				controlTypes={ [
-					{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-					{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-				] }
-				firstIcon={ topLeftIcon }
-				secondIcon={ topRightIcon }
-				thirdIcon={ bottomRightIcon }
-				fourthIcon={ bottomLeftIcon }
-			/>
-		</>
-	);
 	const tabletControls = (
 		<>
 			<ToggleControl
@@ -508,50 +464,7 @@ import { __ } from '@wordpress/i18n';
 			) }
 		</>
 	);
-	const tabletBorderControls = (
-			<>
-			<PopColorControl
-				label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
-				value={ ( tabletBorder ? tabletBorder : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { tabletBorder: value } ) }
-			/>
-			<MeasurementControls
-				label={ __( 'Tablet Border Width', 'kadence-blocks' ) }
-				measurement={ tabletBorderWidth }
-				onChange={ ( value ) => setAttributes( { tabletBorderWidth: value } ) }
-				control={ borderWidthControl }
-				onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
-				min={ 0 }
-				max={ 40 }
-				step={ 1 }
-				allowEmpty={ true }
-				unit={ 'px' }
-				units={ [ 'px' ] }
-				showUnit={ true }
-				preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-			/>
-			<MeasurementControls
-				label={ __( 'Tablet Border Radius', 'kadence-blocks' ) }
-				measurement={ tabletBorderRadius }
-				control={ borderRadiusControl }
-				onChange={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
-				onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
-				min={ 0 }
-				max={ 500 }
-				step={ 1 }
-				allowEmpty={ true }
-				controlTypes={ [
-					{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-					{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-				] }
-				firstIcon={ topLeftIcon }
-				secondIcon={ topRightIcon }
-				thirdIcon={ bottomRightIcon }
-				fourthIcon={ bottomLeftIcon }
-			/>
-		</>
-	);
+
 	const slideControls = ( index ) => {
 		let bgSlider;
 		if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
@@ -1051,50 +964,6 @@ const deskOverlayControls = (
 		<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 	</>
 );
-const deskBorderControls = (
-	<>
-		<PopColorControl
-			label={ __( 'Border Color', 'kadence-blocks' ) }
-			value={ ( border ? border : '' ) }
-			default={ '' }
-			onChange={ value => setAttributes( { border: value } ) }
-		/>
-		<MeasurementControls
-			label={ __( 'Border Width', 'kadence-blocks' ) }
-			measurement={ borderWidth }
-			onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-			control={ borderWidthControl }
-			onControl={ ( value ) => setBorderWidthControl( value ) }
-			min={ 0 }
-			max={ 40 }
-			step={ 1 }
-			allowEmpty={ true }
-			unit={ 'px' }
-			units={ [ 'px' ] }
-			showUnit={ true }
-			preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-		/>
-		<MeasurementControls
-			label={ __( 'Border Radius', 'kadence-blocks' ) }
-			measurement={ borderRadius }
-			control={ borderRadiusControl }
-			onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-			onControl={ ( value ) => setBorderRadiusControl( value ) }
-			min={ 0 }
-			max={ 500 }
-			step={ 1 }
-			allowEmpty={ true }
-			controlTypes={ [
-				{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-				{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-			] }
-			firstIcon={ topLeftIcon }
-			secondIcon={ topRightIcon }
-			thirdIcon={ bottomRightIcon }
-			fourthIcon={ bottomLeftIcon }
-		/>
-	</>
-);
 	
 	const overTabControls = (
 		<div>
@@ -1304,12 +1173,12 @@ const deskBorderControls = (
 						onChange={( value ) => setAttributes( { borderRadius: value } )}
 						onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
 						onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
-						unit={'px'}
-						units={[ 'px' ]}
-						showUnit={true}
+						unit={borderRadiusUnit}
+						units={[ 'px', 'em', 'rem', '%' ]}
+						onUnit={( value ) => setAttributes( { borderRadiusUnit: value } )}
+						max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
+						step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
 						min={ 0 }
-						max={ 500 }
-						step={ 1 }
 						allowEmpty={ true }
 						controlTypes={ [
 							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
@@ -1319,13 +1188,6 @@ const deskBorderControls = (
 						secondIcon={ topRightIcon }
 						thirdIcon={ bottomRightIcon }
 						fourthIcon={ bottomLeftIcon }
-					/>
-					<SmallResponsiveControl
-						label={__( 'Border', 'kadence-blocks' )}
-						hasPadding={ true }
-						desktopChildren={ deskBorderControls }
-						tabletChildren={ tabletBorderControls }
-						mobileChildren={ mobileBorderControls }
 					/>
 				</KadencePanelBody>
 			) }

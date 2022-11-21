@@ -207,9 +207,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 .wp-block[data-align="right"] {
 	> .wp-block-kadence-image {
 		display: table;
-
 		> figcaption {
 			display: table-caption;
+			/* autoprefixer: ignore next */
 			caption-side: bottom;
 		}
 	}

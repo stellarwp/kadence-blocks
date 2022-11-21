@@ -261,10 +261,10 @@ export default function ResponsiveMeasureRangeControl( {
 			<div ref={ ref } className={ 'components-base-control kb-responsive-measure-control kadence-measure-range-control' }>
 				<Flex
 					justify="space-between"
-					className={ 'kadence-title-bar kadence-measure-range__header kadence-radio-range__header' }
+					className={ 'kadence-title-bar kadence-component__header kadence-measure-range__header kadence-radio-range__header' }
 				>
 					{ label && (
-						<div className="kadence-radio-range__title">
+						<div className="kadence-component__header__title kadence-radio-range__title">
 							<label className="components-base-control__label">{ label }</label>
 							{ reset && (
 								<div className='title-reset-wrap'>
