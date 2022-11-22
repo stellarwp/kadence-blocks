@@ -1,8 +1,26 @@
 svg {
 	--kadence-color: #0058b0;
 	--kadence-color-white: #fff;
-	}
-	.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg {
-	   --kadence-color: currentColor;
-	   --kadence-color-white: var(--wp-admin-theme-color);
-   }
+}
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg {
+	--kadence-color: currentColor;
+	--kadence-color-white: var(--wp-admin-theme-color);
+}
+.components-modal__frame.kadence-css-modal {
+    width: 80%;
+    max-width: 1200px;
+    height: 80%;
+    max-height: 800px;
+}
+
+.components-modal__frame.kadence-css-modal .components-button.is-secondary {
+    position: absolute;
+    bottom: 20px;
+    right: 32px;
+}
+.components-modal__frame.kadence-css-modal .components-modal__content {
+	padding-bottom: 50px;
+}
+.components-button.kadence-css-modal-open.has-text.has-icon {
+    box-shadow: none !important;
+}
