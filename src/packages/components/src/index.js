@@ -43,6 +43,7 @@ export { default as StepControls } from './step-control';
 export { default as OpacityControl } from './opacity-control';
 export { default as BorderControl } from './border/border-control';
 export { default as ResponsiveBorderControl } from './border/responsive-border-control';
+export { default as FontSizeControl } from './font-size';
 export { default as InspectorControlTabs } from './inspector-control-tabs';
 
 /* Links */

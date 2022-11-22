@@ -24,7 +24,8 @@ import {
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	FontSizeControl,
 } from '@kadence/components';
 
 import {
@@ -175,7 +176,7 @@ function KadenceAdvancedHeading( props ) {
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ activeTab, setActiveTab ] = useState( 'style' );
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -563,6 +564,7 @@ function KadenceAdvancedHeading( props ) {
 
 					<InspectorControlTabs
 						panelName={'advanced-heading'}
+						initialOpen={ 'style' }
 						setActiveTab={( value ) => setActiveTab( value )}
 						activeTab={activeTab}
 					/>
@@ -587,7 +589,59 @@ function KadenceAdvancedHeading( props ) {
 									onChangeTablet={( nextAlign ) => setAttributes( { tabletAlign: nextAlign } )}
 									onChangeMobile={( nextAlign ) => setAttributes( { mobileAlign: nextAlign } )}
 								/>
-								{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
+							</KadencePanelBody>
+							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Link Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-link-settings'}
+								>
+									<PopColorControl
+										label={__( 'Link Color', 'kadence-blocks' )}
+										swatchLabel={__( 'Link Color', 'kadence-blocks' )}
+										value={( linkColor ? linkColor : '' )}
+										default={''}
+										onChange={value => setAttributes( { linkColor: value } )}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( linkHoverColor ? linkHoverColor : '' )}
+										default2={''}
+										onChange2={value => setAttributes( { linkHoverColor: value } )}
+									/>
+									<SelectControl
+										label={__( 'Link Style', 'kadence-blocks' )}
+										value={linkStyle}
+										options={[
+											{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+											{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+											{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+										]}
+										onChange={value => setAttributes( { linkStyle: value } )}
+									/>
+									<URLInputControl
+										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
+										url={link}
+										onChangeUrl={value => setAttributes( { link: value } )}
+										additionalControls={true}
+										opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
+										onChangeTarget={value => setAttributes( { linkTarget: value } )}
+										linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
+										onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
+										linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
+										onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
+										dynamicAttribute={'link'}
+										allowClear={true}
+										{...props}
+									/>
+								</KadencePanelBody>
+							)}
+						</>
+					}
+
+					{( activeTab === 'style' ) &&
+						<>
+						<KadencePanelBody panelName={'kb-adv-heading-style'}>
+							{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
 									<Fragment>
 										<PopColorControl
 											label={__( 'Color', 'kadence-blocks' )}
@@ -607,6 +661,19 @@ function KadenceAdvancedHeading( props ) {
 								)}
 								{showSettings( 'sizeSettings', 'kadence/advancedheading' ) && (
 									<Fragment>
+										<FontSizeControl
+											label={__( 'Font Size', 'kadence-blocks' )}
+											value={ ( size ? size : '' ) }
+											onChange={value => setAttributes( { size: value } )}
+											min={0}
+											max={( sizeType === 'px' ? 200 : 12 )}
+											step={( sizeType === 'px' ? 1 : 0.1 )}
+											unit={ sizeType ? sizeType : 'px' }
+											onUnit={( value ) => {
+												setAttributes( { sizeType: value } );
+											}}
+											units={[ 'px', 'em', 'rem' ]}
+										/>
 										<ResponsiveRangeControls
 											label={__( 'Font Size', 'kadence-blocks' )}
 											value={( size ? size : '' )}
@@ -677,56 +744,6 @@ function KadenceAdvancedHeading( props ) {
 									/>
 								</KadencePanelBody>
 							)}
-							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
-								<KadencePanelBody
-									title={__( 'Link Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-adv-heading-link-settings'}
-								>
-									<PopColorControl
-										label={__( 'Link Color', 'kadence-blocks' )}
-										swatchLabel={__( 'Link Color', 'kadence-blocks' )}
-										value={( linkColor ? linkColor : '' )}
-										default={''}
-										onChange={value => setAttributes( { linkColor: value } )}
-										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
-										value2={( linkHoverColor ? linkHoverColor : '' )}
-										default2={''}
-										onChange2={value => setAttributes( { linkHoverColor: value } )}
-									/>
-									<SelectControl
-										label={__( 'Link Style', 'kadence-blocks' )}
-										value={linkStyle}
-										options={[
-											{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
-											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
-											{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
-											{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
-										]}
-										onChange={value => setAttributes( { linkStyle: value } )}
-									/>
-									<URLInputControl
-										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
-										url={link}
-										onChangeUrl={value => setAttributes( { link: value } )}
-										additionalControls={true}
-										opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
-										onChangeTarget={value => setAttributes( { linkTarget: value } )}
-										linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
-										onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
-										linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
-										onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
-										dynamicAttribute={'link'}
-										allowClear={true}
-										{...props}
-									/>
-								</KadencePanelBody>
-							)}
-						</>
-					}
-
-					{( activeTab === 'style' ) &&
-						<>
 							<KadencePanelBody
 								title={__( 'Text Shadow Settings', 'kadence-blocks' )}
 								initialOpen={false}
