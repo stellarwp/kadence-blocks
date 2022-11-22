@@ -749,6 +749,10 @@
 		  "left": [ "", "", "" ],
 		  "unit": "px"
 		} ]
+	},
+	"blockVersion": {
+		"type": "number",
+		"default": ""
 	}
   },
   "supports": {

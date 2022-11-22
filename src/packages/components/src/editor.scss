@@ -1,0 +1,8 @@
+svg {
+	--kadence-color: #0058b0;
+	--kadence-color-white: #fff;
+	}
+	.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg {
+	   --kadence-color: currentColor;
+	   --kadence-color-white: var(--wp-admin-theme-color);
+   }

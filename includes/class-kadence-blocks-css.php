@@ -1617,6 +1617,109 @@ class Kadence_Blocks_CSS {
 		$this->set_media_state( 'desktop' );
 	}
 	/**
+	 * Generates the border styles output.
+	 *
+	 * @param array  $attributes an array of attributes.
+	 * @param string $name an string of the attribute name.
+	 * @param array  $args an array of settings.
+	 * @return string
+	 */
+	public function render_border_styles( $attributes, $name = 'borderStyle', $args = array() ) {
+		if ( empty( $attributes ) || empty( $name ) ) {
+			return false;
+		}
+		if ( ! is_array( $attributes ) ) {
+			return false;
+		}
+		$defaults = array(
+			'desktop_key' => $name,
+			'tablet_key'  => 'tablet' . ucfirst( $name ),
+			'mobile_key'  => 'mobile' . ucfirst( $name ),
+			'unit_key'    => 'unit',
+			'first_prop'  => 'border-top',
+			'second_prop' => 'border-right',
+			'third_prop'  => 'border-bottom',
+			'fourth_prop' => 'border-left',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+		if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_array( $attributes[ $args['desktop_key'] ][0] ) ) {
+			$desktop_border = $attributes[ $args['desktop_key'] ][0];
+			$border_unit = ( ! empty( $desktop_border['unit'] ) ? $desktop_border['unit'] : 'px' );
+			if ( $this->is_number( $desktop_border['top'][2] ) ) {
+				$border_style = ( ! empty( $desktop_border['top'][1] ) ? $desktop_border['top'][1] : 'solid' );
+				$border_color = ( ! empty( $desktop_border['top'][0] ) ? $this->sanitize_color( $desktop_border['top'][0] ) : 'transparent' );
+				$this->add_property( $args['first_prop'], $desktop_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $desktop_border['right'][2] ) ) {
+				$border_style = ( ! empty( $desktop_border['right'][1] ) ? $desktop_border['right'][1] : 'solid' );
+				$border_color = ( ! empty( $desktop_border['right'][0] ) ? $this->sanitize_color( $desktop_border['right'][0] ) : 'transparent' );
+				$this->add_property( $args['second_prop'], $desktop_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $desktop_border['bottom'][2] ) ) {
+				$border_style = ( ! empty( $desktop_border['bottom'][1] ) ? $desktop_border['bottom'][1] : 'solid' );
+				$border_color = ( ! empty( $desktop_border['bottom'][0] ) ? $this->sanitize_color( $desktop_border['bottom'][0] ) : 'transparent' );
+				$this->add_property( $args['third_prop'], $desktop_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $desktop_border['left'][2] ) ) {
+				$border_style = ( ! empty( $desktop_border['left'][1] ) ? $desktop_border['left'][1] : 'solid' );
+				$border_color = ( ! empty( $desktop_border['left'][0] ) ? $this->sanitize_color( $desktop_border['left'][0] ) : 'transparent' );
+				$this->add_property( $args['fourth_prop'], $desktop_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+		}
+		$this->set_media_state( 'tablet' );
+		if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_array( $attributes[ $args['tablet_key'] ][0] ) ) {
+			$tablet_border = $attributes[ $args['tablet_key'] ][0];
+			$border_unit = ( ! empty( $tablet_border['unit'] ) ? $tablet_border['unit'] : 'px' );
+			if ( $this->is_number( $tablet_border['top'][2] ) ) {
+				$border_style = ( ! empty( $tablet_border['top'][1] ) ? $tablet_border['top'][1] : 'solid' );
+				$border_color = ( ! empty( $tablet_border['top'][0] ) ? $this->sanitize_color( $tablet_border['top'][0] ) : 'transparent' );
+				$this->add_property( $args['first_prop'], $tablet_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $tablet_border['right'][2] ) ) {
+				$border_style = ( ! empty( $tablet_border['right'][1] ) ? $tablet_border['right'][1] : 'solid' );
+				$border_color = ( ! empty( $tablet_border['right'][0] ) ? $this->sanitize_color( $tablet_border['right'][0] ) : 'transparent' );
+				$this->add_property( $args['second_prop'], $tablet_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $tablet_border['bottom'][2] ) ) {
+				$border_style = ( ! empty( $tablet_border['bottom'][1] ) ? $tablet_border['bottom'][1] : 'solid' );
+				$border_color = ( ! empty( $tablet_border['bottom'][0] ) ? $this->sanitize_color( $tablet_border['bottom'][0] ) : 'transparent' );
+				$this->add_property( $args['third_prop'], $tablet_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $tablet_border['left'][2] ) ) {
+				$border_style = ( ! empty( $tablet_border['left'][1] ) ? $tablet_border['left'][1] : 'solid' );
+				$border_color = ( ! empty( $tablet_border['left'][0] ) ? $this->sanitize_color( $tablet_border['left'][0] ) : 'transparent' );
+				$this->add_property( $args['fourth_prop'], $tablet_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+		}
+		$this->set_media_state( 'mobile' );
+		if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_array( $attributes[ $args['mobile_key'] ][0] ) ) {
+			$mobile_border = $attributes[ $args['mobile_key'] ][0];
+			$border_unit = ( ! empty( $mobile_border['unit'] ) ? $mobile_border['unit'] : 'px' );
+			if ( $this->is_number( $mobile_border['top'][2] ) ) {
+				$border_style = ( ! empty( $mobile_border['top'][1] ) ? $mobile_border['top'][1] : 'solid' );
+				$border_color = ( ! empty( $mobile_border['top'][0] ) ? $this->sanitize_color( $mobile_border['top'][0] ) : 'transparent' );
+				$this->add_property( $args['first_prop'], $mobile_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $mobile_border['right'][2] ) ) {
+				$border_style = ( ! empty( $mobile_border['right'][1] ) ? $mobile_border['right'][1] : 'solid' );
+				$border_color = ( ! empty( $mobile_border['right'][0] ) ? $this->sanitize_color( $mobile_border['right'][0] ) : 'transparent' );
+				$this->add_property( $args['second_prop'], $mobile_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $mobile_border['bottom'][2] ) ) {
+				$border_style = ( ! empty( $mobile_border['bottom'][1] ) ? $mobile_border['bottom'][1] : 'solid' );
+				$border_color = ( ! empty( $mobile_border['bottom'][0] ) ? $this->sanitize_color( $mobile_border['bottom'][0] ) : 'transparent' );
+				$this->add_property( $args['third_prop'], $mobile_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+			if ( $this->is_number( $mobile_border['left'][2] ) ) {
+				$border_style = ( ! empty( $mobile_border['left'][1] ) ? $mobile_border['left'][1] : 'solid' );
+				$border_color = ( ! empty( $mobile_border['left'][0] ) ? $this->sanitize_color( $mobile_border['left'][0] ) : 'transparent' );
+				$this->add_property( $args['fourth_prop'], $mobile_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			}
+		}
+		$this->set_media_state( 'desktop' );
+	}
+	/**
 	 * Generates the measure output.
 	 *
 	 * @param array  $attributes an array of attributes.
@@ -1794,6 +1897,23 @@ class Kadence_Blocks_CSS {
 		}
 		$size_string = ( is_numeric( $measure[0] ) ? $measure[0] : '0' ) . $unit . ' ' . ( is_numeric( $measure[1] ) ? $measure[1] : '0' ) . $unit . ' ' . ( is_numeric( $measure[2] ) ? $measure[2] : '0' ) . $unit . ' ' . ( is_numeric( $measure[3] ) ? $measure[3] : '0' ) . $unit;
 		return $size_string;
+	}
+	/**
+	 * Generates the opacity css output.
+	 *
+	 * @param array  $opacity a number up to 100.
+	 */
+	public function render_opacity_from_100( $opacity = null ) {
+		if ( ! $this->is_number( $opacity ) ) {
+			return;
+		}
+		if ( $opacity < 10 ) {
+			$this->add_property( 'opacity', '0.0' . $opacity );
+		} elseif ( $opacity >= 100 ) {
+			$this->add_property( 'opacity', '1' );
+		} else {
+			$this->add_property( 'opacity', '0.' . $opacity );
+		}
 	}
 	/**
 	 * Generates the background output.

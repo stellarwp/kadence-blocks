@@ -1,3 +1,7 @@
+/**
+ * Import General Editor CSS
+ */
+ import './editor.scss';
 export { default as PopColorControl } from './pop-color-control';
 export { default as SinglePopColorControl } from './single-pop-color-control';
 export { default as ColorIcons } from './color-icons';

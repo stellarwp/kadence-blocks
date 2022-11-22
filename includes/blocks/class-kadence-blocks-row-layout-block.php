@@ -372,266 +372,195 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'grid-template-columns', $grid_layout );
 		$css->set_media_state( 'desktop' );
 
+		// Border radius.
+		$css->set_selector( $base_selector );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+		$has_radius = false;
+		if ( $css->is_number( $attributes['borderRadius'][0] && 0 !== $attributes['borderRadius'][0] ) ) {
+			$has_radius = true;
+		}
+		if ( $css->is_number( $attributes['borderRadius'][1] ) && 0 !== $attributes['borderRadius'][1] ) {
+			$has_radius = true;
+		}
+		if ( $css->is_number( $attributes['borderRadius'][2] ) && 0 !== $attributes['borderRadius'][2] ) {
+			$has_radius = true;
+		}
+		if ( $css->is_number( $attributes['borderRadius'][3] ) && 0 !== $attributes['borderRadius'][3] ) {
+			$has_radius = true;
+		}
+		if ( $has_radius ) {
+			$css->add_property( 'overflow', 'hidden' );
+		}
+		// Border, have to check for old styles first.
+		if ( ! empty( $attributes['border'] ) || ! empty( $attributes['tabletBorder'] ) || ! empty( $attributes['mobileBorder'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
+			$css->render_border_color( $attributes, 'border' );
+			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
+			if ( ! empty( $attributes['tabletBorder'] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->render_border_color( $attributes, 'tabletBorder' );
+				$css->set_media_state( 'desktop' );
+			}
+			if ( ! empty( $attributes['mobileBorder'] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->render_border_color( $attributes, 'mobileBorder' );
+				$css->set_media_state( 'desktop' );
+			}
+		} else {
+			$css->render_border_styles( $attributes, 'borderStyle' );
+		}
 
-		if ( isset( $attributes['bgColor'] ) || isset( $attributes['bgImg'] ) || isset( $attributes['border'] ) || isset( $attributes['borderWidth'] ) || isset( $attributes['borderRadius'] ) ) {
-			$css->set_selector( '#kt-layout-id' . $unique_id );
-			if ( isset( $attributes['border'] ) ) {
-				$css->add_property( 'border-color', $css->render_color( $attributes['border'] ) );
-			}
-			if ( isset( $attributes['borderWidth'] ) && is_array( $attributes['borderWidth'] ) ) {
-				if ( isset( $attributes['borderWidth'][0] ) && is_numeric( $attributes['borderWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['borderWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][1] ) && is_numeric( $attributes['borderWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['borderWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][2] ) && is_numeric( $attributes['borderWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['borderWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][3] ) && is_numeric( $attributes['borderWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['borderWidth'][3] . 'px' );
-				}
-			}
-			$has_radius = false;
-			if ( isset( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-				if ( isset( $attributes['borderRadius'][0] ) && is_numeric( $attributes['borderRadius'][0] ) ) {
-					if ( 0 !== $attributes['borderRadius'][0] ) {
-						$has_radius = true;
+		// Background.
+		$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
+		switch ( $background_type ) {
+			case 'normal':
+				if ( ! empty( $attributes['bgColor'] ) ) {
+					if ( class_exists( 'Kadence\Theme' ) ) {
+						if ( empty( $attributes['bgColorClass'] ) ) {
+							$css->render_color_output( $attributes, 'bgColor', 'background-color' );
+						}
+					} else if ( strpos( $attributes['bgColor'], 'palette' ) === 0 ) {
+						$css->render_color_output( $attributes, 'bgColor', 'background-color' );
+					} else if ( empty( $attributes['bgColorClass'] ) ) {
+						$css->render_color_output( $attributes, 'bgColor', 'background-color' );
 					}
-					$css->add_property( 'border-top-left-radius', $attributes['borderRadius'][0] . 'px' );
 				}
-				if ( isset( $attributes['borderRadius'][1] ) && is_numeric( $attributes['borderRadius'][1] ) ) {
-					if ( 0 !== $attributes['borderRadius'][1] ) {
-						$has_radius = true;
+				if ( ! empty( $attributes['bgImg'] ) ) {
+					if ( isset( $attributes['bgImgAttachment'] ) ) {
+						if ( 'parallax' === $attributes['bgImgAttachment'] ) {
+							$bg_attach = 'fixed';
+						} else {
+							$bg_attach = $attributes['bgImgAttachment'];
+						}
+					} else {
+						$bg_attach = 'scroll';
 					}
-					$css->add_property( 'border-top-right-radius', $attributes['borderRadius'][1] . 'px' );
+					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['bgImg'] ) );
+					$css->add_property( 'background-size', ( isset( $attributes['bgImgSize'] ) ? $attributes['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', $bg_attach );
+					$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
 				}
-				if ( isset( $attributes['borderRadius'][2] ) && is_numeric( $attributes['borderRadius'][2] ) ) {
-					if ( 0 !== $attributes['borderRadius'][2] ) {
-						$has_radius = true;
-					}
-					$css->add_property( 'border-bottom-right-radius', $attributes['borderRadius'][2] . 'px' );
+				break;
+			case 'gradient':
+				if ( ! empty( $attributes['gradient'] ) ) {
+					$css->add_property( 'background-image', $attributes['gradient'] );
 				}
-				if ( isset( $attributes['borderRadius'][3] ) && is_numeric( $attributes['borderRadius'][3] ) ) {
-					if ( 0 !== $attributes['borderRadius'][3] ) {
-						$has_radius = true;
-					}
-					$css->add_property( 'border-bottom-left-radius', $attributes['borderRadius'][3] . 'px' );
-				}
+				break;
+		}
+		// Tablet Background.
+		$tablet_background = ( isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
+		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
+			if ( ! empty( $tablet_background['bgColor'] ) ) {
+				$css->render_color_output( $tablet_background, 'bgColor', 'background-color' );
 			}
-			if ( $has_radius ) {
-				$css->add_property( 'overflow', 'hidden' );
-			}
-			if ( isset( $attributes['bgColor'] ) && ! empty( $attributes['bgColor'] ) ) {
-				if ( class_exists( 'Kadence\Theme' ) ) {
-					if ( isset( $attributes['bgColorClass'] ) && empty( $attributes['bgColorClass'] ) || ! isset( $attributes['bgColorClass'] ) ) {
-						$css->add_property( 'background-color', $css->render_color( $attributes['bgColor'] ) );
-					}
-				} else if ( strpos( $attributes['bgColor'], 'palette' ) === 0 ) {
-					$css->add_property( 'background-color', $css->render_color( $attributes['bgColor'] ) );
-				} else if ( isset( $attributes['bgColorClass'] ) && empty( $attributes['bgColorClass'] ) || ! isset( $attributes['bgColorClass'] ) ) {
-					$css->add_property( 'background-color', $css->render_color( $attributes['bgColor'] ) );
-				}
-			}
-			if ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && ( ! isset( $attributes['backgroundSettingTab'] ) || empty( $attributes['backgroundSettingTab'] ) || 'normal' === $attributes['backgroundSettingTab'] ) ) {
-				if ( isset( $attributes['bgImgAttachment'] ) ) {
-					if ( 'parallax' === $attributes['bgImgAttachment'] ) {
+			if ( ! empty( $tablet_background['bgImg'] ) ) {
+				if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
+					if ( 'parallax' === $tablet_background['bgImgAttachment'] ) {
 						$bg_attach = 'fixed';
 					} else {
-						$bg_attach = $attributes['bgImgAttachment'];
+						$bg_attach = $tablet_background['bgImgAttachment'];
 					}
 				} else {
 					$bg_attach = 'scroll';
 				}
-				$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['bgImg'] ) );
-				$css->add_property( 'background-size', ( isset( $attributes['bgImgSize'] ) ? $attributes['bgImgSize'] : 'cover' ) );
-				$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
+
+				$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' );
+				if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
+					$is_important = '!important';
+				}
+				$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . $is_important );
+				$css->add_property( 'background-size', ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) );
+				$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
 				$css->add_property( 'background-attachment', $bg_attach );
-				$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
+				$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
+			}
+			if ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
+				$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
+				$css->add_property( 'display', 'none !important' );
+			}
+			if ( isset( $attributes['backgroundSettingTab'] ) && ! empty( $attributes['backgroundSettingTab'] ) && 'normal' !== $attributes['backgroundSettingTab'] ) {
+				$css->set_selector( '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider' );
+				$css->add_property( 'display', 'none' );
 			}
 		}
-		if ( isset( $attributes['zIndex'] ) ) {
-			$css->set_selector( '.kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			$css->add_property( 'z-index', $attributes['zIndex'] );
+		// Force No image for tablet.
+		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( $base_selector );
+			$css->add_property( 'background-image', 'none !important' );
+			$css->set_selector( $base_selector  . ' [id*="jarallax-container-"]' );
+			$css->add_property( 'display', 'none !important' );
+			$css->set_media_state( 'desktop' );
 		}
-		if ( isset( $attributes['textColor'] ) ) {
-			$css->set_selector( '.kt-layout-id' . $unique_id . ', .kt-layout-id' . $unique_id . ' h1, .kt-layout-id' . $unique_id . ' h2, .kt-layout-id' . $unique_id . ' h3, .kt-layout-id' . $unique_id . ' h4, .kt-layout-id' . $unique_id . ' h5, .kt-layout-id' . $unique_id . ' h6' );
-			$css->add_property( 'color', $css->render_color( $attributes['textColor'] ) );
-		}
-		if ( isset( $attributes['linkColor'] ) ) {
-			$css->set_selector( '.kt-layout-id' . $unique_id . ' a' );
-			$css->add_property( 'color', $css->render_color( $attributes['linkColor'] ) );
-		}
-		if ( isset( $attributes['linkHoverColor'] ) ) {
-			$css->set_selector( '.kt-layout-id' . $unique_id . ' a:hover' );
-			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
-		}
-		if ( isset( $attributes['bottomSep'] ) && 'none' != $attributes['bottomSep'] ) {
-			if ( isset( $attributes['bottomSepHeight'] ) || isset( $attributes['bottomSepWidth'] ) || isset( $attributes['bottomSepColor'] ) ) {
-				if ( isset( $attributes['bottomSepHeight'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeight'] . 'px' );
-				}
-				if ( isset( $attributes['bottomSepWidth'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
-					$css->add_property( 'width', $attributes['bottomSepWidth'] . '%' );
-				}
-			}
-			if ( ! empty( $attributes['bottomSepColor'] ) ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
-				$css->add_property( 'fill', $css->render_color( $attributes['bottomSepColor'] ) . '!important' );
-			}
-			if ( isset( $attributes['bottomSepHeightTab'] ) || isset( $attributes['bottomSepWidthTab'] ) ) {
-				$css->set_media_state( 'tablet' );
-				if ( isset( $attributes['bottomSepHeightTab'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeightTab'] . 'px' );
-				}
-				if ( isset( $attributes['bottomSepWidthTab'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
-					$css->add_property( 'width', $attributes['bottomSepWidthTab'] . '%' );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-			if ( isset( $attributes['bottomSepHeightMobile'] ) || isset( $attributes['bottomSepWidthMobile'] ) ) {
-				$css->set_media_state( 'mobile' );
-				if ( isset( $attributes['bottomSepHeightMobile'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeightMobile'] . 'px' );
-				}
-				if ( isset( $attributes['bottomSepWidthMobile'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
-					$css->add_property( 'width', $attributes['bottomSepWidthMobile'] . '%' );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-		}
-		if ( isset( $attributes['topSep'] ) && 'none' != $attributes['topSep'] ) {
-			if ( isset( $attributes['topSepHeight'] ) || isset( $attributes['topSepWidth'] )|| isset( $attributes['topSepColor'] ) ) {
-				if ( isset( $attributes['topSepHeight'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
-					$css->add_property( 'height', $attributes['topSepHeight'] . 'px' );
-				}
-				if ( isset( $attributes['topSepWidth'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
-					$css->add_property( 'width', $attributes['topSepWidth'] . '%' );
-				}
-				if ( ! empty( $attributes['topSepColor'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg'  );
-					$css->add_property( 'fill', $css->render_color( $attributes['topSepColor'] ) . '!important' );
-				}
-			}
-			if ( isset( $attributes['topSepHeightTab'] ) || isset( $attributes['topSepWidthTab'] ) ) {
-				$css->set_media_state( 'tablet' );
-				if ( isset( $attributes['topSepHeightTab'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
-					$css->add_property( 'height', $attributes['topSepHeightTab'] . 'px' );
-				}
-				if ( isset( $attributes['topSepWidthTab'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
-					$css->add_property( 'width', $attributes['topSepWidthTab'] . '%' );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-			if ( isset( $attributes['topSepHeightMobile'] ) || isset( $attributes['topSepWidthMobile'] ) ) {
-				$css->set_media_state( 'mobile' );
-				if ( isset( $attributes['topSepHeightMobile'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
-					$css->add_property( 'height', $attributes['topSepHeightMobile'] . 'px' );
-				}
-				if ( isset( $attributes['topSepWidthMobile'] ) ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
-					$css->add_property( 'width', $attributes['topSepWidthMobile'] . '%' );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-		}
-		if ( isset( $attributes['overlay'] ) || isset( $attributes['overlayBgImg'] ) || isset( $attributes['overlaySecond'] ) ) {
-			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay' );
-			if ( isset( $attributes['overlayOpacity'] ) ) {
-				if ( $attributes['overlayOpacity'] < 10 ) {
-					$css->add_property( 'opacity', '0.0' . $attributes['overlayOpacity'] );
-				} else if ( $attributes['overlayOpacity'] >= 100 ) {
-					$css->add_property( 'opacity', '1' );
-				} else {
-					$css->add_property( 'opacity', '0.' . $attributes['overlayOpacity'] );
-				}
-			}
-			if ( isset( $attributes['currentOverlayTab'] ) && 'grad' == $attributes['currentOverlayTab'] ) {
-				$type = ( isset( $attributes['overlayGradType'] ) ? $attributes['overlayGradType'] : 'linear' );
-				if ( 'radial' === $type ) {
-					$angle = ( isset( $attributes['overlayBgImgPosition'] ) ? 'at ' . $attributes['overlayBgImgPosition'] : 'at center center' );
-				} else {
-					$angle = ( isset( $attributes['overlayGradAngle'] ) ? $attributes['overlayGradAngle'] . 'deg' : '180deg' );
-				}
-				$loc         = ( isset( $attributes['overlayGradLoc'] ) ? $attributes['overlayGradLoc'] : '0' );
-				$color       = ( isset( $attributes['overlay'] ) ? $css->render_color( $attributes['overlay'], ( isset( $attributes['overlayFirstOpacity'] ) && is_numeric( $attributes['overlayFirstOpacity'] ) ? $attributes['overlayFirstOpacity'] : 1 ) ) : 'transparent' );
-				$locsecond   = ( isset( $attributes['overlayGradLocSecond'] ) ? $attributes['overlayGradLocSecond'] : '100' );
-				$colorsecond = ( isset( $attributes['overlaySecond'] ) ? $css->render_color( $attributes['overlaySecond'], ( isset( $attributes['overlaySecondOpacity'] ) && is_numeric( $attributes['overlaySecondOpacity'] ) ? $attributes['overlaySecondOpacity'] : 1 ) ) : '#00B5E2' );
-				$css->add_property( 'background-image', $type . '-gradient(' . $angle . ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%)' );
-			} else {
-				if ( isset( $attributes['overlay'] ) ) {
-					$css->add_property( 'background-color', $css->render_color( $attributes['overlay'], ( isset( $attributes['overlayFirstOpacity'] ) && is_numeric( $attributes['overlayFirstOpacity'] ) ? $attributes['overlayFirstOpacity'] : 1 ) ) );
-				}
-				if ( isset( $attributes['overlayBgImg'] ) ) {
-					if ( isset( $attributes['overlayBgImgAttachment'] ) ) {
-						if ( 'parallax' === $attributes['overlayBgImgAttachment'] ) {
-							$overbg_attach = 'fixed';
-						} else {
-							$overbg_attach = $attributes['overlayBgImgAttachment'];
-						}
-					} else {
-						$overbg_attach = 'scroll';
+		// Overlay.
+		if ( ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlaySecond'] ) || ! empty( $attributes['overlayGradient'] ) ) {
+			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
+			$css->render_opacity_from_100( $attributes['overlayOpacity'] );
+			$overlay_type = ! empty( $attributes['currentOverlayTab'] ) ? $attributes['currentOverlayTab'] : 'normal';
+			switch ( $overlay_type ) {
+				case 'normal':
+					if ( isset( $attributes['overlay'] ) ) {
+						$css->add_property( 'background-color', $css->render_color( $attributes['overlay'], ( isset( $attributes['overlayFirstOpacity'] ) && is_numeric( $attributes['overlayFirstOpacity'] ) ? $attributes['overlayFirstOpacity'] : 1 ) ) );
 					}
-					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['overlayBgImg'] ) );
-					$css->add_property( 'background-size', ( isset( $attributes['overlayBgImgSize'] ) ? $attributes['overlayBgImgSize'] : 'cover' ) );
-					$css->add_property( 'background-position', ( isset( $attributes['overlayBgImgPosition'] ) ? $attributes['overlayBgImgPosition'] : 'center center' ) );
-					$css->add_property( 'background-attachment', $overbg_attach );
-					$css->add_property( 'background-repeat', ( isset( $attributes['overlayBgImgRepeat'] ) ? $attributes['overlayBgImgRepeat'] : 'no-repeat' ) );
-				}
+					if ( ! empty( $attributes['overlayBgImg'] ) ) {
+						if ( isset( $attributes['overlayBgImgAttachment'] ) ) {
+							if ( 'parallax' === $attributes['overlayBgImgAttachment'] ) {
+								$overbg_attach = 'fixed';
+							} else {
+								$overbg_attach = $attributes['overlayBgImgAttachment'];
+							}
+						} else {
+							$overbg_attach = 'scroll';
+						}
+						$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['overlayBgImg'] ) );
+						$css->add_property( 'background-size', ( isset( $attributes['overlayBgImgSize'] ) ? $attributes['overlayBgImgSize'] : 'cover' ) );
+						$css->add_property( 'background-position', ( isset( $attributes['overlayBgImgPosition'] ) ? $attributes['overlayBgImgPosition'] : 'center center' ) );
+						$css->add_property( 'background-attachment', $overbg_attach );
+						$css->add_property( 'background-repeat', ( isset( $attributes['overlayBgImgRepeat'] ) ? $attributes['overlayBgImgRepeat'] : 'no-repeat' ) );
+					}
+					if ( ! empty( $attributes['bgImg'] ) ) {
+						if ( isset( $attributes['bgImgAttachment'] ) ) {
+							if ( 'parallax' === $attributes['bgImgAttachment'] ) {
+								$bg_attach = 'fixed';
+							} else {
+								$bg_attach = $attributes['bgImgAttachment'];
+							}
+						} else {
+							$bg_attach = 'scroll';
+						}
+						$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['bgImg'] ) );
+						$css->add_property( 'background-size', ( isset( $attributes['bgImgSize'] ) ? $attributes['bgImgSize'] : 'cover' ) );
+						$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
+						$css->add_property( 'background-attachment', $bg_attach );
+						$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
+					}
+					break;
+				case 'gradient':
+					$css->add_property( 'background', $attributes['overlayGradient'] );
+					break;
+				case 'grad':
+					// Old Gradient Support.
+					$type = ( isset( $attributes['overlayGradType'] ) ? $attributes['overlayGradType'] : 'linear' );
+					if ( 'radial' === $type ) {
+						$angle = ( isset( $attributes['overlayBgImgPosition'] ) ? 'at ' . $attributes['overlayBgImgPosition'] : 'at center center' );
+					} else {
+						$angle = ( isset( $attributes['overlayGradAngle'] ) ? $attributes['overlayGradAngle'] . 'deg' : '180deg' );
+					}
+					$loc         = ( isset( $attributes['overlayGradLoc'] ) ? $attributes['overlayGradLoc'] : '0' );
+					$color       = ( isset( $attributes['overlay'] ) ? $css->render_color( $attributes['overlay'], ( isset( $attributes['overlayFirstOpacity'] ) && is_numeric( $attributes['overlayFirstOpacity'] ) ? $attributes['overlayFirstOpacity'] : 1 ) ) : 'transparent' );
+					$locsecond   = ( isset( $attributes['overlayGradLocSecond'] ) ? $attributes['overlayGradLocSecond'] : '100' );
+					$colorsecond = ( isset( $attributes['overlaySecond'] ) ? $css->render_color( $attributes['overlaySecond'], ( isset( $attributes['overlaySecondOpacity'] ) && is_numeric( $attributes['overlaySecondOpacity'] ) ? $attributes['overlaySecondOpacity'] : 1 ) ) : '#00B5E2' );
+					$css->add_property( 'background-image', $type . '-gradient(' . $angle . ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%)' );
+					break;
 			}
-			if ( isset( $attributes['overlayBlendMode'] ) ) {
+			if ( ! empty( $attributes['overlayBlendMode'] ) && 'none' !== $attributes['overlayBlendMode'] ) {
 				$css->add_property( 'mix-blend-mode', $attributes['overlayBlendMode'] );
 			}
 		}
 		$tablet_overlay    = ( isset( $attributes['tabletOverlay'] ) && is_array( $attributes['tabletOverlay'] ) && isset( $attributes['tabletOverlay'][0] ) && is_array( $attributes['tabletOverlay'][0] ) ? $attributes['tabletOverlay'][0] : array() );
 		$tablet_background = ( isset( $attributes['tabletBackground'] ) && is_array( $attributes['tabletBackground'] ) && isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
-		if ( isset( $attributes['tabletPadding'] ) || isset( $attributes['tabletBorder'] ) || isset( $attributes['tabletBorderWidth'] ) || isset( $attributes['tabletBorderRadius'] ) || isset( $attributes['minHeightTablet'] ) || isset( $attributes['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) || isset( $attributes['responsiveMaxWidth'] ) ) {
+		if ( isset( $attributes['tabletPadding'] ) || isset( $attributes['tabletBorderRadius'] ) || isset( $attributes['minHeightTablet'] ) || isset( $attributes['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) || isset( $attributes['responsiveMaxWidth'] ) ) {
 			$css->set_media_state( 'tablet' );
-			if ( isset( $attributes['tabletBorder'] ) || isset( $attributes['tabletBorderWidth'] ) || isset( $attributes['tabletBorderRadius'] ) ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id );
-				if ( isset( $attributes['tabletBorder'] ) ) {
-					$css->add_property( 'border-color', $css->render_color( $attributes['tabletBorder'] ) );
-				}
-				if ( isset( $attributes['tabletBorderWidth'] ) && is_array( $attributes['tabletBorderWidth'] ) ) {
-					if ( isset( $attributes['tabletBorderWidth'][0] ) && is_numeric( $attributes['tabletBorderWidth'][0] ) ) {
-						$css->add_property( 'border-top-width', $attributes['tabletBorderWidth'][0] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderWidth'][1] ) && is_numeric( $attributes['tabletBorderWidth'][1] ) ) {
-						$css->add_property( 'border-right-width', $attributes['tabletBorderWidth'][1] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderWidth'][2] ) && is_numeric( $attributes['tabletBorderWidth'][2] ) ) {
-						$css->add_property( 'border-bottom-width', $attributes['tabletBorderWidth'][2] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderWidth'][3] ) && is_numeric( $attributes['tabletBorderWidth'][3] ) ) {
-						$css->add_property( 'border-left-width', $attributes['tabletBorderWidth'][3] . 'px' );
-					}
-				}
-				if ( isset( $attributes['tabletBorderRadius'] ) && is_array( $attributes['tabletBorderRadius'] ) ) {
-					if ( isset( $attributes['tabletBorderRadius'][0] ) && is_numeric( $attributes['tabletBorderRadius'][0] ) ) {
-						$css->add_property( 'border-top-left-radius', $attributes['tabletBorderRadius'][0] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderRadius'][1] ) && is_numeric( $attributes['tabletBorderRadius'][1] ) ) {
-						$css->add_property( 'border-top-right-radius', $attributes['tabletBorderRadius'][1] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderRadius'][2] ) && is_numeric( $attributes['tabletBorderRadius'][2] ) ) {
-						$css->add_property( 'border-bottom-right-radius', $attributes['tabletBorderRadius'][2] . 'px' );
-					}
-					if ( isset( $attributes['tabletBorderRadius'][3] ) && is_numeric( $attributes['tabletBorderRadius'][3] ) ) {
-						$css->add_property( 'border-bottom-left-radius', $attributes['tabletBorderRadius'][3] . 'px' );
-					}
-				}
-			}
 			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id );
 				if ( ! empty( $tablet_background['bgColor'] ) ) {
@@ -717,53 +646,109 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 
 			}
 			$css->set_media_state( 'desktop' );
-			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
-				$css->set_media_state( 'tabletOnly' );
-				$css->set_selector( '#kt-layout-id' . $unique_id );
-				$css->add_property( 'background-image', 'none !important' );
-				$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-				$css->add_property( 'display', 'none !important' );
+		}
+
+		if ( isset( $attributes['zIndex'] ) ) {
+			$css->set_selector( $inner_selector );
+			$css->add_property( 'z-index', $attributes['zIndex'] );
+		}
+		if ( ! empty( $attributes['textColor'] ) ) {
+			$css->set_selector( $base_selector, $base_selector . ' h1,' . $base_selector . ' h2,' . $base_selector . ' h3,' . $base_selector . ' h4,' . $base_selector . ' h5,' . $base_selector . ' h6' );
+			$css->render_color_output( $attributes, 'textColor', 'color' );
+		}
+		if ( ! empty( $attributes['linkColor'] ) ) {
+			$css->set_selector( $base_selector . ' a' );
+			$css->render_color_output( $attributes, 'linkColor', 'color' );
+		}
+		if ( ! empty( $attributes['linkHoverColor'] ) ) {
+			$css->set_selector( $base_selector . ' a:hover' );
+			$css->render_color_output( $attributes, 'linkHoverColor', 'color' );
+		}
+		if ( isset( $attributes['bottomSep'] ) && 'none' != $attributes['bottomSep'] ) {
+			if ( isset( $attributes['bottomSepHeight'] ) || isset( $attributes['bottomSepWidth'] ) || isset( $attributes['bottomSepColor'] ) ) {
+				if ( isset( $attributes['bottomSepHeight'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
+					$css->add_property( 'height', $attributes['bottomSepHeight'] . 'px' );
+				}
+				if ( isset( $attributes['bottomSepWidth'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+					$css->add_property( 'width', $attributes['bottomSepWidth'] . '%' );
+				}
+			}
+			if ( ! empty( $attributes['bottomSepColor'] ) ) {
+				$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+				$css->add_property( 'fill', $css->render_color( $attributes['bottomSepColor'] ) . '!important' );
+			}
+			if ( isset( $attributes['bottomSepHeightTab'] ) || isset( $attributes['bottomSepWidthTab'] ) ) {
+				$css->set_media_state( 'tablet' );
+				if ( isset( $attributes['bottomSepHeightTab'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
+					$css->add_property( 'height', $attributes['bottomSepHeightTab'] . 'px' );
+				}
+				if ( isset( $attributes['bottomSepWidthTab'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+					$css->add_property( 'width', $attributes['bottomSepWidthTab'] . '%' );
+				}
+				$css->set_media_state( 'desktop' );
+			}
+			if ( isset( $attributes['bottomSepHeightMobile'] ) || isset( $attributes['bottomSepWidthMobile'] ) ) {
+				$css->set_media_state( 'mobile' );
+				if ( isset( $attributes['bottomSepHeightMobile'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep' );
+					$css->add_property( 'height', $attributes['bottomSepHeightMobile'] . 'px' );
+				}
+				if ( isset( $attributes['bottomSepWidthMobile'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg' );
+					$css->add_property( 'width', $attributes['bottomSepWidthMobile'] . '%' );
+				}
 				$css->set_media_state( 'desktop' );
 			}
 		}
-		$mobile_overlay    = ( isset( $attributes['mobileOverlay'] ) && is_array( $attributes['mobileOverlay'] ) && isset( $attributes['mobileOverlay'][0] ) && is_array( $attributes['mobileOverlay'][0] ) ? $attributes['mobileOverlay'][0] : array() );
-		$mobile_background = ( isset( $attributes['mobileBackground'] ) && is_array( $attributes['mobileBackground'] ) && isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
-		if ( isset( $attributes['topPaddingM'] ) || isset( $attributes['bottomPaddingM'] ) || isset( $attributes['leftPaddingM'] ) || isset( $attributes['rightPaddingM'] ) || isset( $attributes['topMarginM'] ) || isset( $attributes['bottomMarginM'] ) || isset( $attributes['mobileBorder'] ) || isset( $attributes['mobileBorderWidth'] ) || isset( $attributes['mobileBorderRadius'] ) || ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) || isset( $attributes['minHeightMobile'] ) || ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] == 'true' ) || isset( $attributes['responsiveMaxWidth'] ) ) {
-			$css->set_media_state( 'mobile' );
-			if ( isset( $attributes['mobileBorder'] ) || isset( $attributes['mobileBorderWidth'] ) || isset( $attributes['mobileBorderRadius'] ) ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id );
-				if ( isset( $attributes['mobileBorder'] ) ) {
-					$css->add_property( 'border-color', $css->render_color( $attributes['mobileBorder'] ) );
+		if ( isset( $attributes['topSep'] ) && 'none' != $attributes['topSep'] ) {
+			if ( isset( $attributes['topSepHeight'] ) || isset( $attributes['topSepWidth'] )|| isset( $attributes['topSepColor'] ) ) {
+				if ( isset( $attributes['topSepHeight'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
+					$css->add_property( 'height', $attributes['topSepHeight'] . 'px' );
 				}
-				if ( isset( $attributes['mobileBorderWidth'] ) && is_array( $attributes['mobileBorderWidth'] ) ) {
-					if ( isset( $attributes['mobileBorderWidth'][0] ) && is_numeric( $attributes['mobileBorderWidth'][0] ) ) {
-						$css->add_property( 'border-top-width', $attributes['mobileBorderWidth'][0] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderWidth'][1] ) && is_numeric( $attributes['mobileBorderWidth'][1] ) ) {
-						$css->add_property( 'border-right-width', $attributes['mobileBorderWidth'][1] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderWidth'][2] ) && is_numeric( $attributes['mobileBorderWidth'][2] ) ) {
-						$css->add_property( 'border-bottom-width', $attributes['mobileBorderWidth'][2] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderWidth'][3] ) && is_numeric( $attributes['mobileBorderWidth'][3] ) ) {
-						$css->add_property( 'border-left-width', $attributes['mobileBorderWidth'][3] . 'px' );
-					}
+				if ( isset( $attributes['topSepWidth'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
+					$css->add_property( 'width', $attributes['topSepWidth'] . '%' );
 				}
-				if ( isset( $attributes['mobileBorderRadius'] ) && is_array( $attributes['mobileBorderRadius'] ) ) {
-					if ( isset( $attributes['mobileBorderRadius'][0] ) && is_numeric( $attributes['mobileBorderRadius'][0] ) ) {
-						$css->add_property( 'border-top-left-radius', $attributes['mobileBorderRadius'][0] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderRadius'][1] ) && is_numeric( $attributes['mobileBorderRadius'][1] ) ) {
-						$css->add_property( 'border-top-right-radius', $attributes['mobileBorderRadius'][1] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderRadius'][2] ) && is_numeric( $attributes['mobileBorderRadius'][2] ) ) {
-						$css->add_property( 'border-bottom-right-radius', $attributes['mobileBorderRadius'][2] . 'px' );
-					}
-					if ( isset( $attributes['mobileBorderRadius'][3] ) && is_numeric( $attributes['mobileBorderRadius'][3] ) ) {
-						$css->add_property( 'border-bottom-left-radius', $attributes['mobileBorderRadius'][3] . 'px' );
-					}
+				if ( ! empty( $attributes['topSepColor'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg'  );
+					$css->add_property( 'fill', $css->render_color( $attributes['topSepColor'] ) . '!important' );
 				}
 			}
+			if ( isset( $attributes['topSepHeightTab'] ) || isset( $attributes['topSepWidthTab'] ) ) {
+				$css->set_media_state( 'tablet' );
+				if ( isset( $attributes['topSepHeightTab'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
+					$css->add_property( 'height', $attributes['topSepHeightTab'] . 'px' );
+				}
+				if ( isset( $attributes['topSepWidthTab'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
+					$css->add_property( 'width', $attributes['topSepWidthTab'] . '%' );
+				}
+				$css->set_media_state( 'desktop' );
+			}
+			if ( isset( $attributes['topSepHeightMobile'] ) || isset( $attributes['topSepWidthMobile'] ) ) {
+				$css->set_media_state( 'mobile' );
+				if ( isset( $attributes['topSepHeightMobile'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep' );
+					$css->add_property( 'height', $attributes['topSepHeightMobile'] . 'px' );
+				}
+				if ( isset( $attributes['topSepWidthMobile'] ) ) {
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg' );
+					$css->add_property( 'width', $attributes['topSepWidthMobile'] . '%' );
+				}
+				$css->set_media_state( 'desktop' );
+			}
+		}
+	
+		$mobile_overlay    = ( isset( $attributes['mobileOverlay'] ) && is_array( $attributes['mobileOverlay'] ) && isset( $attributes['mobileOverlay'][0] ) && is_array( $attributes['mobileOverlay'][0] ) ? $attributes['mobileOverlay'][0] : array() );
+		$mobile_background = ( isset( $attributes['mobileBackground'] ) && is_array( $attributes['mobileBackground'] ) && isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
+		if ( ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) || isset( $attributes['minHeightMobile'] ) || ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] == 'true' ) || isset( $attributes['responsiveMaxWidth'] ) ) {
+			$css->set_media_state( 'mobile' );
 			if ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id );
 				if ( isset( $mobile_background['bgColor'] ) && ! empty( $mobile_background['bgColor'] ) ) {
@@ -859,7 +844,7 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css_output = apply_filters( 'as3cf_filter_post_local_to_provider', $css->css_output() );
 		return $css_output;
 	}
-		/**
+	/**
 	 * Adds Scripts for row block.
 	 *
 	 * @param array $attr the blocks attr.

@@ -1108,12 +1108,10 @@ const deskOverlayControls = (
 				value={ ( linkColor ? linkColor : '' ) }
 				default={ '' }
 				onChange={ value => setAttributes( { linkColor: value } ) }
-			/>
-			<PopColorControl
-				label={ __( 'Link Hover Color', 'kadence-blocks' ) }
-				value={ ( linkHoverColor ? linkHoverColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { linkHoverColor: value } ) }
+				swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
+				value2={ ( linkHoverColor ? linkHoverColor : '' ) }
+				default2={ '' }
+				onChange2={ value => setAttributes( { linkHoverColor: value } ) }
 			/>
 		</KadencePanelBody>
 	);

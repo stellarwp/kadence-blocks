@@ -63,7 +63,9 @@ class BackgroundControl extends Component {
 			imageAttachmentParallax = false,
 			inlineImage,
 			onSaveInlineImage,
-			dynamicAttribute = '' } = this.props;
+			dynamicAttribute = '',
+			attributes
+		} = this.props;
 		let attachmentOptions = [
 			{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
 			{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
@@ -101,9 +103,9 @@ class BackgroundControl extends Component {
 						{ label && (
 							<div class="components-kadence-image-background__label">{ label }</div>
 						) }
-						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && kadenceDynamic && kadenceDynamic[ dynamicAttribute ] && kadenceDynamic[ dynamicAttribute ].enable ? (
+						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && attributes.kadenceDynamic && attributes.kadenceDynamic[ dynamicAttribute ] && attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
 							<div className="kb-dynamic-background-sidebar-top">
-								<DynamicBackgroundControl startOpen={ kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
+								<DynamicBackgroundControl startOpen={ attributes.kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
 							</div>
 						) : (
 							<Fragment>

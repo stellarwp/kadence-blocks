@@ -277,6 +277,58 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			const newMobileGradient = ( 'radial' === mobileOverlay[ 0 ].overlayGradType ? `radial-gradient(ellipse at ${ mobileOverlay[ 0 ].overlayBgImgPosition }, ${ ( mobileOverlay[ 0 ].overlay ? KadenceColorOutput( mobileOverlay[ 0 ].overlay, ( undefined !== mobileOverlay[ 0 ].overlayFirstOpacity && '' !== mobileOverlay[ 0 ].overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLoc }%, ${ ( mobileOverlay[ 0 ].overlaySecond ? KadenceColorOutput( mobileOverlay[ 0 ].overlaySecond, ( undefined !== mobileOverlay[ 0 ].overlaySecondOpacity && '' !== mobileOverlay[ 0 ].overlaySecondOpacity ? mobileOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLocSecond }%)` : `linear-gradient(${ mobileOverlay[ 0 ].overlayGradAngle }deg, ${ ( mobileOverlay[ 0 ].overlay ? KadenceColorOutput( mobileOverlay[ 0 ].overlay, ( undefined !== overlayFirstOpacity && '' !== mobileOverlay[ 0 ].overlayFirstOpacity ? mobileOverlay[ 0 ].overlayFirstOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLoc }%, ${ ( mobileOverlay[ 0 ].overlaySecond ? KadenceColorOutput( mobileOverlay[ 0 ].overlaySecond, ( undefined !== mobileOverlay[ 0 ].overlaySecondOpacity && '' !== mobileOverlay[ 0 ].mobileOverlay[ 0 ].overlaySecondOpacity ? mobileOverlay[ 0 ].overlaySecondOpacity : 1 ) ) : '' ) } ${ mobileOverlay[ 0 ].overlayGradLocSecond }%)` );
 			saveMobileOverlay( {  gradient: newMobileGradient, currentOverlayTab: 'gradient' } );
 		}
+		// Update from old border settings.
+		if ( ( '' !== border ) ) {
+			borderStyle[0].top[0] = border;
+			borderStyle[0].right[0] = border;
+			borderStyle[0].bottom[0] = border;
+			borderStyle[0].left[0] = border;
+			// Force a change.
+			const tempBorderStyle = JSON.parse(JSON.stringify(borderStyle));
+			setAttributes( { borderStyle: tempBorderStyle, border:'' } );
+		}
+		if ( ( '' !== tabletBorder ) ) {
+			tabletBorderStyle[0].top[0] = tabletBorder;
+			tabletBorderStyle[0].right[0] = tabletBorder;
+			tabletBorderStyle[0].bottom[0] = tabletBorder;
+			tabletBorderStyle[0].left[0] = tabletBorder;
+			// Force a change.
+			const tempTabBorderStyle = JSON.parse(JSON.stringify(tabletBorderStyle));
+			setAttributes( { tabletBorderStyle: tempTabBorderStyle, tabletBorder: '' } );
+		}
+		if ( ( '' !== mobileBorder ) ) {
+			mobileBorderStyle[0].top[0] = mobileBorder;
+			mobileBorderStyle[0].right[0] = mobileBorder;
+			mobileBorderStyle[0].bottom[0] = mobileBorder;
+			mobileBorderStyle[0].left[0] = mobileBorder;
+			// Force a change.
+			const tempMobileBorderStyle = JSON.parse(JSON.stringify(mobileBorderStyle));
+			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorder: '' } );
+		}
+		if ( ( '' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3] ) ) {
+			borderStyle[0].top[2] = borderWidth?.[0] || '';
+			borderStyle[0].right[2] = borderWidth?.[1] || '';
+			borderStyle[0].bottom[2] = borderWidth?.[2] || '';
+			borderStyle[0].left[2] = borderWidth?.[3] || '';
+			const tempBorderWidth = JSON.parse(JSON.stringify(borderStyle));
+			setAttributes( { borderStyle: tempBorderWidth, borderWidth:[ '', '', '', '' ] } );
+		}
+		if ( ( '' !== tabletBorderWidth?.[0] || '' !== tabletBorderWidth?.[1] || '' !== tabletBorderWidth?.[2] || '' !== tabletBorderWidth?.[3] ) ) {
+			tabletBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
+			tabletBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
+			tabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
+			tabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
+			const tempTabBorderWidth = JSON.parse(JSON.stringify(tabletBorderStyle));
+			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
+		}
+		if ( ( '' !== mobileBorderWidth?.[0] || '' !== mobileBorderWidth?.[1] || '' !== mobileBorderWidth?.[2] || '' !== mobileBorderWidth?.[3] ) ) {
+			mobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
+			mobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
+			mobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
+			mobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
+			const tempMobileBorderWidth = JSON.parse(JSON.stringify(mobileBorderStyle));
+			setAttributes( { mobileBorderStyle: tempMobileBorderWidth, mobileBorderWidth:[ '', '', '', '' ] } );
+		}
 	}, [] );
 	const { innerItemCount } = useSelect(
 		( select ) => {
