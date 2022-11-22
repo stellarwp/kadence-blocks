@@ -351,6 +351,14 @@
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"fontSize": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
 	}
   },
   "usesContext": [

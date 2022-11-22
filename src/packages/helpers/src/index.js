@@ -13,6 +13,6 @@ export { default as typographyStyle } from './typography-style';
 export { default as linkedOrIndividual } from './is-linked-or-individual';
 export { default as setBlockDefaults } from './set-block-defaults';
 export { default as mouseOverVisualizer } from './mouse-over-visualizer';
-export { SPACING_SIZES_MAP } from './constants';
+export { SPACING_SIZES_MAP, FONT_SIZES_MAP } from './constants';
 export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './spacing-utilities';
 export { getFontSizeOptionOutput  } from './font-size-utilities';

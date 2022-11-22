@@ -27,7 +27,7 @@ import {
 	__experimentalUnitControl as UnitControl
 } from '@wordpress/components';
 import { settings, link, linkOff, undo } from '@wordpress/icons';
-import { OPTIONS_MAP } from './constants';
+import { FONT_SIZES_MAP } from '@kadence/helpers';
 function isCustomOption( optionsArray, value ) {
 	if ( ! value ) {
 		return false;
@@ -38,6 +38,38 @@ function isCustomOption( optionsArray, value ) {
 	return (
 		! optionsArray.find( ( option ) => option.value === value )
 	);
+}
+function getOptionSize( optionsArray, value ) {
+	if ( ! value ) {
+		return '';
+	}
+	if ( ! optionsArray ) {
+		return '';
+	}
+	if ( value === '0' ) {
+		return 0;
+	}
+	const found = optionsArray.find( ( option ) => option.value === value );
+	if ( ! found ) {
+		return '';
+	}
+	return found.size;
+}
+function getOptionFromSize( optionsArray, size ) {
+	if ( ! size ) {
+		return '';
+	}
+	if ( ! optionsArray ) {
+		return '';
+	}
+	if ( size === '0' ) {
+		return '';
+	}
+	const found = optionsArray.find( ( option ) => option.size === size );
+	if ( ! found ) {
+		return '';
+	}
+	return found.value;
 }
 function getOptionValue( optionsArray, value ) {
 	if ( ! value ) {
@@ -64,7 +96,7 @@ export default function FontSizeControl( {
 	onChange,
 	value = '',
 	className = '',
-	options = OPTIONS_MAP,
+	options = FONT_SIZES_MAP,
 	step = 1,
 	max = 200,
 	min = 0,
@@ -98,7 +130,7 @@ export default function FontSizeControl( {
 		if ( typeof reset === 'function' ){
 			reset();
 		} else {
-			onChange( [ '', '', '', '' ] );
+			onChange( defaultValue );
 		}
 	}
 	return [
@@ -150,7 +182,12 @@ export default function FontSizeControl( {
 									className={'kadence-radio-item radio-custom only-icon'}
 									label={ __( 'Set custom size', 'kadence-blocks' ) }
 									icon={ settings }
-									onClick={ () => realSetIsCustom( true ) }
+									onClick={ () => {
+										if ( currentValue && unit === 'px' ) {
+											onChange( getOptionSize( options, currentValue ) );
+										}
+										realSetIsCustom( true );
+									} }
 									isPressed={ false }
 									isTertiary={ true }
 								/>
@@ -193,7 +230,12 @@ export default function FontSizeControl( {
 									label={ __( 'Use size preset', 'kadence-blocks' ) }
 									icon={ settings }
 									isPrimary={true}
-									onClick={ () => realSetIsCustom( false ) }
+									onClick={ () => {
+										if ( value && unit === 'px' ) {
+											onChange( getOptionFromSize( options, value ) );
+										}
+										realSetIsCustom( false );
+									} }
 									isPressed={ true }
 								/>
 							</ButtonGroup>

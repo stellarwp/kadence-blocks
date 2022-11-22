@@ -25,7 +25,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
-	FontSizeControl,
+	ResponsiveFontSizeControl,
 } from '@kadence/components';
 
 import {
@@ -33,7 +33,8 @@ import {
 	showSettings,
 	getPreviewSize,
 	getSpacingOptionOutput,
-	mouseOverVisualizer
+	mouseOverVisualizer,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -171,10 +172,9 @@ function KadenceAdvancedHeading( props ) {
 		linkStyle,
 		linkColor,
 		linkHoverColor,
+		fontSize,
 	} = attributes;
 
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 
@@ -218,6 +218,10 @@ function KadenceAdvancedHeading( props ) {
 		// Update Old Styles
 		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
 			setAttributes( { margin: [ topMargin, rightMargin, bottomMargin, leftMargin ], topMargin:'', rightMargin:'', bottomMargin:'', leftMargin:'' } );
+		}
+		// Update Old font Styles
+		if ( ( '' !== size || '' !== tabSize || '' !== mobileSize ) ) {
+			setAttributes( { fontSize: [ size, tabSize, mobileSize ], size:'', tabSize:'', mobileSize:'' } );
 		}
 	}, [] );
 
@@ -273,7 +277,8 @@ function KadenceAdvancedHeading( props ) {
 	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
-	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== size ? size : '' ), ( undefined !== tabSize ? tabSize : '' ), ( undefined !== mobileSize ? mobileSize : '' ) );
+	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize[0] ? fontSize[0] : '' ), ( undefined !== fontSize[1] ? fontSize[1] : '' ), ( undefined !== fontSize[2] ? fontSize[2] : '' ) );
+
 	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
 	const previewAlign = getPreviewSize( getPreviewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
 	const previewMarkPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
@@ -376,7 +381,7 @@ function KadenceAdvancedHeading( props ) {
 				backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 				fontWeight     : fontWeight,
 				fontStyle      : fontStyle,
-				fontSize       : ( previewFontSize ? previewFontSize + sizeType : undefined ),
+				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
 				lineHeight     : ( previewLineHeight ? previewLineHeight + lineType : undefined ),
 				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
@@ -420,7 +425,7 @@ function KadenceAdvancedHeading( props ) {
 				backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 				fontWeight     : fontWeight,
 				fontStyle      : fontStyle,
-				fontSize       : ( previewFontSize ? previewFontSize + sizeType : undefined ),
+				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
 				lineHeight     : ( previewLineHeight ? previewLineHeight + lineType : undefined ),
 				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
@@ -661,10 +666,14 @@ function KadenceAdvancedHeading( props ) {
 								)}
 								{showSettings( 'sizeSettings', 'kadence/advancedheading' ) && (
 									<Fragment>
-										<FontSizeControl
+										<ResponsiveFontSizeControl
 											label={__( 'Font Size', 'kadence-blocks' )}
-											value={ ( size ? size : '' ) }
-											onChange={value => setAttributes( { size: value } )}
+											value={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
+											onChange={value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
+											tabletValue={( undefined !== fontSize[1] ? fontSize[1] : '' )}
+											onChangeTablet={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),value,( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
+											mobileValue={( undefined !== fontSize[2] ? fontSize[2] : '' )}
+											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
 											step={( sizeType === 'px' ? 1 : 0.1 )}
@@ -672,7 +681,7 @@ function KadenceAdvancedHeading( props ) {
 											onUnit={( value ) => {
 												setAttributes( { sizeType: value } );
 											}}
-											units={[ 'px', 'em', 'rem' ]}
+											units={[ 'px', 'em', 'rem', 'vw' ]}
 										/>
 										<ResponsiveRangeControls
 											label={__( 'Font Size', 'kadence-blocks' )}
