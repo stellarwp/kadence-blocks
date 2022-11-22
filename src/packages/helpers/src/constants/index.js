@@ -87,8 +87,8 @@ export const FONT_SIZES_MAP = [
 	},
 	{
 		value: 'md',
-		output: 'var(--global-kb-font-size-md, 1.2rem)',
-		size: 32,
+		output: 'var(--global-kb-font-size-md, 1.25rem)',
+		size: 20,
 		label:  __( 'MD', 'kadence-blocks' ),
 		name:  __( 'Medium', 'kadence-blocks' ),
 	},

@@ -359,6 +359,18 @@
 			"",
 			""
 		]
+	},
+	"fontHeight": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
+	},
+	"fontHeightType": {
+		"type": "string",
+		"default": ""
 	}
   },
   "usesContext": [

@@ -45,7 +45,12 @@ export { default as BorderControl } from './border/border-control';
 export { default as ResponsiveBorderControl } from './border/responsive-border-control';
 export { default as FontSizeControl } from './font-size';
 export { default as ResponsiveFontSizeControl } from './font-size/responsive';
+export { default as ResponsiveUnitControl } from './unit/responsive';
 export { default as InspectorControlTabs } from './inspector-control-tabs';
+
+/* Panels */
+export { default as ColorGroup } from './panels/color-group';
+export { default as TwoColumn } from './panels/two-column';
 
 /* Links */
 export { default as DynamicLinkControl } from './links/dynamic-link-control';

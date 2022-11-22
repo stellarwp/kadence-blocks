@@ -8,18 +8,18 @@ import { showSettings } from '@kadence/helpers';
 import { get } from 'lodash';
 
 function KadencePanelBody ({
-							   children,
-							   title,
-							   initialOpen = true,
-							   isOpened,
-							   toggleOpened,
-							   className = '',
-							   icon = '',
-							   buttonProps = {},
-							   blockSlug = false,
-							   index = false,
-							   panelName
-						   }) {
+		children,
+		title,
+		initialOpen = true,
+		isOpened,
+		toggleOpened,
+		className = '',
+		icon = '',
+		buttonProps = {},
+		blockSlug = false,
+		index = false,
+		panelName
+	}) {
 
 	/* If the block slug is set, check the panel name against the allowed settings for the user */
 	if( blockSlug !== false && !showSettings( panelName, blockSlug ) ) {

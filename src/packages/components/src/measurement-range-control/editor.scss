@@ -1,5 +1,5 @@
 .components-base-control > .kadence-component__header {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 	color: #1e1e1e;
     font-size: 13px;
     font-weight: 500;
@@ -28,6 +28,7 @@
 		padding: 0;
 		margin: 0 0 0 -20px;
 		display: flex;
+		height: 18px;
 	}
 	.kadence-component__header__title:hover {
 		.components-button.is-small.has-icon.is-reset {

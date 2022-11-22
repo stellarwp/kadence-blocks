@@ -1,6 +1,9 @@
 .kadence-font-size-control .components-button-group.kadence-radio-container-control {
     flex: 1;
 }
+.kadence-font-size-control .kadence-single-unit-control .components-button-group.kadence-radio-container-control {
+    flex:0;
+}
 .kadence-font-size-control .kadence-radio-container-control.components-button-group .components-button {
     height: 32px;
 }

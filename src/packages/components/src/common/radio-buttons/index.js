@@ -27,6 +27,7 @@ export default function KadenceRadioButtons( {
 		className,
 		hideLabel=false,
 		wrap=false,
+		allowClear = false,
 		...props
 	} ) {
 		const instanceId = useInstanceId( KadenceRadioButtons );
@@ -34,12 +35,14 @@ export default function KadenceRadioButtons( {
 	return (
 		<div className={ `components-base-control kadence-radio-buttons-wrap${ className ? ' ' + className : '' }` }>
 			{ label && (
-				<label
-					htmlFor={ id }
-					className="kadence-radio-control-label components-radio-control__label"
-				>
-					{ label }
-				</label>
+				<div className='kadence-component__header'>
+					<label
+						htmlFor={ id }
+						className="kadence-radio-control-label components-radio-control__label kadence-component__header__title"
+					>
+						{ label }
+					</label>
+				</div>
 			) }
 			<ButtonGroup id={ id } className={ `kadence-radio-container-control${ wrap ? ' kadence-radio-control-flexwrap' : '' }` }>
 				{ options.map( ( option, index ) =>
@@ -50,7 +53,13 @@ export default function KadenceRadioButtons( {
 						isPrimary={value === option.value}
 						icon={ undefined !== option.icon ? option.icon : undefined }
 						aria-pressed={value === option.value}
-						onClick={() => onChange( option.value )}
+						onClick={() => {
+							if ( allowClear && option.value === value ) {
+								onChange( '')
+							} else {
+								onChange( option.value );
+							}
+						} }
 						label={ ( hideLabel ? option.label : undefined )}
 					>
 					{ ! hideLabel &&  (

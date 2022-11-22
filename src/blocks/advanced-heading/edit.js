@@ -25,7 +25,11 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	ResponsiveUnitControl,
+	TwoColumn,
+	ColorGroup,
 	ResponsiveFontSizeControl,
+	KadenceRadioButtons,
 } from '@kadence/components';
 
 import {
@@ -220,7 +224,7 @@ function KadenceAdvancedHeading( props ) {
 			setAttributes( { margin: [ topMargin, rightMargin, bottomMargin, leftMargin ], topMargin:'', rightMargin:'', bottomMargin:'', leftMargin:'' } );
 		}
 		// Update Old font Styles
-		if ( ( '' !== size || '' !== tabSize || '' !== mobileSize ) ) {
+		if ( ( size || tabSize || mobileSize ) ) {
 			setAttributes( { fontSize: [ size, tabSize, mobileSize ], size:'', tabSize:'', mobileSize:'' } );
 		}
 	}, [] );
@@ -266,9 +270,6 @@ function KadenceAdvancedHeading( props ) {
 	const paddingStep = ( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 );
 	const fontMax = ( sizeType !== 'px' ? 12 : 200 );
 	const fontStep = ( sizeType !== 'px' ? 0.1 : 1 );
-	const lineMin = ( lineType !== 'px' ? 0.2 : 5 );
-	const lineMax = ( lineType !== 'px' ? 12 : 200 );
-	const lineStep = ( lineType !== 'px' ? 0.1 : 1 );
 	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
@@ -278,7 +279,6 @@ function KadenceAdvancedHeading( props ) {
 	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize[0] ? fontSize[0] : '' ), ( undefined !== fontSize[1] ? fontSize[1] : '' ), ( undefined !== fontSize[2] ? fontSize[2] : '' ) );
-
 	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
 	const previewAlign = getPreviewSize( getPreviewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
 	const previewMarkPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
@@ -372,7 +372,6 @@ function KadenceAdvancedHeading( props ) {
 		'has-background'               : textBackgroundColorClass,
 		[ `hls-${linkStyle}` ]         : !link && linkStyle,
 	} );
-
 	const dynamicHeadingContent = (
 		<TagHTML
 			style={{
@@ -526,20 +525,20 @@ function KadenceAdvancedHeading( props ) {
 						textTransform={textTransform}
 						onTextTransform={( value ) => setAttributes( { textTransform: value } )}
 						fontSizeArray={false}
-						fontSize={size}
-						onFontSize={( value ) => setAttributes( { size: value } )}
+						// fontSize={size}
+						// onFontSize={( value ) => setAttributes( { size: value } )}
 						fontSizeType={sizeType}
 						onFontSizeType={( value ) => setAttributes( { sizeType: value } )}
 						lineHeight={lineHeight}
 						onLineHeight={( value ) => setAttributes( { lineHeight: value } )}
 						lineHeightType={lineType}
 						onLineHeightType={( value ) => setAttributes( { lineType: value } )}
-						tabSize={tabSize}
-						onTabSize={( value ) => setAttributes( { tabSize: value } )}
+						// tabSize={tabSize}
+						// onTabSize={( value ) => setAttributes( { tabSize: value } )}
 						tabLineHeight={tabLineHeight}
 						onTabLineHeight={( value ) => setAttributes( { tabLineHeight: value } )}
-						mobileSize={mobileSize}
-						onMobileSize={( value ) => setAttributes( { mobileSize: value } )}
+						// mobileSize={mobileSize}
+						// onMobileSize={( value ) => setAttributes( { mobileSize: value } )}
 						mobileLineHeight={mobileLineHeight}
 						onMobileLineHeight={( value ) => setAttributes( { mobileLineHeight: value } )}
 					/>
@@ -647,7 +646,7 @@ function KadenceAdvancedHeading( props ) {
 						<>
 						<KadencePanelBody panelName={'kb-adv-heading-style'}>
 							{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
-									<Fragment>
+									<ColorGroup>
 										<PopColorControl
 											label={__( 'Color', 'kadence-blocks' )}
 											value={( color ? color : '' )}
@@ -662,10 +661,10 @@ function KadenceAdvancedHeading( props ) {
 											onChange={value => setAttributes( { background: value } )}
 											onClassChange={value => setAttributes( { backgroundColorClass: value } )}
 										/>
-									</Fragment>
+									</ColorGroup>
 								)}
 								{showSettings( 'sizeSettings', 'kadence/advancedheading' ) && (
-									<Fragment>
+									<>
 										<ResponsiveFontSizeControl
 											label={__( 'Font Size', 'kadence-blocks' )}
 											value={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
@@ -683,37 +682,38 @@ function KadenceAdvancedHeading( props ) {
 											}}
 											units={[ 'px', 'em', 'rem', 'vw' ]}
 										/>
-										<ResponsiveRangeControls
-											label={__( 'Font Size', 'kadence-blocks' )}
-											value={( size ? size : '' )}
-											onChange={value => setAttributes( { size: value } )}
-											tabletValue={( tabSize ? tabSize : '' )}
-											onChangeTablet={( value ) => setAttributes( { tabSize: value } )}
-											mobileValue={( mobileSize ? mobileSize : '' )}
-											onChangeMobile={( value ) => setAttributes( { mobileSize: value } )}
-											min={fontMin}
-											max={fontMax}
-											step={fontStep}
-											unit={sizeType}
-											onUnit={( value ) => setAttributes( { sizeType: value } )}
-											units={[ 'px', 'em', 'rem', 'vw' ]}
-										/>
-										<ResponsiveRangeControls
-											label={__( 'Line Height', 'kadence-blocks' )}
-											value={( lineHeight ? lineHeight : '' )}
-											onChange={value => setAttributes( { lineHeight: value } )}
-											tabletValue={( tabLineHeight ? tabLineHeight : '' )}
-											onChangeTablet={( value ) => setAttributes( { tabLineHeight: value } )}
-											mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
-											onChangeMobile={( value ) => setAttributes( { mobileLineHeight: value } )}
-											min={lineMin}
-											max={lineMax}
-											step={lineStep}
-											unit={lineType}
-											onUnit={( value ) => setAttributes( { lineType: value } )}
-											units={[ 'px', 'em', 'rem' ]}
-										/>
-									</Fragment>
+										<TwoColumn>
+											<ResponsiveUnitControl
+												label={__( 'Height', 'kadence-blocks' )}
+												value={( lineHeight ? lineHeight : '' )}
+												onChange={value => setAttributes( { lineHeight: value } )}
+												tabletValue={( tabLineHeight ? tabLineHeight : '' )}
+												onChangeTablet={( value ) => setAttributes( { tabLineHeight: value } )}
+												mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
+												onChangeMobile={( value ) => setAttributes( { mobileLineHeight: value } )}
+												min={0}
+												max={( lineType === 'px' ? 200 : 12 )}
+												step={( lineType === 'px' ? 1 : 0.1 )}
+												unit={ lineType ? lineType : 'px' }
+												onUnit={( value ) => setAttributes( { lineType: value } )}
+												units={[ '-', 'px', 'em', 'rem' ]}
+												compressedDevice={ true }
+											/>
+											<KadenceRadioButtons
+												label={__( 'Letter Case', 'kadence-blocks' )}
+												value={textTransform}
+												className={ 'kb-letter-case' }
+												options={[
+													{ value: 'none', label: __( '-', 'kadence-blocks' ) },
+													{ value: 'uppercase', label: __( 'ab', 'kadence-blocks' ) },
+													{ value: 'lowercase', label: __( 'Ab', 'kadence-blocks' ) },
+													{ value: 'capitalize', label: __( 'AB', 'kadence-blocks' ) },
+												]}
+												allowClear={ true }
+												onChange={value => setAttributes( { textTransform: value } )}
+											/>
+										</TwoColumn>
+									</>
 								)}
 							</KadencePanelBody>
 							{showSettings( 'advancedSettings', 'kadence/advancedheading' ) && (
