@@ -177,6 +177,8 @@ function KadenceAdvancedHeading( props ) {
 		linkColor,
 		linkHoverColor,
 		fontSize,
+		fontHeight,
+		fontHeightType,
 	} = attributes;
 
 	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
@@ -226,6 +228,10 @@ function KadenceAdvancedHeading( props ) {
 		// Update Old font Styles
 		if ( ( size || tabSize || mobileSize ) ) {
 			setAttributes( { fontSize: [ size, tabSize, mobileSize ], size:'', tabSize:'', mobileSize:'' } );
+		}
+		// Update Old Line height Styles
+		if ( ( lineHeight || tabLineHeight || mobileLineHeight ) ) {
+			setAttributes( { fontHeight: [ lineHeight, tabLineHeight, mobileLineHeight ], fontHeightType: lineType, lineHeight:'', tabLineHeight:'', mobileLineHeight:'' } );
 		}
 	}, [] );
 
@@ -279,7 +285,7 @@ function KadenceAdvancedHeading( props ) {
 	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize[0] ? fontSize[0] : '' ), ( undefined !== fontSize[1] ? fontSize[1] : '' ), ( undefined !== fontSize[2] ? fontSize[2] : '' ) );
-	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
+	const previewLineHeight = getPreviewSize( getPreviewDevice,  ( undefined !== fontHeight[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight[2] ? fontHeight[2] : '' ) );
 	const previewAlign = getPreviewSize( getPreviewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
 	const previewMarkPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
 	const previewMarkPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
@@ -425,7 +431,7 @@ function KadenceAdvancedHeading( props ) {
 				fontWeight     : fontWeight,
 				fontStyle      : fontStyle,
 				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-				lineHeight     : ( previewLineHeight ? previewLineHeight + lineType : undefined ),
+				lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
 				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
 				fontFamily     : ( typography ? renderTypography : '' ),
@@ -685,17 +691,17 @@ function KadenceAdvancedHeading( props ) {
 										<TwoColumn>
 											<ResponsiveUnitControl
 												label={__( 'Height', 'kadence-blocks' )}
-												value={( lineHeight ? lineHeight : '' )}
-												onChange={value => setAttributes( { lineHeight: value } )}
-												tabletValue={( tabLineHeight ? tabLineHeight : '' )}
-												onChangeTablet={( value ) => setAttributes( { tabLineHeight: value } )}
-												mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
-												onChangeMobile={( value ) => setAttributes( { mobileLineHeight: value } )}
+												value={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
+												onChange={value => setAttributes( { fontHeight: [value,( undefined !== fontHeight[1] ? fontHeight[1] : '' ),( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
+												tabletValue={( undefined !== fontHeight[1] ? fontHeight[1] : '' )}
+												onChangeTablet={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),value,( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
+												mobileValue={( undefined !== fontHeight[2] ? fontHeight[2] : '' )}
+												onChangeMobile={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),( undefined !== fontHeight[1] ? fontHeight[1] : '' ),value] } )}
 												min={0}
-												max={( lineType === 'px' ? 200 : 12 )}
-												step={( lineType === 'px' ? 1 : 0.1 )}
-												unit={ lineType ? lineType : 'px' }
-												onUnit={( value ) => setAttributes( { lineType: value } )}
+												max={( fontHeightType === 'px' ? 200 : 12 )}
+												step={( fontHeightType === 'px' ? 1 : 0.1 )}
+												unit={ fontHeightType ? fontHeightType : '' }
+												onUnit={( value ) => setAttributes( { fontHeightType: value } )}
 												units={[ '-', 'px', 'em', 'rem' ]}
 												compressedDevice={ true }
 											/>
