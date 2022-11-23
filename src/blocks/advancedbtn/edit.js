@@ -446,10 +446,12 @@ function KadenceAdvancedButton( props ) {
 			[ `kb-btn-tablet-only-icon` ]                                                      : ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[ 1 ] ),
 			[ `kb-btn-mobile-only-icon` ]                                                      : ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[ 2 ] ),
 		} );
-		const topIconPadding = ( btns[ index ].icon ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 0 ] && '' !== btns[ index ].iconPadding[ 0 ] ? btns[ index ].iconPadding[ 0 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 0 ] && '' !== btns[ index ].iconTabletPadding[ 0 ] ? btns[ index ].iconTabletPadding[ 0 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 0 ] && '' !== btns[ index ].iconMobilePadding[ 0 ] ? btns[ index ].iconMobilePadding[ 0 ] : '' ) ) : '' );
-		const rightIconPadding = ( btns[ index ].icon ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 1 ] && '' !== btns[ index ].iconPadding[ 1 ] ? btns[ index ].iconPadding[ 1 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 1 ] && '' !== btns[ index ].iconTabletPadding[ 1 ] ? btns[ index ].iconTabletPadding[ 1 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 1 ] && '' !== btns[ index ].iconMobilePadding[ 1 ] ? btns[ index ].iconMobilePadding[ 1 ] : '' ) ) : '' );
-		const bottomIconPadding = ( btns[ index ].icon ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 2 ] && '' !== btns[ index ].iconPadding[ 2 ] ? btns[ index ].iconPadding[ 2 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 2 ] && '' !== btns[ index ].iconTabletPadding[ 2 ] ? btns[ index ].iconTabletPadding[ 2 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 2 ] && '' !== btns[ index ].iconMobilePadding[ 2 ] ? btns[ index ].iconMobilePadding[ 2 ] : '' ) ) : '' );
-		const leftIconPadding = ( btns[ index ].icon ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 3 ] && '' !== btns[ index ].iconPadding[ 3 ] ? btns[ index ].iconPadding[ 3 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 3 ] && '' !== btns[ index ].iconTabletPadding[ 3 ] ? btns[ index ].iconTabletPadding[ 3 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 3 ] && '' !== btns[ index ].iconMobilePadding[ 3 ] ? btns[ index ].iconMobilePadding[ 3 ] : '' ) ) : '' );
+
+		const iconFontSize = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' );
+		const topIconPadding = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 0 ] && '' !== btns[ index ].iconPadding[ 0 ] ? btns[ index ].iconPadding[ 0 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 0 ] && '' !== btns[ index ].iconTabletPadding[ 0 ] ? btns[ index ].iconTabletPadding[ 0 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 0 ] && '' !== btns[ index ].iconMobilePadding[ 0 ] ? btns[ index ].iconMobilePadding[ 0 ] : '' ) );
+		const rightIconPadding = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 1 ] && '' !== btns[ index ].iconPadding[ 1 ] ? btns[ index ].iconPadding[ 1 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 1 ] && '' !== btns[ index ].iconTabletPadding[ 1 ] ? btns[ index ].iconTabletPadding[ 1 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 1 ] && '' !== btns[ index ].iconMobilePadding[ 1 ] ? btns[ index ].iconMobilePadding[ 1 ] : '' ) );
+		const bottomIconPadding = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 2 ] && '' !== btns[ index ].iconPadding[ 2 ] ? btns[ index ].iconPadding[ 2 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 2 ] && '' !== btns[ index ].iconTabletPadding[ 2 ] ? btns[ index ].iconTabletPadding[ 2 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 2 ] && '' !== btns[ index ].iconMobilePadding[ 2 ] ? btns[ index ].iconMobilePadding[ 2 ] : '' ) );
+		const leftIconPadding = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[ 3 ] && '' !== btns[ index ].iconPadding[ 3 ] ? btns[ index ].iconPadding[ 3 ] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[ 3 ] && '' !== btns[ index ].iconTabletPadding[ 3 ] ? btns[ index ].iconTabletPadding[ 3 ] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[ 3 ] && '' !== btns[ index ].iconMobilePadding[ 3 ] ? btns[ index ].iconMobilePadding[ 3 ] : '' ) );
 		const topBtnMargin = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[ 0 ] && '' !== btns[ index ].margin[ 0 ] ? btns[ index ].margin[ 0 ] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[ 0 ] && '' !== btns[ index ].tabletMargin[ 0 ] ? btns[ index ].tabletMargin[ 0 ] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[ 0 ] && '' !== btns[ index ].mobileMargin[ 0 ] ? btns[ index ].mobileMargin[ 0 ] : '' ) );
 		const rightBtnMargin = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[ 1 ] && '' !== btns[ index ].margin[ 1 ] ? btns[ index ].margin[ 1 ] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[ 1 ] && '' !== btns[ index ].tabletMargin[ 1 ] ? btns[ index ].tabletMargin[ 1 ] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[ 1 ] && '' !== btns[ index ].mobileMargin[ 1 ] ? btns[ index ].mobileMargin[ 1 ] : '' ) );
 		const bottomBtnMargin = getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[ 2 ] && '' !== btns[ index ].margin[ 2 ] ? btns[ index ].margin[ 2 ] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[ 2 ] && '' !== btns[ index ].tabletMargin[ 2 ] ? btns[ index ].tabletMargin[ 2 ] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[ 2 ] && '' !== btns[ index ].mobileMargin[ 2 ] ? btns[ index ].mobileMargin[ 2 ] : '' ) );
@@ -478,7 +480,7 @@ function KadenceAdvancedButton( props ) {
 						<span className={btnClassName} style={{
 							background   : ( undefined !== btnbg ? btnbg : undefined ),
 							color        : ( undefined !== btns[ index ].color ? KadenceColorOutput( btns[ index ].color ) : undefined ),
-							fontSize     : ( undefined !== btns[ index ].size ? getPreviewSize( getPreviewDevice, btns[ index ].size, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ) + ( undefined !== btns[ index ].sizeType ? btns[ index ].sizeType : 'px' ) : undefined ),
+							fontSize     : getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].size ? btns[ index ].size : undefined ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ) + ( undefined !== btns[ index ].sizeType ? btns[ index ].sizeType : 'px' ),
 							fontWeight   : fontWeight,
 							fontStyle    : fontStyle,
 							letterSpacing: letterSpacing + 'px',
@@ -501,7 +503,7 @@ function KadenceAdvancedButton( props ) {
 						}}>
 							{btns[ index ].icon && 'left' === btns[ index ].iconSide && (
 								<IconRender className={`kt-btn-svg-icon kt-btn-svg-icon-${btns[ index ].icon} kt-btn-side-${btns[ index ].iconSide}`} name={btns[ index ].icon} size={'1em'} style={{
-									fontSize     : ( undefined !== btns[ index ].iconSize ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
+									fontSize     : iconFontSize,
 									color        : ( undefined !== btns[ index ].iconColor ? KadenceColorOutput( btns[ index ].iconColor ) : undefined ),
 									paddingTop   : ( topIconPadding ? topIconPadding + 'px' : undefined ),
 									paddingRight : ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
@@ -559,7 +561,7 @@ function KadenceAdvancedButton( props ) {
 							/>
 							{btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
 								<IconRender className={`kt-btn-svg-icon kt-btn-svg-icon-${btns[ index ].icon} kt-btn-side-${btns[ index ].iconSide}`} name={btns[ index ].icon} size={'1em'} style={{
-									fontSize     : ( undefined !== btns[ index ].iconSize ? getPreviewSize( getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
+									fontSize     : iconFontSize,
 									color        : ( undefined !== btns[ index ].iconColor ? KadenceColorOutput( btns[ index ].iconColor ) : undefined ),
 									paddingTop   : ( topIconPadding ? topIconPadding + 'px' : undefined ),
 									paddingRight : ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
@@ -1095,10 +1097,7 @@ function KadenceAdvancedButton( props ) {
 							<KadenceIconPicker
 								value={btns[ index ].icon}
 								onChange={value => {
-									console.log( 'value' );
-									console.log( value );
-									console.log( 'index: ' + index );
-									// saveArrayUpdate( { icon: value }, index );
+									saveArrayUpdate( { icon: value }, index );
 								}}
 							/>
 						</div>
@@ -1768,7 +1767,7 @@ function KadenceAdvancedButton( props ) {
 		</style>
 	);
 
-	const blockProps = useBlockProps( {} );
+	const blockProps = useBlockProps();
 
 	return (
 		<div {...blockProps}>
