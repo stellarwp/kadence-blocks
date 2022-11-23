@@ -29,6 +29,10 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, tabletPadding, mobilePadding, padding, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, gradient, margin, tabletMargin, mobileMargin, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit } = attributes;
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[2] ? margin[2] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[2] ? tabletMargin[2] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[2] ? mobileMargin[2] : '' ) );
+	const tabletBackgroundType = tabletBackground?.[ 0 ]?.type || 'normal';
+	const mobileBackgroundType = mobileBackground?.[ 0 ]?.type || 'normal';
+	const mobileAllowForceOverride = ( 'normal' === mobileBackgroundType && '' === mobileBackground?.[ 0 ]?.bgImg && ( ( 'normal' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.bgImg ) || ( 'gradient' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.gradient ) || ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
+	const tabletAllowForceOverride = ( 'normal' === tabletBackgroundType && '' === tabletBackground?.[ 0 ]?.bgImg && ( ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
 	const previewBackgroundColor = getPreviewSize( previewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor && tabletBackground[0].enable ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor && mobileBackground[0].enable ? mobileBackground[0].bgColor : '' ) );
 	// Border.
 	const previewBorderTopStyle = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
@@ -41,7 +45,10 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
 	// Background Image.
 	let previewBackgroundImage = getPreviewSize( previewDevice, ( bgImg ? `url(${ bgImg })` : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImg && tabletBackground[0].enable ? `url(${ tabletBackground[0].bgImg })` : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImg && mobileBackground[0].enable ? `url(${ mobileBackground[0].bgImg })` : '' ) );
-	previewBackgroundImage = getPreviewSize(  previewDevice, previewBackgroundImage, ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].forceOverDesk && tabletBackground[0].enable ? 'none' : previewBackgroundImage ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].forceOverDesk && mobileBackground[0].enable ? 'none' : previewBackgroundImage ) );
+
+	previewBackgroundImage = getPreviewSize(  previewDevice, ( backgroundSettingTab && 'gradient' == backgroundSettingTab ? gradient : previewBackgroundImage ), ( 'gradient' == tabletBackground?.[0]?.type && tabletBackground?.[0]?.gradient && tabletBackground?.[0]?.enable ? tabletBackground[0].gradient : previewBackgroundImage ), ( undefined !== mobileBackground[0] && undefined !== mobileBackground[0].type && 'gradient' == mobileBackground[0].type && undefined !== mobileBackground[0].gradient && mobileBackground[0].gradient && mobileBackground[0].enable ? mobileBackground[0].gradient : previewBackgroundImage ) );
+
+	previewBackgroundImage = getPreviewSize( previewDevice, previewBackgroundImage, ( tabletAllowForceOverride && tabletBackground?.[0]?.forceOverDesk && tabletBackground?.[0]?.enable ? 'none' : previewBackgroundImage ), ( mobileAllowForceOverride && mobileBackground?.[0]?.forceOverDesk && mobileBackground?.[0]?.enable ? 'none' : previewBackgroundImage ) );
 	if ( previewBackgroundImage === 'none' ) {
 		previewBackgroundImage = undefined;
 	}
@@ -123,18 +130,13 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	return (
 		<>
 			<div { ...blockProps }>
-				{ ( 'slider' !== previewBackgroundSettingTab && 'video' !== previewBackgroundSettingTab && 'gradient' !== previewBackgroundSettingTab ) && (
+				{ ( 'slider' !== previewBackgroundSettingTab && 'video' !== previewBackgroundSettingTab ) && (
 					<div className={ `kt-row-layout-background${ previewBackgroundImage && previewBackgroundAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
 						backgroundColor: ( previewBackgroundColor ? KadenceColorOutput( previewBackgroundColor ) : undefined ),
 						backgroundImage: ( previewBackgroundImage ? previewBackgroundImage : undefined ),
 						backgroundSize: ( previewBackgroundSize ? previewBackgroundSize : undefined ),
 						backgroundPosition: ( previewBackgroundPosition ? previewBackgroundPosition : undefined ),
 						backgroundRepeat: ( previewBackgroundRepeat ? previewBackgroundRepeat : undefined ),
-					} }></div>
-				) }
-				{ ( 'gradient' === previewBackgroundSettingTab ) && (
-					<div className={ `kt-row-layout-background kt-row-layout-background-gradient` } style={ {
-						background: ( gradient ? gradient : undefined ),
 					} }></div>
 				) }
 				{ ( 'slider' === previewBackgroundSettingTab ) && (

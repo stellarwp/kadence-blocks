@@ -66,7 +66,7 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$this->enqueue_script( 'kadence-blocks-slick-init' );
 		}
-		if ( isset( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && isset( $attributes['backgroundVideo'] ) && isset( $attributes['backgroundVideo'][0] ) && isset( $attributes['backgroundVideo'][0]['btns'] ) && true === $attr['backgroundVideo'][0]['btns'] ) {
+		if ( isset( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && isset( $attributes['backgroundVideo'] ) && isset( $attributes['backgroundVideo'][0] ) && isset( $attributes['backgroundVideo'][0]['btns'] ) && true === $attributes['backgroundVideo'][0]['btns'] ) {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
 		}
 	}
@@ -243,19 +243,27 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_measure_output( $attributes, 'margin', 'margin' );
 		}
-
 		// Vertical Alignment.
 		$css->set_selector( $inner_selector );
 		if ( ! empty( $attributes['verticalAlignment'] ) ) {
 			switch ( $attributes['verticalAlignment'] ) {
 				case 'middle':
 					$css->add_property( 'align-content', 'center' );
+					$css->set_selector( ':where(' . $inner_selector . ') > .wp-block-kadence-column' );
+					$css->add_property( 'justify-content', 'center' );
+					$css->set_selector( $inner_selector );
 					break;
 				case 'bottom':
 					$css->add_property( 'align-content', 'end' );
+					$css->set_selector( ':where(' . $inner_selector . ') > .wp-block-kadence-column' );
+					$css->add_property( 'justify-content', 'end' );
+					$css->set_selector( $inner_selector );
 					break;
 				case 'top':
 					$css->add_property( 'align-content', 'start' );
+					$css->set_selector( ':where(' . $inner_selector . ') > .wp-block-kadence-column' );
+					$css->add_property( 'justify-content', 'start' );
+					$css->set_selector( $inner_selector );
 					break;
 			}
 		}
@@ -411,6 +419,7 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Background.
 		$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
+		$css->set_selector( $base_selector );
 		switch ( $background_type ) {
 			case 'normal':
 				if ( ! empty( $attributes['bgColor'] ) ) {
@@ -450,46 +459,131 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Tablet Background.
 		$tablet_background = ( isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
 		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
-			if ( ! empty( $tablet_background['bgColor'] ) ) {
-				$css->render_color_output( $tablet_background, 'bgColor', 'background-color' );
-			}
-			if ( ! empty( $tablet_background['bgImg'] ) ) {
-				if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
-					if ( 'parallax' === $tablet_background['bgImgAttachment'] ) {
-						$bg_attach = 'fixed';
-					} else {
-						$bg_attach = $tablet_background['bgImgAttachment'];
-					}
-				} else {
-					$bg_attach = 'scroll';
-				}
-
-				$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' );
-				if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
-					$is_important = '!important';
-				}
-				$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . $is_important );
-				$css->add_property( 'background-size', ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) );
-				$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
-				$css->add_property( 'background-attachment', $bg_attach );
-				$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
-			}
-			if ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-				$css->add_property( 'display', 'none !important' );
-			}
-			if ( isset( $attributes['backgroundSettingTab'] ) && ! empty( $attributes['backgroundSettingTab'] ) && 'normal' !== $attributes['backgroundSettingTab'] ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider' );
-				$css->add_property( 'display', 'none' );
-			}
-		}
-		// Force No image for tablet.
-		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector );
-			$css->add_property( 'background-image', 'none !important' );
-			$css->set_selector( $base_selector  . ' [id*="jarallax-container-"]' );
-			$css->add_property( 'display', 'none !important' );
+			$tablet_background_type = ! empty( $tablet_background['type'] ) ? $tablet_background['type'] : 'normal';
+			switch ( $tablet_background_type ) {
+				case 'normal':
+					if ( ! empty( $tablet_background['bgColor'] ) ) {
+						$css->render_color_output( $tablet_background, 'bgColor', 'background-color' );
+					}
+					if ( ! empty( $tablet_background['bgImg'] ) ) {
+						if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
+							if ( 'parallax' === $tablet_background['bgImgAttachment'] ) {
+								$bg_attach = 'fixed';
+							} else {
+								$bg_attach = $tablet_background['bgImgAttachment'];
+							}
+						} else {
+							$bg_attach = 'scroll';
+						}
+						$is_important = ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' );
+						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
+							$is_important = '!important';
+						}
+						$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . $is_important );
+						$css->add_property( 'background-size', ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) );
+						$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
+						$css->add_property( 'background-attachment', $bg_attach );
+						$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
+					} else if ( isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
+						// Force No image for tablet.
+						//$css->set_media_state( 'tabletOnly' );
+						$css->set_selector( $base_selector );
+						$css->add_property( 'background-image', 'none !important' );
+						$css->set_selector( $base_selector  . ' [id*="jarallax-container-"]' );
+						$css->add_property( 'display', 'none !important' );
+						//$css->set_media_state( 'tablet' );
+					}
+					if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && ! empty( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
+						$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
+						$css->add_property( 'display', 'none !important' );
+					}
+					break;
+				case 'gradient':
+					if ( ! empty( $tablet_background['gradient'] ) ) {
+						$is_important = ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ? '!important' : '' );
+						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
+							$is_important = '!important';
+						}
+						$css->add_property( 'background-image', $tablet_background['gradient'] . $is_important );
+						if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) {
+							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
+							$css->add_property( 'display', 'none !important' );
+						}
+					}
+					break;
+			}
+			if ( 'normal' !== $background_type ) {
+				$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				$css->add_property( 'display', 'none' );
+			}
+			$css->set_media_state( 'desktop' );
+		}
+		// Mobile Background.
+		$mobile_background = ( isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
+		if ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] ) {
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( $base_selector );
+			$mobile_background_type = ! empty( $mobile_background['type'] ) ? $mobile_background['type'] : 'normal';
+			switch ( $mobile_background_type ) {
+				case 'normal':
+					if ( ! empty( $mobile_background['bgColor'] ) ) {
+						$css->render_color_output( $mobile_background, 'bgColor', 'background-color' );
+					}
+					if ( ! empty( $mobile_background['bgImg'] ) ) {
+						if ( ! empty( $mobile_background['bgImgAttachment'] ) ) {
+							if ( 'parallax' === $mobile_background['bgImgAttachment'] ) {
+								$bg_attach = 'fixed';
+							} else {
+								$bg_attach = $mobile_background['bgImgAttachment'];
+							}
+						} else {
+							$bg_attach = 'scroll';
+						}
+						$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' );
+						if ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+							$is_important = '!important';
+						}
+						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
+							$is_important = '!important';
+						}
+						$css->add_property( 'background-image', sprintf( "url('%s')", $mobile_background['bgImg'] ) . $is_important );
+						$css->add_property( 'background-size', ( ! empty( $mobile_background['bgImgSize'] ) ? $mobile_background['bgImgSize'] : 'cover' ) );
+						$css->add_property( 'background-position', ( ! empty( $mobile_background['bgImgPosition'] ) ? $mobile_background['bgImgPosition'] : 'center center' ) );
+						$css->add_property( 'background-attachment', $bg_attach );
+						$css->add_property( 'background-repeat', ( ! empty( $mobile_background['bgImgRepeat'] ) ? $mobile_background['bgImgRepeat'] : 'no-repeat' ) );
+					} else if ( isset( $mobile_background['forceOverDesk'] ) && $mobile_background['forceOverDesk'] ) {
+						$css->add_property( 'background-image', 'none !important' );
+						$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
+						$css->add_property( 'display', 'none !important' );
+					}
+					if ( ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) && isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+						$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
+						$css->add_property( 'display', 'none !important' );
+					}
+					break;
+				case 'gradient':
+					if ( ! empty( $mobile_background['gradient'] ) ) {
+						$is_important = ( ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ? '!important' : '' );
+						if ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) {
+							$is_important = '!important';
+						}
+						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
+							$is_important = '!important';
+						}
+						$css->add_property( 'background-image', $mobile_background['gradient'] . $is_important );
+						if ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) {
+							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
+							$css->add_property( 'display', 'none !important' );
+						}
+					}
+					break;
+			}
+			if ( 'normal' !== $background_type ) {
+				$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				$css->add_property( 'display', 'none' );
+			}
 			$css->set_media_state( 'desktop' );
 		}
 		// Overlay.
@@ -561,41 +655,6 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		$tablet_background = ( isset( $attributes['tabletBackground'] ) && is_array( $attributes['tabletBackground'] ) && isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
 		if ( isset( $attributes['tabletPadding'] ) || isset( $attributes['tabletBorderRadius'] ) || isset( $attributes['minHeightTablet'] ) || isset( $attributes['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) || isset( $attributes['responsiveMaxWidth'] ) ) {
 			$css->set_media_state( 'tablet' );
-			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id );
-				if ( ! empty( $tablet_background['bgColor'] ) ) {
-					$css->add_property( 'background-color', $css->render_color( $tablet_background['bgColor'] ) );
-				}
-				if ( ! empty( $tablet_background['bgImg'] ) ) {
-					if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
-						if ( 'parallax' === $tablet_background['bgImgAttachment'] ) {
-							$bg_attach = 'fixed';
-						} else {
-							$bg_attach = $tablet_background['bgImgAttachment'];
-						}
-					} else {
-						$bg_attach = 'scroll';
-					}
-
-					$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ? '!important' : '' );
-					if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
-						$is_important = '!important';
-					}
-					$css->add_property( 'background-image', sprintf( "url('%s')", $tablet_background['bgImg'] ) . $is_important );
-					$css->add_property( 'background-size', ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) );
-					$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
-					$css->add_property( 'background-attachment', $bg_attach );
-					$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
-				}
-				if ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-					$css->add_property( 'display', 'none !important' );
-				}
-				if ( isset( $attributes['backgroundSettingTab'] ) && ! empty( $attributes['backgroundSettingTab'] ) && 'normal' !== $attributes['backgroundSettingTab'] ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider' );
-					$css->add_property( 'display', 'none' );
-				}
-			}
 			if ( ! empty( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay' );
 				if ( isset( $tablet_overlay['overlayOpacity'] ) && is_numeric( $tablet_overlay['overlayOpacity'] ) ) {
@@ -748,45 +807,7 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		$mobile_overlay    = ( isset( $attributes['mobileOverlay'] ) && is_array( $attributes['mobileOverlay'] ) && isset( $attributes['mobileOverlay'][0] ) && is_array( $attributes['mobileOverlay'][0] ) ? $attributes['mobileOverlay'][0] : array() );
 		$mobile_background = ( isset( $attributes['mobileBackground'] ) && is_array( $attributes['mobileBackground'] ) && isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
 		if ( ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) || isset( $attributes['minHeightMobile'] ) || ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] == 'true' ) || isset( $attributes['responsiveMaxWidth'] ) ) {
-			$css->set_media_state( 'mobile' );
-			if ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] ) {
-				$css->set_selector( '#kt-layout-id' . $unique_id );
-				if ( isset( $mobile_background['bgColor'] ) && ! empty( $mobile_background['bgColor'] ) ) {
-					$css->add_property( 'background-color', $css->render_color( $mobile_background['bgColor'] ) );
-				}
-				if ( isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) ) {
-					if ( ! empty( $mobile_background['bgImgAttachment'] ) ) {
-						if ( 'parallax' === $mobile_background['bgImgAttachment'] ) {
-							$bg_attach = 'fixed';
-						} else {
-							$bg_attach = $mobile_background['bgImgAttachment'];
-						}
-					} else {
-						$bg_attach = 'scroll';
-					}
-					$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' );
-					if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
-						$is_important = '!important';
-					}
-					$css->add_property( 'background-image', sprintf( "url('%s')", $mobile_background['bgImg'] ) . $is_important );
-					$css->add_property( 'background-size', ( ! empty( $mobile_background['bgImgSize'] ) ? $mobile_background['bgImgSize'] : 'cover' ) );
-					$css->add_property( 'background-position', ( ! empty( $mobile_background['bgImgPosition'] ) ? $mobile_background['bgImgPosition'] : 'center center' ) );
-					$css->add_property( 'background-attachment', $bg_attach );
-					$css->add_property( 'background-repeat', ( ! empty( $mobile_background['bgImgRepeat'] ) ? $mobile_background['bgImgRepeat'] : 'no-repeat' ) );
-				} else if ( isset( $mobile_background['forceOverDesk'] ) && $mobile_background['forceOverDesk'] ) {
-					$css->add_property( 'background-image', 'none !important' );
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-					$css->add_property( 'display', 'none !important' );
-				}
-				if ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-					$css->add_property( 'display', 'none !important' );
-				}
-				if ( isset( $attributes['backgroundSettingTab'] ) && ! empty( $attributes['backgroundSettingTab'] ) && 'normal' !== $attributes['backgroundSettingTab'] ) {
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider' );
-					$css->add_property( 'display', 'none' );
-				}
-			}
+			
 			if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay' );
 				if ( isset( $mobile_overlay['overlayOpacity'] ) && is_numeric( $mobile_overlay['overlayOpacity'] ) ) {
@@ -847,19 +868,19 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Adds Scripts for row block.
 	 *
-	 * @param array $attr the blocks attr.
+	 * @param array $attributes the blocks attributes.
 	 */
-	public function render_row_layout_scripts( $attr ) {
-		if ( ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] ) || ( isset( $attr['overlayBgImg'] ) && ! empty( $attr['overlayBgImg'] ) && isset( $attr['overlayBgImgAttachment'] ) && 'parallax' === $attr['overlayBgImgAttachment'] ) ) {
+	public function render_row_layout_scripts( $attributes ) {
+		if ( ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( isset( $attributes['overlayBgImg'] ) && ! empty( $attributes['overlayBgImg'] ) && isset( $attributes['overlayBgImgAttachment'] ) && 'parallax' === $attributes['overlayBgImgAttachment'] ) ) {
 			$this->enqueue_script( 'kadence-blocks-parallax-js' );
 		}
-		if ( isset( $attr['backgroundSettingTab'] ) && 'slider' === $attr['backgroundSettingTab'] ) {
+		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
 			$this->enqueue_style( 'kadence-blocks-pro-slick' );
 			$this->enqueue_script( 'kadence-blocks-slick-init' );
 			// $this->enqueue_style( 'kadence-blocks-tiny-slider' );
 			// $this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
 		}
-		if ( isset( $attr['backgroundSettingTab'] ) && 'video' === $attr['backgroundSettingTab'] && isset( $attr['backgroundVideo'] ) && isset( $attr['backgroundVideo'][0] ) && isset( $attr['backgroundVideo'][0]['btns'] ) && true === $attr['backgroundVideo'][0]['btns'] ) {
+		if ( isset( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && isset( $attributes['backgroundVideo'] ) && isset( $attributes['backgroundVideo'][0] ) && isset( $attributes['backgroundVideo'][0]['btns'] ) && true === $attributes['backgroundVideo'][0]['btns'] ) {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
 		}
 	}

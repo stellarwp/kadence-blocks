@@ -68,6 +68,7 @@ import {
 	GradientControl,
 	KadenceVideoControl,
 	SubsectionWrap,
+	ColorGroup,
 	InspectorControlTabs,
 	BorderControl,
 	ResponsiveBorderControl,
@@ -133,8 +134,10 @@ import { __ } from '@wordpress/i18n';
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
-	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual' );
+	const tabletBackgroundType = tabletBackground?.[ 0 ]?.type || 'normal';
+	const mobileBackgroundType = mobileBackground?.[ 0 ]?.type || 'normal';
+	const mobileAllowForceOverride = ( '' === mobileBackground?.[ 0 ]?.bgImg && ( ( 'normal' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.bgImg ) || ( 'gradient' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.gradient ) || ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
+	const tabletAllowForceOverride = ( '' === tabletBackground?.[ 0 ]?.bgImg && ( ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
 	const saveSlideItem = ( value, thisIndex ) => {
 		let currentItems = backgroundSlider;
 		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
@@ -257,63 +260,80 @@ import { __ } from '@wordpress/i18n';
 				checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].enable : false ) }
 				onChange={ ( value ) => saveMobileBackground( { enable: value } ) }
 			/>
-			{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
+			{ mobileBackground?.[ 0 ]?.enable && (
 				<>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveMobileBackground( { bgColor: value } ) }
+				<BackgroundTypeControl
+						label={ __( 'Type', 'kadence-blocks' ) }
+						type={ mobileBackground?.[ 0 ]?.type ? mobileBackground[ 0 ].type : 'normal' }
+						onChange={ value => saveMobileBackground( { type: value } ) }
+						allowedTypes={ [ 'normal', 'gradient' ] }
 					/>
-					{ '' === mobileBackground[ 0 ].bgImg && '' !== bgImg && (
-						<ToggleControl
-							label={ __( 'Force no image for mobile', 'kadence-blocks' ) }
-							checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].forceOverDesk : false ) }
-							onChange={ ( value ) => saveMobileBackground( { forceOverDesk: value } ) }
+					{ 'gradient' === mobileBackgroundType && (
+						<GradientControl
+							value={ mobileBackground?.[ 0 ]?.gradient }
+							onChange={ value => saveMobileBackground( { gradient: value } ) }
+							gradients={ [] }
 						/>
 					) }
-					<KadenceBackgroundControl
-						label={ __( 'Background Image', 'kadence-blocks' ) }
-						hasImage={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? true : false ) }
-						imageURL={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
-						imageID={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgID ? mobileBackground[ 0 ].bgImgID : '' ) }
-						imagePosition={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgPosition ? mobileBackground[ 0 ].bgImgPosition : 'center center' ) }
-						imageSize={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgSize ? mobileBackground[ 0 ].bgImgSize : 'cover' ) }
-						imageRepeat={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgRepeat ? mobileBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
-						imageAttachment={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgAttachment ? mobileBackground[ 0 ].bgImgAttachment : 'scroll' ) }
-						imageAttachmentParallax={ true }
-						onRemoveImage={ () => {
-							saveMobileBackground( {
-								bgImgID: '',
-								bgImg: '',
-							} );
-						} }
-						onSaveImage={ ( img ) => {
-							saveMobileBackground( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						onSaveURL={ ( newURL ) => {
-							if ( newURL !== ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) ) {
-								saveMobileBackground( {
-									bgImgID: undefined,
-									bgImg: newURL,
-								} );
-							}
-						} }
-						onSavePosition={ value => saveMobileBackground( { bgImgPosition: value } ) }
-						onSaveSize={ value => saveMobileBackground( { bgImgSize: value } ) }
-						onSaveRepeat={ value => saveMobileBackground( { bgImgRepeat: value } ) }
-						onSaveAttachment={ value => saveMobileBackground( { bgImgAttachment: value } ) }
-						disableMediaButtons={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
-						dynamicAttribute="mobileBackground:0:bgImg"
-						isSelected={ isSelected }
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						name={ 'kadence/rowlayout' }
-						clientId={ clientId }
-					/>
+					{ 'normal' === mobileBackgroundType && (
+						<>
+							<PopColorControl
+								label={ __( 'Background Color', 'kadence-blocks' ) }
+								value={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
+								default={ '' }
+								onChange={ value => saveMobileBackground( { bgColor: value } ) }
+							/>
+							{ mobileAllowForceOverride && (
+								<ToggleControl
+									label={ __( 'Force no image for mobile', 'kadence-blocks' ) }
+									checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].forceOverDesk : false ) }
+									onChange={ ( value ) => saveMobileBackground( { forceOverDesk: value } ) }
+								/>
+							) }
+							<KadenceBackgroundControl
+								label={ __( 'Background Image', 'kadence-blocks' ) }
+								hasImage={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? true : false ) }
+								imageURL={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
+								imageID={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgID ? mobileBackground[ 0 ].bgImgID : '' ) }
+								imagePosition={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgPosition ? mobileBackground[ 0 ].bgImgPosition : 'center center' ) }
+								imageSize={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgSize ? mobileBackground[ 0 ].bgImgSize : 'cover' ) }
+								imageRepeat={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgRepeat ? mobileBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
+								imageAttachment={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgAttachment ? mobileBackground[ 0 ].bgImgAttachment : 'scroll' ) }
+								imageAttachmentParallax={ true }
+								onRemoveImage={ () => {
+									saveMobileBackground( {
+										bgImgID: '',
+										bgImg: '',
+									} );
+								} }
+								onSaveImage={ ( img ) => {
+									saveMobileBackground( {
+										bgImgID: img.id,
+										bgImg: img.url,
+									} );
+								} }
+								onSaveURL={ ( newURL ) => {
+									if ( newURL !== ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) ) {
+										saveMobileBackground( {
+											bgImgID: undefined,
+											bgImg: newURL,
+										} );
+									}
+								} }
+								onSavePosition={ value => saveMobileBackground( { bgImgPosition: value } ) }
+								onSaveSize={ value => saveMobileBackground( { bgImgSize: value } ) }
+								onSaveRepeat={ value => saveMobileBackground( { bgImgRepeat: value } ) }
+								onSaveAttachment={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+								disableMediaButtons={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
+								dynamicAttribute="mobileBackground:0:bgImg"
+								isSelected={ isSelected }
+								attributes={ attributes }
+								setAttributes={ setAttributes }
+								name={ 'kadence/rowlayout' }
+								clientId={ clientId }
+							/>
+						</>
+					) }
 				</>
 			) }
 		</>
@@ -361,69 +381,80 @@ import { __ } from '@wordpress/i18n';
 				checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].enable : false ) }
 				onChange={ ( value ) => saveTabletBackground( { enable: value } ) }
 			/>
-			{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
+			{ tabletBackground?.[ 0 ]?.enable && (
 				<>
 					<BackgroundTypeControl
 						label={ __( 'Type', 'kadence-blocks' ) }
-						type={ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].type ? tabletBackground[ 0 ].type : 'normal' }
+						type={ tabletBackground?.[ 0 ]?.type ? tabletBackground[ 0 ].type : 'normal' }
 						onChange={ value => saveTabletBackground( { type: value } ) }
 						allowedTypes={ [ 'normal', 'gradient' ] }
 					/>
-					<PopColorControl
-						label={ __( 'Background Color', 'kadence-blocks' ) }
-						value={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveTabletBackground( { bgColor: value } ) }
-					/>
-					{ '' === tabletBackground[ 0 ].bgImg && '' !== bgImg && (
-						<ToggleControl
-							label={ __( 'Force no image for tablet', 'kadence-blocks' ) }
-							checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].forceOverDesk : false ) }
-							onChange={ ( value ) => saveTabletBackground( { forceOverDesk: value } ) }
+					{ 'gradient' === tabletBackgroundType && (
+						<GradientControl
+							value={ tabletBackground?.[ 0 ]?.gradient }
+							onChange={ value => saveTabletBackground( { gradient: value } ) }
+							gradients={ [] }
 						/>
 					) }
-					<KadenceBackgroundControl
-						label={ __( 'Background Image', 'kadence-blocks' ) }
-						hasImage={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? true : false ) }
-						imageURL={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
-						imageID={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgID ? tabletBackground[ 0 ].bgImgID : '' ) }
-						imagePosition={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgPosition ? tabletBackground[ 0 ].bgImgPosition : 'center center' ) }
-						imageSize={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgSize ? tabletBackground[ 0 ].bgImgSize : 'cover' ) }
-						imageRepeat={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgRepeat ? tabletBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
-						imageAttachment={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgAttachment ? tabletBackground[ 0 ].bgImgAttachment : 'scroll' ) }
-						imageAttachmentParallax={ true }
-						onRemoveImage={ () => {
-							saveTabletBackground( {
-								bgImgID: '',
-								bgImg: '',
-							} );
-						} }
-						onSaveImage={ ( img ) => {
-							saveTabletBackground( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						onSaveURL={ ( newURL ) => {
-							if ( newURL !== ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) ) {
-								saveTabletBackground( {
-									bgImgID: undefined,
-									bgImg: newURL,
-								} );
-							}
-						} }
-						onSavePosition={ value => saveTabletBackground( { bgImgPosition: value } ) }
-						onSaveSize={ value => saveTabletBackground( { bgImgSize: value } ) }
-						onSaveRepeat={ value => saveTabletBackground( { bgImgRepeat: value } ) }
-						onSaveAttachment={ value => saveTabletBackground( { bgImgAttachment: value } ) }
-						disableMediaButtons={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
-						dynamicAttribute="tabletBackground:0:bgImg"
-						isSelected={ isSelected }
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						name={ 'kadence/rowlayout' }
-						clientId={ clientId }
-					/>
+					{ 'normal' === tabletBackgroundType && (
+						<>
+							<PopColorControl
+								label={ __( 'Background Color', 'kadence-blocks' ) }
+								value={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
+								default={ '' }
+								onChange={ value => saveTabletBackground( { bgColor: value } ) }
+							/>
+							{ tabletAllowForceOverride && (
+								<ToggleControl
+									label={ __( 'Force no image/gradient for tablet', 'kadence-blocks' ) }
+									checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].forceOverDesk : false ) }
+									onChange={ ( value ) => saveTabletBackground( { forceOverDesk: value } ) }
+								/>
+							) }
+							<KadenceBackgroundControl
+								label={ __( 'Background Image', 'kadence-blocks' ) }
+								hasImage={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? true : false ) }
+								imageURL={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
+								imageID={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgID ? tabletBackground[ 0 ].bgImgID : '' ) }
+								imagePosition={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgPosition ? tabletBackground[ 0 ].bgImgPosition : 'center center' ) }
+								imageSize={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgSize ? tabletBackground[ 0 ].bgImgSize : 'cover' ) }
+								imageRepeat={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgRepeat ? tabletBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
+								imageAttachment={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgAttachment ? tabletBackground[ 0 ].bgImgAttachment : 'scroll' ) }
+								imageAttachmentParallax={ true }
+								onRemoveImage={ () => {
+									saveTabletBackground( {
+										bgImgID: '',
+										bgImg: '',
+									} );
+								} }
+								onSaveImage={ ( img ) => {
+									saveTabletBackground( {
+										bgImgID: img.id,
+										bgImg: img.url,
+									} );
+								} }
+								onSaveURL={ ( newURL ) => {
+									if ( newURL !== ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) ) {
+										saveTabletBackground( {
+											bgImgID: undefined,
+											bgImg: newURL,
+										} );
+									}
+								} }
+								onSavePosition={ value => saveTabletBackground( { bgImgPosition: value } ) }
+								onSaveSize={ value => saveTabletBackground( { bgImgSize: value } ) }
+								onSaveRepeat={ value => saveTabletBackground( { bgImgRepeat: value } ) }
+								onSaveAttachment={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+								disableMediaButtons={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
+								dynamicAttribute="tabletBackground:0:bgImg"
+								isSelected={ isSelected }
+								attributes={ attributes }
+								setAttributes={ setAttributes }
+								name={ 'kadence/rowlayout' }
+								clientId={ clientId }
+							/>
+						</>
+					) }
 				</>
 			) }
 		</>
@@ -1097,22 +1128,24 @@ const deskOverlayControls = (
 			initialOpen={ false }
 			panelName={ 'kb-row-text-color' }
 		>
-			<PopColorControl
-				label={ __( 'Text Color', 'kadence-blocks' ) }
-				value={ ( textColor ? textColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { textColor: value } ) }
-			/>
-			<PopColorControl
-				label={ __( 'Link Color', 'kadence-blocks' ) }
-				value={ ( linkColor ? linkColor : '' ) }
-				default={ '' }
-				onChange={ value => setAttributes( { linkColor: value } ) }
-				swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
-				value2={ ( linkHoverColor ? linkHoverColor : '' ) }
-				default2={ '' }
-				onChange2={ value => setAttributes( { linkHoverColor: value } ) }
-			/>
+			<ColorGroup>
+				<PopColorControl
+					label={ __( 'Text Color', 'kadence-blocks' ) }
+					value={ ( textColor ? textColor : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { textColor: value } ) }
+				/>
+				<PopColorControl
+					label={ __( 'Link Color', 'kadence-blocks' ) }
+					value={ ( linkColor ? linkColor : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { linkColor: value } ) }
+					swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
+					value2={ ( linkHoverColor ? linkHoverColor : '' ) }
+					default2={ '' }
+					onChange2={ value => setAttributes( { linkHoverColor: value } ) }
+				/>
+			</ColorGroup>
 		</KadencePanelBody>
 	);
 	return (

@@ -90,7 +90,8 @@
 		  "selector": "img",
 		  "attribute": "data-sponsored"
 		}
-	  }
+	  },
+	  "__experimentalRole": "content"
 	},
 	"lightSize": {
 	  "type": "string",

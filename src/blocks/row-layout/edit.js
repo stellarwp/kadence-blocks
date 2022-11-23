@@ -90,6 +90,7 @@ import {
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
+	InspectorAdvancedControls,
 	useBlockProps,
 	useInnerBlocksProps,
 	store as blockEditorStore,
@@ -142,7 +143,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	isSelected,
 	clientId,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -553,6 +554,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			allowedBlocks: ALLOWED_BLOCKS,
 			orientation:'horizontal',
 			renderAppender: false,
+			templateLock: templateLock ? templateLock : undefined,
 		}
 	);
 	const paddingMouseOver = mouseOverVisualizer();
@@ -647,269 +649,278 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				</Toolbar>
 			</BlockControls>
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
-				<InspectorControls>
-					<InspectorControlTabs
-						panelName={ 'rowlayout' }
-						setActiveTab={ setActiveTab }
-						activeTab={ activeTab }
-						tabs= {
-							[
-								{
-									key  : 'general',
-									title: __( 'Layout', 'kadence-blocks' ),
-									icon : blockDefault,
-								},
-								{
-									key  : 'style',
-									title: __( 'Style', 'kadence-blocks' ),
-									icon : brush,
-								},
-								{
-									key  : 'advanced',
-									title: __( 'Advanced', 'kadence-blocks' ),
-									icon : settings,
-								},
-							]
-						}
-					/>
-					{ ( activeTab === 'general' ) && (
-						<>
-							<LayoutControls
+				<>
+					<InspectorControls>
+						<InspectorControlTabs
+							panelName={ 'rowlayout' }
+							setActiveTab={ setActiveTab }
+							activeTab={ activeTab }
+							tabs= {
+								[
+									{
+										key  : 'general',
+										title: __( 'Layout', 'kadence-blocks' ),
+										icon : blockDefault,
+									},
+									{
+										key  : 'style',
+										title: __( 'Style', 'kadence-blocks' ),
+										icon : brush,
+									},
+									{
+										key  : 'advanced',
+										title: __( 'Advanced', 'kadence-blocks' ),
+										icon : settings,
+									},
+								]
+							}
+						/>
+						{ ( activeTab === 'general' ) && (
+							<>
+								<LayoutControls
+									clientId={ clientId }
+									attributes={ attributes }
+									setAttributes={setAttributes}
+									updateColumns={updateColumns}
+									innerItemCount={innerItemCount}
+									widthString={ widthString }
+									previewDevice={ previewDevice }
+								/>
+							</>
+						) }
+						{ ( activeTab === 'style' ) && (
+							<StyleControls
 								clientId={ clientId }
 								attributes={ attributes }
 								setAttributes={setAttributes}
-								updateColumns={updateColumns}
-								innerItemCount={innerItemCount}
-								widthString={ widthString }
-								previewDevice={ previewDevice }
+								isSelected={ isSelected }
 							/>
-						</>
-					) }
-					{ ( activeTab === 'style' ) && (
-						<StyleControls
-							clientId={ clientId }
-							attributes={ attributes }
-							setAttributes={setAttributes}
-							isSelected={ isSelected }
-						/>
-					) }
-					{ ( activeTab === 'advanced' ) && (
-						<>
-							{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
-								<KadencePanelBody panelName={ 'kb-row-padding' }>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Padding', 'kadence-blocks' )}
-										value={ undefined !== padding && undefined !== padding[0] ? padding : [ 'sm', '', 'sm', '' ] }
-										tabletValue={ tabletPadding }
-										mobileValue={ undefined !== mobilePadding && undefined !== mobilePadding[0] ? mobilePadding : [ '', '', '', '' ] }
-										onChange={( value ) => setAttributes( { padding: value } ) }
-										onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
-										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
-										min={ 0 }
-										max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
-										step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-										deskDefault={ [ 'sm', '', 'sm', '' ] }
-										unit={ paddingUnit }
-										options={ SPACING_SIZES_MAP }
-										units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-										onUnit={( value ) => setAttributes( { paddingUnit: value } )}
-										onMouseOver={ paddingMouseOver.onMouseOver }
-										onMouseOut={ paddingMouseOver.onMouseOut }
-									/>
-									<ResponsiveMeasureRangeControl
-										label={__( 'Margin', 'kadence-blocks' )}
-										value={ [ ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), 'auto', ( undefined !== margin && undefined !== margin[2] ? margin[2] : '' ), 'auto' ] }
-										tabletValue={ [ ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), 'auto', ( undefined !== tabletMargin && undefined !== tabletMargin[2] ? tabletMargin[2] : '' ), 'auto' ] }
-										mobileValue={ [ ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ), 'auto', ( undefined !== mobileMargin && undefined !== mobileMargin[2] ? mobileMargin[2] : '' ), 'auto' ] }
-										onChange={ ( value ) => {
-											setAttributes( { margin: [ value[ 0 ], '', value[ 2 ], '' ] } );
-										} }
-										onChangeTablet={ ( value ) => {
-											setAttributes( { tabletMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
-										} }
-										onChangeMobile={ ( value ) => {
-											setAttributes( { mobileMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
-										} }
-										min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-										max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-										step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-										unit={ marginUnit }
-										allowEmpty={ true }
-										options={ SPACING_SIZES_MAP }
-										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-										onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-										onMouseOver={ marginMouseOver.onMouseOver }
-										onMouseOut={ marginMouseOver.onMouseOut }
-									/>
-								</KadencePanelBody>
-							) }
-							<div className="kt-sidebar-settings-spacer"></div>
-							{ showSettings( 'structure', 'kadence/rowlayout' ) && (
-								<>
-									<KadencePanelBody
-										title={ __( 'Structure Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-row-structure-settings' }
-									>
-										<SelectControl
-											label={ __( 'Container HTML tag', 'kadence-blocks' ) }
-											value={ htmlTag }
-											options={ [
-												{ value: 'div', label: 'div' },
-												{ value: 'header', label: 'header' },
-												{ value: 'section', label: 'section' },
-												{ value: 'article', label: 'article' },
-												{ value: 'main', label: 'main' },
-												{ value: 'aside', label: 'aside' },
-												{ value: 'footer', label: 'footer' },
-											] }
-											onChange={ value => setAttributes( { htmlTag: value } ) }
-										/>
-										<ResponsiveRangeControls
-											label={ __( 'Minimum Height', 'kadence-blocks' ) }
-											value={ minHeight ? minHeight : '' }
-											onChange={ value => {
-												setAttributes( { minHeight: value } );
-											} }
-											tabletValue={ ( undefined !== minHeightTablet ? minHeightTablet : '' ) }
-											onChangeTablet={ ( value ) => {
-												setAttributes( { minHeightTablet: value } );
-											} }
-											mobileValue={ ( undefined !== minHeightMobile ? minHeightMobile : '' ) }
-											onChangeMobile={ ( value ) => {
-												setAttributes( { minHeightMobile: value } );
-											} }
+						) }
+						{ ( activeTab === 'advanced' ) && (
+							<>
+								{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
+									<KadencePanelBody panelName={ 'kb-row-padding' }>
+										<ResponsiveMeasureRangeControl
+											label={__( 'Padding', 'kadence-blocks' )}
+											value={ undefined !== padding && undefined !== padding[0] ? padding : [ 'sm', '', 'sm', '' ] }
+											tabletValue={ tabletPadding }
+											mobileValue={ undefined !== mobilePadding && undefined !== mobilePadding[0] ? mobilePadding : [ '', '', '', '' ] }
+											onChange={( value ) => setAttributes( { padding: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
+											onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
 											min={ 0 }
-											max={ ( minHeightUnit === 'px' ? 2000 : 200 ) }
-											step={ 1 }
-											unit={ minHeightUnit ? minHeightUnit : 'px' }
-											onUnit={ ( value ) => {
-												setAttributes( { minHeightUnit: value } );
-											} }
-											units={ [ 'px', 'vw', 'vh' ] }
+											max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+											step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+											deskDefault={ [ 'sm', '', 'sm', '' ] }
+											unit={ paddingUnit }
+											options={ SPACING_SIZES_MAP }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+											onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+											onMouseOver={ paddingMouseOver.onMouseOver }
+											onMouseOut={ paddingMouseOver.onMouseOut }
 										/>
-										<ToggleControl
-											label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
-											checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
-											onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
-										/>
-										<RangeControl
-											label={ __( 'Z-Index Control', 'kadence-blocks' ) }
-											value={ zIndex }
+										<ResponsiveMeasureRangeControl
+											label={__( 'Margin', 'kadence-blocks' )}
+											value={ [ ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), 'auto', ( undefined !== margin && undefined !== margin[2] ? margin[2] : '' ), 'auto' ] }
+											tabletValue={ [ ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), 'auto', ( undefined !== tabletMargin && undefined !== tabletMargin[2] ? tabletMargin[2] : '' ), 'auto' ] }
+											mobileValue={ [ ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ), 'auto', ( undefined !== mobileMargin && undefined !== mobileMargin[2] ? mobileMargin[2] : '' ), 'auto' ] }
 											onChange={ ( value ) => {
-												setAttributes( {
-													zIndex: value,
-												} );
+												setAttributes( { margin: [ value[ 0 ], '', value[ 2 ], '' ] } );
 											} }
-											min={ -200 }
-											max={ 2000 }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { tabletMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
+											} }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { mobileMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
+											} }
+											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+											step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ marginUnit }
+											allowEmpty={ true }
+											options={ SPACING_SIZES_MAP }
+											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+											onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+											onMouseOver={ marginMouseOver.onMouseOver }
+											onMouseOut={ marginMouseOver.onMouseOut }
 										/>
 									</KadencePanelBody>
-									<KadencePanelBody
-										title={ __( 'Visibility Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-row-visibility-settings' }
-									>
-										<ToggleControl
-											label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
-											checked={ ( undefined !== vsdesk ? vsdesk : false ) }
-											onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
-										/>
-										<ToggleControl
-											label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
-											checked={ ( undefined !== vstablet ? vstablet : false ) }
-											onChange={ ( value ) => setAttributes( { vstablet: value } ) }
-										/>
-										<ToggleControl
-											label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
-											checked={ ( undefined !== vsmobile ? vsmobile : false ) }
-											onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
-										/>
-										<h2>{ __( 'User Visibility Settings', 'kadence-blocks' ) }</h2>
-										<ToggleControl
-											label={ __( 'Hide from Logged in Users', 'kadence-blocks' ) }
-											checked={ ( undefined !== loggedIn ? loggedIn : false ) }
-											onChange={ ( value ) => setAttributes( { loggedIn: value } ) }
-										/>
-										{ loggedIn && (
-											<>
-												<div className="components-base-control">
-													<span className="kadence-sidebar-label">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</span>
-													<div className="kt-meta-select-wrap">
-														<Select
-															options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-															value={ loggedInUser }
-															isMulti={ true }
-															maxMenuHeight={ 200 }
-															isClearable={ true }
-															placeholder={ '' }
-															onChange={ value => setAttributes( { loggedInUser: value } ) }
-														/>
-													</div>
-												</div>
-												<div className="components-base-control">
-													<span className="kadence-sidebar-label">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</span>
-													<div className="kt-meta-select-wrap">
-														<Select
-															options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-															value={ loggedInShow }
-															isMulti={ true }
-															maxMenuHeight={ 200 }
-															isClearable={ true }
-															placeholder={ '' }
-															onChange={ value => setAttributes( { loggedInShow: value } ) }
-														/>
-													</div>
-												</div>
-											</>
-										) }
-										<ToggleControl
-											label={ __( 'Hide from Loggedout Users', 'kadence-blocks' ) }
-											checked={ ( undefined !== loggedOut ? loggedOut : false ) }
-											onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
-										/>
-										{ kadence_blocks_params && kadence_blocks_params.rcp_access && (
-											<>
-												<ToggleControl
-													label={ __( 'Restrict based on Membership', 'kadence-blocks' ) }
-													checked={ ( undefined !== rcpMembership ? rcpMembership : false ) }
-													onChange={ ( value ) => setAttributes( { rcpMembership: value } ) }
-												/>
-												{ rcpMembership && (
-													<>
-														<SelectControl
-															label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
-															value={ rcpAccess }
-															options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
-															onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
-														/>
-														<div className="components-base-control">
-															<span className="kadence-sidebar-label">{ __( 'Specific Memberships', 'kadence-blocks' ) }</span>
-															<div className="kt-meta-select-wrap">
-																<Select
-																	options={ ( kadence_blocks_params && kadence_blocks_params.rcp_levels ? kadence_blocks_params.rcp_levels : [] ) }
-																	value={ rcpMembershipLevel }
-																	isMulti={ true }
-																	maxMenuHeight={ 200 }
-																	isClearable={ true }
-																	placeholder={ 'Any Membership' }
-																	onChange={ value => setAttributes( { rcpMembershipLevel: value } ) }
-																/>
-															</div>
+								) }
+								<div className="kt-sidebar-settings-spacer"></div>
+								{ showSettings( 'structure', 'kadence/rowlayout' ) && (
+									<>
+										<KadencePanelBody
+											title={ __( 'Structure Settings', 'kadence-blocks' ) }
+											initialOpen={ false }
+											panelName={ 'kb-row-structure-settings' }
+										>
+											<SelectControl
+												label={ __( 'Container HTML tag', 'kadence-blocks' ) }
+												value={ htmlTag }
+												options={ [
+													{ value: 'div', label: 'div' },
+													{ value: 'header', label: 'header' },
+													{ value: 'section', label: 'section' },
+													{ value: 'article', label: 'article' },
+													{ value: 'main', label: 'main' },
+													{ value: 'aside', label: 'aside' },
+													{ value: 'footer', label: 'footer' },
+												] }
+												onChange={ value => setAttributes( { htmlTag: value } ) }
+											/>
+											<ResponsiveRangeControls
+												label={ __( 'Minimum Height', 'kadence-blocks' ) }
+												value={ minHeight ? minHeight : '' }
+												onChange={ value => {
+													setAttributes( { minHeight: value } );
+												} }
+												tabletValue={ ( undefined !== minHeightTablet ? minHeightTablet : '' ) }
+												onChangeTablet={ ( value ) => {
+													setAttributes( { minHeightTablet: value } );
+												} }
+												mobileValue={ ( undefined !== minHeightMobile ? minHeightMobile : '' ) }
+												onChangeMobile={ ( value ) => {
+													setAttributes( { minHeightMobile: value } );
+												} }
+												min={ 0 }
+												max={ ( minHeightUnit === 'px' ? 2000 : 200 ) }
+												step={ 1 }
+												unit={ minHeightUnit ? minHeightUnit : 'px' }
+												onUnit={ ( value ) => {
+													setAttributes( { minHeightUnit: value } );
+												} }
+												units={ [ 'px', 'vw', 'vh' ] }
+											/>
+											<ToggleControl
+												label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
+												checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
+												onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
+											/>
+											<RangeControl
+												label={ __( 'Z-Index Control', 'kadence-blocks' ) }
+												value={ zIndex }
+												onChange={ ( value ) => {
+													setAttributes( {
+														zIndex: value,
+													} );
+												} }
+												min={ -200 }
+												max={ 2000 }
+											/>
+										</KadencePanelBody>
+										<KadencePanelBody
+											title={ __( 'Visibility Settings', 'kadence-blocks' ) }
+											initialOpen={ false }
+											panelName={ 'kb-row-visibility-settings' }
+										>
+											<ToggleControl
+												label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
+												checked={ ( undefined !== vsdesk ? vsdesk : false ) }
+												onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
+											/>
+											<ToggleControl
+												label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
+												checked={ ( undefined !== vstablet ? vstablet : false ) }
+												onChange={ ( value ) => setAttributes( { vstablet: value } ) }
+											/>
+											<ToggleControl
+												label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
+												checked={ ( undefined !== vsmobile ? vsmobile : false ) }
+												onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+											/>
+											<h2>{ __( 'User Visibility Settings', 'kadence-blocks' ) }</h2>
+											<ToggleControl
+												label={ __( 'Hide from Logged in Users', 'kadence-blocks' ) }
+												checked={ ( undefined !== loggedIn ? loggedIn : false ) }
+												onChange={ ( value ) => setAttributes( { loggedIn: value } ) }
+											/>
+											{ loggedIn && (
+												<>
+													<div className="components-base-control">
+														<span className="kadence-sidebar-label">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</span>
+														<div className="kt-meta-select-wrap">
+															<Select
+																options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+																value={ loggedInUser }
+																isMulti={ true }
+																maxMenuHeight={ 200 }
+																isClearable={ true }
+																placeholder={ '' }
+																onChange={ value => setAttributes( { loggedInUser: value } ) }
+															/>
 														</div>
-													</>
-												) }
-											</>
+													</div>
+													<div className="components-base-control">
+														<span className="kadence-sidebar-label">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</span>
+														<div className="kt-meta-select-wrap">
+															<Select
+																options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+																value={ loggedInShow }
+																isMulti={ true }
+																maxMenuHeight={ 200 }
+																isClearable={ true }
+																placeholder={ '' }
+																onChange={ value => setAttributes( { loggedInShow: value } ) }
+															/>
+														</div>
+													</div>
+												</>
+											) }
+											<ToggleControl
+												label={ __( 'Hide from Loggedout Users', 'kadence-blocks' ) }
+												checked={ ( undefined !== loggedOut ? loggedOut : false ) }
+												onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
+											/>
+											{ kadence_blocks_params && kadence_blocks_params.rcp_access && (
+												<>
+													<ToggleControl
+														label={ __( 'Restrict based on Membership', 'kadence-blocks' ) }
+														checked={ ( undefined !== rcpMembership ? rcpMembership : false ) }
+														onChange={ ( value ) => setAttributes( { rcpMembership: value } ) }
+													/>
+													{ rcpMembership && (
+														<>
+															<SelectControl
+																label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
+																value={ rcpAccess }
+																options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
+																onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
+															/>
+															<div className="components-base-control">
+																<span className="kadence-sidebar-label">{ __( 'Specific Memberships', 'kadence-blocks' ) }</span>
+																<div className="kt-meta-select-wrap">
+																	<Select
+																		options={ ( kadence_blocks_params && kadence_blocks_params.rcp_levels ? kadence_blocks_params.rcp_levels : [] ) }
+																		value={ rcpMembershipLevel }
+																		isMulti={ true }
+																		maxMenuHeight={ 200 }
+																		isClearable={ true }
+																		placeholder={ 'Any Membership' }
+																		onChange={ value => setAttributes( { rcpMembershipLevel: value } ) }
+																	/>
+																</div>
+															</div>
+														</>
+													) }
+												</>
 
-										) }
-									</KadencePanelBody>
-								</>
-							) }
+											) }
+										</KadencePanelBody>
+									</>
+								) }
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
-						</>
-					) }
-				</InspectorControls>
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
+							</>
+						) }
+					</InspectorControls>
+					<InspectorAdvancedControls>
+						<ToggleControl
+							label={ __( 'Row Content Only Editing', 'kadence-blocks' ) }
+							checked={ ( 'contentOnly' === templateLock ? true : false ) }
+							onChange={ ( value ) => setAttributes( { templateLock: 'contentOnly' } ) }
+						/>
+					</InspectorAdvancedControls>
+				</>
 			) }
 			<style>
 				{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }

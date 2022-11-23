@@ -750,6 +750,10 @@
 		  "unit": "px"
 		} ]
 	},
+	"templateLock": {
+		"type": [ "string", "boolean" ],
+		"enum": [ "all", "insert", "contentOnly", false ]
+	},
 	"blockVersion": {
 		"type": "number",
 		"default": ""

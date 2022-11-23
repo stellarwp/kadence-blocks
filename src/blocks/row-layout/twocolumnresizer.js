@@ -15,7 +15,7 @@ export default function TwoColumnResizer( {
 	setAttributes,
 	attributes,
 } ) {
-	const { padding, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidth } = attributes;
+	const { padding, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidth, maxWidthUnit } = attributes;
 	const currentGutter = getPreviewGutterSize( 'Desktop', columnGutter, customGutter, gutterType );
 	const currentGutterTotal = getGutterTotal( currentGutter, columns );
 	const previewMaxWidth = ( undefined !== maxWidth ? maxWidth : '' );
@@ -85,7 +85,7 @@ export default function TwoColumnResizer( {
 			marginRight: 'auto',
 			paddingTop:previewPaddingTop ?previewPaddingTop : fallbackVerticalPadding,
 			paddingBottom: previewPaddingBottom ? previewPaddingBottom : fallbackVerticalPadding,
-			maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+			maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + ( maxWidthUnit ? maxWidthUnit : 'px' ) : undefined,
 		} }>
 			<div className='kb-inner-resize-row' style={ {
 				left: previewPaddingLeft ? previewPaddingLeft : fallbackPadding,

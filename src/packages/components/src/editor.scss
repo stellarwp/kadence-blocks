@@ -2,7 +2,7 @@ svg {
 	--kadence-color: #0058b0;
 	--kadence-color-white: #fff;
 }
-.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg {
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg, .components-button.is-pressed .block-editor-block-icon svg {
 	--kadence-color: currentColor;
 	--kadence-color-white: var(--wp-admin-theme-color);
 }

@@ -325,16 +325,16 @@ div.kb-blocks-bg-video {
 .block-editor-block-list__block[data-align=center][data-type="kadence/rowlayout"] {
 	text-align: inherit;
 }
-.block-editor-block-list__block[data-type="kadence/column"] > .block-editor-block-contextual-toolbar {
-    top: 38px;
-    transform: translateY(-38px);
-    margin-left: -29px;
-    margin-right: -29px;
-}
-.block-editor-block-list__block[data-type="kadence/column"]>.block-editor-block-list__insertion-point {
-    top: 0;
-    margin-top: 0;
-}
+// .block-editor-block-list__block[data-type="kadence/column"] > .block-editor-block-contextual-toolbar {
+//     top: 38px;
+//     transform: translateY(-38px);
+//     margin-left: -29px;
+//     margin-right: -29px;
+// }
+// .block-editor-block-list__block[data-type="kadence/column"]>.block-editor-block-list__insertion-point {
+//     top: 0;
+//     margin-top: 0;
+// }
 
 // This block has flex container children. Flex container margins do not collapse: https://www.w3.org/TR/css-flexbox-1/#flex-containers.
 // Therefore, let's at least not add any additional margins here.
@@ -350,12 +350,27 @@ div.kb-blocks-bg-video {
 }
 .wp-block-kadence-rowlayout.kt-row-valign-middle>.innerblocks-wrap {
 	align-content: center;
+	> .wp-block-kadence-column {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
 }
 .wp-block-kadence-rowlayout.kt-row-valign-top>.innerblocks-wrap {
 	align-content: start;
+	> .wp-block-kadence-column {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+	}
 }
 .wp-block-kadence-rowlayout.kt-row-valign-bottom>.innerblocks-wrap {
 	align-content: end;
+	> .wp-block-kadence-column {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
 }
 // Full height align middle.
 .wp-block-kadence-rowlayout.kt-row-valign-top.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner {

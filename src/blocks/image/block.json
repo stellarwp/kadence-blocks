@@ -16,28 +16,33 @@
 		"type": "string",
 		"source": "attribute",
 		"selector": "img",
-		"attribute": "src"
+		"attribute": "src",
+		"__experimentalRole": "content"
 	  },
 	  "alt": {
 		"type": "string",
 		"source": "attribute",
 		"selector": "img",
 		"attribute": "alt",
-		"default": ""
+		"default": "",
+		"__experimentalRole": "content"
 	  },
 	  "caption": {
 		"type": "string",
 		"source": "html",
-		"selector": "figcaption"
+		"selector": "figcaption",
+		"__experimentalRole": "content"
 	  },
 	  "title": {
 		"type": "string",
 		"source": "attribute",
 		"selector": "img",
-		"attribute": "title"
+		"attribute": "title",
+		"__experimentalRole": "content"
 	  },
 	  "id": {
-		"type": "number"
+		"type": "number",
+		"__experimentalRole": "content"
 	  },
 	  "width": {
 		"type": "number"
@@ -65,7 +70,8 @@
 		"default": false
 	  },
 	  "link": {
-		"type": "string"
+		"type": "string",
+		"__experimentalRole": "content"
 	  },
 	  "linkTarget": {
 		"type": "boolean",
