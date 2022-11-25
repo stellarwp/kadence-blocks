@@ -92,11 +92,17 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
 				$css->add_property( 'text-align', $attributes['align'] );
 			}
-			if ( isset( $attributes['size'] ) && ! empty( $attributes['size'] ) ) {
+			// Old size first.
+			if ( ! empty( $attributes['size'] ) ) {
 				$css->add_property( 'font-size', $attributes['size'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+			} else if ( ! empty( $attributes['fontSize'][0] ) ) {
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][0], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 			}
+			// Old line height first.
 			if ( isset( $attributes['lineHeight'] ) && ! empty( $attributes['lineHeight'] ) ) {
-				$css->add_property( 'line-height', $attributes['lineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+			} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
+				$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
 			}
 			if ( isset( $attributes['fontWeight'] ) && ! empty( $attributes['fontWeight'] ) ) {
 				$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
@@ -225,22 +231,24 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}
-		if ( isset( $attributes['tabSize'] ) || isset( $attributes['tabLineHeight'] ) || isset( $attributes['tabletAlign'] ) ) {
-			// Tablet.
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
-			if ( isset( $attributes['tabSize'] ) && is_numeric( $attributes['tabSize'] ) ) {
-				$css->add_property( 'font-size', $attributes['tabSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-			}
-			if ( isset( $attributes['tabLineHeight'] ) && is_numeric( $attributes['tabLineHeight'] ) ) {
-				$css->add_property( 'line-height', $attributes['tabLineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-			}
-			if ( isset( $attributes['tabletAlign'] ) && ! empty( $attributes['tabletAlign'] ) ) {
-				$css->add_property( 'text-align', $attributes['tabletAlign'] . '!important' );
-			}
-
-			$css->set_media_state( 'desktop' );
+		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		$css->set_media_state( 'tablet' );
+		// Old size first.
+		if ( ! empty( $attributes['tabSize'] ) ) {
+			$css->add_property( 'font-size', $attributes['tabSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+		} else if ( ! empty( $attributes['fontSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][1], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
+		// Old line height first.
+		if ( ! empty( $attributes['tabLineHeight'] ) ) {
+			$css->add_property( 'line-height', $attributes['tabLineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][1] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		}
+		if ( ! empty( $attributes['tabletAlign'] ) ) {
+			$css->add_property( 'text-align', $attributes['tabletAlign'] . '!important' );
+		}
+		$css->set_media_state( 'desktop' );
 		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][1] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][1] ) ) {
 			// Tablet.
 			$css->set_media_state( 'tablet' );
@@ -265,22 +273,24 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 			}
 			$css->set_media_state( 'desktop' );
 		}
-		if ( isset( $attributes['mobileSize'] ) || isset( $attributes['mobileLineHeight'] ) || isset( $attributes['mobileAlign'] ) ) {
-			// Mobile.
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
-			if ( isset( $attributes['mobileSize'] ) && is_numeric( $attributes['mobileSize'] ) ) {
-				$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-			}
-			if ( isset( $attributes['mobileLineHeight'] ) && is_numeric( $attributes['mobileLineHeight'] ) ) {
-				$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-			}
-			if ( isset( $attributes['mobileAlign'] ) && ! empty( $attributes['mobileAlign'] ) ) {
-				$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
-			}
-
-			$css->set_media_state( 'desktop' );
+		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		$css->set_media_state( 'mobile' );
+		// Old size first.
+		if ( ! empty( $attributes['mobileSize'] ) ) {
+			$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+		} else if ( ! empty( $attributes['fontSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][1], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
+		// Old line height first.
+		if ( ! empty( $attributes['mobileLineHeight'] ) ) {
+			$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][1] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		}
+		if ( ! empty( $attributes['mobileAlign'] ) ) {
+			$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
+		}
+		$css->set_media_state( 'desktop' );
 		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][2] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][2] ) ) {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );

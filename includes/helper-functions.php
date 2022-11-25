@@ -72,3 +72,14 @@ function kadence_blocks_hex2rgba( $hex, $alpha ) {
 	$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
 	return $rgba;
 }
+/**
+ * Check to see if variable contains a number including 0.
+ *
+ * @access public
+ *
+ * @param  string $value - the css property.
+ * @return boolean
+ */
+function kadence_blocks_is_number( &$value ) {
+	return isset( $value ) && is_numeric( $value );
+}

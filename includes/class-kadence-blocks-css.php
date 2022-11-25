@@ -77,6 +77,14 @@ class Kadence_Blocks_CSS {
 	protected $_tablet_only_media_query = array();
 
 	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $_desktop_only_media_query = array();
+
+	/**
 	 * The array that holds all of the css to output inside of the mobile media query
 	 *
 	 * @access protected
@@ -175,6 +183,16 @@ class Kadence_Blocks_CSS {
 		'5xl' => 'var(--global-kb-spacing-5xl, 10rem)'
 	);
 	/**
+	 * Font size variables used in string based font sizes.
+	 */
+	protected $font_sizes = array(
+		'sm' => 'var(--global-kb-font-size-sm, 0.9rem)',
+		'md' => 'var(--global-kb-font-size-md, 1.25rem)',
+		'lg' => 'var(--global-kb-font-size-lg, 3rem)',
+		'xl' => 'var(--global-kb-font-size-xl, 4rem)',
+		'xxl' => 'var(--global-kb-font-size-xxl, 5rem)',
+	);
+	/**
 	 * Gaps variables used in string based gutters.
 	 */
 	protected $gap_sizes = array(
@@ -204,7 +222,7 @@ class Kadence_Blocks_CSS {
 	 * Render block CSS helper function
 	 */
 	public function frontend_block_css() {
-		if ( ! is_admin() && ! empty( self::$styles ) ) {
+		if ( ! empty( self::$styles ) ) {
 			$output = '';
 			foreach ( self::$styles as $key => $value ) {
 				$output .= $value;
@@ -214,6 +232,7 @@ class Kadence_Blocks_CSS {
 				wp_enqueue_style( 'kadence_blocks_css' );
 				wp_add_inline_style( 'kadence_blocks_css', $output );
 			}
+			self::$styles = array();
 		}
 	}
 	/**
@@ -372,7 +391,7 @@ class Kadence_Blocks_CSS {
 	 * @param  string $value - the css property.
 	 * @return boolean
 	 */
-	public function is_number( $value = null ) {
+	public function is_number( &$value ) {
 		return isset( $value ) && is_numeric( $value );
 	}
 	/**
@@ -404,6 +423,11 @@ class Kadence_Blocks_CSS {
 					$this->_tablet_only_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_only_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'desktopOnly' === $this->_media_state ) {
+				if ( ! isset( $this->_desktop_only_media_query[ $this->_selector ] ) ) {
+					$this->_desktop_only_media_query[ $this->_selector ] = '';
+				}
+				$this->_desktop_only_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} else {
 				$this->_css .= sprintf( $format, $property, $value, $prefix );
 			}
@@ -794,7 +818,20 @@ class Kadence_Blocks_CSS {
 		}
 		$this->set_media_state( 'desktop' );
 	}
-
+	/**
+	 * Generates the font output.
+	 *
+	 * @param array  $font an array of font settings.
+	 * @param object $css an object of css output.
+	 * @param string $inherit an string to determine if the font should inherit.
+	 * @return string
+	 */
+	public function get_font_size( $size, $unit ) {
+		if ( $this->is_variable_font_size_value( $size ) ) {
+			return $this->get_variable_font_size_value( $size );
+		}
+		return $size . $unit;
+	}
 	/**
 	 * Generates the font output.
 	 *
@@ -818,7 +855,7 @@ class Kadence_Blocks_CSS {
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
-			$css->add_property( 'font-size', $font['size']['desktop'] . $size_type );
+			$css->add_property( 'font-size', $this->get_font_size( $font['size']['desktop'], $size_type ) );
 		}
 		$line_type = ( isset( $font['lineType'] ) && ! empty( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
@@ -2030,6 +2067,14 @@ class Kadence_Blocks_CSS {
 	 * @return void
 	 */
 	public function render_media_queries() {
+		if ( isset( $this->_desktop_only_media_query ) && is_array( $this->_desktop_only_media_query ) && ! empty( $this->_desktop_only_media_query ) ) {
+			$this->start_media_query( $this->get_media_queries( 'desktop' ) );
+			foreach ( $this->_desktop_only_media_query as $selector => $string ) {
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
 		if ( isset( $this->_tablet_media_query ) && is_array( $this->_tablet_media_query ) && ! empty( $this->_tablet_media_query ) ) {
 			foreach ( $this->_tablet_media_query as $selector => $string ) {
 				$this->start_media_query( $this->get_media_queries( 'tablet' ) );
@@ -2081,6 +2126,7 @@ class Kadence_Blocks_CSS {
 		$this->_selector_output = '';
 		$this->_selector_states = array();
 		$this->_tablet_media_query = array();
+		$this->_desktop_only_media_query = array();
 		$this->_tablet_only_media_query = array();
 		$this->_mobile_media_query = array();
 		$this->_media_state = 'desktop';
@@ -2136,7 +2182,26 @@ class Kadence_Blocks_CSS {
 
 		return false;
 	}
+	/**
+	 * @param $value
+	 *
+	 * @return bool
+	 */
+	public function is_variable_font_size_value( $value ) {
+		return isset( $this->font_sizes[ $value ] );
+	}
+	/**
+	 * @param $value
+	 *
+	 * @return int|string
+	 */
+	public function get_variable_font_size_value( $value ) {
+		if ( $this->is_variable_font_size_value( $value ) ) {
+			return $this->font_sizes[ $value ];
+		}
 
+		return false;
+	}
 	/**
 	 * @param $value
 	 *

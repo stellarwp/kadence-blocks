@@ -750,11 +750,14 @@
 		  "unit": "px"
 		} ]
 	},
+	"anchor": {
+		"type": "string"
+	},
 	"templateLock": {
 		"type": [ "string", "boolean" ],
 		"enum": [ "all", "insert", "contentOnly", false ]
 	},
-	"blockVersion": {
+	"kbVersion": {
 		"type": "number",
 		"default": ""
 	}

@@ -6,7 +6,7 @@
 // Item
 // Defaults
 
-.kt-row-layout-inner {
+.kt-row-layout-inner, .kb-row-layout-wrap {
 	position: relative;
 	border: 0 solid transparent;
 }
@@ -25,7 +25,7 @@
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
-.alignfull > .kt-row-layout-inner > .kt-row-column-wrap {
+.alignfull > .kt-row-layout-inner > .kt-row-column-wrap, .alignfull.kb-row-layout-wrap > .kt-row-column-wrap {
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
@@ -100,7 +100,7 @@
 	}
 }
 // Background Slider
-.kt-row-layout-inner > .kb-blocks-bg-slider {
+.kt-row-layout-inner > .kb-blocks-bg-slider, .kb-row-layout-wrap > .kb-blocks-bg-slider {
 	position: absolute;
 	left: 0;
 	right: 0;

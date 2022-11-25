@@ -240,43 +240,44 @@ import {
 			</>
 		);
 	};
-	return (
-		<HtmlTagOut { ...blockProps }>
-			<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses } style={ {
-				backgroundImage: ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab && backgroundInline && undefined !== bgImg && '' !== bgImg ? 'url(' + bgImg + ')' : undefined ),
-			} }>
-				{ ( 'slider' === backgroundSettingTab ) && (
-					renderSlider()
-				) }
-				{ ( 'video' === backgroundSettingTab ) && (
-					<div className={ 'kb-blocks-bg-video-container' }>
-						{ ( undefined === backgroundVideoType || '' === backgroundVideoType || 'local' === backgroundVideoType ) && (
-							renderVideo()
-						) }
-					</div>
-				) }
-				{ hasOverlay && (
-					<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
-				) }
-				{ topSep && 'none' !== topSep && '' !== topSep && (
-					<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>
-						<svg style={ { fill: KadenceColorOutput( topSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
-							{ topSVGDivider }
-						</svg>
-					</div>
-				) }
-				<div className={ innerColumnClasses }>
-					<InnerBlocks.Content />
-				</div>
-				{ bottomSep && 'none' !== bottomSep && '' !== bottomSep && (
-					<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` }>
-						<svg style={ { fill: KadenceColorOutput( bottomSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
-							{ bottomSVGDivider }
-						</svg>
-					</div>
-				) }
-			</div>
-		</HtmlTagOut>
-	);
+	// return (
+	// 	<HtmlTagOut { ...blockProps }>
+	// 		<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses } style={ {
+	// 			backgroundImage: ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab && backgroundInline && undefined !== bgImg && '' !== bgImg ? 'url(' + bgImg + ')' : undefined ),
+	// 		} }>
+	// 			{ ( 'slider' === backgroundSettingTab ) && (
+	// 				renderSlider()
+	// 			) }
+	// 			{ ( 'video' === backgroundSettingTab ) && (
+	// 				<div className={ 'kb-blocks-bg-video-container' }>
+	// 					{ ( undefined === backgroundVideoType || '' === backgroundVideoType || 'local' === backgroundVideoType ) && (
+	// 						renderVideo()
+	// 					) }
+	// 				</div>
+	// 			) }
+	// 			{ hasOverlay && (
+	// 				<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
+	// 			) }
+	// 			{ topSep && 'none' !== topSep && '' !== topSep && (
+	// 				<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>
+	// 					<svg style={ { fill: KadenceColorOutput( topSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+	// 						{ topSVGDivider }
+	// 					</svg>
+	// 				</div>
+	// 			) }
+	// 			<div className={ innerColumnClasses }>
+	// 				<InnerBlocks.Content />
+	// 			</div>
+	// 			{ bottomSep && 'none' !== bottomSep && '' !== bottomSep && (
+	// 				<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` }>
+	// 					<svg style={ { fill: KadenceColorOutput( bottomSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+	// 						{ bottomSVGDivider }
+	// 					</svg>
+	// 				</div>
+	// 			) }
+	// 		</div>
+	// 	</HtmlTagOut>
+	// );
+	return <InnerBlocks.Content />;
 }
 export default RowLayoutSave;

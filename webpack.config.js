@@ -21,7 +21,7 @@ module.exports = {
 		'blocks-spacer': './src/blocks/spacer/index.js',
 		'blocks-advancedbtn': './src/blocks/advancedbtn/block.js',
 		'blocks-countup': './src/blocks/countup/block.js',
-		'blocks-row-layout': './src/blocks/row-layout/index.js',
+		'blocks-rowlayout': './src/blocks/row-layout/index.js',
 		'blocks-column': './src/blocks/column/index.js',
 		'blocks-advanced-heading': './src/blocks/advanced-heading/block.js',
 		'blocks-icon': './src/blocks/icon/block.js',
