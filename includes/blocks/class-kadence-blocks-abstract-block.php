@@ -117,7 +117,6 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $block the block data.
 	 */
 	public function output_head_data( $block ) {
-
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
 			if ( isset( $attributes['uniqueID'] ) ) {

@@ -232,7 +232,6 @@ class Kadence_Blocks_CSS {
 				wp_enqueue_style( 'kadence_blocks_css' );
 				wp_add_inline_style( 'kadence_blocks_css', $output );
 			}
-			self::$styles = array();
 		}
 	}
 	/**

@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Instance of this class
@@ -29,7 +29,7 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'table-of-contents';
+	protected $block_name = 'tableofcontents';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -318,4 +318,4 @@ class Kadence_Blocks_Table_Of_Contents_Block extends Kadence_Blocks_Abstract_Blo
 
 }
 
-Kadence_Blocks_Table_Of_Contents_Block::get_instance();
+Kadence_Blocks_Tableofcontents_Block::get_instance();

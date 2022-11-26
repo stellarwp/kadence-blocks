@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Instance of this class
 	 *
@@ -874,30 +874,11 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
-			$css->add_css_string( str_replace( 'selector', '#kt-layout-id' . $unique_id, $attributes['kadenceBlockCSS'] ) );
+			$css->add_css_string( str_replace( 'selector', $base_selector, $attributes['kadenceBlockCSS'] ) );
 		}
 		// Filter with cdn support.
 		$css_output = apply_filters( 'as3cf_filter_post_local_to_provider', $css->css_output() );
 		return $css_output;
-	}
-	/**
-	 * Adds Scripts for row block.
-	 *
-	 * @param array $attributes the blocks attributes.
-	 */
-	public function render_row_layout_scripts( $attributes ) {
-		if ( ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( isset( $attributes['overlayBgImg'] ) && ! empty( $attributes['overlayBgImg'] ) && isset( $attributes['overlayBgImgAttachment'] ) && 'parallax' === $attributes['overlayBgImgAttachment'] ) ) {
-			$this->enqueue_script( 'kadence-blocks-parallax-js' );
-		}
-		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
-			$this->enqueue_style( 'kadence-blocks-pro-slick' );
-			$this->enqueue_script( 'kadence-blocks-slick-init' );
-			// $this->enqueue_style( 'kadence-blocks-tiny-slider' );
-			// $this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
-		}
-		if ( isset( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && isset( $attributes['backgroundVideo'] ) && isset( $attributes['backgroundVideo'][0] ) && isset( $attributes['backgroundVideo'][0]['btns'] ) && true === $attributes['backgroundVideo'][0]['btns'] ) {
-			$this->enqueue_script( 'kadence-blocks-video-bg' );
-		}
 	}
 	/**
 	 * Render svg divider.
@@ -1298,4 +1279,4 @@ class Kadence_Blocks_RowLayout_Block extends Kadence_Blocks_Abstract_Block {
 	}
 }
 
-Kadence_Blocks_RowLayout_Block::get_instance();
+Kadence_Blocks_Rowlayout_Block::get_instance();

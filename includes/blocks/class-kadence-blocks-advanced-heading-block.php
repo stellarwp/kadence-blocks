@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Instance of this class
@@ -29,7 +29,7 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'advanced-heading';
+	protected $block_name = 'advancedheading';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -320,4 +320,4 @@ class Kadence_Blocks_Advanced_Heading_Block extends Kadence_Blocks_Abstract_Bloc
 
 }
 
-Kadence_Blocks_Advanced_Heading_Block::get_instance();
+Kadence_Blocks_Advancedheading_Block::get_instance();
