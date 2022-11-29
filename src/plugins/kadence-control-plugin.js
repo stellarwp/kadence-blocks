@@ -557,17 +557,15 @@ function KadenceConfig() {
 					</PanelBody>
 
 					<PanelBody
-						title={__('Export Block Defaults', 'kadence-blocks')}
+						title={__('Import/Export Block Settings', 'kadence-blocks')}
 						initialOpen={ false }
 					>
 						<ExportDefaults />
-					</PanelBody>
 
-					<PanelBody
-						title={__('Import Block Defaults', 'kadence-blocks')}
-						initialOpen={ false }
-					>
+						<hr/>
+
 						<ImportDefaults />
+
 					</PanelBody>
 
 					<PanelBody

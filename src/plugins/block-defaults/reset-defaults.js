@@ -1,4 +1,7 @@
 import { __ } from '@wordpress/i18n';
+import { SafeParseJSON } from '@kadence/helpers';
+import { get } from 'lodash';
+
 import {
     Fragment,
     useState,
@@ -17,9 +20,13 @@ import {store as noticesStore} from '@wordpress/notices';
 
 function ResetDefaults() {
 
-    const [ includeVisbility, setIncludeVisibility ] = useState(true );
+    const [ includeVisbility, setIncludeVisibility ] = useState( true );
+    const [ includeDefaults, setIncludeDefaults ] = useState( true );
     const [ isConfirmOpen, setIsConfirmOpen ] = useState(false);
     const {createErrorNotice} = useDispatch(noticesStore);
+
+    const blockDefaults = SafeParseJSON(get(kadence_blocks_params, ['configuration'], {}), true );
+    const blockVisibility = SafeParseJSON(get(kadence_blocks_params, ['settings'], {}), true );
 
     const reset = () => {
         apiFetch( {
@@ -40,7 +47,21 @@ function ResetDefaults() {
 
             <p>{ __('Reset all custom block defaults. This will not modify any existing blocks.', 'kadence-blocks' ) }</p>
 
-            <Button isDestructive={ true } onClick={ () => setIsConfirmOpen(true)}>Reset</Button>
+            <CheckboxControl
+                label={__('Reset Block Visibility Settings', 'kadence-blocks')}
+                checked={includeVisbility}
+                onChange={(value) => setIncludeVisibility(value)}
+                disabled={ Object.keys(blockVisibility).length === 0 }
+            />
+
+            <CheckboxControl
+                label={__('Reset Block Defaults', 'kadence-blocks')}
+                checked={includeDefaults}
+                onChange={(value) => setIncludeDefaults(value)}
+                disabled={ Object.keys(blockDefaults).length === 0 }
+            />
+
+            <Button isDestructive={ true } disabled={ !includeVisbility && !includeDefaults } onClick={ () => setIsConfirmOpen(true)}>Reset</Button>
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}
