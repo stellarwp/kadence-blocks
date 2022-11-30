@@ -406,16 +406,18 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Border, have to check for old styles first.
 		if ( ! empty( $attributes['border'] ) || ! empty( $attributes['tabletBorder'] ) || ! empty( $attributes['mobileBorder'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
-			$css->render_border_color( $attributes, 'border' );
+			if ( ! empty( $attributes['border'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attributes['border'] ) );
+			}
 			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
 			if ( ! empty( $attributes['tabletBorder'] ) ) {
 				$css->set_media_state( 'tablet' );
-				$css->render_border_color( $attributes, 'tabletBorder' );
+				$css->add_property( 'border-color', $css->render_color( $attributes['tabletBorder'] ) );
 				$css->set_media_state( 'desktop' );
 			}
 			if ( ! empty( $attributes['mobileBorder'] ) ) {
 				$css->set_media_state( 'mobile' );
-				$css->render_border_color( $attributes, 'mobileBorder' );
+				$css->add_property( 'border-color', $css->render_color( $attributes['mobileBorder'] ) );
 				$css->set_media_state( 'desktop' );
 			}
 		} else {

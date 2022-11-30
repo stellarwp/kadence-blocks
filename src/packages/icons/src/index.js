@@ -44,6 +44,9 @@ export { default as slider } from './slider'
 export { default as video } from './video'
 export { default as gradient } from './gradient'
 export { default as brush } from './brush'
+export { default as hoverToggle } from './hover'
+export { default as copy } from './copy'
+export { default as paste } from './paste'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'

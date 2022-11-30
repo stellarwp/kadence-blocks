@@ -102,6 +102,7 @@ import {
 	TabPanel,
 	Popover,
 	ToolbarGroup,
+	ToolbarButton,
 	TextControl,
 	Dashicon,
 	Toolbar,
@@ -563,93 +564,95 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const marginMouseOver = mouseOverVisualizer();
 	return (
 		<>
-			<BlockControls>
-				<BlockAlignmentToolbar
-					value={ align }
-					controls={ [ 'center', 'wide', 'full' ] }
-					onChange={ value => setAttributes( { align: value } ) }
-				/>
-				<Toolbar>
-					<Button
-						className="kb-content-width"
-						icon={ inheritMaxWidth ? <ContentWidthIcon value='theme' /> : <ContentWidthIcon value='normal' /> }
-						onClick={ () => {
-							if ( ! contentWidthPop ) {
-								setContentWidthPop( true );
-							}
-						} }
-						isPressed={ contentWidthPop ? true : false }
-						aria-haspopup="true"
-						aria-expanded={ contentWidthPop }
-						label={  __( 'Inner Content Width', 'kadence-blocks' ) }
-						showTooltip={ true }
+			{ 'contentOnly' !== templateLock && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
+				<BlockControls>
+					<BlockAlignmentToolbar
+						value={ align }
+						controls={ [ 'center', 'wide', 'full' ] }
+						onChange={ value => setAttributes( { align: value } ) }
 					/>
-					{ contentWidthPop && (
-						<Popover
-							className="kb-content-width-popover"
-							position="bottom center"
-							onClick={ () => {} }
-							expandOnMobile={ true }
-							onClose={ () => {
-								setContentWidthPop( false );
+					<ToolbarGroup>
+						<ToolbarButton
+							className="kb-content-width"
+							icon={ inheritMaxWidth ? <ContentWidthIcon value='theme' /> : <ContentWidthIcon value='normal' /> }
+							onClick={ () => {
+								if ( ! contentWidthPop ) {
+									setContentWidthPop( true );
+								}
 							} }
-						>
-							<div className="kb-content-width-popover-inner-wrap">
-								<ToggleControl
-									label={ __( 'Use Theme Content Inner Width?', 'kadence-blocks' ) }
-									checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
-									onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
-								/>
-								{ inheritMaxWidth !== true && (
-									<>
-										<ResponsiveRangeControls
-											label={ __( 'Custom Content Max Width', 'kadence-blocks' ) }
-											value={ maxWidth ? maxWidth : '' }
-											onChange={ value => {
-												setAttributes( { maxWidth: value } );
-											} }
-											tabletValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ) }
-											onChangeTablet={ ( value ) => {
-												setAttributes( { responsiveMaxWidth: [ value, ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) ] } );
-											} }
-											mobileValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) }
-											onChangeMobile={ ( value ) => {
-												setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
-											} }
-											min={ 0 }
-											max={ ( maxWidthUnit === 'px' ? 2000 : 100 ) }
-											step={ 1 }
-											unit={ maxWidthUnit ? maxWidthUnit : 'px' }
-											onUnit={ ( value ) => {
-												setAttributes( { maxWidthUnit: value } );
-											} }
-											units={ [ 'px', '%', 'vw', 'rem' ] }
-										/>
-									</>
-								) }
-							</div>
-						</Popover>
-					) }
-				</Toolbar>
-				<ToolbarGroup
-					isCollapsed={ true }
-					icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
-					label={ __( 'Vertical Align', 'kadence-blocks' )  }
-					controls={ verticalAlignOptions }
-				/>
-				<Toolbar>
-					<Button
-						className="kb-row-add-section"
-						icon={ plusCircle }
-						onClick={ () => {
-							const newBlock = createBlock( 'kadence/column', {} );
-							insertSection( newBlock );
-						} }
-						label={  __( 'Add Another Section', 'kadence-blocks' ) }
-						showTooltip={ true }
+							isPressed={ contentWidthPop ? true : false }
+							aria-haspopup="true"
+							aria-expanded={ contentWidthPop }
+							label={  __( 'Inner Content Width', 'kadence-blocks' ) }
+							showTooltip={ true }
+						/>
+						{ contentWidthPop && (
+							<Popover
+								className="kb-content-width-popover"
+								position="bottom center"
+								onClick={ () => {} }
+								expandOnMobile={ true }
+								onClose={ () => {
+									setContentWidthPop( false );
+								} }
+							>
+								<div className="kb-content-width-popover-inner-wrap">
+									<ToggleControl
+										label={ __( 'Use Theme Content Inner Width?', 'kadence-blocks' ) }
+										checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
+										onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
+									/>
+									{ inheritMaxWidth !== true && (
+										<>
+											<ResponsiveRangeControls
+												label={ __( 'Custom Content Max Width', 'kadence-blocks' ) }
+												value={ maxWidth ? maxWidth : '' }
+												onChange={ value => {
+													setAttributes( { maxWidth: value } );
+												} }
+												tabletValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ) }
+												onChangeTablet={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ value, ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) ] } );
+												} }
+												mobileValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) }
+												onChangeMobile={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
+												} }
+												min={ 0 }
+												max={ ( maxWidthUnit === 'px' ? 2000 : 100 ) }
+												step={ 1 }
+												unit={ maxWidthUnit ? maxWidthUnit : 'px' }
+												onUnit={ ( value ) => {
+													setAttributes( { maxWidthUnit: value } );
+												} }
+												units={ [ 'px', '%', 'vw', 'rem' ] }
+											/>
+										</>
+									) }
+								</div>
+							</Popover>
+						) }
+					</ToolbarGroup>
+					<ToolbarGroup
+						isCollapsed={ true }
+						icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
+						label={ __( 'Vertical Align', 'kadence-blocks' )  }
+						controls={ verticalAlignOptions }
 					/>
-				</Toolbar>
-			</BlockControls>
+					<ToolbarGroup>
+						<ToolbarButton
+							className="kb-row-add-section"
+							icon={ plusCircle }
+							onClick={ () => {
+								const newBlock = createBlock( 'kadence/column', {} );
+								insertSection( newBlock );
+							} }
+							label={  __( 'Add Another Section', 'kadence-blocks' ) }
+							showTooltip={ true }
+						/>
+					</ToolbarGroup>
+				</BlockControls>
+			)}
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<>
 					<InspectorControls>

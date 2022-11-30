@@ -47,6 +47,8 @@ export { default as FontSizeControl } from './font-size';
 export { default as ResponsiveFontSizeControl } from './font-size/responsive';
 export { default as ResponsiveUnitControl } from './unit/responsive';
 export { default as InspectorControlTabs } from './inspector-control-tabs';
+export { default as HoverToggleControl } from './hover-toggle';
+export { default as TagSelect } from './tag-select';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';

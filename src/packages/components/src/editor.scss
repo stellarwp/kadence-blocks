@@ -56,3 +56,14 @@ svg {
 .kb-letter-case .kadence-radio-container-control.components-button-group .components-button {
 	height: 32px;
 }
+// Copy Paste Styles
+.kb-copy-paste-styles__popover .components-menu-item__button svg {
+    width: 16px;
+    height: 16px;
+}
+// Vertical Align
+.components-toolbar-group.kb-vertical-align .components-button svg {
+    width: 18px;
+    height: 18px;
+    min-width: 0;
+}

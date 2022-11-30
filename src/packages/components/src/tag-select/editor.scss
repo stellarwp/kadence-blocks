@@ -1,0 +1,47 @@
+.kb-tag-level-control .components-toolbar__control.components-button[data-subscript]:after {
+    line-height: 15px;
+    font-size: 12px;
+}
+.kb-tag-level-control .components-icon-button:not(:disabled).is-active:hover:after, .kb-tag-level-control .components-button:not(:disabled).is-active:hover:after {
+    color:#191e23;
+}
+.kb-tag-level-control .components-toolbar__control.components-button:before {
+    left: 0px;
+    right: 0px;
+}
+.kb-tag-level-control .components-icon-button.is-active, .kb-tag-level-control .components-button.is-active {
+    outline: none;
+    color: #fff;
+    box-shadow: none;
+    background: #555d66;
+}
+.kb-tag-level-control .components-toolbar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(40px, 1fr) );
+}
+.kb-tag-level-control div.has-left-divider .components-toolbar__control.components-button[aria-label="Paragraph"] svg {
+    max-height: 14px;
+}
+.kb-tag-level-control div.has-left-divider .components-toolbar__control.components-button[aria-label="Paragraph"] svg path {
+    transform: translate(-2px, -1px);
+}
+.kb-tag-level-control .components-toolbar > div {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+.kb-tag-level-control .components-toolbar>div+div.has-left-divider {
+    margin-left: 0;
+}
+.kb-tag-level-control .components-toolbar>div+div.has-left-divider:before {
+    top: 12px;
+    left: 0;
+}
+.kb-tag-level-control .components-toolbar__control.components-button {
+    width: 30px;
+    min-width: 30px !important;
+    height: 33px;
+	padding-left: 0 !important;
+    padding-right: 0 !important;
+}

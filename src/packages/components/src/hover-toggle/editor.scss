@@ -1,0 +1,16 @@
+.kb-hover-toggle-control-toggle {
+    position: relative;
+}
+.kb-hover-toggle-control-toggle .components-button.kb-hover-toggle-btn{
+    position: absolute;
+    min-width: 32px;
+    padding: 6px;
+    height: 32px;
+    top: -44px;
+    font-size: 18px;
+    right: 32px;
+}
+.kb-hover-toggle-control-toggle .components-button.kb-hover-toggle-btn svg {
+    width: 1em;
+    height: 1em;
+}

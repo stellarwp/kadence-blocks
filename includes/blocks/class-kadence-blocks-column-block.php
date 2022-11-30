@@ -55,14 +55,68 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
-			// Backward compatablity.
-			$css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
-			$css->add_property( 'flex', '1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			//Section inside Section compatablity.
+			// $css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			// $css->add_property( 'flex', '1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->add_property( 'max-width', 'unset' );
 			$css->add_property( 'margin-left', 'unset' );
 			$css->add_property( 'margin-right', 'unset' );
+		}
+		// Margin, check old first.
+		if ( $css->is_number( $attributes['topMargin'] ) || $css->is_number( $attributes['bottomMargin'] ) || $css->is_number( $attributes['rightMargin'] ) || $css->is_number( $attributes['leftMargin'] ) || $css->is_number( $attributes['topMarginT'] ) || $css->is_number( $attributes['bottomMarginT'] ) || $css->is_number( $attributes['rightMarginT'] ) || $css->is_number( $attributes['leftMarginT'] ) || $css->is_number( $attributes['topMarginM'] ) || $css->is_number( $attributes['bottomMarginM'] ) || $css->is_number( $attributes['rightMarginM'] ) || $css->is_number( $attributes['leftMarginM'] ) ) {
+			$css->set_selector( '.wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( $css->is_number( $attributes['topMargin'] ) ) {
+				$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['bottomMargin'] ) ) {
+				$css->add_property( 'margin-bottom', $attributes['bottomMargin'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['rightMargin'] ) ) {
+				$css->add_property( 'margin-right', $attributes['rightMargin'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['leftMargin'] ) ) {
+				$css->add_property( 'margin-left', $attributes['leftMargin'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			$css->set_media_state( 'tablet' );
+			if ( $css->is_number( $attributes['topMarginT'] ) ) {
+				$css->add_property( 'margin-top', $attributes['topMarginT'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['bottomMarginT'] ) ) {
+				$css->add_property( 'margin-bottom', $attributes['bottomMarginT'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['rightMarginT'] ) ) {
+				$css->add_property( 'margin-right', $attributes['rightMarginT'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['leftMarginT'] ) ) {
+				$css->add_property( 'margin-left', $attributes['leftMarginT'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			$css->set_media_state( 'mobile' );
+			if ( $css->is_number( $attributes['topMarginM'] ) ) {
+				$css->add_property( 'margin-top', $attributes['topMarginM'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['bottomMarginM'] ) ) {
+				$css->add_property( 'margin-bottom', $attributes['bottomMarginM'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['rightMarginM'] ) ) {
+				$css->add_property( 'margin-right', $attributes['rightMarginM'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['leftMarginM'] ) ) {
+				$css->add_property( 'margin-left', $attributes['leftMarginM'] . ( ! empty( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
+			}
+			$css->set_media_state( 'desktop' );
+		} else {
+			// New margin intentially targets outer container, improvement and don't have to worry about issues with row layout.
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->render_measure_output(
+				$attributes,
+				'margin',
+				'margin',
+				array(
+					'unit_key' => 'marginType',
+				)
+			);
 		}
 		if ( ! empty( $attributes['sticky'] ) && true === $attributes['sticky'] ) {
 			$css->set_selector( '#wrapper.site' );
@@ -106,124 +160,106 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
-			'unit_key' => 'paddingType'
-		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
-			'unit_key' => 'marginType'
-		) );
-		if ( isset( $attributes['topPadding'] ) || isset( $attributes['bottomPadding'] ) || isset( $attributes['leftPadding'] ) || isset( $attributes['rightPadding'] ) || isset( $attributes['topMargin'] ) || isset( $attributes['bottomMargin'] ) || isset( $attributes['rightMargin'] ) || isset( $attributes['leftMargin'] ) || ! empty( $attributes['height'][0] ) || isset( $attributes['border'] ) || isset( $attributes['borderRadius'] ) || isset( $attributes['borderWidth'] ) || ( isset( $attributes['displayShadow'] ) && true == $attributes['displayShadow'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( ! empty( $attributes['height'][0] ) ) {
-				$css->add_property( 'min-height', $attributes['height'][0] . ( isset( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
+		// Padding, check old first.
+		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingT'] ) || $css->is_number( $attributes['bottomPaddingT'] ) || $css->is_number( $attributes['leftPaddingT'] ) || $css->is_number( $attributes['rightPaddingT'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
+			if ( $css->is_number( $attributes['topPadding'] ) ) {
+				$css->add_property( 'padding-top', $attributes['topPadding'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attributes['topPadding'] ) ) {
-				$css->add_property( 'padding-top', $attributes['topPadding'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			if ( $css->is_number( $attributes['bottomPadding'] ) ) {
+				$css->add_property( 'padding-bottom', $attributes['bottomPadding'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attributes['bottomPadding'] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['bottomPadding'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			if ( $css->is_number( $attributes['leftPadding'] ) ) {
+				$css->add_property( 'padding-left', $attributes['leftPadding'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attributes['leftPadding'] ) ) {
-				$css->add_property( 'padding-left', $attributes['leftPadding'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			if ( $css->is_number( $attributes['rightPadding'] ) ) {
+				$css->add_property( 'padding-right', $attributes['rightPadding'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attributes['rightPadding'] ) ) {
-				$css->add_property( 'padding-right', $attributes['rightPadding'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			$css->set_media_state( 'tablet' );
+			if ( $css->is_number( $attributes['topPaddingT'] ) ) {
+				$css->add_property( 'padding-top', $attributes['topPaddingT'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
 			}
-			if ( isset( $attributes['border'] ) ) {
+			if ( $css->is_number( $attributes['bottomPaddingT'] ) ) {
+				$css->add_property( 'padding-bottom', $attributes['bottomPaddingT'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['leftPaddingT'] ) ) {
+				$css->add_property( 'padding-left', $attributes['leftPaddingT'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['rightPaddingT'] ) ) {
+				$css->add_property( 'padding-right', $attributes['rightPaddingT'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			$css->set_media_state( 'mobile' );
+			if ( $css->is_number( $attributes['topPaddingM'] ) ) {
+				$css->add_property( 'padding-top', $attributes['topPaddingM'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['bottomPaddingM'] ) ) {
+				$css->add_property( 'padding-bottom', $attributes['bottomPaddingM'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['leftPaddingM'] ) ) {
+				$css->add_property( 'padding-left', $attributes['leftPaddingM'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			if ( $css->is_number( $attributes['rightPaddingM'] ) ) {
+				$css->add_property( 'padding-right', $attributes['rightPaddingM'] . ( ! empty( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
+			}
+			$css->set_media_state( 'desktop' );
+		} else {
+			$css->render_measure_output(
+				$attributes,
+				'padding',
+				'padding',
+				array(
+					'unit_key' => 'paddingType',
+				)
+			);
+		}
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		if ( $css->is_number( $attributes['height'][0] ) ) {
+			$css->add_property( 'min-height', $attributes['height'][0] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
+		}
+		$css->set_media_state( 'tablet' );
+		if ( $css->is_number( $attributes['height'][1] ) ) {
+			$css->add_property( 'min-height', $attributes['height'][1] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
+		}
+		$css->set_media_state( 'mobile' );
+		if ( $css->is_number( $attributes['height'][2] ) ) {
+			$css->add_property( 'min-height', $attributes['height'][2] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
+		}
+		$css->set_media_state( 'desktop' );
+		if ( isset( $attributes['displayShadow'] ) && true == $attributes['displayShadow'] ) {
+			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadow'][0]['inset'] ) && true === $attributes['shadow'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadow'][0]['hOffset'] ) && is_numeric( $attributes['shadow'][0]['hOffset'] ) ? $attributes['shadow'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['vOffset'] ) && is_numeric( $attributes['shadow'][0]['vOffset'] ) ? $attributes['shadow'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['blur'] ) && is_numeric( $attributes['shadow'][0]['blur'] ) ? $attributes['shadow'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadow'][0]['spread'] ) && is_numeric( $attributes['shadow'][0]['spread'] ) ? $attributes['shadow'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadow'][0]['color'] ) && ! empty( $attributes['shadow'][0]['color'] ) ? $attributes['shadow'][0]['color'] : '#000000' ), ( isset( $attributes['shadow'][0]['opacity'] ) && is_numeric( $attributes['shadow'][0]['opacity'] ) ? $attributes['shadow'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
+			}
+		}
+		// Border, check old first.
+		if ( ! empty( $attributes['border'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
+			if ( ! empty( $attributes['border'] ) ) {
 				$alpha = ( isset( $attributes['borderOpacity'] ) && ! empty( $attributes['borderOpacity'] ) ? $attributes['borderOpacity'] : 1 );
 				$css->add_property( 'border-color', $css->render_color( $attributes['border'], $alpha ) );
 			}
-			if ( isset( $attributes['borderWidth'] ) && ! empty( $attributes['borderWidth'] ) && is_array( $attributes['borderWidth'] ) ) {
-				if ( isset( $attributes['borderWidth'][0] ) && is_numeric( $attributes['borderWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['borderWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][1] ) && is_numeric( $attributes['borderWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['borderWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][2] ) && is_numeric( $attributes['borderWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['borderWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['borderWidth'][3] ) && is_numeric( $attributes['borderWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['borderWidth'][3] . 'px' );
-				}
-			}
-			if ( isset( $attributes['borderRadius'] ) && ! empty( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-				if ( isset( $attributes['borderRadius'][0] ) && is_numeric( $attributes['borderRadius'][0] ) ) {
-					$css->add_property( 'border-top-left-radius', $attributes['borderRadius'][0] . 'px' );
-				}
-				if ( isset( $attributes['borderRadius'][1] ) && is_numeric( $attributes['borderRadius'][1] ) ) {
-					$css->add_property( 'border-top-right-radius', $attributes['borderRadius'][1] . 'px' );
-				}
-				if ( isset( $attributes['borderRadius'][2] ) && is_numeric( $attributes['borderRadius'][2] ) ) {
-					$css->add_property( 'border-bottom-right-radius', $attributes['borderRadius'][2] . 'px' );
-				}
-				if ( isset( $attributes['borderRadius'][3] ) && is_numeric( $attributes['borderRadius'][3] ) ) {
-					$css->add_property( 'border-bottom-left-radius', $attributes['borderRadius'][3] . 'px' );
-				}
-			}
-			if ( isset( $attributes['displayShadow'] ) && true == $attributes['displayShadow'] ) {
-				if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
-					$css->add_property( 'box-shadow', ( isset( $attributes['shadow'][0]['inset'] ) && true === $attributes['shadow'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadow'][0]['hOffset'] ) && is_numeric( $attributes['shadow'][0]['hOffset'] ) ? $attributes['shadow'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['vOffset'] ) && is_numeric( $attributes['shadow'][0]['vOffset'] ) ? $attributes['shadow'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['blur'] ) && is_numeric( $attributes['shadow'][0]['blur'] ) ? $attributes['shadow'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadow'][0]['spread'] ) && is_numeric( $attributes['shadow'][0]['spread'] ) ? $attributes['shadow'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadow'][0]['color'] ) && ! empty( $attributes['shadow'][0]['color'] ) ? $attributes['shadow'][0]['color'] : '#000000' ), ( isset( $attributes['shadow'][0]['opacity'] ) && is_numeric( $attributes['shadow'][0]['opacity'] ) ? $attributes['shadow'][0]['opacity'] : 0.2 ) ) );
-				} else {
-					$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
-				}
-			}
+			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
+		} else {
+			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
-		if ( isset( $attributes['topMargin'] ) || isset( $attributes['bottomMargin'] ) || isset( $attributes['rightMargin'] ) || isset( $attributes['leftMargin'] ) ) {
-			$css->set_selector( '.wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( isset( $attributes['topMargin'] ) ) {
-				$css->add_property( 'margin-top', $attributes['topMargin'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['bottomMargin'] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['bottomMargin'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['rightMargin'] ) ) {
-				$css->add_property( 'margin-right', $attributes['rightMargin'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['leftMargin'] ) ) {
-				$css->add_property( 'margin-left', $attributes['leftMargin'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-		}
-		// Hover Styles.
-		if ( isset( $attributes['borderHover'] ) || isset( $attributes['borderHoverRadius'] ) || isset( $attributes['borderHoverWidth'] ) || ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
-			if ( isset( $attributes['borderHover'] ) ) {
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+		// Border Hover Styles, check old first.
+		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+		if ( ! empty( $attributes['borderHover'] ) || $css->is_number( $attributes['borderHoverWidth'][0] ) || $css->is_number( $attributes['borderHoverWidth'][1] ) || $css->is_number( $attributes['borderHoverWidth'][2] ) || $css->is_number( $attributes['borderHoverWidth'][3] ) || $css->is_number( $attributes['tabletBorderHoverWidth'][0] ) || $css->is_number( $attributes['tabletBorderHoverWidth'][1] ) || $css->is_number( $attributes['tabletBorderHoverWidth'][2] ) || $css->is_number( $attributes['tabletBorderHoverWidth'][3] ) || $css->is_number( $attributes['mobileBorderHoverWidth'][0] ) || $css->is_number( $attributes['mobileBorderHoverWidth'][1] ) || $css->is_number( $attributes['mobileBorderHoverWidth'][2] ) || $css->is_number( $attributes['mobileBorderHoverWidth'][3] ) ) {
+			if ( ! empty( $attributes['borderHover'] ) ) {
 				$css->add_property( 'border-color', $css->render_color( $attributes['borderHover'] ) );
 			}
-			if ( isset( $attributes['borderHoverWidth'] ) && ! empty( $attributes['borderHoverWidth'] ) && is_array( $attributes['borderHoverWidth'] ) ) {
-				if ( isset( $attributes['borderHoverWidth'][0] ) && is_numeric( $attributes['borderHoverWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['borderHoverWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverWidth'][1] ) && is_numeric( $attributes['borderHoverWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['borderHoverWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverWidth'][2] ) && is_numeric( $attributes['borderHoverWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['borderHoverWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverWidth'][3] ) && is_numeric( $attributes['borderHoverWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['borderHoverWidth'][3] . 'px' );
-				}
-			}
-			if ( isset( $attributes['borderHoverRadius'] ) && ! empty( $attributes['borderHoverRadius'] ) && is_array( $attributes['borderHoverRadius'] ) ) {
-				if ( isset( $attributes['borderHoverRadius'][0] ) && is_numeric( $attributes['borderHoverRadius'][0] ) ) {
-					$css->add_property( 'border-top-left-radius', $attributes['borderHoverRadius'][0] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverRadius'][1] ) && is_numeric( $attributes['borderHoverRadius'][1] ) ) {
-					$css->add_property( 'border-top-right-radius', $attributes['borderHoverRadius'][1] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverRadius'][2] ) && is_numeric( $attributes['borderHoverRadius'][2] ) ) {
-					$css->add_property( 'border-bottom-right-radius', $attributes['borderHoverRadius'][2] . 'px' );
-				}
-				if ( isset( $attributes['borderHoverRadius'][3] ) && is_numeric( $attributes['borderHoverRadius'][3] ) ) {
-					$css->add_property( 'border-bottom-left-radius', $attributes['borderHoverRadius'][3] . 'px' );
-				}
-			}
-			if ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) {
-				if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {
-					$css->add_property( 'box-shadow', ( isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowHover'][0]['hOffset'] ) ? $attributes['shadowHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowHover'][0]['vOffset'] ) ? $attributes['shadowHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['blur'] ) && is_numeric( $attributes['shadowHover'][0]['blur'] ) ? $attributes['shadowHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['spread'] ) && is_numeric( $attributes['shadowHover'][0]['spread'] ) ? $attributes['shadowHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowHover'][0]['color'] ) && ! empty( $attributes['shadowHover'][0]['color'] ) ? $attributes['shadowHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowHover'][0]['opacity'] ) && is_numeric( $attributes['shadowHover'][0]['opacity'] ) ? $attributes['shadowHover'][0]['opacity'] : 0.2 ) ) );
-				} else {
-					$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
-				}
+			$css->render_measure_output( $attributes, 'borderHoverWidth', 'border-width' );
+		} else {
+			$css->render_border_styles( $attributes, 'borderHoverStyle' );
+		}
+		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius', array( 'unit_key' => 'borderHoverRadiusUnit' ) );
+
+		if ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowHover'][0]['hOffset'] ) ? $attributes['shadowHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowHover'][0]['vOffset'] ) ? $attributes['shadowHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['blur'] ) && is_numeric( $attributes['shadowHover'][0]['blur'] ) ? $attributes['shadowHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['spread'] ) && is_numeric( $attributes['shadowHover'][0]['spread'] ) ? $attributes['shadowHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowHover'][0]['color'] ) && ! empty( $attributes['shadowHover'][0]['color'] ) ? $attributes['shadowHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowHover'][0]['opacity'] ) && is_numeric( $attributes['shadowHover'][0]['opacity'] ) ? $attributes['shadowHover'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
 			}
 		}
 		// Direction Styles.
@@ -315,69 +351,101 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'justify-content', $align );
 		}
 		// Background.
-		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			$alpha = ( isset( $attributes['backgroundOpacity'] ) && is_numeric( $attributes['backgroundOpacity'] ) ? $attributes['backgroundOpacity'] : 1 );
-			$css->add_property( 'background-color', $css->render_color( $attributes['background'], $alpha ) );
-		}
-		if ( isset( $attributes['backgroundImg'] ) && is_array( $attributes['backgroundImg'] ) && isset( $attributes['backgroundImg'][0] ) && is_array( $attributes['backgroundImg'][0] ) && isset( $attributes['backgroundImg'][0]['bgImg'] ) && ! empty( $attributes['backgroundImg'][0]['bgImg'] ) ) {
-			$bg_img = $attributes['backgroundImg'][0];
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img['bgImg'] ) );
-			$css->add_property( 'background-size', ( ! empty( $bg_img['bgImgSize'] ) ? $bg_img['bgImgSize'] : 'cover' ) );
-			$css->add_property( 'background-position', ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) );
-			$css->add_property( 'background-attachment', ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) );
-			$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
+		$background_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		switch ( $background_type ) {
+			case 'normal':
+				if ( ! empty( $attributes['background'] ) ) {
+					$alpha = ( $css->is_number( $attributes['backgroundOpacity'] ) ? $attributes['backgroundOpacity'] : 1 );
+					$css->add_property( 'background-color', $css->render_color( $attributes['background'], $alpha ) );
+				}
+				if ( ! empty( $attributes['backgroundImg'][0]['bgImg'] ) ) {
+					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImg'][0]['bgImg'] ) );
+					$css->add_property( 'background-size', ( isset( $attributes['backgroundImg'][0]['bgImgSize'] ) ? $attributes['backgroundImg'][0]['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( isset( $attributes['backgroundImg'][0]['bgImgPosition'] ) ? $attributes['backgroundImg'][0]['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( isset( $attributes['backgroundImg'][0]['bgImgAttachment'] ) ? $attributes['backgroundImg'][0]['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( isset( $attributes['backgroundImg'][0]['bgImgRepeat'] ) ? $attributes['backgroundImg'][0]['bgImgRepeat'] : 'no-repeat' ) );
+				}
+				break;
+			case 'gradient':
+				if ( ! empty( $attributes['gradient'] ) ) {
+					$css->add_property( 'background-image', $attributes['gradient'] );
+				}
+				break;
 		}
 		// Background Hover.
-		if ( isset( $attributes['backgroundHover'] ) && ! empty( $attributes['backgroundHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHover'] ) );
-		}
-		if ( isset( $attributes['backgroundImgHover'] ) && is_array( $attributes['backgroundImgHover'] ) && isset( $attributes['backgroundImgHover'][0] ) && is_array( $attributes['backgroundImgHover'][0] ) && isset( $attributes['backgroundImgHover'][0]['bgImg'] ) && ! empty( $attributes['backgroundImgHover'][0]['bgImg'] ) ) {
-			$bg_img_hover = $attributes['backgroundImgHover'][0];
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
-			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img_hover['bgImg'] ) );
-			$css->add_property( 'background-size', ( ! empty( $bg_img_hover['bgImgSize'] ) ? $bg_img_hover['bgImgSize'] : 'cover' ) );
-			$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
-			$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
-			$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
+		$hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		switch ( $hover_type ) {
+			case 'normal':
+				if ( ! empty( $attributes['backgroundHover'] ) ) {
+					$css->render_color_output( $attributes, 'backgroundHover', 'background-color' );
+				}
+				if ( ! empty( $attributes['backgroundImgHover'][0]['bgImg'] ) ) {
+					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImgHover'][0]['bgImg'] ) );
+					$css->add_property( 'background-size', ( isset( $attributes['backgroundImgHover'][0]['bgImgSize'] ) ? $attributes['backgroundImgHover'][0]['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( isset( $attributes['backgroundImgHover'][0]['bgImgPosition'] ) ? $attributes['backgroundImgHover'][0]['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( isset( $attributes['backgroundImgHover'][0]['bgImgAttachment'] ) ? $attributes['backgroundImgHover'][0]['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( isset( $attributes['backgroundImgHover'][0]['bgImgRepeat'] ) ? $attributes['backgroundImgHover'][0]['bgImgRepeat'] : 'no-repeat' ) );
+				}
+				break;
+			case 'gradient':
+				if ( ! empty( $attributes['gradientHover'] ) ) {
+					$css->add_property( 'background-image', $attributes['gradientHover'] );
+				}
+				break;
 		}
 		// Overlay.
-		if ( isset( $attributes['overlayOpacity'] ) && is_numeric( $attributes['overlayOpacity'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );
+		$overlay_type = ! empty( $attributes['overlayType'] ) ? $attributes['overlayType'] : 'normal';
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );
+		if ( $css->is_number( $attributes['overlayOpacity'] ) ) {
 			$css->add_property( 'opacity', $attributes['overlayOpacity'] );
 		}
-		if ( isset( $attributes['overlay'] ) && ! empty( $attributes['overlay'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['overlay'] ) );
-		}
-		if ( isset( $attributes['overlayImg'] ) && is_array( $attributes['overlayImg'] ) && isset( $attributes['overlayImg'][0] ) && is_array( $attributes['overlayImg'][0] ) && isset( $attributes['overlayImg'][0]['bgImg'] ) && ! empty( $attributes['overlayImg'][0]['bgImg'] ) ) {
-			$bg_img = $attributes['overlayImg'][0];
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );
-			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img['bgImg'] ) );
-			$css->add_property( 'background-size', ( ! empty( $bg_img['bgImgSize'] ) ? $bg_img['bgImgSize'] : 'cover' ) );
-			$css->add_property( 'background-position', ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) );
-			$css->add_property( 'background-attachment', ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) );
-			$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
+		switch ( $overlay_type ) {
+			case 'normal':
+				if ( ! empty( $attributes['overlay'] ) ) {
+					$css->add_property( 'background-color', $css->render_color( $attributes['overlay'] ) );
+				}
+				if ( ! empty( $attributes['overlayImg'][0]['bgImg'] ) ) {
+					$bg_img = $attributes['overlayImg'][0];
+					$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img['bgImg'] ) );
+					$css->add_property( 'background-size', ( ! empty( $bg_img['bgImgSize'] ) ? $bg_img['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
+				}
+				break;
+			case 'gradient':
+				if ( ! empty( $attributes['overlayGradient'] ) ) {
+					$css->add_property( 'background-image', $attributes['overlayGradient'] );
+				}
+				break;
 		}
 		// Overlay Hover.
-		if ( isset( $attributes['overlayHoverOpacity'] ) && is_numeric( $attributes['overlayHoverOpacity'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
+		$overlay_hover_type = ! empty( $attributes['overlayHoverType'] ) ? $attributes['overlayHoverType'] : 'normal';
+		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
+		if ( $css->is_number( $attributes['overlayHoverOpacity'] ) ) {
 			$css->add_property( 'opacity', $attributes['overlayHoverOpacity'] );
 		}
-		if ( isset( $attributes['overlayHover'] ) && ! empty( $attributes['overlayHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['overlayHover'] ) );
-		}
-		if ( isset( $attributes['overlayImgHover'] ) && is_array( $attributes['overlayImgHover'] ) && isset( $attributes['overlayImgHover'][0] ) && is_array( $attributes['overlayImgHover'][0] ) && isset( $attributes['overlayImgHover'][0]['bgImg'] ) && ! empty( $attributes['overlayImgHover'][0]['bgImg'] ) ) {
-			$bg_img_hover = $attributes['overlayImgHover'][0];
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
-			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img_hover['bgImg'] ) );
-			$css->add_property( 'background-size', ( ! empty( $bg_img_hover['bgImgSize'] ) ? $bg_img_hover['bgImgSize'] : 'cover' ) );
-			$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
-			$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
-			$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
+		switch ( $overlay_hover_type ) {
+			case 'normal':
+				if ( ! empty( $attributes['overlayHover'] ) ) {
+					$css->add_property( 'background-color', $css->render_color( $attributes['overlayHover'] ) );
+				}
+				if ( ! empty( $attributes['overlayImgHover'][0]['bgImg'] ) ) {
+					$bg_img_hover = $attributes['overlayImgHover'][0];
+					$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
+					$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img_hover['bgImg'] ) );
+					$css->add_property( 'background-size', ( ! empty( $bg_img_hover['bgImgSize'] ) ? $bg_img_hover['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
+				}
+			case 'gradient':
+				if ( ! empty( $attributes['overlayGradientHover'] ) ) {
+					$css->add_property( 'background-image', $attributes['overlayGradientHover'] );
+				}
+				break;
 		}
 		// Align.
 		if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && isset( $attributes['textAlign'][0] ) && ! empty( $attributes['textAlign'][0] ) ) {
@@ -500,51 +568,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
-		if ( isset( $attributes['topPaddingT'] ) || isset( $attributes['bottomPaddingT'] ) || isset( $attributes['leftPaddingT'] ) || isset( $attributes['rightPaddingT'] ) || ( isset( $attributes['height'][1] ) && is_numeric( $attributes['height'][1] ) ) || isset( $attributes['tabletBorderWidth'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( isset( $attributes['height'][1] ) && is_numeric( $attributes['height'][1] ) ) {
-				$css->add_property( 'min-height', $attributes['height'][1] . ( isset( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
-			}
-			if ( isset( $attributes['topPaddingT'] ) ) {
-				$css->add_property( 'padding-top', $attributes['topPaddingT'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['bottomPaddingT'] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['bottomPaddingT'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['leftPaddingT'] ) ) {
-				$css->add_property( 'padding-left', $attributes['leftPaddingT'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['rightPaddingT'] ) ) {
-				$css->add_property( 'padding-right', $attributes['rightPaddingT'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['topMarginT'] ) ) {
-				$css->add_property( 'margin-top', $attributes['topMarginT'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['bottomMarginT'] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['bottomMarginT'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['rightMarginT'] ) ) {
-				$css->add_property( 'margin-right', $attributes['rightMarginT'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['leftMarginT'] ) ) {
-				$css->add_property( 'margin-left', $attributes['leftMarginT'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletBorderWidth'] ) && ! empty( $attributes['tabletBorderWidth'] ) && is_array( $attributes['tabletBorderWidth'] ) ) {
-				if ( isset( $attributes['tabletBorderWidth'][0] ) && is_numeric( $attributes['tabletBorderWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['tabletBorderWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['tabletBorderWidth'][1] ) && is_numeric( $attributes['tabletBorderWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['tabletBorderWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['tabletBorderWidth'][2] ) && is_numeric( $attributes['tabletBorderWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['tabletBorderWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['tabletBorderWidth'][3] ) && is_numeric( $attributes['tabletBorderWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['tabletBorderWidth'][3] . 'px' );
-				}
-			}
-		}
-		$css->set_media_state( 'desktop' );
 		$css->set_media_state( 'mobile' );
 		if ( ! empty( $attributes['maxWidth'][2] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
@@ -644,54 +667,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( '' !== $gutter ) {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
-		}
-		if ( isset( $attributes['topPaddingM'] ) || isset( $attributes['bottomPaddingM'] ) || isset( $attributes['leftPaddingM'] ) || isset( $attributes['rightPaddingM'] ) || ( isset( $attributes['height'][2] ) && is_numeric( $attributes['height'][2] ) ) || isset( $attributes['mobileBorderWidth'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( isset( $attributes['height'][2] ) && is_numeric( $attributes['height'][2] ) ) {
-				$css->add_property( 'min-height', $attributes['height'][2] . ( isset( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
-			}
-			if ( isset( $attributes['topPaddingM'] ) ) {
-				$css->add_property( 'padding-top', $attributes['topPaddingM'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['bottomPaddingM'] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['bottomPaddingM'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['leftPaddingM'] ) ) {
-				$css->add_property( 'padding-left', $attributes['leftPaddingM'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['rightPaddingM'] ) ) {
-				$css->add_property( 'padding-right', $attributes['rightPaddingM'] . ( isset( $attributes['paddingType'] ) ? $attributes['paddingType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileBorderWidth'] ) && ! empty( $attributes['mobileBorderWidth'] ) && is_array( $attributes['mobileBorderWidth'] ) ) {
-				if ( isset( $attributes['mobileBorderWidth'][0] ) && is_numeric( $attributes['mobileBorderWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['mobileBorderWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['mobileBorderWidth'][1] ) && is_numeric( $attributes['mobileBorderWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['mobileBorderWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['mobileBorderWidth'][2] ) && is_numeric( $attributes['mobileBorderWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['mobileBorderWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['mobileBorderWidth'][3] ) && is_numeric( $attributes['mobileBorderWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['mobileBorderWidth'][3] . 'px' );
-				}
-			}
-		}
-		if ( isset( $attributes['topMarginM'] ) || isset( $attributes['bottomMarginM'] ) || isset( $attributes['rightMarginM'] ) || isset( $attributes['leftMarginM'] ) ) {
-			$css->set_selector( '.wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( isset( $attributes['topMarginM'] ) ) {
-				$css->add_property( 'margin-top', $attributes['topMarginM'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['bottomMarginM'] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['bottomMarginM'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['rightMarginM'] ) ) {
-				$css->add_property( 'margin-right', $attributes['rightMarginM'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['leftMarginM'] ) ) {
-				$css->add_property( 'margin-left', $attributes['leftMarginM'] . ( isset( $attributes['marginType'] ) ? $attributes['marginType'] : 'px' ) );
-			}
-		}
+		}		
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
 			$css->add_css_string( str_replace( 'selector', '.kadence-column' . $unique_id, $attributes['kadenceBlockCSS'] ) );

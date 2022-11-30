@@ -262,7 +262,7 @@ import { __ } from '@wordpress/i18n';
 			/>
 			{ mobileBackground?.[ 0 ]?.enable && (
 				<>
-				<BackgroundTypeControl
+					<BackgroundTypeControl
 						label={ __( 'Type', 'kadence-blocks' ) }
 						type={ mobileBackground?.[ 0 ]?.type ? mobileBackground[ 0 ].type : 'normal' }
 						onChange={ value => saveMobileBackground( { type: value } ) }

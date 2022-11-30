@@ -260,7 +260,9 @@ class HeadingStyleCopyPaste extends Component {
 			}
 		};
 		return (
-			<Toolbar>
+			<Toolbar
+				label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
+			>
 				<DropdownMenu
 					className="block-editor-block-settings-menu"
 					icon={ copyIcon }

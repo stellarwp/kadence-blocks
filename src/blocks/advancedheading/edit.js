@@ -30,6 +30,7 @@ import {
 	ColorGroup,
 	ResponsiveFontSizeControl,
 	KadenceRadioButtons,
+	TagSelect,
 } from '@kadence/components';
 
 import {
@@ -582,6 +583,17 @@ function KadenceAdvancedHeading( props ) {
 					{( activeTab === 'general' ) &&
 						<>
 							<KadencePanelBody>
+								<TagSelect
+									label={__( 'Change HTML Tag', 'kadence-blocks' )}
+									value={ 'heading' === htmlTag ? level : htmlTag }
+									onChange={ (value) => {
+										if ( 'div' === value || 'p' === value || 'span' === value ) {
+											setAttributes( { level: 2, htmlTag: value } );
+										} else {
+											setAttributes( { level: 2, htmlTag: 'heading' } );
+										}
+									} }
+								/>
 								<div className="kb-tag-level-control components-base-control">
 									<p className="kb-component-label">{__( 'HTML Tag', 'kadence-blocks' )}</p>
 									<ToolbarGroup

@@ -62,7 +62,7 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 				const hasSupport = select( blocksStore ).hasBlockSupport( props.name, 'kbcss' );
 				let openTab = 'general';
 				if ( hasSupport ) {
-					openTab = typeof select( 'kadenceblocks/data' ).getOpenSidebarTabKey === "function" ? select( 'kadenceblocks/data' ).getOpenSidebarTabKey( props.name.replace('kadence/', '') + select( 'core/block-editor' ).getSelectedBlockClientId() ) : 'advanced';
+					openTab = typeof select( 'kadenceblocks/data' ).getOpenSidebarTabKey === "function" ? select( 'kadenceblocks/data' ).getOpenSidebarTabKey( props.name.replace('kadence/', '') + select( 'core/block-editor' ).getSelectedBlockClientId(), 'general' ) : 'advanced';
 				}
 				return {
 					hasBlockCSS: hasSupport,
