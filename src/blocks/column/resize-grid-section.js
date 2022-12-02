@@ -30,7 +30,7 @@ import Draggable from 'react-draggable';
 function ResizeGridSection( props ) {
 	const { attributes, setAttributes, clientId, parentBlock, parentBlockClientId, context } = props;
 	const [ moveGrid, setMoveGrid ] = useState( [55, 35] );
-	const [ gridArea, setGridArea ] = useState( ( attributes.gridArea ? attributes.gridArea : '2/5/4/10' ) );
+	const [ gridArea, setGridArea ] = useState( ( attributes.gridArea ? attributes.gridArea : '2/6/8/10' ) );
 	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
@@ -40,8 +40,8 @@ function ResizeGridSection( props ) {
 		[ clientId ]
 	);
 	const enable = useMemo( () => ( {
-		right: previewDevice === 'Desktop' ? true : false,
-		left: previewDevice === 'Desktop' ? true : false,
+		right: previewDevice === 'Desktop' ? false : false,
+		left: previewDevice === 'Desktop' ? false : false,
 		top: previewDevice === 'Desktop' ? true : false,
 		bottom: previewDevice === 'Desktop' ? true : false,
 	} ), [ previewDevice ] );
@@ -94,34 +94,34 @@ function ResizeGridSection( props ) {
 				setMoveGrid( [parentWidth, parentHeight ])
 			}}
 			onDrag={ ( value ) => {
-				console.log( 'DRAG' );
-				console.log( value );
-				console.log( value.movementX );
-				const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
-				const parentWidth = parentEl.clientWidth/12;
-				const parentHeight = parentEl.clientHeight/6;
-				setMoveGrid( [parentWidth, parentHeight ]);
-				const grid = gridArea.split("/");
-				console.log( grid );
-				let vstart = grid[0];
-				let vend = grid[2];
-				let xstart = grid[1];
-				let xend = grid[3];
-				if ( 0 != value.movementY ) {
-					vstart = Number( vstart ) + value.movementY;
-					vend = Number( vend ) + value.movementY;
-				}
-				if ( 0 != value.movementX ) {
-					xstart =Number( xstart ) + value.movementX;
-					xend = Number( xend ) + value.movementX;
-				}
-				const final = vstart + '/' + xstart + '/' + vend + '/' + xend;
-				console.log( final );
-				setGridArea( final );
+				// console.log( 'DRAG' );
+				// console.log( value );
+				// console.log( value.movementX );
+				// const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
+				// const parentWidth = parentEl.clientWidth/12;
+				// const parentHeight = parentEl.clientHeight/6;
+				// setMoveGrid( [parentWidth, parentHeight ]);
+				// const grid = gridArea.split("/");
+				// console.log( grid );
+				// let vstart = grid[0];
+				// let vend = grid[2];
+				// let xstart = grid[1];
+				// let xend = grid[3];
+				// if ( 0 != value.movementY ) {
+				// 	vstart = Number( vstart ) + value.movementY;
+				// 	vend = Number( vend ) + value.movementY;
+				// }
+				// if ( 0 != value.movementX ) {
+				// 	xstart =Number( xstart ) + value.movementX;
+				// 	xend = Number( xend ) + value.movementX;
+				// }
+				// const final = vstart + '/' + xstart + '/' + vend + '/' + xend;
+				// console.log( final );
+				// setGridArea( final );
 			}}
 			onStop={( value ) => {
-				// console.log( 'STOP' );
-				// console.log( value );
+				console.log( 'STOP' );
+				console.log( value );
 				// const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
 				// const parentWidth = parentEl.clientWidth/12;
 				// const parentHeight = parentEl.clientHeight/6;
@@ -134,7 +134,6 @@ function ResizeGridSection( props ) {
 						gridArea: gridArea,
 						width: 'auto',
 						height: 'auto',
-						transform: 'none !important',
 					}}
 					enable={ enable }
 					handleClasses={ {
@@ -150,7 +149,6 @@ function ResizeGridSection( props ) {
 				>
 				{ props.children }
 				<span className="grid-section-move-handle">
-					{ 'Move' }
 					<Icon icon={dragHandle}/>
 				</span>
 			</ResizableBox>

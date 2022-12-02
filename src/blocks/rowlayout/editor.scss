@@ -651,12 +651,12 @@ div.kb-blocks-bg-video {
     display:grid;
 	position: relative;
 	z-index: 2;
-    grid-template-rows: repeat(6,minmax(24px, 24px));
+    grid-template-rows: repeat(10,minmax(24px, 24px));
     grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 .kt-row-layout-grid-layout > .innerblocks-wrap {
 	.grid-section-handle:not(.react-draggable-dragging) {
-		transform: none !important;
+	//	transform: none !important;
 	}
 	.grid-section-handle > .kadence-column, .grid-section-handle > .kadence-column > .kadence-inner-column-inner {
 		display: flex;
@@ -743,7 +743,7 @@ div.kb-blocks-bg-video {
 }
 .kb-grid-align-display > div {
 	background: rgba(255,255,255,0.6);
-	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+	box-shadow: inset 0 0 0 2px rgba(0,0,0,0.2);
 }
 .kt-row-layout-grid-layout > .innerblocks-wrap .grid-section-move-handle {
     position: absolute;
@@ -753,9 +753,23 @@ div.kb-blocks-bg-video {
     z-index: 1000;
 	background: rgba(255,255,255,0.9);
 	cursor: pointer;
+	display: flex;
+	border: 1px solid;
+	svg {
+		fill:currentColor;
+	}
+}
+.kt-row-layout-grid-layout > .innerblocks-wrap .grid-section-handle:hover .grid-section-move-handle, .kt-row-layout-grid-layout > .innerblocks-wrap  .react-draggable-dragging .grid-section-move-handle {
+		background:rgb(2, 122, 255);
+		color:white;
+		border: 1px solid rgb(2, 122, 255);
+}
+.kt-row-layout-grid-layout > .innerblocks-wrap .grid-section-handle:hover .wp-block-kadence-column,  .kt-row-layout-grid-layout > .innerblocks-wrap  .react-draggable-dragging .wp-block-kadence-column {
+	outline: 2px solid rgb(2, 122, 255);
 }
 .wp-block-kadence-column.is-selected, .wp-block-kadence-column.has-child-selected, .wp-block-kadence-column:hover {
     outline: 2px solid rgb(2, 122, 255);
+	outline-offset: -2px;
 }
 .kb-gridlayout-inner-inner {
     grid-area: 2/5/4/10;

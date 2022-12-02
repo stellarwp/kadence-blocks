@@ -232,7 +232,7 @@
 	display:grid;
 	position: relative;
 	z-index: 2;
-	grid-template-rows: repeat(6,minmax(24px, 24px));
+	grid-template-rows: repeat(10,minmax(24px, 24px));
 	grid-template-columns: repeat(12, minmax(0, 1fr));
 	> .wp-block-kadence-column > .kt-inside-inner-col {
 		display: flex;
