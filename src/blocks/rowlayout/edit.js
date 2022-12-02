@@ -74,6 +74,7 @@ import TwoColumnResizer from './twocolumnresizer';
 import ThreeColumnDrag from './threecolumndrag';
 import PaddingResizer from './padding-resizer';
 import renderSVGDivider from './render-svg-divider';
+import GridVisualizer from './gridvisualizer';
 import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
 import { SPACING_SIZES_MAP } from './constants';
 /**
@@ -508,6 +509,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		{ key: 'right-forty', col: 4, name: __( 'Four: Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
 		{ key: 'equal', col: 5, name: __( 'Five: Equal', 'kadence-blocks' ), icon: fiveColIcon },
 		{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: sixColIcon },
+		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
 	];
 	const verticalAlignOptions = [
 		[
@@ -931,18 +933,16 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				{ columns && columns > 1 && (
-					<>
-						{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID } { column-gap:${ columnGap } }` : '' ) }
-					</>
-				) }
-				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID } { row-gap:${ rowGap } }` : '' ) }
-				{ columns && columns === 2 && (
+				<>
+					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
+				</>
+				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
+				{ columns && columns === 2 && 'grid-layout' !== previewLayout && (
 					<>
 						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
 					</>
 				) }
-				{ columns && columns === 3 && (
+				{ columns && columns === 3 && 'grid-layout' !== previewLayout && (
 					<>
 						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
 					</>
@@ -967,6 +967,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					attributes={ attributes }
 					previewDevice={ previewDevice }
 				/>
+				{ colLayout && 'grid-layout' === colLayout && (
+					<GridVisualizer
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+					/>
+				) }
 				{ ! colLayout && (
 					<div className="kt-select-layout">
 						<div className="kt-select-layout-title">
@@ -985,6 +991,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										setAttributes( {
 											colLayout: key,
 											columns: col,
+											allowResize: key === 'grid-layout' ? false : true,
 										} ) }
 									}
 								/>
@@ -1023,13 +1030,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ colLayout && (
 					<>
-						{ colLayout && 'row' !== colLayout && columns && 2 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 2 === columns && 'grid-layout' !== colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<TwoColumnResizer
 								attributes={ attributes }
 								setAttributes={ setAttributes }
 							/>
 						) }
-						{ colLayout && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && 'grid-layout' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<ThreeColumnDrag
 								attributes={ attributes }
 								setAttributes={ setAttributes }

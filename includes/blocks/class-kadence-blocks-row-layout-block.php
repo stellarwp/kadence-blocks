@@ -84,6 +84,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	public function get_template_columns( $css, $columns, $layout, $inner_selector, $column1 = null, $column2 = null, $column3 = null ) {
 		$grid_layout = 'minmax(0, 1fr)';
 		switch ( $columns ) {
+			case 1:
+				switch ( $layout ) {
+					case 'grid-layout':
+						$grid_layout = 'repeat(12, minmax(0, 1fr))';
+						break;
+				}
+				break;
 			case 2:
 				if ( ! empty( $column1 ) ) {
 					$grid_layout = 'minmax(0, ' . $column1 . '%) minmax(0, ' . abs( $column1 - 100 ) . '%)';

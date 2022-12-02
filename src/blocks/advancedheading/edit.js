@@ -590,18 +590,10 @@ function KadenceAdvancedHeading( props ) {
 										if ( 'div' === value || 'p' === value || 'span' === value ) {
 											setAttributes( { level: 2, htmlTag: value } );
 										} else {
-											setAttributes( { level: 2, htmlTag: 'heading' } );
+											setAttributes( { level: value, htmlTag: 'heading' } );
 										}
 									} }
 								/>
-								<div className="kb-tag-level-control components-base-control">
-									<p className="kb-component-label">{__( 'HTML Tag', 'kadence-blocks' )}</p>
-									<ToolbarGroup
-										isCollapsed={false}
-										label={__( 'Change HTML Tag', 'kadence-blocks' )}
-										controls={headingOptions}
-									/>
-								</div>
 								<ResponsiveAlignControls
 									label={__( 'Text Alignment', 'kadence-blocks' )}
 									value={( align ? align : '' )}
@@ -700,7 +692,7 @@ function KadenceAdvancedHeading( props ) {
 											}}
 											units={[ 'px', 'em', 'rem', 'vw' ]}
 										/>
-										<TwoColumn>
+										<TwoColumn className="kb-font-settings">
 											<ResponsiveUnitControl
 												label={__( 'Height', 'kadence-blocks' )}
 												value={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
@@ -722,10 +714,10 @@ function KadenceAdvancedHeading( props ) {
 												value={textTransform}
 												className={ 'kb-letter-case' }
 												options={[
-													{ value: 'none', label: __( '-', 'kadence-blocks' ) },
-													{ value: 'uppercase', label: __( 'ab', 'kadence-blocks' ) },
-													{ value: 'lowercase', label: __( 'Ab', 'kadence-blocks' ) },
-													{ value: 'capitalize', label: __( 'AB', 'kadence-blocks' ) },
+													{ value: 'none', label: __( '-', 'kadence-blocks' ), tooltip: __( 'None', 'kadence-blocks' ) },
+													{ value: 'uppercase', label: __( 'AB', 'kadence-blocks' ), tooltip: __( 'Uppercase', 'kadence-blocks' ) },
+													{ value: 'lowercase', label: __( 'ab', 'kadence-blocks' ), tooltip: __( 'Lowercase', 'kadence-blocks' ) },
+													{ value: 'capitalize', label: __( 'Ab', 'kadence-blocks' ), tooltip: __( 'Capitalize', 'kadence-blocks' ) },
 												]}
 												allowClear={ true }
 												onChange={value => setAttributes( { textTransform: value } )}

@@ -4,6 +4,9 @@
   "name": "kadence/rowlayout",
   "title": "Row Layout",
   "category": "kadence-blocks",
+  "providesContext": {
+		"allowResize": "allowResize"
+  },
   "usesContext": [
 	"postId",
 	"queryId"
@@ -760,6 +763,10 @@
 	"kbVersion": {
 		"type": "number",
 		"default": ""
+	},
+	"allowResize": {
+		"type": "boolean",
+		"default": true
 	}
   },
   "supports": {

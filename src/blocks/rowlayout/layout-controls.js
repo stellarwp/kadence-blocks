@@ -289,7 +289,7 @@ import { __ } from '@wordpress/i18n';
 									/>}
 								/>
 							) }
-							{ columns > 1 && (
+							{ ( colLayout === 'grid-layout' || columns > 1 ) && (
 								<>
 									<ResponsiveRadioRangeControls
 										label={__( 'Column Gutter', 'kadence-blocks' )}
@@ -331,7 +331,7 @@ import { __ } from '@wordpress/i18n';
 									/>
 								</>
 							)}
-							{ ( innerItemCount > columns || previewDevice != 'Desktop' ) && (
+							{ ( colLayout === 'grid-layout' || innerItemCount > columns || previewDevice != 'Desktop' ) && (
 								<>
 									<ResponsiveRadioRangeControls
 										label={__( 'Row Gutter', 'kadence-blocks' )}

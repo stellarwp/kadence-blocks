@@ -15,16 +15,16 @@ import {
 	MenuItem,
 	Toolbar,
 	ToggleControl,
-	SelectControl
+	SelectControl,
+	ToolbarDropdownMenu,
+	ToolbarGroup,
 } from '@wordpress/components';
 const {
 	localStorage,
 } = window;
-
-const POPOVER_PROPS = {
-	className: 'block-editor-block-settings-menu__popover',
-	position: 'bottom right',
-};
+import {
+	copy as coreCopy,
+} from '@wordpress/icons';
 /**
  * Build the copy and paste controls
  * @returns {object} copy and paste settings.
@@ -260,17 +260,17 @@ class HeadingStyleCopyPaste extends Component {
 			}
 		};
 		return (
-			<Toolbar
-				label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
-			>
-				<DropdownMenu
-					className="block-editor-block-settings-menu"
-					icon={ copyIcon }
+			<ToolbarGroup>
+				<ToolbarDropdownMenu
+					className="kb-copy-paste-styles"
+					icon={ coreCopy }
 					label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
-					popoverProps={ POPOVER_PROPS }
+					popoverProps={ {
+						className: 'kb-copy-paste-styles__popover',
+					} }
 				>
 					{ ( { onClose } ) => (
-						<Fragment>
+						<>
 							<MenuGroup>
 								<MenuItem
 									icon={ 'clipboard' }
@@ -288,10 +288,10 @@ class HeadingStyleCopyPaste extends Component {
 									{ __( 'Paste Styles', 'kadence-blocks' ) }
 								</MenuItem>
 							</MenuGroup>
-						</Fragment>
+						</>
 					) }
-				</DropdownMenu>
-			</Toolbar>
+				</ToolbarDropdownMenu>
+			</ToolbarGroup>
 		);
 	}
 }

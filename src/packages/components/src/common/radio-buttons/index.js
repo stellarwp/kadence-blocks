@@ -60,7 +60,7 @@ export default function KadenceRadioButtons( {
 								onChange( option.value );
 							}
 						} }
-						label={ ( hideLabel ? option.label : undefined )}
+						label={ ( hideLabel ? option.label : option?.tooltip )}
 					>
 					{ ! hideLabel &&  (
 						option.label

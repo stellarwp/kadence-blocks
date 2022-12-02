@@ -228,3 +228,18 @@
 .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-arrow {
 	z-index: 1000;
 }
+.kt-row-layout-grid-layout {
+	display:grid;
+	position: relative;
+	z-index: 2;
+	grid-template-rows: repeat(6,minmax(24px, 24px));
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	> .wp-block-kadence-column > .kt-inside-inner-col {
+		display: flex;
+		max-height: 100%;
+	}
+	img {
+		max-height: 100%;
+		object-fit: contain;
+	}
+}
