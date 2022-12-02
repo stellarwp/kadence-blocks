@@ -29,23 +29,43 @@ function ResetDefaults() {
     const blockVisibility = SafeParseJSON(get(kadence_blocks_params, ['settings'], {}), true );
 
     const reset = () => {
-        apiFetch( {
-            path: '/wp/v2/settings',
-            method: 'POST',
-            data: { kadence_blocks_config_blocks: JSON.stringify( {} )},
-        } ).then( () => {
-            createErrorNotice(__('Block defaults reset', 'kadence-blocks'), {
-                type: 'snackbar',
-            })
-            kadence_blocks_params.configuration = JSON.stringify({});
-            setIsConfirmOpen(false);
-        });
+
+        if( includeDefaults ) {
+            apiFetch({
+                path: '/wp/v2/settings',
+                method: 'POST',
+                data: {kadence_blocks_config_blocks: JSON.stringify({})},
+            }).then(() => {
+                createErrorNotice(__('Block defaults reset', 'kadence-blocks'), {
+                    type: 'snackbar',
+                })
+                kadence_blocks_params.configuration = JSON.stringify({});
+            });
+        }
+
+        if( includeVisbility ) {
+            apiFetch({
+                path: '/wp/v2/settings',
+                method: 'POST',
+                data: {kadence_blocks_settings_blocks: JSON.stringify({})},
+            }).then(() => {
+                createErrorNotice(__('Block visibility reset', 'kadence-blocks'), {
+                    type: 'snackbar',
+                })
+                kadence_blocks_params.settings = JSON.stringify({});
+            });
+        }
+
+        setIsConfirmOpen(false);
+
     }
+
+    console.log( blockVisibility );
 
     return (
         <Fragment>
 
-            <p>{ __('Reset all custom block defaults. This will not modify any existing blocks.', 'kadence-blocks' ) }</p>
+            <p>{ __('Reset all custom block defaults or visability settings. This will not modify any existing blocks.', 'kadence-blocks' ) }</p>
 
             <CheckboxControl
                 label={__('Reset Block Visibility Settings', 'kadence-blocks')}
@@ -61,14 +81,14 @@ function ResetDefaults() {
                 disabled={ Object.keys(blockDefaults).length === 0 }
             />
 
-            <Button isDestructive={ true } disabled={ !includeVisbility && !includeDefaults } onClick={ () => setIsConfirmOpen(true)}>Reset</Button>
+            <Button isDestructive={ true } disabled={ Object.keys(blockDefaults).length === 0 && Object.keys(blockVisibility).length === 0 } onClick={ () => setIsConfirmOpen(true)}>Reset</Button>
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}
                 onConfirm={() => reset()}
                 onCancel={() => setIsConfirmOpen(false)}
             >
-                {__('Are you sure you\'d like to reset all block defaults?', 'kadence-blocks')}
+                {__('Are you sure you\'d like to reset these settings?', 'kadence-blocks')}
             </ConfirmDialog>
         </Fragment>
     );

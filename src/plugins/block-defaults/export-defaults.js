@@ -42,6 +42,7 @@ function ExportDefaults() {
                 checked={includeDefaults}
                 onChange={(value) => setIncludeDefaults(value)}
                 disabled={ Object.keys(blockDefaults).length === 0 }
+                help={ Object.keys(blockDefaults).length === 0 ? __('No custom defaults to export.', 'kadence-blocks') : '' }
             />
 
             <CheckboxControl
@@ -49,6 +50,7 @@ function ExportDefaults() {
                 checked={includeVisbility}
                 onChange={(value) => setIncludeVisibility(value)}
                 disabled={ Object.keys(blockVisibility).length === 0 }
+                help={ Object.keys(blockVisibility).length === 0 ? __('No custom visibility settings to export.', 'kadence-blocks') : '' }
             />
 
             <Button
