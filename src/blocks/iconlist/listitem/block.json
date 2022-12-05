@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "parent": [
+    "kadence/iconlist"
+  ],
+  "title": "List item",
+  "name": "kadence/listitem",
+  "category": "kadence-blocks",
+  "attributes": {
+    "uniqueID": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "string",
+      "default": "fe_checkCircle"
+    },
+    "link": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "string",
+      "default": "_self"
+    },
+    "size": {
+      "type": "number",
+      "default": 20
+    },
+    "width": {
+      "type": "number",
+      "default": 2
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "color": {
+      "type": "string",
+      "default": ""
+    },
+    "background": {
+      "type": "string",
+      "default": ""
+    },
+    "border": {
+      "type": "string",
+      "default": ""
+    },
+    "borderRadius": {
+      "type": "number",
+      "default": 0
+    },
+    "padding": {
+      "type": "number",
+      "default": 5
+    },
+    "borderWidth": {
+      "type": "number",
+      "default": 1
+    },
+    "style": {
+      "type": "string",
+      "default": "default"
+    },
+    "level": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "supports": {
+    "ktdynamic": true
+  }
+}

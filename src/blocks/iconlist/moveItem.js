@@ -26,12 +26,8 @@ class MoveItem extends Component {
 	}
 	render() {
 		const {
-			onMoveUp,
-			onMoveDown,
 			onMoveRight,
 			onMoveLeft,
-			focusIndex,
-			itemCount,
 			level
 		} = this.props;
 
@@ -50,34 +46,16 @@ class MoveItem extends Component {
 						<Fragment>
 							<MenuGroup>
 								<MenuItem
-									icon={ 'arrow-up' }
-									disabled={ focusIndex === 0 }
-									onClick={ flow( onClose, onMoveUp( focusIndex ) ) }
-									label={ __( 'Move Up', 'kadence-blocks' ) }
-								>
-									{ __( 'Move Up', 'kadence-blocks' ) }
-								</MenuItem>
-								<MenuItem
-									icon={ 'arrow-down' }
-									disabled={ focusIndex === itemCount - 1 }
-									onClick={ flow( onClose, onMoveDown( focusIndex ) ) }
-									label={ __( 'Move Down', 'kadence-blocks' ) }
-								>
-									{ __( 'Move Down', 'kadence-blocks' ) }
-								</MenuItem>
-							</MenuGroup>
-							<MenuGroup>
-								<MenuItem
 									icon={ 'arrow-left' }
 									disabled={ level === 0}
-									onClick={ flow( onClose, onMoveLeft( focusIndex ) ) }
+									onClick={ flow( onClose, onMoveLeft ) }
 									label={ __( 'Decrease Indent', 'kadence-blocks' ) }
 								>
 									{ __( 'Decrease Indent', 'kadence-blocks' ) }
 								</MenuItem>
 								<MenuItem
 									icon={ 'arrow-right' }
-									onClick={ flow( onClose, onMoveRight( focusIndex ) ) }
+									onClick={ flow( onClose, onMoveRight ) }
 									disabled={ level === 5 }
 									label={ __( 'Increase Indent', 'kadence-blocks' ) }
 								>

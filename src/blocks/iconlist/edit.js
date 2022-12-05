@@ -25,7 +25,6 @@ import {
 import {
 	WebfontLoader,
 	PopColorControl,
-	StepControls,
 	TypographyControls,
 	KadenceIconPicker,
 	ResponsiveRangeControls,
@@ -47,16 +46,13 @@ import './editor.scss';
 import metadata from './block.json';
 
 /**
- * Import Block Specific.
- */
-import MoveItem from './moveItem';
-/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
-
 import {
+	useBlockProps,
+	useInnerBlocksProps,
+	InnerBlocks,
 	InspectorControls,
 	RichText,
 	BlockControls,
@@ -67,6 +63,8 @@ import {
 	useEffect,
 	useState,
 	Fragment,
+	Platform,
+	forwardRef
 } from '@wordpress/element';
 
 import {
@@ -78,7 +76,7 @@ import {
 } from '@wordpress/components';
 
 import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { withDispatch, withSelect, useSelect } from '@wordpress/data';
 import {
 	plus,
 } from '@wordpress/icons';
@@ -134,6 +132,13 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 	}, [] );
 
+	function selfOrChildSelected( isSelected, clientId ) {
+		const childSelected = useSelect( ( select ) =>
+			select( 'core/block-editor' ).hasSelectedInnerBlock( clientId, true )
+		);
+		return isSelected || childSelected;
+	}
+
 	const previewListMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[0] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 0 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 0 ] : '' ) );
 	const previewListMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[1] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 1 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 1 ] : '' ) );
 	const previewListMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
@@ -142,182 +147,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 	const previewColumnGap = getPreviewSize( getPreviewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
 	const previewListGap = getPreviewSize( getPreviewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
-
-	const createNewListItem = ( value, entireOld, previousIndex ) => {
-		const previousValue = entireOld.replace( value, '' );
-		const amount = Math.abs( 1 + listCount );
-		const currentItems = items;
-		const newItems = [ {
-			icon        : currentItems[ 0 ].icon,
-			link        : currentItems[ 0 ].link,
-			target      : currentItems[ 0 ].target,
-			size        : currentItems[ 0 ].size,
-			text        : currentItems[ 0 ].text,
-			width       : currentItems[ 0 ].width,
-			color       : currentItems[ 0 ].color,
-			background  : currentItems[ 0 ].background,
-			border      : currentItems[ 0 ].border,
-			borderRadius: currentItems[ 0 ].borderRadius,
-			borderWidth : currentItems[ 0 ].borderWidth,
-			padding     : currentItems[ 0 ].padding,
-			style       : currentItems[ 0 ].style,
-			level       : get( currentItems[ 0 ], 'level', 0 ),
-		} ];
-		const addin = Math.abs( previousIndex + 1 );
-		{
-			times( amount, n => {
-				let ind = n;
-				if ( n === 0 ) {
-					if ( 0 === previousIndex ) {
-						newItems[ 0 ].text = previousValue;
-					}
-				} else if ( n === addin ) {
-					newItems.push( {
-						icon        : currentItems[ previousIndex ].icon,
-						link        : currentItems[ previousIndex ].link,
-						target      : currentItems[ previousIndex ].target,
-						size        : currentItems[ previousIndex ].size,
-						text        : value,
-						width       : currentItems[ previousIndex ].width,
-						color       : currentItems[ previousIndex ].color,
-						background  : currentItems[ previousIndex ].background,
-						border      : currentItems[ previousIndex ].border,
-						borderRadius: currentItems[ previousIndex ].borderRadius,
-						borderWidth : currentItems[ previousIndex ].borderWidth,
-						padding     : currentItems[ previousIndex ].padding,
-						style       : currentItems[ previousIndex ].style,
-						level       : get( currentItems[ previousIndex ], 'level', 0 ),
-					} );
-				} else if ( n === previousIndex ) {
-					newItems.push( {
-						icon        : currentItems[ previousIndex ].icon,
-						link        : currentItems[ previousIndex ].link,
-						target      : currentItems[ previousIndex ].target,
-						size        : currentItems[ previousIndex ].size,
-						text        : previousValue,
-						width       : currentItems[ previousIndex ].width,
-						color       : currentItems[ previousIndex ].color,
-						background  : currentItems[ previousIndex ].background,
-						border      : currentItems[ previousIndex ].border,
-						borderRadius: currentItems[ previousIndex ].borderRadius,
-						borderWidth : currentItems[ previousIndex ].borderWidth,
-						padding     : currentItems[ previousIndex ].padding,
-						style       : currentItems[ previousIndex ].style,
-						level       : get( currentItems[ previousIndex ], 'level', 0 ),
-					} );
-				} else {
-					if ( n > addin ) {
-						ind = Math.abs( n - 1 );
-					}
-					newItems.push( {
-						icon        : currentItems[ ind ].icon,
-						link        : currentItems[ ind ].link,
-						target      : currentItems[ ind ].target,
-						size        : currentItems[ ind ].size,
-						text        : currentItems[ ind ].text,
-						width       : currentItems[ ind ].width,
-						color       : currentItems[ ind ].color,
-						background  : currentItems[ ind ].background,
-						border      : currentItems[ ind ].border,
-						borderRadius: currentItems[ ind ].borderRadius,
-						borderWidth : currentItems[ ind ].borderWidth,
-						padding     : currentItems[ ind ].padding,
-						style       : currentItems[ ind ].style,
-						level       : get( currentItems[ ind ], 'level', 0 ),
-					} );
-				}
-			} );
-			setAttributes( { items: newItems } );
-			setAttributes( { listCount: amount } );
-			setFocusIndex( addin );
-			setFocusOnNewItem( addin, uniqueID );
-		}
-	};
-
-	// Silly Hack to handle focus.
-	const setFocusOnNewItem = ( index, uniqueID ) => {
-		setTimeout( function() {
-			if ( document.querySelector( `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-${index}` ) ) {
-				const parent = document.querySelector( `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-${index}` );
-				const rich = parent.querySelector( '.rich-text' );
-				rich.focus();
-			}
-		}, 100 );
-	};
-
-	const onSelectItem = ( index ) => {
-		return () => {
-			if ( focusIndex !== index ) {
-				setFocusIndex( { index } );
-			}
-		};
-	};
-	const onMoveVertical = ( oldIndex, newIndex ) => {
-		const items = [ ...items ];
-		items.splice( newIndex, 1, items[ oldIndex ] );
-		items.splice( oldIndex, 1, items[ newIndex ] );
-		setFocusIndex( newIndex );
-		setAttributes( { items } );
-	};
-
-	const onMoveHorizontal = ( index, newLevel ) => {
-		const items = [ ...items ];
-		items[ index ].level = newLevel;
-
-		setAttributes( { items } );
-	};
-
-	const onMoveDown = ( oldIndex ) => {
-		return () => {
-			if ( oldIndex === items.length - 1 ) {
-				return;
-			}
-			onMoveVertical( oldIndex, oldIndex + 1 );
-		};
-	};
-
-	const onMoveUp = ( oldIndex ) => {
-		return () => {
-			if ( oldIndex === 0 ) {
-				return;
-			}
-			onMoveVertical( oldIndex, oldIndex - 1 );
-		};
-	};
-
-	const onMoveLeft = ( index ) => {
-		return () => {
-			if ( items[ index ].level === 0 ) {
-				return;
-			}
-			onMoveHorizontal( index, items[ index ].level - 1 );
-		};
-	};
-
-	const onMoveRight = ( index ) => {
-		return () => {
-			let currentLevel = get( items[ index ], 'level', 0 );
-
-			if ( currentLevel === 5 ) {
-				return;
-			}
-
-			onMoveHorizontal( index, currentLevel + 1 );
-		};
-	};
-
-	const saveListItem = ( value, thisIndex ) => {
-		const currentItems = items;
-		const newUpdate = currentItems.map( ( item, index ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			items: newUpdate,
-		} );
-	};
 
 	const gconfig = {
 		google: {
@@ -356,27 +185,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 		{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 	];
 
-	const stopOnReplace = ( value, index ) => {
-		if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
-			saveListItem( { text: value[ 0 ].attributes.content }, index );
-		}
-	};
-	const removeListItem = ( value, previousIndex ) => {
-		const amount = Math.abs( listCount );
-		if ( amount === 1 ) {
-			// Remove Block.
-			onDelete();
-		} else {
-			const newAmount = Math.abs( amount - 1 );
-			const currentItems = filter( items, ( item, i ) => previousIndex !== i );
-			const addin = Math.abs( previousIndex - 1 );
-			setFocusIndex( addin );
-			setAttributes( {
-				items    : currentItems,
-				listCount: newAmount,
-			} );
-		}
-	};
 	const blockToolControls = ( index ) => {
 		const isLineSelected = ( isSelected && focusIndex === index && kadence_blocks_params.dynamic_enabled );
 		if ( !isLineSelected ) {
@@ -384,228 +192,27 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 		}
 		return <DynamicTextControl dynamicAttribute={'items:' + index + ':text'} {...attributes} />;
 	};
-	const renderIconSettings = ( index ) => {
-		return (
-			<KadencePanelBody
-				title={__( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' )}
-				initialOpen={( 1 === listCount ? true : false )}
-				panelName={'kb-icon-item-' + index}
-			>
-				<URLInputControl
-					label={__( 'Link', 'kadence-blocks' )}
-					url={items[ index ].link}
-					onChangeUrl={value => {
-						saveListItem( { link: value }, index );
-					}}
-					additionalControls={true}
-					opensInNewTab={( items[ index ].target && '_blank' == items[ index ].target ? true : false )}
-					onChangeTarget={value => {
-						if ( value ) {
-							saveListItem( { target: '_blank' }, index );
-						} else {
-							saveListItem( { target: '_self' }, index );
-						}
-					}}
-					dynamicAttribute={'items:' + index + ':link'}
-					allowClear={true}
-					{...attributes}
-				/>
-				<KadenceIconPicker
-					value={items[ index ].icon}
-					onChange={value => {
-						saveListItem( { icon: value }, index );
-					}}
-				/>
-				<RangeControl
-					label={__( 'Icon Size' )}
-					value={items[ index ].size}
-					onChange={value => {
-						saveListItem( { size: value }, index );
-					}}
-					min={5}
-					max={250}
-				/>
-				{items[ index ].icon && 'fe' === items[ index ].icon.substring( 0, 2 ) && (
-					<RangeControl
-						label={__( 'Line Width' )}
-						value={items[ index ].width}
-						onChange={value => {
-							saveListItem( { width: value }, index );
-						}}
-						step={0.5}
-						min={0.5}
-						max={4}
-					/>
-				)}
-				<PopColorControl
-					label={__( 'Icon Color' )}
-					value={( items[ index ].color ? items[ index ].color : '' )}
-					default={''}
-					onChange={value => {
-						saveListItem( { color: value }, index );
-					}}
-				/>
-				<SelectControl
-					label={__( 'Icon Style' )}
-					value={items[ index ].style}
-					options={[
-						{ value: 'default', label: __( 'Default' ) },
-						{ value: 'stacked', label: __( 'Stacked' ) },
-					]}
-					onChange={value => {
-						saveListItem( { style: value }, index );
-					}}
-				/>
-				{items[ index ].style !== 'default' && (
-					<PopColorControl
-						label={__( 'Icon Background' )}
-						value={( items[ index ].background ? items[ index ].background : '' )}
-						default={''}
-						onChange={value => {
-							saveListItem( { background: value }, index );
-						}}
-					/>
-				)}
-				{items[ index ].style !== 'default' && (
-					<PopColorControl
-						label={__( 'Border Color' )}
-						value={( items[ index ].border ? items[ index ].border : '' )}
-						default={''}
-						onChange={value => {
-							saveListItem( { border: value }, index );
-						}}
-					/>
-				)}
-				{items[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Border Size (px)' )}
-						value={items[ index ].borderWidth}
-						onChange={value => {
-							saveListItem( { borderWidth: value }, index );
-						}}
-						min={0}
-						max={20}
-					/>
-				)}
-				{items[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Border Radius (%)' )}
-						value={items[ index ].borderRadius}
-						onChange={value => {
-							saveListItem( { borderRadius: value }, index );
-						}}
-						min={0}
-						max={50}
-					/>
-				)}
-				{items[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Padding (px)' )}
-						value={items[ index ].padding}
-						onChange={value => {
-							saveListItem( { padding: value }, index );
-						}}
-						min={0}
-						max={180}
-					/>
-				)}
-			</KadencePanelBody>
-		);
-	};
-	const renderSettings = (
-		<div>
-			{times( listCount, n => renderIconSettings( n ) )}
-		</div>
-	);
+
 	const renderToolControls = (
 		<div>
 			{times( listCount, n => blockToolControls( n ) )}
 		</div>
 	);
-	const renderIconsPreview = ( index ) => {
-		return (
-			<div className={`kt-svg-icon-list-style-${items[ index ].style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${index} kt-svg-icon-list-level-${get( items[ index ], 'level', 0 )}`}>
-				{items[ index ].icon && (
-					<IconRender className={`kt-svg-icon-list-single kt-svg-icon-list-single-${items[ index ].icon}`} name={items[ index ].icon} size={items[ index ].size}
-								strokeWidth={( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined )} style={{
-						color          : ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
-						backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
-						padding        : ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
-						borderColor    : ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
-						borderWidth    : ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
-						borderRadius   : ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
-					}}/>
-				)}
-				{/* { applyFilters( 'kadence.dynamicContent', <RichText
-						tagName="div"
-						value={ items[ index ].text }
-						onChange={ value => {
-							saveListItem( { text: value }, index );
-						} }
-						onSplit={ ( value ) => {
-							if ( ! value ) {
-								return createNewListItem( '', items[ index ].text, index );
-							}
-							return createNewListItem( value, items[ index ].text, index );
-						} }
-						onRemove={ ( value ) => {
-							removeListItem( value, index );
-						} }
-						//isSelected={ focusIndex === index }
-						unstableOnFocus={ onSelectItem( index ) }
-						onReplace={ ( value ) => {
-							stopOnReplace( value, index );
-						} }
-						className={ 'kt-svg-icon-list-text' }
-						allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'core/strikethrough', 'core/subscript', 'core/superscript', 'core/text-color', 'toolset/inline-field' ], 'kadence/iconlist' ) }
-					/>, attributes, 'items:' + index + ':text' ) } */}
-					<RichText
-						tagName="div"
-						value={ items[ index ].text }
-						onChange={ value => {
-							saveListItem( { text: value }, index );
-						} }
-						onSplit={ ( value ) => {
-							if ( ! value ) {
-								return createNewListItem( '', items[ index ].text, index );
-							}
-							return createNewListItem( value, items[ index ].text, index );
-						} }
-						onRemove={ ( value ) => {
-							removeListItem( value, index );
-						} }
-						//isSelected={ this.state.focusIndex === index }
-						unstableOnFocus={ () => onSelectItem( index ) }
-						onReplace={ ( value ) => {
-							stopOnReplace( value, index );
-						} }
-						className={ 'kt-svg-icon-list-text' }
-					/>
-				</div>
-			);
-		};
 
-		const blockProps = useBlockProps( {
-			className: className,
-			'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
-		} );
+	const blockProps = useBlockProps( {
+		className: className,
+		// 'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
+	} );
 
-		return (
+	const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
+
+	return (
 			<div {...blockProps}>
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
 						controls={ [ 'center', 'left', 'right' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
-					/>
-					<MoveItem
-						onMoveUp={ value => onMoveUp( value ) }
-						onMoveDown={ value => onMoveDown( value ) }
-						onMoveRight={ value => onMoveRight( value ) }
-						onMoveLeft={ value => onMoveLeft( value ) }
-						focusIndex={ focusIndex }
-						itemCount={ items.length }
-						level={  get( items[ ( focusIndex ? focusIndex : 0 ) ], 'level', 0) }
 					/>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/iconlist' ) && (
@@ -624,41 +231,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 									initialOpen={true}
 									panelName={'kb-icon-list-controls'}
 								>
-									<StepControls
-										label={__( 'Number of Items' )}
-										value={listCount}
-										onChange={( newcount ) => {
-											const newitems = items;
-											if ( newitems.length < newcount ) {
-												const amount = Math.abs( newcount - newitems.length );
-												{
-													times( amount, n => {
-														newitems.push( {
-															icon        : newitems[ 0 ].icon,
-															link        : newitems[ 0 ].link,
-															target      : newitems[ 0 ].target,
-															size        : newitems[ 0 ].size,
-															width       : newitems[ 0 ].width,
-															color       : newitems[ 0 ].color,
-															background  : newitems[ 0 ].background,
-															border      : newitems[ 0 ].border,
-															borderRadius: newitems[ 0 ].borderRadius,
-															borderWidth : newitems[ 0 ].borderWidth,
-															padding     : newitems[ 0 ].padding,
-															style       : newitems[ 0 ].style,
-															level       : get( newitems[ 0 ], 'level', 0 )
-														} );
-													} );
-												}
-												setAttributes( { items: newitems } );
-												saveListItem( { size: items[ 0 ].size }, 0 );
-											}
-											setAttributes( { listCount: newcount } );
-										}}
-										min={1}
-										max={40}
-										step={1}
-									/>
 									{ showSettings( 'column', 'kadence/iconlist' ) && (
 										<ResponsiveRangeControls
 											label={__( 'List Columns', 'kadence-blocks' )}
@@ -733,17 +305,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 										</Fragment>
 									)}
 								</KadencePanelBody>
-
-								<div className="kt-sidebar-settings-spacer"></div>
-								{ showSettings( 'individualIcons', 'kadence/iconlist' ) && (
-									<KadencePanelBody
-										title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-list-individual-item-settings' }
-									>
-										{ renderSettings }
-									</KadencePanelBody>
-								) }
 							</>
 						}
 
@@ -826,116 +387,116 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 								<div className="kt-sidebar-settings-spacer"></div>
 
-								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
-									<KadencePanelBody
-										title={__( 'Edit All Icon Styles Together' )}
-										initialOpen={ false }
-										panelName={'kb-icon-all-styles'}
-									>
-										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
-										<KadenceIconPicker
-											value={items[ 0 ].icon}
-											onChange={value => {
-												if ( value !== items[ 0 ].icon ) {
-													saveAllListItem( { icon: value } );
-												}
-											}}
-										/>
-										<RangeControl
-											label={__( 'Icon Size' )}
-											value={items[ 0 ].size}
-											onChange={value => {
-												saveAllListItem( { size: value } );
-											}}
-											min={5}
-											max={250}
-										/>
-										{items[ 0 ].icon && 'fe' === items[ 0 ].icon.substring( 0, 2 ) && (
-											<RangeControl
-												label={__( 'Line Width' )}
-												value={items[ 0 ].width}
-												onChange={value => {
-													saveAllListItem( { width: value } );
-												}}
-												step={0.5}
-												min={0.5}
-												max={4}
-											/>
-										)}
-										<PopColorControl
-											label={__( 'Icon Color' )}
-											value={( items[ 0 ].color ? items[ 0 ].color : '' )}
-											default={''}
-											onChange={value => {
-												saveAllListItem( { color: value } );
-											}}
-										/>
-										<SelectControl
-											label={__( 'Icon Style' )}
-											value={items[ 0 ].style}
-											options={[
-												{ value: 'default', label: __( 'Default' ) },
-												{ value: 'stacked', label: __( 'Stacked' ) },
-											]}
-											onChange={value => {
-												saveAllListItem( { style: value } );
-											}}
-										/>
-										{items[ 0 ].style !== 'default' && (
-											<PopColorControl
-												label={__( 'Icon Background' )}
-												value={( items[ 0 ].background ? items[ 0 ].background : '' )}
-												default={''}
-												onChange={value => {
-													saveAllListItem( { background: value } );
-												}}
-											/>
-										)}
-										{items[ 0 ].style !== 'default' && (
-											<PopColorControl
-												label={__( 'Border Color' )}
-												value={( items[ 0 ].border ? items[ 0 ].border : '' )}
-												default={''}
-												onChange={value => {
-													saveAllListItem( { border: value } );
-												}}
-											/>
-										)}
-										{items[ 0 ].style !== 'default' && (
-											<RangeControl
-												label={__( 'Border Size (px)' )}
-												value={items[ 0 ].borderWidth}
-												onChange={value => {
-													saveAllListItem( { borderWidth: value } );
-												}}
-												min={0}
-												max={20}
-											/>
-										)}
-										{items[ 0 ].style !== 'default' && (
-											<RangeControl
-												label={__( 'Border Radius (%)' )}
-												value={items[ 0 ].borderRadius}
-												onChange={value => {
-													saveAllListItem( { borderRadius: value } );
-												}}
-												min={0}
-												max={50}
-											/>
-										)}
-										{items[ 0 ].style !== 'default' && (
-											<RangeControl
-												label={__( 'Padding (px)' )}
-												value={items[ 0 ].padding}
-												onChange={value => {
-													saveAllListItem( { padding: value } );
-												}}
-												min={0}
-												max={180}
-											/>
-										)}
-									</KadencePanelBody>
-								)}
+								{/*{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (*/}
+								{/*	<KadencePanelBody*/}
+								{/*		title={__( 'Edit All Icon Styles Together' )}*/}
+								{/*		initialOpen={ false }*/}
+								{/*		panelName={'kb-icon-all-styles'}*/}
+								{/*	>*/}
+								{/*		<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>*/}
+								{/*		<KadenceIconPicker*/}
+								{/*			value={items[ 0 ].icon}*/}
+								{/*			onChange={value => {*/}
+								{/*				if ( value !== items[ 0 ].icon ) {*/}
+								{/*					saveAllListItem( { icon: value } );*/}
+								{/*				}*/}
+								{/*			}}*/}
+								{/*		/>*/}
+								{/*		<RangeControl*/}
+								{/*			label={__( 'Icon Size' )}*/}
+								{/*			value={items[ 0 ].size}*/}
+								{/*			onChange={value => {*/}
+								{/*				saveAllListItem( { size: value } );*/}
+								{/*			}}*/}
+								{/*			min={5}*/}
+								{/*			max={250}*/}
+								{/*		/>*/}
+								{/*		{items[ 0 ].icon && 'fe' === items[ 0 ].icon.substring( 0, 2 ) && (*/}
+								{/*			<RangeControl*/}
+								{/*				label={__( 'Line Width' )}*/}
+								{/*				value={items[ 0 ].width}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { width: value } );*/}
+								{/*				}}*/}
+								{/*				step={0.5}*/}
+								{/*				min={0.5}*/}
+								{/*				max={4}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*		<PopColorControl*/}
+								{/*			label={__( 'Icon Color' )}*/}
+								{/*			value={( items[ 0 ].color ? items[ 0 ].color : '' )}*/}
+								{/*			default={''}*/}
+								{/*			onChange={value => {*/}
+								{/*				saveAllListItem( { color: value } );*/}
+								{/*			}}*/}
+								{/*		/>*/}
+								{/*		<SelectControl*/}
+								{/*			label={__( 'Icon Style' )}*/}
+								{/*			value={items[ 0 ].style}*/}
+								{/*			options={[*/}
+								{/*				{ value: 'default', label: __( 'Default' ) },*/}
+								{/*				{ value: 'stacked', label: __( 'Stacked' ) },*/}
+								{/*			]}*/}
+								{/*			onChange={value => {*/}
+								{/*				saveAllListItem( { style: value } );*/}
+								{/*			}}*/}
+								{/*		/>*/}
+								{/*		{items[ 0 ].style !== 'default' && (*/}
+								{/*			<PopColorControl*/}
+								{/*				label={__( 'Icon Background' )}*/}
+								{/*				value={( items[ 0 ].background ? items[ 0 ].background : '' )}*/}
+								{/*				default={''}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { background: value } );*/}
+								{/*				}}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*		{items[ 0 ].style !== 'default' && (*/}
+								{/*			<PopColorControl*/}
+								{/*				label={__( 'Border Color' )}*/}
+								{/*				value={( items[ 0 ].border ? items[ 0 ].border : '' )}*/}
+								{/*				default={''}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { border: value } );*/}
+								{/*				}}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*		{items[ 0 ].style !== 'default' && (*/}
+								{/*			<RangeControl*/}
+								{/*				label={__( 'Border Size (px)' )}*/}
+								{/*				value={items[ 0 ].borderWidth}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { borderWidth: value } );*/}
+								{/*				}}*/}
+								{/*				min={0}*/}
+								{/*				max={20}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*		{items[ 0 ].style !== 'default' && (*/}
+								{/*			<RangeControl*/}
+								{/*				label={__( 'Border Radius (%)' )}*/}
+								{/*				value={items[ 0 ].borderRadius}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { borderRadius: value } );*/}
+								{/*				}}*/}
+								{/*				min={0}*/}
+								{/*				max={50}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*		{items[ 0 ].style !== 'default' && (*/}
+								{/*			<RangeControl*/}
+								{/*				label={__( 'Padding (px)' )}*/}
+								{/*				value={items[ 0 ].padding}*/}
+								{/*				onChange={value => {*/}
+								{/*					saveAllListItem( { padding: value } );*/}
+								{/*				}}*/}
+								{/*				min={0}*/}
+								{/*				max={180}*/}
+								{/*			/>*/}
+								{/*		)}*/}
+								{/*	</KadencePanelBody>*/}
+								{/*)}*/}
 
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/iconlist' } excludedAttrs={ [ 'listCount' ] } preventMultiple={ [ 'items' ] } />
 
@@ -957,6 +518,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 							letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
 							font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
 							text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
+							column-gap: ${ ( previewColumnGap ? previewColumnGap + 'px' : '' ) };
 						}`
 				}
 			</style>
@@ -971,47 +533,16 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 					 marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType),
 					 marginBottom: getSpacingOptionOutput( previewListMarginBottom, listMarginType),
 					 marginLeft: getSpacingOptionOutput( previewListMarginLeft, listMarginType),
-					 columnGap: previewColumnGap + 'px'
 				 }}>
-				{times( listCount, n => renderIconsPreview( n ) )}
-				{isSelected && (
-					<Fragment>
-						<Button
-							isSecondary
-							icon={plus}
-							onClick={() => {
-								const newitems = items;
-								const newcount = listCount + 1;
-								if ( newitems.length < newcount ) {
-									const amount = Math.abs( newcount - newitems.length );
-									{
-										times( amount, n => {
-											newitems.push( {
-												icon        : newitems[ 0 ].icon,
-												link        : newitems[ 0 ].link,
-												target      : newitems[ 0 ].target,
-												size        : newitems[ 0 ].size,
-												width       : newitems[ 0 ].width,
-												color       : newitems[ 0 ].color,
-												background  : newitems[ 0 ].background,
-												border      : newitems[ 0 ].border,
-												borderRadius: newitems[ 0 ].borderRadius,
-												borderWidth : newitems[ 0 ].borderWidth,
-												padding     : newitems[ 0 ].padding,
-												style       : newitems[ 0 ].style,
-												level       : get( newitems[ 0 ], 'level', 0 ),
-											} );
-										} );
-									}
-									setAttributes( { items: newitems } );
-									saveListItem( { size: items[ 0 ].size }, 0 );
-								}
-								setAttributes( { listCount: newcount } );
-							}}
-							label={__( 'Add List Item', 'kadence-blocks' )}
-						/>
-					</Fragment>
-				)}
+
+				<InnerBlocks
+					template={ [ [ 'kadence/listitem' ] ] }
+					templateLock={ false }
+					templateInsertUpdatesSelection={ true }
+					allowedBlocks={ [ 'kadence/listitem' ] }
+					renderAppender={ () => selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
+				/>
+				
 			</div>
 		</div>
 	);
