@@ -43,7 +43,15 @@
 .kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
 	margin-top: 0px;
 	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
 }
+
+.wp-block[data-align="center"] .kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .kt-svg-icon-list-columns-2 .block-editor-block-list__layout {
     grid-template-columns: 50% auto;
     grid-template-rows: auto;
@@ -130,5 +138,5 @@
 	display: block;
 	margin: 0 auto;
 	text-align: center;
-	display: table;
+	//display: table;
 }
