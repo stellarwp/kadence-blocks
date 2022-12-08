@@ -5,6 +5,11 @@
 import metadata from './block.json';
 
 /**
+ * Register sub blocks.
+ */
+import './single-icon/block.js';
+
+/**
  * Import Icon stuff
  */
 import { iconIcon } from '@kadence/icons';
