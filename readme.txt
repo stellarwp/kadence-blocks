@@ -95,8 +95,8 @@ Release Date: April 20th, 2022
 * Fix: Issue with aligning in buttons with icons.
 * Update: Facebook logo svg.
 * Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
-* Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
-* Tweek - Accordion animation when nesting accordions, with both "closed".
+* Tweak - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
+* Tweak - Accordion animation when nesting accordions, with both "closed".
 * Fix: Google Maps filer initial value issue.
 * Add: Text Transform option on title in Count Up block
 * Fix: Only generate dynamic CSS for rtl sites when needed.
@@ -105,6 +105,12 @@ Release Date: April 20th, 2022
 * Add: Responsive container margin on Icon List block.
 * Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
+* Update: Icon List block to use innerBlocks for list items.
+* Update: Improved CSS generation for blocks.
+* Fix: Issue when using more than 36 tabs in Tabs block.
+* Add: New Icon Picker
+* Add: Ability to import, export, and reset block defaults
+
 
 = 2.4.21 =
 Release Date: November 11th, 2022
@@ -1401,7 +1407,7 @@ You can also set the block defaults.
 * Add: You can now define which Tab should be open regardless of what is open in the editor.
 * Fix: Small change with parallax settings.
 * Fix: Unique IDs causing revisions needlessly.
-* Tweek: Setting Page styles.
+* Tweak: Setting Page styles.
 * Add: BorderRadius Property to columns - thanks @DizzySquirrel
 * Fix: Correct naming for 'Left Bottom' background - thanks @DizzySquirrel
 
@@ -1472,7 +1478,7 @@ You can also set the block defaults.
 * Fix: Issue with button top and bottom padding.
 
 = 1.1.6 =
-* Update: Layouts css tweek.
+* Update: Layouts css Tweak.
 
 = 1.1.5 =
 * Add: Support for tabs within tabs.
