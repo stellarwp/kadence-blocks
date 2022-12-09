@@ -1,0 +1,131 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Single Icon",
+  "name": "kadence/single-icon",
+  "parent": [
+    "kadence/icon"
+  ],
+  "category": "kadence-blocks",
+  "attributes": {
+    "uniqueID": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "string",
+      "default": "fe_aperture"
+    },
+    "link": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "string",
+      "default": "_self"
+    },
+    "size": {
+      "type": "number",
+      "default": 50
+    },
+    "width": {
+      "type": "number",
+      "default": 2
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "color": {
+      "type": "string",
+      "default": "palette4"
+    },
+    "background": {
+      "type": "string",
+      "default": "transparent"
+    },
+    "border": {
+      "type": "string",
+      "default": "palette4"
+    },
+    "borderRadius": {
+      "type": "number",
+      "default": 0
+    },
+    "borderWidth": {
+      "type": "number",
+      "default": 2
+    },
+    "padding": {
+      "type": "array",
+      "default": [ 20, 20, 20, 20 ]
+    },
+    "paddingUnit" : {
+      "type": "string",
+      "default": "px"
+    },
+    "style": {
+      "type": "string",
+      "default": "default"
+    },
+    "margin": {
+      "type": "array",
+      "default": [ "", "", "", "" ]
+    },
+    "marginUnit" : {
+      "type": "string",
+      "default": "px"
+    },
+    "hColor": {
+      "type": "string",
+      "default": ""
+    },
+    "hBackground": {
+      "type": "string",
+      "default": ""
+    },
+    "hBorder": {
+      "type": "string",
+      "default": ""
+    },
+    "linkTitle": {
+      "type": "string",
+      "default": ""
+    },
+    "tabletSize": {
+      "type": "number",
+      "default": ""
+    },
+    "mobileSize": {
+      "type": "number",
+      "default": ""
+    },
+    "tabletMargin": {
+      "type": "array",
+      "default": [ "", "", "", "" ]
+    },
+    "mobileMargin": {
+      "type": "array",
+      "default": [ "", "", "", "" ]
+    },
+    "tabletPadding": {
+      "type": "array",
+      "default": [ "", "", "", "" ]
+    },
+    "mobilePadding": {
+      "type": "array",
+      "default": [ "", "", "", "" ]
+    },
+    "inQueryBlock": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "ktdynamic": true
+  },
+  "usesContext": [
+    "postId",
+    "queryId"
+  ]
+}

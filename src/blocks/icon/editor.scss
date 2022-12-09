@@ -9,7 +9,7 @@
 	min-height: 10px;
  }
 
-.kt-svg-icons {
+.kt-svg-icons, .kt-svg-icons .block-editor-inner-blocks .block-editor-block-list__layout {
     display: flex;
     gap: 0.2em;
 	align-items:flex-end;
@@ -22,7 +22,7 @@
 	transition: all .3s ease-in-out;
 	padding: 20px;
 }
-.kt-svg-icons.kb-icon-valign-top {
+.kt-svg-icons.kb-icon-valign-top, .kt-svg-icons.kb-icon-valign-top .block-editor-inner-blocks .block-editor-block-list__layout {
   align-items: flex-start;
   display: flex;
 
@@ -38,7 +38,7 @@
     justify-content: flex-start;
   }
 }
-.kt-svg-icons.kb-icon-valign-middle {
+.kt-svg-icons.kb-icon-valign-middle, .kt-svg-icons.kb-icon-valign-middle .block-editor-inner-blocks .block-editor-block-list__layout {
     align-items: center;
     display: flex;
 
@@ -54,7 +54,7 @@
     justify-content: flex-start;
   }
 }
-.kt-svg-icons.kb-icon-valign-bottom {
+.kt-svg-icons.kb-icon-valign-bottom, .kt-svg-icons.kb-icon-valign-bottom .block-editor-inner-blocks .block-editor-block-list__layout {
     align-items: flex-end;
     display: flex;
 	&.kb-icon-align-center {

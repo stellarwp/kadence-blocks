@@ -129,7 +129,7 @@ export default function KadenceBlockDefaults({attributes, defaultAttributes = {}
                 title={__('Block Defaults', 'kadence-blocks')}
                 initialOpen={false}
             >
-                {__('This will set the current block attributes as the default styles for this block.', 'kadence-blocks')}&nbsp;
+                {__('This will set the current block attributes as the default styles for this block type.', 'kadence-blocks')}&nbsp;
                 {__('This will not modify any blocks that have already been created.', 'kadence-blocks')}&nbsp;
                 {__('Block content is not included.', 'kadence-blocks')}&nbsp;
 
