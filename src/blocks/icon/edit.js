@@ -209,13 +209,13 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, clien
 			</KadenceInspectorControls>
 			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${previewTextAlign ? ' kb-icon-halign-' + previewTextAlign : ''}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`}>
 				<InnerBlocks
-					template={ [ [ 'kadence/icon-single' ] ] }
+					template={ [ [ 'kadence/single-icon' ] ] }
 					templateLock={ false }
 					templateInsertUpdatesSelection={ true }
-					allowedBlocks={ [ 'kadence/icon-single' ] }
-					renderAppender={ () => false && selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
+					allowedBlocks={ [ 'kadence/single-icon' ] }
 				/>
 			</div>
+			{ selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
 		</div>
 	);
 }
