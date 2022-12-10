@@ -13,6 +13,7 @@
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
     "@react-google-maps/api": "^2.12.0",
+    "@splidejs/react-splide": "^0.7.12",
     "@wordpress/icons": "^9.7.0",
     "@wordpress/url": "^3.12.0",
     "classnames": "^2.2.6",

@@ -330,7 +330,7 @@ class Kadence_Blocks_Settings {
 			}
 		}
 		if ( $options ) {
-			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
+			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'includes/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
 			wp_localize_script(
 				'kadence-blocks-deregister-js',
 				'kt_deregister_params',
@@ -444,8 +444,8 @@ class Kadence_Blocks_Settings {
 				),
 			),
 		);
-		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . '/dist/settings/dashboard.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
-		wp_enqueue_script( 'kadence-blocks-admin-js', KADENCE_BLOCKS_URL . '/dist/settings/scripts.min.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, true );
+		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/settings/dashboard.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
+		wp_enqueue_script( 'kadence-blocks-admin-js', KADENCE_BLOCKS_URL . 'includes/settings/scripts.min.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-admin-js',
 			'kt_blocks_params',

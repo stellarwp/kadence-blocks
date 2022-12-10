@@ -3,7 +3,8 @@
  */
 import classnames from 'classnames';
 import { every, filter, forEach, debounce, map } from 'lodash';
-import Masonry from 'react-masonry-component';
+//import Masonry from 'react-masonry-component';
+import Masonry from 'react-masonry-css'
 
 /**
  * Kadence Components.
@@ -25,12 +26,14 @@ import {
 	DynamicLinkControl,
 	KadenceMediaPlaceholder,
 	DynamicGalleryControl,
-	MeasurementControls,
+	ResponsiveMeasurementControls,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
+	ResponsiveRangeControls,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer
 } from '@kadence/components';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 import Slider from 'react-slick';
 import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
@@ -81,7 +84,7 @@ import {
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
-import { withSelect, useSelect } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -155,6 +158,9 @@ function GalleryEdit( props ) {
 		arrowStyle,
 		dotStyle,
 		imageRadius,
+		tabletImageRadius,
+		mobileImageRadius,
+		imageRadiusUnit,
 		margin,
 		marginUnit,
 		displayShadow,
@@ -170,29 +176,60 @@ function GalleryEdit( props ) {
 		mobileForceHover,
 		kadenceDynamic,
 		imagesDynamic,
+		kbVersion,
+		gutterUnit,
 	} = attributes;
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 
 	useEffect( () => {
-
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/advancedgallery' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedgallery' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/advancedgallery' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedgallery' ][ attribute ];
-				} );
+			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/advancedgallery' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedgallery' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/advancedgallery' ] ).map( ( attribute ) => {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/advancedgallery' ][ attribute ];
+					} );
+				}
+			}
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kbGalleryUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
 			}
 		} else {
-			kbGalleryUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
+			if ( ! attributes.inQueryBlock ) {
+				setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( attributes.inQueryBlock ) {
+			setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+		// Old Static Image source.
 		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
 			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );
 			forEach( images, ( { url } ) => revokeBlobURL( url ) );
@@ -203,32 +240,40 @@ function GalleryEdit( props ) {
 			} );
 		}
 
-		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
+		if ( ! kbVersion || kbVersion < 2 ) {
+			if ( images ) {
+				const newImageData = [];
+				forEach( images, ( image ) => {
+					newImageData.push( {
+						url: image?.url || '',
+						thumbUrl: image?.thumbUrl || '',
+						lightUrl: image?.lightUrl || '',
+						link: image?.link || '',
+						customLink: image?.customLink || '',
+						linkTarget: image?.linkTarget || '',
+						width: image?.width || '',
+						height: image?.height || '',
+						alt: image?.alt || '',
+						id: image?.id || '',
+						caption: image?.caption || '',
+						linkSponsored: image?.linkSponsored || '',
+					});
+				} );
 				setAttributes( {
-					inQueryBlock: true,
+					imagesDynamic: newImageData,
 				} );
 			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
+			setAttributes( { kbVersion: 2 } );
 		}
 	}, [] );
-
-	const { previewDevice } = useSelect(
-		( select ) => {
-			return {
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			};
-		},
-		[ clientId ]
-	);
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[0] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[0] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[0] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[1] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[1] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[1] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[2] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[2] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[2] : '' ) );
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[3] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[3] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[3] : '' ) );
+
+	const previewGutter = getPreviewSize( previewDevice, ( undefined !== gutter[0] ? gutter[0] : '' ), ( undefined !== gutter[1] ? gutter[1] : '' ), ( undefined !== gutter[2] ? gutter[2] : '' ) );
+	const previewGutterUnit = ( gutterUnit ? gutterUnit : 'px' );
 
 	const blockProps = useBlockProps( {
 		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
@@ -241,11 +286,6 @@ function GalleryEdit( props ) {
 	} );
 
 	const [ selectedImage, setSelectedImage ] = useState( null );
-
-	const [ marginDeskControl, setMarginDeskControl ] = useState( 'linked' );
-	const [ marginTabletControl, setMarginTabletControl ] = useState( 'linked' );
-	const [ marginMobileControl, setMarginMobileControl ] = useState( 'linked' );
-	const [ radiusControl, setRadiusControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const [ sliderSlides, setSliderSlides ] = useState( null );
@@ -258,10 +298,10 @@ function GalleryEdit( props ) {
 			throw new Error( 'The "ids" attribute should not be changed directly. It is managed automatically when "images" attribute changes' );
 		}
 
-		if ( newAttribs.images ) {
+		if ( newAttribs.imagesDynamic ) {
 			newAttribs = {
 				...newAttribs,
-				ids: map( newAttribs.images, 'id' ),
+				ids: map( newAttribs.imagesDynamic, 'id' ),
 			};
 		}
 
@@ -275,15 +315,15 @@ function GalleryEdit( props ) {
 	};
 
 	const onMove = ( oldIndex, newIndex ) => {
-		let newImages = [ ...images ];
-		newImages.splice( newIndex, 1, images[ oldIndex ] );
-		newImages.splice( oldIndex, 1, images[ newIndex ] );
+		let newImages = [ ...imagesDynamic ];
+		newImages.splice( newIndex, 1, imagesDynamic[ oldIndex ] );
+		newImages.splice( oldIndex, 1, imagesDynamic[ newIndex ] );
 		setSelectedImage( newIndex );
-		setAttribs( { images: newImages } );
+		setAttribs( { imagesDynamic: newImages } );
 	};
 
 	const onMoveForward = ( oldIndex ) => {
-		if ( oldIndex === images.length - 1 ) {
+		if ( oldIndex === imagesDynamic.length - 1 ) {
 			return;
 		}
 		onMove( oldIndex, oldIndex + 1 );
@@ -297,18 +337,18 @@ function GalleryEdit( props ) {
 	};
 
 	const onRemoveImage = ( index ) => {
-		let newImages = filter( images, ( img, i ) => index !== i );
+		let newImages = filter( imagesDynamic, ( img, i ) => index !== i );
 		setSelectedImage( null );
 		setAttribs( {
-			images: newImages
+			imagesDynamic: newImages
 		} );
 	};
 
 	//async
 	async function onSelectImages( imgs, src = 9 ) {
-		const updatingImages = await getRelevantMediaFiles( imgs, lightSize, thumbSize, images );
+		const updatingImages = await getRelevantMediaFiles( imgs, lightSize, thumbSize, imagesDynamic );
 		setAttribs( {
-			images: updatingImages,
+			imagesDynamic: updatingImages,
 		} );
 	};
 
@@ -324,11 +364,11 @@ function GalleryEdit( props ) {
 		setAttribs( { showCaption: !previousShowCaption } );
 
 		if ( previousShowCaption ) {
-			if ( images ) {
-				const updatingImages = await getRelevantMediaFiles( images, lightSize, thumbSize );
+			if ( imagesDynamic ) {
+				const updatingImages = await getRelevantMediaFiles( imagesDynamic, lightSize, thumbSize );
 
 				setAttribs( {
-					images: updatingImages,
+					imagesDynamic: updatingImages,
 				} );
 			}
 		}
@@ -338,9 +378,9 @@ function GalleryEdit( props ) {
 	async function changeImageThumbSize( img ) {
 
 		setAttributes( { thumbSize: img.slug } );
-		const updatingImages = await getRelevantMediaFiles( images, lightSize, img.slug );
+		const updatingImages = await getRelevantMediaFiles( imagesDynamic, lightSize, img.slug );
 		setAttribs( {
-			images: updatingImages,
+			imagesDynamic: updatingImages,
 		} );
 	};
 
@@ -348,9 +388,9 @@ function GalleryEdit( props ) {
 	async function changeImageLightSize( img ) {
 		setAttributes( { lightSize: img.slug } );
 
-		const updatingImages = await getRelevantMediaFiles( images, img.slug, thumbSize );
+		const updatingImages = await getRelevantMediaFiles( imagesDynamic, img.slug, thumbSize );
 		setAttribs( {
-			images: updatingImages,
+			imagesDynamic: updatingImages,
 		} );
 	};
 
@@ -376,35 +416,35 @@ function GalleryEdit( props ) {
 	};
 	const setImageAttributes = ( index, attributes ) => {
 
-		if ( !images[ index ] ) {
+		if ( !imagesDynamic[ index ] ) {
 			return;
 		}
-		if ( images[ index ].id ) {
-			saveImageAttributes( images[ index ].id, attributes );
+		if ( imagesDynamic[ index ].id ) {
+			saveImageAttributes( imagesDynamic[ index ].id, attributes );
 		}
 		setAttributes( {
-			images: [
-				...images.slice( 0, index ),
+			imagesDynamic: [
+				...imagesDynamic.slice( 0, index ),
 				{
-					...images[ index ],
+					...imagesDynamic[ index ],
 					...attributes,
 				},
-				...images.slice( index + 1 ),
+				...imagesDynamic.slice( index + 1 ),
 			],
 		} );
 	};
 	const setLinkAttributes = ( index, attributes ) => {
-		if ( !images[ index ] ) {
+		if ( !imagesDynamic[ index ] ) {
 			return;
 		}
 		setAttributes( {
-			images: [
-				...images.slice( 0, index ),
+			imagesDynamic: [
+				...imagesDynamic.slice( 0, index ),
 				{
-					...images[ index ],
+					...imagesDynamic[ index ],
 					...attributes,
 				},
-				...images.slice( index + 1 ),
+				...imagesDynamic.slice( index + 1 ),
 			],
 		} );
 	};
@@ -431,7 +471,7 @@ function GalleryEdit( props ) {
 
 	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
 	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
-	const theImages = dynamicSource ? imagesDynamic : images;
+	const theImages = imagesDynamic;
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
 		let columnArray = [];
@@ -581,21 +621,17 @@ function GalleryEdit( props ) {
 		prevArrow     : <CustomPrevArrow/>,
 	};
 	const fluidCarouselSettings = {
-		dots          : ( dotStyle === 'none' ? false : true ),
-		arrows        : ( arrowStyle === 'none' ? false : true ),
-		infinite      : true,
-		speed         : transSpeed,
-		draggable     : false,
-		autoplaySpeed : autoSpeed,
-		autoplay      : autoPlay,
+		type         : 'slide',
+		autoplay     : autoPlay,
+		rewind       : false,
+		pagination   : false,
+		arrows       : ( arrowStyle === 'none' ? false : true ),
+		perPage      : 1,
+		speed        : transSpeed,
+		interval     : autoSpeed,
+
+		pagination    : ( dotStyle === 'none' ? false : true ),
 		centerMode    : ( carouselAlign === false ? false : true ),
-		variableWidth : true,
-		slidesToShow  : 1,
-		slidesToScroll: 1,
-		nextArrow     : <CustomNextArrow/>,
-		prevArrow     : <CustomPrevArrow/>,
-		onInit        : () => carouselSizeTrigger(),
-		onReInit      : () => carouselSizeTrigger(),
 	};
 	const sliderSettings = {
 		dots          : ( dotStyle === 'none' ? false : true ),
@@ -645,13 +681,13 @@ function GalleryEdit( props ) {
 	const controls = (
 		<BlockControls>
 			{hasImages && !dynamicSource && (
-				<Toolbar>
+				<Toolbar label={ __( 'Edit Gallery Images', 'kadence-blocks' ) }>
 					<MediaUpload
 						onSelect={( imgs ) => onSelectImages( imgs, 3 ) }
 						allowedTypes={ALLOWED_MEDIA_TYPES}
 						multiple
 						gallery
-						value={images.map( ( img ) => img.id )}
+						value={imagesDynamic.map( ( img ) => img.id )}
 						render={( { open } ) => (
 							<Button
 								className="components-toolbar__control"
@@ -696,10 +732,10 @@ function GalleryEdit( props ) {
 												className={`kt-style-btn${( isDisabled ? ' kb-disabled-btn' : '' )}`}
 												isSmall
 												isDisabled={isDisabled}
-												isPrimary={type === value}
+												variant={ type === value ? 'primary' : undefined }
 												aria-pressed={type === value}
-												onClick={() => {
-													if ( !isDisabled ) {
+												onClick={ () => {
+													if ( ! isDisabled ) {
 														setAttributes( { type: value } );
 													}
 												}}
@@ -961,66 +997,21 @@ function GalleryEdit( props ) {
 								)}
 								{type !== 'slider' && showSettings( 'gutterSettings', 'kadence/advancedgallery' ) && (
 									<>
-										<h2 className="kt-heading-size-title">{__( 'Gutter', 'kadence-blocks' )}</h2>
-										<TabPanel className="kt-size-tabs"
-												  activeClass="active-tab"
-												  tabs={[
-													  {
-														  name     : 'desk',
-														  title    : <Dashicon icon="desktop"/>,
-														  className: 'kt-desk-tab',
-													  },
-													  {
-														  name     : 'tablet',
-														  title    : <Dashicon icon="tablet"/>,
-														  className: 'kt-tablet-tab',
-													  },
-													  {
-														  name     : 'mobile',
-														  title    : <Dashicon icon="smartphone"/>,
-														  className: 'kt-mobile-tab',
-													  },
-												  ]}>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'mobile' === tab.name ) {
-															tabout = (
-																<RangeControl
-																	value={( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' )}
-																	onChange={value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), value ] } )}
-																	step={2}
-																	min={0}
-																	max={100}
-																/>
-															);
-														} else if ( 'tablet' === tab.name ) {
-															tabout = (
-																<RangeControl
-																	value={( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' )}
-																	onChange={value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), value, ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } )}
-																	step={2}
-																	min={0}
-																	max={100}
-																/>
-															);
-														} else {
-															tabout = (
-																<RangeControl
-																	value={( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' )}
-																	onChange={value => setAttributes( { gutter: [ value, ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } )}
-																	step={2}
-																	min={0}
-																	max={100}
-																/>
-															);
-														}
-													}
-													return <div className={tab.className} key={tab.className}>{tabout}</div>;
-												}
-											}
-										</TabPanel>
+										<ResponsiveRangeControls
+											label={__( 'Gutter', 'kadence-blocks' )}
+											value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
+											onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
+											tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
+											onChangeTablet={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
+											mobileValue={( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' )}
+											onChangeMobile={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } )}
+											min={0}
+											max={( gutterUnit !== 'px' ? 12 : 200 )}
+											step={( gutterUnit !== 'px' ? 0.1 : 1 )}
+											unit={gutterUnit}
+											onUnit={( value ) => setAttributes( { gutterUnit: value } )}
+											units={[ 'px', 'em', 'rem' ]}
+										/>
 									</>
 								)}
 								{( type === 'fluidcarousel' || type === 'tiles' ) && (
@@ -1385,23 +1376,29 @@ function GalleryEdit( props ) {
 									panelName={'kb-gallery-image-style'}
 								>
 									{!( type === 'carousel' && imageRatio === 'inherit' ) && !( type === 'slider' && imageRatio === 'inherit' ) && (
-										<MeasurementControls
+										<ResponsiveMeasurementControls
 											label={__( 'Border Radius', 'kadence-blocks' )}
-											measurement={imageRadius}
-											control={radiusControl}
+											value={imageRadius}
+											tabletValue={tabletImageRadius}
+											mobileValue={mobileImageRadius}
 											onChange={( value ) => setAttributes( { imageRadius: value } )}
-											onControl={( value ) => setRadiusControl( value )}
-											min={0}
-											max={200}
-											step={1}
-											controlTypes={[
+											onChangeTablet={( value ) => setAttributes( { tabletImageRadius: value } )}
+											onChangeMobile={( value ) => setAttributes( { mobileImageRadius: value } )}
+											unit={ imageRadiusUnit}
+											units={[ 'px', 'em', 'rem', '%' ]}
+											onUnit={( value ) => setAttributes( { imageRadiusUnit: value } )}
+											max={(imageRadiusUnit === 'em' || imageRadiusUnit === 'rem' ? 24 : 500)}
+											step={(imageRadiusUnit === 'em' || imageRadiusUnit === 'rem' ? 0.1 : 1)}
+											min={ 0 }
+											allowEmpty={ true }
+											controlTypes={ [
 												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
 												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-											]}
-											firstIcon={topLeftIcon}
-											secondIcon={topRightIcon}
-											thirdIcon={bottomRightIcon}
-											fourthIcon={bottomLeftIcon}
+											] }
+											firstIcon={ topLeftIcon }
+											secondIcon={ topRightIcon }
+											thirdIcon={ bottomRightIcon }
+											fourthIcon={ bottomLeftIcon }
 										/>
 									)}
 									<SelectControl
@@ -1617,9 +1614,12 @@ function GalleryEdit( props ) {
 								</>
 							)}
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
-												  blockSlug={'kadence/advancedgallery'}
-												  excludedAttrs={['images', 'imagesDynamic']}/>
+							<KadenceBlockDefaults
+								attributes={attributes}
+								defaultAttributes={metadata['attributes']}
+								blockSlug={'kadence/advancedgallery'}
+								excludedAttrs={['images', 'imagesDynamic']}
+							/>
 						</>
 					)}
 
@@ -1708,11 +1708,11 @@ function GalleryEdit( props ) {
 					}
 					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-prev,
 					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails .slick-prev {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
+						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:calc(' + + previewGutter + previewGutterUnit + ' / 2 );' : '' )}
 					}
 					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-next,
 					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails .slick-next {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
+						${( previewGutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:calc(' + previewGutter + previewGutterUnit + ' / 2 );' : '' )}
 					}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' )}
@@ -1758,43 +1758,41 @@ function GalleryEdit( props ) {
 		);
 		const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
 		return (
-			<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-				<div className="kadence-blocks-gallery-item-inner">
-					<GalleryImage
-						thumbUrl={img.thumbUrl}
-						url={img.url}
-						width={img.width}
-						height={img.height}
-						lightUrl={img.lightUrl}
-						alt={img.alt}
-						id={img.id}
-						index={index}
-						link={img.link}
-						linkTo={linkTo}
-						isFirstItem={index === 0}
-						isLastItem={( index + 1 ) === theImages.length}
-						isSelected={isSelected && selectedImage === index}
-						onMoveBackward={() => { onMoveBackward( index ) } }
-						onMoveForward={() => { onMoveForward( index ) } }
-						onRemove={() => { onRemoveImage( index ) } }
-						onSelect={( index ) => { onSelectImage( index ) }}
-						setAttributes={( attrs ) => { setImageAttributes( index, attrs ) } }
-						caption={img.caption}
-						customLink={img.customLink}
-						linkTarget={img.linkTarget}
-						linkSponsored={img.linkSponsored}
-						setLinkAttributes={( attrs ) => { setLinkAttributes( index, attrs ) } }
-						showCaption={showCaption}
-						captionStyles={captionStyles}
-						captionStyle={captionStyle}
-						aria-label={ariaLabel}
-						imageRatio={ratio}
-						type={type}
-						thumbnail={thumbnail}
-						dynamicSource={dynamicSource}
-					/>
-				</div>
-			</li>
+			<div className="kadence-blocks-gallery-item-inner">
+				<GalleryImage
+					thumbUrl={img.thumbUrl}
+					url={img.url}
+					width={img.width}
+					height={img.height}
+					lightUrl={img.lightUrl}
+					alt={img.alt}
+					id={img.id}
+					index={index}
+					link={img.link}
+					linkTo={linkTo}
+					isFirstItem={index === 0}
+					isLastItem={( index + 1 ) === theImages.length}
+					isSelected={isSelected && selectedImage === index}
+					onMoveBackward={() => { onMoveBackward( index ) } }
+					onMoveForward={() => { onMoveForward( index ) } }
+					onRemove={() => { onRemoveImage( index ) } }
+					onSelect={( index ) => { onSelectImage( index ) }}
+					setAttributes={( attrs ) => { setImageAttributes( index, attrs ) } }
+					caption={img.caption}
+					customLink={img.customLink}
+					linkTarget={img.linkTarget}
+					linkSponsored={img.linkSponsored}
+					setLinkAttributes={( attrs ) => { setLinkAttributes( index, attrs ) } }
+					showCaption={showCaption}
+					captionStyles={captionStyles}
+					captionStyle={captionStyle}
+					aria-label={ariaLabel}
+					imageRatio={ratio}
+					type={type}
+					thumbnail={thumbnail}
+					dynamicSource={dynamicSource}
+				/>
+			</div>
 		);
 	};
 
@@ -1825,15 +1823,23 @@ function GalleryEdit( props ) {
 					<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
 						<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
 							{theImages.length !== 1 && (
-								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...fluidCarouselSettings}>
+								<Splide options={ fluidCarouselSettings } className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
 									{theImages.map( ( img, index ) => {
-										return renderGalleryImages( img, index );
+										return (
+											<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+												{ renderGalleryImages( img, index ) }
+											</SplideSlide>
+										);
 									} )}
-								</Slider>
+								</Splide>
 							)}
 							{theImages.length === 1 && (
 								theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
+									return (
+										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) };
+										</li>
+									);
 								} )
 							)}
 						</div>
@@ -1845,13 +1851,21 @@ function GalleryEdit( props ) {
 							{theImages.length !== 1 && (
 								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
 									{theImages.map( ( img, index ) => {
-										return renderGalleryImages( img, index );
+										return (
+											<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+												{ renderGalleryImages( img, index ) };
+											</li>
+										);
 									} )}
 								</Slider>
 							)}
 							{theImages.length === 1 && (
 								theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
+									return (
+										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) };
+										</li>
+									);
 								} )
 							)}
 						</div>
@@ -1864,7 +1878,11 @@ function GalleryEdit( props ) {
 								<>
 									<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
 										{theImages.map( ( img, index ) => {
-											return renderGalleryImages( img, index );
+											return (
+												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+													{ renderGalleryImages( img, index ) };
+												</li>
+											);
 										} )}
 									</Slider>
 									<Slider
@@ -1873,14 +1891,22 @@ function GalleryEdit( props ) {
 										asNavFor={sliderSlides}
 										{...thumbsliderthumbsSettings}>
 										{theImages.map( ( img, index ) => {
-											return renderGalleryImages( img, index, true );
+											return (
+												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+													{ renderGalleryImages( img, index ) };
+												</li>
+											);
 										} )}
 									</Slider>
 								</>
 							)}
 							{theImages.length === 1 && (
 								theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
+									return (
+										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) };
+										</li>
+									);
 								} )
 							)}
 						</div>
@@ -1899,13 +1925,21 @@ function GalleryEdit( props ) {
 							{theImages.length > columns[ 0 ] && (
 								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...carouselSettings}>
 									{theImages.map( ( img, index ) => {
-										return renderGalleryImages( img, index );
+										return (
+											<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+												{ renderGalleryImages( img, index ) }
+											</li>
+										);
 									} )}
 								</Slider>
 							)}
 							{theImages.length <= columns[ 0 ] && (
 								theImages.map( ( img, index ) => {
-									return renderGalleryImages( img, index );
+									return (
+										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) }
+										</li>
+									);
 								} )
 							)}
 						</div>
@@ -1913,23 +1947,35 @@ function GalleryEdit( props ) {
 				)}
 				{type && type === 'masonry' && (
 					<Masonry
-						className={galleryClassNames}
-						elementType={'ul'}
-						data-columns-xxl={columns[ 0 ]}
-						data-columns-xl={columns[ 1 ]}
-						data-columns-lg={columns[ 2 ]}
-						data-columns-md={columns[ 3 ]}
-						data-columns-sm={columns[ 4 ]}
-						data-columns-xs={columns[ 5 ]}
-						options={{
-							transitionDuration: 0,
+						breakpointCols={{
+							default: columns[ 0 ],
+							1600: columns[ 1 ],
+							1200: columns[ 2 ],
+							992: columns[ 3 ],
+							767: columns[ 4 ],
+							500: columns[ 5 ],
 						}}
-						disableImagesLoaded={false}
-						enableResizableChildren={true}
-						updateOnEachImageLoad={false}
+						className={galleryClassNames}
+						// elementType={'ul'}
+						// data-columns-xxl={columns[ 0 ]}
+						// data-columns-xl={columns[ 1 ]}
+						// data-columns-lg={columns[ 2 ]}
+						// data-columns-md={columns[ 3 ]}
+						// data-columns-sm={columns[ 4 ]}
+						// data-columns-xs={columns[ 5 ]}
+						// options={{
+						// 	transitionDuration: 0,
+						// }}
+						// disableImagesLoaded={false}
+						// enableResizableChildren={true}
+						// updateOnEachImageLoad={false}
 					>
 						{theImages.map( ( img, index ) => {
-							return renderGalleryImages( img, index );
+							return (
+								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									{ renderGalleryImages( img, index ) }
+								</li>
+							);
 						} )}
 					</Masonry>
 				)}
@@ -1944,7 +1990,11 @@ function GalleryEdit( props ) {
 						data-columns-xs={columns[ 5 ]}
 					>
 						{theImages.map( ( img, index ) => {
-							return renderGalleryImages( img, index );
+							return (
+								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									{ renderGalleryImages( img, index ) }
+								</li>
+							);
 						} )}
 					</ul>
 				)}
@@ -1953,7 +2003,11 @@ function GalleryEdit( props ) {
 						className={galleryClassNames}
 					>
 						{theImages.map( ( img, index ) => {
-							return renderGalleryImages( img, index );
+							return (
+								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									{ renderGalleryImages( img, index ) }
+								</li>
+							);
 						} )}
 					</ul>
 				)}

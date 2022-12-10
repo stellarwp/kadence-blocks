@@ -146,41 +146,41 @@
 
 	@for $i from 1 through 8 {
 		&[data-columns-xs="#{ $i }"] .kadence-blocks-gallery-item {
-			width: (100% / #{ $i });
+			width: calc(100% / #{ $i });
 		}
 	}
 	@media (min-width: 543px) {
 		@for $i from 1 through 8 {
 			&[data-columns-sm="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100% / #{ $i });
 			}
 		}
 	}
 	@media (min-width: 768px) {
 		@for $i from 1 through 8 {
 			&[data-columns-md="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100% / #{ $i });
 			}
 		}
 	}
 	@media (min-width: 992px) {
 		@for $i from 1 through 8 {
 			&[data-columns-lg="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100% / #{ $i });
 			}
 		}
 	}
 	@media (min-width: 1200px) {
 		@for $i from 1 through 8 {
 			&[data-columns-xl="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100% / #{ $i });
 			}
 		}
 	}
 	@media (min-width: 1500px) {
 		@for $i from 1 through 8 {
 			&[data-columns-xxl="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100% / #{ $i });
 			}
 		}
 	}
@@ -557,7 +557,7 @@
 			&[data-columns-ss="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
@@ -569,7 +569,7 @@
 			&[data-columns-xs="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
@@ -581,7 +581,7 @@
 			&[data-columns-sm="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
@@ -593,7 +593,7 @@
 			&[data-columns-md="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
@@ -605,7 +605,7 @@
 			&[data-columns-xl="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
@@ -617,7 +617,7 @@
 			&[data-columns-xxl="#{ $i }"] .kb-slide-item {
 				display:none;
 				&:nth-child(-n+#{ $i }) {
-					width: (100% / #{ $i });
+					width: calc(100% / #{ $i });
 					display:block;
 					float:left;
 				}
