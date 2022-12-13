@@ -22,7 +22,10 @@ import {
 	KadencePanelBody,
 	RangeControl,
 	WebfontLoader,
+	StepControls,
 	ImageSizeControl,
+	KadenceRadioButtons,
+	ResponsiveRadioRangeControls,
 	DynamicLinkControl,
 	KadenceMediaPlaceholder,
 	DynamicGalleryControl,
@@ -48,13 +51,13 @@ import {
 	bottomRightIcon,
 	radiusLinkedIcon,
 	radiusIndividualIcon,
-	galMasonryIcon,
-	galGridIcon,
-	galCarouselIcon,
-	galFluidIcon,
-	galSliderIcon,
-	galTilesIcon,
-	thumbSliderIcon,
+	galleryMasonryIcon,
+	galleryGridIcon,
+	galleryCarouselIcon,
+	galleryFluidIcon,
+	gallerySliderIcon,
+	galleryTilesIcon,
+	galleryThumbSliderIcon,
 } from '@kadence/icons';
 
 /**
@@ -68,6 +71,7 @@ import {
 	SelectControl,
 	ToggleControl,
 	Toolbar,
+	ToolbarGroup,
 	TabPanel,
 	Dashicon,
 	Placeholder,
@@ -111,20 +115,15 @@ const linkOptions = [
 	{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
 ];
 const typeOptions = [
-	{ value: 'masonry', label: __( 'Masonry', 'kadence-blocks' ), icon: galMasonryIcon, isDisabled: false },
-	{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ), icon: galGridIcon, isDisabled: false },
-	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: galCarouselIcon, isDisabled: false },
-	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: galFluidIcon, isDisabled: false },
-	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: false },
-	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: thumbSliderIcon, isDisabled: true },
-	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galTilesIcon, isDisabled: true },
+	{ value: 'masonry', label: __( 'Masonry', 'kadence-blocks' ), icon: galleryMasonryIcon, isDisabled: false },
+	{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ), icon: galleryGridIcon, isDisabled: false },
+	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: galleryCarouselIcon, isDisabled: false },
+	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: galleryFluidIcon, isDisabled: false },
+	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: gallerySliderIcon, isDisabled: false },
+	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: galleryThumbSliderIcon, isDisabled: true },
+	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galleryTilesIcon, isDisabled: true },
 	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: true },
 ];
-
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kbGalleryUniqueIDs = [];
 
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
@@ -271,6 +270,8 @@ function GalleryEdit( props ) {
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[1] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[1] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[1] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[2] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[2] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[2] : '' ) );
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[3] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[3] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[3] : '' ) );
+
+	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[ 0 ] ? columns[ 0 ] : 3 ), ( undefined !== columns[ 3 ] ? columns[ 3 ] : '' ), ( undefined !== columns[ 5 ] ? columns[ 5 ] : '' ) );
 
 	const previewGutter = getPreviewSize( previewDevice, ( undefined !== gutter[0] ? gutter[0] : '' ), ( undefined !== gutter[1] ? gutter[1] : '' ), ( undefined !== gutter[2] ? gutter[2] : '' ) );
 	const previewGutterUnit = ( gutterUnit ? gutterUnit : 'px' );
@@ -681,7 +682,7 @@ function GalleryEdit( props ) {
 	const controls = (
 		<BlockControls>
 			{hasImages && !dynamicSource && (
-				<Toolbar label={ __( 'Edit Gallery Images', 'kadence-blocks' ) }>
+				<ToolbarGroup>
 					<MediaUpload
 						onSelect={( imgs ) => onSelectImages( imgs, 3 ) }
 						allowedTypes={ALLOWED_MEDIA_TYPES}
@@ -691,13 +692,13 @@ function GalleryEdit( props ) {
 						render={( { open } ) => (
 							<Button
 								className="components-toolbar__control"
-								label={__( 'Edit gallery', 'kadence-blocks' )}
+								label={__( 'Edit/Add gallery images', 'kadence-blocks' )}
 								icon="edit"
 								onClick={open}
 							/>
 						)}
 					/>
-				</Toolbar>
+				</ToolbarGroup>
 			)}
 		</BlockControls>
 	);
@@ -716,35 +717,23 @@ function GalleryEdit( props ) {
 					{( activeTab === 'general' ) &&
 
 						<>
-							<KadencePanelBody
-								title={__( 'Gallery Settings', 'kadence-blocks' )}
-								panelName={'kb-gallery-settings'}
-							>
+							<KadencePanelBody panelName={'kb-gallery-settings'}>
 								{kadence_blocks_params.dynamic_enabled && dynamicSource && (
 									<DynamicGalleryControl dynamicAttribute="images" {...props} />
 								)}
-								<h2>{__( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' )}</h2>
-								<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={__( 'Gallery Type', 'kadence-blocks' )}>
-									{map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
-										<Tooltip text={label}>
-											<Button
-												key={value}
-												className={`kt-style-btn${( isDisabled ? ' kb-disabled-btn' : '' )}`}
-												isSmall
-												isDisabled={isDisabled}
-												variant={ type === value ? 'primary' : undefined }
-												aria-pressed={type === value}
-												onClick={ () => {
-													if ( ! isDisabled ) {
-														setAttributes( { type: value } );
-													}
-												}}
-											>
-												{icon}
-											</Button>
-										</Tooltip>
-									) )}
-								</ButtonGroup>
+								<KadenceRadioButtons
+									value={ type  }
+									options={ galleryTypes }
+									wrap={true}
+									hideLabel={true}
+									label={__( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' )}
+									className={ 'kb-gallery-type-select' }
+									onChange={ value => {
+										setAttributes( {
+											type: value,
+										} );
+									}}
+								/>
 								{( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && (
 									<SelectControl
 										label={__( 'Image ratio', 'kadence-blocks' )}
@@ -862,8 +851,8 @@ function GalleryEdit( props ) {
 											) )}
 										</ButtonGroup>
 										{columnControl !== 'individual' && (
-											<RangeControl
-												label={__( 'Columns' )}
+											<StepControls
+												label={__( 'Columns', 'kadence-blocks' )}
 												value={columns[ 2 ]}
 												onChange={onColumnChange}
 												min={1}
@@ -997,6 +986,56 @@ function GalleryEdit( props ) {
 								)}
 								{type !== 'slider' && showSettings( 'gutterSettings', 'kadence/advancedgallery' ) && (
 									<>
+										<ResponsiveRadioRangeControls
+											label={__( 'Gutter', 'kadence-blocks' )}
+											options={ [
+												{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+												{ value: 'sm', size:16, label: __('SM', 'kadence-blocks' ) },
+												{ value: 'md', size:32, label: __('MD', 'kadence-blocks' ) },
+												{ value: 'lg', size:64, label: __('LG', 'kadence-blocks' ) },
+											] }
+											value={ {
+												value: ( gutter && '' !== gutter[ 0 ] && ( 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
+												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
+											} }
+											onChange={ ( value, size ) => {
+												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
+													setAttributes( { gutter: [ value, ( gutter[1] ? gutter[1] : '' ), ( gutter[2] ? gutter[2] : '' ) ] } );
+												} else {
+													setAttributes( { gutter: [ size, ( gutter[1] ? gutter[1] : '' ), ( gutter[2] ? gutter[2] : '' ) ] } );
+												}
+											}}
+											tabletValue={ {
+												value: ( gutter && '' !== gutter[ 1 ] && ( 'none' === gutter[ 1 ] || 'sm' === gutter[ 1 ] || 'md' === gutter[ 1 ] || 'lg' === gutter[ 1 ] ) ? gutter[ 1 ] : 'custom' ),
+												size: ( gutter && '' !== gutter[ 1 ] && ( 'none' !== gutter[ 1 ] && 'sm' !== gutter[ 1 ] && 'md' !== gutter[ 1 ] && 'lg' !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ),
+											} }
+											onChangeTablet={ ( value, size ) => {
+												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
+													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), value, ( gutter[2] ? gutter[2] : '' ) ] } );
+												} else {
+													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), size, ( gutter[2] ? gutter[2] : '' ) ] } );
+												}
+											}}
+											mobileValue={ {
+												value: ( gutter && '' !== gutter[ 0 ] && ( 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
+												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
+											} }
+											onChangeMobile={ ( value, size ) => {
+												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
+													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ),value ] } );
+												} else {
+													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ), size ] } );
+												}
+											}}
+											min={0}
+											max={( gutterUnit === 'px' ? 200 : 12 )}
+											step={( gutterUnit === 'px' ? 1 : 0.1 )}
+											unit={ gutterUnit ? gutterUnit : 'px' }
+											onUnit={( value ) => {
+												setAttributes( { gutterUnit: value } );
+											}}
+											units={[ 'px', 'em', 'rem' ]}
+										/>
 										<ResponsiveRangeControls
 											label={__( 'Gutter', 'kadence-blocks' )}
 											value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
@@ -1716,7 +1755,7 @@ function GalleryEdit( props ) {
 					}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' )}
-					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color ? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' )}
+					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color && '' !== captionStyles[ 0 ].color ? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' )}
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : 'none' )}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${( displayShadow ? shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) : 'none' )}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
@@ -1823,7 +1862,7 @@ function GalleryEdit( props ) {
 					<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
 						<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
 							{theImages.length !== 1 && (
-								<Splide options={ fluidCarouselSettings } className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+								<Splide options={ fluidCarouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
 									{theImages.map( ( img, index ) => {
 										return (
 											<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
@@ -1948,33 +1987,15 @@ function GalleryEdit( props ) {
 				{type && type === 'masonry' && (
 					<Masonry
 						breakpointCols={{
-							default: columns[ 0 ],
-							1600: columns[ 1 ],
-							1200: columns[ 2 ],
-							992: columns[ 3 ],
-							767: columns[ 4 ],
-							500: columns[ 5 ],
+							default: previewColumns,
 						}}
 						className={galleryClassNames}
-						// elementType={'ul'}
-						// data-columns-xxl={columns[ 0 ]}
-						// data-columns-xl={columns[ 1 ]}
-						// data-columns-lg={columns[ 2 ]}
-						// data-columns-md={columns[ 3 ]}
-						// data-columns-sm={columns[ 4 ]}
-						// data-columns-xs={columns[ 5 ]}
-						// options={{
-						// 	transitionDuration: 0,
-						// }}
-						// disableImagesLoaded={false}
-						// enableResizableChildren={true}
-						// updateOnEachImageLoad={false}
 					>
 						{theImages.map( ( img, index ) => {
 							return (
-								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+								<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
 									{ renderGalleryImages( img, index ) }
-								</li>
+								</div>
 							);
 						} )}
 					</Masonry>
@@ -2010,9 +2031,6 @@ function GalleryEdit( props ) {
 							);
 						} )}
 					</ul>
-				)}
-				{isSelected && !dynamicSource && (
-					addMediaPlaceholder
 				)}
 			</div>
 	</div>

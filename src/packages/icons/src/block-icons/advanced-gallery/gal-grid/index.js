@@ -1,7 +1,6 @@
 export default <svg viewBox='0 0 48 37' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 					clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='2'>
-	<rect id='Artboard1' width='47.974' height='36.014' fill='none' />
-	<g fill='#3a3a3a' fillRule='nonzero'>
+	<g fillRule='nonzero'>
 		<path d='M45.54,1.456l-20.192,0c-0.217,0 -0.396,0.179 -0.396,0.396l0,14.696c0,0.217 0.179,0.395 0.396,0.395l20.192,0c0.217,0 0.396,-0.178 0.396,-0.395l0,-14.699c-0.002,-0.216 -0.181,-0.393 -0.396,-0.393Zm-0.396,14.692l-19.4,0l0,-13.9l19.4,0l0,13.9Z'
 		/>
 		<path d='M39.43,14.702l4.511,0l-4.854,-6.18l-2.256,2.872l-3.643,-4.639l-6.241,7.947l12.483,0Z'

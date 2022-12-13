@@ -54,20 +54,10 @@ function GalleryImage( props ) {
 		image
 	} = props;
 
-	const [ captionSelected, setCaptionSelected ] = useState( false );
 	const [ showSettings, setShowSettings ] = useState( false );
 
 	const toggleSettingsVisibility = () => {
 		setShowSettings( !showSettings );
-	};
-
-	const onSelectCaption = () => {
-		if ( !isSelected ) {
-			onSelect();
-		}
-		if ( !captionSelected ) {
-			setCaptionSelected( true );
-		}
 	};
 
 	const onSelectImage = () => {
@@ -76,9 +66,6 @@ function GalleryImage( props ) {
 			onSelect( index );
 		}
 
-		if ( captionSelected ) {
-			setCaptionSelected( false );
-		}
 	};
 
 	const onRemoveImage = ( event ) => {
@@ -95,9 +82,6 @@ function GalleryImage( props ) {
 	const onSelectCustomLink = () => {
 		if ( ! isSelected ) {
 			onSelect();
-		}
-		if ( captionSelected ) {
-			setCaptionSelected( false );
 		}
 	}
 
@@ -203,19 +187,14 @@ function GalleryImage( props ) {
 			{isBlobURL( url ) && <Spinner/>}
 		</div>
 	);
-
 	const figcap = (
 		<RichText
 			tagName="figcaption"
-			className={`kadence-blocks-gallery-item__caption${( captionSelected ? ' editing-caption' : '' )}`}
+			className={`kadence-blocks-gallery-item__caption`}
 			placeholder={isSelected ? __( 'Write caption…', 'kadence-blocks' ) : null}
 			value={caption}
-			isSelected={captionSelected}
 			onChange={( newCaption ) => setAttributes( { caption: newCaption } )}
-			unstableOnFocus={ () => onSelectCaption}
-			onClick={ () => onSelectCaption}
-			inlineToolbar={captionSelected ? true : false}
-			allowedFormats={( linkTo === 'none' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) )}
+			inlineToolbar
 			keepPlaceholderOnFocus
 			style={{
 				fontWeight   : '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,

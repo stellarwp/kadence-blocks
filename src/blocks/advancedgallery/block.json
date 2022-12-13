@@ -171,6 +171,14 @@
 		""
 	  ]
 	},
+	"gap": {
+		"type": "array",
+		"default": [
+		  "",
+		  "",
+		  ""
+		]
+	},
 	"gutterUnit": {
 		"type": "string",
 		"default": "px"

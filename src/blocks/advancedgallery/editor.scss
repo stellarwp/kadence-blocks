@@ -3,7 +3,24 @@
  *
  * CSS for Backend.
  */
- .wp-block[data-align=right]>.wp-block-kadence-advancedgallery, .wp-block[data-align=left]>.wp-block-kadence-advancedgallery {
+ @import './splide.scss';
+ // Controls.
+.kb-gallery-type-select .kadence-radio-control-flexwrap .components-button.kadence-radio-item {
+    height: 50px;
+	svg {
+		width: 100%;
+		height: auto;
+	}
+}
+.kb-gallery-type-select .kadence-radio-container-control.components-button-group .components-button.has-icon.radio-no-label svg {
+	rect {
+	fill: none !important;
+	}
+	path[fill="none"] {
+		fill: none !important;
+	}
+}
+.wp-block[data-align=right]>.wp-block-kadence-advancedgallery, .wp-block[data-align=left]>.wp-block-kadence-advancedgallery {
     max-width: 420px;
     width: 100%;
 }
@@ -58,7 +75,7 @@
 }
 .kb-gallery-custom-link .block-editor-url-input {
     width:100%;
-    border-top: 4px solid #0085ba;
+    border-top: 4px solid var(--wp-admin-theme-color, #00669b);
 }
 .kb-gallery-custom-link .block-editor-url-input input[type=text] {
     width:100%;
@@ -94,7 +111,7 @@
 		&:before {
 			content: '';
 			position: absolute;
-			border: 4px solid #0085ba;
+			border: 4px solid var(--wp-admin-theme-color, #00669b);
 			left: 0;
 			right: 0;
 			top: 0;
@@ -142,14 +159,14 @@
 
 	.is-selected .kadence-blocks-library-gallery-item__move-menu,
 	.is-selected .kadence-blocks-library-gallery-item__inline-menu {
-		background-color: #0085ba;
+		background-color: var(--wp-admin-theme-color, #00669b);
 
 		.components-button {
 			color: #fff;
 		}
 
 		.components-button:focus {
-			color: inherit;
+			color: #fff;
 		}
 
 	}

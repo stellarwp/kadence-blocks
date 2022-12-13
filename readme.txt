@@ -76,25 +76,29 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.5.0 Beta Version =
-Release Date: April 20th, 2022
-* Update: RowLayout to use grid css.
+= 3.0.0 Beta Version 1 =
+Release Date: December 15th, 2022
+* Update: Row Layout to use grid css.
 * Update: File Structure, build process, individual block files.
+* Update: Improved CSS generation for blocks.
+* Update: Block defaults structure, new controls and management. 
 * Update: Inline SVGs removed from content html.
+* Update: New Icon Picker
 * Update: Sections can move freely in and out of rows.
+* Update: Icon List block to use innerBlocks for list items.
 * Update: Icons flex layout with gap settings.
 * Update: Add Icon option to advanced text block.
-* Update: Lightbox to use glightbox.
+* Update: Lightbox to use glightbox (mobile swipe).
 * Update: Gallery Carousels to use splide.
 * Update: Testimonial Carousels to use Splide.
-* Fix: Parallax background issue with border radius.
-* Add: Block defaults for button style in advanced button.
-* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
 * Update: Gallery to allow links in captions, separate from image link.
+* Add: Ability to import, export, and reset block defaults
+* Fix: Parallax background issue with border radius. *
+* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing. *
 * Fix: Updating gallery can lose added captions.
-* Fix: Issue with aligning in buttons with icons.
-* Update: Facebook logo svg.
-* Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
+* Fix: Issue with aligning in buttons with icons. *
+* Update: Facebook logo svg. *
+* Update: Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
 * Tweak - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
 * Tweak - Accordion animation when nesting accordions, with both "closed".
 * Fix: Google Maps filer initial value issue.
@@ -105,12 +109,7 @@ Release Date: April 20th, 2022
 * Add: Responsive container margin on Icon List block.
 * Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
-* Update: Icon List block to use innerBlocks for list items.
-* Update: Improved CSS generation for blocks.
 * Fix: Issue when using more than 36 tabs in Tabs block.
-* Add: New Icon Picker
-* Add: Ability to import, export, and reset block defaults
-
 
 = 2.4.21 =
 Release Date: November 11th, 2022
