@@ -14,7 +14,7 @@ import {
 	InlineTypographyControls,
 	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
-	RangeControl,
+	BorderControl,
 	KadencePanelBody,
 	URLInputControl,
 	WebfontLoader,
@@ -39,7 +39,8 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getBorderStyle
 } from '@kadence/helpers';
 
 /**
@@ -141,7 +142,6 @@ function KadenceAdvancedHeading( props ) {
 		markFontWeight,
 		markFontStyle,
 		markPadding,
-		markPaddingControl,
 		markColor,
 		markBG,
 		markBGOpacity,
@@ -180,9 +180,19 @@ function KadenceAdvancedHeading( props ) {
 		fontSize,
 		fontHeight,
 		fontHeightType,
+		letterSpacingType,
+		tabletLetterSpacing,
+		mobileLetterSpacing,
+		markLetterSpacingType,
+		markPaddingType,
+		tabletMarkLetterSpacing,
+		mobileMarkLetterSpacing,
+		markBorderStyles,
+		maxWidthType,
+		maxWidth,
+		beforeIcon,
+		afterIcon,
 	} = attributes;
-
-	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 
 	const paddingMouseOver = mouseOverVisualizer();
@@ -234,6 +244,42 @@ function KadenceAdvancedHeading( props ) {
 		if ( ( lineHeight || tabLineHeight || mobileLineHeight ) ) {
 			setAttributes( { fontHeight: [ lineHeight, tabLineHeight, mobileLineHeight ], fontHeightType: lineType, lineHeight:'', tabLineHeight:'', mobileLineHeight:'' } );
 		}
+		// Update from old border settings.
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.markBorderStyles ? attributes.markBorderStyles : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
+		let updateBorderStyle = false;
+		if ( ( '' !== markBorder ) ) {
+			tempBorderStyle[0].top[0] = KadenceColorOutput( markBorder, markBorderOpacity );
+			tempBorderStyle[0].right[0] = KadenceColorOutput( markBorder, markBorderOpacity );
+			tempBorderStyle[0].bottom[0] = KadenceColorOutput( markBorder, markBorderOpacity );
+			tempBorderStyle[0].left[0] = KadenceColorOutput( markBorder, markBorderOpacity );
+			updateBorderStyle = true;
+			setAttributes( { markBorder: '' } );
+		}
+		if ( '' !== markBorderWidth && 0 !== markBorderWidth ) {
+			tempBorderStyle[0].top[2] = markBorderWidth;
+			tempBorderStyle[0].right[2] = markBorderWidth;
+			tempBorderStyle[0].bottom[2] = markBorderWidth;
+			tempBorderStyle[0].left[2] = markBorderWidth;
+			updateBorderStyle = true;
+			setAttributes( { markBorderWidth:0 } );
+		}
+		if ( '' !== markBorderStyle && 'solid' !== markBorderStyle ) {
+			tempBorderStyle[0].top[1] = markBorderStyle;
+			tempBorderStyle[0].right[1] = markBorderStyle;
+			tempBorderStyle[0].bottom[1] = markBorderStyle;
+			tempBorderStyle[0].left[1] = markBorderStyle;
+			updateBorderStyle = true;
+			setAttributes( { markBorderStyle:'solid' } );
+		}
+		if ( updateBorderStyle ) {
+			setAttributes( { markBorderStyles: tempBorderStyle } );
+		}
 	}, [] );
 
 	const saveShadow = ( value ) => {
@@ -268,15 +314,7 @@ function KadenceAdvancedHeading( props ) {
 	const sconfig = ( markGoogleFont ? sgconfig : '' );
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 	const TagHTML = tagName;
-	const fontMin = ( sizeType !== 'px' ? 0.2 : 5 );
-	const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
-	const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
-	const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
-	const paddingMin = ( paddingType === 'em' || paddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( paddingType === 'em' || paddingType === 'rem' ? 12 : 200 );
-	const paddingStep = ( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 );
-	const fontMax = ( sizeType !== 'px' ? 12 : 200 );
-	const fontStep = ( sizeType !== 'px' ? 0.1 : 1 );
+
 	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
@@ -287,6 +325,9 @@ function KadenceAdvancedHeading( props ) {
 	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize[0] ? fontSize[0] : '' ), ( undefined !== fontSize[1] ? fontSize[1] : '' ), ( undefined !== fontSize[2] ? fontSize[2] : '' ) );
 	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== fontHeight[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight[2] ? fontHeight[2] : '' ) );
+
+	const previewLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
+
 	const previewAlign = getPreviewSize( getPreviewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
 	const previewMarkPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
 	const previewMarkPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
@@ -294,6 +335,15 @@ function KadenceAdvancedHeading( props ) {
 	const previewMarkPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 3 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 3 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 3 ] : '' ) );
 	const previewMarkSize = getPreviewSize( getPreviewDevice, ( undefined !== markSize ? markSize[ 0 ] : '' ), ( undefined !== markSize ? markSize[ 1 ] : '' ), ( undefined !== markSize ? markSize[ 2 ] : '' ) );
 	const previewMarkLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== markLineHeight ? markLineHeight[ 0 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 1 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 2 ] : '' ) );
+
+	const previewMarkLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== markLetterSpacing ? markLetterSpacing : '' ), ( undefined !== tabletMarkLetterSpacing ? tabletMarkLetterSpacing : '' ), ( undefined !== mobileMarkLetterSpacing ? mobileMarkLetterSpacing : '' ) );
+
+	const previewMaxWidth = getPreviewSize( getPreviewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
+
+	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, '', '' );
+	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, '', '' );
+	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, '', '' );
+	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, '', '' );
 	const headingOptions = [
 		[
 			{
@@ -388,8 +438,8 @@ function KadenceAdvancedHeading( props ) {
 				fontWeight     : fontWeight,
 				fontStyle      : fontStyle,
 				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-				lineHeight     : ( previewLineHeight ? previewLineHeight + lineType : undefined ),
-				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
+				lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
+				letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
 				fontFamily     : ( typography ? renderTypography : '' ),
 				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
@@ -433,7 +483,7 @@ function KadenceAdvancedHeading( props ) {
 				fontStyle      : fontStyle,
 				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
 				lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
-				letterSpacing  : ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
+				letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
 				textTransform  : ( textTransform ? textTransform : undefined ),
 				fontFamily     : ( typography ? renderTypography : '' ),
 				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
@@ -472,19 +522,21 @@ function KadenceAdvancedHeading( props ) {
 						background: ${( markBG ? markBGString : 'transparent' )};
 						font-weight: ${( markFontWeight ? markFontWeight : 'inherit' )};
 						font-style: ${( markFontStyle ? markFontStyle : 'inherit' )};
-						font-size: ${( previewMarkSize ? previewMarkSize + markSizeType : 'inherit' )};
+						font-size: ${( previewMarkSize ? getFontSizeOptionOutput( previewMarkSize, markSizeType ) : 'inherit' )};
 						line-height: ${( previewMarkLineHeight ? previewMarkLineHeight + markLineType : 'inherit' )};
-						letter-spacing: ${( markLetterSpacing ? markLetterSpacing + 'px' : 'inherit' )};
+						letter-spacing: ${( previewMarkLetterSpacing ? previewMarkLetterSpacing + ( markLetterSpacingType ? markLetterSpacingType : 'px' ) : 'inherit' )};
 						text-transform: ${( markTextTransform ? markTextTransform : 'inherit' )};
 						font-family: ${( markTypography ? markTypography : 'inherit' )};
-						border-color: ${( markBorder ? markBorderString : 'transparent' )};
-						border-width: ${( markBorderWidth ? markBorderWidth + 'px' : '0' )};
-						border-style: ${( markBorderStyle ? markBorderStyle : 'solid' )};
-						padding-top: ${( previewMarkPaddingTop ? previewMarkPaddingTop + 'px ' : '0' )};
-						padding-right: ${( previewMarkPaddingRight ? previewMarkPaddingRight + 'px ' : '0' )};
-						padding-bottom: ${( previewMarkPaddingBottom ? previewMarkPaddingBottom + 'px ' : '0' )};
-						padding-left: ${( previewMarkPaddingLeft ? previewMarkPaddingLeft + 'px ' : '0' )};
+						border-top: ${( previewMarkBorderTopStyle ? previewMarkBorderTopStyle : 'inherit' )};
+						border-right: ${( previewMarkBorderRightStyle ? previewMarkBorderRightStyle : 'inherit' )};
+						border-bottom: ${( previewMarkBorderBottomStyle ? previewMarkBorderBottomStyle : 'inherit' )};
+						border-left: ${( previewMarkBorderLeftStyle ? previewMarkBorderLeftStyle : 'inherit' )};
+						padding-top: ${( previewMarkPaddingTop ? getSpacingOptionOutput( previewMarkPaddingTop, markPaddingType ) : '0' )};
+						padding-right: ${( previewMarkPaddingRight ? getSpacingOptionOutput( previewMarkPaddingRight, markPaddingType ) : '0' )};
+						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
+						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
 					}`}
+				{ ( previewMaxWidth ? `.kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; margin-left: auto; margin-right:auto; }` : '' ) }
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
 							color: ${KadenceColorOutput( linkColor )} !important;
@@ -584,7 +636,7 @@ function KadenceAdvancedHeading( props ) {
 						<>
 							<KadencePanelBody>
 								<TagSelect
-									label={__( 'Change HTML Tag', 'kadence-blocks' )}
+									label={__( 'HTML Tag', 'kadence-blocks' )}
 									value={ 'heading' === htmlTag ? level : htmlTag }
 									onChange={ (value) => {
 										if ( 'div' === value || 'p' === value || 'span' === value ) {
@@ -602,6 +654,29 @@ function KadenceAdvancedHeading( props ) {
 									onChange={( nextAlign ) => setAttributes( { align: nextAlign } )}
 									onChangeTablet={( nextAlign ) => setAttributes( { tabletAlign: nextAlign } )}
 									onChangeMobile={( nextAlign ) => setAttributes( { mobileAlign: nextAlign } )}
+								/>
+								<ResponsiveRangeControls
+									label={__( 'Max Width', 'kadence-blocks' )}
+									value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
+									onChange={value => {
+										setAttributes( { maxWidth: [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+									}}
+									tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
+									onChangeTablet={( value ) => {
+										setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+									}}
+									mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
+									onChangeMobile={( value ) => {
+										setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ] } );
+									}}
+									min={0}
+									max={( maxWidthType === 'px' ? 2000 : 100 )}
+									step={1}
+									unit={maxWidthType ? maxWidthType : 'px'}
+									onUnit={( value ) => {
+										setAttributes( { maxWidthType: value } );
+									}}
+									units={[ 'px', '%', 'vw' ]}
 								/>
 							</KadencePanelBody>
 							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
@@ -694,7 +769,7 @@ function KadenceAdvancedHeading( props ) {
 										/>
 										<TwoColumn className="kb-font-settings">
 											<ResponsiveUnitControl
-												label={__( 'Height', 'kadence-blocks' )}
+												label={__( 'Line Height', 'kadence-blocks' )}
 												value={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
 												onChange={value => setAttributes( { fontHeight: [value,( undefined !== fontHeight[1] ? fontHeight[1] : '' ),( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
 												tabletValue={( undefined !== fontHeight[1] ? fontHeight[1] : '' )}
@@ -734,8 +809,10 @@ function KadenceAdvancedHeading( props ) {
 								>
 									<TypographyControls
 										fontGroup={'heading'}
-										letterSpacing={letterSpacing}
-										onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
+										reLetterSpacing={[letterSpacing, tabletLetterSpacing, mobileLetterSpacing]}
+										onLetterSpacing={( value ) => setAttributes( {  letterSpacing: value[0], tabletLetterSpacing: value[1], mobileLetterSpacing: value[2] } )}
+										letterSpacingType={ letterSpacingType }
+										onLetterSpacingType={( value ) => setAttributes( { letterSpacingType: value } )}
 										fontFamily={typography}
 										onFontFamily={( value ) => setAttributes( { typography: value } )}
 										onFontChange={( select ) => {
@@ -756,8 +833,6 @@ function KadenceAdvancedHeading( props ) {
 										onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
 										fontSubset={fontSubset}
 										onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
-										textTransform={textTransform}
-										onTextTransform={( value ) => setAttributes( { textTransform: value } )}
 										loadItalic={loadItalic}
 										onLoadItalic={( value ) => setAttributes( { loadItalic: value } )}
 									/>
@@ -800,13 +875,13 @@ function KadenceAdvancedHeading( props ) {
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
 									<PopColorControl
-										label={__( 'Highlight Color', 'kadence-blocks' )}
+										label={__( 'Color', 'kadence-blocks' )}
 										value={( markColor ? markColor : '' )}
 										default={''}
 										onChange={value => setAttributes( { markColor: value } )}
 									/>
 									<PopColorControl
-										label={__( 'Highlight Background', 'kadence-blocks' )}
+										label={__( 'Background', 'kadence-blocks' )}
 										value={( markBG ? markBG : '' )}
 										default={''}
 										onChange={value => setAttributes( { markBG: value } )}
@@ -814,35 +889,13 @@ function KadenceAdvancedHeading( props ) {
 										onOpacityChange={value => setAttributes( { markBGOpacity: value } )}
 										onArrayChange={( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } )}
 									/>
-									<PopColorControl
-										label={__( 'Highlight Border Color', 'kadence-blocks' )}
-										value={( markBorder ? markBorder : '' )}
-										default={''}
-										onChange={value => setAttributes( { markBorder: value } )}
-										opacityValue={markBorderOpacity}
-										onOpacityChange={value => setAttributes( { markBorderOpacity: value } )}
-										onArrayChange={( color, opacity ) => setAttributes( { markBorder: color, markBorderOpacity: opacity } )}
-									/>
-									<SelectControl
-										label={__( 'Highlight Border Style', 'kadence-blocks' )}
-										value={markBorderStyle}
-										options={[
-											{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
-											{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
-											{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
-										]}
-										onChange={value => setAttributes( { markBorderStyle: value } )}
-									/>
-									<RangeControl
-										label={__( 'Highlight Border Width', 'kadence-blocks' )}
-										value={markBorderWidth}
-										onChange={value => setAttributes( { markBorderWidth: value } )}
-										min={0}
-										max={20}
-										step={1}
+									<BorderControl
+										label={__( 'Border', 'kadence-blocks' )}
+										value={markBorderStyles}
+										onChange={( value ) => setAttributes( { markBorderStyles: value } )}
 									/>
 									<TypographyControls
-										fontGroup={'heading'}
+										fontGroup={'mark-heading'}
 										fontSize={markSize}
 										onFontSize={( value ) => setAttributes( { markSize: value } )}
 										fontSizeType={markSizeType}
@@ -851,8 +904,10 @@ function KadenceAdvancedHeading( props ) {
 										onLineHeight={( value ) => setAttributes( { markLineHeight: value } )}
 										lineHeightType={markLineType}
 										onLineHeightType={( value ) => setAttributes( { markLineType: value } )}
-										letterSpacing={markLetterSpacing}
-										onLetterSpacing={( value ) => setAttributes( { markLetterSpacing: value } )}
+										reLetterSpacing={[markLetterSpacing, tabletMarkLetterSpacing, mobileMarkLetterSpacing]}
+										onLetterSpacing={( value ) => setAttributes( {  markLetterSpacing: value[0], tabletMarkLetterSpacing: value[1], mobileMarkLetterSpacing: value[2] } )}
+										letterSpacingType={ markLetterSpacingType }
+										onLetterSpacingType={( value ) => setAttributes( { markLetterSpacingType: value } )}
 										fontFamily={markTypography}
 										onFontFamily={( value ) => setAttributes( { markTypography: value } )}
 										onFontChange={( select ) => {
@@ -876,22 +931,20 @@ function KadenceAdvancedHeading( props ) {
 										textTransform={markTextTransform}
 										onTextTransform={( value ) => setAttributes( { markTextTransform: value } )}
 									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Padding', 'kadence-blocks' )}
+									<ResponsiveMeasureRangeControl
+										label={__('Padding', 'kadence-blocks')}
 										value={markPadding}
-										control={markPaddingControls}
 										tabletValue={markTabPadding}
 										mobileValue={markMobilePadding}
 										onChange={( value ) => setAttributes( { markPadding: value } )}
 										onChangeTablet={( value ) => setAttributes( { markTabPadding: value } )}
 										onChangeMobile={( value ) => setAttributes( { markMobilePadding: value } )}
-										onChangeControl={( value ) => setMarkPaddingControls( value )}
 										min={0}
-										max={100}
-										step={1}
-										unit={'px'}
-										units={[ 'px' ]}
-										showUnit={true}
+										max={( markPaddingType === 'em' || markPaddingType === 'rem' ? 12 : 200 )}
+										step={( markPaddingType === 'em' || markPaddingType === 'rem' ? 0.1 : 1 )}
+										unit={markPaddingType}
+										units={['px', 'em', 'rem', '%']}
+										onUnit={(value) => setAttributes({markPaddingType: value})}
 									/>
 								</KadencePanelBody>
 							)}
@@ -911,9 +964,9 @@ function KadenceAdvancedHeading( props ) {
 											onChange={(value) => setAttributes({padding: value})}
 											onChangeTablet={(value) => setAttributes({tabletPadding: value})}
 											onChangeMobile={(value) => setAttributes({mobilePadding: value})}
-											min={paddingMin}
-											max={paddingMax}
-											step={paddingStep}
+											min={0}
+											max={( paddingType === 'em' || paddingType === 'rem' ? 12 : 200 )}
+											step={( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 )}
 											unit={paddingType}
 											units={['px', 'em', 'rem', '%']}
 											onUnit={(value) => setAttributes({paddingType: value})}
@@ -930,9 +983,9 @@ function KadenceAdvancedHeading( props ) {
 											}}
 											onChangeTablet={(value) => setAttributes({tabletMargin: value})}
 											onChangeMobile={(value) => setAttributes({mobileMargin: value})}
-											min={marginMin}
-											max={marginMax}
-											step={marginStep}
+											min={( marginType === 'em' || marginType === 'rem' ? -10 : -200 )}
+											max={( marginType === 'em' || marginType === 'rem' ? 12 : 200 )}
+											step={( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 )}
 											unit={marginType}
 											units={['px', 'em', 'rem', '%', 'vh']}
 											onUnit={(value) => setAttributes({marginType: value})}

@@ -46,7 +46,6 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-row-layout-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-column-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-accordion-block.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advanced-form-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advancedgallery-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advancedbtn-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advanced-heading-block.php';
@@ -73,10 +72,13 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-cpt.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/convertkit-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/activecampaign-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';
+	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advanced-form-block.php';
+		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-cpt.php';
+		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';
+	}
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );

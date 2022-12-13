@@ -53,6 +53,16 @@
 	"letterSpacing": {
 	  "type": "number"
 	},
+	"tabletLetterSpacing": {
+		"type": "number"
+	},
+	"mobileLetterSpacing": {
+		"type": "number"
+	},
+	"letterSpacingType": {
+		"type": "string",
+		"default": "px"
+	},
 	"typography": {
 	  "type": "string",
 	  "default": ""
@@ -194,6 +204,16 @@
 	"markLetterSpacing": {
 	  "type": "number"
 	},
+	"tabletMarkLetterSpacing": {
+		"type": "number"
+	},
+	"mobileMarkLetterSpacing": {
+		"type": "number"
+	},
+	"markLetterSpacingType": {
+		"type": "string",
+		"default": "px"
+	},
 	"markTypography": {
 	  "type": "string",
 	  "default": ""
@@ -264,8 +284,22 @@
 	  "type": "string",
 	  "default": "linked"
 	},
+	"markPaddingType": {
+		"type": "string",
+		"default": "px"
+	},
 	"markBorder": {
 	  "type": "string"
+	},
+	"markBorderStyles": {
+		"type": "array",
+		"default": [ { 
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+		} ]
 	},
 	"markBorderOpacity": {
 	  "type": "number",
@@ -372,6 +406,18 @@
 	"fontHeightType": {
 		"type": "string",
 		"default": ""
+	},
+	"maxWidth": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
+	},
+	"maxWidthType": {
+		"type": "string",
+		"default": "px"
 	}
   },
   "usesContext": [

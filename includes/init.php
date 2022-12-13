@@ -65,7 +65,6 @@ function kadence_gutenberg_editor_assets() {
 		'advancedbtn',
 		'advancedgallery',
 		'advancedheading',
-		'advanced-form',
 		'column',
 		'countup',
 		'countdown',
@@ -84,6 +83,9 @@ function kadence_gutenberg_editor_assets() {
 		'tabs',
 		'testimonials',
 	);
+	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
+		$blocks[] = 'advanced-form';
+	}
 	foreach ( $blocks as $block ) {
 		$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
 		$handle = sprintf( 'kadence-blocks-%s', $block );
@@ -939,7 +941,10 @@ function kadence_blocks_get_pro_license_data() {
 	return $data;
 }
 
-function register_lottie_custom_post_type() {
+/**
+ * Register the lotte post type.
+ */
+function kadence_blocks_register_lottie_custom_post_type() {
 	register_post_type(
 		'kadence_lottie',
 		array(
@@ -969,4 +974,4 @@ function register_lottie_custom_post_type() {
 	);
 }
 
-add_action( 'init', 'register_lottie_custom_post_type' );
+add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );

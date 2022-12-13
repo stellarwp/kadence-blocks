@@ -27,7 +27,6 @@ import { debounce, uniqueId } from 'lodash';
 import {
 	PopColorControl,
 	ResponsiveMeasurementControls,
-	MeasurementControls,
 	SmallResponsiveControl,
 	RangeControl,
 	ResponsiveRangeControls,
