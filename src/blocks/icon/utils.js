@@ -4,7 +4,6 @@
 import { createBlock } from '@wordpress/blocks';
 
 export function migrateToInnerblocks( attributes ) {
-    console.log( 'VIA MIGRATINON', attributes );
 
     const { icons } = attributes;
 
