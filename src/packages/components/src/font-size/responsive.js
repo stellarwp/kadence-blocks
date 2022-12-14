@@ -79,9 +79,13 @@
 		if ( typeof reset === 'function' ){
 			reset();
 		} else {
-			onChange( defaultValue[0] );
-			onChangeTablet( defaultValue[1] );
-			onChangeMobile( defaultValue[2] );
+			if ( deviceType === 'Mobile' ) {
+				onChangeMobile( defaultValue[2] );
+			} else if ( deviceType === 'Tablet' ) {
+				onChangeTablet( defaultValue[1] );
+			} else {
+				onChange( defaultValue[0] );
+			}
 		}
 	}
 	 const output = {};

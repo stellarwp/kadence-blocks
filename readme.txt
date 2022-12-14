@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.9
-Tested up to: 5.9
-Stable tag: 2.5.0
+Requires at least: 6.0
+Tested up to: 6.1
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

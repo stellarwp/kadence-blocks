@@ -753,7 +753,7 @@ function KadenceAdvancedHeading( props ) {
 										<ResponsiveFontSizeControl
 											label={__( 'Font Size', 'kadence-blocks' )}
 											value={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
-											onChange={value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
+											onChange={ value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
 											tabletValue={( undefined !== fontSize[1] ? fontSize[1] : '' )}
 											onChangeTablet={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),value,( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
 											mobileValue={( undefined !== fontSize[2] ? fontSize[2] : '' )}

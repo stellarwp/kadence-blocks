@@ -44,21 +44,6 @@ class HeadingStyleCopyPaste extends Component {
 			onPaste,
 			blockAttributes,
 		} = this.props;
-		const copyIcon = <svg
-			xmlns="http://www.w3.org/2000/svg"
-			fillRule="evenodd"
-			strokeLinejoin="round"
-			strokeMiterlimit="2"
-			clipRule="evenodd"
-			viewBox="0 0 32 32"
-			width="20px"
-			height="20px"
-		>
-			<path
-				fillRule="nonzero"
-				d="M26 8h-6V6l-6-6H0v24h12v8h20V14l-6-6zm0 2.828L29.172 14H26v-3.172zm-12-8L17.172 6H14V2.828zM2 2h10v6h6v14H2V2zm28 28H14v-6h6V10h4v6h6v14z"
-			></path>
-		</svg>;
 		const headingCopiedStyles = JSON.parse( localStorage.getItem( 'kadenceHeadingStyle' ) );
 		const copyAction = () => {
 			const copyStyles = {};
@@ -223,6 +208,9 @@ class HeadingStyleCopyPaste extends Component {
 			}
 			if ( blockAttributes.markBorderStyle ) {
 				copyStyles.markBorderStyle = blockAttributes.markBorderStyle;
+			}
+			if ( blockAttributes.markBorderStyles ) {
+				copyStyles.markBorderStyles = blockAttributes.markBorderStyles;
 			}
 			if ( blockAttributes.textTransform ) {
 				copyStyles.textTransform = blockAttributes.textTransform;
