@@ -1,11 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
- * Register sub blocks.
- */
-import './testimonial/block.js';
-
-/**
  * Internal dependencies
  */
 import edit from './edit';
@@ -15,7 +10,6 @@ import save from './save';
 const { name } = metadata;
 import { testimonialBlockIcon } from '@kadence/icons';
 import { __ } from '@wordpress/i18n';
-import './style.scss';
 
 export { metadata, name };
 

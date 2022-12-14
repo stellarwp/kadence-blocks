@@ -1,0 +1,138 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Testimonials",
+  "name": "kadence/testimonial",
+  "parent": [
+	"kadence/testimonials"
+  ],
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"uniqueID": {
+	  "type": "string",
+	  "default": ""
+	},
+    "url": {
+	  "type": "string",
+	  "default": ""
+	},
+	"id": {
+	  "type": "number",
+	  "default": ""
+	},
+	"alt": {
+	  "type": "string",
+	  "default": ""
+	},
+	"width": {
+	  "type": "number",
+	  "default": ""
+	},
+	"height": {
+	  "type": "number",
+	  "default": ""
+	},
+	"maxWidth": {
+	  "type": "number",
+	  "default": ""
+	},
+	"subtype": {
+	  "type": "string",
+	  "default": ""
+	},
+	"media": {
+	  "type": "string",
+	  "default": "image"
+	},
+	"icon": {
+	  "type": "string",
+	  "default": "fas_quote-left"
+	},
+	"isize": {
+	  "type": "number",
+	  "default": 50
+	},
+	"istroke": {
+	  "type": "number",
+	  "default": 2
+	},
+	"ititle": {
+	  "type": "string",
+	  "default": ""
+	},
+	"color": {
+	  "type": "string",
+	  "default": "#555555"
+	},
+	"title": {
+	  "type": "string",
+	  "default": ""
+	},
+	"content": {
+	  "type": "string",
+	  "default": ""
+	},
+	"name": {
+	  "type": "string",
+	  "default": ""
+	},
+	"occupation": {
+	  "type": "string",
+	  "default": ""
+	},
+	"rating": {
+	  "type": "number",
+	  "default": 5
+	},
+	"inQueryBlock": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"useBlockQuoteTags": {
+	  "type": "boolean",
+	  "default": true
+	}
+  },
+  "usesContext": [
+	"postId",
+	"queryId",
+	"kadence/testimonials-displayContent",
+    "kadence/testimonials-displayTitle",
+	"kadence/testimonials-displayRating",
+	"kadence/testimonials-displayName",
+	"kadence/testimonials-displayIcon",
+	"kadence/testimonials-wrapperPadding",
+	"kadence/testimonials-wrapperPaddingType",
+	"kadence/testimonials-wrapperTabletPadding",
+	"kadence/testimonials-wrapperMobilePadding",
+	"kadence/testimonials-iconStyles",
+	"kadence/testimonials-containerVAlign",
+	"kadence/testimonials-style",
+	"kadence/testimonials-displayShadow",
+	"kadence/testimonials-shadow",
+	"kadence/testimonials-containerBorder",
+	"kadence/testimonials-containerBorderRadius",
+	"kadence/testimonials-containerBorderWidth",
+	"kadence/testimonials-containerBorderOpacity",
+    "kadence/testimonials-containerBackground",
+	"kadence/testimonials-containerBackgroundOpactiy",
+	"kadence/testimonials-containerPadding",
+	"kadence/testimonials-mobileContainerPadding",
+	"kadence/testimonials-tabletContainerPadding",
+	"kadence/testimonials-containerPaddingType",
+	"kadence/testimonials-containerMaxWidth",
+	  "kadence/testimonials-containerMinHeight",
+	  "kadence/testimonials-layout",
+	  "kadence/testimonials-displayMedia",
+	  "kadence/testimonials-titleMinHeight",
+	  "kadence/testimonials-titleFont",
+	  "kadence/testimonials-contentMinHeight",
+	  "kadence/testimonials-contentFont",
+	  "kadence/testimonials-occupationFont",
+	  "kadence/testimonials-nameFont"
+  ],
+  "supports": {
+	"anchor": true
+  }
+}
