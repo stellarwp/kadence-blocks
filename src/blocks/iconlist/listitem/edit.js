@@ -43,11 +43,6 @@ import {
 import metadata from './block.json';
 
 /**
- * Import Block Specific.
- */
-import MoveItem from '../moveItem';
-
-/**
  * Internal block libraries
  */
 import {__} from '@wordpress/i18n';
@@ -72,10 +67,13 @@ import {
     Tooltip,
     Button,
     SelectControl,
+    Toolbar,
+    ToolbarButton
 } from '@wordpress/components';
 
 import {compose} from '@wordpress/compose';
 import {withDispatch, withSelect} from '@wordpress/data';
+import {formatIndent, formatOutdent} from "@wordpress/icons";
 
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -113,17 +111,6 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
         className: className
     });
 
-    const stopOnReplace = () => {
-        return;
-    }
-
-    const removeListItem = () => {
-        return;
-    }
-
-    const createNewListItem = () => {
-        return;
-    }
 
     const onMoveLeft = () => {
         let newLevel = level - 1;
@@ -138,11 +125,24 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
     return (
         <div {...blockProps}>
             <BlockControls>
-                <MoveItem
-                    onMoveRight={value => onMoveRight(value)}
-                    onMoveLeft={value => onMoveLeft(value)}
-                    level={level}
-                />
+                <Toolbar>
+
+                    <ToolbarButton
+                        icon={formatOutdent}
+                        title={__('Outdent')}
+                        describedBy={__('Outdent list item')}
+                        disabled={level === 0}
+                        onClick={() => onMoveLeft()}
+                    />
+                    <ToolbarButton
+                        icon={formatIndent}
+                        title={__('Indent')}
+                        describedBy={__('Indent list item')}
+                        isDisabled={level === 5}
+                        onClick={() => onMoveRight()}
+                    />
+
+                </Toolbar>
             </BlockControls>
             <InspectorControls>
                 <KadencePanelBody
