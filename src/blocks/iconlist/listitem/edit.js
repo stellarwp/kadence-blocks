@@ -272,7 +272,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
             </InspectorControls>
 
             <div
-                className={`kt-svg-icon-list-style-${style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${get(level, 0)}`}>
+                className={`kt-svg-icon-list-style-${style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}`}>
                 {icon && (
                     <IconRender className={`kt-svg-icon-list-single kt-svg-icon-list-single-${icon}`} name={icon}
                                 size={size}
