@@ -86,7 +86,7 @@ import {
  */
 const kticonlistUniqueIDs = [];
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId, updateBlockAttributes } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
 
@@ -169,14 +169,18 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 			listStyles: newUpdate,
 		} );
 	};
+
+	const { childBlocks, getBlockAttrs } = useSelect(
+		( select ) => {
+			return {
+				childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
+				getBlockAttrs: ( blockClientId ) => select( 'core/block-editor' ).getBlockAttributes( blockClientId ),
+			};
+		}, []);
+
+	const firstInnerAttrs = getBlockAttrs( childBlocks[ 0 ] );
 	const saveAllListItem = ( value ) => {
-		const newUpdate = items.map( ( item, index ) => {
-			item = { ...item, ...value };
-			return item;
-		} );
-		setAttributes( {
-			items: newUpdate,
-		} );
+		updateBlockAttributes( childBlocks, value );
 	};
 
 	const iconAlignOptions = [
@@ -203,8 +207,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 		className: className,
 		// 'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
 	} );
-
-	const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 
 	return (
 			<div {...blockProps}>
@@ -387,116 +389,116 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 								<div className="kt-sidebar-settings-spacer"></div>
 
-								{/*{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (*/}
-								{/*	<KadencePanelBody*/}
-								{/*		title={__( 'Edit All Icon Styles Together' )}*/}
-								{/*		initialOpen={ false }*/}
-								{/*		panelName={'kb-icon-all-styles'}*/}
-								{/*	>*/}
-								{/*		<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>*/}
-								{/*		<KadenceIconPicker*/}
-								{/*			value={items[ 0 ].icon}*/}
-								{/*			onChange={value => {*/}
-								{/*				if ( value !== items[ 0 ].icon ) {*/}
-								{/*					saveAllListItem( { icon: value } );*/}
-								{/*				}*/}
-								{/*			}}*/}
-								{/*		/>*/}
-								{/*		<RangeControl*/}
-								{/*			label={__( 'Icon Size' )}*/}
-								{/*			value={items[ 0 ].size}*/}
-								{/*			onChange={value => {*/}
-								{/*				saveAllListItem( { size: value } );*/}
-								{/*			}}*/}
-								{/*			min={5}*/}
-								{/*			max={250}*/}
-								{/*		/>*/}
-								{/*		{items[ 0 ].icon && 'fe' === items[ 0 ].icon.substring( 0, 2 ) && (*/}
-								{/*			<RangeControl*/}
-								{/*				label={__( 'Line Width' )}*/}
-								{/*				value={items[ 0 ].width}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { width: value } );*/}
-								{/*				}}*/}
-								{/*				step={0.5}*/}
-								{/*				min={0.5}*/}
-								{/*				max={4}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*		<PopColorControl*/}
-								{/*			label={__( 'Icon Color' )}*/}
-								{/*			value={( items[ 0 ].color ? items[ 0 ].color : '' )}*/}
-								{/*			default={''}*/}
-								{/*			onChange={value => {*/}
-								{/*				saveAllListItem( { color: value } );*/}
-								{/*			}}*/}
-								{/*		/>*/}
-								{/*		<SelectControl*/}
-								{/*			label={__( 'Icon Style' )}*/}
-								{/*			value={items[ 0 ].style}*/}
-								{/*			options={[*/}
-								{/*				{ value: 'default', label: __( 'Default' ) },*/}
-								{/*				{ value: 'stacked', label: __( 'Stacked' ) },*/}
-								{/*			]}*/}
-								{/*			onChange={value => {*/}
-								{/*				saveAllListItem( { style: value } );*/}
-								{/*			}}*/}
-								{/*		/>*/}
-								{/*		{items[ 0 ].style !== 'default' && (*/}
-								{/*			<PopColorControl*/}
-								{/*				label={__( 'Icon Background' )}*/}
-								{/*				value={( items[ 0 ].background ? items[ 0 ].background : '' )}*/}
-								{/*				default={''}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { background: value } );*/}
-								{/*				}}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*		{items[ 0 ].style !== 'default' && (*/}
-								{/*			<PopColorControl*/}
-								{/*				label={__( 'Border Color' )}*/}
-								{/*				value={( items[ 0 ].border ? items[ 0 ].border : '' )}*/}
-								{/*				default={''}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { border: value } );*/}
-								{/*				}}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*		{items[ 0 ].style !== 'default' && (*/}
-								{/*			<RangeControl*/}
-								{/*				label={__( 'Border Size (px)' )}*/}
-								{/*				value={items[ 0 ].borderWidth}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { borderWidth: value } );*/}
-								{/*				}}*/}
-								{/*				min={0}*/}
-								{/*				max={20}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*		{items[ 0 ].style !== 'default' && (*/}
-								{/*			<RangeControl*/}
-								{/*				label={__( 'Border Radius (%)' )}*/}
-								{/*				value={items[ 0 ].borderRadius}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { borderRadius: value } );*/}
-								{/*				}}*/}
-								{/*				min={0}*/}
-								{/*				max={50}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*		{items[ 0 ].style !== 'default' && (*/}
-								{/*			<RangeControl*/}
-								{/*				label={__( 'Padding (px)' )}*/}
-								{/*				value={items[ 0 ].padding}*/}
-								{/*				onChange={value => {*/}
-								{/*					saveAllListItem( { padding: value } );*/}
-								{/*				}}*/}
-								{/*				min={0}*/}
-								{/*				max={180}*/}
-								{/*			/>*/}
-								{/*		)}*/}
-								{/*	</KadencePanelBody>*/}
-								{/*)}*/}
+								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
+									<KadencePanelBody
+										title={__( 'Edit All Icon Styles Together' )}
+										initialOpen={ false }
+										panelName={'kb-icon-all-styles'}
+									>
+										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
+										<KadenceIconPicker
+											value={firstInnerAttrs.icon}
+											onChange={value => {
+												if ( value !== firstInnerAttrs.icon ) {
+													saveAllListItem( { icon: value } );
+												}
+											}}
+										/>
+										<RangeControl
+											label={__( 'Icon Size' )}
+											value={firstInnerAttrs.size}
+											onChange={value => {
+												saveAllListItem( { size: value } );
+											}}
+											min={5}
+											max={250}
+										/>
+										{firstInnerAttrs.icon && 'fe' === firstInnerAttrs.icon.substring( 0, 2 ) && (
+											<RangeControl
+												label={__( 'Line Width' )}
+												value={firstInnerAttrs.width}
+												onChange={value => {
+													saveAllListItem( { width: value } );
+												}}
+												step={0.5}
+												min={0.5}
+												max={4}
+											/>
+										)}
+										<PopColorControl
+											label={__( 'Icon Color' )}
+											value={( firstInnerAttrs.color ? firstInnerAttrs.color : '' )}
+											default={''}
+											onChange={value => {
+												saveAllListItem( { color: value } );
+											}}
+										/>
+										<SelectControl
+											label={__( 'Icon Style' )}
+											value={firstInnerAttrs.style}
+											options={[
+												{ value: 'default', label: __( 'Default' ) },
+												{ value: 'stacked', label: __( 'Stacked' ) },
+											]}
+											onChange={value => {
+												saveAllListItem( { style: value } );
+											}}
+										/>
+										{firstInnerAttrs.style !== 'default' && (
+											<PopColorControl
+												label={__( 'Icon Background' )}
+												value={( firstInnerAttrs.background ? firstInnerAttrs.background : '' )}
+												default={''}
+												onChange={value => {
+													saveAllListItem( { background: value } );
+												}}
+											/>
+										)}
+										{firstInnerAttrs.style !== 'default' && (
+											<PopColorControl
+												label={__( 'Border Color' )}
+												value={( firstInnerAttrs.border ? firstInnerAttrs.border : '' )}
+												default={''}
+												onChange={value => {
+													saveAllListItem( { border: value } );
+												}}
+											/>
+										)}
+										{firstInnerAttrs.style !== 'default' && (
+											<RangeControl
+												label={__( 'Border Size (px)' )}
+												value={firstInnerAttrs.borderWidth}
+												onChange={value => {
+													saveAllListItem( { borderWidth: value } );
+												}}
+												min={0}
+												max={20}
+											/>
+										)}
+										{firstInnerAttrs.style !== 'default' && (
+											<RangeControl
+												label={__( 'Border Radius (%)' )}
+												value={firstInnerAttrs.borderRadius}
+												onChange={value => {
+													saveAllListItem( { borderRadius: value } );
+												}}
+												min={0}
+												max={50}
+											/>
+										)}
+										{firstInnerAttrs.style !== 'default' && (
+											<RangeControl
+												label={__( 'Padding (px)' )}
+												value={firstInnerAttrs.padding}
+												onChange={value => {
+													saveAllListItem( { padding: value } );
+												}}
+												min={0}
+												max={180}
+											/>
+										)}
+									</KadencePanelBody>
+								)}
 
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/iconlist' } excludedAttrs={ [ 'listCount' ] } preventMultiple={ [ 'items' ] } />
 
@@ -555,11 +557,14 @@ export default compose( [
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
-		const { removeBlock } = dispatch( 'core/block-editor' );
+		const { removeBlock, updateBlockAttributes } = dispatch( 'core/block-editor' );
 		return {
 			onDelete: () => {
 				removeBlock( clientId, rootClientId );
 			},
+			updateBlockAttributes( ...args ) {
+				updateBlockAttributes( ...args );
+			}
 		};
 	} ),
 ] )( KadenceIconLists );
