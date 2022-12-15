@@ -16,6 +16,7 @@
  import {
 	 Dashicon,
 	 Button,
+	 DropdownMenu,
 	 ButtonGroup,
  } from '@wordpress/components';
  import { settings, link, linkOff } from '@wordpress/icons';
@@ -40,6 +41,8 @@
 		unit = 'px',
 		defaultValue = [ '', '', '' ],
 		reset = true,
+		radio = true,
+		compressedDevice = false,
 	 } ) {
 	 const ref = useRef();
 	 const [ deviceType, setDeviceType ] = useState( 'Desktop' );
@@ -101,6 +104,7 @@
 			 max={ max }
 			 min={ min }
 			 unit={ unit }
+			 radio={ radio }
 		 />
 	 );
 	 output.Tablet = (
@@ -115,6 +119,7 @@
 			max={ max }
 			min={ min }
 			unit={ unit }
+			radio={ radio }
 		 />
 	 );
 	 output.Desktop = (
@@ -129,8 +134,24 @@
 			max={ max }
 			min={ min }
 			unit={ unit }
+			radio={ radio }
 		/>
 	 );
+	 const icons = {
+		Desktop: <Dashicon icon="desktop" />,
+		Tablet: <Dashicon icon="tablet" />,
+		Mobile: <Dashicon icon="smartphone" />,
+	 }
+	 const createLevelControlToolbar = ( mappedDevice ) => {
+		return [ {
+			title: mappedDevice.name,
+			icon: mappedDevice.title,
+			isActive: deviceType === mappedDevice.name,
+			onClick: () => {
+				customSetPreviewDeviceType( mappedDevice.name );
+			},
+		} ];
+	};
 	 return [
 		 onChange && onChangeTablet && onChangeMobile && (
 			 <div ref={ ref } className={ 'components-base-control kb-responsive-font-size-control kadence-font-size-control' }>
@@ -154,19 +175,29 @@
 							 ) }
 						 </div>
 					 ) }
-					 <ButtonGroup className="kb-responsive-options kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
-						 { map( devices, ( { name, key, title, itemClass } ) => (
-							 <Button
-								 key={ key }
-								 className={ `kb-responsive-btn ${ itemClass }${ name === deviceType ? ' is-active' : '' }` }
-								 isSmall
-								 aria-pressed={ deviceType === name }
-								 onClick={ () => customSetPreviewDeviceType( name ) }
-							 >
-								 { title }
-							 </Button>
-						 ) ) }
-					 </ButtonGroup>
+					 { ! compressedDevice && (
+						<ButtonGroup className="kb-responsive-options kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
+							{ map( devices, ( { name, key, title, itemClass } ) => (
+								<Button
+									key={ key }
+									className={ `kb-responsive-btn ${ itemClass }${ name === deviceType ? ' is-active' : '' }` }
+									isSmall
+									aria-pressed={ deviceType === name }
+									onClick={ () => customSetPreviewDeviceType( name ) }
+								>
+									{ title }
+								</Button>
+							) ) }
+						</ButtonGroup>
+					 )}
+					 { compressedDevice && (
+						<DropdownMenu
+							className="kb-responsive-options-dropdown"
+							icon={ ( icons[ deviceType ] ? icons[ deviceType ] : icons.Desktop ) }
+							label={__( 'Target Device', 'kadence-blocks' )}
+							controls={ devices.map( ( singleDevice ) => createLevelControlToolbar( singleDevice ) ) }
+						/>
+					 ) }
 				 </div>
 				 <div className="kb-responsive-border-control-inner">
 					 { ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }

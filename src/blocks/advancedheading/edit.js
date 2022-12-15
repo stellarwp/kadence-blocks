@@ -536,7 +536,9 @@ function KadenceAdvancedHeading( props ) {
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
 					}`}
-				{ ( previewMaxWidth ? `.kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; margin-left: auto; margin-right:auto; }` : '' ) }
+				{ ( previewMaxWidth ? `.kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'center' ? `.kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'right' ? `.kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
 							color: ${KadenceColorOutput( linkColor )} !important;
@@ -555,7 +557,7 @@ function KadenceAdvancedHeading( props ) {
 					label={__( 'Change heading tag', 'kadence-blocks' )}
 					controls={headingOptions}
 				/>
-				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarTypography', 'kadence/advancedheading' ) && (
+				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarTypography', 'kadence/advancedheading', false ) && (
 					<InlineTypographyControls
 						uniqueID={uniqueID}
 						fontGroup={'heading'}
@@ -584,25 +586,25 @@ function KadenceAdvancedHeading( props ) {
 						textTransform={textTransform}
 						onTextTransform={( value ) => setAttributes( { textTransform: value } )}
 						fontSizeArray={false}
-						// fontSize={size}
-						// onFontSize={( value ) => setAttributes( { size: value } )}
 						fontSizeType={sizeType}
 						onFontSizeType={( value ) => setAttributes( { sizeType: value } )}
-						lineHeight={lineHeight}
-						onLineHeight={( value ) => setAttributes( { lineHeight: value } )}
-						lineHeightType={lineType}
-						onLineHeightType={( value ) => setAttributes( { lineType: value } )}
-						// tabSize={tabSize}
-						// onTabSize={( value ) => setAttributes( { tabSize: value } )}
-						tabLineHeight={tabLineHeight}
-						onTabLineHeight={( value ) => setAttributes( { tabLineHeight: value } )}
-						// mobileSize={mobileSize}
-						// onMobileSize={( value ) => setAttributes( { mobileSize: value } )}
-						mobileLineHeight={mobileLineHeight}
-						onMobileLineHeight={( value ) => setAttributes( { mobileLineHeight: value } )}
+						lineHeightType={fontHeightType}
+						onLineHeightType={( value ) => setAttributes( { fontHeightType: value } )}
+						fontSize={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
+						onFontSize={ value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
+						tabSize={( undefined !== fontSize[1] ? fontSize[1] : '' )}
+						onTabSize={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),value,( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
+						mobileSize={( undefined !== fontSize[2] ? fontSize[2] : '' )}
+						onMobileSize={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
+						lineHeight={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
+						onLineHeight={value => setAttributes( { fontHeight: [value,( undefined !== fontHeight[1] ? fontHeight[1] : '' ),( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
+						tabLineHeight={( undefined !== fontHeight[1] ? fontHeight[1] : '' )}
+						onTabLineHeight={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),value,( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
+						mobileLineHeight={( undefined !== fontHeight[2] ? fontHeight[2] : '' )}
+						onMobileLineHeight={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),( undefined !== fontHeight[1] ? fontHeight[1] : '' ),value] } )}
 					/>
 				)}
-				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarColor', 'kadence/advancedheading' ) && (
+				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarColor', 'kadence/advancedheading', false ) && (
 					<InlinePopColorControl
 						label={__( 'Color', 'kadence-blocks' )}
 						value={( color ? color : '' )}
@@ -1041,13 +1043,7 @@ function KadenceAdvancedHeading( props ) {
 			)}
 
 			<SpacingVisualizer
-				style={ {
-					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-				} }
-				type="inside"
+				type="outside"
 				forceShow={ marginMouseOver.isMouseOver }
 				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginType ), getSpacingOptionOutput( previewMarginRight, marginType ), getSpacingOptionOutput( previewMarginBottom, marginType ), getSpacingOptionOutput( previewMarginLeft, marginType ) ] }
 			/>

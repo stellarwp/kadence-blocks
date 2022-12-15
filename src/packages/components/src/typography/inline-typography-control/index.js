@@ -14,6 +14,7 @@
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
 import { map } from 'lodash';
+import './editor.scss';
 
 import { applyFilters } from '@wordpress/hooks';
 
@@ -22,6 +23,8 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
+import ResponsiveFontSizeControl from '../../font-size/responsive';
+import ResponsiveUnitControl from '../../unit/responsive';
 import {
 	Button,
 	ButtonGroup,
@@ -529,81 +532,24 @@ class InlineTypographyControls extends Component {
 							<div className="typography-row-settings typography-size-row-settings">
 								{ onFontSize && onFontSizeType && ! fontSizeArray && (
 									<div className="kt-size-input-wrap">
-										<div className="kt-size-tite-device-wrap">
-											<p className="kt-inline-size-title">{ __( 'Size' ) }</p>
-											<ButtonGroup className="kt-typography-size-type-options" aria-label={ __( 'Device Size Control Switch' ) }>
-												{ map( deviceControlTypes, ( { name, key, icon } ) => (
-													<Tooltip text={ name }>
-														<Button
-															key={ key }
-															className="kt-size-btn"
-															isSmall
-															isPrimary={ controlSize === key }
-															aria-pressed={ controlSize === key }
-															onClick={ () => onControlSize( key ) }
-														>
-															{ icon }
-														</Button>
-													</Tooltip>
-												) ) }
-											</ButtonGroup>
-										</div>
 										{ onFontSize && (
 											<div className="kt-type-size-input-wrap">
-												{ 'mobile' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( mobileSize ? mobileSize : '' ) }
-																onChange={ onMobileFontSizeInput }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												{ 'tablet' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( tabSize ? tabSize : '' ) }
-																onChange={ onTabFontSizeInput }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												{ 'desk' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( fontSize ? fontSize : '' ) }
-																onChange={ onFontSizeInput }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												<SelectControl
-													value={ fontSizeType }
-													className="kt-typography-size-type"
-													options={ [
-														{ value: 'px', label: __( 'px' ) },
-														{ value: 'em', label: __( 'em' ) },
-														{ value: 'rem', label: __( 'rem' ) },
-													] }
-													onChange={ ( value ) => onFontSizeType( value ) }
+												<ResponsiveFontSizeControl
+													label={ __( 'Size', 'kadence-blocks' ) }
+													value={ ( fontSize ? fontSize : '' ) }
+													onChange={ value => onFontSize( value ) }
+													tabletValue={ ( tabSize ? tabSize : '' ) }
+													onChangeTablet={ ( value ) => onTabletSize( value ) }
+													mobileValue={ ( mobileSize ? mobileSize : '' ) }
+													onChangeMobile={ ( value ) => onMobileSize( value ) }
+													min={ 0 }
+													max={ fontSizeType !== 'px' ? 12 : 300 }
+													step={ fontSizeType !== 'px' ? 0.01 : 1 }
+													unit={ ( fontSizeType ? fontSizeType : 'px' ) }
+													onUnit={ ( value ) => onFontSizeType( value ) }
+													units={[ 'px', 'em', 'rem', 'vw' ]}
+													radio={ false }
+													compressedDevice={ true }
 												/>
 											</div>
 										) }
@@ -611,84 +557,24 @@ class InlineTypographyControls extends Component {
 								) }
 								{ onLineHeight && onLineHeightType && ! fontSizeArray && (
 									<div className="kt-size-input-wrap">
-										<div className="kt-size-tite-device-wrap">
-											<p className="kt-inline-size-title">{ __( 'Height' ) }</p>
-											<ButtonGroup className="kt-typography-size-type-options" aria-label={ __( 'Device Size Control Switch' ) }>
-												{ map( deviceControlTypes, ( { name, key, icon } ) => (
-													<Tooltip text={ name }>
-														<Button
-															key={ key }
-															className="kt-size-btn"
-															isSmall
-															isPrimary={ controlSize === key }
-															aria-pressed={ controlSize === key }
-															onClick={ () => onControlSize( key ) }
-														>
-															{ icon }
-														</Button>
-													</Tooltip>
-												) ) }
-											</ButtonGroup>
+										<div className="kt-type-size-input-wrap">
+											<ResponsiveUnitControl
+												label={__( 'Line Height', 'kadence-blocks' )}
+												value={( lineHeight ? lineHeight : '' )}
+												onChange={value => onLineHeight( value )}
+												tabletValue={( tabLineHeight ? tabLineHeight : '' )}
+												onChangeTablet={( value ) => onTabLineHeight( value )}
+												mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
+												onChangeMobile={( value ) => onMobileLineHeight( value )}
+												min={0}
+												max={( lineHeightType === 'px' ? 300 : 12 )}
+												step={( lineHeightType === 'px' ? 1 : 0.1 )}
+												unit={ lineHeightType ? lineHeightType : '' }
+												onUnit={( value ) => onLineHeightType( value )}
+												units={[ '-', 'px', 'em', 'rem' ]}
+												compressedDevice={ true }
+											/>
 										</div>
-										{ onLineHeight && (
-											<div className="kt-type-size-input-wrap">
-												{ 'mobile' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( mobileLineHeight ? mobileLineHeight : '' ) }
-																onChange={ onMobileLineHeightInput }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												{ 'tablet' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( tabLineHeight ? tabLineHeight : '' ) }
-																onChange={ onTabLineHeightInput }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												{ 'desk' === controlSize && (
-													<div className="components-base-control kt-typography-number-input">
-														<div className="components-base-control__field">
-															<input
-																value={ ( lineHeight ? lineHeight : '' ) }
-																onChange={ onLineHeightInput }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-																type="number"
-																className="components-text-control__input"
-															/>
-														</div>
-													</div>
-												) }
-												<SelectControl
-													value={ lineHeightType }
-													className="kt-typography-size-type"
-													options={ [
-														{ value: 'px', label: __( 'px' ) },
-														{ value: 'em', label: __( 'em' ) },
-														{ value: 'rem', label: __( 'rem' ) },
-													] }
-													onChange={ ( value ) => onLineHeightType( value ) }
-												/>
-											</div>
-										) }
 									</div>
 								) }
 							</div>

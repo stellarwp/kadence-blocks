@@ -447,7 +447,7 @@ class TypographyControls extends Component {
 			{ value: 'capitalize', label: __( 'Ab', 'kadence-blocks' ), tooltip: __( 'Capitalize', 'kadence-blocks' ) },
 		];
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType !== 'px' ? 12 : 200 );
+		const fontMax = ( fontSizeType !== 'px' ? 12 : 300 );
 		const fontStep = ( fontSizeType !== 'px' ? 0.01 : 1 );
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
@@ -519,7 +519,7 @@ class TypographyControls extends Component {
 							onChangeTablet={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), value, ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
 							mobileValue={ ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) }
 							onChangeMobile={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ), value ] ) }
-							min={ fontMin }
+							min={ 0 }
 							max={ fontMax }
 							step={ fontStep }
 							unit={ ( fontSizeType ? fontSizeType : 'px' ) }
@@ -541,7 +541,7 @@ class TypographyControls extends Component {
 							step={ lineStep }
 							unit={ ( lineHeightType ? lineHeightType : 'px' ) }
 							onUnit={ ( value ) => onLineHeightType( value ) }
-							units={ [  '-', 'px', 'em', 'rem' ] }
+							units={ [ '-', 'px', 'em', 'rem' ] }
 						/>
 					)}
 					{ onTextTransform && onLineHeight && onLineHeightType && (
