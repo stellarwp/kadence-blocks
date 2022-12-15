@@ -85,7 +85,7 @@ import {
 	InspectorControls,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
@@ -178,6 +178,8 @@ function GalleryEdit( props ) {
 		kbVersion,
 		gutterUnit,
 	} = attributes;
+	const mainRef = useRef( null );
+	const thumbsRef = useRef();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -189,7 +191,11 @@ function GalleryEdit( props ) {
 		},
 		[ clientId ]
 	);
-
+	useEffect( () => {
+		if ( mainRef.current && thumbsRef.current && thumbsRef.current.splide ) {
+			mainRef.current.sync( thumbsRef.current.splide );
+		}
+	}, [ mainRef.current, thumbsRef.current] );
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
@@ -275,6 +281,8 @@ function GalleryEdit( props ) {
 
 	const previewGutter = getPreviewSize( previewDevice, ( undefined !== gutter[0] ? gutter[0] : '' ), ( undefined !== gutter[1] ? gutter[1] : '' ), ( undefined !== gutter[2] ? gutter[2] : '' ) );
 	const previewGutterUnit = ( gutterUnit ? gutterUnit : 'px' );
+
+	const previewHeight = getPreviewSize( previewDevice, ( undefined !== carouselHeight[0] ? carouselHeight[0] : '' ), ( undefined !== carouselHeight[1] ? carouselHeight[1] : '' ), ( undefined !== carouselHeight[2] ? carouselHeight[2] : '' ) );
 
 	const blockProps = useBlockProps( {
 		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
@@ -622,31 +630,29 @@ function GalleryEdit( props ) {
 		prevArrow     : <CustomPrevArrow/>,
 	};
 	const fluidCarouselSettings = {
-		type         : 'slide',
+		type         : 'loop',
 		autoplay     : autoPlay,
 		rewind       : false,
-		pagination   : false,
 		arrows       : ( arrowStyle === 'none' ? false : true ),
 		perPage      : 1,
 		speed        : transSpeed,
 		interval     : autoSpeed,
-
-		pagination    : ( dotStyle === 'none' ? false : true ),
-		centerMode    : ( carouselAlign === false ? false : true ),
+		autoWidth    : true,
+		pagination   : ( dotStyle === 'none' ? false : true ),
+		centerMode   : ( carouselAlign === false ? false : true ),
+		focus        : carouselAlign === false ? 0 : "center",
 	};
 	const sliderSettings = {
+		type          : 'fade',
 		dots          : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		infinite      : true,
+		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
 		draggable     : false,
-		autoplaySpeed : autoSpeed,
+		interval      : autoSpeed,
 		autoplay      : autoPlay,
-		slidesToShow  : 1,
-		slidesToScroll: 1,
-		nextArrow     : <CustomNextArrow/>,
-		prevArrow     : <CustomPrevArrow/>,
 	};
 	const thumbsliderSettings = {
 		dots          : false,
@@ -664,20 +670,19 @@ function GalleryEdit( props ) {
 		prevArrow     : <CustomPrevArrow/>,
 	};
 	const thumbsliderthumbsSettings = {
-		dots          : false,
+		focus        : undefined,
+		height       : '100%',
+		perPage      : previewColumns,
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		infinite      : true,
 		fade          : false,
 		speed         : transSpeed,
-		draggable     : false,
-		autoplaySpeed : autoSpeed,
-		autoplay      : autoPlay,
-		slidesToShow  : thumbnailColumns[ 0 ],
-		slidesToScroll: 1,
-		nextArrow     : <CustomNextArrow/>,
-		prevArrow     : <CustomPrevArrow/>,
-		swipeToSlide  : true,
-		focusOnSelect : true,
+		gap          : '' !== previewGutter ? previewGutter + previewGutterUnit : '4px',
+		rewind       : true,
+		pagination   : false,
+		isNavigation : true,
+		drag         : false,
+		arrows       : true,
 	};
 	const controls = (
 		<BlockControls>
@@ -986,7 +991,7 @@ function GalleryEdit( props ) {
 								)}
 								{type !== 'slider' && showSettings( 'gutterSettings', 'kadence/advancedgallery' ) && (
 									<>
-										<ResponsiveRadioRangeControls
+										{/* <ResponsiveRadioRangeControls
 											label={__( 'Gutter', 'kadence-blocks' )}
 											options={ [
 												{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
@@ -995,7 +1000,7 @@ function GalleryEdit( props ) {
 												{ value: 'lg', size:64, label: __('LG', 'kadence-blocks' ) },
 											] }
 											value={ {
-												value: ( gutter && '' !== gutter[ 0 ] && ( 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
+												value: ( gutter && ( '' === gutter[ 0 ] && 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
 												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
 											} }
 											onChange={ ( value, size ) => {
@@ -1021,8 +1026,8 @@ function GalleryEdit( props ) {
 												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
 											} }
 											onChangeMobile={ ( value, size ) => {
-												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
-													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ),value ] } );
+												if ( '' === value || 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
+													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ), value ] } );
 												} else {
 													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ), size ] } );
 												}
@@ -1035,7 +1040,7 @@ function GalleryEdit( props ) {
 												setAttributes( { gutterUnit: value } );
 											}}
 											units={[ 'px', 'em', 'rem' ]}
-										/>
+										/> */}
 										<ResponsiveRangeControls
 											label={__( 'Gutter', 'kadence-blocks' )}
 											value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
@@ -1055,70 +1060,21 @@ function GalleryEdit( props ) {
 								)}
 								{( type === 'fluidcarousel' || type === 'tiles' ) && (
 									<>
-										<h2 className="kt-heading-size-title">{( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) )}</h2>
-										<TabPanel className="kt-size-tabs"
-												  activeClass="active-tab"
-												  tabs={[
-													  {
-														  name     : 'desk',
-														  title    : <Dashicon icon="desktop"/>,
-														  className: 'kt-desk-tab',
-													  },
-													  {
-														  name     : 'tablet',
-														  title    : <Dashicon icon="tablet"/>,
-														  className: 'kt-tablet-tab',
-													  },
-													  {
-														  name     : 'mobile',
-														  title    : <Dashicon icon="smartphone"/>,
-														  className: 'kt-mobile-tab',
-													  },
-												  ]}>
-											{
-												( tab ) => {
-													if ( tab.name ) {
-														if ( 'mobile' === tab.name ) {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<RangeControl
-																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' )}
-																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } )}
-																		step={1}
-																		min={120}
-																		max={800}
-																	/>
-																</div>
-															);
-														} else if ( 'tablet' === tab.name ) {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<RangeControl
-																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' )}
-																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={120}
-																		max={800}
-																	/>
-																</div>
-															);
-														} else {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<RangeControl
-																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' )}
-																		onChange={value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={120}
-																		max={800}
-																	/>
-																</div>
-															);
-														}
-													}
-												}
-											}
-										</TabPanel>
+										<ResponsiveRangeControls
+											label={( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) )}
+											value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' )}
+											onChange={value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+											tabletValue={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' )}
+											onChangeTablet={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+											mobileValue={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' )}
+											onChangeMobile={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } )}
+											step={1}
+											min={120}
+											max={800}
+											unit={'px'}
+											showUnit={true}
+											units={[ 'px' ]}
+										/>
 										{type === 'fluidcarousel' && (
 											<ToggleControl
 												label={__( 'Carousel Center Mode', 'kadence-blocks' )}
@@ -1761,11 +1717,11 @@ function GalleryEdit( props ) {
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${( imageRadius && undefined !== imageRadius[ 0 ] && '' !== imageRadius[ 0 ] ? 'border-radius:' + imageRadius[ 0 ] + 'px ' + imageRadius[ 1 ] + 'px ' + imageRadius[ 2 ] + 'px ' + imageRadius[ 3 ] + 'px;' : '' )}
 					}
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-list figure .kb-gal-image-radius img {
-						${( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' )}
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius img {
+						${( previewHeight ? 'height:' + previewHeight + 'px;' : '' )}
 					}
 					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
-						${( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' )}
+						${( previewHeight ? 'height:' + previewHeight + 'px;' : '' )}
 					}
 			`}
 		</style>
@@ -1876,7 +1832,7 @@ function GalleryEdit( props ) {
 								theImages.map( ( img, index ) => {
 									return (
 										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) };
+											{ renderGalleryImages( img, index ) }
 										</li>
 									);
 								} )
@@ -1888,21 +1844,21 @@ function GalleryEdit( props ) {
 					<div className={galleryClassNames}>
 						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 							{theImages.length !== 1 && (
-								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
+								<Splide options={ sliderSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
 									{theImages.map( ( img, index ) => {
 										return (
-											<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-												{ renderGalleryImages( img, index ) };
-											</li>
+											<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+												{ renderGalleryImages( img, index ) }
+											</SplideSlide>
 										);
 									} )}
-								</Slider>
+								</Splide>
 							)}
 							{theImages.length === 1 && (
 								theImages.map( ( img, index ) => {
 									return (
 										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) };
+											{ renderGalleryImages( img, index ) }
 										</li>
 									);
 								} )
@@ -1915,11 +1871,29 @@ function GalleryEdit( props ) {
 						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 							{theImages.length !== 1 && (
 								<>
-									<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
+									<Splide options={ thumbsliderSettings } ref={ mainRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+										{theImages.map( ( img, index ) => {
+											return (
+												<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+													{ renderGalleryImages( img, index ) }
+												</SplideSlide>
+											);
+										} )}
+									</Splide>
+									<Splide options={thumbsliderthumbsSettings } ref={ thumbsRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}>
+										{theImages.map( ( img, index ) => {
+											return (
+												<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+													{ renderGalleryImages( img, index ) }
+												</SplideSlide>
+											);
+										} )}
+									</Splide>
+									{/* <Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
 										{theImages.map( ( img, index ) => {
 											return (
 												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) };
+													{ renderGalleryImages( img, index ) }
 												</li>
 											);
 										} )}
@@ -1932,18 +1906,18 @@ function GalleryEdit( props ) {
 										{theImages.map( ( img, index ) => {
 											return (
 												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) };
+													{ renderGalleryImages( img, index ) }
 												</li>
 											);
 										} )}
-									</Slider>
+									</Slider> */}
 								</>
 							)}
 							{theImages.length === 1 && (
 								theImages.map( ( img, index ) => {
 									return (
 										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) };
+											{ renderGalleryImages( img, index ) }
 										</li>
 									);
 								} )

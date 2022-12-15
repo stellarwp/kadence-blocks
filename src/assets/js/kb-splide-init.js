@@ -38,7 +38,6 @@
 				});
 
 				let splideOptions = this.getSplideOptions(parsedData);
-				console.log( splideOptions );
 				// Add this to remove slick based css from hiding elements
 				thisSlider.classList.add("slick-initialized");
 				thisSlider.classList.add("slick-slider");
