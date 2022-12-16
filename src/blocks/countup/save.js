@@ -26,6 +26,8 @@ function KadenceCounterUpSave( props ) {
 		title,
 		start,
 		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -41,6 +43,14 @@ function KadenceCounterUpSave( props ) {
 		'kb-count-up'                : true,
 	} );
 
+	let startValue = startDecimal;
+	let endValue = endDecimal;
+
+	if( start !== 0 || end !== 0 ) {
+		startValue = start;
+		endValue = end;
+	}
+
 	const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
 
 	const blockProps = useBlockProps.save( {
@@ -50,8 +60,8 @@ function KadenceCounterUpSave( props ) {
 	return (
 		<div
 			{...blockProps}
-			data-start={start}
-			data-end={end}
+			data-start={ startValue }
+			data-end={ endValue }
 			data-prefix={prefix}
 			data-suffix={suffix}
 			data-duration={duration}

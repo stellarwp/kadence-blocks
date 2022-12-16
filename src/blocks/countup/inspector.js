@@ -54,8 +54,8 @@ function Inspector( {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const {
-		start,
-		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -137,9 +137,10 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Starting Number', 'kadence-blocks' )}
-									value={start}
-									onChange={( value ) => setAttributes( { start: parseInt( value ) } )}
+									value={startDecimal}
+									onChange={( value ) => setAttributes( { startDecimal: value } )}
 									min={0}
+									step={0.01}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>
@@ -148,9 +149,10 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Ending Number', 'kadence-blocks' )}
-									value={end}
-									onChange={( value ) => setAttributes( { end: parseInt( value ) } )}
+									value={endDecimal}
+									onChange={( value ) => setAttributes( { endDecimal: value } )}
 									min={0}
+									step={0.01}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>

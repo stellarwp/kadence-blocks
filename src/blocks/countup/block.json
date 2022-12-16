@@ -160,6 +160,14 @@
 	  "type": "number",
 	  "default": 100
 	},
+	"startDecimal": {
+	 "type": "string",
+	 "default": "0"
+	},
+	"endDecimal": {
+	 "type": "string",
+	 "default": "100"
+	},
 	"prefix": {
 	  "type": "string",
 	  "default": ""

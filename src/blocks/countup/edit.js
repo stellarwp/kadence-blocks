@@ -61,6 +61,8 @@ function KadenceCounterUp( {
 		title,
 		start,
 		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -110,6 +112,11 @@ function KadenceCounterUp( {
 		} else {
 			kbCountUpUniqueIDs.push( uniqueID );
 		}
+
+		if( start !== 0 || end !== 0 ) {
+			setAttributes( { startDecimal: start, endDecimal: end, start: 0, end: 0 } );
+		}
+
 	}, [] );
 
 	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
@@ -206,8 +213,8 @@ function KadenceCounterUp( {
 					}}
 				>
 					<CountUp
-						start={start}
-						end={end}
+						start={ startDecimal }
+						end={ endDecimal }
 						duration={duration}
 						separator={theSeparator}
 						decimal={decimal ? decimal : undefined}
