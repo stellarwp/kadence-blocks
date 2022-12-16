@@ -97,6 +97,7 @@
   "usesContext": [
 	"postId",
 	"queryId",
+	"kadence/testimonials-displayOccupation",
 	"kadence/testimonials-displayContent",
     "kadence/testimonials-displayTitle",
 	"kadence/testimonials-displayRating",
@@ -122,15 +123,15 @@
 	"kadence/testimonials-tabletContainerPadding",
 	"kadence/testimonials-containerPaddingType",
 	"kadence/testimonials-containerMaxWidth",
-	  "kadence/testimonials-containerMinHeight",
-	  "kadence/testimonials-layout",
-	  "kadence/testimonials-displayMedia",
-	  "kadence/testimonials-titleMinHeight",
-	  "kadence/testimonials-titleFont",
-	  "kadence/testimonials-contentMinHeight",
-	  "kadence/testimonials-contentFont",
-	  "kadence/testimonials-occupationFont",
-	  "kadence/testimonials-nameFont"
+	"kadence/testimonials-containerMinHeight",
+	"kadence/testimonials-layout",
+	"kadence/testimonials-displayMedia",
+	"kadence/testimonials-titleMinHeight",
+	"kadence/testimonials-titleFont",
+	"kadence/testimonials-contentMinHeight",
+	"kadence/testimonials-contentFont",
+	"kadence/testimonials-occupationFont",
+	"kadence/testimonials-nameFont"
   ],
   "supports": {
 	"anchor": true
