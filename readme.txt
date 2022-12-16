@@ -113,6 +113,7 @@ Release Date: December 15th, 2022
 * Add: Responsive container padding on Table of Contents block.**
 * Add: Responsive container margin on Icon List block.**
 * Add: Responsive Inner Container padding on Tabs block.**
+* Add: Ability to use decimals for start & end vaules in count up block.
 
 = 2.4.21 =
 Release Date: November 11th, 2022
