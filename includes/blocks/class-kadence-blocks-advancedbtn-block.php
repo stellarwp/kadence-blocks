@@ -378,7 +378,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( $this->has_script ) {
-			wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
+			wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'includes/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
 			wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-video-popup.min.js', array(
 				'jquery',
 				'magnific-popup'
