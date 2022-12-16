@@ -14,7 +14,8 @@ import {
 	showSettings,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
-	getPreviewSize
+	getPreviewSize,
+	getFontSizeOptionOutput,
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -37,7 +38,6 @@ import {
 	SpacingVisualizer
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import Slider from 'react-slick';
 import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -279,13 +279,15 @@ function GalleryEdit( props ) {
 
 	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[ 0 ] ? columns[ 0 ] : 3 ), ( undefined !== columns[ 3 ] ? columns[ 3 ] : '' ), ( undefined !== columns[ 5 ] ? columns[ 5 ] : '' ) );
 
+	const previewThumbColumns = getPreviewSize( previewDevice, ( undefined !== thumbnailColumns[ 0 ] ? thumbnailColumns[ 0 ] : 4 ), ( undefined !== thumbnailColumns[ 3 ] ? thumbnailColumns[ 3 ] : '' ), ( undefined !== thumbnailColumns[ 5 ] ? thumbnailColumns[ 5 ] : '' ) );
+
 	const previewGutter = getPreviewSize( previewDevice, ( undefined !== gutter[0] ? gutter[0] : '' ), ( undefined !== gutter[1] ? gutter[1] : '' ), ( undefined !== gutter[2] ? gutter[2] : '' ) );
 	const previewGutterUnit = ( gutterUnit ? gutterUnit : 'px' );
 
 	const previewHeight = getPreviewSize( previewDevice, ( undefined !== carouselHeight[0] ? carouselHeight[0] : '' ), ( undefined !== carouselHeight[1] ? carouselHeight[1] : '' ), ( undefined !== carouselHeight[2] ? carouselHeight[2] : '' ) );
 
 	const blockProps = useBlockProps( {
-		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
+		className: `kb-gallery-container`,
 		style: {
 			marginTop: getSpacingOptionOutput( previewMarginTop, marginUnit ),
 			marginRight: getSpacingOptionOutput( previewMarginRight, marginUnit ),
@@ -590,49 +592,25 @@ function GalleryEdit( props ) {
 		} );
 	};
 
-	function CustomNextArrow( props ) {
-		const { className, style, onClick } = props;
-		return (
-			<button
-				className={className}
-				style={{ ...style, display: 'block' }}
-				onClick={onClick}
-			>
-				<Dashicon icon="arrow-right-alt2"/>
-			</button>
-		);
-	}
-
-	function CustomPrevArrow( props ) {
-		const { className, style, onClick } = props;
-		return (
-			<button
-				className={className}
-				style={{ ...style, display: 'block' }}
-				onClick={onClick}
-			>
-				<Dashicon icon="arrow-left-alt2"/>
-			</button>
-		);
-	}
-
 	const carouselSettings = {
-		dots          : ( dotStyle === 'none' ? false : true ),
+		type         : 'slide',
+		autoplay     : autoPlay,
+		rewind       : true,
+		pagination    : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
-		infinite      : true,
 		speed         : transSpeed,
 		draggable     : false,
-		autoplaySpeed : autoSpeed,
+		focus        : 0,
+		perPage      : previewColumns,
+		interval     : autoSpeed,
 		autoplay      : autoPlay,
-		slidesToShow  : columns[ 0 ],
 		slidesToScroll: ( slidesScroll === 'all' ? columns[ 0 ] : 1 ),
-		nextArrow     : <CustomNextArrow/>,
-		prevArrow     : <CustomPrevArrow/>,
+		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
 	const fluidCarouselSettings = {
-		type         : 'loop',
+		type         : 'slide',
 		autoplay     : autoPlay,
-		rewind       : false,
+		rewind       : true,
 		arrows       : ( arrowStyle === 'none' ? false : true ),
 		perPage      : 1,
 		speed        : transSpeed,
@@ -641,12 +619,14 @@ function GalleryEdit( props ) {
 		pagination   : ( dotStyle === 'none' ? false : true ),
 		centerMode   : ( carouselAlign === false ? false : true ),
 		focus        : carouselAlign === false ? 0 : "center",
+		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
 	const sliderSettings = {
 		type          : 'fade',
 		dots          : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
-		infinite      : true,
+		rewind       : true,
+		perPage      : 1,
 		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
@@ -657,31 +637,26 @@ function GalleryEdit( props ) {
 	const thumbsliderSettings = {
 		dots          : false,
 		arrows        : ( arrowStyle === 'none' ? false : true ),
-		infinite      : true,
+		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
 		draggable     : false,
+		pagination   : false,
 		autoplaySpeed : autoSpeed,
 		autoplay      : autoPlay,
 		slidesToShow  : 1,
 		slidesToScroll: 1,
-		onInit        : () => onSelectImage( 0 ),
-		nextArrow     : <CustomNextArrow/>,
-		prevArrow     : <CustomPrevArrow/>,
 	};
 	const thumbsliderthumbsSettings = {
-		focus        : undefined,
+		focus        : 0,
 		height       : '100%',
-		perPage      : previewColumns,
+		perPage      : previewThumbColumns,
 		arrows        : ( arrowStyle === 'none' ? false : true ),
-		infinite      : true,
-		fade          : false,
 		speed         : transSpeed,
 		gap          : '' !== previewGutter ? previewGutter + previewGutterUnit : '4px',
 		rewind       : true,
 		pagination   : false,
 		isNavigation : true,
-		drag         : false,
 		arrows       : true,
 	};
 	const controls = (
@@ -991,56 +966,6 @@ function GalleryEdit( props ) {
 								)}
 								{type !== 'slider' && showSettings( 'gutterSettings', 'kadence/advancedgallery' ) && (
 									<>
-										{/* <ResponsiveRadioRangeControls
-											label={__( 'Gutter', 'kadence-blocks' )}
-											options={ [
-												{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
-												{ value: 'sm', size:16, label: __('SM', 'kadence-blocks' ) },
-												{ value: 'md', size:32, label: __('MD', 'kadence-blocks' ) },
-												{ value: 'lg', size:64, label: __('LG', 'kadence-blocks' ) },
-											] }
-											value={ {
-												value: ( gutter && ( '' === gutter[ 0 ] && 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
-												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
-											} }
-											onChange={ ( value, size ) => {
-												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
-													setAttributes( { gutter: [ value, ( gutter[1] ? gutter[1] : '' ), ( gutter[2] ? gutter[2] : '' ) ] } );
-												} else {
-													setAttributes( { gutter: [ size, ( gutter[1] ? gutter[1] : '' ), ( gutter[2] ? gutter[2] : '' ) ] } );
-												}
-											}}
-											tabletValue={ {
-												value: ( gutter && '' !== gutter[ 1 ] && ( 'none' === gutter[ 1 ] || 'sm' === gutter[ 1 ] || 'md' === gutter[ 1 ] || 'lg' === gutter[ 1 ] ) ? gutter[ 1 ] : 'custom' ),
-												size: ( gutter && '' !== gutter[ 1 ] && ( 'none' !== gutter[ 1 ] && 'sm' !== gutter[ 1 ] && 'md' !== gutter[ 1 ] && 'lg' !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ),
-											} }
-											onChangeTablet={ ( value, size ) => {
-												if ( 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
-													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), value, ( gutter[2] ? gutter[2] : '' ) ] } );
-												} else {
-													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), size, ( gutter[2] ? gutter[2] : '' ) ] } );
-												}
-											}}
-											mobileValue={ {
-												value: ( gutter && '' !== gutter[ 0 ] && ( 'none' === gutter[ 0 ] || 'sm' === gutter[ 0 ] || 'md' === gutter[ 0 ] || 'lg' === gutter[ 0 ] ) ? gutter[ 0 ] : 'custom' ),
-												size: ( gutter && '' !== gutter[ 0 ] && ( 'none' !== gutter[ 0 ] && 'sm' !== gutter[ 0 ] && 'md' !== gutter[ 0 ] && 'lg' !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ),
-											} }
-											onChangeMobile={ ( value, size ) => {
-												if ( '' === value || 'none' === value || 'sm' === value || 'md' === value || 'lg' === value ) {
-													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ), value ] } );
-												} else {
-													setAttributes( { gutter: [ ( gutter[0] ? gutter[0] : '' ), ( gutter[1] ? gutter[1] : '' ), size ] } );
-												}
-											}}
-											min={0}
-											max={( gutterUnit === 'px' ? 200 : 12 )}
-											step={( gutterUnit === 'px' ? 1 : 0.1 )}
-											unit={ gutterUnit ? gutterUnit : 'px' }
-											onUnit={( value ) => {
-												setAttributes( { gutterUnit: value } );
-											}}
-											units={[ 'px', 'em', 'rem' ]}
-										/> */}
 										<ResponsiveRangeControls
 											label={__( 'Gutter', 'kadence-blocks' )}
 											value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
@@ -1683,32 +1608,16 @@ function GalleryEdit( props ) {
 	const buildCSS = (
 		<style>
 			{`
-					.wp-block[data-type="kadence/advancedgallery"]  ul.kb-gallery-main-contain.kb-gallery-id-${uniqueID} {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
+					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID}, .wp-block-kadence-advancedgallery .kb-gallery-type-grid.kb-gallery-id-${uniqueID}, .wp-block-kadence-advancedgallery .kb-gallery-type-masonry.kb-gallery-id-${uniqueID} {
+						${( previewGutter ? 'margin: -' + ( previewGutter / 2 ) + previewGutterUnit + ';' : '' )}
 					}
-					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
+					.kb-gallery-id-${uniqueID}.kb-gallery-type-masonry .kadence-blocks-gallery-item, .kb-gallery-id-${uniqueID}.kb-gallery-type-grid .kadence-blocks-gallery-item, .kb-gallery-id-${uniqueID}.kb-gallery-type-tiles .kadence-blocks-gallery-item {
+						${( previewGutter ? 'padding:' + ( previewGutter / 2 ) + previewGutterUnit + ';' : '' )}
 					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-slider,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails.slick-slider {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: 0 -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
+					.kb-gallery-id-${uniqueID}.kb-gallery-type-thumbslider .kt-blocks-carousel-main {
+						${( previewGutter ? 'margin-bottom:' + previewGutter + previewGutterUnit + ';' : '' )}
 					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-slider .slick-slide,
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-slider .slick-slide,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails.slick-slider .slick-slide {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' )}
-					}
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel.kb-carousel-mode-align-left .slick-slider .slick-slide {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] ) + 'px 4px 0;' : '' )}
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-prev,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails .slick-prev {
-						${( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:calc(' + + previewGutter + previewGutterUnit + ' / 2 );' : '' )}
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .slick-next,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${uniqueID} .kt-blocks-carousel-thumbnails .slick-next {
-						${( previewGutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:calc(' + previewGutter + previewGutterUnit + ' / 2 );' : '' )}
-					}
+					
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color && '' !== captionStyles[ 0 ].color ? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' )}
@@ -1728,11 +1637,11 @@ function GalleryEdit( props ) {
 	);
 	if ( !hasImages || theImages.constructor !== Array ) {
 		return (
-			<>
+			<div {...blockProps}>
 				{controls}
 				{sidebarControls}
 				{theImages.constructor !== Array && dynamicSource ? dynamicMediaPlaceholder : mediaPlaceholder}
-			</>
+			</div>
 		);
 	}
 	const galleryClassNames = classnames(
@@ -1786,39 +1695,92 @@ function GalleryEdit( props ) {
 					type={type}
 					thumbnail={thumbnail}
 					dynamicSource={dynamicSource}
+					previewDevice={ previewDevice }
 				/>
 			</div>
 		);
 	};
 
 	return (
-		<div>
-			<div {...blockProps} >
-				<SpacingVisualizer
-					// style={ {
-					// 	marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-					// 	marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-					// 	marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-					// 	marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					// } }
-					type="outside"
-					offset={ false }
-					forceShow={ marginMouseOver.isMouseOver }
-					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
-				/>
-				{buildCSS}
-				{controls}
-				{sidebarControls}
-				{noticeUI}
-				{showCaption && captionStyles[ 0 ].google && (
-					<WebfontLoader config={config}>
-					</WebfontLoader>
-				)}
-				{type && type === 'fluidcarousel' && (
-					<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
-						<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
-							{theImages.length !== 1 && (
-								<Splide options={ fluidCarouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+		<div {...blockProps}>
+			<SpacingVisualizer
+				// style={ {
+				// 	marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+				// 	marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				// 	marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				// 	marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				// } }
+				type="outside"
+				offset={ false }
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+			/>
+			{buildCSS}
+			{controls}
+			{sidebarControls}
+			{noticeUI}
+			{showCaption && captionStyles[ 0 ].google && (
+				<WebfontLoader config={config}>
+				</WebfontLoader>
+			)}
+			{type && type === 'fluidcarousel' && (
+				<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
+					<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
+						{theImages.length !== 1 && (
+							<Splide options={ fluidCarouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+								{theImages.map( ( img, index ) => {
+									return (
+										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) }
+										</SplideSlide>
+									);
+								} )}
+							</Splide>
+						)}
+						{theImages.length === 1 && (
+							theImages.map( ( img, index ) => {
+								return (
+									<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+										{ renderGalleryImages( img, index ) }
+									</div>
+								);
+							} )
+						)}
+					</div>
+				</div>
+			)}
+			{type && type === 'slider' && (
+				<div className={galleryClassNames}>
+					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
+						{theImages.length !== 1 && (
+							<Splide options={ sliderSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+								{theImages.map( ( img, index ) => {
+									return (
+										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) }
+										</SplideSlide>
+									);
+								} )}
+							</Splide>
+						)}
+						{theImages.length === 1 && (
+							theImages.map( ( img, index ) => {
+								return (
+									<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+										{ renderGalleryImages( img, index ) }
+									</div>
+								);
+							} )
+						)}
+					</div>
+				</div>
+			)}
+			{type && type === 'thumbslider' && (
+				<div className={galleryClassNames}>
+					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
+						{theImages.length !== 1 && (
+							<>
+								<Splide options={ thumbsliderSettings } ref={ mainRef } className={`splide kt-blocks-carousel-main kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
 									{theImages.map( ( img, index ) => {
 										return (
 											<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
@@ -1827,187 +1789,111 @@ function GalleryEdit( props ) {
 										);
 									} )}
 								</Splide>
-							)}
-							{theImages.length === 1 && (
-								theImages.map( ( img, index ) => {
-									return (
-										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) }
-										</li>
-									);
-								} )
-							)}
-						</div>
-					</div>
-				)}
-				{type && type === 'slider' && (
-					<div className={galleryClassNames}>
-						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
-							{theImages.length !== 1 && (
-								<Splide options={ sliderSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+								<Splide options={thumbsliderthumbsSettings } ref={ thumbsRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}>
 									{theImages.map( ( img, index ) => {
 										return (
 											<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
-												{ renderGalleryImages( img, index ) }
+												{ renderGalleryImages( img, index, true ) }
 											</SplideSlide>
 										);
 									} )}
 								</Splide>
-							)}
-							{theImages.length === 1 && (
-								theImages.map( ( img, index ) => {
-									return (
-										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) }
-										</li>
-									);
-								} )
-							)}
-						</div>
+							</>
+						)}
+						{theImages.length === 1 && (
+							theImages.map( ( img, index ) => {
+								return (
+									<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+										{ renderGalleryImages( img, index ) }
+									</div>
+								);
+							} )
+						)}
 					</div>
-				)}
-				{type && type === 'thumbslider' && (
-					<div className={galleryClassNames}>
-						<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
-							{theImages.length !== 1 && (
-								<>
-									<Splide options={ thumbsliderSettings } ref={ mainRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
-										{theImages.map( ( img, index ) => {
-											return (
-												<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) }
-												</SplideSlide>
-											);
-										} )}
-									</Splide>
-									<Splide options={thumbsliderthumbsSettings } ref={ thumbsRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}>
-										{theImages.map( ( img, index ) => {
-											return (
-												<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) }
-												</SplideSlide>
-											);
-										} )}
-									</Splide>
-									{/* <Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
-										{theImages.map( ( img, index ) => {
-											return (
-												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) }
-												</li>
-											);
-										} )}
-									</Slider>
-									<Slider
-										className={`kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}
-										ref={ (slider) => setSliderThumbs(slider)}
-										asNavFor={sliderSlides}
-										{...thumbsliderthumbsSettings}>
-										{theImages.map( ( img, index ) => {
-											return (
-												<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-													{ renderGalleryImages( img, index ) }
-												</li>
-											);
-										} )}
-									</Slider> */}
-								</>
-							)}
-							{theImages.length === 1 && (
-								theImages.map( ( img, index ) => {
-									return (
-										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) }
-										</li>
-									);
-								} )
-							)}
-						</div>
-					</div>
-				)}
-				{type && type === 'carousel' && (
-					<div className={galleryClassNames}
-						 data-columns-xxl={columns[ 0 ]}
-						 data-columns-xl={columns[ 1 ]}
-						 data-columns-lg={columns[ 2 ]}
-						 data-columns-md={columns[ 3 ]}
-						 data-columns-sm={columns[ 4 ]}
-						 data-columns-xs={columns[ 5 ]}
-					>
-						<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
-							{theImages.length > columns[ 0 ] && (
-								<Slider className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...carouselSettings}>
-									{theImages.map( ( img, index ) => {
-										return (
-											<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-												{ renderGalleryImages( img, index ) }
-											</li>
-										);
-									} )}
-								</Slider>
-							)}
-							{theImages.length <= columns[ 0 ] && (
-								theImages.map( ( img, index ) => {
-									return (
-										<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) }
-										</li>
-									);
-								} )
-							)}
-						</div>
-					</div>
-				)}
-				{type && type === 'masonry' && (
-					<Masonry
-						breakpointCols={{
-							default: previewColumns,
-						}}
-						className={galleryClassNames}
-					>
-						{theImages.map( ( img, index ) => {
-							return (
-								<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
-									{ renderGalleryImages( img, index ) }
-								</div>
-							);
-						} )}
-					</Masonry>
-				)}
-				{type && type === 'grid' && (
-					<ul
-						className={galleryClassNames}
+				</div>
+			)}
+			{type && type === 'carousel' && (
+				<div className={galleryClassNames}
 						data-columns-xxl={columns[ 0 ]}
 						data-columns-xl={columns[ 1 ]}
 						data-columns-lg={columns[ 2 ]}
 						data-columns-md={columns[ 3 ]}
 						data-columns-sm={columns[ 4 ]}
 						data-columns-xs={columns[ 5 ]}
-					>
-						{theImages.map( ( img, index ) => {
-							return (
-								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-									{ renderGalleryImages( img, index ) }
-								</li>
-							);
-						} )}
-					</ul>
-				)}
-				{type && type === 'tiles' && (
-					<ul
-						className={galleryClassNames}
-					>
-						{theImages.map( ( img, index ) => {
-							return (
-								<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
-									{ renderGalleryImages( img, index ) }
-								</li>
-							);
-						} )}
-					</ul>
-				)}
-			</div>
-	</div>
+				>
+					<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
+						{theImages.length > columns[ 0 ] && (
+							<Splide options={ carouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+								{theImages.map( ( img, index ) => {
+									return (
+										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) }
+										</SplideSlide>
+									);
+								} )}
+							</Splide>
+						)}
+						{theImages.length <= columns[ 0 ] && (
+							theImages.map( ( img, index ) => {
+								return (
+									<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+										{ renderGalleryImages( img, index ) }
+									</div>
+								);
+							} )
+						)}
+					</div>
+				</div>
+			)}
+			{type && type === 'masonry' && (
+				<Masonry
+					breakpointCols={{
+						default: previewColumns,
+					}}
+					className={galleryClassNames}
+				>
+					{theImages.map( ( img, index ) => {
+						return (
+							<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+								{ renderGalleryImages( img, index ) }
+							</div>
+						);
+					} )}
+				</Masonry>
+			)}
+			{type && type === 'grid' && (
+				<ul
+					className={galleryClassNames}
+					data-columns-xxl={columns[ 0 ]}
+					data-columns-xl={columns[ 1 ]}
+					data-columns-lg={columns[ 2 ]}
+					data-columns-md={columns[ 3 ]}
+					data-columns-sm={columns[ 4 ]}
+					data-columns-xs={columns[ 5 ]}
+				>
+					{theImages.map( ( img, index ) => {
+						return (
+							<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+								{ renderGalleryImages( img, index ) }
+							</li>
+						);
+					} )}
+				</ul>
+			)}
+			{type && type === 'tiles' && (
+				<ul
+					className={galleryClassNames}
+				>
+					{theImages.map( ( img, index ) => {
+						return (
+							<li className="kadence-blocks-gallery-item" key={img.id || img.url}>
+								{ renderGalleryImages( img, index ) }
+							</li>
+						);
+					} )}
+				</ul>
+			)}
+		</div>
 	);
 }
 

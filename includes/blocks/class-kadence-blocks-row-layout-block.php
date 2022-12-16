@@ -1170,7 +1170,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$outer_classes[] = 'kb-v-sm-hidden';
 			}
 			if ( ! empty( $attributes['bgColorClass'] ) ) {
-				$outer_classes[] = 'has-theme-' . $attributes['bgColorClass'] . '-background-color';
+				$outer_classes[] = 'has-' . $attributes['bgColorClass'] . '-background-color';
 			}
 			if ( ! empty( $attributes['bgImg'] ) || ! empty( $attributes['bgColor'] ) || ! empty( $attributes['gradient'] ) || ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlayGradient'] ) ) {
 				$outer_classes[] = 'kt-row-has-bg';

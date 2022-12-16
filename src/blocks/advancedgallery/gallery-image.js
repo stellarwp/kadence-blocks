@@ -15,6 +15,14 @@ import { withSelect } from '@wordpress/data';
 import { RichText, URLInput } from '@wordpress/block-editor';
 import { isBlobURL } from '@wordpress/blob';
 import { applyFilters } from '@wordpress/hooks';
+import {
+	KadenceColorOutput,
+	showSettings,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	getPreviewSize,
+	getFontSizeOptionOutput,
+} from '@kadence/helpers';
 
 function GalleryImage( props ) {
 
@@ -51,6 +59,7 @@ function GalleryImage( props ) {
 		type,
 		thumbnail,
 		dynamicSource,
+		previewDevice,
 		image
 	} = props;
 
@@ -84,6 +93,7 @@ function GalleryImage( props ) {
 			onSelect();
 		}
 	}
+	const previewFont = getPreviewSize( previewDevice, ( undefined !== captionStyles?.[ 0 ]?.size?.[ 0 ] ? captionStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 1 ] ? captionStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 2 ] ? captionStyles[ 0 ].size[ 2 ] : '' ) );
 
 	// const componentDidUpdate = ( prevProps ) => {
 	// 	if ( image && !url ) {
@@ -199,7 +209,7 @@ function GalleryImage( props ) {
 			style={{
 				fontWeight   : '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,
 				fontStyle    : '' !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined,
-				fontSize     : undefined !== captionStyles[ 0 ].size && '' !== captionStyles[ 0 ].size[ 0 ] ? captionStyles[ 0 ].size[ 0 ] + captionStyles[ 0 ].sizeType : undefined,
+				fontSize     : previewFont ? getFontSizeOptionOutput( previewFont, captionStyles[ 0 ].sizeType ) : undefined,
 				lineHeight   : ( captionStyles[ 0 ].lineHeight && captionStyles[ 0 ].lineHeight[ 0 ] ? captionStyles[ 0 ].lineHeight[ 0 ] + captionStyles[ 0 ].lineType : undefined ),
 				textTransform: ( '' !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : undefined ),
 				letterSpacing: '' !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing + 'px' : undefined,

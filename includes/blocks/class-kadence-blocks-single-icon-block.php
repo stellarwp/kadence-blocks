@@ -31,6 +31,13 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 	protected $block_name = 'single-icon';
 
 	/**
+	 * Block determines if styles need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {

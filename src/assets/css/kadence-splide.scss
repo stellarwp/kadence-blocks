@@ -131,7 +131,7 @@
 }
 .splide--fade > .splide__slider > .splide__track > .splide__list,
 .splide--fade > .splide__track > .splide__list {
-    display: flex;
+    display: block;
 }
 .splide--fade > .splide__slider > .splide__track > .splide__list > .splide__slide,
 .splide--fade > .splide__track > .splide__list > .splide__slide {
@@ -194,13 +194,13 @@
 		}
 	}
 	.splide__arrow--prev {
-		left:0;
+		left: 1em;
 	}
 	.splide__arrow--prev svg {
 		transform: scaleX(-1);
 	}
 	.splide__arrow--next {
-		right: 0;
+		right: 1em;
 	}
 	.splide__pagination {
 		bottom: -25px;
@@ -209,7 +209,6 @@
 		position: absolute;
 		right: 0;
 		z-index: 1;
-		margin: 0;
 	}
 	.splide__pagination__page {
 		background: var( --splide-pagination-background );
@@ -278,7 +277,7 @@
 .splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev,
 .splide--rtl > .splide__track > .splide__arrows .splide__arrow--prev {
     left: auto;
-    right: 0;
+    right: 1em;
 }
 .splide--rtl > .splide__arrows .splide__arrow--prev svg,
 .splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev svg,
@@ -288,7 +287,7 @@
 .splide--rtl > .splide__arrows .splide__arrow--next,
 .splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--next,
 .splide--rtl > .splide__track > .splide__arrows .splide__arrow--next {
-    left: 0;
+    left: 1em;
     right: auto;
 }
 .splide--rtl > .splide__arrows .splide__arrow--next svg,

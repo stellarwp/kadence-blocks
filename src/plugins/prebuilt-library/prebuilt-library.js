@@ -84,7 +84,7 @@ const no_connect_actions = [
 	},
 	{
 		slug: 'wire',
-		title: 'Wireframe',
+		title: __( 'Wireframe', 'kadence-blocks' ),
 		key: 'kb-wire-tab',
 	},
 ];
@@ -175,7 +175,7 @@ class PrebuiltModal extends Component {
 			this.reloadAllActions();
 		}
 		return (
-			<Fragment>
+			<>
 				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Design Library', 'kadence-blocks' ) }</Button>
 				{ this.state.modalOpen ?
 					<Modal
@@ -202,7 +202,7 @@ class PrebuiltModal extends Component {
 								{ ! this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
 										{ actions.map( ( action, index ) =>
-											<Fragment>
+											<>
 												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
 													<Button
 														key={ `${ action.slug }-${ index }` }
@@ -236,7 +236,7 @@ class PrebuiltModal extends Component {
 														{ action.slug === 'cloud' ? undefined : <span> { action.title } <span className="new-notice">{ __( 'New', 'kadence-blocks' ) }</span></span> }
 													</Button>
 												) }
-											</Fragment>
+											</>
 										) }
 									</div>
 								) }
@@ -305,7 +305,7 @@ class PrebuiltModal extends Component {
 						</div>
 					</Modal>
 					: null }
-			</Fragment>
+			</>
 		);
 	}
 }

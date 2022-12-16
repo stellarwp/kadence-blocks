@@ -92,9 +92,11 @@
 					);
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
+					navSliderOptions.pagination = false;
 
 					mainSliderOptions.type = "fade";
 					mainSliderOptions.rewind = true;
+					mainSliderOptions.pagination = false;
 
 					navSlider.classList.add("slick-initialized");
 					navSlider.classList.add("slick-slider");
@@ -181,26 +183,32 @@
 				pagination: dataSet.sliderDots || false,
 				direction: dataSet.sliderDirection,
 				pauseOnHover: dataSet.sliderPauseHover || false,
+				gap: dataSet.sliderGap || 0,
 				breakpoints: {
 					543: {
 						perPage: dataSet.columnsSs || 1,
 						perMove: scrollIsOne || dataSet.scrollSs,
+						gap: dataSet.sliderGapMobile || 0,
 					},
 					767: {
 						perPage: dataSet.columnsXs || 1,
 						perMove: scrollIsOne || dataSet.columnsXs,
+						gap: dataSet.sliderGapMobile || 0,
 					},
 					991: {
 						perPage: dataSet.columnsXs || 1,
 						perMove: scrollIsOne || dataSet.columnsSm,
+						gap: dataSet.sliderGapTablet || 0,
 					},
 					1199: {
 						perPage: dataSet.columnsMd || 1,
 						perMove: scrollIsOne || dataSet.columnsMd,
+						gap: dataSet.sliderGapTablet || 0,
 					},
 					1499: {
 						perPage: dataSet.columnsXl || 1,
 						perMove: scrollIsOne || dataSet.columnsXl,
+						gap: dataSet.sliderGap || 0,
 					},
 				},
 				classes: {

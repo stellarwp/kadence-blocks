@@ -323,8 +323,8 @@ function KadenceAdvancedHeading( props ) {
 	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
-	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize[0] ? fontSize[0] : '' ), ( undefined !== fontSize[1] ? fontSize[1] : '' ), ( undefined !== fontSize[2] ? fontSize[2] : '' ) );
-	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== fontHeight[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight[2] ? fontHeight[2] : '' ) );
+	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize?.[0] ? fontSize[0] : '' ), ( undefined !== fontSize?.[1] ? fontSize[1] : '' ), ( undefined !== fontSize?.[2] ? fontSize[2] : '' ) );
+	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== fontHeight?.[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight?.[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight?.[2] ? fontHeight[2] : '' ) );
 
 	const previewLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
 
@@ -511,8 +511,13 @@ function KadenceAdvancedHeading( props ) {
 			{undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable ? dynamicHeadingContent : headingContent}
 		</a>
 	);
-
-	const blockProps = useBlockProps( {} );
+	const wrapperClasses = classnames({
+		'kb-is-heading' : htmlTag && htmlTag === 'heading',
+		'kb-adv-text'   : true,
+	});
+	const blockProps = useBlockProps( {
+		className: wrapperClasses,
+	} );
 
 	return (
 		<div {...blockProps}>
@@ -590,17 +595,17 @@ function KadenceAdvancedHeading( props ) {
 						onFontSizeType={( value ) => setAttributes( { sizeType: value } )}
 						lineHeightType={fontHeightType}
 						onLineHeightType={( value ) => setAttributes( { fontHeightType: value } )}
-						fontSize={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
+						fontSize={ ( undefined !== fontSize?.[0] ? fontSize[0] : '' ) }
 						onFontSize={ value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
-						tabSize={( undefined !== fontSize[1] ? fontSize[1] : '' )}
+						tabSize={( undefined !== fontSize?.[1] ? fontSize[1] : '' )}
 						onTabSize={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),value,( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
-						mobileSize={( undefined !== fontSize[2] ? fontSize[2] : '' )}
+						mobileSize={( undefined !== fontSize?.[2] ? fontSize[2] : '' )}
 						onMobileSize={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
-						lineHeight={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
+						lineHeight={( undefined !== fontHeight?.[0] ? fontHeight[0] : '' )}
 						onLineHeight={value => setAttributes( { fontHeight: [value,( undefined !== fontHeight[1] ? fontHeight[1] : '' ),( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
-						tabLineHeight={( undefined !== fontHeight[1] ? fontHeight[1] : '' )}
+						tabLineHeight={( undefined !== fontHeight?.[1] ? fontHeight[1] : '' )}
 						onTabLineHeight={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),value,( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
-						mobileLineHeight={( undefined !== fontHeight[2] ? fontHeight[2] : '' )}
+						mobileLineHeight={( undefined !== fontHeight?.[2] ? fontHeight[2] : '' )}
 						onMobileLineHeight={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),( undefined !== fontHeight[1] ? fontHeight[1] : '' ),value] } )}
 					/>
 				)}
@@ -754,11 +759,11 @@ function KadenceAdvancedHeading( props ) {
 									<>
 										<ResponsiveFontSizeControl
 											label={__( 'Font Size', 'kadence-blocks' )}
-											value={ ( undefined !== fontSize[0] ? fontSize[0] : '' ) }
+											value={ ( undefined !== fontSize?.[0] ? fontSize[0] : '' ) }
 											onChange={ value => setAttributes( { fontSize: [value,( undefined !== fontSize[1] ? fontSize[1] : '' ),( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
-											tabletValue={( undefined !== fontSize[1] ? fontSize[1] : '' )}
+											tabletValue={( undefined !== fontSize?.[1] ? fontSize[1] : '' )}
 											onChangeTablet={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),value,( undefined !== fontSize[2] ? fontSize[2] : '' )] } )}
-											mobileValue={( undefined !== fontSize[2] ? fontSize[2] : '' )}
+											mobileValue={( undefined !== fontSize?.[2] ? fontSize[2] : '' )}
 											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
@@ -772,11 +777,11 @@ function KadenceAdvancedHeading( props ) {
 										<TwoColumn className="kb-font-settings">
 											<ResponsiveUnitControl
 												label={__( 'Line Height', 'kadence-blocks' )}
-												value={( undefined !== fontHeight[0] ? fontHeight[0] : '' )}
+												value={( undefined !== fontHeight?.[0] ? fontHeight[0] : '' )}
 												onChange={value => setAttributes( { fontHeight: [value,( undefined !== fontHeight[1] ? fontHeight[1] : '' ),( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
-												tabletValue={( undefined !== fontHeight[1] ? fontHeight[1] : '' )}
+												tabletValue={( undefined !== fontHeight?.[1] ? fontHeight[1] : '' )}
 												onChangeTablet={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),value,( undefined !== fontHeight[2] ? fontHeight[2] : '' )] } )}
-												mobileValue={( undefined !== fontHeight[2] ? fontHeight[2] : '' )}
+												mobileValue={( undefined !== fontHeight?.[2] ? fontHeight[2] : '' )}
 												onChangeMobile={( value ) => setAttributes( { fontHeight: [( undefined !== fontHeight[0] ? fontHeight[0] : '' ),( undefined !== fontHeight[1] ? fontHeight[1] : '' ),value] } )}
 												min={0}
 												max={( fontHeightType === 'px' ? 200 : 12 )}

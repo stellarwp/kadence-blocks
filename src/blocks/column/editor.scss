@@ -18,6 +18,8 @@
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
+	margin-bottom: auto;
+    margin-top: auto;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
@@ -27,6 +29,8 @@
 	display: flex;
 	justify-content: flex-end;
 	flex-direction: column;
+	margin-bottom: 0;
+    margin-top: auto;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
@@ -70,6 +74,11 @@
 	}
 	&.kadence-inner-column-vertical-align-top {
 		align-items: flex-start;
+	}
+	&.kadence-inner-column-vertical-align-middle {
+		align-items: center;
+		margin-bottom: auto;
+    	margin-top: auto;
 	}
 	&.kadence-inner-column-vertical-align-bottom {
 		align-items: flex-end;

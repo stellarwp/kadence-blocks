@@ -4,6 +4,10 @@
  * CSS for Backend.
  */
  @import './splide.scss';
+ .block-editor-block-list__block[data-type="kadence/advancedgallery"] {
+    margin-bottom: 0;
+    margin-top: 0;
+}
  // Controls.
 .kb-gallery-type-select .kadence-radio-control-flexwrap .components-button.kadence-radio-item {
     height: 50px;
@@ -234,7 +238,6 @@
 	margin-left: -9px;
 }
 .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-main-contain {
-	margin:-5px;
 	padding:0;
 	box-sizing: border-box;
 }
@@ -245,7 +248,7 @@
 	padding: 0 !important;
 	.kadence-blocks-gallery-item {
 		position: relative;
-		padding:5px;
+		padding:0;
 		margin:0;
 		.kadence-blocks-gallery-item-inner {
 			position: relative;
@@ -348,10 +351,10 @@
 		}
 	}
 
-	// On mobile and responsive viewports, we allow only 1 or 2 columns at the most.
-	& .kadence-blocks-gallery-item {
-		width: 100%;
-	}
+	// // On mobile and responsive viewports, we allow only 1 or 2 columns at the most.
+	// & .kadence-blocks-gallery-item {
+	// 	width: 100%;
+	// }
 
 	// Beyond mobile viewports, we allow up to 8 columns.
 	@media (min-width: 600px) {
@@ -404,25 +407,6 @@
 }
 .kb-gallery-main-contain.kb-gallery-type-carousel, .kb-gallery-main-contain.kb-gallery-type-slider, .kb-gallery-main-contain.kb-gallery-type-thumbslider {
 	display: block;
-	.kt-blocks-carousel {
-		.slick-slider {
-			margin:0 -5px;
-			user-select: auto;
-			touch-action: auto;
-			.slick-slide {
-				padding: 4px 5px
-			}
-		}
-		.slick-prev {
-			left:5px;
-		}
-		.slick-next {
-			right:5px;
-		}
-	}
-	.slick-slider .kadence-blocks-gallery-item {
-		padding:0 !important;
-	}
 }
 .kb-gallery-main-contain.kb-gallery-type-thumbslider .splide.splide--nav>.splide__track>.splide__list>.splide__slide {
 	border: 0;
@@ -442,28 +426,6 @@
 }
 .kb-gallery-main-contain.kb-gallery-type-fluidcarousel {
 	display: block;
-	.kt-blocks-carousel {
-		.slick-slider {
-			margin:0;
-			user-select: auto;
-			touch-action: auto;
-			.slick-slide {
-				padding: 4px 5px
-			}
-		}
-		&.kb-carousel-mode-align-left .slick-slider .slick-slide {
-			padding: 4px 10px 4px 0;
-		}
-		.slick-prev {
-			left:0px;
-		}
-		.slick-next {
-			right:0px;
-		}
-	}
-	.kadence-blocks-gallery-item {
-		padding:0 !important;
-	}
 }
 .kb-gallery-main-contain.kb-gallery-type-carousel .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kb-gallery-image-contain.kadence-blocks-gallery-intrinsic.kb-gallery-image-ratio-inherit {
 	padding-bottom: 100%;
@@ -589,8 +551,8 @@
 		filter: contrast(1.1) saturate(1.1);
 	}
 }
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kb-cloned-hide .slick-slide.slick-cloned {
-	display:none !important;
+.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel {
+    padding-bottom: 0;
 }
 @media (max-width: 782px) {
 .block-editor-editor-skeleton__content {
