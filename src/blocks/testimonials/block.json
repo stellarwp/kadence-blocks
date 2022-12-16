@@ -7,6 +7,7 @@
   "textdomain": "kadence-blocks",
   "providesContext": {
 	"kadence/testimonials-displayContent": "displayContent",
+	"kadence/testimonials-displayOccupation": "displayOccupation",
 	"kadence/testimonials-displayTitle": "displayTitle",
 	"kadence/testimonials-displayRating": "displayRating",
 	"kadence/testimonials-displayName": "displayName",
