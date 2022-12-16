@@ -329,7 +329,8 @@ import { migrateToInnerblocks } from './utils';
 					 </ul>
 				 </div>
 			 );
-		 }
+		 },
+		 migrate: migrateToInnerblocks,
 	 },
 	 {
 		 attributes: {
@@ -456,6 +457,7 @@ import { migrateToInnerblocks } from './utils';
 					 </ul>
 				 </div>
 			 );
-		 }
+		 },
+		 migrate: migrateToInnerblocks,
 	 }
  ];

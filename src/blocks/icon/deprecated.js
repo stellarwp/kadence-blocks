@@ -183,7 +183,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 			}
 		},
 		migrate( attributes ) {
-			const newAttributes = attributes;
+			let newAttributes = attributes;
 			for ( let i = 0; i < attributes.icons.length; i++) {
 				if ( attributes.icons[i].padding ) {
 					const tempPadding = parseInt( attributes.icons[i].padding, 10 );
@@ -200,7 +200,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 				
 				newAttributes.icons[i].margin = [ tempMarginTop, tempMarginRight, tempMarginBottom, tempMarginLeft ];
 			}
-		   return newAttributes;
+			
+		   return migrateToInnerblocks( newAttributes );
 	   },
 	   save: ( { attributes } ) => {
 			const { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
@@ -348,7 +349,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 					 { times( iconCount, n => renderSaveIcons( n ) ) }
 				 </div>
 			 );
-		 }
+		 },
+		 migrate: migrateToInnerblocks,
 	 },
 	 {
 		 attributes: {
