@@ -37,6 +37,7 @@ registerBlockType( 'kadence/rowlayout', {
 	save,
 	deprecated,
 	supports: {
+		align:[ 'center', 'wide', 'full' ],
 		anchor: true,
 		ktdynamic: true,
 		kbcss: true,

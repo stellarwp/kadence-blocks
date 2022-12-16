@@ -737,7 +737,7 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'font-weight', $font['weight'] );
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		$line_type = ( isset( $font['lineType'] ) && ! empty( $font['lineType'] ) ? $font['lineType'] : 'px' );
+		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : 'px' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
 		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
 		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
@@ -2232,3 +2232,4 @@ class Kadence_Blocks_CSS {
 		$this->spacing_sizes = $sizes;
 	}
 }
+Kadence_Blocks_CSS::get_instance();

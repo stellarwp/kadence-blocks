@@ -82,7 +82,6 @@ import { useBlockProps } from '@wordpress/block-editor';
 			 }
 		 },
 		 save( { attributes, className } ) {
-			 console.log('testing123');
 			 const {  icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
 			 const renderSaveIcons = ( index ) => {
 				 return (

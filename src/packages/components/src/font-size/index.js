@@ -219,19 +219,21 @@ export default function FontSizeControl( {
 							}
 						/>			
 						{ ! disableCustomSizes && (
-							<Button
-								className={'kadence-radio-item radio-custom only-icon'}
-								label={ __( 'Set custom size', 'kadence-blocks' ) }
-								icon={ settings }
-								onClick={ () => {
-									if ( currentValue && unit === 'px' ) {
-										onChange( getOptionSize( options, currentValue ) );
-									}
-									realSetIsCustom( true );
-								} }
-								isPressed={ false }
-								isTertiary={ true }
-							/>
+							<ButtonGroup className="kadence-radio-container-control">
+								<Button
+									className={'kadence-radio-item radio-custom only-icon'}
+									label={ __( 'Set custom size', 'kadence-blocks' ) }
+									icon={ settings }
+									onClick={ () => {
+										if ( currentValue && unit === 'px' ) {
+											onChange( getOptionSize( options, currentValue ) );
+										}
+										realSetIsCustom( true );
+									} }
+									isPressed={ false }
+									isTertiary={ true }
+								/>
+							</ButtonGroup>
 						) }
 					</div>
 				) }

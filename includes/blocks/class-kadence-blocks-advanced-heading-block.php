@@ -60,21 +60,21 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		// Add Main heading font
-		if ( isset( $attributes['googleFont'] ) && isset( $attributes['loadGoogleFont'] ) && ( ! isset( $attributes['loadGoogleFont'] ) || true === $attributes['loadGoogleFont'] ) ) {
-			$font_variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : '';
-			$font_subset  = isset( $attributes['fontSubset'] ) ? $attributes['fontSubset'] : '';
+		// // Add Main heading font
+		// if ( isset( $attributes['googleFont'] ) && isset( $attributes['loadGoogleFont'] ) && ( ! isset( $attributes['loadGoogleFont'] ) || true === $attributes['loadGoogleFont'] ) ) {
+		// 	$font_variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : '';
+		// 	$font_subset  = isset( $attributes['fontSubset'] ) ? $attributes['fontSubset'] : '';
 
-			$css->maybe_add_google_font( $attributes['typography'], $font_variant, $font_subset );
-		}
+		// 	$css->maybe_add_google_font( $attributes['typography'], $font_variant, $font_subset );
+		// }
 
-		// Add Mark heading font
-		if ( isset( $attributes['markGoogleFont'] ) && isset( $attributes['markLoadGoogleFont'] ) && ( ! isset( $attributes['markLoadGoogleFont'] ) || true === $attributes['markLoadGoogleFont'] ) ) {
-			$font_variant = isset( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : '';
-			$font_subset  = isset( $attributes['markFontSubset'] ) ? $attributes['markFontSubset'] : '';
+		// // Add Mark heading font
+		// if ( isset( $attributes['markGoogleFont'] ) && isset( $attributes['markLoadGoogleFont'] ) && ( ! isset( $attributes['markLoadGoogleFont'] ) || true === $attributes['markLoadGoogleFont'] ) ) {
+		// 	$font_variant = isset( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : '';
+		// 	$font_subset  = isset( $attributes['markFontSubset'] ) ? $attributes['markFontSubset'] : '';
 
-			$css->maybe_add_google_font( $attributes['markTypography'], $font_variant, $font_subset );
-		}
+		// 	$css->maybe_add_google_font( $attributes['markTypography'], $font_variant, $font_subset );
+		// }
 
 		// Issue with span tag.
 		if ( isset( $attributes['htmlTag'] ) && 'span' === $attributes['htmlTag'] ) {
@@ -104,16 +104,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
 				$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
 			}
-			if ( isset( $attributes['fontWeight'] ) && ! empty( $attributes['fontWeight'] ) ) {
+			if ( ! empty( $attributes['fontWeight'] ) ) {
 				$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
 			}
-			if ( isset( $attributes['fontStyle'] ) && ! empty( $attributes['fontStyle'] ) ) {
+			if ( ! empty( $attributes['fontStyle'] ) ) {
 				$css->add_property( 'font-style', $attributes['fontStyle'] );
 			}
-			if ( isset( $attributes['typography'] ) && ! empty( $attributes['typography'] ) ) {
+			if ( ! empty( $attributes['typography'] ) ) {
 				$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'] ) );
 			}
-			if ( isset( $attributes['textTransform'] ) && ! empty( $attributes['textTransform'] ) ) {
+			if ( ! empty( $attributes['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $attributes['textTransform'] );
 			}
 			if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {

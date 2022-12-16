@@ -568,11 +568,11 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		<>
 			{ 'contentOnly' !== templateLock && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<BlockControls>
-					<BlockAlignmentToolbar
+					{/* <BlockAlignmentToolbar
 						value={ align }
 						controls={ [ 'center', 'wide', 'full' ] }
 						onChange={ value => setAttributes( { align: value } ) }
-					/>
+					/> */}
 					<ToolbarGroup>
 						<ToolbarButton
 							className="kb-content-width"

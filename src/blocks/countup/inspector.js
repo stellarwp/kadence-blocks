@@ -303,7 +303,7 @@ function Inspector( {
 									}
 								</TabPanel>
 								<TypographyControls
-									fontGroup={'heading'}
+									fontGroup={'countup-heading'}
 									tagLowLevel={2}
 									tagHighLevel={7}
 									otherTags={{ 'p': true, 'span': true, 'div': true }}
@@ -320,7 +320,9 @@ function Inspector( {
 									lineHeight={titleFont[ 0 ].lineHeight}
 									onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
 									lineHeightType={titleFont[ 0 ].lineType}
-									onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
+									onLineHeightType={( value ) => {
+										saveTitleFont( { lineType: value } )
+									}}
 									letterSpacing={titleFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
 									fontFamily={titleFont[ 0 ].family}

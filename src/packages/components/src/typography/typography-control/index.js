@@ -557,7 +557,7 @@ class TypographyControls extends Component {
 								min={ lineMin }
 								max={ lineMax }
 								step={ lineStep }
-								unit={ ( lineHeightType ? lineHeightType : 'px' ) }
+								unit={ ( lineHeightType ? lineHeightType : '' ) }
 								onUnit={ ( value ) => onLineHeightType( value ) }
 								units={ [  '-', 'px', 'em', 'rem' ] }
 								compressedDevice={ true }

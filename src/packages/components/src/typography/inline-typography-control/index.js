@@ -559,7 +559,7 @@ class InlineTypographyControls extends Component {
 									<div className="kt-size-input-wrap">
 										<div className="kt-type-size-input-wrap">
 											<ResponsiveUnitControl
-												label={__( 'Line Height', 'kadence-blocks' )}
+												label={__( 'Height', 'kadence-blocks' )}
 												value={( lineHeight ? lineHeight : '' )}
 												onChange={value => onLineHeight( value )}
 												tabletValue={( tabLineHeight ? tabLineHeight : '' )}

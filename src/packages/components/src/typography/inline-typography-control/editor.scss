@@ -49,12 +49,22 @@
     max-height: 240px;
     min-width: 260px;
 }
+.components-popover.kt-popover-font-family .components-popover__content .typography-row-settings .kadence-font-size-select-control-wrap .components-base-control {
+    flex:1;
+}
 .components-popover.kt-popover-font-family .components-popover__content {
 	padding:10px;
     z-index: 1;
     > div {
         padding:0;
     }
+	.components-base-control > .kadence-component__header .components-button.is-small.has-icon.is-reset svg {
+		width: 14px;
+		height: 14px;
+	}
+	.kadence-font-size-select-control-wrap .components-button-group.kadence-radio-container-control {
+		flex: 0;
+	}
 	.kt-heading-fontfamily-title {
 		margin: 0;
 		line-height: 10px;
@@ -161,8 +171,7 @@
 		display: inline-block;
 	}
 	.kt-type-size-input-wrap {
-		display: flex;
-		justify-content: space-between;
+		display: block;
 	}
 }
 .components-popover.kt-popover-font-family .components-popover__content .typography-row-settings .components-base-control:last-child .components-base-control__field .kt-typography-size-type {

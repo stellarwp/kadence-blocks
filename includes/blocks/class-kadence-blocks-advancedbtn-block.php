@@ -70,14 +70,6 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if ( isset( $attributes['googleFont'] ) && $attributes['googleFont'] && ( ! isset( $attributes['loadGoogleFont'] ) || true == $attributes['loadGoogleFont'] ) && isset( $attributes['typography'] ) ) {
-			// Add Button font.
-			$font_variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : '';
-			$font_subset  = isset( $attributes['fontSubset'] ) ? $attributes['fontSubset'] : '';
-
-			$css->maybe_add_google_font( $attributes['typography'], $font_variant, $font_subset );
-		}
-
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
