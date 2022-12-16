@@ -2822,7 +2822,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 					{( activeTab === 'advanced') && (
 						<>
-							<KadencePanelBody>
+							<KadencePanelBody panelName={'kb-infobox-spacing-settings'}>
 								<ResponsiveMeasureRangeControl
 									label={__('Container Padding', 'kadence-blocks')}
 									tabletControl={containerPaddingControl}

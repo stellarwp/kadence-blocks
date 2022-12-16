@@ -551,7 +551,7 @@ export function Edit( {
 
 				{ activeTab === 'advanced' && (
 					<>
-						<KadencePanelBody>
+						<KadencePanelBody panelName={'kb-google-spacing-settings'}>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={paddingDesktop}

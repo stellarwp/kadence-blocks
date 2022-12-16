@@ -539,7 +539,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 
 					{(activeTab === 'advanced') &&
 						<>
-							<KadencePanelBody>
+							<KadencePanelBody panelName={'kb-toc-spacing-settings'}>
 								<ResponsiveMeasureRangeControl
 									label={__( 'Container Margin', 'kadence-blocks' )}
 									value={containerMargin}

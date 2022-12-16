@@ -59,6 +59,21 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.size ) {
 				copyStyles.size = blockAttributes.size;
 			}
+			if ( blockAttributes.fontSize ) {
+				copyStyles.fontSize = blockAttributes.fontSize;
+			}
+			if ( blockAttributes.fontHeight ) {
+				copyStyles.fontHeight = blockAttributes.fontHeight;
+			}
+			if ( blockAttributes.fontHeightType ) {
+				copyStyles.fontHeightType = blockAttributes.fontHeightType;
+			}
+			if ( blockAttributes.maxWidth ) {
+				copyStyles.maxWidth = blockAttributes.maxWidth;
+			}
+			if ( blockAttributes.maxWidthType ) {
+				copyStyles.maxWidthType = blockAttributes.maxWidthType;
+			}
 			if ( blockAttributes.sizeType ) {
 				copyStyles.sizeType = blockAttributes.sizeType;
 			}

@@ -1564,7 +1564,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 						{ activeTab === 'advanced' && (
 							<>
-								<KadencePanelBody>
+								<KadencePanelBody panelName={'kb-tabs-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
 										label={__('Container Padding', 'kadence-blocks')}
 										value={innerPadding}

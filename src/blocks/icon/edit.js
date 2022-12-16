@@ -213,7 +213,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 				/>
 
 				{( activeTab === 'general' ) &&
-					<KadencePanelBody>
+					<KadencePanelBody panelName={'kb-icon-alignment-settings'}>
 						<ResponsiveAlignControls
 							label={__( 'Icon Alignment', 'kadence-blocks' )}
 							value={( textAlignment ? textAlignment : '' )}

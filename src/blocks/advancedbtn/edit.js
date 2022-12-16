@@ -1937,7 +1937,7 @@ function KadenceAdvancedButton( props ) {
 								<>
 									{showSettings('marginSettings', 'kadence/advancedbtn') && (
 										<>
-											<KadencePanelBody>
+											<KadencePanelBody panelName={'kb-adv-button-margin-settings'}>
 												<ResponsiveMeasureRangeControl
 													label={__('Container Margin', 'kadence-blocks')}
 													value={undefined !== margin && undefined !== margin[0] && undefined !== margin[0].desk ? margin[0].desk : ['', '', '', '']}

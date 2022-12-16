@@ -367,7 +367,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 
 						{( activeTab === 'advanced' ) &&
 							<>
-								<KadencePanelBody>
+								<KadencePanelBody panelName={'kb-icon-list-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
 										label={__( 'List Margin', 'kadence-blocks' )}
 										value={ listMargin }

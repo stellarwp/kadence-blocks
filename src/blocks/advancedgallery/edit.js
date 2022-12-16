@@ -1502,7 +1502,7 @@ function GalleryEdit( props ) {
 							{showSettings('spacingSettings', 'kadence/advancedgallery') && (
 
 								<>
-									<KadencePanelBody>
+									<KadencePanelBody panelName={'kb-adv-gallery-spacing-settings'}>
 										<ResponsiveMeasureRangeControl
 											label={__('Margin', 'kadence-blocks')}
 											value={margin[0].desk}

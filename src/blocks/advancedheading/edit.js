@@ -641,7 +641,7 @@ function KadenceAdvancedHeading( props ) {
 
 					{( activeTab === 'general' ) &&
 						<>
-							<KadencePanelBody>
+							<KadencePanelBody panelName={'kb-adv-heading-general-settings'}>
 								<TagSelect
 									label={__( 'HTML Tag', 'kadence-blocks' )}
 									value={ 'heading' === htmlTag ? level : htmlTag }
