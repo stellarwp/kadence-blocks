@@ -475,6 +475,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
+		[ `align${ align }` ]: align,
 		[ `kb-row-id-${ uniqueID }` ]: uniqueID,
 		[ `kt-has-${ columns }-columns` ]: columns,
 		[ `kt-row-layout-${ previewLayout }` ]: previewLayout,
@@ -568,11 +569,11 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		<>
 			{ 'contentOnly' !== templateLock && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<BlockControls>
-					{/* <BlockAlignmentToolbar
+					<BlockAlignmentToolbar
 						value={ align }
 						controls={ [ 'center', 'wide', 'full' ] }
 						onChange={ value => setAttributes( { align: value } ) }
-					/> */}
+					/>
 					<ToolbarGroup>
 						<ToolbarButton
 							className="kb-content-width"

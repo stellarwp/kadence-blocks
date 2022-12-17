@@ -78,7 +78,57 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_style( 'kadence-blocks-tiny-slider' );
 			$this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
 		}
-
+		// Main Icon.
+		if ( isset( $attributes['iconStyles'][0] ) && is_array( $attributes['iconStyles'][0] ) ) {
+			$icon_styles = $attributes['iconStyles'][0];
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon' );
+			if ( ! empty( $icon_styles['color'] ) ) {
+				$css->add_property( 'color', $css->render_color( $icon_styles['color'] ) );
+			}
+			if ( $css->is_number( $icon_styles['size'] ) ) {
+				$css->add_property( 'font-size', $icon_styles['size'] . 'px' );
+			}
+			if ( $css->is_number( $icon_styles['borderRadius'] ) ) {
+				$css->add_property( 'border-radius', $icon_styles['borderRadius'] . 'px' );
+			}
+			if ( ! empty( $icon_styles['background'] ) ) {
+				$alpha = ( $css->is_number( $icon_styles['backgroundOpacity'] ) ? $icon_styles['backgroundOpacity'] : 1 );
+				$css->add_property( 'background', $css->render_color( $icon_styles['background'], $alpha ) );
+			}
+			if ( ! empty( $icon_styles['border'] ) ) {
+				$alpha = ( $css->is_number( $icon_styles['borderOpacity'] ) ? $icon_styles['borderOpacity'] : 1 );
+				$css->add_property( 'border-color', $css->render_color( $icon_styles['border'], $alpha ) );
+			}
+			$css->render_measure_range( $icon_styles, 'borderWidth', 'border-width' );
+			$css->render_measure_range( $icon_styles, 'padding', 'padding' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon-wrap' );
+			$css->render_measure_range( $icon_styles, 'margin', 'margin' );
+		}
+		// Testimonial specific Icon.
+		if ( isset( $attributes['testimonials'] ) && is_array( $attributes['testimonials'] ) ) {
+			foreach ( $attributes['testimonials'] as $key => $value ) {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-' . $key . ' .kt-svg-testimonial-icon' );
+				if ( ! empty( $value['color'] ) ) {
+					$css->add_property( 'color', $css->render_color( $value['color'] ) );
+				}
+				if ( $css->is_number( $value['isize'] ) ) {
+					$css->add_property( 'font-size', $value['isize'] . 'px' );
+				}
+			}
+		}
+		// Rating icons.
+		if ( isset( $attributes['ratingStyles'][0] ) && is_array( $attributes['ratingStyles'][0] ) ) {
+			$rating_styles = $attributes['ratingStyles'][0];
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap' );
+			$css->render_measure_range( $rating_styles, 'margin', 'margin' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap .kb-svg-icon-wrap' );
+			if ( ! empty( $rating_styles['color'] ) ) {
+				$css->add_property( 'color', $css->render_color( $rating_styles['color'] ) );
+			}
+			if ( $css->is_number( $rating_styles['size'] ) ) {
+				$css->add_property( 'font-size', $rating_styles['size'] . 'px' );
+			}
+		}
 		/*
 		 *  Wrapper padding
 		 */

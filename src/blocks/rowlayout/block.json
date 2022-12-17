@@ -770,7 +770,6 @@
 	}
   },
   "supports": {
-	"align": [ "center", "wide", "full" ],
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true

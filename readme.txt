@@ -76,10 +76,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.0.0 Beta Version 1 =
-Release Date: December 15th, 2022
+= 3.0.0 Alpha Version 1 =
+Release Date: December 16th, 2022
 * Update: Block Settings to use a tab structure.
-* Update: Row Layout to use grid css.
+* Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
 * Update: Improved CSS generation for blocks.
 * Update: Kadence Block defaults structure, new controls and management. 
@@ -89,30 +89,23 @@ Release Date: December 15th, 2022
 * Update: Border control for more flexibility.
 * Update: New Margin and Padding control with added visualizer.
 * Update: New Icon Picker Control.
+* Update: New Font size control.
+* Update: Line Height to support none unit values.
 * Update: Lightbox to use glightbox (adds mobile swipe).
 * Update: Gallery Carousels to use splide.
 * Update: Icon List block to use innerBlocks for list items.
-* Update: Icons flex layout with gap settings.**
-* Update: Add Icon option to advanced text block.**
-* Update: Testimonial Carousels to use Splide.**
-* Update: Gallery to allow links in captions, separate from image link.**
-* Update: Allow inner sections to have vertical flex alignment.**
-* Update: Facebook logo svg.**
+* Update: Accordion js to handle issues with offset in accordion hash.
+* Add: Responsive container margin on Info Box block.
+* Add: Responsive container padding on Table of Contents block.
+* Add: Responsive container margin on Icon List block.
+* Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
 * Add: Ability to import, export, and reset block defaults
-* Fix: Parallax background issue with border radius. **
 * Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
 * Fix: Issue with gallery possibly losing added captions.
-* Fix: Issue with aligning in buttons with icons.*
 * Fix: Only generate dynamic CSS for rtl sites when needed.
-* Fix: Google Maps filer initial value issue.
+* Fix: Google Maps filter initial value issue.
 * Fix: Issue when using more than 36 tabs in Tabs block.
-* Tweak - Accordion js to handle issues with offset in accordion hash.
-* Add: Text Transform option on title in Count Up block**
-* Add: Responsive container margin on Info Box block.**
-* Add: Responsive container padding on Table of Contents block.**
-* Add: Responsive container margin on Icon List block.**
-* Add: Responsive Inner Container padding on Tabs block.**
 * Add: Ability to use decimals for start & end vaules in count up block.
 
 = 2.4.21 =

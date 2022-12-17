@@ -626,22 +626,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'background-attachment', $overbg_attach );
 						$css->add_property( 'background-repeat', ( isset( $attributes['overlayBgImgRepeat'] ) ? $attributes['overlayBgImgRepeat'] : 'no-repeat' ) );
 					}
-					if ( ! empty( $attributes['bgImg'] ) ) {
-						if ( isset( $attributes['bgImgAttachment'] ) ) {
-							if ( 'parallax' === $attributes['bgImgAttachment'] ) {
-								$bg_attach = 'fixed';
-							} else {
-								$bg_attach = $attributes['bgImgAttachment'];
-							}
-						} else {
-							$bg_attach = 'scroll';
-						}
-						$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['bgImg'] ) );
-						$css->add_property( 'background-size', ( isset( $attributes['bgImgSize'] ) ? $attributes['bgImgSize'] : 'cover' ) );
-						$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
-						$css->add_property( 'background-attachment', $bg_attach );
-						$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
-					}
 					break;
 				case 'gradient':
 					$css->add_property( 'background', $attributes['overlayGradient'] );

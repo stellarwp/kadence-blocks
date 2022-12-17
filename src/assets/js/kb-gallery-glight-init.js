@@ -96,7 +96,6 @@
 		 * Initiate the script to process all
 		 */
 		initAll: function() {
-			GLightbox.defaults.captionAttribute = 'data-caption';
 			kadenceBlocksGLight.findGalleries();
 		},
 		// Initiate the menus when the DOM loads.

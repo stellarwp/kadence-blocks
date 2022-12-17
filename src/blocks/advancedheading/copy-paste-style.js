@@ -50,6 +50,9 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.level ) {
 				copyStyles.level = blockAttributes.level;
 			}
+			if ( blockAttributes.htmlTag ) {
+				copyStyles.htmlTag = blockAttributes.htmlTag;
+			}
 			if ( blockAttributes.align ) {
 				copyStyles.align = blockAttributes.align;
 			}
@@ -65,7 +68,7 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.fontHeight ) {
 				copyStyles.fontHeight = blockAttributes.fontHeight;
 			}
-			if ( blockAttributes.fontHeightType ) {
+			if ( undefined !== blockAttributes.fontHeightType ) {
 				copyStyles.fontHeightType = blockAttributes.fontHeightType;
 			}
 			if ( blockAttributes.maxWidth ) {
@@ -131,6 +134,9 @@ class HeadingStyleCopyPaste extends Component {
 			if ( undefined !== blockAttributes.rightMargin && '' !== blockAttributes.rightMargin ) {
 				copyStyles.rightMargin = blockAttributes.rightMargin;
 			}
+			if ( blockAttributes.margin ) {
+				copyStyles.margin = blockAttributes.margin;
+			}
 			if ( blockAttributes.tabletMargin ) {
 				copyStyles.tabletMargin = blockAttributes.tabletMargin;
 			}
@@ -164,7 +170,7 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.markSizeType ) {
 				copyStyles.markSizeType = blockAttributes.markSizeType;
 			}
-			if ( blockAttributes.markLineHeight ) {
+			if ( undefined !== blockAttributes.markLineHeight ) {
 				copyStyles.markLineHeight = blockAttributes.markLineHeight;
 			}
 			if ( blockAttributes.markLineType ) {

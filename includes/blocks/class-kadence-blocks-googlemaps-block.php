@@ -39,6 +39,13 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
+	 * Block determines in scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {

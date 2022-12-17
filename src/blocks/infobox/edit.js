@@ -1750,137 +1750,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 					{( activeTab === 'style' ) &&
 						<>
-							{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
-								<KadencePanelBody
-									title={__( 'Container Shadow', 'kadence-blocks' )}
-									panelName={'kb-info-container-shadow'}
-								>
-									<ToggleControl
-										label={__( 'Enable Shadow', 'kadence-blocks' )}
-										checked={displayShadow}
-										onChange={value => setAttributes( { displayShadow: value } )}
-									/>
-									{displayShadow && (
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-												  activeClass="active-tab"
-												  tabs={[
-													  {
-														  name     : 'normal',
-														  title    : __( 'Normal' ),
-														  className: 'kt-normal-tab',
-													  },
-													  {
-														  name     : 'hover',
-														  title    : __( 'Hover' ),
-														  className: 'kt-hover-tab',
-													  },
-												  ]}>
-											{
-												( tab ) => {
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveHoverShadow( { color: value } )}
-																		opacityValue={shadowHover[ 0 ].opacity}
-																		onOpacityChange={value => saveHoverShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].blur}
-																		onChange={value => saveHoverShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].spread}
-																		onChange={value => saveHoverShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].vOffset}
-																		onChange={value => saveHoverShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].hOffset}
-																		onChange={value => saveHoverShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																</div>
-															);
-														} else {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadow( { color: value } )}
-																		opacityValue={shadow[ 0 ].opacity}
-																		onOpacityChange={value => saveShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadow[ 0 ].blur}
-																		onChange={value => saveShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadow[ 0 ].spread}
-																		onChange={value => saveShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].vOffset}
-																		onChange={value => saveShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].hOffset}
-																		onChange={value => saveShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																</div>
-															);
-														}
-													}
-												}
-											}
-										</TabPanel>
-									)}
-								</KadencePanelBody>
-							)}
-
 							{showSettings( 'mediaSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
 									title={__( 'Media Settings', 'kadence-blocks' )}
-									initialOpen={false}
+									initialOpen={true}
 									panelName={'kb-info-media-settings'}
 								>
 									<ResponsiveControl
@@ -2817,14 +2690,140 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									)}
 								</KadencePanelBody>
 							)}
+							{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
+								<KadencePanelBody
+									title={__( 'Container Shadow', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-info-container-shadow'}
+								>
+									<ToggleControl
+										label={__( 'Enable Shadow', 'kadence-blocks' )}
+										checked={displayShadow}
+										onChange={value => setAttributes( { displayShadow: value } )}
+									/>
+									{displayShadow && (
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+													activeClass="active-tab"
+													tabs={[
+														{
+															name     : 'normal',
+															title    : __( 'Normal' ),
+															className: 'kt-normal-tab',
+														},
+														{
+															name     : 'hover',
+															title    : __( 'Hover' ),
+															className: 'kt-hover-tab',
+														},
+													]}>
+											{
+												( tab ) => {
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															return (
+																<div className={tab.className} key={tab.className}>
+																	<PopColorControl
+																		label={__( 'Shadow Color', 'kadence-blocks' )}
+																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
+																		default={''}
+																		onChange={value => saveHoverShadow( { color: value } )}
+																		opacityValue={shadowHover[ 0 ].opacity}
+																		onOpacityChange={value => saveHoverShadow( { opacity: value } )}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Blur', 'kadence-blocks' )}
+																		value={shadowHover[ 0 ].blur}
+																		onChange={value => saveHoverShadow( { blur: value } )}
+																		min={0}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Spread', 'kadence-blocks' )}
+																		value={shadowHover[ 0 ].spread}
+																		onChange={value => saveHoverShadow( { spread: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
+																		value={shadowHover[ 0 ].vOffset}
+																		onChange={value => saveHoverShadow( { vOffset: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
+																		value={shadowHover[ 0 ].hOffset}
+																		onChange={value => saveHoverShadow( { hOffset: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																</div>
+															);
+														} else {
+															return (
+																<div className={tab.className} key={tab.className}>
+																	<PopColorControl
+																		label={__( 'Shadow Color', 'kadence-blocks' )}
+																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
+																		default={''}
+																		onChange={value => saveShadow( { color: value } )}
+																		opacityValue={shadow[ 0 ].opacity}
+																		onOpacityChange={value => saveShadow( { opacity: value } )}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Blur', 'kadence-blocks' )}
+																		value={shadow[ 0 ].blur}
+																		onChange={value => saveShadow( { blur: value } )}
+																		min={0}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Spread', 'kadence-blocks' )}
+																		value={shadow[ 0 ].spread}
+																		onChange={value => saveShadow( { spread: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
+																		value={shadow[ 0 ].vOffset}
+																		onChange={value => saveShadow( { vOffset: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																	<RangeControl
+																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
+																		value={shadow[ 0 ].hOffset}
+																		onChange={value => saveShadow( { hOffset: value } )}
+																		min={-100}
+																		max={100}
+																		step={1}
+																	/>
+																</div>
+															);
+														}
+													}
+												}
+											}
+										</TabPanel>
+									)}
+								</KadencePanelBody>
+							)}
 						</>
 					}
-
 					{( activeTab === 'advanced') && (
 						<>
 							<KadencePanelBody panelName={'kb-infobox-spacing-settings'}>
 								<ResponsiveMeasureRangeControl
-									label={__('Container Padding', 'kadence-blocks')}
+									label={__('Padding', 'kadence-blocks')}
 									tabletControl={containerPaddingControl}
 									mobileControl={containerPaddingControl}
 									value={containerPadding}

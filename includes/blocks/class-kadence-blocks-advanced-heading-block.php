@@ -111,7 +111,14 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'font-style', $attributes['fontStyle'] );
 			}
 			if ( ! empty( $attributes['typography'] ) ) {
-				$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'] ) );
+				$google_font = ( ! isset( $attributes['loadGoogleFont'] ) || isset( $attributes['loadGoogleFont'] ) && true === $attributes['loadGoogleFont'] ? true : false );
+				if ( ! empty( $attributes['fontWeight'] ) ) {
+					$font_variant = $attributes['fontWeight'];
+				}
+				if ( ! empty( $attributes['fontStyle'] ) ) {
+					$font_variant .= $attributes['fontStyle'];
+				}
+				$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google_font, $font_variant ) );
 			}
 			if ( ! empty( $attributes['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $attributes['textTransform'] );
@@ -170,7 +177,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
 			}
 			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][0] ) ) {
-				$css->add_property( 'font-size', $attributes['markSize'][0] . ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][0], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 			}
 			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $attributes['markLineHeight'][0] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
@@ -254,7 +261,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][1] ) ) {
-				$css->add_property( 'font-size', $attributes['markSize'][1] . ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 			}
 			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $attributes['markLineHeight'][1] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
@@ -295,7 +302,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][2] ) ) {
-				$css->add_property( 'font-size', $attributes['markSize'][2] . ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][2], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 			}
 			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $attributes['markLineHeight'][2] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );

@@ -5,6 +5,20 @@
  * which makes it higher in priority.
  */
  .wp-block-kadence-testimonials {
+	.kt-testimonial-rating-wrap {
+		margin: 10px 0 10px 0;
+		.kb-svg-icon-wrap {
+			color: #ffd700;
+			font-size: 16px;
+		}
+	}
+	.kb-svg-icon-wrap {
+		display: inline-flex;
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+	}
 	.kt-blocks-carousel {
 		padding-bottom: 35px;
 		margin-left: -15px;
@@ -34,7 +48,6 @@
 .kt-testimonial-grid-wrap {
 	display: -ms-grid;
 	display: grid;
-    -ms-grid-columns: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     gap: 30px 30px;
@@ -77,15 +90,12 @@
     grid-template-columns: 1fr;
 }
 .kt-testimonial-columns-3 .kt-testimonial-grid-wrap {
-	-ms-grid-columns: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
 }
 .kt-testimonial-columns-4 .kt-testimonial-grid-wrap {
-	-ms-grid-columns: 1fr 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .kt-testimonial-columns-5 .kt-testimonial-grid-wrap {
-	-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 @media (min-width: 1200px) and (max-width: 1499px) {
@@ -93,19 +103,15 @@
 		grid-template-columns: 1fr;
 	}
 	.kt-t-xl-col-2 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr;
 		grid-template-columns: 1fr 1fr;
 	}
 	.kt-t-xl-col-3 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr;
 	}
 	.kt-t-xl-col-4 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	.kt-t-xl-col-5 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 }
@@ -135,19 +141,15 @@
 		grid-template-columns: 1fr;
 	}
 	.kt-t-md-col-2 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr;
 		grid-template-columns: 1fr 1fr;
 	}
 	.kt-t-md-col-3 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr;
 	}
 	.kt-t-md-col-4 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	.kt-t-md-col-5 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 }
@@ -159,15 +161,12 @@
 		grid-template-columns: 1fr 1fr;
 	}
 	.kt-t-sm-col-3 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr;
 	}
 	.kt-t-sm-col-4 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	.kt-t-sm-col-5 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 }
@@ -179,15 +178,12 @@
 		grid-template-columns: 1fr 1fr;
 	}
 	.kt-t-xs-col-3 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr;
 	}
 	.kt-t-xs-col-4 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	.kt-t-xs-col-5 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
 		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 }
@@ -217,6 +213,9 @@
 		position: absolute;
 		width: 100%;
 		height: 100%;
+		display: flex;
+		left: 0;
+		right: 0;
 	}
 }
 .kt-testimonial-item-wrap {
@@ -235,10 +234,10 @@
 	}
 }
 .kt-svg-testimonial-global-icon {
-	border: 2px solid #eeeeee;
+	border: 2px solid var(--global-palette7, #eeeeee );;
 	border-radius: 100%;
 	background: transparent;
-	color: #444444;
+	color: var(--global-palette4, #444444 );
 	padding: 20px;
 }
 .kt-svg-testimonial-global-icon-wrap {
@@ -277,7 +276,7 @@
 // Bubble
 .kt-testimonial-style-bubble {
 	.kt-testimonial-text-wrap {
-		border: 2px solid #eee;
+		border: 2px solid var(--global-palette7, #eeeeee );
 		padding: 20px;
 		position: relative;
 		border-radius: 10px;
@@ -286,7 +285,7 @@
 			left: 50%;
 			top: 100%;
 			position: absolute;
-			border-top: 14px solid #eee;
+			border-top: 14px solid var(--global-palette7, #eeeeee );
 			border-bottom: 14px solid transparent;
 			border-left: 14px solid transparent;
 			border-right: 14px solid transparent;
@@ -329,7 +328,7 @@
 		float:left;
 	}
 	.kt-testimonial-text-wrap {
-		border: 2px solid #eee;
+		border: 2px solid var(--global-palette7, #eeeeee );
 		padding: 20px;
 		position: relative;
 		border-radius: 10px;
@@ -339,7 +338,7 @@
 			left: 20px;
 			top: 100%;
 			position: absolute;
-			border-top: 14px solid #eee;
+			border-top: 14px solid var(--global-palette7, #eeeeee );
 			border-bottom: 14px solid transparent;
 			border-left: 14px solid transparent;
 			border-right: 14px solid transparent;

@@ -505,7 +505,7 @@ function Inspector( {
 							onFontSubset={( value ) => saveNumberFont( { subset: value } )}
 						/>
 						<ResponsiveMeasureRangeControl
-							label={__( 'Number Padding', 'kadence-blocks' )}
+							label={__( 'Padding', 'kadence-blocks' )}
 							value={numberPadding}
 							tabletValue={numberTabletPadding}
 							mobileValue={numberMobilePadding}
@@ -522,7 +522,7 @@ function Inspector( {
 							onMouseOut={ numberPaddingMouseOver.onMouseOut }
 						/>
 						<ResponsiveMeasureRangeControl
-							label={__( 'Number Margin', 'kadence-blocks' )}
+							label={__( 'Margin', 'kadence-blocks' )}
 							value={numberMargin}
 							tabletValue={numberTabletMargin}
 							mobileValue={numberMobileMargin}
