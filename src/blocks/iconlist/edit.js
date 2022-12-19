@@ -76,61 +76,73 @@ import {
 } from '@wordpress/components';
 
 import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect, useSelect } from '@wordpress/data';
+import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import {
 	plus,
 } from '@wordpress/icons';
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kticonlistUniqueIDs = [];
-
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId, updateBlockAttributes } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, clientId, updateBlockAttributes } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/iconlist' ] ).map( ( attribute ) => {
-					if ( attribute === 'items' ) {
-						attributes[ attribute ] = attributes[ attribute ].map( ( item, index ) => {
-							item.icon = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].icon;
-							item.size = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].size;
-							item.color = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].color;
-							item.background = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].background;
-							item.border = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].border;
-							item.borderRadius = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderRadius;
-							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
-							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
-							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
-							item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0 );
-							return item;
-						} );
-					} else {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
-					}
-				} );
+			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/iconlist' ] ).map( ( attribute ) => {
+						if ( attribute === 'items' ) {
+							attributes[ attribute ] = attributes[ attribute ].map( ( item, index ) => {
+								item.icon = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].icon;
+								item.size = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].size;
+								item.color = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].color;
+								item.background = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].background;
+								item.border = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].border;
+								item.borderRadius = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderRadius;
+								item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
+								item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
+								item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
+								item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0 );
+								return item;
+							} );
+						} else {
+							attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
+						}
+					} );
+				}
+			}
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kticonlistUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
 			}
 		} else {
-			kticonlistUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
-
 	}, [] );
+
 
 	function selfOrChildSelected( isSelected, clientId ) {
 		const childSelected = useSelect( ( select ) =>
@@ -139,13 +151,13 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 		return isSelected || childSelected;
 	}
 
-	const previewListMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[0] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 0 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 0 ] : '' ) );
-	const previewListMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[1] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 1 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 1 ] : '' ) );
-	const previewListMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
-	const previewListMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== listMargin ? listMargin[3] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 3 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 3 ] : '' ) );
+	const previewListMarginTop = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[0] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 0 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 0 ] : '' ) );
+	const previewListMarginRight = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[1] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 1 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 1 ] : '' ) );
+	const previewListMarginBottom = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
+	const previewListMarginLeft = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[3] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 3 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 3 ] : '' ) );
 
-	const previewColumnGap = getPreviewSize( getPreviewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
-	const previewListGap = getPreviewSize( getPreviewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
+	const previewColumnGap = getPreviewSize( previewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
+	const previewListGap = getPreviewSize( previewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
 
 	const gconfig = {
@@ -155,8 +167,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 	};
 
 	const config = ( listStyles[ 0 ].google ? gconfig : '' );
-	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
-	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
+	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
 
 	const saveListStyles = ( value ) => {
 		const newUpdate = listStyles.map( ( item, index ) => {
@@ -551,11 +563,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 }
 
 export default compose( [
-	withSelect( ( select, ownProps ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
 	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
 		const { removeBlock, updateBlockAttributes } = dispatch( 'core/block-editor' );
 		return {

@@ -228,7 +228,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'fill', $media_icon['hoverColor'] );
 			}
 		}
-		if ( isset( $media_icon['size'] ) && ! empty( $media_icon['size'] ) ) {
+		if ( ! empty( $media_icon['size'] ) ) {
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-info-svg-icon-flip, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
 			$css->add_property( 'font-size', $media_icon['size'] . 'px' );
 		}

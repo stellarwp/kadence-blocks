@@ -229,36 +229,63 @@ function SectionEdit( {
 		if ( updateBorderHoverStyle ) {
 			setAttributes( { borderHoverStyle: tempBorderHoverStyle } );
 		}
+		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
 		if ( ( '' !== tabletBorderWidth?.[0] || '' !== tabletBorderWidth?.[1] || '' !== tabletBorderWidth?.[2] || '' !== tabletBorderWidth?.[3] ) ) {
-			tabletBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
-			tabletBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
-			tabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
-			tabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
-			const tempTabBorderWidth = JSON.parse(JSON.stringify(tabletBorderStyle));
+			tempTabBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
+			tempTabBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
+			tempTabBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
+			tempTabBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
+			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
 		}
+		let tempTabBorderHoverStyle = JSON.parse( JSON.stringify( attributes.tabletBorderHoverStyle ? attributes.tabletBorderHoverStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
 		if ( ( '' !== tabletBorderHoverWidth?.[0] || '' !== tabletBorderHoverWidth?.[1] || '' !== tabletBorderHoverWidth?.[2] || '' !== tabletBorderHoverWidth?.[3] ) ) {
-			tabletBorderHoverStyle[0].top[2] = tabletBorderHoverWidth?.[0] || '';
-			tabletBorderHoverStyle[0].right[2] = tabletBorderHoverWidth?.[1] || '';
-			tabletBorderHoverStyle[0].bottom[2] = tabletBorderHoverWidth?.[2] || '';
-			tabletBorderHoverStyle[0].left[2] = tabletBorderHoverWidth?.[3] || '';
-			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tabletBorderHoverStyle));
+			tempTabBorderHoverStyle[0].top[2] = tabletBorderHoverWidth?.[0] || '';
+			tempTabBorderHoverStyle[0].right[2] = tabletBorderHoverWidth?.[1] || '';
+			tempTabBorderHoverStyle[0].bottom[2] = tabletBorderHoverWidth?.[2] || '';
+			tempTabBorderHoverStyle[0].left[2] = tabletBorderHoverWidth?.[3] || '';
+			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tempTabBorderHoverStyle));
 			setAttributes( { tabletBorderHoverStyle: tempTabBorderHoverWidth, tabletBorderHoverWidth:[ '', '', '', '' ] } );
 		}
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
 		if ( ( '' !== mobileBorderWidth?.[0] || '' !== mobileBorderWidth?.[1] || '' !== mobileBorderWidth?.[2] || '' !== mobileBorderWidth?.[3] ) ) {
-			mobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
-			mobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
-			mobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
-			mobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			const tempMobileBorderWidth = JSON.parse(JSON.stringify(mobileBorderStyle));
-			setAttributes( { mobileBorderStyle: tempMobileBorderWidth, mobileBorderWidth:[ '', '', '', '' ] } );
+			tempMobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
+			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
+			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
+			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
+			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
+		let tempMobileBorderHoverStyle = JSON.parse( JSON.stringify( attributes.mobileBorderHoverStyle ? attributes.mobileBorderHoverStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
 		if ( ( '' !== mobileBorderHoverWidth?.[0] || '' !== mobileBorderHoverWidth?.[1] || '' !== mobileBorderHoverWidth?.[2] || '' !== mobileBorderHoverWidth?.[3] ) ) {
-			mobileBorderHoverStyle[0].top[2] = mobileBorderHoverWidth?.[0] || '';
-			mobileBorderHoverStyle[0].right[2] = mobileBorderHoverWidth?.[1] || '';
-			mobileBorderHoverStyle[0].bottom[2] = mobileBorderHoverWidth?.[2] || '';
-			mobileBorderHoverStyle[0].left[2] = mobileBorderHoverWidth?.[3] || '';
-			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(mobileBorderHoverStyle));
+			tempMobileBorderHoverStyle[0].top[2] = mobileBorderHoverWidth?.[0] || '';
+			tempMobileBorderHoverStyle[0].right[2] = mobileBorderHoverWidth?.[1] || '';
+			tempMobileBorderHoverStyle[0].bottom[2] = mobileBorderHoverWidth?.[2] || '';
+			tempMobileBorderHoverStyle[0].left[2] = mobileBorderHoverWidth?.[3] || '';
+			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
 		debounce( getDynamic, 200 );

@@ -245,6 +245,9 @@ text-decoration: none;
 	font-size:50px;
 	line-height: 1em;
 	min-width: 1em;
+	justify-content: center;
+    align-items: center;
+    display: flex;
 	svg {
 		display: block !important;
 		width: 1em !important;

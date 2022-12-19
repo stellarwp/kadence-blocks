@@ -20,6 +20,7 @@ import {
 	infoTopOverlayIcon,
 	infoLeftOverlayIcon,
 } from '@kadence/icons';
+import classnames from 'classnames';
 
 import { debounce, map, get } from 'lodash';
 import {
@@ -63,8 +64,6 @@ import {
 	Fragment,
 } from '@wordpress/element';
 
-import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
 import {
 	MediaUpload,
 	RichText,
@@ -94,16 +93,12 @@ import {
 	plusCircleFilled,
 } from '@wordpress/icons';
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktinfoboxUniqueIDs = [];
-
+import { useSelect, useDispatch } from '@wordpress/data';
 /**
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, getPreviewDevice, context, clientId } ) {
+function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId } ) {
 
 	const {
 		uniqueID,
@@ -179,28 +174,58 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
-
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/infobox' ] !== undefined && typeof blockConfigObject[ 'kadence/infobox' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/infobox' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/infobox' ][ attribute ];
-				} );
+			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/infobox' ] !== undefined && typeof blockConfigObject[ 'kadence/infobox' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/infobox' ] ).map( ( attribute ) => {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/infobox' ][ attribute ];
+					} );
+				}
+			}
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-
-			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktinfoboxUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
-				ktinfoboxUniqueIDs.push('_' + clientId.substr(2, 9));
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
 			}
 		} else {
-			ktinfoboxUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
+		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
+			if ( ! attributes.inQueryBlock ) {
+				setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( attributes.inQueryBlock ) {
+			setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+		debounce( getDynamic.bind( this ), 200 );
+	}, [] );
+	useEffect( () => {
 		if ( mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 1 ] && mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 2 ] && mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 			setMediaBorderControl( 'linked' );
 		} else {
@@ -227,20 +252,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			setContainerPaddingControl( 'individual' );
 		}
 
-		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
-
-		debounce( getDynamic.bind( this ), 200 );
-
 	}, [] );
 
 	const getDynamic = () => {
@@ -258,31 +269,31 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
 	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
 	const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
-	const previewContainerPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
-	const previewContainerPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
-	const previewContainerPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
-	const previewContainerPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
+	const previewContainerPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
+	const previewContainerPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
+	const previewContainerPaddingBottom = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
+	const previewContainerPaddingLeft = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
 
-	const previewContainerMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
-	const previewContainerMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
-	const previewContainerMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
-	const previewContainerMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+	const previewContainerMarginTop = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+	const previewContainerMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+	const previewContainerMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+	const previewContainerMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
 
-	const previewTitleFontSize = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
-	const previewTitleLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewTitleMinHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight[ 1 ] && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight[ 2 ] && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
+	const previewTitleFontSize = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
+	const previewTitleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewTitleMinHeight = getPreviewSize( previewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight[ 1 ] && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight[ 2 ] && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
 
-	const previewTextFontSize = getPreviewSize( getPreviewDevice, ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 0 ] ? textFont[ 0 ].size[ 0 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 1 ] ? textFont[ 0 ].size[ 1 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 2 ] ? textFont[ 0 ].size[ 2 ] : '' ) );
-	const previewTextLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 1 ] ? textFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 2 ] ? textFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewTextMinHeight = getPreviewSize( getPreviewDevice, ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] : '' ), ( undefined !== textMinHeight[ 1 ] && undefined !== textMinHeight[ 1 ] ? textMinHeight[ 1 ] : '' ), ( undefined !== textMinHeight[ 2 ] && undefined !== textMinHeight[ 2 ] ? textMinHeight[ 2 ] : '' ) );
+	const previewTextFontSize = getPreviewSize( previewDevice, ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 0 ] ? textFont[ 0 ].size[ 0 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 1 ] ? textFont[ 0 ].size[ 1 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 2 ] ? textFont[ 0 ].size[ 2 ] : '' ) );
+	const previewTextLineHeight = getPreviewSize( previewDevice, ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 1 ] ? textFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 2 ] ? textFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewTextMinHeight = getPreviewSize( previewDevice, ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] : '' ), ( undefined !== textMinHeight[ 1 ] && undefined !== textMinHeight[ 1 ] ? textMinHeight[ 1 ] : '' ), ( undefined !== textMinHeight[ 2 ] && undefined !== textMinHeight[ 2 ] ? textMinHeight[ 2 ] : '' ) );
 
-	const previewLearnMoreFontSize = getPreviewSize( getPreviewDevice, ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 0 ] ? learnMoreStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 1 ] ? learnMoreStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 2 ] ? learnMoreStyles[ 0 ].size[ 2 ] : '' ) );
-	const previewLearnMoreLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 1 ] ? learnMoreStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 2 ] ? learnMoreStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewLearnMoreFontSize = getPreviewSize( previewDevice, ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 0 ] ? learnMoreStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 1 ] ? learnMoreStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 2 ] ? learnMoreStyles[ 0 ].size[ 2 ] : '' ) );
+	const previewLearnMoreLineHeight = getPreviewSize( previewDevice, ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 1 ] ? learnMoreStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 2 ] ? learnMoreStyles[ 0 ].lineHeight[ 2 ] : '' ) );
 
-	const previewMediaIconSize = getPreviewSize( getPreviewDevice, ( undefined !== mediaIcon[ 0 ] && undefined !== mediaIcon[ 0 ].size ? mediaIcon[ 0 ].size : '14' ), ( undefined !== mediaIcon[ 0 ].tabletSize && undefined !== mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' ), ( undefined !== mediaIcon[ 0 ].mobileSize && undefined !== mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' ) );
+	const previewMediaIconSize = getPreviewSize( previewDevice, ( undefined !== mediaIcon[ 0 ] && undefined !== mediaIcon[ 0 ].size ? mediaIcon[ 0 ].size : '14' ), ( undefined !== mediaIcon[ 0 ].tabletSize && undefined !== mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' ), ( undefined !== mediaIcon[ 0 ].mobileSize && undefined !== mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' ) );
 
-	const previewhAlign = getPreviewSize( getPreviewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
-	const previewMediaAlign = getPreviewSize( getPreviewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
+	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
+	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
 	const widthTypes = [
 		{ key: 'px', name: 'px' },
@@ -1372,43 +1383,43 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 	const renderCSS = (
 		<style>
-			{( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput( mediaIcon[ 0 ].hoverColor )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) .editor-media-placeholder { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }` : '' )}
-			{( titleHoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput( titleHoverColor )} !important; }` : '' )}
-			{( textHoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${KadenceColorOutput( textHoverColor )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput( learnMoreStyles[ 0 ].colorHover )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].borderHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].borderHover )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].backgroundHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover )} !important; }` : '' )}
-			{( containerHoverBackground ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { background: ${( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) )} !important; }` : '' )}
-			{( containerHoverBorder ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-color: ${( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) )} !important; }` : '' )}
-			{( displayShadow ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBackground ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaIcon[ 0 ].hoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput( mediaIcon[ 0 ].hoverColor )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].borderRadius ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) .editor-media-placeholder { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }` : '' )}
+			{( titleHoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput( titleHoverColor )} !important; }` : '' )}
+			{( textHoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${KadenceColorOutput( textHoverColor )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].colorHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput( learnMoreStyles[ 0 ].colorHover )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].borderHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].borderHover )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].backgroundHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover )} !important; }` : '' )}
+			{( containerHoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background: ${( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) )} !important; }` : '' )}
+			{( containerHoverBorder ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-color: ${( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) )} !important; }` : '' )}
+			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{'icon' === mediaType && 'drawborder' === mediaIcon[ 0 ].hoverAnimation && (
-					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ KadenceColorOutput( mediaStyle[ 0 ].border ) }; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+					`.kb-info-box-wrap${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ KadenceColorOutput( mediaStyle[ 0 ].border ) }; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 			{'number' === mediaType && mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation && 'drawborder' === mediaNumber[ 0 ].hoverAnimation && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+				`.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 			{'image' === mediaType && true === mediaImagedraw && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+				`.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 		</style>
 	);
@@ -1494,11 +1505,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 
 	const blockProps = useBlockProps( {
-		className: className,
+		className: classnames( className, {
+            [`kb-info-box-wrap${uniqueID}`]: true
+        }),
 	} );
 
 	return (
-		<div id={`kt-info-box${uniqueID}`} {...blockProps}>
+		<div {...blockProps}>
 			{renderCSS}
 			<BlockControls key="controls">
 				{showImageToolbar && (
@@ -1529,7 +1542,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									aria-expanded={isOpen}/>
 						)}
 						renderContent={() => (
-							<Fragment>
+							<>
 								<div className="kb-inline-icon-control">
 									<KadenceIconPicker
 										value={mediaIcon[ 0 ].icon}
@@ -1544,7 +1557,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										step={1}
 									/>
 								</div>
-							</Fragment>
+							</>
 						)}
 					/>
 				)}
@@ -1572,7 +1585,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						<>
 
 							<KadencePanelBody panelName={'kb-info-all-settings'}>
-								<Fragment>
+								<>
 									<h2>{__( 'InfoBox Quick Layout Presets', 'kadence-blocks' )}</h2>
 									<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'InfoBox Style', 'kadence-blocks' )}>
 										{map( layoutPresetOptions, ( { name, key, icon } ) => (
@@ -1590,7 +1603,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											</Button>
 										) )}
 									</ButtonGroup>
-								</Fragment>
+								</>
 								<URLInputControl
 									label={__( 'Link', 'kadence-blocks' )}
 									url={link}
@@ -1681,7 +1694,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												if ( tab.name ) {
 													if ( 'hover' === tab.name ) {
 														tabout = (
-															<Fragment>
+															<>
 																<PopColorControl
 																	label={__( 'Hover Background', 'kadence-blocks' )}
 																	value={( containerHoverBackground ? containerHoverBackground : '#f2f2f2' )}
@@ -1698,11 +1711,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																	onChange={value => setAttributes( { containerHoverBorder: value } )}
 																	onOpacityChange={value => setAttributes( { containerHoverBorderOpacity: value } )}
 																/>
-															</Fragment>
+															</>
 														);
 													} else {
 														tabout = (
-															<Fragment>
+															<>
 																<PopColorControl
 																	label={__( 'Container Background', 'kadence-blocks' )}
 																	value={( containerBackground ? containerBackground : '#f2f2f2' )}
@@ -1719,7 +1732,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																	onChange={value => setAttributes( { containerBorder: value } )}
 																	onOpacityChange={value => setAttributes( { containerBorderOpacity: value } )}
 																/>
-															</Fragment>
+															</>
 														);
 													}
 												}
@@ -1763,7 +1776,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									/>
 
 									{mediaAlign !== 'top' && (
-										<Fragment>
+										<>
 											<SelectControl
 												label={__( 'Media Vertical Align', 'kadence-blocks' )}
 												value={mediaVAlign}
@@ -1774,7 +1787,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												]}
 												onChange={value => setAttributes( { mediaVAlign: value } )}
 											/>
-										</Fragment>
+										</>
 									)}
 									<SelectControl
 										label={__( 'Media Type', 'kadence-blocks' )}
@@ -1788,7 +1801,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										onChange={value => setAttributes( { mediaType: value } )}
 									/>
 									{'image' === mediaType && (
-										<Fragment>
+										<>
 											<KadenceImageControl
 												label={__( 'Image', 'kadence-blocks' )}
 												hasImage={( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].url ? true : false )}
@@ -1877,7 +1890,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												onChange={value => saveMediaImage( { hoverAnimation: value } )}
 											/>
 											{'flip' === mediaImage[ 0 ].hoverAnimation && (
-												<Fragment>
+												<>
 													<h2>{__( 'Flip Image (Use same size as start image', 'kadence-blocks' )}</h2>
 													<KadenceImageControl
 														label={__( 'Image', 'kadence-blocks' )}
@@ -1898,7 +1911,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 															onChange={changeFlipImageSize}
 														/>
 													)}
-												</Fragment>
+												</>
 											)}
 											<MeasurementControls
 												label={__( 'Image Border', 'kadence-blocks' )}
@@ -1938,9 +1951,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'hover' === tab.name ) {
 																tabout = (
-																	<Fragment>
+																	<>
 																		{mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
-																			<Fragment>
+																			<>
 																				<PopColorControl
 																					label={__( 'SVG Hover Color', 'kadence-blocks' )}
 																					value={( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' )}
@@ -1948,7 +1961,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																					onChange={value => saveMediaIcon( { hoverColor: value } )}
 																				/>
 																				<small>{__( '*you must force inline svg for this to have effect.', 'kadence-blocks' )}</small>
-																			</Fragment>
+																			</>
 																		)}
 																		<PopColorControl
 																			label={__( 'Image Hover Background', 'kadence-blocks' )}
@@ -1962,13 +1975,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { hoverBorder: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															} else {
 																tabout = (
-																	<Fragment>
+																	<>
 																		{mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
-																			<Fragment>
+																			<>
 																				<PopColorControl
 																					label={__( 'SVG Color', 'kadence-blocks' )}
 																					value={( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' )}
@@ -1976,7 +1989,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																					onChange={value => saveMediaIcon( { color: value } )}
 																				/>
 																				<small>{__( '*you must force inline svg for this to have effect.', 'kadence-blocks' )}</small>
-																			</Fragment>
+																			</>
 																		)}
 																		<PopColorControl
 																			label={__( 'Image Background', 'kadence-blocks' )}
@@ -1990,7 +2003,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { border: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															}
 														}
@@ -1998,7 +2011,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 													}
 												}
 											</TabPanel>
-										</Fragment>
+										</>
 									)}
 									{'icon' === mediaType && (
 										<>
@@ -2082,7 +2095,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'hover' === tab.name ) {
 																tabout = (
-																	<Fragment>
+																	<>
 																		<PopColorControl
 																			label={__( 'Icon Hover Color', 'kadence-blocks' )}
 																			value={( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' )}
@@ -2101,11 +2114,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { hoverBorder: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															} else {
 																tabout = (
-																	<Fragment>
+																	<>
 																		<PopColorControl
 																			label={__( 'Icon Color', 'kadence-blocks' )}
 																			value={( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' )}
@@ -2124,7 +2137,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { border: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															}
 														}
@@ -2989,7 +3002,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 							{'number' === mediaType && (
 								<div
 									className={`kadence-info-box-number-container kt-info-number-animate-${mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none'}`}>
-									<div className={'kadence-info-box-number-inner-container'}>
+									<div className={'kadence-info-box-number-inner-container'} style={{
+												fontWeight: mediaNumber[ 0 ].weight,
+												fontStyle : mediaNumber[ 0 ].style,
+												color     : ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
+												fontSize  : mediaIcon[ 0 ].size + 'px',
+												fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : undefined ),
+											}}>
 										<RichText
 											className="kt-blocks-info-box-number"
 											allowedFormats={( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) )}
@@ -2997,13 +3016,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											placeholder={'1'}
 											onChange={onChangeNumber}
 											value={number}
-											style={{
-												fontWeight: mediaNumber[ 0 ].weight,
-												fontStyle : mediaNumber[ 0 ].style,
-												color     : ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
-												fontSize  : mediaIcon[ 0 ].size + 'px',
-												fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : undefined ),
-											}}
 										/>
 									</div>
 									{mediaNumber[ 0 ].google && (
@@ -3128,10 +3140,4 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	);
 }
 
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-] )( KadenceInfoBox );
+export default KadenceInfoBox;

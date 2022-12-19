@@ -71,7 +71,7 @@ function ResizeGridSection( props ) {
 		console.log( event )
 	}
 	let displayGrid = false;
-	if ( undefined !== context.allowResize && false === context.allowResize ) {
+	if ( undefined !== context.gridResize && false === context.gridResize ) {
 		displayGrid = true;
 	}
 	if ( ! displayGrid ) {

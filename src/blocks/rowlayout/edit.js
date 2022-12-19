@@ -992,7 +992,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										setAttributes( {
 											colLayout: key,
 											columns: col,
-											allowResize: key === 'grid-layout' ? false : true,
 										} ) }
 									}
 								/>

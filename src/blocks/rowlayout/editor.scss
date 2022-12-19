@@ -426,6 +426,7 @@ div.kb-blocks-bg-video {
 	position: relative;
 	border: 0 solid transparent;
 	> .innerblocks-wrap {
+		z-index: 2;
 		margin: 0 auto;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);

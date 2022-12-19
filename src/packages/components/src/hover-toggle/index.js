@@ -54,7 +54,7 @@ export default function HoverToggleControl( {
 			</div>
 			<div className={ 'kb-hover-toggle-area' }>
 				{ isToggled && (
-					<>{ hover }</>
+					<div className='kb-hover-control-wrap'>{ hover }</div>
 				)}
 				{ !isToggled && (
 					<>{ normal }</>

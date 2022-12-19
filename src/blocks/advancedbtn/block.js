@@ -111,7 +111,7 @@ registerBlockType( 'kadence/advancedbtn', {
 						letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					} } >
 						{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-							<IconSpanTag className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } />
+							<IconSpanTag extraClass={ `kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon }/>
 						) }
 						<RichText.Content
 							tagName={ 'span' }
@@ -119,7 +119,7 @@ registerBlockType( 'kadence/advancedbtn', {
 							value={ btns[ index ].text }
 						/>
 						{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-							<IconSpanTag className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } />
+							<IconSpanTag extraClass={ `kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon }/>
 						) }
 					</a>
 				</div>

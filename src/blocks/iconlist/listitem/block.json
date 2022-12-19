@@ -26,7 +26,7 @@
     },
     "size": {
       "type": "number",
-      "default": 20
+      "default": ""
     },
     "width": {
       "type": "number",
@@ -50,15 +50,15 @@
     },
     "borderRadius": {
       "type": "number",
-      "default": 0
+      "default": ""
     },
     "padding": {
       "type": "number",
-      "default": 5
+      "default": ""
     },
     "borderWidth": {
       "type": "number",
-      "default": 1
+      "default": ""
     },
     "style": {
       "type": "string",

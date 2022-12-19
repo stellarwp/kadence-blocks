@@ -839,6 +839,11 @@ const v4 = {
 			type: 'object',
 		},
 	},
+	supports: {
+		anchor: true,
+		ktdynamic: true,
+		kbcss: true,
+	},
 	save: ( { attributes } ) => {
 		const { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile } = attributes;
 		let bottomSVGDivider;
@@ -1545,6 +1550,11 @@ const v3 = {
 			type: 'boolean',
 			default: false,
 		},
+	},
+	supports: {
+		anchor: true,
+		ktdynamic: true,
+		kbcss: true,
 	},
 	migrate( attributes ) {
 		const newAlign = ( attributes.blockAlignment ? attributes.blockAlignment : undefined );

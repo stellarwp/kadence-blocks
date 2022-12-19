@@ -8,6 +8,7 @@
  import { times } from 'lodash';
 import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
 import { IconRender } from '@kadence/components';
+import classnames from 'classnames';
 
 /**
  * Import attributes

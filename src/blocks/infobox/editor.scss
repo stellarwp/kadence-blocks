@@ -42,6 +42,13 @@
     padding: 1em;
     margin: 0;
 }
+.kadence-info-box-number-inner-container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    min-width: 1em;
+    line-height: 1em;
+}
 .components-button-group.kt-style-btn-group.kb-info-layouts button.components-button.kt-style-btn {
     padding: 0;
     width: 33.33%;
