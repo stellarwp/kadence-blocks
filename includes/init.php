@@ -59,7 +59,6 @@ function kadence_gutenberg_editor_assets() {
 
 	wp_set_script_translations( 'kadence-blocks-vendor', 'kadence-blocks' );
 
-
 	$blocks = array(
 		'accordion',
 		'advancedbtn',
@@ -572,6 +571,38 @@ function kadence_blocks_post_block_get_excerpt_length() {
 	return $kadence_blocks_post_block_get_excerpt_length;
 }
 /**
+ * Add global styles into the frontend.
+ */
+function kadence_blocks_add_global_gutenberg_styles_frontend() {
+	$css = ':root {
+		--global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
+		--global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
+		--global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
+		--global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
+		--global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
+		--global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
+	}';
+	wp_register_style( 'kadence-blocks-global-variables', false );
+	wp_enqueue_style( 'kadence-blocks-global-variables' );
+	wp_add_inline_style( 'kadence-blocks-global-variables', $css );
+}
+add_action( 'wp_enqueue_scripts', 'kadence_blocks_add_global_gutenberg_styles_frontend', 90 );
+/**
+ * Add global styles into the editor.
+ */
+function kadence_blocks_add_global_gutenberg_styles() {
+	$css = ':root {
+		--global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
+		--global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
+		--global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
+		--global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
+		--global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
+		--global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
+	}';
+	wp_add_inline_style( 'wp-edit-blocks', $css );
+}
+add_action( 'enqueue_block_editor_assets', 'kadence_blocks_add_global_gutenberg_styles', 90 );
+/**
  * Add inline css editor width
  */
 function kadence_blocks_admin_theme_content_width() {
@@ -602,6 +633,34 @@ function kadence_blocks_admin_theme_content_width() {
 		--global-kb-gutter-lg: 3rem;
 		--global-kb-gutter-xl: 5rem;
 	}';
+	// {
+	// 	value: 'lg',
+	// 	output: 'var(--global-kb-font-size-lg, 2rem)',
+	// 	size: 32,
+	// 	label:  __( 'LG', 'kadence-blocks' ),
+	// 	name:  __( 'Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: 'xl',
+	// 	output: 'var(--global-kb-font-size-xl, 3rem)',
+	// 	size: 40,
+	// 	label:  __( 'XL', 'kadence-blocks' ),
+	// 	name:  __( 'X Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: 'xxl',
+	// 	output: 'var(--global-kb-font-size-xxl, 4rem)',
+	// 	size: 64,
+	// 	label:  __( 'XXL', 'kadence-blocks' ),
+	// 	name:  __( '2X Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: '3xl',
+	// 	output: 'var(--global-kb-font-size-xxxl, 5rem)',
+	// 	size: 80,
+	// 	label:  __( '3XL', 'kadence-blocks' ),
+	// 	name:  __( '3X Large', 'kadence-blocks' ),
+	// },
 	echo ':root .post-content-style-boxed {
 		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
 	}';

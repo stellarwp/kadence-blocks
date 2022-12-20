@@ -183,6 +183,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 		height: inherit;
 	}
 }
+.wp-block-kadence-image.kb-image-is-ratio-size .components-resizable-box__container {
+	display:block;
+}
 
 .block-editor-block-list__block[data-type="kadence/image"] .block-editor-block-toolbar .block-editor-url-input__button-modal {
 	position: absolute;

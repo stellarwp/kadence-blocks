@@ -164,7 +164,7 @@ import { __ } from '@wordpress/i18n';
 		];
 	} else if ( 6 === columns ) {
 		layoutOptions = [
-			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: sixCol },
+			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: sixColIcon },
 			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'three-grid', label: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },

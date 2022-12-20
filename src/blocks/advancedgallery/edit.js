@@ -1311,6 +1311,7 @@ function GalleryEdit( props ) {
 											step={(imageRadiusUnit === 'em' || imageRadiusUnit === 'rem' ? 0.1 : 1)}
 											min={ 0 }
 											isBorderRadius={ true }
+											allowEmpty={true}
 										/>
 									)}
 									<SelectControl
