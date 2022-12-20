@@ -57,6 +57,7 @@ import {
 	RichText,
 	BlockControls,
 	BlockAlignmentToolbar,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
 import {
@@ -72,16 +73,18 @@ import {
 	ButtonGroup,
 	Tooltip,
 	Button,
+	ToolbarGroup,
+	ToolbarButton,
 	SelectControl,
 } from '@wordpress/components';
 
-import { compose } from '@wordpress/compose';
 import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
 import {
-	plus,
+	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, clientId, updateBlockAttributes } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, listBlock, container, clientId, updateBlockAttributes } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
 
@@ -228,6 +231,21 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 						controls={ [ 'center', 'left', 'right' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
+					<ToolbarGroup>
+						<ToolbarButton
+							className="kb-icons-add-icon"
+							icon={ plusCircle }
+							onClick={ () => {
+								const latestAttributes = listBlock.innerBlocks[listBlock.innerBlocks.length - 1].attributes;
+								latestAttributes.uniqueID = '';
+								latestAttributes.text = '';
+								const newBlock = createBlock( 'kadence/listitem', latestAttributes );
+								insertListItem( newBlock );
+							} }
+							label={  __( 'Add Another List Item', 'kadence-blocks' ) }
+							showTooltip={ true }
+						/>
+					</ToolbarGroup>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/iconlist' ) && (
 					<InspectorControls>
@@ -562,16 +580,52 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 	);
 }
 
-export default compose( [
-	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
-		const { removeBlock, updateBlockAttributes } = dispatch( 'core/block-editor' );
-		return {
-			onDelete: () => {
-				removeBlock( clientId, rootClientId );
-			},
-			updateBlockAttributes( ...args ) {
-				updateBlockAttributes( ...args );
-			}
-		};
-	} ),
-] )( KadenceIconLists );
+// export default compose( [
+// 	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
+// 		const { removeBlock, updateBlockAttributes } = dispatch( 'core/block-editor' );
+// 		return {
+// 			onDelete: () => {
+// 				removeBlock( clientId, rootClientId );
+// 			},
+// 			updateBlockAttributes( ...args ) {
+// 				updateBlockAttributes( ...args );
+// 			}
+// 		};
+// 	} ),
+// ] )( KadenceIconLists );
+const KadenceIconsListWrapper = withDispatch(
+	( dispatch, ownProps, registry ) => ( {
+		insertListItem( newBlock ) {
+			const { clientId } = ownProps;
+			const { insertBlock } = dispatch( blockEditorStore );
+			const { getBlock } = registry.select( blockEditorStore );
+			const block = getBlock( clientId );
+			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		onDelete( childID, rootClientId  ) {
+			const { removeBlock } = registry.select( blockEditorStore );
+			removeBlock( childID, rootClientId )
+		},
+		updateBlockAttributes( ...args ) {
+			const { updateBlockAttributes } = registry.select( blockEditorStore );
+			updateBlockAttributes( ...args );
+		}
+	} )
+)( KadenceIconLists );
+const KadenceListEdit = ( props ) => {
+	const { clientId } = props;
+	const { listBlock } = useSelect(
+		( select ) => {
+			const {
+				getBlock,
+			} = select( 'core/block-editor' );
+			const block = getBlock( clientId );
+			return {
+				listBlock: block,
+			};
+		},
+		[ clientId ]
+	);
+	return <KadenceIconsListWrapper listBlock={ listBlock } { ...props } />;
+};
+export default KadenceListEdit;
