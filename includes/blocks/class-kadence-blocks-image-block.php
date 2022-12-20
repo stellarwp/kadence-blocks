@@ -61,6 +61,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		$key_positions = [ 'top', 'right', 'bottom', 'left' ];
+		$breakpoints = [ 'Desktop', 'Tablet', 'Mobile' ];
 		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id );
 		if ( ! empty( $attributes['zIndex'] ) ) {
 			$css->add_property( 'position', 'relative' );
@@ -131,7 +132,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Border widths
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
+		foreach ( $breakpoints as $breakpoint ) {
 			$css->set_media_state( strtolower( $breakpoint ) );
 
 			if ( isset( $attributes[ 'borderWidth' . $breakpoint ] ) && is_array( $attributes[ 'borderWidth' . $breakpoint ] ) ) {
@@ -152,15 +153,25 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Border Radius
-		if ( isset( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-			$borderRadius     = array();
-			$borderRadiusUnit = isset( $attributes['borderRadiusUnit'] ) ? $attributes['borderRadiusUnit'] : 'px';
+		$breakpointAttrs = [ 'borderRadius', 'tabletBorderRadius', 'mobileBorderRadius' ];
+		$i = 0;
+		foreach ( $breakpoints as $breakpoint ) {
+			$css->set_media_state( strtolower( $breakpoint ) );
+			$breakpointAttr = $breakpointAttrs[$i];
 
-			foreach ( $attributes['borderRadius'] as $br ) {
-				$borderRadius[] = ! is_numeric( $br ) ? '0' : $br . $borderRadiusUnit;
+			if ( isset( $attributes[ $breakpointAttr ] ) && is_array( $attributes[ $breakpointAttr ] ) ) {
+				$borderRadius     = array();
+				$borderRadiusUnit = isset( $attributes['borderRadiusUnit'] ) ? $attributes['borderRadiusUnit'] : 'px';
+
+				foreach ( $attributes[ $breakpointAttr ] as $br ) {
+					$borderRadius[] = ! is_numeric( $br ) ? '0' : $br . $borderRadiusUnit;
+				}
+
+				$css->add_property( 'border-radius', implode( ' ', $borderRadius ) );
 			}
 
-			$css->add_property( 'border-radius', implode( ' ', $borderRadius ) );
+			$css->set_media_state( 'desktop' );
+			$i++;
 		}
 
 		if ( ! empty( $attributes['maskSvg'] ) && 'none' !== $attributes['maskSvg'] ) {
