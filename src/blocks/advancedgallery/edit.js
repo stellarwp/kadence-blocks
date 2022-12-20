@@ -1310,15 +1310,7 @@ function GalleryEdit( props ) {
 											max={(imageRadiusUnit === 'em' || imageRadiusUnit === 'rem' ? 24 : 500)}
 											step={(imageRadiusUnit === 'em' || imageRadiusUnit === 'rem' ? 0.1 : 1)}
 											min={ 0 }
-											allowEmpty={ true }
-											controlTypes={ [
-												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-											] }
-											firstIcon={ topLeftIcon }
-											secondIcon={ topRightIcon }
-											thirdIcon={ bottomRightIcon }
-											fourthIcon={ bottomLeftIcon }
+											isBorderRadius={ true }
 										/>
 									)}
 									<SelectControl
@@ -1704,12 +1696,6 @@ function GalleryEdit( props ) {
 	return (
 		<div {...blockProps}>
 			<SpacingVisualizer
-				// style={ {
-				// 	marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-				// 	marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-				// 	marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-				// 	marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-				// } }
 				type="outside"
 				offset={ false }
 				forceShow={ marginMouseOver.isMouseOver }

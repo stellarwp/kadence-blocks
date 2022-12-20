@@ -32,6 +32,7 @@ import {
 	IconRender,
 	URLInputControl,
 	WebfontLoader,
+	BoxShadowControl,
 	KadenceImageControl,
 	KadenceMediaPlaceholder,
 	ImageSizeControl,
@@ -40,9 +41,13 @@ import {
 	InspectorControlTabs,
 	ResponsiveAlignControls,
 	ResponsiveControl,
+	SmallResponsiveControl,
+	ResponsiveBorderControl,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
+	ResponsiveMeasurementControls,
 	SpacingVisualizer,
+	HoverToggleControl,
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -51,7 +56,9 @@ import {
 	getPreviewSize,
 	showSettings,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	ConvertColor,
+	getBorderStyle,
 } from '@kadence/helpers';
 
 /**
@@ -163,10 +170,23 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		linkTitle,
 		kadenceDynamic,
 		inQueryBlock,
+		borderStyle,
+		borderRadius,
+		borderRadiusUnit,
+		tabletBorderStyle,
+		tabletBorderRadius,
+		mobileBorderStyle,
+		mobileBorderRadius,
+		borderHoverRadius,
+		borderHoverStyle,
+		borderHoverRadiusUnit,
+		tabletBorderHoverStyle,
+		tabletBorderHoverRadius,
+		mobileBorderHoverStyle,
+		mobileBorderHoverRadius,
+		tabletMaxWidth,
+		mobileMaxWidth,
 	} = attributes;
-
-	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
-	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
@@ -241,17 +261,57 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else {
 			setMediaMarginControl( 'individual' );
 		}
-		if ( containerBorderWidth[ 0 ] === containerBorderWidth[ 1 ] && containerBorderWidth[ 0 ] === containerBorderWidth[ 2 ] && containerBorderWidth[ 0 ] === containerBorderWidth[ 3 ] ) {
-			setContainerBorderControl( 'linked' );
-		} else {
-			setContainerBorderControl( 'individual' );
+		// Update from old border settings.
+		if ( ( '' !== containerBorderRadius ) ) {
+			setAttributes( { borderRadius: [ containerBorderRadius, containerBorderRadius, containerBorderRadius, containerBorderRadius ], containerBorderRadius: '' } );
 		}
-		if ( containerPadding[ 0 ] === containerPadding[ 1 ] && containerPadding[ 0 ] === containerPadding[ 2 ] && containerPadding[ 0 ] === containerPadding[ 3 ] ) {
-			setContainerPaddingControl( 'linked' );
-		} else {
-			setContainerPaddingControl( 'individual' );
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		let updateBorderStyle = false;
+		if ( ( '' !== containerBorder ) ) {
+			tempBorderStyle[0].top[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].right[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].bottom[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].left[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			updateBorderStyle = true;
+			setAttributes( { containerBorder: '' } );
 		}
-
+		if ( ( '' !== containerBorderWidth?.[0] || '' !== containerBorderWidth?.[1] || '' !== containerBorderWidth?.[2] || '' !== containerBorderWidth?.[3] ) ) {
+			tempBorderStyle[0].top[2] = containerBorderWidth?.[0] || '';
+			tempBorderStyle[0].right[2] = containerBorderWidth?.[1] || '';
+			tempBorderStyle[0].bottom[2] = containerBorderWidth?.[2] || '';
+			tempBorderStyle[0].left[2] = containerBorderWidth?.[3] || '';
+			updateBorderStyle = true;
+			setAttributes( { containerBorderWidth:[ '', '', '', '' ] } );
+		}
+		if ( updateBorderStyle ) {
+			setAttributes( { borderStyle: tempBorderStyle } );
+		}
+		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ));
+		if ( ( '' !== containerHoverBorder ) ) {
+			tempBorderHoverStyle[0].top[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].right[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].bottom[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].left[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			setAttributes( { containerHoverBorder:'', borderHoverStyle: tempBorderHoverStyle } );
+		}
+		if ( '' !== containerBackgroundOpacity && 1 !== containerBackgroundOpacity && containerBackground ) {
+			setAttributes( { containerBackground: ConvertColor( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ), containerBackgroundOpacity: '' } );
+		}
+		if ( '' !== containerHoverBackgroundOpacity && 1 !== containerHoverBackgroundOpacity && containerHoverBackground ) {
+			setAttributes( { containerHoverBackground: ConvertColor( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ), containerHoverBackgroundOpacity: '' } );
+		}
 	}, [] );
 
 	const getDynamic = () => {
@@ -278,6 +338,25 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const previewContainerMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
 	const previewContainerMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
 	const previewContainerMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+
+	// Border.
+	const previewBorderTopStyle = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderRightStyle = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderLeftStyle = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+	const previewRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+	// Hover Border
+	const previewBorderHoverTopStyle = getBorderStyle( previewDevice, 'top', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverRightStyle = getBorderStyle( previewDevice, 'right', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverBottomStyle = getBorderStyle( previewDevice, 'bottom', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverLeftStyle = getBorderStyle( previewDevice, 'left', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewHoverRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 0 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 0 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 0 ] : '' ) );
+	const previewHoverRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 1 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 1 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 1 ] : '' ) );
+	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
+	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
 
 	const previewTitleFontSize = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
 	const previewTitleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
@@ -1390,9 +1469,21 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			{( learnMoreStyles[ 0 ].colorHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput( learnMoreStyles[ 0 ].colorHover )} !important; }` : '' )}
 			{( learnMoreStyles[ 0 ].borderHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].borderHover )} !important; }` : '' )}
 			{( learnMoreStyles[ 0 ].backgroundHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover )} !important; }` : '' )}
-			{( containerHoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background: ${( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) )} !important; }` : '' )}
-			{( containerHoverBorder ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-color: ${( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) )} !important; }` : '' )}
+
+			{ ( previewBorderHoverTopStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top:${ previewBorderHoverTopStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverRightStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-right:${ previewBorderHoverRightStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverBottomStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom:${ previewBorderHoverBottomStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverLeftStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-left:${ previewBorderHoverLeftStyle } !important; }` : '' ) }
+
+			{ ( '' !== previewHoverRadiusTop ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-left-radius:${ previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusRight ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-right-radius:${ previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusBottom ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-right-radius:${ previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusLeft ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-left-radius:${  previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+
+			{ ( containerHoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background:${ KadenceColorOutput( containerHoverBackground ) } !important; }` : '' ) }
 			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
+
+
 			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
@@ -1464,9 +1555,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		showImageToolbar = false;
 	}
 
-	const mediaSettingsMobile = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsMobile = <>
 		<SelectControl
-			label={__( 'Mobile Media Align', 'kadence-blocks' )}
 			value={( mediaAlignMobile ? mediaAlignMobile : mediaAlign )}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1475,11 +1565,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			]}
 			onChange={value => setAttributes( { mediaAlignMobile: value } )}
 		/>
-	</div>;
+	</>;
 
-	const mediaSettingsTablet = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsTablet = <>
 		<SelectControl
-			label={__( 'Tablet Media Align', 'kadence-blocks' )}
 			value={( mediaAlignTablet ? mediaAlignTablet : mediaAlign )}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1488,11 +1577,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			]}
 			onChange={value => setAttributes( { mediaAlignTablet: value } )}
 		/>
-	</div>;
+	</>;
 
-	const mediaSettingsDesktop = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsDesktop = <>
 		<SelectControl
-			label={__( 'Media Align', 'kadence-blocks' )}
 			value={mediaAlign}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1501,7 +1589,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			]}
 			onChange={value => setAttributes( { mediaAlign: value } )}
 		/>
-	</div>;
+	</>;
 
 
 	const blockProps = useBlockProps( {
@@ -1650,126 +1738,185 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									onChangeMobile={( nextAlign ) => setAttributes( { hAlignMobile: nextAlign } )}
 								/>
 							</KadencePanelBody>
-							{showSettings( 'containerSettings', 'kadence/infobox' ) && (
-								<KadencePanelBody
-									title={__( 'Container Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-info-container-settings'}
-								>
-									<MeasurementControls
-										label={__( 'Container Border Width (px)', 'kadence-blocks' )}
-										measurement={containerBorderWidth}
-										control={containerBorderControl}
-										onChange={( value ) => setAttributes( { containerBorderWidth: value } )}
-										onControl={( value ) => setContainerBorderControl( value )}
-										min={0}
-										max={40}
-										step={1}
-									/>
-									<RangeControl
-										label={__( 'Container Border Radius (px)', 'kadence-blocks' )}
-										value={containerBorderRadius}
-										onChange={value => setAttributes( { containerBorderRadius: value } )}
-										step={1}
-										min={0}
-										max={200}
-									/>
-									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'normal',
-													  title    : __( 'Normal', 'kadence-blocks' ),
-													  className: 'kt-normal-tab',
-												  },
-												  {
-													  name     : 'hover',
-													  title    : __( 'Hover', 'kadence-blocks' ),
-													  className: 'kt-hover-tab',
-												  },
-											  ]}>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'hover' === tab.name ) {
-														tabout = (
-															<>
-																<PopColorControl
-																	label={__( 'Hover Background', 'kadence-blocks' )}
-																	value={( containerHoverBackground ? containerHoverBackground : '#f2f2f2' )}
-																	default={'#f2f2f2'}
-																	opacityValue={containerHoverBackgroundOpacity}
-																	onChange={value => setAttributes( { containerHoverBackground: value } )}
-																	onOpacityChange={value => setAttributes( { containerHoverBackgroundOpacity: value } )}
-																/>
-																<PopColorControl
-																	label={__( 'Hover Border', 'kadence-blocks' )}
-																	value={( containerHoverBorder ? containerHoverBorder : '#eeeeee' )}
-																	default={'#eeeeee'}
-																	opacityValue={containerHoverBorderOpacity}
-																	onChange={value => setAttributes( { containerHoverBorder: value } )}
-																	onOpacityChange={value => setAttributes( { containerHoverBorderOpacity: value } )}
-																/>
-															</>
-														);
-													} else {
-														tabout = (
-															<>
-																<PopColorControl
-																	label={__( 'Container Background', 'kadence-blocks' )}
-																	value={( containerBackground ? containerBackground : '#f2f2f2' )}
-																	default={'#f2f2f2'}
-																	opacityValue={containerBackgroundOpacity}
-																	onChange={value => setAttributes( { containerBackground: value } )}
-																	onOpacityChange={value => setAttributes( { containerBackgroundOpacity: value } )}
-																/>
-																<PopColorControl
-																	label={__( 'Container Border', 'kadence-blocks' )}
-																	value={( containerBorder ? containerBorder : '#eeeeee' )}
-																	default={'#eeeeee'}
-																	opacityValue={containerBorderOpacity}
-																	onChange={value => setAttributes( { containerBorder: value } )}
-																	onOpacityChange={value => setAttributes( { containerBorderOpacity: value } )}
-																/>
-															</>
-														);
-													}
-												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
-											}
-										}
-									</TabPanel>
-
-									<ButtonGroup className="kt-size-type-options" aria-label={__( 'Max Width Type', 'kadence-blocks' )}>
-										{map( widthTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={maxWidthUnit === key}
-												aria-pressed={maxWidthUnit === key}
-												onClick={() => setAttributes( { maxWidthUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-								</KadencePanelBody>
-							)}
-
 						</>
 					}
 
 					{( activeTab === 'style' ) &&
 						<>
+							{showSettings( 'containerSettings', 'kadence/infobox' ) && (
+								<>
+									<KadencePanelBody
+										title={__( 'Container Settings', 'kadence-blocks' )}
+										initialOpen={true}
+										panelName={'kb-info-container-settings'}
+									>
+										<HoverToggleControl
+											hover={
+												<>
+													<PopColorControl
+														label={__( 'Hover Background', 'kadence-blocks' )}
+														value={( containerHoverBackground ? containerHoverBackground : '' )}
+														default={''}
+														onChange={value => setAttributes( { containerHoverBackground: value } )}
+													/>
+													<ResponsiveBorderControl
+														label={__( 'Border', 'kadence-blocks' )}
+														value={borderHoverStyle}
+														tabletValue={tabletBorderHoverStyle}
+														mobileValue={mobileBorderHoverStyle}
+														onChange={( value ) => setAttributes( { borderHoverStyle: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderHoverStyle: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderHoverStyle: value } )}
+													/>
+													<ResponsiveMeasurementControls
+														label={__( 'Border Radius', 'kadence-blocks' )}
+														value={borderHoverRadius}
+														tabletValue={tabletBorderHoverRadius}
+														mobileValue={mobileBorderHoverRadius}
+														onChange={( value ) => setAttributes( { borderHoverRadius: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderHoverRadius: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderHoverRadius: value } )}
+														unit={borderHoverRadiusUnit}
+														units={[ 'px', 'em', 'rem', '%' ]}
+														onUnit={( value ) => setAttributes( { borderHoverRadiusUnit: value } )}
+														max={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 24 : 500)}
+														step={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 0.1 : 1)}
+														min={ 0 }
+														isBorderRadius={ true }
+														allowEmpty={true}
+													/>
+													<BoxShadowControl
+														label={__( 'Box Shadow', 'kadence-blocks' )}
+														enable={( undefined !== displayShadow ? displayShadow : false )}
+														color={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' )}
+														colorDefault={'#000000'}
+														onArrayChange={( color, opacity ) => {
+															saveShadowHover( { color: color, opacity: opacity } );
+														}}
+														opacity={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 )}
+														hOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 )}
+														vOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 )}
+														blur={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 )}
+														spread={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 )}
+														inset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false )}
+														onEnableChange={value => {
+															setAttributes( {
+																displayShadow: value,
+															} );
+														}}
+														onColorChange={value => {
+															saveShadowHover( { color: value } );
+														}}
+														onOpacityChange={value => {
+															saveShadowHover( { opacity: value } );
+														}}
+														onHOffsetChange={value => {
+															saveShadowHover( { hOffset: value } );
+														}}
+														onVOffsetChange={value => {
+															saveShadowHover( { vOffset: value } );
+														}}
+														onBlurChange={value => {
+															saveShadowHover( { blur: value } );
+														}}
+														onSpreadChange={value => {
+															saveShadowHover( { spread: value } );
+														}}
+														onInsetChange={value => {
+															saveShadowHover( { inset: value } );
+														}}
+													/>
+												</>
+											}
+											normal={
+												<>
+													<PopColorControl
+														label={__( 'Background', 'kadence-blocks' )}
+														value={ ( containerBackground ? containerBackground : '' )}
+														default={''}
+														onChange={value => setAttributes( { containerBackground: value } )}
+													/>
+													<ResponsiveBorderControl
+														label={__( 'Border', 'kadence-blocks' )}
+														value={borderStyle}
+														tabletValue={tabletBorderStyle}
+														mobileValue={mobileBorderStyle}
+														onChange={( value ) => setAttributes( { borderStyle: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+													/>
+													<ResponsiveMeasurementControls
+														label={__( 'Border Radius', 'kadence-blocks' )}
+														value={borderRadius}
+														tabletValue={tabletBorderRadius}
+														mobileValue={mobileBorderRadius}
+														onChange={( value ) => setAttributes( { borderRadius: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
+														unit={borderRadiusUnit}
+														units={[ 'px', 'em', 'rem', '%' ]}
+														onUnit={( value ) => setAttributes( { borderRadiusUnit: value } )}
+														max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
+														step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
+														min={ 0 }
+														isBorderRadius={ true }
+														allowEmpty={true}
+													/>
+													<BoxShadowControl
+														label={__( 'Box Shadow', 'kadence-blocks' )}
+														enable={( undefined !== displayShadow ? displayShadow : false )}
+														color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
+														colorDefault={'#000000'}
+														onArrayChange={( color, opacity ) => {
+															saveShadow( { color: color, opacity: opacity } );
+														}}
+														opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
+														hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
+														vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
+														blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
+														spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
+														inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
+														onEnableChange={value => {
+															setAttributes( {
+																displayShadow: value,
+															} );
+														}}
+														onColorChange={value => {
+															saveShadow( { color: value } );
+														}}
+														onOpacityChange={value => {
+															saveShadow( { opacity: value } );
+														}}
+														onHOffsetChange={value => {
+															saveShadow( { hOffset: value } );
+														}}
+														onVOffsetChange={value => {
+															saveShadow( { vOffset: value } );
+														}}
+														onBlurChange={value => {
+															saveShadow( { blur: value } );
+														}}
+														onSpreadChange={value => {
+															saveShadow( { spread: value } );
+														}}
+														onInsetChange={value => {
+															saveShadow( { inset: value } );
+														}}
+													/>
+												</>
+											}
+										/>										
+									</KadencePanelBody>
+								</>
+							)}
 							{showSettings( 'mediaSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
 									title={__( 'Media Settings', 'kadence-blocks' )}
-									initialOpen={true}
+									initialOpen={false}
 									panelName={'kb-info-media-settings'}
 								>
-									<ResponsiveControl
+									<SmallResponsiveControl
+										label={__( 'Media Align', 'kadence-blocks' )}
 										desktopChildren={ mediaSettingsDesktop }
 										tabletChildren={ mediaSettingsTablet }
 										mobileChildren={ mediaSettingsMobile }
@@ -2837,8 +2984,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 							<KadencePanelBody panelName={'kb-infobox-spacing-settings'}>
 								<ResponsiveMeasureRangeControl
 									label={__('Padding', 'kadence-blocks')}
-									tabletControl={containerPaddingControl}
-									mobileControl={containerPaddingControl}
 									value={containerPadding}
 									tabletValue={containerTabletPadding}
 									mobileValue={containerMobilePadding}
@@ -2883,17 +3028,22 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									onMouseOver={marginMouseOver.onMouseOver}
 									onMouseOut={marginMouseOver.onMouseOut}
 								/>
-
-								<RangeControl
-									label={__( 'Container Max Width', 'kadence-blocks' )}
-									value={maxWidth}
-									onChange={( value ) => {
-										setAttributes( {
-											maxWidth: value,
-										} );
-									}}
+								<ResponsiveRangeControls
+									label={__( 'Max Width', 'kadence-blocks' )}
+									value={ maxWidth }
+									onChange={ ( value ) => setAttributes( { maxWidth: value } ) }
+									tabletValue={tabletMaxWidth}
+									onChangeTablet={( value ) => setAttributes( { tabletMaxWidth: value } ) }
+									mobileValue={mobileMaxWidth}
+									onChangeMobile={ ( value ) => setAttributes( { mobileMaxWidth: value } ) }
 									min={0}
-									max={widthMax}
+									max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+									step={1}
+									unit={maxWidthUnit ? maxWidthUnit : 'px'}
+									onUnit={( value ) => {
+										setAttributes( { maxWidthUnit: value } );
+									}}
+									units={[ 'px', '%', 'vw' ]}
 								/>
 							</KadencePanelBody>
 
@@ -2906,20 +3056,25 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			)}
 			<div className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}
 				 style={{
-					 boxShadow    : ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-					 borderColor  : ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-					 background   : ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
-					 borderRadius : containerBorderRadius + 'px',
-					 borderWidth  : ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					 paddingTop   : ( '' !== previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ) : undefined ),
-					 paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
-					 paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
-					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
-					 maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
-					 marginTop    : getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ),
-					 marginRight  : getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ),
-					 marginBottom : getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ),
-					 marginLeft   : getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ),
+					boxShadow    : ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
+					background   : ( containerBackground ? KadenceColorOutput( containerBackground ) : undefined ),
+					borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
+					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
+					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
+					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
+					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					paddingTop   : ( '' !== previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ) : undefined ),
+					paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
+					paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
+					paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
+					maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
+					marginTop    : ( '' !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+					marginRight  : ( '' !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+					marginBottom : ( '' !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					marginLeft   : ( '' !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
 				 }}>
 				{'none' !== mediaType && (
 					<div className={'kt-blocks-info-box-media-container'} style={{
@@ -3120,18 +3275,18 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					)}
 				</div>
 				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
+						marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+						marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					} }
 					type="inside"
 					forceShow={ paddingMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) ] }
 				/>
 				<SpacingVisualizer
-					// style={ {
-					// 	marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
-					// 	marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
-					// 	marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
-					// 	marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
-					// } }
-					type="outside"
+					type="outsideVertical"
 					forceShow={ marginMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) ] }
 				/>

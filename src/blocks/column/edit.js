@@ -1356,15 +1356,8 @@ function SectionEdit( {
 													max={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 24 : 500)}
 													step={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 0.1 : 1)}
 													min={ 0 }
-													allowEmpty={ true }
-													controlTypes={ [
-														{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-														{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-													] }
-													firstIcon={ topLeftIcon }
-													secondIcon={ topRightIcon }
-													thirdIcon={ bottomRightIcon }
-													fourthIcon={ bottomLeftIcon }
+													isBorderRadius={ true }
+													allowEmpty={true}
 												/>
 												<BoxShadowControl
 													label={__( 'Box Shadow', 'kadence-blocks' )}
@@ -1434,15 +1427,8 @@ function SectionEdit( {
 													max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
 													step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
 													min={ 0 }
-													allowEmpty={ true }
-													controlTypes={ [
-														{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-														{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-													] }
-													firstIcon={ topLeftIcon }
-													secondIcon={ topRightIcon }
-													thirdIcon={ bottomRightIcon }
-													fourthIcon={ bottomLeftIcon }
+													isBorderRadius={ true }
+													allowEmpty={true}
 												/>
 												<BoxShadowControl
 													label={__( 'Box Shadow', 'kadence-blocks' )}
@@ -1589,7 +1575,7 @@ function SectionEdit( {
 				spacing={ [ getSpacingOptionOutput( previewPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) ] }
 			/>
 			<SpacingVisualizer
-				type="outside"
+				type="outsideVertical"
 				forceShow={ marginMouseOver.isMouseOver }
 				spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginType ), getSpacingOptionOutput( previewMarginRight, previewMarginType ), getSpacingOptionOutput( previewMarginBottom, previewMarginType ), getSpacingOptionOutput( previewMarginLeft, previewMarginType ) ] }
 			/>

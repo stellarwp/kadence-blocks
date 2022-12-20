@@ -22,7 +22,7 @@
 		width: 100%;
 	}
 	&:hover {
-		border-color: #eeeeee;
+		border-color: var(--global-palette7,#eeeeee );
 	}
 }
 .kb-inline-icon-control {
@@ -173,7 +173,7 @@
 	border: 0 solid transparent;
 }
 .kt-blocks-info-box-text {
-    color: #555555;
+    color: var(--global-palette5, #444444 );
 }
 .wp-block-kadence-infobox .kt-blocks-info-box-learnmore-wrap {
     display: inline-block;

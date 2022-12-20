@@ -234,7 +234,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		// Border, check old first.
 		if ( ! empty( $attributes['border'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
 			if ( ! empty( $attributes['border'] ) ) {
-				$alpha = ( isset( $attributes['borderOpacity'] ) && ! empty( $attributes['borderOpacity'] ) ? $attributes['borderOpacity'] : 1 );
+				$alpha = ( isset( $attributes['borderOpacity'] ) && is_numeric( $attributes['borderOpacity'] ) ? $attributes['borderOpacity'] : 1 );
 				$css->add_property( 'border-color', $css->render_color( $attributes['border'], $alpha ) );
 			}
 			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );

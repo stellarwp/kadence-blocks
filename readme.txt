@@ -95,7 +95,11 @@ Release Date: December 16th, 2022
 * Update: Gallery Carousels to use splide.
 * Update: Icon List block to use innerBlocks for list items.
 * Update: Accordion js to handle issues with offset in accordion hash.
+* Update: Facebook logo svg.
 * Add: Responsive container margin on Info Box block.
+* Add: Responsive container border styles to info box.
+* Add: Responsive border radius styles to info box.
+* Add: Responsive max width control to info box.
 * Add: Responsive container padding on Table of Contents block.
 * Add: Responsive container margin on Icon List block.
 * Add: Responsive Inner Container padding on Tabs block.

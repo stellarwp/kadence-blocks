@@ -22,6 +22,7 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 		left: spacing[3],
 	}
 	const outputStyling = useMemo( () => {
+		
 		if ( type === 'outside' ) {
 			const spacingTop = outputSpacing?.top
 				? outputSpacing?.top
@@ -42,9 +43,33 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 				borderBottomWidth: spacingBottom,
 				borderLeftWidth: spacingLeft,
 				top: offset && spacingTop ? `calc(${ spacingTop } * -1)` : 0,
-				// right: spacingRight ? `calc(${ spacingRight } * -1)` : 0,
+				right: offset && spacingRight ? `calc(${ spacingRight } * -1)` : 0,
 				bottom: offset && spacingBottom ? `calc(${ spacingBottom } * -1)` : 0,
-				// left: spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
+				left: offset && spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
+			};
+		} else if ( type === 'outsideVertical' ) {
+			const spacingTop = outputSpacing?.top
+				? outputSpacing?.top
+				: 0;
+			const spacingRight = outputSpacing?.right
+				? outputSpacing?.right
+				: 0;
+			const spacingBottom = outputSpacing?.bottom
+				? outputSpacing?.bottom
+				: 0;
+			const spacingLeft = outputSpacing?.left
+				? outputSpacing?.left
+				: 0;
+	
+			return {
+				borderTopWidth: spacingTop,
+				borderRightWidth: spacingRight,
+				borderBottomWidth: spacingBottom,
+				borderLeftWidth: spacingLeft,
+				top: offset && spacingTop ? `calc(${ spacingTop } * -1)` : 0,
+				//right: offset && spacingRight ? `calc(${ spacingRight } * -1)` : 0,
+				bottom: offset && spacingBottom ? `calc(${ spacingBottom } * -1)` : 0,
+				//left: offset && spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
 			};
 		} else {
 			return {
