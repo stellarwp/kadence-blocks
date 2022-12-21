@@ -976,9 +976,10 @@ return KadenceAccordion;
           initializedClass: 'kt-accordion-initialized',
           headerDataAttr: 'data-kt-accordion-header-id',
           openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
-		  roles: {
-			presentation: false
-		  }
+          roles: {
+            presentation: false,
+            region:true,
+          }
         } );
       };
       window.addEventListener( 'hashchange', window.KadenceBlocksAccordion.anchor, false );
