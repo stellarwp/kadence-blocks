@@ -6,7 +6,8 @@
  * Import External
  */
 import classnames from 'classnames';
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+
+const { RichText } = wp.blockEditor;
 
 export default [
 	{
