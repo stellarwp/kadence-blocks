@@ -146,22 +146,13 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
-		// Background Color
-		if ( isset( $attributes['backgroundColor'] ) ) {
+		// Background Color.
+		if ( ! empty( $attributes['backgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
 		}
 
-		// Border Radius
-		if ( isset( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-			$borderRadius     = array();
-			$borderRadiusUnit = isset( $attributes['borderRadiusUnit'] ) ? $attributes['borderRadiusUnit'] : 'px';
-
-			foreach ( $attributes['borderRadius'] as $br ) {
-				$borderRadius[] = ! is_numeric( $br ) ? '0' : $br . $borderRadiusUnit;
-			}
-
-			$css->add_property( 'border-radius', implode( ' ', $borderRadius ) );
-		}
+		// Border Radius.
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 
 		if ( ! empty( $attributes['maskSvg'] ) && 'none' !== $attributes['maskSvg'] ) {
 			if ( 'custom' === $attributes['maskSvg'] ) {
