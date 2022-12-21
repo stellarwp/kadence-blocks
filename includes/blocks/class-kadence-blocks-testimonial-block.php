@@ -32,6 +32,13 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	protected $block_name = 'testimonial';
 
 	/**
+	 * Block determines in scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -159,15 +166,15 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 		$strokeWidth = 'fe' === substr($iconStyles[ 0 ]['icon'], 0, 2) ? $iconStyles[ 0 ]['stroke'] : false;
 		$title = isset( $iconStyles[ 0 ]['title'] ) ? $iconStyles[ 0 ]['title'] : '';
+		$size = isset( $iconStyles[ 0 ]['size'] ) ? $iconStyles[ 0 ]['size'] : 30;
+		$extras = ' height="'.$size .'" width="'.$size .'"';
 
-		$icon .= "<span
-			data-name='". $iconStyles[0]['icon'] ."' 
-			data-stroke='". $strokeWidth ."' 
-			data-title='". $title ."' 
-			data-class='kt-svg-testimonial-global-icon-".$iconStyles[ 0 ]['icon'] . "' 
-			data-size='". $iconStyles[ 0 ]['size'] ."'
-			class='kadence-dynamic-icon'></span>";
-		
+		$svg = Kadence_Blocks_Svg_Render::render( $iconStyles[ 0 ]['icon'], 'none', $strokeWidth, $title, false, $extras);
+
+		$icon .= "<div class='kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-icon-" . $iconStyles[ 0 ]['icon'] . "'>";
+		$icon .= $svg;
+		$icon .= "</div>";
+
 		$icon .= '</div>';
 
 		return $icon;
@@ -247,7 +254,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	private function render_title( $attributes, $titleFont ) {
 		$title = '<div class="kt-testimonial-title-wrap">';
 
-		$title .= '<h'. $titleFont[0]['level'] .' class="kt-testimonial-title-wrap">';
+		$title .= '<h'. $titleFont[0]['level'] .' class="kt-testimonial-title">';
 		$title .= $attributes['title'];
 		$title .= '</h'. $titleFont[0]['level'] .'>';
 
@@ -257,21 +264,18 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	private function render_rating( $attributes, $ratingStyles ) {
-//		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. $attributes['rating'] .'">';
-//
-//		for( $i = 0; $i < $attributes['rating']; $i++ ) {
-//			$rating .= "<span
-//			data-name='fas_star'
-//			data-title='fas_star'
-//			data-class='kt-svg-testimonial-rating-icon'
-//			data-size='". $ratingStyles[ 0 ]['size'] ."'
-//			class='kadence-dynamic-icon'></span>";
-//		}
-//
-//
-//		$rating .= '</div>';
+		$extras = ' height="'.$ratingStyles[ 0 ]['size'].'" width="'.$ratingStyles[ 0 ]['size'].'"';
+		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', $ratingStyles[ 0 ]['size'], 'fas_star', false, $extras);
 
-		$rating = 'Rating here';
+		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. $attributes['rating'] .'">';
+
+		for( $i = 0; $i < $attributes['rating']; $i++ ) {
+			$rating .= '<div class="kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-'. ($i + 1) .'">';
+			$rating .= $svg;
+			$rating .= '</div>';
+		}
+
+		$rating .= '</div>';
 
 		return $rating;
 	}

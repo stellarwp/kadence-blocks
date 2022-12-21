@@ -134,7 +134,7 @@ function KadenceTestimonials({
     const containerBorderWidth = context['kadence/testimonials-containerBorderWidth'];
     const containerBorderOpacity = context['kadence/testimonials-containerBorderOpacity'];
     const containerBackground = context['kadence/testimonials-containerBackground'];
-    const containerBackgroundOpactiy = context['kadence/testimonials-containerBackgroundOpactiy'];
+    const containerBackgroundOpacity = context['kadence/testimonials-containerBackgroundOpacity'];
     const contentMinHeight = context['kadence/testimonials-contentMinHeight'];
     const contentFont = context['kadence/testimonials-contentFont'];
 
@@ -322,11 +322,7 @@ function KadenceTestimonials({
 
     const renderTestimonialSettings = () => {
         return (
-            <KadencePanelBody
-                title={__('Testimonial', 'kadence-blocks') + ' ' + __('Settings', 'kadence-blocks')}
-                initialOpen={ true }
-                panelName={'kb-testimonial'}
-            >
+            <>
                 <SelectControl
                     label={__('Media Type', 'kadence-blocks')}
                     value={media}
@@ -383,14 +379,10 @@ function KadenceTestimonials({
                     min={1}
                     max={5}
                 />
-            </KadencePanelBody>
+            </>
         );
     };
-    const renderSettings = (
-        <div>
-            { renderTestimonialSettings() }
-        </div>
-    );
+
     const renderTestimonialIcon = () => {
         return (
             <div className="kt-svg-testimonial-global-icon-wrap" style={{
@@ -802,24 +794,17 @@ function KadenceTestimonials({
                         {(activeTab === 'general') &&
 
                             <>
-                                <KadencePanelBody
-                                    panelName={'kb-testimonials-settings'}
-                                >
-                                    Hello World
-
-                                </KadencePanelBody>
-
-                                <div className="kt-sidebar-settings-spacer"></div>
 
                                 {showSettings('individualSettings', 'kadence/testimonials') && (
                                     <KadencePanelBody
                                         title={__('Individual Settings', 'kadence-blocks')}
-                                        initialOpen={false}
+                                        initialOpen={true}
                                         panelName={'kb-testimonials-individual-settings'}
                                     >
-                                        {renderSettings}
+                                        {renderTestimonialSettings()}
                                     </KadencePanelBody>
                                 )}
+
                             </>
                         }
 
