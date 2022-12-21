@@ -573,6 +573,10 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'border-color', 'backgroundOpacity' );
 				$css->render_measure_range( $attributes['mediaStyles'][0], 'borderWidth', 'border-width' );
 			}
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
+			$css->add_property( 'justify-content', 'center' );
+			$css->add_property( 'align-items', 'center' );
 		}
 
 		/*
