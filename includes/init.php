@@ -574,14 +574,20 @@ function kadence_blocks_post_block_get_excerpt_length() {
  * Add global styles into the frontend.
  */
 function kadence_blocks_add_global_gutenberg_styles_frontend() {
-	$css = ':root {
-		--global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-		--global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-		--global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-		--global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-		--global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-		--global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-	}';
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
+	$css = ':root {';
+	foreach( $font_sizes as $key => $value ) {
+		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
+	}
+	$css .= '}';
 	wp_register_style( 'kadence-blocks-global-variables', false );
 	wp_enqueue_style( 'kadence-blocks-global-variables' );
 	wp_add_inline_style( 'kadence-blocks-global-variables', $css );
@@ -591,14 +597,20 @@ add_action( 'wp_enqueue_scripts', 'kadence_blocks_add_global_gutenberg_styles_fr
  * Add global styles into the editor.
  */
 function kadence_blocks_add_global_gutenberg_styles() {
-	$css = ':root {
-		--global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-		--global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-		--global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-		--global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-		--global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-		--global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-	}';
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
+	$css = ':root {';
+	foreach( $font_sizes as $key => $value ) {
+		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
+	}
+	$css .= '}';
 	wp_add_inline_style( 'wp-edit-blocks', $css );
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_add_global_gutenberg_styles', 90 );
