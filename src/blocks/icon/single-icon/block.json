@@ -38,7 +38,7 @@
     },
     "color": {
       "type": "string",
-      "default": "palette4"
+      "default": ""
     },
     "background": {
       "type": "string",
@@ -46,7 +46,7 @@
     },
     "border": {
       "type": "string",
-      "default": "palette4"
+      "default": ""
     },
     "borderRadius": {
       "type": "number",
@@ -58,7 +58,7 @@
     },
     "padding": {
       "type": "array",
-      "default": [ 20, 20, 20, 20 ]
+      "default": [ "xs", "xs", "xs", "xs" ]
     },
     "paddingUnit" : {
       "type": "string",

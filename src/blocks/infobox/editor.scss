@@ -22,7 +22,7 @@
 		width: 100%;
 	}
 	&:hover {
-		border-color: #eeeeee;
+		border-color: var(--global-palette7,#eeeeee );
 	}
 }
 .kb-inline-icon-control {
@@ -41,6 +41,13 @@
  .kt-blocks-info-box-media-align-top .kt-blocks-info-box-media .editor-media-placeholder {
     padding: 1em;
     margin: 0;
+}
+.kadence-info-box-number-inner-container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    min-width: 1em;
+    line-height: 1em;
 }
 .components-button-group.kt-style-btn-group.kb-info-layouts button.components-button.kt-style-btn {
     padding: 0;
@@ -166,7 +173,7 @@
 	border: 0 solid transparent;
 }
 .kt-blocks-info-box-text {
-    color: #555555;
+    color: var(--global-palette5, #444444 );
 }
 .wp-block-kadence-infobox .kt-blocks-info-box-learnmore-wrap {
     display: inline-block;

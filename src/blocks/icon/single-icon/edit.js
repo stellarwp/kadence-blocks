@@ -187,7 +187,7 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
             <KadenceInspectorControls blockSlug={ 'kadence/icon' }>
 
                 <InspectorControlTabs
-                    panelName={ 'icon' }
+                    panelName={ 'single-icon' }
                     allowedTabs={ [ 'general', 'advanced' ] }
                     setActiveTab={ ( value ) => setActiveTab( value ) }
                     activeTab={ activeTab }

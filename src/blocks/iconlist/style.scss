@@ -24,7 +24,9 @@
 		.kt-svg-icon-list-single {
 			margin-right: 10px;
 			padding: 4px 0;
-			display:inline-block;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
 		}
 		.kt-svg-icon-link {
 			display: flex;

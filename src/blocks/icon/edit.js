@@ -29,8 +29,8 @@ import {
 	setBlockDefaults,
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
-import { useSelect, useDispatch } from '@wordpress/data';
-
+import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
 /**
  * Import Css
  */
@@ -47,7 +47,8 @@ import {
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
 	useBlockProps,
-	InnerBlocks
+	InnerBlocks,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
 	Fragment,
@@ -55,15 +56,19 @@ import {
 	useState
 } from '@wordpress/element';
 import {
+	plusCircle
+} from '@wordpress/icons';
+import {
 	TextControl,
 	SelectControl,
 	Button,
 	Dashicon,
+	ToolbarButton,
 	TabPanel,
 	ToolbarGroup,
 } from '@wordpress/components';
 
-function KadenceIcons( { attributes, className, setAttributes, isSelected, clientId, context } ) {
+function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, clientId, context } ) {
 	const { iconCount, inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -182,6 +187,20 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, clien
 					value={textAlignment}
 					onChange={value => setAttributes( { textAlignment: value } )}
 				/>
+				<ToolbarGroup>
+					<ToolbarButton
+						className="kb-icons-add-icon"
+						icon={ plusCircle }
+						onClick={ () => {
+							const latestAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
+							latestAttributes.uniqueID = '';
+							const newBlock = createBlock( 'kadence/single-icon', latestAttributes );
+							insertIcon( newBlock );
+						} }
+						label={  __( 'Add Another Icon', 'kadence-blocks' ) }
+						showTooltip={ true }
+					/>
+				</ToolbarGroup>
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/icon' }>
 
@@ -193,7 +212,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, clien
 				/>
 
 				{( activeTab === 'general' ) &&
-					<KadencePanelBody>
+					<KadencePanelBody panelName={'kb-icon-alignment-settings'}>
 						<ResponsiveAlignControls
 							label={__( 'Icon Alignment', 'kadence-blocks' )}
 							value={( textAlignment ? textAlignment : '' )}
@@ -211,14 +230,41 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, clien
 				<InnerBlocks
 					template={ [ [ 'kadence/single-icon' ] ] }
 					templateLock={ false }
+					orientation="horizontal"
 					templateInsertUpdatesSelection={ true }
+					renderAppender={ false }
 					allowedBlocks={ [ 'kadence/single-icon' ] }
 				/>
 			</div>
-			{ selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
 		</div>
 	);
 }
-
-export default ( KadenceIcons );
+const KadenceIconsWrapper = withDispatch(
+	( dispatch, ownProps, registry ) => ( {
+		insertIcon( newBlock ) {
+			const { clientId } = ownProps;
+			const { insertBlock } = dispatch( blockEditorStore );
+			const { getBlock } = registry.select( blockEditorStore );
+			const block = getBlock( clientId );
+			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+	} )
+)( KadenceIcons );
+const KadenceIconsEdit = ( props ) => {
+	const { clientId } = props;
+	const { iconsBlock } = useSelect(
+		( select ) => {
+			const {
+				getBlock,
+			} = select( 'core/block-editor' );
+			const block = getBlock( clientId );
+			return {
+				iconsBlock: block,
+			};
+		},
+		[ clientId ]
+	);
+	return <KadenceIconsWrapper iconsBlock={ iconsBlock } { ...props } />;
+};
+export default KadenceIconsEdit;
 

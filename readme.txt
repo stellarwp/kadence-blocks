@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.9
-Tested up to: 5.9
-Stable tag: 2.5.0
+Requires at least: 6.0
+Tested up to: 6.1
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,41 +76,41 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.5.0 Beta Version =
-Release Date: April 20th, 2022
-* Update: RowLayout to use grid css.
+= 3.0.0 Alpha Version 1 =
+Release Date: December 16th, 2022
+* Update: Block Settings to use a tab structure.
+* Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
-* Update: Inline SVGs removed from content html.
+* Update: Improved CSS generation for blocks.
+* Update: Kadence Block defaults structure, new controls and management. 
+* Update: Inline SVGs removed from content html, all svgs load through filter.
 * Update: Sections can move freely in and out of rows.
-* Update: Icons flex layout with gap settings.
-* Update: Add Icon option to advanced text block.
-* Update: Lightbox to use glightbox.
+* Update: Rows can be content locked to preserve inner block settings and simplify updating.
+* Update: Border control for more flexibility.
+* Update: New Margin and Padding control with added visualizer.
+* Update: New Icon Picker Control.
+* Update: New Font size control.
+* Update: Line Height to support none unit values.
+* Update: Lightbox to use glightbox (adds mobile swipe).
 * Update: Gallery Carousels to use splide.
-* Update: Testimonial Carousels to use Splide.
-* Fix: Parallax background issue with border radius.
-* Add: Block defaults for button style in advanced button.
-* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
-* Update: Gallery to allow links in captions, separate from image link.
-* Fix: Updating gallery can lose added captions.
-* Fix: Issue with aligning in buttons with icons.
+* Update: Icon List block to use innerBlocks for list items.
+* Update: Accordion js to handle issues with offset in accordion hash.
 * Update: Facebook logo svg.
-* Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
-* Tweak - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
-* Tweak - Accordion animation when nesting accordions, with both "closed".
-* Fix: Google Maps filer initial value issue.
-* Add: Text Transform option on title in Count Up block
-* Fix: Only generate dynamic CSS for rtl sites when needed.
 * Add: Responsive container margin on Info Box block.
+* Add: Responsive container border styles to info box.
+* Add: Responsive border radius styles to info box.
+* Add: Responsive max width control to info box.
 * Add: Responsive container padding on Table of Contents block.
 * Add: Responsive container margin on Icon List block.
 * Add: Responsive Inner Container padding on Tabs block.
 * Add: Support for external dotLottie files
-* Update: Icon List block to use innerBlocks for list items.
-* Update: Improved CSS generation for blocks.
-* Fix: Issue when using more than 36 tabs in Tabs block.
-* Add: New Icon Picker
 * Add: Ability to import, export, and reset block defaults
-
+* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
+* Fix: Issue with gallery possibly losing added captions.
+* Fix: Only generate dynamic CSS for rtl sites when needed.
+* Fix: Google Maps filter initial value issue.
+* Fix: Issue when using more than 36 tabs in Tabs block.
+* Add: Ability to use decimals for start & end vaules in count up block.
 
 = 2.4.21 =
 Release Date: November 11th, 2022

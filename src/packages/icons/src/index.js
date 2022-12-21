@@ -129,13 +129,13 @@ export { default as sixColIcon } from './block-icons/row-layout/six-col'
 export { default as twoColIcon } from './block-icons/row-layout/two-col'
 
 // Advanced Gallery
-export { default as galCarouselIcon } from './block-icons/advanced-gallery/gal-carousel'
-export { default as galFluidIcon } from './block-icons/advanced-gallery/gal-fluid'
-export { default as galGridIcon } from './block-icons/advanced-gallery/gal-grid'
-export { default as galMasonryIcon } from './block-icons/advanced-gallery/gal-masonry'
-export { default as galSliderIcon } from './block-icons/advanced-gallery/gal-slider'
-export { default as galTilesIcon } from './block-icons/advanced-gallery/gal-tiles'
-export { default as thumbSliderIcon } from './thumbs-slider'
+export { default as galleryCarouselIcon } from './block-icons/advanced-gallery/gal-carousel'
+export { default as galleryFluidIcon } from './block-icons/advanced-gallery/gal-fluid'
+export { default as galleryGridIcon } from './block-icons/advanced-gallery/gal-grid'
+export { default as galleryMasonryIcon } from './block-icons/advanced-gallery/gal-masonry'
+export { default as gallerySliderIcon } from './block-icons/advanced-gallery/gal-slider'
+export { default as galleryTilesIcon } from './block-icons/advanced-gallery/gal-tiles'
+export { default as galleryThumbSliderIcon } from './thumbs-slider'
 
 // Table of contents
 export { default as noneIcon } from './block-icons/table-of-contents/none'

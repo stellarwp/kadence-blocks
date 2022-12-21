@@ -61,6 +61,8 @@ function KadenceCounterUp( {
 		title,
 		start,
 		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -110,9 +112,14 @@ function KadenceCounterUp( {
 		} else {
 			kbCountUpUniqueIDs.push( uniqueID );
 		}
+
+		if( start !== 0 || end !== 0 ) {
+			setAttributes( { startDecimal: start, endDecimal: end, start: 0, end: 0 } );
+		}
+
 	}, [] );
 
-	const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
+	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
 
 	const gconfig = {
 		google: {
@@ -206,8 +213,8 @@ function KadenceCounterUp( {
 					}}
 				>
 					<CountUp
-						start={start}
-						end={end}
+						start={ startDecimal }
+						end={ endDecimal }
 						duration={duration}
 						separator={theSeparator}
 						decimal={decimal ? decimal : undefined}
@@ -216,13 +223,13 @@ function KadenceCounterUp( {
 						suffix={suffix}
 					/>
 					<SpacingVisualizer
-						style={ {
-							marginLeft: ( undefined !== previewNumberMarginLeft ? getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) : undefined ),
-							marginRight: ( undefined !== previewNumberMarginRight ? getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ) : undefined ),
-							marginTop: ( undefined !== previewNumberMarginTop ? getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ) : undefined ),
-							marginBottom: ( undefined !== previewNumberMarginBottom ? getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ) : undefined ),
-						} }
-						type="inside"
+						// style={ {
+						// 	marginLeft: ( undefined !== previewNumberMarginLeft ? getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) : undefined ),
+						// 	marginRight: ( undefined !== previewNumberMarginRight ? getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ) : undefined ),
+						// 	marginTop: ( undefined !== previewNumberMarginTop ? getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ) : undefined ),
+						// 	marginBottom: ( undefined !== previewNumberMarginBottom ? getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ) : undefined ),
+						// } }
+						type="outside"
 						forceShow={ numberMarginMouseOver.isMouseOver }
 						spacing={ [ getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ), getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ), getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ), getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) ] }
 					/>
@@ -234,14 +241,27 @@ function KadenceCounterUp( {
 				</div>
 
 				{displayTitle &&
-					<>
+					<TitleTagName className={'kb-count-up-wrap'}
+						style={{
+							position:'relative',
+							paddingTop   : ( '' !== previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingType ) : undefined ),
+							paddingRight : ( '' !== previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingType ) : undefined ),
+							paddingBottom: ( '' !== previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingType ) : undefined ),
+							paddingLeft  : ( '' !== previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingType ) : undefined ),
+							marginTop    : ( previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, titleMarginType ) : undefined ),
+							marginRight  : ( previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, titleMarginType ) : undefined ),
+							marginBottom : ( previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, titleMarginType ) : undefined ),
+							marginLeft   : ( previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, titleMarginType ) : undefined ),
+							textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
+						}}>
 						<RichText
-							tagName={tagName}
+							tagName={'span'}
 							className={'kb-count-up-title'}
 							value={title}
 							onChange={( content ) => setAttributes( { title: content } )}
 							placeholder={__( 'Type Here...', 'kadence-blocks' )}
 							style={{
+								display: 'block',
 								fontWeight   : titleFont[ 0 ].weight,
 								fontStyle    : titleFont[ 0 ].style,
 								color        : KadenceColorOutput( titleColor ),
@@ -250,20 +270,12 @@ function KadenceCounterUp( {
 								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
 								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 								minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
-								textAlign    : previewTitleAlign,
-								paddingTop   : ( '' !== previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingType ) : undefined ),
-								paddingRight : ( '' !== previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingType ) : undefined ),
-								paddingBottom: ( '' !== previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingType ) : undefined ),
-								paddingLeft  : ( '' !== previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingType ) : undefined ),
-								marginTop    : ( previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, titleMarginType ) : undefined ),
-								marginRight  : ( previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, titleMarginType ) : undefined ),
-								marginBottom : ( previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, titleMarginType ) : undefined ),
-								marginLeft   : ( previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, titleMarginType ) : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
+								textAlign    : previewTitleAlign,								
 							}}
 						/>
 						<SpacingVisualizer
-							type="inside"
+							type="outside"
 							forceShow={ titleMarginMouseOver.isMouseOver }
 							spacing={ [ getSpacingOptionOutput( previewTitleMarginTop, numberMarginType ), getSpacingOptionOutput( previewTitleMarginRight, numberMarginType ), getSpacingOptionOutput( previewTitleMarginBottom, numberMarginType ), getSpacingOptionOutput( previewTitleMarginLeft, numberMarginType ) ] }
 						/>
@@ -272,7 +284,7 @@ function KadenceCounterUp( {
 							forceShow={ titlePaddingMouseOver.isMouseOver }
 							spacing={ [ getSpacingOptionOutput( previewTitlePaddingTop, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingRight, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingBottom, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingLeft, numberPaddingType ) ] }
 						/>
-					</>
+					</TitleTagName>
 				}
 			</div>
 		</div>

@@ -254,7 +254,7 @@ export function Edit ({
 
 				{( activeTab === 'advanced' ) &&
 					<>
-						<KadencePanelBody>
+						<KadencePanelBody panelName={'kb-show-more-settings'}>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={[ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ]}

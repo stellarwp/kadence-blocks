@@ -9,11 +9,8 @@ import {
 /**
  * External dependencies
  */
-import { IconRender } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { Fragment } from '@wordpress/element';
 import { times } from 'lodash';
-import { RichText } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const { items, listCount, columns, blockAlignment, iconAlign, uniqueID, tabletColumns, mobileColumns } = attributes;

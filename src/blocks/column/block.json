@@ -3,7 +3,7 @@
 	"title": "Section",
 	"name": "kadence/column",
 	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId", "allowResize" ],
+	"usesContext": [ "postId", "queryId" ],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 		"id": {

@@ -32,7 +32,7 @@ export default [
 					size: [ '', '', '' ],
 					sizeType: 'px',
 					lineHeight: [ '', '', '' ],
-					lineType: 'px',
+					lineType: '',
 					letterSpacing: '',
 					textTransform: '',
 					family: '',

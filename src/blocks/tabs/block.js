@@ -21,7 +21,7 @@ import { blockTabsIcon } from '@kadence/icons';
 import metadata from './block.json';
 import classnames from 'classnames';
 import { times } from 'lodash';
-import { IconRender } from '@kadence/components';
+import { IconRender, IconSpanTag } from '@kadence/components';
 import { Fragment } from '@wordpress/element';
 import {
 	InnerBlocks,

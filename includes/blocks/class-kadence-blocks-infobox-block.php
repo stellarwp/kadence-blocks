@@ -95,17 +95,24 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 
 			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
 		}
-
-		// Style.
-		if ( isset( $attributes['containerBorder'] ) || isset( $attributes['containerBackground'] ) || isset( $attributes['containerBackgroundOpacity'] ) || isset( $attributes['containerPadding'] ) || isset( $attributes['containerMargin'] ) || isset( $attributes['containerBorderRadius'] ) || isset( $attributes['containerBorderWidth'] ) || isset( $attributes['maxWidth'] ) ) {
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
-			if ( isset( $attributes['containerBorder'] ) && ! empty( $attributes['containerBorder'] ) ) {
+		$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
+		// Container Border, check old first.
+		if ( ! empty( $attributes['containerBorder'] ) || $css->is_number( $attributes['containerBorderWidth'][0] ) || $css->is_number( $attributes['containerBorderWidth'][1] ) || $css->is_number( $attributes['containerBorderWidth'][2] ) || $css->is_number( $attributes['containerBorderWidth'][3] ) || $css->is_number( $attributes['containerBorderRadius'] ) ) {
+			if ( ! empty( $attributes['containerBorder'] ) ) {
 				$alpha = ( isset( $attributes['containerBorderOpacity'] ) && is_numeric( $attributes['containerBorderOpacity'] ) ? $attributes['containerBorderOpacity'] : 1 );
 				$css->add_property( 'border-color', $css->render_color( $attributes['containerBorder'], $alpha ) );
 			}
 			if ( isset( $attributes['containerBorderRadius'] ) && ! empty( $attributes['containerBorderRadius'] ) ) {
 				$css->add_property( 'border-radius', $attributes['containerBorderRadius'] . 'px' );
 			}
+			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
+		} else {
+			$css->render_border_styles( $attributes, 'borderStyle' );
+			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+		}
+
+		// Style.
+		if ( ! empty( $attributes['containerBackground'] ) || $css->is_number( $attributes['containerBackgroundOpacity'] ) || ! empty( $attributes['maxWidth'] ) ) {
 			if ( isset( $attributes['containerBackground'] ) && ! empty( $attributes['containerBackground'] ) ) {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( $attributes['containerBackground'], $alpha ) );
@@ -113,38 +120,31 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
-
-			$css->render_measure_output( $attributes, 'containerPadding', 'padding', [ 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ] );
-
-			$css->render_measure_output( $attributes, 'containerMargin', 'margin', [ 'unit_key' => 'containerMarginUnit' ] );
-
-			if ( isset( $attributes['containerBorderWidth'] ) && is_array( $attributes['containerBorderWidth'] ) ) {
-				if ( isset( $attributes['containerBorderWidth'][0] ) && is_numeric( $attributes['containerBorderWidth'][0] ) ) {
-					$css->add_property( 'border-top-width', $attributes['containerBorderWidth'][0] . 'px' );
-				}
-				if ( isset( $attributes['containerBorderWidth'][1] ) && is_numeric( $attributes['containerBorderWidth'][1] ) ) {
-					$css->add_property( 'border-right-width', $attributes['containerBorderWidth'][1] . 'px' );
-				}
-				if ( isset( $attributes['containerBorderWidth'][2] ) && is_numeric( $attributes['containerBorderWidth'][2] ) ) {
-					$css->add_property( 'border-bottom-width', $attributes['containerBorderWidth'][2] . 'px' );
-				}
-				if ( isset( $attributes['containerBorderWidth'][3] ) && is_numeric( $attributes['containerBorderWidth'][3] ) ) {
-					$css->add_property( 'border-left-width', $attributes['containerBorderWidth'][3] . 'px' );
-				}
-			}
 			if ( isset( $attributes['maxWidth'] ) && ! empty( $attributes['maxWidth'] ) ) {
 				$unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $unit );
 			}
 		}
+		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array( 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ) );
+		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array( 'unit_key' => 'containerMarginUnit' ) );
 
+		// Hover.
 		$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover' );
-		$border_hover = ( isset( $attributes['containerHoverBorder'] ) && ! empty( $attributes['containerHoverBorder'] ) ? $attributes['containerHoverBorder'] : '#eeeeee' );
-		$alpha        = ( isset( $attributes['containerHoverBorderOpacity'] ) && is_numeric( $attributes['containerHoverBorderOpacity'] ) ? $attributes['containerHoverBorderOpacity'] : 1 );
-		$bg_hover     = ( isset( $attributes['containerHoverBackground'] ) && ! empty( $attributes['containerHoverBackground'] ) ? $attributes['containerHoverBackground'] : '#f2f2f2' );
-		$bg_alpha     = ( isset( $attributes['containerHoverBackgroundOpacity'] ) && is_numeric( $attributes['containerHoverBackgroundOpacity'] ) ? $attributes['containerHoverBackgroundOpacity'] : 1 );
-		$css->add_property( 'border-color', $css->render_color( $border_hover, $alpha ) );
-		$css->add_property( 'background', $css->render_color( $bg_hover, $bg_alpha ) );
+		// Container Border, check old first.
+		if ( ! empty( $attributes['containerHoverBorder'] ) ) {
+			$border_hover = ( isset( $attributes['containerHoverBorder'] ) && ! empty( $attributes['containerHoverBorder'] ) ? $attributes['containerHoverBorder'] : '#eeeeee' );
+			$alpha        = ( isset( $attributes['containerHoverBorderOpacity'] ) && is_numeric( $attributes['containerHoverBorderOpacity'] ) ? $attributes['containerHoverBorderOpacity'] : 1 );
+			$css->add_property( 'border-color', $css->render_color( $border_hover, $alpha ) );
+		} else {
+			$css->render_border_styles( $attributes, 'borderHoverStyle' );
+			$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius', array( 'unit_key' => 'borderHoverRadiusUnit' ) );
+		}
+		if ( ! empty( $attributes['containerHoverBackground'] ) ) {
+			$bg_hover     = ( isset( $attributes['containerHoverBackground'] ) && ! empty( $attributes['containerHoverBackground'] ) ? $attributes['containerHoverBackground'] : '' );
+			$bg_alpha     = ( isset( $attributes['containerHoverBackgroundOpacity'] ) && is_numeric( $attributes['containerHoverBackgroundOpacity'] ) ? $attributes['containerHoverBackgroundOpacity'] : 1 );
+			$css->add_property( 'background', $css->render_color( $bg_hover, $bg_alpha ) );
+		}
+
 		if ( isset( $attributes['mediaIcon'] ) && is_array( $attributes['mediaIcon'] ) && is_array( $attributes['mediaIcon'][0] ) ) {
 			$media_icon = $attributes['mediaIcon'][0];
 		} else {
@@ -228,7 +228,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'fill', $media_icon['hoverColor'] );
 			}
 		}
-		if ( isset( $media_icon['size'] ) && ! empty( $media_icon['size'] ) ) {
+		if ( ! empty( $media_icon['size'] ) ) {
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-info-svg-icon-flip, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
 			$css->add_property( 'font-size', $media_icon['size'] . 'px' );
 		}

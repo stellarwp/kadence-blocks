@@ -1142,7 +1142,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 
 						{( activeTab === 'advanced' ) &&
 							<>
-								<KadencePanelBody>
+								<KadencePanelBody panelName={'kb-countdown-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
 										label={__( 'Container Padding', 'kadence-blocks' )}
 										value={containerPadding}

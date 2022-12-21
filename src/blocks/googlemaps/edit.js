@@ -246,7 +246,7 @@ export function Edit( {
 		<figure { ...blockProps }>
 			<KadenceInspectorControls blockSlug={ 'kadence/googlemaps' }>
 				<InspectorControlTabs
-					panelName={ 'google-maps' }
+					panelName={ 'googlemaps' }
 					setActiveTab={ setActiveTab }
 					activeTab={ activeTab }
 				/>
@@ -551,7 +551,7 @@ export function Edit( {
 
 				{ activeTab === 'advanced' && (
 					<>
-						<KadencePanelBody>
+						<KadencePanelBody panelName={'kb-google-spacing-settings'}>
 							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={paddingDesktop}

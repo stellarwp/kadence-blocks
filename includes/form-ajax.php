@@ -94,8 +94,9 @@ class KB_Ajax_Form {
 					}
 				}
 				// Check Honey Pot.
-				if ( isset( $form_args['honeyPot'] ) && true === $form_args['honeyPot'] ) {
-					$honeypot_check = filter_input( INPUT_POST, '_kb_verify_email', FILTER_SANITIZE_STRING );
+				$honeypot_check_enabled = ! isset( $form_args['honeyPot'] ) || ( isset( $form_args['honeyPot'] ) && true === $form_args['honeyPot'] );
+				if ( $honeypot_check_enabled && isset( $_POST['_kb_verify_email'] ) ) {
+					$honeypot_check = htmlspecialchars( $_POST['_kb_verify_email'], ENT_QUOTES );
 					if ( ! empty( $honeypot_check ) ) {
 						$this->process_bail( __( 'Submission Rejected', 'kadence-blocks' ), __( 'Spam Detected', 'kadence-blocks' ) );
 					}

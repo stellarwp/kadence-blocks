@@ -5,12 +5,16 @@
  import {
 	withDispatch,
 } from '@wordpress/data';
-import { createBlock } from '@wordpress/blocks';
 import {
-	Component,
+    useEffect,
+    useState,
 	render,
-	Fragment,
 } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { createBlock, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
+import {
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import {
@@ -20,91 +24,79 @@ import {
 /**
  * Internal dependencies
  */
-import { SafeParseJSON } from '@kadence/helpers';
+import { SafeParseJSON, showSettings } from '@kadence/helpers';
 import { kadenceBlocksIcon } from '@kadence/icons';
 /**
  * Add Prebuilt Library button to Gutenberg toolbar
  */
-class ToolbarLibrary extends Component {
-	constructor() {
-		super( ...arguments );
-		this.showSettings = this.showSettings.bind( this );
-		this.state = {
-			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
-			settings: {},
-		};
-	}
-	componentDidMount() {
-		const blockSettings = ( kadence_blocks_params.configuration ? SafeParseJSON( kadence_blocks_params.configuration, true ) : {} );
-		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
-			this.setState( { settings: blockSettings[ 'kadence/designlibrary' ] } );
-		}
-	}
-	showSettings( key ) {
-		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
-			return true;
-		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
-			return true;
-		}
-		return false;
-	}
-    render() {
-		const {
-            insertBlocks,
-        } = this.props;
-		const LibraryButton = () => (
-			<Button
-				className="kb-toolbar-prebuilt-button"
-				icon={ kadenceBlocksIcon }
-				isPrimary
-				onClick={ () => {
-					insertBlocks( createBlock( 'kadence/rowlayout', {
-						isPrebuiltModal: true,
-						noCustomDefaults: true,
-					} ) );
-				} }
-			>
-				{ __( 'Design Library', 'kadence-blocks' ) }
-			</Button>
-		);
-		const checkElement = async selector => {
-			while ( document.querySelector(selector) === null) {
-				await new Promise( resolve => requestAnimationFrame( resolve ) )
-			}
-			return document.querySelector(selector);
-		}
-		if ( this.showSettings( 'show' ) && kadence_blocks_params.showDesignLibrary ) {
-			checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
-				if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
-					const toolbarButton = document.createElement( 'div' );
-					toolbarButton.classList.add( 'kadence-toolbar-design-library' );
-
-					selector.appendChild( toolbarButton );
-					render( <LibraryButton />, toolbarButton );
+function ToolbarLibrary() {
+	// const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
+	// const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
+	const { getSelectedBlock, getBlockRootClientId, getBlockIndex } = useSelect( blockEditorStore );
+	const {
+		replaceBlocks,
+		insertBlocks,
+	} = useDispatch( blockEditorStore );
+	const LibraryButton = () => (
+		<Button
+			className="kb-toolbar-prebuilt-button"
+			icon={ kadenceBlocksIcon }
+			isPrimary
+			onClick={ () => {
+				const selectedBlock = getSelectedBlock();
+				if ( selectedBlock && isUnmodifiedDefaultBlock( selectedBlock ) ) {
+					replaceBlocks(
+						selectedBlock.clientId,
+						createBlock( 'kadence/rowlayout', {
+							isPrebuiltModal: true,
+							noCustomDefaults: true,
+						} ),
+						null,
+						0,
+					);
+				} else if ( selectedBlock ) {
+					const destinationRootClientId = getBlockRootClientId(selectedBlock.clientId);
+					const destinationIndex = getBlockIndex( destinationRootClientId ) + 1;
+					insertBlocks(
+						createBlock( 'kadence/rowlayout', {
+							isPrebuiltModal: true,
+							noCustomDefaults: true,
+						} ),
+						destinationIndex,
+					);
+				} else {
+					insertBlocks(
+						createBlock( 'kadence/rowlayout', {
+							isPrebuiltModal: true,
+							noCustomDefaults: true,
+						} ),
+					);
 				}
-			} );
+			} }
+		>
+			{ __( 'Design Library', 'kadence-blocks' ) }
+		</Button>
+	);
+	const checkElement = async selector => {
+		while ( document.querySelector(selector) === null) {
+			await new Promise( resolve => requestAnimationFrame( resolve ) )
 		}
+		return document.querySelector(selector);
+	}
+	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
+		checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
+			if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
+				const toolbarButton = document.createElement( 'div' );
+				toolbarButton.classList.add( 'kadence-toolbar-design-library' );
 
-        return null;
-    }
+				selector.appendChild( toolbarButton );
+				render( <LibraryButton />, toolbarButton );
+			}
+		} );
+	}
+
+	return null;
 }
-
 registerPlugin( 'kb-toolbar-library', {
-    render: compose(
-        withDispatch( ( dispatch ) => {
-            const {
-                insertBlocks,
-            } = dispatch( 'core/block-editor' );
-
-            return {
-                insertBlocks,
-            };
-        } ),
-    )( ToolbarLibrary ),
+    render: ToolbarLibrary,
 } );

@@ -73,10 +73,10 @@
 .kt-btn-wrap .kt-button:hover::before, .kt-btn-wrap .kt-button:focus::before {
 	opacity: 1;
 }
-.kt-btn-svg-icon.kt-btn-side-right {
+.kt-btn-svg-icon.kt-btn-side-right, .kb-svg-icon-wrap.kt-btn-side-right {
     padding-left: 0.5em;
 }
-.kt-btn-svg-icon.kt-btn-side-left {
+.kt-btn-svg-icon.kt-btn-side-left, .kb-svg-icon-wrap.kt-btn-side-left {
     padding-right: 0.5em;
 }
 .kt-btn-has-text-false .kt-btn-svg-icon {

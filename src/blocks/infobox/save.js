@@ -2,8 +2,8 @@
  * BLOCK: Kadence Info box
  */
 
-import { IconRender } from '@kadence/components';
-import { RichText, useBlockProps } from '@wordpress/block-editor'
+import { IconSpanTag } from '@kadence/components';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 
 function Save( { attributes, className } ) {
@@ -46,13 +46,9 @@ function Save( { attributes, className } ) {
 	const icon = (
 		<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
 			<div className={ 'kadence-info-box-icon-inner-container' } >
-				<IconRender className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } title={ ( mediaIcon[ 0 ].title ? mediaIcon[ 0 ].title : '' ) } ariaHidden={ ( mediaIcon[ 0 ].title ? undefined : 'true' ) } style={ {
-					display: 'block',
-				} } />
+				<IconSpanTag extraClass={ 'kt-info-svg-icon' } name={ mediaIcon[ 0 ].icon } strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } title={ ( mediaIcon[ 0 ].title ? mediaIcon[ 0 ].title : '' ) } ariaHidden={ ( mediaIcon[ 0 ].title ? undefined : 'true' ) }/>
 				{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-					<IconRender className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } ariaHidden={ 'true' } style={ {
-						display: 'block',
-					} } />
+					<IconSpanTag extraClass={ 'kt-info-svg-icon-flip' } name={ mediaIcon[ 0 ].flipIcon } strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } ariaHidden={ 'true' }/>
 				) }
 			</div>
 		</div>

@@ -475,6 +475,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
+		[ `align${ align }` ]: align,
 		[ `kb-row-id-${ uniqueID }` ]: uniqueID,
 		[ `kt-has-${ columns }-columns` ]: columns,
 		[ `kt-row-layout-${ previewLayout }` ]: previewLayout,
@@ -937,12 +938,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
 				</>
 				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
-				{ columns && columns === 2 && 'grid-layout' !== previewLayout && (
+				{ columns && columns === 2 && 'grid-layout' !== previewLayout && 'Desktop' === previewDevice && (
 					<>
 						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
 					</>
 				) }
-				{ columns && columns === 3 && 'grid-layout' !== previewLayout && (
+				{ columns && columns === 3 && 'grid-layout' !== previewLayout && 'Desktop' === previewDevice && (
 					<>
 						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
 					</>
@@ -991,7 +992,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 										setAttributes( {
 											colLayout: key,
 											columns: col,
-											allowResize: key === 'grid-layout' ? false : true,
 										} ) }
 									}
 								/>

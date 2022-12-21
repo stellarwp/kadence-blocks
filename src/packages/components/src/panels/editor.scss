@@ -17,10 +17,14 @@
     font-size: 14px;
     height: 14px;
 }
+.kadence-color-group .kadence-pop-color-control .color-indicator-icon .dashicons-admin-site {
+    left: 4px;
+    top: 4px;
+}
 .components-base-control.kadence-two-column-group {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    gap: 12px;
 }
 .components-base-control.kadence-two-column-group  > .components-base-control {
     margin-bottom:0

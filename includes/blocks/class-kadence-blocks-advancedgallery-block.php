@@ -32,11 +32,18 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	protected $block_name = 'advancedgallery';
 
 	/**
-	 * Block determines in scripts need to be loaded for block.
+	 * Block determines if generic scripts need to be loaded for block.
 	 *
 	 * @var string
 	 */
 	protected $has_script = false;
+
+	/**
+	 * Block determines if generic styles need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = true;
 
 	/**
 	 * Instance Control
@@ -73,9 +80,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$this->enqueue_script( 'kadence-blocks-masonry-init' );
 		}
 		if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
-			$this->enqueue_style( 'kadence-simplelightbox-css' );
-			$this->should_render_inline_stylesheet( 'kadence-simplelightbox-css' );
-			$this->enqueue_script( 'kadence-blocks-simplelightbox-init' );
+			$this->enqueue_style( 'kadence-glightbox' );
+			$this->should_render_inline_stylesheet( 'kadence-glightbox' );
+			$this->enqueue_script( 'kadence-blocks-glight-init' );
 		}
 	}
 
@@ -87,7 +94,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
-
+		$updated_version = ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? true : false;
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
@@ -106,29 +113,49 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'overflow', 'hidden' );
 		}
 
-		if ( isset( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) && isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ) {
-			$css->set_selector('.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id );
-			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . 'px' );
+		if ( $css->is_number( $attributes['gutter'][0] ) ) {
+			$gutter_unit = ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px';
+			// Masonry.
+			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-masonry.kb-gallery-id-' . $unique_id );
+			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->set_selector('.kb-gallery-type-masonry.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
+			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			// Grid.
+			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-grid.kb-gallery-id-' . $unique_id );
+			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->set_selector('.kb-gallery-type-grid.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
+			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			// Tiles.
+			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-' . $unique_id );
+			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->set_selector('.kb-gallery-type-tiles.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
+			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			// Carousel.
+			if ( ! $updated_version ) {
+				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
+				$css->add_property('margin', '0 -' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
 
-			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
-			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . 'px' );
+				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
+				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
+				$css->add_property('left', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
 
-			$css->add_property('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
-			$css->add_property('margin', '0 -' . ( $attributes['gutter'][0] / 2 ) . 'px' );
-
-			$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-carousel .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item');
-			$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] / 2 ) . 'px' );
-
-			$css->set_selector('.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item' );
-			$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] ) . 'px 4px 0' );
-
-			$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
-			$css->add_property('left', ( $attributes['gutter'][0] / 2 ) . 'px' );
-
-			$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
-			$css->add_property('right', ( $attributes['gutter'][0] / 2 ) . 'px' );
+				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
+				$css->add_property('right', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			}
+			if ( ! $updated_version ) {
+				// Fluid Carousel.
+				$css->set_selector('.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
+				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->set_selector('.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item' );
+				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] ) . $gutter_unit . ' 4px 0' );
+			}
+			if ( $updated_version ) {
+				// Thumbnail.
+				$css->set_selector('.kb-gallery-type-thumbslider.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel-init ');
+				$css->add_property('margin-bottom', $attributes['gutter'][0] . $gutter_unit );
+			}
 		}
-		
 		if ( isset( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) && isset( $attributes['gutter'][1] ) && is_numeric( $attributes['gutter'][1] ) ) {
 			$css->set_media_state( 'tablet');
 			$css->set_selector('.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id );
@@ -268,8 +295,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
 				$css->add_property('background', 'linear-gradient( 0deg, ' . $css->render_color( $caption_font['background'], ( isset( $caption_font['backgroundOpacity'] ) && is_numeric(  $caption_font['backgroundOpacity'] ) ) ?  $caption_font['backgroundOpacity'] : '0.5' ) . ' 0, ' . $css->render_color( $caption_font['background'], 0 ) . ' 100% )' );
 			}
-			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) && ! empty( $caption_font['size'][0] ) ) {
-				$css->add_property('font-size', $caption_font['size'][0] . ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) );
+			if ( ! empty( $caption_font['size'][0] ) ) {
+				$css->add_property('font-size', $css->get_font_size( $caption_font['size'][0], ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) ) );
 			}
 			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
 				$css->add_property('line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );
@@ -300,7 +327,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_media_state( 'tablet' );
 			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
 			if ( isset( $attributes['captionStyles'][0]['size'][1] ) && ! empty( $attributes['captionStyles'][0]['size'][1] ) ) {
-				$css->add_property('font-size', $attributes['captionStyles'][0]['size'][1] . ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) );
+				$css->add_property('font-size', $css->get_font_size( $attributes['captionStyles'][0]['size'][1], ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['captionStyles'][0]['lineHeight'][1] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][1] ) ) {
 				$css->add_property('line-height', $attributes['captionStyles'][0]['lineHeight'][1] . ( ! isset( $attributes['captionStyles'][0]['lineType'] ) ? 'px' : $attributes['captionStyles'][0]['lineType'] ) );
@@ -313,7 +340,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_media_state( 'mobile' );
 			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
 			if ( isset( $attributes['captionStyles'][0]['size'][2] ) && ! empty( $attributes['captionStyles'][0]['size'][2] ) ) {
-				$css->add_property('font-size', $attributes['captionStyles'][0]['size'][2] . ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) );
+				$css->add_property('font-size', $css->get_font_size( $attributes['captionStyles'][0]['size'][2], ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['captionStyles'][0]['lineHeight'][2] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][2] ) ) {
 				$css->add_property('line-height', $attributes['captionStyles'][0]['lineHeight'][2] . ( ! isset( $attributes['captionStyles'][0]['lineType'] ) ? 'px' : $attributes['captionStyles'][0]['lineType'] ) );
@@ -322,6 +349,293 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		return $css->css_output();
+	}
+	/**
+	 * Build HTML for dynamic blocks
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
+			$images       = ( ! empty( $attributes['imagesDynamic'] ) ? $attributes['imagesDynamic'] : false );
+			if ( ! $images ) {
+				return $content;
+			}
+			$unique_id    = ( ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : 'dynamic' );
+			$type         = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );
+			$image_filter = ( ! empty( $attributes['imageFilter'] ) ? $attributes['imageFilter'] : 'none' );
+			$dot_style    = ( ! empty( $attributes['dotStyle'] ) ? $attributes['dotStyle'] : 'dark' );
+			$arrow_style  = ( ! empty( $attributes['arrowStyle'] ) ? $attributes['arrowStyle'] : 'dark' );
+			$link_to      = ( ! empty( $attributes['linkTo'] ) ? $attributes['linkTo'] : 'none' );
+			$lightbox     = ( ! empty( $attributes['lightbox'] ) ? $attributes['lightbox'] : 'none' );
+			$lightbox_cap = ( ! empty( $attributes['lightboxCaption'] ) && $attributes['lightboxCaption'] ? true : false );
+			$autoplay     = ( ! empty( $attributes['autoPlay'] ) && $attributes['autoPlay'] ? true : false );
+			$trans_speed  = ( ! empty( $attributes['transSpeed'] ) ? $attributes['transSpeed'] : 400 );
+			$auto_speed   = ( ! empty( $attributes['autoSpeed'] ) ? $attributes['autoSpeed'] : 7000 );
+			$slides_sc    = ( ! empty( $attributes['slidesScroll'] ) ? $attributes['slidesScroll'] : '1' );
+			$columns_xxl  = ( ! empty( $attributes['columns'][0] ) ? $attributes['columns'][0] : '3' );
+			$columns_xl   = ( ! empty( $attributes['columns'][1] ) ? $attributes['columns'][1] : '3' );
+			$columns_md   = ( ! empty( $attributes['columns'][2] ) ? $attributes['columns'][2] : '3' );
+			$columns_sm   = ( ! empty( $attributes['columns'][3] ) ? $attributes['columns'][3] : '2' );
+			$columns_xs   = ( ! empty( $attributes['columns'][4] ) ? $attributes['columns'][4] : '1' );
+			$columns_ss   = ( ! empty( $attributes['columns'][5] ) ? $attributes['columns'][5] : '1' );
+			$tcolumns_xxl = ( ! empty( $attributes['thumbnailColumns'][0] ) ? $attributes['thumbnailColumns'][0] : '4' );
+			$tcolumns_xl  = ( ! empty( $attributes['thumbnailColumns'][1] ) ? $attributes['thumbnailColumns'][1] : '4' );
+			$tcolumns_md  = ( ! empty( $attributes['thumbnailColumns'][2] ) ? $attributes['thumbnailColumns'][2] : '4' );
+			$tcolumns_sm  = ( ! empty( $attributes['thumbnailColumns'][3] ) ? $attributes['thumbnailColumns'][3] : '4' );
+			$tcolumns_xs  = ( ! empty( $attributes['thumbnailColumns'][4] ) ? $attributes['thumbnailColumns'][4] : '4' );
+			$tcolumns_ss  = ( ! empty( $attributes['thumbnailColumns'][5] ) ? $attributes['thumbnailColumns'][5] : '4' );
+			$car_align    = ( isset( $attributes['carouselAlign'] ) && false === $attributes['carouselAlign'] ? false : true );
+			$gap          = ( ! empty( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : '10' );
+			$tablet_gap   = ( ! empty( $attributes['gutter'][1] ) ? $attributes['gutter'][1] : $gap );
+			$mobile_gap   = ( ! empty( $attributes['gutter'][2] ) ? $attributes['gutter'][2] : $tablet_gap );
+			$gap_unit     = ( ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px' );
+			// Gallery Class.
+			$gallery_classes = array( 'kb-gallery-ul' );
+			$gallery_classes[] = 'kb-gallery-type-' . esc_attr( $type );
+			if ( 'masonry' === $type ) {
+				$gallery_classes[] = 'kb-masonry-init';
+			}
+			if ( isset( $attributes['mobileForceHover'] ) && true === $attributes['mobileForceHover'] ) {
+				$gallery_classes[] = 'kb-mobile-force-hover';
+			}
+			$gallery_classes[] = 'kb-gallery-id-' . esc_attr( $unique_id );
+			$gallery_classes[] = 'kb-gallery-caption-style-' . ( ! empty( $attributes['captionStyle'] ) ? esc_attr( $attributes['captionStyle'] ) : 'bottom-hover' );
+			$gallery_classes[] = 'kb-gallery-filter-' . ( ! empty( $attributes['imageFilter'] ) ? esc_attr( $attributes['imageFilter'] ) : 'none' );
+			if ( 'media' === $link_to && 'magnific' === $lightbox ) {
+				$gallery_classes[] = 'kb-gallery-magnific-init';
+			}
+			$content = '<div class="wp-block-kadence-advancedgallery kb-gallery-wrap-id-' . esc_attr( $unique_id ) . '">';
+			switch ( $type ) {
+				case 'carousel':
+					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
+					$content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';
+						$content .= $this->render_gallery_images( $image, $attributes );
+						$content .= '</div>';
+					}
+					$content .= '</div>';
+					$content .= '</div>';
+					$content .= '</div>';
+					break;
+				case 'fluidcarousel':
+					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
+					$content .= '<div class="kt-blocks-carousel-init kb-blocks-fluid-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . ( $car_align ? '' : ' kb-carousel-mode-align-left' ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="1" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-type="fluidcarousel" data-slider-center-mode="' . esc_attr( ( $car_align ? 'true' : 'false' ) ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';
+						$content .= $this->render_gallery_images( $image, $attributes );
+						$content .= '</div>';
+					}
+					$content .= '</div>';
+					$content .= '</div>';
+					$content .= '</div>';
+					break;
+				case 'slider':
+					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
+					$content .= '<div class="kt-blocks-carousel-init kb-blocks-slider kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="1" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '"data-slider-type="slider"  data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= '<div class="kb-slide-item kb-gallery-slide-item">';
+						$content .= $this->render_gallery_images( $image, $attributes );
+						$content .= '</div>';
+					}
+					$content .= '</div>';
+					$content .= '</div>';
+					$content .= '</div>';
+					break;
+				case 'thumbslider':
+					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
+					$content .= '<div id="kb-slider-' . esc_attr( $unique_id ) . '" class="kt-blocks-carousel-init kb-blocks-slider kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $tcolumns_xxl ) . '" data-columns-xl="' . esc_attr( $tcolumns_xl ) . '" data-columns-md="' . esc_attr( $tcolumns_md ) . '" data-columns-sm="' . esc_attr( $tcolumns_sm ) . '" data-columns-xs="' . esc_attr( $tcolumns_xs ) . '" data-columns-ss="' . esc_attr( $tcolumns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="1" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="false" data-slider-hover-pause="false" data-slider-type="thumbnail" data-slider-nav="kb-thumb-slider-' . esc_attr( $unique_id ) . '"  data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';
+						$content .= $this->render_gallery_images( $image, $attributes );
+						$content .= '</div>';
+					}
+					$content .= '</div>';
+					$content .= '<div id="kb-thumb-slider-' . esc_attr( $unique_id ) . '" class="kb-blocks-slider kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="1" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="false" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-type="thumbnail" data-slider-nav="kb-slider-' . esc_attr( $unique_id ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';
+						$content .= $this->render_gallery_thumb_images( $image, $attributes );
+						$content .= '</div>';
+					}
+					$content .= '</div>';
+					$content .= '</div>';
+					$content .= '</div>';
+					break;
+				case 'tiles':
+					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= $this->render_gallery_images( $image, $attributes );
+					}
+					$content .= '</ul>';
+					break;
+				default:
+					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-item-selector=".kadence-blocks-gallery-item" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '">';
+					foreach ( $images as $key => $image ) {
+						$content .= $this->render_gallery_images( $image, $attributes );
+					}
+					$content .= '</ul>';
+					break;
+			}
+			$content .= '</div>';
+		}
+		return $content;
+	}
+	/**
+	 * Output Gallery image markeup.
+	 */
+	public function render_gallery_images( $image, $attributes ) {
+		$type          = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );
+		$image_ratio   = ( ! empty( $attributes['imageRatio'] ) ? $attributes['imageRatio'] : 'land32' );
+		$show_caption  = ( ! empty( $attributes['showCaption'] ) && $attributes['showCaption'] ? true : false );
+		$caption_style = ( ! empty( $attributes['captionStyle'] ) ? $attributes['captionStyle'] : 'bottom-hover' );
+		$link_to       = ( ! empty( $attributes['linkTo'] ) ? $attributes['linkTo'] : 'none' );
+		$link_target   = apply_filters( 'kadence_blocks_pro_dynamic_gallery_link_target', '', $image, $attributes );
+		$lightbox      = ( ! empty( $attributes['lightbox'] ) ? $attributes['lightbox'] : 'none' );
+		$caption       = ( ! empty( $image['caption'] ) ? $image['caption'] : '' );
+		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
+		$href = '';
+		$image_id = ( ! empty( $image['ID'] ) ? $image['ID'] : '' );
+		if ( empty( $image_id ) ) {
+			$image_id = ( ! empty( $image['id'] ) ? $image['id'] : '' );
+		}
+		$image_src  = ( ! empty( $image['url'] ) ? $image['url'] : '' );
+		$image_full = ( ! empty( $image['fullUrl'] ) ? $image['fullUrl'] : $image['url'] );
+		$image_alt  = ( ! empty( $image['alt'] ) ? $image['alt'] : get_post_meta( $image_id, '_wp_attachment_image_alt', true ) );
+		switch ( $link_to ) {
+			case 'media':
+				$href = ( ! empty( $image_full ) ? $image_full : '' );
+				break;
+			case 'custom':
+				if ( ! empty( $image_id ) && isset( $attributes['kadenceDynamic'] ) && is_array( $attributes['kadenceDynamic'] ) && isset( $attributes['kadenceDynamic']['link'] ) && is_array( $attributes['kadenceDynamic']['link'] ) && isset( $attributes['kadenceDynamic']['link']['enable'] ) && $attributes['kadenceDynamic']['link']['enable'] ) {
+					if ( ! empty( $attributes['kadenceDynamic']['link']['field'] ) && strpos( $attributes['kadenceDynamic']['link']['field'], '|' ) !== false ) {
+						$field_split = explode( '|', $attributes['kadenceDynamic']['link']['field'], 2 );
+						$group = ( isset( $field_split[0] ) && ! empty( $field_split[0] ) ? $field_split[0] : 'post' );
+						$field = ( isset( $field_split[1] ) && ! empty( $field_split[1] ) ? $field_split[1] : '' );
+					} else {
+						$field = '';
+						$group = '';
+					}
+					$args = array(
+						'source'       => $image_id,
+						'origin'       => 'core',
+						'group'        => $group,
+						'type'         => 'link',
+						'field'        => $field,
+						'custom'       => $attributes['kadenceDynamic']['link']['custom'],
+						'para'         => $attributes['kadenceDynamic']['link']['para'],
+						'force-string' => false,
+						'before'       => $attributes['kadenceDynamic']['link']['before'],
+						'after'        => null,
+						'fallback'     => false,
+						'relate'       => ( isset( $blockattr['kadenceDynamic']['link']['relate'] ) ? $blockattr['kadenceDynamic']['link']['relate'] : '' ),
+						'relcustom'    => ( isset( $blockattr['kadenceDynamic']['link']['relcustom'] ) ? $blockattr['kadenceDynamic']['link']['relcustom'] : '' ),
+					);
+					$href = $this->get_content( $args );
+				}
+				break;
+			case 'attachment':
+				if ( ! empty( $image_id ) ) {
+					$href = get_permalink( $image_id );
+				}
+				break;
+		}
+		$image_contain_classes = array( 'kb-gallery-image-contain' );
+		if ( ( ( 'grid' === $type || 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type ) && ! empty( $image_ratio ) ) || ( 'fluidcarousel' !== $type && 'tiles' !== $type && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) ) {
+			$image_contain_classes[] = 'kadence-blocks-gallery-intrinsic';
+		}
+		if ( ! empty( $image_ratio ) && ( 'grid' === $type || 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type ) ) {
+			$image_contain_classes[] = 'kb-gallery-image-ratio-' . $image_ratio;
+		}
+		$fig_classes = array( 'kb-gallery-figure' );
+		if ( ! empty( $href ) ) {
+			$fig_classes[] = 'kb-gallery-item-has-link';
+		}
+		if ( $show_caption ) {
+			if ( ! empty( $caption ) ) {
+				$fig_classes[] = 'kadence-blocks-gallery-item-has-caption';
+			}
+		} else {
+			$fig_classes[] = 'kadence-blocks-gallery-item-hide-caption';
+		}
+		if ( ! empty( $image_ratio ) && ( 'grid' === $type || 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type ) ) {
+			$image_contain_classes[] = 'kb-has-image-ratio-' . $image_ratio;
+		}
+		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
+		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
+		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? $caption : '' ) . '</' . $fig_tag . '>';
+		$padding_bottom = '';
+		if ( ( 'masonry' === $type || 'fluidcarousel' === $type ) && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
+			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
+		} else if ( ! empty( $image_ratio ) && 'inherit' === $image_ratio && 'grid' === $type && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
+			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
+		}
+		$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="wp-image-' . esc_attr( $image_id ) . '"/></div>';
+		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item">';
+		$output .= '<div class="kadence-blocks-gallery-item-inner">';
+		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';
+		if ( ! empty( $href ) ) {
+			$output .= '<a href="' . esc_url( $href ) . '"' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $caption ) && is_string( $caption ) ? ' data-description="' . esc_attr( $caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'rel="noopener noreferrer"' : '' ) . '>';
+		}
+		$output .= '<div class="kb-gal-image-radius" ' . ( ! empty( $padding_bottom ) ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '>';
+		$output .= $img;
+		if ( $show_caption && ! empty( $caption ) && is_string( $caption ) && 'below' !== $caption_style ) {
+			$output .= $figcap;
+		}
+		$output .= '</div>';
+		if ( $show_caption && ! empty( $caption ) && is_string( $caption ) && 'below' === $caption_style ) {
+			$output .= $figcap;
+		}
+		if ( ! empty( $href ) ) {
+			$output .= '</a>';
+		}
+		$output .= '</figure>';
+		$output .= '</div>';
+		$output .= '</' . $item_tag . '>';
+		return $output;
+	}
+	/**
+	 * Output Gallery image markeup.
+	 */
+	public function render_gallery_thumb_images( $image, $attributes ) {
+		$type          = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );
+		$image_ratio   = ( ! empty( $attributes['thumbnailRatio'] ) ? $attributes['thumbnailRatio'] : 'land32' );
+		$image_id = ( ! empty( $image['ID'] ) ? $image['ID'] : '' );
+		if ( empty( $image_id ) ) {
+			$image_id = ( ! empty( $image['id'] ) ? $image['id'] : '' );
+		}
+		$image_src = ( ! empty( $image['url'] ) ? $image['url'] : '' );
+		$image_alt = ( ! empty( $image['alt'] ) ? $image['alt'] : get_post_meta( $image_id, '_wp_attachment_image_alt', true ) );
+		$image_full = ( ! empty( $image['fullUrl'] ) ? $image['fullUrl'] : $image['url'] );
+		$image_contain_classes = array( 'kb-gallery-image-contain kadence-blocks-gallery-intrinsic' );
+		if ( ! empty( $image_ratio ) ) {
+			$image_contain_classes[] = 'kb-gallery-image-ratio-' . $image_ratio;
+		}
+		$fig_classes = array( 'kb-gallery-figure' );
+		if ( ! empty( $image_ratio ) ) {
+			$image_contain_classes[] = 'kb-has-image-ratio-' . $image_ratio;
+		}
+		$padding_bottom = '';
+		$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="wp-image-' . esc_attr( $image_id ) . '"/></div>';
+		$output = '<div class="kadence-blocks-gallery-thumb-item">';
+		$output .= '<div class="kadence-blocks-gallery-thumb-item-inner">';
+		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';
+		$output .= '<div class="kb-gal-image-radius" ' . ( ! empty( $padding_bottom ) ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '>';
+		$output .= $img;
+		$output .= '</div>';
+		$output .= '</figure>';
+		$output .= '</div>';
+		$output .= '</div>';
+		return $output;
 	}
 
 	/**
@@ -338,12 +652,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			return;
 		}
 
-		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kadence-splide' ), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-glightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kadence-blocks-splide' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-masonry-init.min.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-simple-init.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/glightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-glight-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-glight-init.min.js', array( 'kadence-glightbox' ), KADENCE_BLOCKS_VERSION, true );
 
 	}
 }

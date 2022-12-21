@@ -627,7 +627,7 @@ function KadenceTestimonials({
                     <InspectorControls>
 
                         <InspectorControlTabs
-                            panelName={'icon'}
+                            panelName={'testimonials'}
                             setActiveTab={(value) => setActiveTab(value)}
                             activeTab={activeTab}
                         />
@@ -1530,7 +1530,7 @@ function KadenceTestimonials({
 
                         {( activeTab === 'advanced') && (
                             <>
-                                <KadencePanelBody>
+                                <KadencePanelBody panelName={'kb-testimonials-spacings-settings'}>
                                     <ResponsiveMeasureRangeControl
                                         label={__('Container Padding', 'kadence-blocks')}
                                         value={containerPadding}

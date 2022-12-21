@@ -626,22 +626,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'background-attachment', $overbg_attach );
 						$css->add_property( 'background-repeat', ( isset( $attributes['overlayBgImgRepeat'] ) ? $attributes['overlayBgImgRepeat'] : 'no-repeat' ) );
 					}
-					if ( ! empty( $attributes['bgImg'] ) ) {
-						if ( isset( $attributes['bgImgAttachment'] ) ) {
-							if ( 'parallax' === $attributes['bgImgAttachment'] ) {
-								$bg_attach = 'fixed';
-							} else {
-								$bg_attach = $attributes['bgImgAttachment'];
-							}
-						} else {
-							$bg_attach = 'scroll';
-						}
-						$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['bgImg'] ) );
-						$css->add_property( 'background-size', ( isset( $attributes['bgImgSize'] ) ? $attributes['bgImgSize'] : 'cover' ) );
-						$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
-						$css->add_property( 'background-attachment', $bg_attach );
-						$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
-					}
 					break;
 				case 'gradient':
 					$css->add_property( 'background', $attributes['overlayGradient'] );
@@ -1170,7 +1154,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$outer_classes[] = 'kb-v-sm-hidden';
 			}
 			if ( ! empty( $attributes['bgColorClass'] ) ) {
-				$outer_classes[] = 'has-theme-' . $attributes['bgColorClass'] . '-background-color';
+				$outer_classes[] = 'has-' . $attributes['bgColorClass'] . '-background-color';
 			}
 			if ( ! empty( $attributes['bgImg'] ) || ! empty( $attributes['bgColor'] ) || ! empty( $attributes['gradient'] ) || ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlayGradient'] ) ) {
 				$outer_classes[] = 'kt-row-has-bg';
@@ -1281,7 +1265,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'speed' => apply_filters( 'kadence_blocks_parallax_speed', -0.1 ),
 			)
 		);
-		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'includes/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'includes/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-slick-init.min.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );

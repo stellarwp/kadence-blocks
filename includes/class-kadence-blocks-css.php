@@ -188,9 +188,10 @@ class Kadence_Blocks_CSS {
 	protected $font_sizes = array(
 		'sm' => 'var(--global-kb-font-size-sm, 0.9rem)',
 		'md' => 'var(--global-kb-font-size-md, 1.25rem)',
-		'lg' => 'var(--global-kb-font-size-lg, 3rem)',
-		'xl' => 'var(--global-kb-font-size-xl, 4rem)',
-		'xxl' => 'var(--global-kb-font-size-xxl, 5rem)',
+		'lg' => 'var(--global-kb-font-size-lg, 2rem)',
+		'xl' => 'var(--global-kb-font-size-xl, 3rem)',
+		'xxl' => 'var(--global-kb-font-size-xxl, 4rem)',
+		'3xl' => 'var(--global-kb-font-size-xxxl, 5rem)',
 	);
 	/**
 	 * Gaps variables used in string based gutters.
@@ -737,7 +738,7 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'font-weight', $font['weight'] );
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		$line_type = ( isset( $font['lineType'] ) && ! empty( $font['lineType'] ) ? $font['lineType'] : 'px' );
+		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : 'px' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
 		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
 		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
@@ -2232,3 +2233,4 @@ class Kadence_Blocks_CSS {
 		$this->spacing_sizes = $sizes;
 	}
 }
+Kadence_Blocks_CSS::get_instance();

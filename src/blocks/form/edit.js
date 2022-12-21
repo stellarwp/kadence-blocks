@@ -299,13 +299,6 @@ function KadenceForm( props ) {
 
 	const marginMouseOver = mouseOverVisualizer();
 
-	const fudnctionNfame = ( prevProps ) => {
-		// Deselect field when deselecting the block
-		if ( !isSelected && prevProps.isSelected ) {
-			setSelectedField( null );
-		}
-	};
-
 	const deselectField = () => {
 		setSelectedField( null );
 	};
@@ -317,12 +310,12 @@ function KadenceForm( props ) {
 	};
 
 	const onMove = ( oldIndex, newIndex ) => {
-		const fields = [ ...fields ];
-		fields.splice( newIndex, 1, fields[ oldIndex ] );
-		fields.splice( oldIndex, 1, fields[ newIndex ] );
+		const tempFields = [ ...fields ];
+		tempFields.splice( newIndex, 1, fields[ oldIndex ] );
+		tempFields.splice( oldIndex, 1, fields[ newIndex ] );
 		setSelectedField( newIndex );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 
@@ -343,27 +336,28 @@ function KadenceForm( props ) {
 	};
 
 	const onRemoveField = ( index ) => {
-		const fields = filter( fields, ( item, i ) => index !== i );
+		const tempFields = filter( fields, ( item, i ) => index !== i );
 		setSelectedField( null );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 	const onKeyRemoveField = ( index ) => {
-		const fields = filter( fields, ( item, i ) => index !== i );
+		const tempFields = filter( fields, ( item, i ) => index !== i );
 		setSelectedField( null );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 	const onDuplicateField = ( index ) => {
-		const duplicate = fields[ index ];
-		fields.splice( index + 1, 0, duplicate );
+		const tempFields = fields;
+		const duplicate = tempFields[ index ];
+		tempFields.splice( index + 1, 0, duplicate );
 		setSelectedField( index + 1 );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
-		saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );
+		//saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );
 	};
 	const saveFields = ( value, index ) => {
 
@@ -1276,8 +1270,8 @@ function KadenceForm( props ) {
 				tabIndex="0"
 				aria-label={ariaLabel}
 				role="button"
-				onClick={( index ) => onSelectField( index )}
-				onFocus={( index ) => onSelectField( index )}
+				onClick={() => onSelectField( index )}
+				onFocus={() => onSelectField( index )}
 				onKeyDown={( event ) => {
 					const { keyCode } = event;
 					if ( keyCode === DELETE ) {
@@ -1495,17 +1489,17 @@ function KadenceForm( props ) {
 				{isFieldSelected && (
 					<>
 						<div className="kadence-blocks-field-item-controls kadence-blocks-field-item__move-menu">
-							<IconButton
+							<Button
 								icon="arrow-up"
-								onClick={index === 0 ? undefined : onMoveBackward( index )}
+								onClick={() => index === 0 ? undefined : onMoveBackward( index )}
 								className="kadence-blocks-field-item__move-backward"
 								label={__( 'Move Field Up', 'kadence-blocks' )}
 								aria-disabled={index === 0}
 								disabled={!isFieldSelected || index === 0}
 							/>
-							<IconButton
+							<Button
 								icon="arrow-down"
-								onClick={( index + 1 ) === fields.length ? undefined : onMoveForward( index )}
+								onClick={() => ( index + 1 ) === fields.length ? undefined : onMoveForward( index )}
 								className="kadence-blocks-field-item__move-forward"
 								label={__( 'Move Field Down', 'kadence-blocks' )}
 								aria-disabled={( index + 1 ) === fields.length}
@@ -1513,14 +1507,14 @@ function KadenceForm( props ) {
 							/>
 						</div>
 						<div className="kadence-blocks-field-item-controls kadence-blocks-field-item__inline-menu">
-							<IconButton
+							<Button
 								icon="admin-page"
 								onClick={() => onDuplicateField( index )}
 								className="kadence-blocks-field-item__duplicate"
 								label={__( 'Duplicate Field', 'kadence-blocks' )}
 								disabled={!isFieldSelected}
 							/>
-							<IconButton
+							<Button
 								icon="no-alt"
 								onClick={() => onRemoveField( index )}
 								className="kadence-blocks-field-item__remove"

@@ -26,7 +26,7 @@ export default function PaddingResizer( {
 	const previewPaddingLabel = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionName( padding[ index ], paddingUnit ) : __( 'Unset', 'kadence-blocks' ) ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] && '' !== tabletPadding[ index ] ? getSpacingOptionName( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] && '' !== mobilePadding[ index ] ? getSpacingOptionName( mobilePadding[ index ] ) : '' ) );
 	const previewPadding = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionSize( padding[ index ] ) : '' ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] && '' !== tabletPadding[ index ] ? getSpacingOptionSize( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] && '' !== mobilePadding[ index ] ? getSpacingOptionSize( mobilePadding[ index ] ) : '' ) );
 	let paddingType = 'variable';
-	if ( Number( padding[ index ] ) === parseFloat( padding[ index ] ) ) {
+	if ( padding?.[ index ] !== undefined && Number( padding?.[ index ] ) === parseFloat( padding?.[ index ] ) ) {
 		paddingType = 'normal';
 	}
 	return (

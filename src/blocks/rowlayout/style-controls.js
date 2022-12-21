@@ -1210,15 +1210,8 @@ const deskOverlayControls = (
 						max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
 						step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
 						min={ 0 }
-						allowEmpty={ true }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-						] }
-						firstIcon={ topLeftIcon }
-						secondIcon={ topRightIcon }
-						thirdIcon={ bottomRightIcon }
-						fourthIcon={ bottomLeftIcon }
+						isBorderRadius={ true }
+						allowEmpty={true}
 					/>
 				</KadencePanelBody>
 			) }

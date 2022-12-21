@@ -18,6 +18,7 @@
 .kb-tag-level-control .components-toolbar {
     width: 100%;
     display: grid;
+    padding:0 1px;
 	/* autoprefixer: ignore next */
 	grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
     min-height: 40px;

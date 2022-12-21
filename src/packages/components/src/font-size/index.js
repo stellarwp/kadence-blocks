@@ -23,6 +23,7 @@ import {
 	Button,
 	DropdownMenu,
 	Popover,
+	SelectControl,
 	ButtonGroup,
 	__experimentalUnitControl as UnitControl
 } from '@wordpress/components';
@@ -109,6 +110,7 @@ export default function FontSizeControl( {
 	setCustomControl = null,
 	parentLabel = null,
 	reset = true,
+	radio = true,
 } ) {
 	const [ isCustom, setIsCustom ] = useState( false );
 	useEffect( () => {
@@ -133,6 +135,13 @@ export default function FontSizeControl( {
 			onChange( defaultValue );
 		}
 	}
+	const selectOptions = [ {
+		value: '',
+		output: '',
+		size: '',
+		label:  __( 'Inherit', 'kadence-blocks' ),
+		name:  __( 'Inherit', 'kadence-blocks' ),
+	}, ...options ];;
 	return [
 		onChange && (
 			<div className={ `components-base-control component-font-size-control kadence-font-size-control${ className ? ' ' + className : '' }` }>
@@ -155,7 +164,7 @@ export default function FontSizeControl( {
 						</div>
 					</div>
 				) }
-				{ ! realIsCustomControl && (
+				{ ! realIsCustomControl && radio && (
 					<div className={ 'kadence-controls-content' }>
 						<ButtonGroup className="kadence-radio-container-control">
 							{ options.map( ( option, index ) =>
@@ -193,6 +202,39 @@ export default function FontSizeControl( {
 								/>
 							) }
 						</ButtonGroup>
+					</div>
+				) }
+				{ ! realIsCustomControl && ! radio && (
+					<div className={ 'kadence-controls-content kadence-font-size-select-control-wrap' }>
+						<SelectControl
+							className="kadence-font-size-select-control"
+							value={ currentValue }
+							options={ selectOptions }
+							onChange={ (value) => {
+								if ( currentValue == value && defaultValue == '' ) {
+									onChange( '' );
+								} else {
+									onChange( value )}
+								}
+							}
+						/>			
+						{ ! disableCustomSizes && (
+							<ButtonGroup className="kadence-radio-container-control">
+								<Button
+									className={'kadence-radio-item radio-custom only-icon'}
+									label={ __( 'Set custom size', 'kadence-blocks' ) }
+									icon={ settings }
+									onClick={ () => {
+										if ( currentValue && unit === 'px' ) {
+											onChange( getOptionSize( options, currentValue ) );
+										}
+										realSetIsCustom( true );
+									} }
+									isPressed={ false }
+									isTertiary={ true }
+								/>
+							</ButtonGroup>
+						) }
 					</div>
 				) }
 				{ realIsCustomControl && (

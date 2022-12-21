@@ -4,6 +4,7 @@ export { default as advancedGetPreviewSize } from './advanced-get-preview-size';
 export { default as showSettings } from './show-settings';
 export { default as hexToRGBA } from './hex-to-rgba';
 export { default as KadenceColorOutput } from './kadence-color-output';
+export { default as ConvertColor } from './convert-color';
 export { default as DeprecatedKadenceColorOutput } from './deprecated-kadence-color-output';
 export { default as fetchJson } from './fetch-json';
 export { default as capitalizeFirstLetter } from './capital-first';

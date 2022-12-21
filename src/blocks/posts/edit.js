@@ -234,7 +234,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 			<KadenceInspectorControls blockSlug={ 'kadence/posts' }>
 
 				<InspectorControlTabs
-					panelName={'countdown'}
+					panelName={'posts'}
 					setActiveTab={( value ) => setActiveTab( value )}
 					activeTab={activeTab}
 				/>

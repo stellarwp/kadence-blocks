@@ -54,8 +54,8 @@ function Inspector( {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const {
-		start,
-		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -119,7 +119,7 @@ function Inspector( {
 		<KadenceInspectorControls blockSlug={ 'kadence/countup' }>
 
 			<InspectorControlTabs
-				panelName={ 'count-up' }
+				panelName={ 'countup' }
 				setActiveTab={ ( value ) => setActiveTab( value ) }
 				activeTab={ activeTab }
 			/>
@@ -137,9 +137,10 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Starting Number', 'kadence-blocks' )}
-									value={start}
-									onChange={( value ) => setAttributes( { start: parseInt( value ) } )}
+									value={startDecimal}
+									onChange={( value ) => setAttributes( { startDecimal: value } )}
 									min={0}
+									step={0.01}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>
@@ -148,9 +149,10 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Ending Number', 'kadence-blocks' )}
-									value={end}
-									onChange={( value ) => setAttributes( { end: parseInt( value ) } )}
+									value={endDecimal}
+									onChange={( value ) => setAttributes( { endDecimal: value } )}
 									min={0}
+									step={0.01}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>
@@ -303,7 +305,7 @@ function Inspector( {
 									}
 								</TabPanel>
 								<TypographyControls
-									fontGroup={'heading'}
+									fontGroup={'countup-heading'}
 									tagLowLevel={2}
 									tagHighLevel={7}
 									otherTags={{ 'p': true, 'span': true, 'div': true }}
@@ -320,7 +322,9 @@ function Inspector( {
 									lineHeight={titleFont[ 0 ].lineHeight}
 									onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
 									lineHeightType={titleFont[ 0 ].lineType}
-									onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
+									onLineHeightType={( value ) => {
+										saveTitleFont( { lineType: value } )
+									}}
 									letterSpacing={titleFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
 									fontFamily={titleFont[ 0 ].family}
@@ -501,7 +505,7 @@ function Inspector( {
 							onFontSubset={( value ) => saveNumberFont( { subset: value } )}
 						/>
 						<ResponsiveMeasureRangeControl
-							label={__( 'Number Padding', 'kadence-blocks' )}
+							label={__( 'Padding', 'kadence-blocks' )}
 							value={numberPadding}
 							tabletValue={numberTabletPadding}
 							mobileValue={numberMobilePadding}
@@ -518,7 +522,7 @@ function Inspector( {
 							onMouseOut={ numberPaddingMouseOver.onMouseOut }
 						/>
 						<ResponsiveMeasureRangeControl
-							label={__( 'Number Margin', 'kadence-blocks' )}
+							label={__( 'Margin', 'kadence-blocks' )}
 							value={numberMargin}
 							tabletValue={numberTabletMargin}
 							mobileValue={numberMobileMargin}
