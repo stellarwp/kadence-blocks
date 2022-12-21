@@ -609,6 +609,12 @@ function KadenceTestimonials({
                 {(layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-blocks-carousel .slick-next { right: ${columnGap / 2}px; }` : '')}
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
+                {(layout === 'grid' ) && (
+                    `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
+                        grid-row-gap: ${columnGap}px;
+                        grid-column-gap: ${columnGap}px;
+                    }`
+                ) }
             </style>
             {showSettings('allSettings') && (
                 <Fragment>
