@@ -102,7 +102,7 @@ export const FONT_SIZES_MAP = [
 	{
 		value: 'xl',
 		output: 'var(--global-kb-font-size-xl, 3rem)',
-		size: 40,
+		size: 48,
 		label:  __( 'XL', 'kadence-blocks' ),
 		name:  __( 'X Large', 'kadence-blocks' ),
 	},

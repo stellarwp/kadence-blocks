@@ -60,21 +60,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		// // Add Main heading font
-		// if ( isset( $attributes['googleFont'] ) && isset( $attributes['loadGoogleFont'] ) && ( ! isset( $attributes['loadGoogleFont'] ) || true === $attributes['loadGoogleFont'] ) ) {
-		// 	$font_variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : '';
-		// 	$font_subset  = isset( $attributes['fontSubset'] ) ? $attributes['fontSubset'] : '';
-
-		// 	$css->maybe_add_google_font( $attributes['typography'], $font_variant, $font_subset );
-		// }
-
-		// // Add Mark heading font
-		// if ( isset( $attributes['markGoogleFont'] ) && isset( $attributes['markLoadGoogleFont'] ) && ( ! isset( $attributes['markLoadGoogleFont'] ) || true === $attributes['markLoadGoogleFont'] ) ) {
-		// 	$font_variant = isset( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : '';
-		// 	$font_subset  = isset( $attributes['markFontSubset'] ) ? $attributes['markFontSubset'] : '';
-
-		// 	$css->maybe_add_google_font( $attributes['markTypography'], $font_variant, $font_subset );
-		// }
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		// Issue with span tag.
 		if ( isset( $attributes['htmlTag'] ) && 'span' === $attributes['htmlTag'] ) {
@@ -100,6 +85,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Spacing.
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
+		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
 
 		// Style.
 		if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
@@ -125,13 +111,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google_font = ( ! isset( $attributes['loadGoogleFont'] ) || isset( $attributes['loadGoogleFont'] ) && true === $attributes['loadGoogleFont'] ? true : false );
-			if ( ! empty( $attributes['fontWeight'] ) ) {
-				$font_variant = $attributes['fontWeight'];
-			}
-			if ( ! empty( $attributes['fontStyle'] ) ) {
-				$font_variant .= $attributes['fontStyle'];
-			}
-			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google_font, $font_variant ) );
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google_font, $attributes['fontVariant'] ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
@@ -164,75 +144,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable'] ) {
 			$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 		}
-		// Highlight.
-		if ( isset( $attributes['markBorder'] ) || isset( $attributes['markBorderWidth'] ) || isset( $attributes['markBorderStyle'] ) || isset( $attributes['markPadding'] ) || isset( $attributes['markLetterSpacing'] ) || isset( $attributes['markSize'] ) || isset( $attributes['markLineHeight'] ) || isset( $attributes['markTypography'] ) || isset( $attributes['markColor'] ) || isset( $attributes['markBG'] ) || isset( $attributes['markTextTransform'] ) ) {
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
-			if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
-			}
-			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][0] ) ) {
-				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][0], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
-			}
-			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][0] ) ) {
-				$css->add_property( 'line-height', $attributes['markLineHeight'][0] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
-			}
-			if ( isset( $attributes['markTypography'] ) && ! empty( $attributes['markTypography'] ) ) {
-				$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'] ) );
-			}
-			if ( isset( $attributes['markFontWeight'] ) && ! empty( $attributes['markFontWeight'] ) ) {
-				$css->add_property( 'font-weight', $css->render_font_weight( $attributes['markFontWeight'] ) );
-			}
-			if ( isset( $attributes['markFontStyle'] ) && ! empty( $attributes['markFontStyle'] ) ) {
-				$css->add_property( 'font-style', $attributes['markFontStyle'] );
-			}
-			if ( isset( $attributes['markColor'] ) && ! empty( $attributes['markColor'] ) ) {
-				$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
-			}
-			if ( isset( $attributes['markTextTransform'] ) && ! empty( $attributes['markTextTransform'] ) ) {
-				$css->add_property( 'text-transform', $attributes['markTextTransform'] );
-			}
-			if ( isset( $attributes['markBG'] ) && ! empty( $attributes['markBG'] ) ) {
-				$alpha = ( isset( $attributes['markBGOpacity'] ) && ! empty( $attributes['markBGOpacity'] ) ? $attributes['markBGOpacity'] : 1 );
-				$css->add_property( 'background', $css->render_color( $attributes['markBG'], $alpha ) );
-			}
-			if ( isset( $attributes['markBorder'] ) && ! empty( $attributes['markBorder'] ) ) {
-				$alpha = ( isset( $attributes['markBorderOpacity'] ) && ! empty( $attributes['markBorderOpacity'] ) ? $attributes['markBorderOpacity'] : 1 );
-				$css->add_property( 'border-color', $css->render_color( $attributes['markBorder'], $alpha ) );
-			}
-			if ( isset( $attributes['markBorderWidth'] ) && ! empty( $attributes['markBorderWidth'] ) ) {
-				$css->add_property( 'border-width', $attributes['markBorderWidth'] . 'px' );
-			}
-			if ( isset( $attributes['markBorderStyle'] ) && ! empty( $attributes['markBorderStyle'] ) ) {
-				$css->add_property( 'border-style', $attributes['markBorderStyle'] );
-			}
-			if ( isset( $attributes['markPadding'] ) && is_array( $attributes['markPadding'] ) ) {
-				$css->add_property( 'padding', ( isset( $attributes['markPadding'][0] ) ? $attributes['markPadding'][0] . 'px' : 0 ) . ' ' . ( isset( $attributes['markPadding'][1] ) ? $attributes['markPadding'][1] . 'px' : 0 ) . ' ' . ( isset( $attributes['markPadding'][2] ) ? $attributes['markPadding'][2] . 'px' : 0 ) . ' ' . ( isset( $attributes['markPadding'][3] ) ? $attributes['markPadding'][3] . 'px' : 0 ) );
-			}
-		}
-		// Link.
-		if ( ! empty( $attributes['linkColor'] ) ) {
-			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id . ', .kt-adv-heading-link' . $unique_id . ' .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
-			if ( ! empty( $attributes['linkColor'] ) ) {
-				$css->add_property( 'color', $css->render_color( $attributes['linkColor'] ) );
-			}
-		}
-		if ( ! empty( $attributes['linkHoverColor'] ) ) {
-			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover, .kt-adv-heading-link' . $unique_id . ':hover .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
-			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
-		}
-		if ( ! empty( $attributes['linkStyle'] ) ) {
-			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id );
-			if ( 'none' === $attributes['linkStyle'] ) {
-				$css->add_property( 'text-decoration', 'none' );
-			} else if ( $attributes['linkStyle'] === 'underline' ) {
-				$css->add_property( 'text-decoration', 'underline' );
-			} else if ( $attributes['linkStyle'] === 'hover_underline' ) {
-				$css->add_property( 'text-decoration', 'none' );
-				$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover' );
-				$css->add_property( 'text-decoration', 'underline' );
-			}
-		}
-		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		$css->set_media_state( 'tablet' );
 		// Old size first.
 		if ( ! empty( $attributes['tabSize'] ) ) {
@@ -249,32 +160,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['tabletAlign'] ) ) {
 			$css->add_property( 'text-align', $attributes['tabletAlign'] . '!important' );
 		}
-		$css->set_media_state( 'desktop' );
-		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][1] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][1] ) ) {
-			// Tablet.
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
-			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][1] ) ) {
-				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
-			}
-			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][1] ) ) {
-				$css->add_property( 'line-height', $attributes['markLineHeight'][1] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
-			}
-			if ( isset( $attributes['markTabletPadding'] ) && is_array( $attributes['markTabletPadding'] ) && isset( $attributes['markTabletPadding'][0] ) && is_numeric( $attributes['markTabletPadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['markTabletPadding'][0] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markTabletPadding'] ) && is_array( $attributes['markTabletPadding'] ) && isset( $attributes['markTabletPadding'][1] ) && is_numeric( $attributes['markTabletPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['markTabletPadding'][1] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markTabletPadding'] ) && is_array( $attributes['markTabletPadding'] ) && isset( $attributes['markTabletPadding'][2] ) && is_numeric( $attributes['markTabletPadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['markTabletPadding'][2] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markTabletPadding'] ) && is_array( $attributes['markTabletPadding'] ) && isset( $attributes['markTabletPadding'][3] ) && is_numeric( $attributes['markTabletPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['markTabletPadding'][3] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		$css->set_media_state( 'mobile' );
 		// Old size first.
 		if ( ! empty( $attributes['mobileSize'] ) ) {
@@ -292,29 +177,97 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
 		}
 		$css->set_media_state( 'desktop' );
-		if ( ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][2] ) ) || isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][2] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
-			if ( isset( $attributes['markSize'] ) && is_array( $attributes['markSize'] ) && ! empty( $attributes['markSize'][2] ) ) {
-				$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][2], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
-			}
-			if ( isset( $attributes['markLineHeight'] ) && is_array( $attributes['markLineHeight'] ) && ! empty( $attributes['markLineHeight'][2] ) ) {
-				$css->add_property( 'line-height', $attributes['markLineHeight'][2] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
-			}
-			if ( isset( $attributes['markMobilePadding'] ) && is_array( $attributes['markMobilePadding'] ) && isset( $attributes['markMobilePadding'][0] ) && is_numeric( $attributes['markMobilePadding'][0] ) ) {
-				$css->add_property( 'padding-top', $attributes['markMobilePadding'][0] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markMobilePadding'] ) && is_array( $attributes['markMobilePadding'] ) && isset( $attributes['markMobilePadding'][1] ) && is_numeric( $attributes['markMobilePadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attributes['markMobilePadding'][1] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markMobilePadding'] ) && is_array( $attributes['markMobilePadding'] ) && isset( $attributes['markMobilePadding'][2] ) && is_numeric( $attributes['markMobilePadding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $attributes['markMobilePadding'][2] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			if ( isset( $attributes['markMobilePadding'] ) && is_array( $attributes['markMobilePadding'] ) && isset( $attributes['markMobilePadding'][3] ) && is_numeric( $attributes['markMobilePadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attributes['markMobilePadding'][3] . ( ! isset( $attributes['markPaddingType'] ) ? 'px' : $attributes['markPaddingType'] ) );
-			}
-			$css->set_media_state( 'desktop' );
+
+
+		// Highlight.
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
+			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
 		}
+		if ( ! empty( $attributes['markSize'][0] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][0], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][0] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][0] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		if ( ! empty( $attributes['markTypography'] ) ) {
+			$google_font = ( ! isset( $attributes['markLoadGoogleFont'] ) || isset( $attributes['markLoadGoogleFont'] ) && true === $attributes['markLoadGoogleFont'] ? true : false );
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google_font, $attributes['markFontVariant'] ) );
+		}
+		if ( ! empty( $attributes['markFontWeight'] ) ) {
+			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['markFontWeight'] ) );
+		}
+		if ( ! empty( $attributes['markFontStyle'] ) ) {
+			$css->add_property( 'font-style', $attributes['markFontStyle'] );
+		}
+		if ( ! empty( $attributes['markColor'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
+		}
+		if ( ! empty( $attributes['markTextTransform'] ) ) {
+			$css->add_property( 'text-transform', $attributes['markTextTransform'] );
+		}
+		if ( ! empty( $attributes['markBG'] ) ) {
+			$alpha = ( isset( $attributes['markBGOpacity'] ) && ! empty( $attributes['markBGOpacity'] ) ? $attributes['markBGOpacity'] : 1 );
+			$css->add_property( 'background', $css->render_color( $attributes['markBG'], $alpha ) );
+		}
+		if ( ! empty( $attributes['markBorder'] ) ) {
+			$alpha = ( isset( $attributes['markBorderOpacity'] ) && ! empty( $attributes['markBorderOpacity'] ) ? $attributes['markBorderOpacity'] : 1 );
+			$css->add_property( 'border-color', $css->render_color( $attributes['markBorder'], $alpha ) );
+		}
+		if ( ! empty( $attributes['markBorderWidth'] ) ) {
+			$css->add_property( 'border-width', $attributes['markBorderWidth'] . 'px' );
+		}
+		if ( ! empty( $attributes['markBorderStyle'] ) && 'solid' !== $attributes['markBorderStyle'] ) {
+			$css->add_property( 'border-style', $attributes['markBorderStyle'] );
+		}
+		$css->render_border_styles( $attributes, 'markBorderStyles' );
+		$mark_padding_args = array(
+			'desktop_key' => 'markPadding',
+			'tablet_key'  => 'markTabPadding',
+			'mobile_key'  => 'markMobilePadding',
+		);
+		$css->render_measure_output( $attributes, 'markPadding', 'padding', $mark_padding_args );
+		// Link.
+		if ( ! empty( $attributes['linkColor'] ) ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id . ', .kt-adv-heading-link' . $unique_id . ' .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			if ( ! empty( $attributes['linkColor'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attributes['linkColor'] ) );
+			}
+		}
+		if ( ! empty( $attributes['linkHoverColor'] ) ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover, .kt-adv-heading-link' . $unique_id . ':hover .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
+		}
+		if ( ! empty( $attributes['linkStyle'] ) ) {
+			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id );
+			if ( 'none' === $attributes['linkStyle'] ) {
+				$css->add_property( 'text-decoration', 'none' );
+			} else if ( $attributes['linkStyle'] === 'underline' ) {
+				$css->add_property( 'text-decoration', 'underline' );
+			} else if ( $attributes['linkStyle'] === 'hover_underline' ) {
+				$css->add_property( 'text-decoration', 'none' );
+				$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover' );
+				$css->add_property( 'text-decoration', 'underline' );
+			}
+		}
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		// Tablet.
+		$css->set_media_state( 'tablet' );
+		$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		if ( ! empty( $attributes['markSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][1] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		$css->set_media_state( 'mobile' );
+		if ( ! empty( $attributes['markSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][2], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][2] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][2] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		$css->set_media_state( 'desktop' );
 
 		return $css->css_output();
 	}

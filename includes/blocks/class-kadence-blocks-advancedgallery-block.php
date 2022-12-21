@@ -96,6 +96,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	public function build_css( $attributes, $css, $unique_id ) {
 		$updated_version = ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? true : false;
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$gallery_type = ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry';
 
 		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
 
@@ -113,50 +114,56 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'overflow', 'hidden' );
 		}
 
-		if ( $css->is_number( $attributes['gutter'][0] ) ) {
-			$gutter_unit = ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px';
-			// Masonry.
+		$desk_gutter = ( $css->is_number( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : 10 );
+		$gutter_unit = ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px';
+		// Masonry.
+		if ( 'masonry' === $gallery_type ) {
 			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-masonry.kb-gallery-id-' . $unique_id );
-			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('margin','-' . ( $desk_gutter / 2 ) . $gutter_unit );
 			$css->set_selector('.kb-gallery-type-masonry.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
-			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('padding', ( $desk_gutter / 2 ) . $gutter_unit );
+		} else if ( 'grid' === $gallery_type ) {
 			// Grid.
 			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-grid.kb-gallery-id-' . $unique_id );
-			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('margin','-' . ( $desk_gutter / 2 ) . $gutter_unit );
 			$css->set_selector('.kb-gallery-type-grid.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
-			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('padding', ( $desk_gutter / 2 ) . $gutter_unit );
+		} else if ( 'tiles' === $gallery_type ) {
 			// Tiles.
 			$css->set_selector('.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-' . $unique_id );
-			$css->add_property('margin','-' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('margin','-' . ( $desk_gutter / 2 ) . $gutter_unit );
 			$css->set_selector('.kb-gallery-type-tiles.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
-			$css->add_property('padding', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+			$css->add_property('padding', ( $desk_gutter / 2 ) . $gutter_unit );
+		} else if ( 'carousel' === $gallery_type ) {
 			// Carousel.
 			if ( ! $updated_version ) {
 				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
-				$css->add_property('margin', '0 -' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->add_property('margin', '0 -' . ( $desk_gutter / 2 ) . $gutter_unit );
 
 				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
-				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->add_property('padding', '4px ' . ( $desk_gutter / 2 ) . $gutter_unit );
 				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
-				$css->add_property('left', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->add_property('left', ( $desk_gutter / 2 ) . $gutter_unit );
 
 				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
-				$css->add_property('right', ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->add_property('right', ( $desk_gutter / 2 ) . $gutter_unit );
 			}
+		} else if ( 'fluidcarousel' === $gallery_type ) {
 			if ( ! $updated_version ) {
 				// Fluid Carousel.
 				$css->set_selector('.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
-				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] / 2 ) . $gutter_unit );
+				$css->add_property('padding', '4px ' . ( $desk_gutter / 2 ) . $gutter_unit );
 				$css->set_selector('.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item' );
-				$css->add_property('padding', '4px ' . ( $attributes['gutter'][0] ) . $gutter_unit . ' 4px 0' );
+				$css->add_property('padding', '4px ' . ( $desk_gutter ) . $gutter_unit . ' 4px 0' );
 			}
+		} else if ( 'thumbslider' === $gallery_type ) {
 			if ( $updated_version ) {
 				// Thumbnail.
 				$css->set_selector('.kb-gallery-type-thumbslider.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel-init ');
-				$css->add_property('margin-bottom', $attributes['gutter'][0] . $gutter_unit );
+				$css->add_property('margin-bottom', $desk_gutter . $gutter_unit );
 			}
 		}
-		if ( isset( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) && isset( $attributes['gutter'][1] ) && is_numeric( $attributes['gutter'][1] ) ) {
+		if ( $css->is_number( $attributes['gutter'][1] ) ) {
 			$css->set_media_state( 'tablet');
 			$css->set_selector('.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id );
 			$css->add_property('margin', ' -' . ( $attributes['gutter'][1] / 2 ) . 'px' );

@@ -18,6 +18,7 @@ import {
 	KadencePanelBody,
 	URLInputControl,
 	WebfontLoader,
+	KadenceWebfontLoader,
 	HeadingLevelIcon,
 	InlinePopColorControl,
 	ResponsiveAlignControls,
@@ -298,20 +299,8 @@ function KadenceAdvancedHeading( props ) {
 	const renderTypography = typography && !typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
 	const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 	const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
-	const gconfig = {
-		google: {
-			families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
-		},
-	};
-	const sgconfig = {
-		google: {
-			families: [ markTypography + ( markFontVariant ? ':' + markFontVariant : '' ) ],
-		},
-	};
 	const textColorClass = getColorClassName( 'color', colorClass );
 	const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
-	const config = ( googleFont ? gconfig : '' );
-	const sconfig = ( markGoogleFont ? sgconfig : '' );
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 	const TagHTML = tagName;
 
@@ -1038,14 +1027,12 @@ function KadenceAdvancedHeading( props ) {
 			{!kadenceAnimation && (
 				link ? headingLinkContent : headingContent
 			)}
-			{googleFont && (
-				<WebfontLoader config={config}>
-				</WebfontLoader>
-			)}
-			{markGoogleFont && (
-				<WebfontLoader config={sconfig}>
-				</WebfontLoader>
-			)}
+			{ googleFont && typography && (
+				<KadenceWebfontLoader typography={ [{family: typography, variant: ( fontVariant ? fontVariant : '' ) }] } clientId={ clientId } id={ 'advancedHeading' } />
+			) }
+			{ markGoogleFont && markTypography && (
+				<KadenceWebfontLoader typography={ [{family: markTypography, variant: ( markFontVariant ? markFontVariant : '' ) }] } clientId={ clientId } id={ 'advancedHeadingMark' } />
+			) }
 
 			<SpacingVisualizer
 				type="outsideVertical"
