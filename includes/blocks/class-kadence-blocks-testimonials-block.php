@@ -504,33 +504,64 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/*
 		 * Global Media styles
 		 */
-		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap' );
+		if( !isset( $attributes['displayMedia'] ) || ( isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ) ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap' );
 
-		if( isset( $attributes['style'], $attributes['mediaStyles'][0]['width'] ) && $attributes['style'] !== 'card' ) {
-			$css->add_property( 'width', $attributes['mediaStyles'][0]['width'] . 'px' );
-		}
-
-		if( isset( $attributes['mediaStyles'][0] ) ) {
-			if( !isset( $attributes['mediaStyles'][0]['border'] ) ){
-				$attributes['mediaStyles'][0]['border'] = '#555555';
+			if ( isset( $attributes['style'], $attributes['mediaStyles'][0]['width'] ) && $attributes['style'] !== 'card' ) {
+				$css->add_property( 'width', $attributes['mediaStyles'][0]['width'] . 'px' );
 			}
-			$css->render_color_output( $attributes['mediaStyles'][0], 'border', 'border-color' );
 
-			$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
-			$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
-			$css->render_range( $attributes['mediaStyles'][0], 'borderRadius', 'border-radius' );
-			$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'border-color', 'backgroundOpacity' );
-			$css->render_measure_range( $attributes['mediaStyles'][0], 'borderWidth', 'border-width' );
+			if ( isset( $attributes['mediaStyles'][0] ) ) {
+				if ( ! isset( $attributes['mediaStyles'][0]['border'] ) ) {
+					$attributes['mediaStyles'][0]['border'] = '#555555';
+				}
+				$css->render_color_output( $attributes['mediaStyles'][0], 'border', 'border-color' );
+
+				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
+				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
+				$css->render_range( $attributes['mediaStyles'][0], 'borderRadius', 'border-radius' );
+				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'border-color', 'backgroundOpacity' );
+				$css->render_measure_range( $attributes['mediaStyles'][0], 'borderWidth', 'border-width' );
+			}
 		}
 
 		/*
-		 * Global Rating Styles
+		 * Rating Styles
 		 */
-		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap' );
-		$css->render_range( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array( 'margin' => array( 10, 0, 10, 0) ), 'margin', 'margin' );
+		if( isset( $attributes['displayRating'] ) && $attributes['displayRating'] ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap' );
+			$css->render_range( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array(
+				'margin' => array(
+					10,
+					0,
+					10,
+					0
+				)
+			), 'margin', 'margin' );
 
-		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap .kt-svg-testimonial-rating-icon' );
-		$css->render_color_output( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array( 'color' => '#ffd700'), 'color', 'color' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap .kt-svg-testimonial-rating-icon' );
+			$css->render_color_output( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array( 'color' => '#ffd700' ), 'color', 'color' );
+			$css->add_property( 'font-size', isset( $attributes['ratingStyles'][0] ) && isset( $attributes['ratingStyles'][0]['size'] ) ? $attributes['ratingStyles'][0]['size'] . 'px' : '16px' );
+		}
+
+		/*
+		 * Icon Styles
+		 */
+		if( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] ) {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon' );
+			$css->render_color_output( $attributes['iconStyles'][0], 'background', 'background', 'backgroundOpacity' );
+			$css->render_color_output( $attributes['iconStyles'][0], 'border', 'border-color', 'borderOpacity' );
+			$css->add_property( 'color', $css->render_color( $attributes['iconStyles'][0]['color'] ) );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'borderWidth', 'border-width' );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'padding', 'padding' );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'margin', 'margin' );
+
+			if ( ! empty( $attributes['iconStyles'][0]['borderRadius'] ) ) {
+				$css->add_property( 'border-radius', $attributes['iconStyles'][0]['borderRadius'] . 'px' );
+			}
+		}
+
+
 
 		return $css->css_output();
 	}
