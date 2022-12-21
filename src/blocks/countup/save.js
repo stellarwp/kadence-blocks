@@ -68,9 +68,8 @@ function KadenceCounterUpSave( props ) {
 			data-separator={separator}
 			data-decimal={decimal ? decimal : undefined}
 			data-decimal-spaces={decimal ? decimalSpaces : undefined}
-		>            
-			<label className="screen-reader-text" id="countup-label">{endValue}</label>
-			<div className={'kb-count-up-process kb-count-up-number'} aria-labelledby="countup-label" aria-hidden/>
+		>
+			<div className={'kb-count-up-process kb-count-up-number'}/>
 			{title && displayTitle && (
 				<RichText.Content
 					tagName={tagName}
