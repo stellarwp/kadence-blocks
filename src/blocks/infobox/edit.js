@@ -1664,7 +1664,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				<InspectorControls>
 
 					<InspectorControlTabs
-						panelName={'info-box'}
+						panelName={'infobox'}
 						setActiveTab={( value ) => setActiveTab( value )}
 						activeTab={activeTab}
 					/>

@@ -119,7 +119,7 @@ function Inspector( {
 		<KadenceInspectorControls blockSlug={ 'kadence/countup' }>
 
 			<InspectorControlTabs
-				panelName={ 'count-up' }
+				panelName={ 'countup' }
 				setActiveTab={ ( value ) => setActiveTab( value ) }
 				activeTab={ activeTab }
 			/>

@@ -485,7 +485,7 @@ export default function Image( {
 			) }
 			<InspectorControls>
 				<InspectorControlTabs
-						panelName={ 'kb-image' }
+						panelName={ 'image' }
 						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 					/>

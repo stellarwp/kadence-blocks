@@ -633,7 +633,7 @@ function KadenceAdvancedHeading( props ) {
 				<InspectorControls>
 
 					<InspectorControlTabs
-						panelName={'advanced-heading'}
+						panelName={'advancedheading'}
 						initialOpen={ 'style' }
 						setActiveTab={( value ) => setActiveTab( value )}
 						activeTab={activeTab}

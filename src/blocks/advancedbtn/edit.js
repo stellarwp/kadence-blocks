@@ -1785,7 +1785,7 @@ function KadenceAdvancedButton( props ) {
 						<InspectorControls>
 
 							<InspectorControlTabs
-								panelName={'advanced-heading'}
+								panelName={'advancedbtn'}
 								setActiveTab={( value ) => setActiveTab( value )}
 								activeTab={ activeTab}
 							/>

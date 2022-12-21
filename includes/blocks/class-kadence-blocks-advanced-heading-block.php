@@ -75,100 +75,94 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		// 	$css->maybe_add_google_font( $attributes['markTypography'], $font_variant, $font_subset );
 		// }
-
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		// Issue with span tag.
 		if ( isset( $attributes['htmlTag'] ) && 'span' === $attributes['htmlTag'] ) {
-			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 			$css->add_property( 'display', 'block' );
 		}
-
-		$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		// Support old margins.
+		if ( isset( $attributes['topMargin'] ) && is_numeric( $attributes['topMargin'] ) ) {
+			$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
+			// This fixes an issue where the background doesn't show over the top of the item that is above it.
+			if ( $attributes['topMargin'] < 0 && isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
+				$css->add_property( 'position', 'relative' );
+			}
+		}
+		if ( isset( $attributes['rightMargin'] ) && is_numeric( $attributes['rightMargin'] ) ) {
+			$css->add_property( 'margin-right', $attributes['rightMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
+		}
+		if ( isset( $attributes['bottomMargin'] ) && is_numeric( $attributes['bottomMargin'] ) ) {
+			$css->add_property( 'margin-bottom', $attributes['bottomMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
+		}
+		if ( isset( $attributes['leftMargin'] ) && is_numeric( $attributes['leftMargin'] ) ) {
+			$css->add_property( 'margin-left', $attributes['leftMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
+		}
+		// Spacing.
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
 		// Style.
-		if ( isset( $attributes['size'] ) || isset( $attributes['lineHeight'] ) || isset( $attributes['typography'] ) || isset( $attributes['fontWeight'] ) || isset( $attributes['fontStyle'] ) || isset( $attributes['textTransform'] ) || isset( $attributes['letterSpacing'] ) || isset( $attributes['color'] ) || isset( $attributes['topMargin'] ) || isset( $attributes['rightMargin'] ) || isset( $attributes['bottomMargin'] ) || isset( $attributes['leftMargin'] ) || isset( $attributes['textShadow'] ) || isset( $attributes['align'] ) ) {
-			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
-			if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
-				$css->add_property( 'text-align', $attributes['align'] );
-			}
-			// Old size first.
-			if ( ! empty( $attributes['size'] ) ) {
-				$css->add_property( 'font-size', $attributes['size'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-			} else if ( ! empty( $attributes['fontSize'][0] ) ) {
-				$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][0], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
-			}
-			// Old line height first.
-			if ( isset( $attributes['lineHeight'] ) && ! empty( $attributes['lineHeight'] ) ) {
-				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-			} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
-				$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
-			}
+		if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
+			$css->add_property( 'text-align', $attributes['align'] );
+		}
+		// Old size first.
+		if ( ! empty( $attributes['size'] ) ) {
+			$css->add_property( 'font-size', $attributes['size'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+		} else if ( ! empty( $attributes['fontSize'][0] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][0], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
+		}
+		// Old line height first.
+		if ( isset( $attributes['lineHeight'] ) && ! empty( $attributes['lineHeight'] ) ) {
+			$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		}			
+		if ( ! empty( $attributes['fontWeight'] ) ) {
+			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
+		}
+		if ( ! empty( $attributes['fontStyle'] ) ) {
+			$css->add_property( 'font-style', $attributes['fontStyle'] );
+		}
+		if ( ! empty( $attributes['typography'] ) ) {
+			$google_font = ( ! isset( $attributes['loadGoogleFont'] ) || isset( $attributes['loadGoogleFont'] ) && true === $attributes['loadGoogleFont'] ? true : false );
 			if ( ! empty( $attributes['fontWeight'] ) ) {
-				$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
+				$font_variant = $attributes['fontWeight'];
 			}
 			if ( ! empty( $attributes['fontStyle'] ) ) {
-				$css->add_property( 'font-style', $attributes['fontStyle'] );
+				$font_variant .= $attributes['fontStyle'];
 			}
-			if ( ! empty( $attributes['typography'] ) ) {
-				$google_font = ( ! isset( $attributes['loadGoogleFont'] ) || isset( $attributes['loadGoogleFont'] ) && true === $attributes['loadGoogleFont'] ? true : false );
-				if ( ! empty( $attributes['fontWeight'] ) ) {
-					$font_variant = $attributes['fontWeight'];
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google_font, $font_variant ) );
+		}
+		if ( ! empty( $attributes['textTransform'] ) ) {
+			$css->add_property( 'text-transform', $attributes['textTransform'] );
+		}
+		if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {
+			$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+		}
+		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
+			if ( class_exists( 'Kadence\Theme' ) ) {
+				if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 				}
-				if ( ! empty( $attributes['fontStyle'] ) ) {
-					$font_variant .= $attributes['fontStyle'];
-				}
-				$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google_font, $font_variant ) );
+			} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+				$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+			} else if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 			}
-			if ( ! empty( $attributes['textTransform'] ) ) {
-				$css->add_property( 'text-transform', $attributes['textTransform'] );
-			}
-			if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
-			}
-			if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
-				if ( class_exists( 'Kadence\Theme' ) ) {
-					if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
-						$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+		}
+		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
+			if ( class_exists( 'Kadence\Theme' ) ) {
+				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+						$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 					}
-				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
-					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
-				} else if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
-					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
-				}
+			} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+			} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
+				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			}
-			if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
-				if ( class_exists( 'Kadence\Theme' ) ) {
-					if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
-							$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
-						}
-				} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
-					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
-				} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
-					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
-				}
-			}
-			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable'] ) {
-				$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
-			}
-
-			if ( isset( $attributes['topMargin'] ) && is_numeric( $attributes['topMargin'] ) ) {
-				$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-				// This fixes an issue where the background doesn't show over the top of the item that is above it.
-				if ( $attributes['topMargin'] < 0 && isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
-					$css->add_property( 'position', 'relative' );
-				}
-			}
-			if ( isset( $attributes['rightMargin'] ) && is_numeric( $attributes['rightMargin'] ) ) {
-				$css->add_property( 'margin-right', $attributes['rightMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['bottomMargin'] ) && is_numeric( $attributes['bottomMargin'] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['bottomMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-			if ( isset( $attributes['leftMargin'] ) && is_numeric( $attributes['leftMargin'] ) ) {
-				$css->add_property( 'margin-left', $attributes['leftMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
-			}
-
+		}
+		if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable'] ) {
+			$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 		}
 		// Highlight.
 		if ( isset( $attributes['markBorder'] ) || isset( $attributes['markBorderWidth'] ) || isset( $attributes['markBorderStyle'] ) || isset( $attributes['markPadding'] ) || isset( $attributes['markLetterSpacing'] ) || isset( $attributes['markSize'] ) || isset( $attributes['markLineHeight'] ) || isset( $attributes['markTypography'] ) || isset( $attributes['markColor'] ) || isset( $attributes['markBG'] ) || isset( $attributes['markTextTransform'] ) ) {

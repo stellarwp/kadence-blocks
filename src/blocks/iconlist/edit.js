@@ -251,7 +251,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					<InspectorControls>
 
 						<InspectorControlTabs
-							panelName={ 'icon-list' }
+							panelName={ 'iconlist' }
 							setActiveTab={ ( value ) => setActiveTab( value ) }
 							activeTab={ activeTab }
 						/>

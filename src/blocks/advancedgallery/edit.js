@@ -689,7 +689,7 @@ function GalleryEdit( props ) {
 				<InspectorControls>
 
 					<InspectorControlTabs
-						panelName={ 'advanced-gallery' }
+						panelName={ 'advancedgallery' }
 						setActiveTab={ ( value ) => setActiveTab( value ) }
 						activeTab={ activeTab }
 					/>

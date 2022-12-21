@@ -179,7 +179,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
             </BlockControls>
             <InspectorControls>
                 <InspectorControlTabs
-                    panelName={ 'icon-item' }
+                    panelName={ 'listitem' }
                     setActiveTab={ ( value ) => setActiveTab( value ) }
                     activeTab={ activeTab }
                 />

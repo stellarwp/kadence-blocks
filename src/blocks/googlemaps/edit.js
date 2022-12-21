@@ -246,7 +246,7 @@ export function Edit( {
 		<figure { ...blockProps }>
 			<KadenceInspectorControls blockSlug={ 'kadence/googlemaps' }>
 				<InspectorControlTabs
-					panelName={ 'google-maps' }
+					panelName={ 'googlemaps' }
 					setActiveTab={ setActiveTab }
 					activeTab={ activeTab }
 				/>

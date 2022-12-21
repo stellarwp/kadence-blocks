@@ -1045,7 +1045,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					<InspectorControls>
 
 						<InspectorControlTabs
-							panelName={ 'table-of-contents' }
+							panelName={ 'tabs' }
 							setActiveTab={( value ) => setActiveTab( value )}
 							activeTab={ activeTab }
 						/>

@@ -437,10 +437,10 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	);
 	const inspectorControls = (
 		<>
-				<KadenceInspectorControls blockSlug={ 'kadence/table-of-contents'}>
+				<KadenceInspectorControls blockSlug={ 'kadence/tableofcontents'}>
 
 					<InspectorControlTabs
-						panelName={ 'table-of-contents' }
+						panelName={ 'tableofcontents' }
 						setActiveTab={( value ) => setActiveTab( value )}
 						activeTab={ activeTab }
 					/>
@@ -452,7 +452,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								title={__('Allowed Headers', 'kadence-blocks')}
 								initialOpen={true}
 								panelName={'allowedHeaders'}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<ToggleControl
 									label={'h1'}
@@ -492,7 +492,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 										title={__('Collapsible Settings', 'kadence-blocks')}
 										initialOpen={false}
 										panelName={'collapsibleSettings'}
-										blockSlug={'kadence/table-of-contents'}
+										blockSlug={'kadence/tableofcontents'}
 									>
 										<ToggleControl
 											label={__('Enable Collapsible Content', 'kadence-blocks')}
@@ -573,7 +573,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								title={__('Non static content', 'kadence-blocks')}
 								panelName={'nonStaticContent'}
 								initialOpen={false}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<ToggleControl
 									label={__('Search for Headings in Non static content?', 'kadence-blocks')}
@@ -586,7 +586,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								title={__('Scroll Settings', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'scrollSettings'}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<ToggleControl
 									label={__('Enable Smooth Scroll to ID', 'kadence-blocks')}
@@ -627,7 +627,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 							<KadencePanelBody
 								title={__('Container Settings', 'kadence-blocks')}
 								panelName={'containerSettings'}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<PopColorControl
 									label={__( 'Container Background', 'kadence-blocks' )}
@@ -732,7 +732,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								title={__('Title Settings', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'titleSettings'}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<ToggleControl
 									label={__('Enable Title', 'kadence-blocks')}
@@ -814,7 +814,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								title={__('List Settings', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'listSettings'}
-								blockSlug={'kadence/table-of-contents'}
+								blockSlug={'kadence/tableofcontents'}
 							>
 								<ResponsiveRangeControls
 									label={__('List Item Gap', 'kadence-blocks')}

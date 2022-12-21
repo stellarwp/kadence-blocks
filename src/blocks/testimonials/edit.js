@@ -1145,7 +1145,7 @@ function KadenceTestimonials({
                     <InspectorControls>
 
                         <InspectorControlTabs
-                            panelName={'icon'}
+                            panelName={'testimonials'}
                             setActiveTab={(value) => setActiveTab(value)}
                             activeTab={activeTab}
                         />
