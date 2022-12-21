@@ -145,7 +145,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	isSelected,
 	clientId,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -281,56 +281,88 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			saveMobileOverlay( {  gradient: newMobileGradient, currentOverlayTab: 'gradient' } );
 		}
 		// Update from old border settings.
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
+		let updateBorderStyle = false;
 		if ( ( '' !== border ) ) {
-			borderStyle[0].top[0] = border;
-			borderStyle[0].right[0] = border;
-			borderStyle[0].bottom[0] = border;
-			borderStyle[0].left[0] = border;
-			// Force a change.
-			const tempBorderStyle = JSON.parse(JSON.stringify(borderStyle));
-			setAttributes( { borderStyle: tempBorderStyle, border:'' } );
-		}
-		if ( ( '' !== tabletBorder ) ) {
-			tabletBorderStyle[0].top[0] = tabletBorder;
-			tabletBorderStyle[0].right[0] = tabletBorder;
-			tabletBorderStyle[0].bottom[0] = tabletBorder;
-			tabletBorderStyle[0].left[0] = tabletBorder;
-			// Force a change.
-			const tempTabBorderStyle = JSON.parse(JSON.stringify(tabletBorderStyle));
-			setAttributes( { tabletBorderStyle: tempTabBorderStyle, tabletBorder: '' } );
-		}
-		if ( ( '' !== mobileBorder ) ) {
-			mobileBorderStyle[0].top[0] = mobileBorder;
-			mobileBorderStyle[0].right[0] = mobileBorder;
-			mobileBorderStyle[0].bottom[0] = mobileBorder;
-			mobileBorderStyle[0].left[0] = mobileBorder;
-			// Force a change.
-			const tempMobileBorderStyle = JSON.parse(JSON.stringify(mobileBorderStyle));
-			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorder: '' } );
+			tempBorderStyle[0].top[0] = border;
+			tempBorderStyle[0].right[0] = border;
+			tempBorderStyle[0].bottom[0] = border;
+			tempBorderStyle[0].left[0] = border;
+			updateBorderStyle = true;
+			setAttributes( { border:'' } );
 		}
 		if ( ( '' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3] ) ) {
-			borderStyle[0].top[2] = borderWidth?.[0] || '';
-			borderStyle[0].right[2] = borderWidth?.[1] || '';
-			borderStyle[0].bottom[2] = borderWidth?.[2] || '';
-			borderStyle[0].left[2] = borderWidth?.[3] || '';
-			const tempBorderWidth = JSON.parse(JSON.stringify(borderStyle));
-			setAttributes( { borderStyle: tempBorderWidth, borderWidth:[ '', '', '', '' ] } );
+			tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
+			tempBorderStyle[0].right[2] = borderWidth?.[1] || '';
+			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
+			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
+			updateBorderStyle = true;
+			setAttributes( { borderWidth:[ '', '', '', '' ] } );
+		}
+		if ( updateBorderStyle ) {
+			setAttributes( { borderStyle: tempBorderStyle } );
+		}
+		// Update from old border settings.
+		let tempTabletBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
+		let updateTabletBorderStyle = false;
+		if ( ( '' !== tabletBorder ) ) {
+			tempTabletBorderStyle[0].top[0] = tabletBorder;
+			tempTabletBorderStyle[0].right[0] = tabletBorder;
+			tempTabletBorderStyle[0].bottom[0] = tabletBorder;
+			tempTabletBorderStyle[0].left[0] = tabletBorder;
+			updateTabletBorderStyle = true;
+			setAttributes( { tabletBorder: '' } );
 		}
 		if ( ( '' !== tabletBorderWidth?.[0] || '' !== tabletBorderWidth?.[1] || '' !== tabletBorderWidth?.[2] || '' !== tabletBorderWidth?.[3] ) ) {
-			tabletBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
-			tabletBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
-			tabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
-			tabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
-			const tempTabBorderWidth = JSON.parse(JSON.stringify(tabletBorderStyle));
-			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
+			tempTabletBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
+			tempTabletBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
+			tempTabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
+			tempTabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
+			updateTabletBorderStyle = true;
+			setAttributes( { tabletBorderWidth:[ '', '', '', '' ] } );
+		}
+		if ( updateTabletBorderStyle ) {
+			setAttributes( { tabletBorderStyle: tempTabletBorderStyle } );
+		}
+		// Update from old border settings.
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		let updateMobileBorderStyle = false;
+		if ( ( '' !== mobileBorder ) ) {
+			tempMobileBorderStyle[0].top[0] = mobileBorder;
+			tempMobileBorderStyle[0].right[0] = mobileBorder;
+			tempMobileBorderStyle[0].bottom[0] = mobileBorder;
+			tempMobileBorderStyle[0].left[0] = mobileBorder;
+			updateMobileBorderStyle = true;
+			setAttributes( { mobileBorder: '' } );
 		}
 		if ( ( '' !== mobileBorderWidth?.[0] || '' !== mobileBorderWidth?.[1] || '' !== mobileBorderWidth?.[2] || '' !== mobileBorderWidth?.[3] ) ) {
-			mobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
-			mobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
-			mobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
-			mobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			const tempMobileBorderWidth = JSON.parse(JSON.stringify(mobileBorderStyle));
-			setAttributes( { mobileBorderStyle: tempMobileBorderWidth, mobileBorderWidth:[ '', '', '', '' ] } );
+			tempMobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
+			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
+			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
+			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
+			updateMobileBorderStyle = true;
+			setAttributes( { mobileBorderWidth:[ '', '', '', '' ] } );
+		}
+		if ( updateMobileBorderStyle ) {
+			setAttributes( { mobileBorderStyle: tempMobileBorderStyle } );
 		}
 		if ( ! kbVersion || kbVersion < 2 ) {
 			setAttributes( { kbVersion: 2 } );
