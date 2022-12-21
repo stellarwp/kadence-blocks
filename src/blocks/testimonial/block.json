@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
-  "title": "Testimonials",
+  "title": "Testimonial",
   "name": "kadence/testimonial",
   "parent": [
 	"kadence/testimonials"
@@ -85,6 +85,10 @@
 	  "type": "number",
 	  "default": 5
 	},
+	"sizes": {
+	  "type": "object",
+	  "default": {}
+	},
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false
@@ -131,7 +135,9 @@
 	"kadence/testimonials-contentMinHeight",
 	"kadence/testimonials-contentFont",
 	"kadence/testimonials-occupationFont",
-	"kadence/testimonials-nameFont"
+	"kadence/testimonials-nameFont",
+	"kadence/testimonials-mediaStyles",
+	"kadence/testimonials-ratingStyles"
   ],
   "supports": {
 	"anchor": true

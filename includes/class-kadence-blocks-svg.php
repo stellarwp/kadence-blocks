@@ -66,6 +66,7 @@ class Kadence_Blocks_Svg_Render {
 				$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
 				$args = array( 'title' => '' );
 				foreach ( $options as $key => $value ) {
+					$value = trim($value);
 					if ( empty( $value ) ) {
 						continue;
 					}

@@ -36,11 +36,13 @@
 	"kadence/testimonials-layout": "layout",
 	"kadence/testimonials-displayMedia": "displayMedia",
 	"kadence/testimonials-titleMinHeight": "titleMinHeight",
-	  "kadence/testimonials-titleFont": "titleFont",
-	  "kadence/testimonials-contentMinHeight": "contentMinHeight",
-	  "kadence/testimonials-contentFont": "contentFont",
-	  "kadence/testimonials-occupationFont": "occupationFont",
-	  "kadence/testimonials-nameFont": "nameFont"
+	"kadence/testimonials-titleFont": "titleFont",
+	"kadence/testimonials-contentMinHeight": "contentMinHeight",
+	"kadence/testimonials-contentFont": "contentFont",
+	"kadence/testimonials-occupationFont": "occupationFont",
+	"kadence/testimonials-nameFont": "nameFont",
+	"kadence/testimonials-mediaStyles": "mediaStyles",
+	"kadence/testimonials-ratingStyles": "ratingStyles"
   },
   "attributes": {
 	"uniqueID": {

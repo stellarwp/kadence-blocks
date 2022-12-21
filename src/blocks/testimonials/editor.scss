@@ -75,22 +75,25 @@
 .components-button-group button.components-button.kt-style-btn:hover {
     border-color: #eeeeee;
 }
- .kt-testimonial-grid-wrap {
+ .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     gap: 30px 30px;
 }
-.kt-testimonial-columns-1 .kt-testimonial-grid-wrap {
+.kt-testimonial-columns-1 .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
     grid-template-columns: 1fr;
 }
-.kt-testimonial-columns-3 .kt-testimonial-grid-wrap {
-    grid-template-columns: 1fr 1fr 1fr;
+.kt-testimonial-columns-2 .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
+	grid-template-columns: 1fr 1fr 1fr;
 }
-.kt-testimonial-columns-4 .kt-testimonial-grid-wrap {
+.kt-testimonial-columns-3 .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
+	grid-template-columns: 1fr 1fr 1fr;
+}
+.kt-testimonial-columns-4 .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
-.kt-testimonial-columns-5 .kt-testimonial-grid-wrap {
+.kt-testimonial-columns-5 .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap {

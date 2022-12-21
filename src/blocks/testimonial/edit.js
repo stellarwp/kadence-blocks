@@ -20,8 +20,8 @@ import {
 /**
  * Import External
  */
-import Slider from 'react-slick';
-import {times, map} from 'lodash';
+import {has} from 'lodash';
+
 /**
  * Import Components
  */
@@ -40,7 +40,6 @@ import {
     InspectorControlTabs,
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
-    SpacingVisualizer,
 } from '@kadence/components';
 
 import {
@@ -48,7 +47,6 @@ import {
     KadenceColorOutput,
     showSettings,
     setBlockDefaults,
-    mouseOverVisualizer,
     getSpacingOptionOutput
 } from '@kadence/helpers';
 
@@ -116,6 +114,7 @@ function KadenceTestimonials({
         name,
         occupation,
         rating,
+        sizes,
         inQueryBlock,
         useBlockQuoteTags
     } = attributes;
@@ -148,6 +147,7 @@ function KadenceTestimonials({
     const titleMinHeight = context['kadence/testimonials-titleMinHeight'];
     const titleFont = context['kadence/testimonials-titleFont'];
 
+    const displayOccupation = context['kadence/testimonials-displayOccupation'];
     const displayMedia = context['kadence/testimonials-displayMedia'];
     const layout = context['kadence/testimonials-layout'];
     const containerMinHeight = context['kadence/testimonials-containerMinHeight'];
@@ -156,10 +156,10 @@ function KadenceTestimonials({
     const containerPaddingType = context['kadence/testimonials-containerPaddingType'];
     const mobileContainerPadding = context['kadence/testimonials-mobileContainerPadding'];
     const tabletContainerPadding = context['kadence/testimonials-tabletContainerPadding'];
+    const mediaStyles = context['kadence/testimonials-mediaStyles'];
+    const ratingStyles = context['kadence/testimonials-ratingStyles'];
 
     const [activeTab, setActiveTab] = useState('general');
-
-    const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
     const {isUniqueID, isUniqueBlock, previewDevice} = useSelect(
@@ -177,7 +177,7 @@ function KadenceTestimonials({
 
         let smallID = '_' + clientId.substr(2, 9);
         if (!uniqueID) {
-            attributes = setBlockDefaults( 'kadence/testimonials', attributes);
+            attributes = setBlockDefaults( 'kadence/testimonial', attributes);
 
             setAttributes({
                 uniqueID: smallID,
@@ -230,32 +230,6 @@ function KadenceTestimonials({
         onMove(oldIndex, oldIndex - 1);
     };
 
-    const setInitalLayout = (key) => {
-        if ('skip' === key) {
-        } else if ('basic' === key) {
-            setAttributes({style: 'basic'});
-        } else if ('card' === key) {
-            setAttributes({style: 'card'});
-        } else if ('bubble' === key) {
-            setAttributes({style: 'bubble'});
-        } else if ('inlineimage' === key) {
-            setAttributes({style: 'inlineimage'});
-        }
-    };
-    const styleOptions = [
-        {key: 'basic', name: __('Basic', 'kadence-blocks'), icon: testimonialBasicIcon},
-        {key: 'card', name: __('Card', 'kadence-blocks'), icon: testimonialCardIcon},
-        {key: 'bubble', name: __('Bubble', 'kadence-blocks'), icon: testimonialBubbleIcon},
-        {key: 'inlineimage', name: __('Image In Content', 'kadence-blocks'), icon: testimonialInLineIcon},
-    ];
-    const startlayoutOptions = [
-        {key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip')},
-        {key: 'basic', name: __('Basic', 'kadence-blocks'), icon: testimonialBasicIcon},
-        {key: 'card', name: __('Card', 'kadence-blocks'), icon: testimonialCardIcon},
-        {key: 'bubble', name: __('Bubble', 'kadence-blocks'), icon: testimonialBubbleIcon},
-        {key: 'inlineimage', name: __('Image In Content', 'kadence-blocks'), icon: testimonialInLineIcon},
-    ];
-
     const previewContainerPaddingTop = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[0] ? containerPadding[0] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[0] ? tabletContainerPadding[0] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[0] ? mobileContainerPadding[0] : ''));
     const previewContainerPaddingRight = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[1] ? containerPadding[1] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[1] ? tabletContainerPadding[1] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[1] ? mobileContainerPadding[1] : ''));
     const previewContainerPaddingBottom = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[2] ? containerPadding[2] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[2] ? tabletContainerPadding[2] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[2] ? mobileContainerPadding[2] : ''));
@@ -266,21 +240,28 @@ function KadenceTestimonials({
     const previewWrapperPaddingBottom = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[2] ? wrapperPadding[2] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[2] ? wrapperTabletPadding[2] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[2] ? wrapperMobilePadding[2] : ''));
     const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[3] ? wrapperMobilePadding[3] : ''));
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
+    const previewTitleFontSizeType = undefined !== titleFont[0].sizeType ? titleFont[0].sizeType : 'px';
     const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
+    const previewTitleLineHeightLineType = undefined !== titleFont[0].lineType ? titleFont[0].lineType : 'px';
     const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
 
     const previewContainerMinHeight = getPreviewSize(previewDevice, (undefined !== containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), (undefined !== containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), (undefined !== containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : ''));
     const previewTitleMinHeight = getPreviewSize(previewDevice, (undefined !== titleMinHeight && undefined !== titleMinHeight[0] ? titleMinHeight[0] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[1] ? titleMinHeight[1] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[2] ? titleMinHeight[2] : ''));
 
     const previewContentFont = getPreviewSize(previewDevice, (undefined !== contentFont[0].size && undefined !== contentFont[0].size[0] && '' !== contentFont[0].size[0] ? contentFont[0].size[0] : ''), (undefined !== contentFont[0].size && undefined !== contentFont[0].size[1] && '' !== contentFont[0].size[1] ? contentFont[0].size[1] : ''), (undefined !== contentFont[0].size && undefined !== contentFont[0].size[2] && '' !== contentFont[0].size[2] ? contentFont[0].size[2] : ''));
+    const previewContentFontSizeType = undefined !== contentFont[0].sizeType ? contentFont[0].sizeType : 'px';
     const previewContentLineHeight = getPreviewSize(previewDevice, (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[0] && '' !== contentFont[0].lineHeight[0] ? contentFont[0].lineHeight[0] : ''), (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[1] && '' !== contentFont[0].lineHeight[1] ? contentFont[0].lineHeight[1] : ''), (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[2] && '' !== contentFont[0].lineHeight[2] ? contentFont[0].lineHeight[2] : ''));
+    const previewContentLineHeightLineType = undefined !== contentFont[0].lineType ? contentFont[0].lineType : 'px';
 
     const previewNameFont = getPreviewSize(previewDevice, (undefined !== nameFont[0].size && undefined !== nameFont[0].size[0] && '' !== nameFont[0].size[0] ? nameFont[0].size[0] : ''), (undefined !== nameFont[0].size && undefined !== nameFont[0].size[1] && '' !== nameFont[0].size[1] ? nameFont[0].size[1] : ''), (undefined !== nameFont[0].size && undefined !== nameFont[0].size[2] && '' !== nameFont[0].size[2] ? nameFont[0].size[2] : ''));
     const previewNameLineHeight = getPreviewSize(previewDevice, (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[0] && '' !== nameFont[0].lineHeight[0] ? nameFont[0].lineHeight[0] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[1] && '' !== nameFont[0].lineHeight[1] ? nameFont[0].lineHeight[1] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[2] && '' !== nameFont[0].lineHeight[2] ? nameFont[0].lineHeight[2] : ''));
+    const previewNameLineHeightType = undefined !== nameFont[0].lineType ? nameFont[0].lineType : 'px';
+    const previewNameFontType = undefined !== nameFont[0].sizeType ? nameFont[0].sizeType : 'px';
 
     const previewOccupationFont = getPreviewSize(previewDevice, (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[0] && '' !== occupationFont[0].size[0] ? occupationFont[0].size[0] : ''), (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[1] && '' !== occupationFont[0].size[1] ? occupationFont[0].size[1] : ''), (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[2] && '' !== occupationFont[0].size[2] ? occupationFont[0].size[2] : ''));
+    const previewOccupationFontSizeType = undefined !== occupationFont[0].sizeType ? occupationFont[0].sizeType : 'px';
     const previewOccupationLineHeight = getPreviewSize(previewDevice, (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[0] && '' !== occupationFont[0].lineHeight[0] ? occupationFont[0].lineHeight[0] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[1] && '' !== occupationFont[0].lineHeight[1] ? occupationFont[0].lineHeight[1] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[2] && '' !== occupationFont[0].lineHeight[2] ? occupationFont[0].lineHeight[2] : ''));
-
+    const previewOccupationLineHeightLineType = undefined !== occupationFont[0].lineType ? occupationFont[0].lineType : 'px';
 
     const containerStyles = {
         boxShadow: (displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined),
@@ -435,8 +416,9 @@ function KadenceTestimonials({
         );
     };
     const renderTestimonialMedia = () => {
+
         let urlOutput = url;
-        if (sizes && undefined !== sizes.thumbnail) {
+        if ( has( sizes, 'thumbnail') ) {
             if (('card' === style && containerMaxWidth > 500) || mediaStyles[0].width > 600) {
                 urlOutput = url;
             } else if ('card' === style && containerMaxWidth <= 500 && containerMaxWidth > 100) {
@@ -609,15 +591,14 @@ function KadenceTestimonials({
     };
 
     const renderTestimonialPreview = (isCarousel = false) => {
-        // TODO: Remvoe index
-        const index = 0;
         let iconPadding = (displayIcon && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] < 0) ? Math.abs(iconStyles[0].margin[0]) + 'px' : undefined);
         if (iconPadding === undefined && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] >= 0)) {
             iconPadding = '0px';
         }
+
         return (
             <div
-                className={`kt-testimonial-item-wrap kt-testimonial-item-${index}${(containerVAlign ? ' testimonial-valign-' + containerVAlign : '')}`}
+                className={`kt-testimonial-item-wrap kt-testimonial-item-${uniqueID}${(containerVAlign ? ' testimonial-valign-' + containerVAlign : '')}`}
                 style={('bubble' !== style && 'inlineimage' !== style ? containerStyles : {
                     maxWidth: containerMaxWidth + 'px',
                     minHeight: (previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined),
@@ -625,7 +606,7 @@ function KadenceTestimonials({
                     marginTop: isCarousel && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
                     marginBottom: isCarousel && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
                 })}>
-                {/*{itemsCount > 1 && (*/}
+                {/*{itemCount > 1 && (*/}
                 {/*    <div className="kt-testimonial-item__move-menu">*/}
                 {/*        <Button*/}
                 {/*            icon="arrow-left"*/}
@@ -639,11 +620,11 @@ function KadenceTestimonials({
                 {/*        <Button*/}
                 {/*            icon="arrow-right"*/}
                 {/*            onClick={() => {*/}
-                {/*                itemsCount === (index + 1) ? undefined : onMoveForward(index)*/}
+                {/*                itemCount === (index + 1) ? undefined : onMoveForward(index)*/}
                 {/*            }}*/}
                 {/*            className="kt-testimonial-item__move-forward"*/}
                 {/*            aria-label={__('Move Testimonial Forward', 'kadence-blocks')}*/}
-                {/*            aria-disabled={itemsCount === (index + 1)}*/}
+                {/*            aria-disabled={itemCount === (index + 1)}*/}
                 {/*        />*/}
                 {/*    </div>*/}
                 {/*)}*/}
@@ -673,8 +654,8 @@ function KadenceTestimonials({
                                     fontWeight: titleFont[0].weight,
                                     fontStyle: titleFont[0].style,
                                     color: KadenceColorOutput(titleFont[0].color),
-                                    fontSize: previewTitleFont ? previewTitleFont + titleFont[0].sizeType : undefined,
-                                    lineHeight: (previewTitleLineHeight ? previewTitleLineHeight + titleFont[0].lineType : undefined),
+                                    fontSize: previewTitleFont ? previewTitleFont + previewTitleFontSizeType : undefined,
+                                    lineHeight: (previewTitleLineHeight ? previewTitleLineHeight + previewTitleLineHeightLineType : undefined),
                                     letterSpacing: titleFont[0].letterSpacing + 'px',
                                     textTransform: (titleFont[0].textTransform ? titleFont[0].textTransform : undefined),
                                     fontFamily: (titleFont[0].family ? titleFont[0].family : ''),
@@ -735,8 +716,8 @@ function KadenceTestimonials({
                                     fontWeight: contentFont[0].weight,
                                     fontStyle: contentFont[0].style,
                                     color: KadenceColorOutput(contentFont[0].color),
-                                    fontSize: previewContentFont ? previewContentFont + contentFont[0].sizeType : undefined,
-                                    lineHeight: (previewContentLineHeight ? previewContentLineHeight + contentFont[0].lineType : undefined),
+                                    fontSize: previewContentFont ? previewContentFont + previewContentFontSizeType : undefined,
+                                    lineHeight: (previewContentLineHeight ? previewContentLineHeight + previewContentLineHeightLineType : undefined),
                                     textTransform: (contentFont[0].textTransform ? contentFont[0].textTransform : undefined),
                                     letterSpacing: contentFont[0].letterSpacing + 'px',
                                     fontFamily: (contentFont[0].family ? contentFont[0].family : ''),
@@ -765,8 +746,8 @@ function KadenceTestimonials({
                                             fontWeight: nameFont[0].weight,
                                             fontStyle: nameFont[0].style,
                                             color: KadenceColorOutput(nameFont[0].color),
-                                            fontSize: previewNameFont ? previewNameFont + nameFont[0].sizeType : undefined,
-                                            lineHeight: (previewNameLineHeight ? previewNameLineHeight + nameFont[0].lineType : undefined),
+                                            fontSize: ( previewNameFont ? previewNameFont + previewNameFontType : undefined ),
+                                            lineHeight: (previewNameLineHeight ? previewNameLineHeight + previewNameLineHeightType : undefined),
                                             textTransform: (nameFont[0].textTransform ? nameFont[0].textTransform : undefined),
                                             letterSpacing: nameFont[0].letterSpacing + 'px',
                                             fontFamily: (nameFont[0].family ? nameFont[0].family : ''),
@@ -788,8 +769,8 @@ function KadenceTestimonials({
                                             fontWeight: occupationFont[0].weight,
                                             fontStyle: occupationFont[0].style,
                                             color: KadenceColorOutput(occupationFont[0].color),
-                                            fontSize: previewOccupationFont ? previewOccupationFont + occupationFont[0].sizeType : undefined,
-                                            lineHeight: (previewOccupationLineHeight ? previewOccupationLineHeight + occupationFont[0].lineType : undefined),
+                                            fontSize: previewOccupationFont ? previewOccupationFont + previewOccupationFontSizeType : undefined,
+                                            lineHeight: (previewOccupationLineHeight ? previewOccupationLineHeight + previewOccupationLineHeightLineType : undefined),
                                             textTransform: (occupationFont[0].textTransform ? occupationFont[0].textTransform : undefined),
                                             letterSpacing: occupationFont[0].letterSpacing + 'px',
                                             fontFamily: (occupationFont[0].family ? occupationFont[0].family : ''),
@@ -801,11 +782,6 @@ function KadenceTestimonials({
                         </div>
                     </div>
                 )}
-                <SpacingVisualizer
-                    type="inside"
-                    forceShow={ paddingMouseOver.isMouseOver }
-                    spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, containerPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, containerPaddingType ) ] }
-                />
             </div>
         );
     };
@@ -818,6 +794,7 @@ function KadenceTestimonials({
 
                         <InspectorControlTabs
                             panelName={'icon'}
+                            allowedTabs={[ 'general', 'advanced' ]}
                             setActiveTab={(value) => setActiveTab(value)}
                             activeTab={activeTab}
                         />
@@ -846,13 +823,6 @@ function KadenceTestimonials({
                             </>
                         }
 
-                        {(activeTab === 'style') &&
-
-                            <>
-                                Style settings
-                            </>
-                        }
-
                         {( activeTab === 'advanced') && (
                             <>
                                 <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'url', 'media', 'title', 'content' ] } />
@@ -864,7 +834,15 @@ function KadenceTestimonials({
             )}
 
             <Fragment {...blockProps}>
-                { renderTestimonialPreview( true ) }
+                { layout === 'carousel' && (
+                    <div className={'kt-blocks-testimonial-carousel-item'}>
+                        { renderTestimonialPreview( true ) }
+                    </div>
+                ) }
+
+                { layout !== 'carousel' && (
+                    renderTestimonialPreview()
+                ) }
             </Fragment>
         </div>
     );

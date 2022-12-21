@@ -26,7 +26,7 @@ import {
  * Import External
  */
 import Slider from 'react-slick';
-import {times, map} from 'lodash';
+import {map} from 'lodash';
 /**
  * Import Components
  */
@@ -45,7 +45,6 @@ import {
     InspectorControlTabs,
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
-    SpacingVisualizer,
 } from '@kadence/components';
 
 import {
@@ -53,8 +52,7 @@ import {
     KadenceColorOutput,
     showSettings,
     setBlockDefaults,
-    mouseOverVisualizer,
-    getSpacingOptionOutput
+    mouseOverVisualizer
 } from '@kadence/helpers';
 
 /**
@@ -65,8 +63,6 @@ import {__} from '@wordpress/i18n';
 import {useEffect, Fragment, useState, useRef} from '@wordpress/element';
 
 import {
-    MediaUpload,
-    RichText,
     AlignmentToolbar,
     InspectorControls,
     BlockControls,
@@ -110,7 +106,6 @@ function KadenceTestimonials({
         style,
         hAlign,
         layout,
-        itemsCount,
         containerBackground,
         containerBorder,
         containerBorderWidth,
@@ -175,12 +170,13 @@ function KadenceTestimonials({
     const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
-    const {isUniqueID, isUniqueBlock, previewDevice} = useSelect(
+    const {isUniqueID, isUniqueBlock, previewDevice, childBlocks} = useSelect(
         (select) => {
             return {
                 isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
                 isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+                childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
             };
         },
         [clientId],
@@ -274,26 +270,13 @@ function KadenceTestimonials({
         }
     }, []);
 
-    const onMove = (oldIndex, newIndex) => {
-        let newTestimonials = [...testimonials];
-        newTestimonials.splice(newIndex, 1, testimonials[oldIndex]);
-        newTestimonials.splice(oldIndex, 1, testimonials[newIndex]);
-        setAttributes({testimonials: newTestimonials});
-    };
-
-    const onMoveForward = (oldIndex) => {
-        if (oldIndex === testimonials.length - 1) {
-            return;
-        }
-        onMove(oldIndex, oldIndex + 1);
-    };
-
-    const onMoveBackward = (oldIndex) => {
-        if (oldIndex === 0) {
-            return;
-        }
-        onMove(oldIndex, oldIndex - 1);
-    };
+    const previewWrapperPaddingTop = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[0] ? wrapperPadding[0] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[0] ? wrapperTabletPadding[0] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[0] ? wrapperMobilePadding[0] : ''));
+    const previewWrapperPaddingRight = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[1] ? wrapperPadding[1] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[1] ? wrapperTabletPadding[1] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[1] ? wrapperMobilePadding[1] : ''));
+    const previewWrapperPaddingBottom = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[2] ? wrapperPadding[2] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[2] ? wrapperTabletPadding[2] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[2] ? wrapperMobilePadding[2] : ''));
+    const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[3] ? wrapperMobilePadding[3] : ''));
+    const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
+    const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
+    const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
 
     const onColumnChange = (value) => {
         let columnarray = [];
@@ -577,6 +560,46 @@ function KadenceTestimonials({
         });
     };
 
+    function CustomNextArrow(props) {
+        const {className, style, onClick} = props;
+        return (
+            <button
+                className={className}
+                style={{...style, display: 'block'}}
+                onClick={onClick}
+            >
+                <Dashicon icon="arrow-right-alt2"/>
+            </button>
+        );
+    }
+
+    function CustomPrevArrow(props) {
+        const {className, style, onClick} = props;
+        return (
+            <button
+                className={className}
+                style={{...style, display: 'block'}}
+                onClick={onClick}
+            >
+                <Dashicon icon="arrow-left-alt2"/>
+            </button>
+        );
+    }
+
+    const sliderSettings = {
+        dots: (dotStyle === 'none' ? false : true),
+        arrows: (arrowStyle === 'none' ? false : true),
+        infinite: true,
+        speed: transSpeed,
+        draggable: false,
+        autoplaySpeed: autoSpeed,
+        autoplay: autoPlay,
+        slidesToShow: columns[0],
+        slidesToScroll: (slidesScroll === 'all' ? columns[0] : 1),
+        nextArrow: <CustomNextArrow/>,
+        prevArrow: <CustomPrevArrow/>,
+    };
+
     return (
         <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
             <style>
@@ -642,45 +665,9 @@ function KadenceTestimonials({
                                             </ButtonGroup>
                                         </Fragment>
                                     )}
-                                    <RangeControl
-                                        label={__('Testimonial Items', 'kadence-blocks')}
-                                        value={itemsCount}
-                                        onChange={(newcount) => {
-                                            let newitems = testimonials;
-                                            if (newitems.length < newcount) {
-                                                const amount = Math.abs(newcount - newitems.length);
-                                                {
-                                                    times(amount, n => {
-                                                        newitems.push({
-                                                            url: newitems[0].url,
-                                                            id: newitems[0].id,
-                                                            alt: newitems[0].alt,
-                                                            width: newitems[0].width,
-                                                            height: newitems[0].height,
-                                                            maxWidth: newitems[0].maxWidth,
-                                                            subtype: newitems[0].subtype,
-                                                            media: newitems[0].media,
-                                                            icon: newitems[0].icon,
-                                                            isize: newitems[0].isize,
-                                                            istroke: newitems[0].istroke,
-                                                            ititle: newitems[0].ititle,
-                                                            color: newitems[0].color,
-                                                            title: '',
-                                                            content: '',
-                                                            name: '',
-                                                            occupation: '',
-                                                            rating: newitems[0].rating,
-                                                        });
-                                                    });
-                                                }
-                                                setAttributes({testimonials: newitems});
-                                                saveTestimonials({ititle: testimonials[0].ititle}, 0);
-                                            }
-                                            setAttributes({itemsCount: newcount});
-                                        }}
-                                        min={1}
-                                        max={40}
-                                    />
+
+                                    {/* Add item */}
+
                                     {showSettings('columnSettings', 'kadence/testimonials') && (
                                         <Fragment>
                                             {columnControls}
@@ -1614,12 +1601,49 @@ function KadenceTestimonials({
             {!showPreset && (
                 <Fragment {...blockProps}>
 
-                    <InnerBlocks
-                        template={ [ [ 'kadence/testimonial' ] ] }
-                        templateLock={ false }
-                        templateInsertUpdatesSelection={ true }
-                        allowedBlocks={ [ 'kadence/testimonial' ] }
-                    />
+                    {layout && layout === 'carousel' && (
+                        <div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`} style={{
+                            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                        }}>
+                            {childBlocks.size !== 1 && (
+                                <Slider
+                                    className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
+                                    <InnerBlocks
+                                        template={ [ [ 'kadence/testimonial' ] ] }
+                                        templateLock={ false }
+                                        templateInsertUpdatesSelection={ true }
+                                        allowedBlocks={ [ 'kadence/testimonial' ] }
+                                    />
+                                </Slider>
+                            )}
+                            {childBlocks.size === 1 && (
+                                <InnerBlocks
+                                    template={ [ [ 'kadence/testimonial' ] ] }
+                                    templateLock={ false }
+                                    templateInsertUpdatesSelection={ true }
+                                    allowedBlocks={ [ 'kadence/testimonial' ] }
+                                />
+                            )}
+                        </div>
+                    )}
+                    {layout && layout === 'grid' && (
+                        <div className={'kt-testimonial-grid-wrap'} style={{
+                            'grid-row-gap': columnGap + 'px',
+                            'grid-column-gap': columnGap + 'px',
+                            paddingTop: previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                            paddingBottom: previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                        }}>
+                            <InnerBlocks
+                                template={ [ [ 'kadence/testimonial' ] ] }
+                                templateLock={ false }
+                                templateInsertUpdatesSelection={ true }
+                                allowedBlocks={ [ 'kadence/testimonial' ] }
+                            />
+                        </div>
+                    )}
 
                     {displayTitle && titleFont[0].google && (
                         <WebfontLoader config={config}>
