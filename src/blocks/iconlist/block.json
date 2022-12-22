@@ -97,7 +97,7 @@
 	},
 	"listMargin": {
 	  "type": "array",
-	  "default": [ 0, 0, 10, 0 ]
+	  "default": [ 0, 0, "sm", 0 ]
 	},
 	"tabletListMargin": {
 	  "type": "array",
@@ -111,10 +111,70 @@
 	  "type": "string",
 	  "default": "px"
 	},
+	"listPadding": {
+		"type": "array",
+		"default": [ "", "", "","" ]
+	},
+	"tabletListPadding": {
+		"type": "array",
+		"default": [ "", "", "","" ]
+	},
+	"mobileListPadding": {
+		"type": "array",
+		"default": [ "", "", "","" ]
+	},
+	"listPaddingType": {
+		"type": "string",
+		"default": "px"
+	},
 	"iconAlign": {
 	  "type": "string",
 	  "default": "middle"
+	},
+	"iconSize": {
+		"type": "array",
+		"default": [ "", "", "" ]
+	},
+	"icon": {
+		"type": "string",
+		"default": "fe_checkCircle"
+	},
+	"width": {
+		"type": "number",
+		"default": 2
+	},
+	"color": {
+		"type": "string",
+		"default": ""
+	},
+	"background": {
+		"type": "string",
+		"default": ""
+	},
+	"border": {
+		"type": "string",
+		"default": ""
+	},
+	"borderRadius": {
+		"type": "number",
+		"default": ""
+	},
+	"padding": {
+		"type": "number",
+		"default": ""
+	},
+	"borderWidth": {
+		"type": "number",
+		"default": ""
+	},
+	"style": {
+		"type": "string",
+		"default": "default"
 	}
+  },
+  "providesContext": {
+	"kadence/listIcon": "icon",
+	"kadence/listIconWidth": "width"
   },
   "supports": {
 	"ktdynamic": true

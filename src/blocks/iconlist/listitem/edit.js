@@ -76,7 +76,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import {formatIndent, formatOutdent} from "@wordpress/icons";
 
 
-function KadenceListItem({attributes, className, setAttributes, clientId, onReplace, onRemove, mergeBlocks}) {
+function KadenceListItem({attributes, className, setAttributes, clientId, onReplace, onRemove, mergeBlocks, context}) {
 
     const {
         uniqueID,
@@ -95,6 +95,8 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
         style,
         level
     } = attributes;
+    const displayIcon = icon ? icon : context['kadence/listIcon'];
+    const displayWidth = width ? width : context['kadence/listIconWidth'];
     const [ activeTab, setActiveTab ] = useState( 'general' );
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
@@ -162,15 +164,15 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
 
                     <ToolbarButton
                         icon={formatOutdent}
-                        title={__('Outdent')}
-                        describedBy={__('Outdent list item')}
+                        title={__('Outdent', 'kadence-blocks')}
+                        describedBy={__('Outdent list item', 'kadence-blocks')}
                         disabled={level === 0}
                         onClick={() => onMoveLeft()}
                     />
                     <ToolbarButton
                         icon={formatIndent}
-                        title={__('Indent')}
-                        describedBy={__('Indent list item')}
+                        title={__('Indent', 'kadence-blocks')}
+                        describedBy={__('Indent list item', 'kadence-blocks')}
                         isDisabled={level === 5}
                         onClick={() => onMoveRight()}
                     />
@@ -187,7 +189,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                     <KadencePanelBody
                         title={__('Item Settings', 'kadence-blocks')}
                         initialOpen={true}
-                        panelName={'kb-icon-item'}
+                        panelName={'kb-icon-item-settings'}
                     >
                         <URLInputControl
                             label={__('Link', 'kadence-blocks')}
@@ -213,6 +215,8 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                             onChange={value => {
                                 setAttributes({icon: value});
                             }}
+                            allowClear={ true }
+							placeholder={ __( 'Select Icon', 'kadence-blocks' ) }
                         />
                     </KadencePanelBody>
                 ) }
@@ -223,7 +227,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                         panelName={'kb-icon-item'}
                     >
                         <RangeControl
-                            label={__('Icon Size')}
+                            label={__('Icon Size', 'kadence-blocks')}
                             value={size}
                             onChange={value => {
                                 setAttributes({size: value});
@@ -231,9 +235,9 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                             min={5}
                             max={250}
                         />
-                        {icon && 'fe' === icon.substring(0, 2) && (
+                        {displayIcon && 'fe' === displayIcon.substring(0, 2) && (
                             <RangeControl
-                                label={__('Line Width')}
+                                label={__('Line Width', 'kadence-blocks')}
                                 value={width}
                                 onChange={value => {
                                     setAttributes({width: value});
@@ -244,7 +248,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                             />
                         )}
                         <PopColorControl
-                            label={__('Icon Color')}
+                            label={__('Icon Color', 'kadence-blocks')}
                             value={(color ? color : '')}
                             default={''}
                             onChange={value => {
@@ -252,65 +256,66 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                             }}
                         />
                         <SelectControl
-                            label={__('Icon Style')}
+                            label={__('Icon Style', 'kadence-blocks')}
                             value={style}
                             options={[
-                                {value: 'default', label: __('Default')},
-                                {value: 'stacked', label: __('Stacked')},
+                                { value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+                                { value: 'default', label: __( 'Default', 'kadence-blocks' ) },
+                                { value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
                             ]}
                             onChange={value => {
                                 setAttributes({style: value});
                             }}
                         />
-                        {style !== 'default' && (
+                        {style === 'stacked' && (
                             <PopColorControl
-                                label={__('Icon Background')}
-                                value={(background ? background : '')}
-                                default={''}
-                                onChange={value => {
-                                    setAttributes({background: value});
-                                }}
+                                label={ __( 'Icon Background', 'kadence-blocks' ) }
+                                value={ ( background ? background : '' ) }
+                                default={ '' }
+                                onChange={ value => {
+                                    setAttributes( { background: value } );
+                                } }
                             />
                         )}
-                        {style !== 'default' && (
+                        {style === 'stacked' && (
                             <PopColorControl
-                                label={__('Border Color')}
-                                value={(border ? border : '')}
+                                label={ __( 'Border Color', 'kadence-blocks' ) }
+                                value={ ( border ? border : '' ) }
                                 default={''}
-                                onChange={value => {
-                                    setAttributes({border: value});
-                                }}
+                                onChange={ value => {
+                                    setAttributes( { border: value } );
+                                } }
                             />
                         )}
-                        {style !== 'default' && (
+                        {style === 'stacked' && (
                             <RangeControl
-                                label={__('Border Size (px)')}
+                                label={ __( 'Border Size (px)', 'kadence-blocks' ) }
                                 value={borderWidth}
                                 onChange={value => {
-                                    setAttributes({borderWidth: value});
+                                    setAttributes({ borderWidth: value });
                                 }}
                                 min={0}
                                 max={20}
                             />
                         )}
-                        {style !== 'default' && (
+                        {style === 'stacked' && (
                             <RangeControl
-                                label={__('Border Radius (%)')}
+                                label={ __( 'Border Radius (%)', 'kadence-blocks' ) }
                                 value={borderRadius}
                                 onChange={value => {
-                                    setAttributes({borderRadius: value});
+                                    setAttributes({ borderRadius: value });
                                 }}
                                 min={0}
                                 max={50}
                             />
                         )}
-                        {style !== 'default' && (
+                        {style === 'stacked' && (
                             <RangeControl
-                                label={__('Padding (px)')}
-                                value={padding}
-                                onChange={value => {
-                                    setAttributes({padding: value});
-                                }}
+                                label={ __( 'Padding (px)', 'kadence-blocks' ) }
+                                value={ padding }
+                                onChange={ value => {
+                                    setAttributes( { padding: value } );
+                                } }
                                 min={0}
                                 max={180}
                             />
@@ -320,16 +325,22 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
             </InspectorControls>
 
             <div
-                className={`kt-svg-icon-list-style-${style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}`}>
-                {icon && (
-                    <IconRender className={`kt-svg-icon-list-single kt-svg-icon-list-single-${icon}`} name={icon} size={ size ? size : '1em' } strokeWidth={('fe' === icon.substring(0, 2) ? width : undefined)} style={{
-                        color: (color ? KadenceColorOutput(color) : undefined),
-                        backgroundColor: (background && style !== 'default' ? KadenceColorOutput(background) : undefined),
-                        padding: (padding && style !== 'default' ? padding + 'px' : undefined),
-                        borderColor: (border && style !== 'default' ? KadenceColorOutput(border) : undefined),
-                        borderWidth: (borderWidth && style !== 'default' ? borderWidth + 'px' : undefined),
-                        borderRadius: (borderRadius && style !== 'default' ? borderRadius + '%' : undefined),
-                    }}/>
+                className={`kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${ style ? ' kt-svg-icon-list-style-' + style : '' }`}>
+                {displayIcon && (
+                    <IconRender
+                        className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}`}
+                        name={displayIcon}
+                        size={ size ? size : '1em' }
+                        strokeWidth={('fe' === displayIcon.substring(0, 2) ? displayWidth : undefined)}
+                        style={ {
+                            color: (color ? KadenceColorOutput(color) : undefined),
+                            backgroundColor: (background && style === 'stacked' ? KadenceColorOutput(background) : undefined),
+                            padding: (padding && style === 'stacked' ? padding + 'px' : undefined),
+                            borderColor: (border && style === 'stacked' ? KadenceColorOutput(border) : undefined),
+                            borderWidth: (borderWidth && style === 'stacked' ? borderWidth + 'px' : undefined),
+                            borderRadius: (borderRadius && style === 'stacked' ? borderRadius + '%' : undefined),
+                        } }
+                    />
                 )}
 
                 <RichText
@@ -340,9 +351,10 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                     }}
                     onSplit={(value, isOriginal) => {
                         let newAttributes;
-
-                        if (isOriginal || value) {
-                            newAttributes = {...attributes};
+                        newAttributes = {...attributes};
+                        newAttributes.uniqueID = '';
+                        if (! isOriginal && !value) {
+                            newAttributes.link = '';
                         }
 
                         const block = createBlock('kadence/listitem', newAttributes);
@@ -360,7 +372,6 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                     data-empty={text ? false : true}
                 />
             </div>
-
         </div>
     );
 }

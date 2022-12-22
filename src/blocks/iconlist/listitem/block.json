@@ -14,7 +14,7 @@
     },
     "icon": {
       "type": "string",
-      "default": "fe_checkCircle"
+      "default": ""
     },
     "link": {
       "type": "string",
@@ -30,7 +30,7 @@
     },
     "width": {
       "type": "number",
-      "default": 2
+      "default": ""
     },
     "text": {
       "type": "string",
@@ -62,13 +62,17 @@
     },
     "style": {
       "type": "string",
-      "default": "default"
+      "default": ""
     },
     "level": {
       "type": "number",
       "default": 0
     }
   },
+  "usesContext": [
+    "kadence/listIcon",
+    "kadence/listIconWidth"
+  ],
   "supports": {
     "ktdynamic": true
   }

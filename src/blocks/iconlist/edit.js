@@ -23,7 +23,6 @@ import {
 } from '@kadence/helpers';
 
 import {
-	WebfontLoader,
 	PopColorControl,
 	TypographyControls,
 	KadenceIconPicker,
@@ -33,6 +32,7 @@ import {
 	URLInputControl,
 	DynamicTextControl,
 	MeasurementControls,
+	KadenceWebfontLoader,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -86,7 +86,7 @@ import {
 
 function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, listBlock, container, clientId, updateBlockAttributes } ) {
 
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, iconAlign, tabletColumns, mobileColumns } = attributes;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -159,19 +159,20 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 	const previewListMarginBottom = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[2] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 2 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 2 ] : '' ) );
 	const previewListMarginLeft = getPreviewSize( previewDevice, ( undefined !== listMargin ? listMargin[3] : '' ), ( undefined !== tabletListMargin ? tabletListMargin[ 3 ] : '' ), ( undefined !== mobileListMargin ? mobileListMargin[ 3 ] : '' ) );
 
+	const previewListPaddingTop = getPreviewSize( previewDevice, ( undefined !== listPadding ? listPadding[0] : '' ), ( undefined !== tabletListPadding ? tabletListPadding[ 0 ] : '' ), ( undefined !== mobileListPadding ? mobileListPadding[ 0 ] : '' ) );
+	const previewListPaddingRight = getPreviewSize( previewDevice, ( undefined !== listPadding ? listPadding[1] : '' ), ( undefined !== tabletListPadding ? tabletListPadding[ 1 ] : '' ), ( undefined !== mobileListPadding ? mobileListPadding[ 1 ] : '' ) );
+	const previewListPaddingBottom = getPreviewSize( previewDevice, ( undefined !== listPadding ? listPadding[2] : '' ), ( undefined !== tabletListPadding ? tabletListPadding[ 2 ] : '' ), ( undefined !== mobileListPadding ? mobileListPadding[ 2 ] : '' ) );
+	const previewListPaddingLeft = getPreviewSize( previewDevice, ( undefined !== listPadding ? listPadding[3] : '' ), ( undefined !== tabletListPadding ? tabletListPadding[ 3 ] : '' ), ( undefined !== mobileListPadding ? mobileListPadding[ 3 ] : '' ) );
+
 	const previewColumnGap = getPreviewSize( previewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
 	const previewListGap = getPreviewSize( previewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
+	const listPaddingMouseOver = mouseOverVisualizer();
 
-	const gconfig = {
-		google: {
-			families: [ listStyles[ 0 ].family + ( listStyles[ 0 ].variant ? ':' + listStyles[ 0 ].variant : '' ) ],
-		},
-	};
-
-	const config = ( listStyles[ 0 ].google ? gconfig : '' );
 	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
 	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+
+	const previewIconSize = getPreviewSize( previewDevice, ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), ( undefined !== iconSize?.[1] ? iconSize[1] : '' ), ( undefined !== iconSize?.[2] ? iconSize[2] : '' ) );
 
 	const saveListStyles = ( value ) => {
 		const newUpdate = listStyles.map( ( item, index ) => {
@@ -203,20 +204,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
 		{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 	];
-
-	const blockToolControls = ( index ) => {
-		const isLineSelected = ( isSelected && focusIndex === index && kadence_blocks_params.dynamic_enabled );
-		if ( !isLineSelected ) {
-			return;
-		}
-		return <DynamicTextControl dynamicAttribute={'items:' + index + ':text'} {...attributes} />;
-	};
-
-	const renderToolControls = (
-		<div>
-			{times( listCount, n => blockToolControls( n ) )}
-		</div>
-	);
 
 	const blockProps = useBlockProps( {
 		className: className,
@@ -254,6 +241,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 							panelName={ 'iconlist' }
 							setActiveTab={ ( value ) => setActiveTab( value ) }
 							activeTab={ activeTab }
+							initialOpen={ 'style' }
 						/>
 
 						{( activeTab === 'general' ) &&
@@ -342,14 +330,131 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 
 						{( activeTab === 'style' ) &&
 							<>
+								<KadencePanelBody
+									title={__('Icon Styling', 'kadence-blocks')}
+									panelName={'kb-list-icon-styling'}
+								>
+									<KadenceIconPicker
+										value={icon}
+										onChange={value => {
+											setAttributes({icon: value});
+										}}
+									/>
+									<ResponsiveRangeControls
+										label={__( 'Icon Size', 'kadence-blocks' )}
+										value={( undefined !== iconSize?.[0] ? iconSize[0] : '' )}
+										onChange={value => {
+											setAttributes( { iconSize: [ value, ( undefined !== iconSize?.[1] ? iconSize[1] : '' ), ( undefined !== iconSize?.[2] ? iconSize[2] : '' ) ] } );
+										}}
+										tabletValue={( undefined !== iconSize?.[1] ? iconSize[1] : '' )}
+										onChangeTablet={( value ) => {
+											setAttributes( { iconSize: [ ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), value, ( undefined !== iconSize?.[2] ? iconSize[2] : '' ) ] } );
+										}}
+										mobileValue={( undefined !== iconSize?.[2] ? iconSize[2] : '' )}
+										onChangeMobile={( value ) => {
+											setAttributes( { iconSize: [ ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), ( undefined !== iconSize?.[1] ? iconSize[1] : '' ), value ] } );
+										}}
+										min={0}
+										max={300}
+										step={1}
+										unit={'px'}
+										showUnit={true}
+										units={[ 'px' ]}
+									/>
+									{icon && 'fe' === icon.substring(0, 2) && (
+										<RangeControl
+											label={__('Line Width', 'kadence-blocks')}
+											value={width}
+											onChange={value => {
+												setAttributes({width: value});
+											}}
+											step={0.5}
+											min={0.5}
+											max={4}
+										/>
+									)}
+									<PopColorControl
+										label={__('Icon Color', 'kadence-blocks')}
+										value={(color ? color : '')}
+										default={''}
+										onChange={value => {
+											setAttributes({color: value});
+										}}
+									/>
+									<SelectControl
+										label={__('Icon Style', 'kadence-blocks')}
+										value={style}
+										options={[
+											{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
+											{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
+										]}
+										onChange={value => {
+											setAttributes({style: value});
+										}}
+									/>
+									{style === 'stacked' && (
+										<PopColorControl
+											label={ __( 'Icon Background', 'kadence-blocks' ) }
+											value={ ( background ? background : '' ) }
+											default={ '' }
+											onChange={ value => {
+												setAttributes( { background: value } );
+											} }
+										/>
+									)}
+									{style === 'stacked' && (
+										<PopColorControl
+											label={ __( 'Border Color', 'kadence-blocks' ) }
+											value={ ( border ? border : '' ) }
+											default={''}
+											onChange={ value => {
+												setAttributes( { border: value } );
+											} }
+										/>
+									)}
+									{style === 'stacked' && (
+										<RangeControl
+											label={ __( 'Border Size (px)', 'kadence-blocks' ) }
+											value={borderWidth}
+											onChange={value => {
+												setAttributes({ borderWidth: value });
+											}}
+											min={0}
+											max={20}
+										/>
+									)}
+									{style === 'stacked' && (
+										<RangeControl
+											label={ __( 'Border Radius (%)', 'kadence-blocks' ) }
+											value={borderRadius}
+											onChange={value => {
+												setAttributes({ borderRadius: value });
+											}}
+											min={0}
+											max={50}
+										/>
+									)}
+									{style === 'stacked' && (
+										<RangeControl
+											label={ __( 'Padding (px)', 'kadence-blocks' ) }
+											value={ padding }
+											onChange={ value => {
+												setAttributes( { padding: value } );
+											} }
+											min={0}
+											max={180}
+										/>
+									)}
+								</KadencePanelBody>
 								{ showSettings( 'textStyle', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'List Text Styling' )}
+										initialOpen={ false }
 										panelName={'kb-list-text-styling'}
 									>
 										<PopColorControl
 											label={__( 'Color Settings' )}
-											value={( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' )}
+											value={( listStyles[0].color ? listStyles[0].color : '' )}
 											default={''}
 											onChange={value => {
 												saveListStyles( { color: value } );
@@ -399,7 +504,24 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 							<>
 								<KadencePanelBody panelName={'kb-icon-list-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
-										label={__( 'List Margin', 'kadence-blocks' )}
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={ listPadding }
+										tabletValue={ tabletListPadding}
+										mobileValue={ mobileListPadding}
+										onChange={( value ) => setAttributes( { listPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletListPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileListPadding: value } )}
+										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -24 : -200 )}
+										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 24 : 200 )}
+										step={( listPaddingType === 'em' || listPaddingType === 'rem' ? 0.1 : 1 )}
+										unit={listPaddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { listPaddingType: value } )}
+										onMouseOver={ listPaddingMouseOver.onMouseOver }
+										onMouseOut={ listPaddingMouseOver.onMouseOut }
+									/>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Margin', 'kadence-blocks' )}
 										value={ listMargin }
 										tabletValue={ tabletListMargin}
 										mobileValue={ mobileListMargin}
@@ -542,29 +664,32 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					{ `body:not(.rtl) .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
 					{ `body.rtl .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-left: ${ listLabelGap }px; }` }
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
-							font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
-							font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };
-							color:  ${ ( listStyles[ 0 ].color ? KadenceColorOutput( listStyles[ 0 ].color ) : '' ) };
-							font-size: ${ ( previewFontSize ? previewFontSize + listStyles[ 0 ].sizeType : '' ) };
-							line-height: ${ ( previewLineHeight ? previewLineHeight + listStyles[ 0 ].lineType : '' ) };
-							letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
-							font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
-							text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
-							column-gap: ${ ( previewColumnGap ? previewColumnGap + 'px' : '' ) };
-						}`
-				}
+						font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
+						font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };
+						color:  ${ ( listStyles[ 0 ].color ? KadenceColorOutput( listStyles[ 0 ].color ) : '' ) };
+						font-size: ${ ( previewFontSize ? previewFontSize + listStyles[ 0 ].sizeType : '' ) };
+						line-height: ${ ( previewLineHeight ? previewLineHeight + listStyles[ 0 ].lineType : '' ) };
+						letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
+						font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
+						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
+						column-gap: ${ ( previewColumnGap ? previewColumnGap + 'px' : '' ) };
+					}` }
+					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
 			</style>
-			{listStyles[ 0 ].google && (
-				<WebfontLoader config={config}>
-				</WebfontLoader>
-			)}
+			{ listStyles?.[ 0 ]?.google && (
+				<KadenceWebfontLoader typography={ listStyles } clientId={ clientId } id={ 'listStyles' } />
+			) }
 			<div ref={container}
 				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
 				 style={{
-					 marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType),
-					 marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType),
-					 marginBottom: getSpacingOptionOutput( previewListMarginBottom, listMarginType),
-					 marginLeft: getSpacingOptionOutput( previewListMarginLeft, listMarginType),
+					marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType ),
+					marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType ),
+					marginBottom: getSpacingOptionOutput( previewListMarginBottom, listMarginType ),
+					marginLeft: getSpacingOptionOutput( previewListMarginLeft, listMarginType ),
+					paddingTop: getSpacingOptionOutput( previewListPaddingTop, listPaddingType ),
+					paddingRight: getSpacingOptionOutput( previewListPaddingRight, listPaddingType ),
+					paddingBottom: getSpacingOptionOutput( previewListPaddingBottom, listPaddingType ),
+					paddingLeft: getSpacingOptionOutput( previewListPaddingLeft, listPaddingType ),
 				 }}>
 
 				<InnerBlocks
@@ -574,7 +699,16 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					allowedBlocks={ [ 'kadence/listitem' ] }
 					renderAppender={ () => selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
 				/>
-				
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ listPaddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewListPaddingTop, listPaddingType ), getSpacingOptionOutput( previewListPaddingRight, listPaddingType ), getSpacingOptionOutput( previewListPaddingBottom, listPaddingType ), getSpacingOptionOutput( previewListPaddingLeft, listPaddingType ) ] }
+				/>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={ listMarginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewListMarginTop, listMarginType ), getSpacingOptionOutput( previewListMarginRight, listMarginType ), getSpacingOptionOutput( previewListMarginBottom, listMarginType ), getSpacingOptionOutput( previewListMarginLeft, listMarginType ) ] }
+				/>
 			</div>
 		</div>
 	);
