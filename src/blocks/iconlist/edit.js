@@ -19,7 +19,8 @@ import {
 	showSettings,
 	getPreviewSize,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 import {
@@ -208,6 +209,12 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 	const blockProps = useBlockProps( {
 		className: className,
 		// 'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
+	} );
+	const innerBlocksProps = useInnerBlocksProps( blockProps, {
+		allowedBlocks: [ 'kadence/listitem' ],
+		template: [['kadence/listitem']],
+		templateLock: false,
+		templateInsertUpdatesSelection: true,
 	} );
 
 	return (
@@ -539,9 +546,10 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 									/>
 								</KadencePanelBody>
 
-								<div className="kt-sidebar-settings-spacer"></div>
 
-								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
+								{/*
+								 <div className="kt-sidebar-settings-spacer"></div>
+								 { showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'Edit All Icon Styles Together' )}
 										initialOpen={ false }
@@ -650,7 +658,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 											/>
 										)}
 									</KadencePanelBody>
-								)}
+								)} */}
 
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/iconlist' } excludedAttrs={ [ 'listCount' ] } preventMultiple={ [ 'items' ] } />
 
@@ -667,7 +675,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
 						font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };
 						color:  ${ ( listStyles[ 0 ].color ? KadenceColorOutput( listStyles[ 0 ].color ) : '' ) };
-						font-size: ${ ( previewFontSize ? previewFontSize + listStyles[ 0 ].sizeType : '' ) };
+						font-size: ${ ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, listStyles[ 0 ].sizeType ) : '' ) };
 						line-height: ${ ( previewLineHeight ? previewLineHeight + listStyles[ 0 ].lineType : '' ) };
 						letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
 						font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
@@ -675,12 +683,18 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						column-gap: ${ ( previewColumnGap ? previewColumnGap + 'px' : '' ) };
 					}` }
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
+					{ ( color ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${ KadenceColorOutput( color ) }; }` : '' ) }
+					{ ( background ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${ KadenceColorOutput( background ) }; }` : '' ) }
+					{ ( padding ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { padding: ${ padding }px; }` : '' ) }
+					{ ( border ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { border: ${ KadenceColorOutput( border ) }; }` : '' ) }
+					{ ( borderWidth ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { border-width: ${ borderWidth }px; }` : '' ) }
+					{ ( borderRadius ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { border-radius: ${ borderRadius }%; }` : '' ) }
 			</style>
 			{ listStyles?.[ 0 ]?.google && (
 				<KadenceWebfontLoader typography={ listStyles } clientId={ clientId } id={ 'listStyles' } />
 			) }
 			<div ref={container}
-				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
+				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kb-icon-list-style-${style} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
 				 style={{
 					marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType ),
 					marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType ),
@@ -692,20 +706,20 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					paddingLeft: getSpacingOptionOutput( previewListPaddingLeft, listPaddingType ),
 				 }}>
 
-				<InnerBlocks
-					template={ [ [ 'kadence/listitem' ] ] }
-					templateLock={ false }
-					templateInsertUpdatesSelection={ true }
-					allowedBlocks={ [ 'kadence/listitem' ] }
-					renderAppender={ () => selfOrChildSelected(isSelected, clientId ) && <InnerBlocks.ButtonBlockAppender/> }
-				/>
+				<div {...innerBlocksProps} />
 				<SpacingVisualizer
 					type="inside"
+					style={ {
+						marginLeft: ( undefined !== previewListMarginLeft ? getSpacingOptionOutput( previewListMarginLeft, listMarginType ) : undefined ),
+						marginRight: ( undefined !== previewListMarginRight ? getSpacingOptionOutput( previewListMarginRight, listMarginType ) : undefined ),
+						marginTop: ( undefined !== previewListMarginTop ? getSpacingOptionOutput( previewListMarginTop, listMarginType ) : undefined ),
+						marginBottom: ( undefined !== previewListMarginBottom ? getSpacingOptionOutput( previewListMarginBottom, listMarginType ) : undefined ),
+					} }
 					forceShow={ listPaddingMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewListPaddingTop, listPaddingType ), getSpacingOptionOutput( previewListPaddingRight, listPaddingType ), getSpacingOptionOutput( previewListPaddingBottom, listPaddingType ), getSpacingOptionOutput( previewListPaddingLeft, listPaddingType ) ] }
 				/>
 				<SpacingVisualizer
-					type="outside"
+					type="outsideVertical"
 					forceShow={ listMarginMouseOver.isMouseOver }
 					spacing={ [ getSpacingOptionOutput( previewListMarginTop, listMarginType ), getSpacingOptionOutput( previewListMarginRight, listMarginType ), getSpacingOptionOutput( previewListMarginBottom, listMarginType ), getSpacingOptionOutput( previewListMarginLeft, listMarginType ) ] }
 				/>

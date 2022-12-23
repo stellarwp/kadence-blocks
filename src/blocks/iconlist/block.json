@@ -97,7 +97,7 @@
 	},
 	"listMargin": {
 	  "type": "array",
-	  "default": [ 0, 0, "sm", 0 ]
+	  "default": [ "0", "0", "sm", "0" ]
 	},
 	"tabletListMargin": {
 	  "type": "array",
