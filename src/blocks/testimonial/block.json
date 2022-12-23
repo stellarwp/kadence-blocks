@@ -137,7 +137,9 @@
 	"kadence/testimonials-occupationFont",
 	"kadence/testimonials-nameFont",
 	"kadence/testimonials-mediaStyles",
-	"kadence/testimonials-ratingStyles"
+	"kadence/testimonials-columns",
+	"kadence/testimonials-gap",
+	"kadence/testimonials-gapUnit"
   ],
   "supports": {
 	"anchor": true

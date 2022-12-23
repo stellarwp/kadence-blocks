@@ -26,6 +26,7 @@ import {
  * Import External
  */
 import Slider from 'react-slick';
+import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
 import {map} from 'lodash';
 /**
  * Import Components
@@ -45,6 +46,7 @@ import {
     InspectorControlTabs,
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
+    ResponsiveGapSizeControl,
 } from '@kadence/components';
 
 import {
@@ -52,7 +54,8 @@ import {
     KadenceColorOutput,
     showSettings,
     setBlockDefaults,
-    mouseOverVisualizer
+    mouseOverVisualizer,
+    getGapSizeOptionOutput,
 } from '@kadence/helpers';
 
 /**
@@ -67,7 +70,8 @@ import {
     InspectorControls,
     BlockControls,
     useBlockProps,
-    InnerBlocks
+    InnerBlocks,
+    useInnerBlocksProps,
 } from '@wordpress/block-editor';
 
 import {useSelect, useDispatch} from '@wordpress/data';
@@ -151,6 +155,8 @@ function KadenceTestimonials({
         wrapperTabletPadding,
         wrapperMobilePadding,
         inQueryBlock,
+        gap,
+        gapUnit,
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
@@ -166,7 +172,7 @@ function KadenceTestimonials({
     const [iconPaddingControl, setIconPaddingControl] = useState('linked');
     const [showPreset, setShowPreset] = useState(false);
     const [wrapperPaddingControls, setWrapperPaddingControls] = useState('linked');
-
+    const carouselRef = useRef( null );
     const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
@@ -204,7 +210,10 @@ function KadenceTestimonials({
         } else {
             addUniqueID(uniqueID, clientId);
         }
-
+        // Update from old gutter settings.
+        if ( columnGap !== '' ) {
+            setAttributes( { gap: [ columnGap, '', '' ], columnGap: '' } );
+        }
         if (mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[1] && mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[2] && mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[3]) {
             setMediaBorderControl('linked');
         } else {
@@ -277,6 +286,10 @@ function KadenceTestimonials({
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
     const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
+
+    const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[0] ? columns[0] : 3 ), ( undefined !== columns[3] ? columns[3] : '' ), ( undefined !== columns[5] ? columns[5] : '' ) );
+
+    const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
 
     const onColumnChange = (value) => {
         let columnarray = [];
@@ -468,8 +481,6 @@ function KadenceTestimonials({
         });
     };
 
-    const ALLOWED_MEDIA_TYPES = ['image'];
-
     const savemediaStyles = (value) => {
         const newUpdate = mediaStyles.map((item, index) => {
             if (0 === index) {
@@ -560,59 +571,40 @@ function KadenceTestimonials({
         });
     };
 
-    function CustomNextArrow(props) {
-        const {className, style, onClick} = props;
-        return (
-            <button
-                className={className}
-                style={{...style, display: 'block'}}
-                onClick={onClick}
-            >
-                <Dashicon icon="arrow-right-alt2"/>
-            </button>
-        );
-    }
-
-    function CustomPrevArrow(props) {
-        const {className, style, onClick} = props;
-        return (
-            <button
-                className={className}
-                style={{...style, display: 'block'}}
-                onClick={onClick}
-            >
-                <Dashicon icon="arrow-left-alt2"/>
-            </button>
-        );
-    }
-
-    const sliderSettings = {
-        dots: (dotStyle === 'none' ? false : true),
-        arrows: (arrowStyle === 'none' ? false : true),
-        infinite: true,
-        speed: transSpeed,
-        draggable: false,
-        autoplaySpeed: autoSpeed,
-        autoplay: autoPlay,
-        slidesToShow: columns[0],
-        slidesToScroll: (slidesScroll === 'all' ? columns[0] : 1),
-        nextArrow: <CustomNextArrow/>,
-        prevArrow: <CustomPrevArrow/>,
-    };
-
+    const carouselSettings = {
+		type         : 'slide',
+		rewind       : true,
+		pagination    : ( dotStyle === 'none' ? false : true ),
+		arrows        : ( arrowStyle === 'none' ? false : true ),
+		speed         : transSpeed,
+		draggable     : false,
+		focus        : 0,
+		perPage      : previewColumns,
+		interval     : autoSpeed,
+		autoplay      : autoPlay,
+		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
+		gap          : previewGap ? previewGap : '0',
+	};
+    const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: 'testimonial-inner-block-wrap',
+		},
+		{
+			orientation: 'horizontal',
+			templateLock: false,
+            templateInsertUpdatesSelection: true,
+            template: [ [ 'kadence/testimonial' ] ],
+            allowedBlocks: [ 'kadence/testimonial' ],
+		}
+	);
     return (
         <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
             <style>
-                {(layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .slick-slide { padding: 0 ${columnGap / 2}px; }` : '')}
-                {(layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-blocks-carousel .slick-slider { margin: 0 -${columnGap / 2}px; }` : '')}
-                {(layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-blocks-carousel .slick-prev { left: ${columnGap / 2}px; }` : '')}
-                {(layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-blocks-carousel .slick-next { right: ${columnGap / 2}px; }` : '')}
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
                 {(layout === 'grid' ) && (
                     `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
-                        grid-row-gap: ${columnGap}px;
-                        grid-column-gap: ${columnGap}px;
+                        gap: ${getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) )};
                     }`
                 ) }
             </style>
@@ -677,12 +669,22 @@ function KadenceTestimonials({
                                     {showSettings('columnSettings', 'kadence/testimonials') && (
                                         <Fragment>
                                             {columnControls}
-                                            <RangeControl
-                                                label={__('Column Gap', 'kadence-blocks')}
-                                                value={columnGap}
-                                                onChange={(value) => setAttributes({columnGap: value})}
+                                            <ResponsiveGapSizeControl
+                                                label={__( 'Column Gutter', 'kadence-blocks' )}
+                                                value={ ( undefined !== gap?.[0] ? gap[0] : '' ) }
+                                                onChange={ value => setAttributes( { gap: [value,( undefined !== gap[1] ? gap[1] : '' ),( undefined !== gap[2] ? gap[2] : '' )] } )}
+                                                tabletValue={( undefined !== gap?.[1] ? gap[1] : '' )}
+                                                onChangeTablet={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),value,( undefined !== gap[2] ? gap[2] : '' )] } )}
+                                                mobileValue={( undefined !== gap?.[2] ? gap[2] : '' )}
+                                                onChangeMobile={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),( undefined !== gap[1] ? gap[1] : '' ),value] } )}
                                                 min={0}
-                                                max={80}
+                                                max={( gapUnit === 'px' ? 200 : 12 )}
+                                                step={( gapUnit === 'px' ? 1 : 0.1 )}
+                                                unit={ gapUnit ? gapUnit : 'px' }
+                                                onUnit={( value ) => {
+                                                    setAttributes( { gapUnit: value } );
+                                                }}
+                                                units={[ 'px', 'em', 'rem' ]}
                                             />
                                         </Fragment>
                                     )}
@@ -1605,33 +1607,22 @@ function KadenceTestimonials({
                 </div>
             )}
             {!showPreset && (
-                <Fragment {...blockProps}>
-
+                <>
                     {layout && layout === 'carousel' && (
-                        <div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`} style={{
-                            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                        }}>
-                            {childBlocks.size !== 1 && (
-                                <Slider
-                                    className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...sliderSettings}>
-                                    <InnerBlocks
-                                        template={ [ [ 'kadence/testimonial' ] ] }
-                                        templateLock={ false }
-                                        templateInsertUpdatesSelection={ true }
-                                        allowedBlocks={ [ 'kadence/testimonial' ] }
-                                    />
-                                </Slider>
-                            )}
-                            {childBlocks.size === 1 && (
-                                <InnerBlocks
-                                    template={ [ [ 'kadence/testimonial' ] ] }
-                                    templateLock={ false }
-                                    templateInsertUpdatesSelection={ true }
-                                    allowedBlocks={ [ 'kadence/testimonial' ] }
-                                />
-                            )}
-                        </div>
+                        <Splide
+                            options={ carouselSettings }
+                            ref={ carouselRef }
+                            aria-label={ __( 'Testimonial Carousel', 'kadence-woo-extras' ) }
+                            className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+                            hasTrack={ false }
+                            style={{
+                                paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                                paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+                            }}
+                            >
+                            <SplideTrack { ...innerBlocksProps }>
+                            </SplideTrack>
+                        </Splide>
                     )}
                     {layout && layout === 'grid' && (
                         <div className={'kt-testimonial-grid-wrap'} style={{
@@ -1667,7 +1658,7 @@ function KadenceTestimonials({
                         <WebfontLoader config={oconfig}>
                         </WebfontLoader>
                     )}
-                </Fragment>
+                </>
             )}
         </div>
     );

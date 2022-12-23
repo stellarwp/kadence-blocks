@@ -604,7 +604,7 @@ function GalleryEdit( props ) {
 		perPage      : previewColumns,
 		interval     : autoSpeed,
 		autoplay      : autoPlay,
-		slidesToScroll: ( slidesScroll === 'all' ? columns[ 0 ] : 1 ),
+		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
 	const fluidCarouselSettings = {
@@ -968,12 +968,12 @@ function GalleryEdit( props ) {
 									<>
 										<ResponsiveRangeControls
 											label={__( 'Gutter', 'kadence-blocks' )}
-											value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
-											onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
-											tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
-											onChangeTablet={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
-											mobileValue={( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' )}
-											onChangeMobile={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } )}
+											value={( '' !== gutter?.[0] ? gutter[0] : '' )}
+											onChange={value => setAttributes( { gutter: [ value, ( '' !== gutter?.[1] ? gutter[1] : '' ), ( '' !== gutter?.[2] ? gutter[2] : '' ) ] } )}
+											tabletValue={( '' !== gutter?.[1] ? gutter[1] : '' )}
+											onChangeTablet={value => setAttributes( { gutter: [ (  '' !== gutter?.[0] ? gutter[0] : '' ), value, ( '' !== gutter?.[2] ? gutter[2] : '' ) ] } )}
+											mobileValue={( '' !== gutter?.[2] ? gutter[2] : '' )}
+											onChangeMobile={value => setAttributes( { gutter: [ (  '' !== gutter?.[0] ? gutter[0] : '' ), ( '' !== gutter?.[1] ? gutter[1] : '' ), value ] } )}
 											min={0}
 											max={( gutterUnit !== 'px' ? 12 : 200 )}
 											step={( gutterUnit !== 'px' ? 0.1 : 1 )}
@@ -1810,7 +1810,7 @@ function GalleryEdit( props ) {
 				>
 					<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
 						{theImages.length > columns[ 0 ] && (
-							<Splide options={ carouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+							<Splide options={ carouselSettings } ref={ mainRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
 								{theImages.map( ( img, index ) => {
 									return (
 										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>

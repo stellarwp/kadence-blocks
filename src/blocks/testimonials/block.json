@@ -6,6 +6,9 @@
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "providesContext": {
+	"kadence/testimonials-columns": "columns",
+	"kadence/testimonials-gap": "gap",
+	"kadence/testimonials-gap-unit": "gapUnit",
 	"kadence/testimonials-displayContent": "displayContent",
 	"kadence/testimonials-displayOccupation": "displayOccupation",
 	"kadence/testimonials-displayTitle": "displayTitle",
@@ -74,7 +77,19 @@
 	},
 	"columnGap": {
 	  "type": "number",
-	  "default": 30
+	  "default": ""
+	},
+	"gap": {
+		"type": "array",
+		"default": [
+			"md",
+			"",
+			""
+		]
+	},
+	"gapUnit": {
+		"type": "string",
+		"default": "px"
 	},
 	"autoPlay": {
 	  "type": "boolean",

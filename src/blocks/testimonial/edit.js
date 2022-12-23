@@ -4,6 +4,7 @@
  */
 
 import metadata from './block.json';
+import TestimonialItemWrap from './carousel-item-wrap';
 /**
  * Import Icons
  */
@@ -86,13 +87,13 @@ import classnames from 'classnames';
  * Build the overlay edit
  */
 function KadenceTestimonials({
-                                 attributes,
-                                 setAttributes,
-                                 className,
-                                 clientId,
-                                 isSelected,
-                                 context,
-                             }) {
+        attributes,
+        setAttributes,
+        className,
+        clientId,
+        isSelected,
+        context,
+    }) {
 
     const {
         uniqueID,
@@ -294,31 +295,6 @@ function KadenceTestimonials({
 
     const ALLOWED_MEDIA_TYPES = ['image'];
 
-    function CustomNextArrow(props) {
-        const {className, style, onClick} = props;
-        return (
-            <button
-                className={className}
-                style={{...style, display: 'block'}}
-                onClick={onClick}
-            >
-                <Dashicon icon="arrow-right-alt2"/>
-            </button>
-        );
-    }
-
-    function CustomPrevArrow(props) {
-        const {className, style, onClick} = props;
-        return (
-            <button
-                className={className}
-                style={{...style, display: 'block'}}
-                onClick={onClick}
-            >
-                <Dashicon icon="arrow-left-alt2"/>
-            </button>
-        );
-    }
 
     const renderTestimonialSettings = () => {
         return (
@@ -777,59 +753,52 @@ function KadenceTestimonials({
             </div>
         );
     };
-
     return (
-        <div {...blockProps}>
-            {showSettings('allSettings') && (
-                <Fragment>
-                    <InspectorControls>
+        <TestimonialItemWrap { ...{ attributes, setAttributes, isSelected, clientId, context, previewDevice }}>
+            <div {...blockProps}>
+                {showSettings('allSettings') && (
+                    <>
+                        <InspectorControls>
 
-                        <InspectorControlTabs
-                            panelName={'icon'}
-                            allowedTabs={[ 'general', 'advanced' ]}
-                            setActiveTab={(value) => setActiveTab(value)}
-                            activeTab={activeTab}
-                        />
+                            <InspectorControlTabs
+                                panelName={'icon'}
+                                allowedTabs={[ 'general', 'advanced' ]}
+                                setActiveTab={(value) => setActiveTab(value)}
+                                activeTab={activeTab}
+                            />
 
-                        {(activeTab === 'general') &&
+                            {(activeTab === 'general') &&
 
-                            <>
+                                <>
 
-                                {showSettings('individualSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Individual Settings', 'kadence-blocks')}
-                                        initialOpen={true}
-                                        panelName={'kb-testimonials-individual-settings'}
-                                    >
-                                        {renderTestimonialSettings()}
-                                    </KadencePanelBody>
-                                )}
+                                    {showSettings('individualSettings', 'kadence/testimonials') && (
+                                        <KadencePanelBody
+                                            title={__('Individual Settings', 'kadence-blocks')}
+                                            initialOpen={true}
+                                            panelName={'kb-testimonials-individual-settings'}
+                                        >
+                                            {renderTestimonialSettings()}
+                                        </KadencePanelBody>
+                                    )}
 
-                            </>
-                        }
+                                </>
+                            }
 
-                        {( activeTab === 'advanced') && (
-                            <>
-                                <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'url', 'media', 'title', 'content' ] } />
-                            </>
-                        )}
+                            {( activeTab === 'advanced') && (
+                                <>
+                                    <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'url', 'media', 'title', 'content' ] } />
+                                </>
+                            )}
 
-                    </InspectorControls>
-                </Fragment>
-            )}
+                        </InspectorControls>
+                    </>
+                )}
 
-            <Fragment {...blockProps}>
-                { layout === 'carousel' && (
-                    <div className={'kt-blocks-testimonial-carousel-item'}>
-                        { renderTestimonialPreview( true ) }
-                    </div>
-                ) }
-
-                { layout !== 'carousel' && (
-                    renderTestimonialPreview()
-                ) }
-            </Fragment>
-        </div>
+                <>
+                    { renderTestimonialPreview( true ) }
+                </>
+            </div>
+        </TestimonialItemWrap>
     );
 }
 

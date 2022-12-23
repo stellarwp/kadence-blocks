@@ -4,51 +4,19 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- @import './slick.scss';
+ @import './splide.scss';
  .wp-block-kadence-testimonials {
-	.kt-blocks-carousel {
-		padding-bottom: 35px;
+	.splide:not(.kt-carousel-dotstyle-none) {
+		padding-bottom: 30px;
 	}
-	.kt-blocks-carousel.kt-carousel-container-dotstyle-none {
-		padding-bottom: 0;
-	}
-	.kt-blocks-carousel .slick-slider:not(.kt-carousel-arrowstyle-none) {
-		padding-left: 35px;
-		padding-right: 35px;
+	.splide .splide__pagination {
+		bottom: 6px;
 	}
 }
  .kt-spacer-sidebar-15 {
 	 height: 15px;
  }
- .kt-testimonial-item__move-menu {
-    display: none;
-    position: absolute;
-	right: 0;
-	top:0;
-	z-index: 100;
-}
-.kt-testimonial-item-wrap:hover .kt-testimonial-item__move-menu {
-    display:inline-flex;
-}
- .kt-testimonial-item__move-menu .components-button {
-	padding: 4px;
-	height: 30px;
-    min-width: 30px;
-	width: 30px;
-	border:1px solid transparent;
-	background:rgba(255,255,255,.8);
-	&:focus:enabled {
-		border-color: transparent;
-		outline: 0;
-		outline-offset: 0;
-		box-shadow: none;
-		color: #555d66;
-	}
-	&:hover {
-		border:1px solid #555d66;
-		color: #555d66;
-	}
-}
+ 
 .components-button-group.kt-style-btn-group button.components-button.kt-style-btn {
     width: 50%;
     border: 0;
