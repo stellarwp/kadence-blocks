@@ -86,6 +86,7 @@ export { default as testimonialBubbleIcon } from './block-icons/testimonial/test
 export { default as testimonialInLineIcon } from './block-icons/testimonial/testimonial-in-line'
 export { default as testimonialBasicIcon } from './block-icons/testimonial/testimonial-basic'
 export { default as testimonialBlockIcon } from './block-icons/testimonial/testimonial-block'
+export { default as testimonialSingleBlockIcon } from './block-icons/testimonial/testimonial-single'
 export { default as testimonialCardIcon } from './block-icons/testimonial/testimonial-card'
 
 // Tabs Block

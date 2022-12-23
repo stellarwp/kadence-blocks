@@ -1,5 +1,5 @@
 /**
- * Utilitites for the icon list block.
+ * Utilities for the icon list block.
  */
 import { createBlock } from '@wordpress/blocks';
 

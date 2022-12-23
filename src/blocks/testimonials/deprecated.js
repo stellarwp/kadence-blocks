@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
- import { times } from 'lodash';
+import { times } from 'lodash';
 import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
 import { IconRender } from '@kadence/components';
 import classnames from 'classnames';
@@ -20,6 +20,8 @@ import attributes from './attributes';
  */
 import { __ } from '@wordpress/i18n';
 import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { migrateToInnerblocks } from './utils';
+
 
 /**
  * Register: a Gutenberg Block.
@@ -30,7 +32,7 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
- export default [
+export default [
 	{
 		attributes,
 		save: ( { attributes } ) => {
@@ -167,10 +169,10 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 			const renderTestimonialPreview = ( index ) => {
 				return (
 					<div className={`kt-testimonial-item-wrap kt-testimonial-item-${index}${( containerVAlign ? ' testimonial-valign-' + containerVAlign : '' )}`}
-						style={( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
-							maxWidth  : containerMaxWidth + 'px',
-							paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
-						} )}>
+						 style={( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
+							 maxWidth  : containerMaxWidth + 'px',
+							 paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
+						 } )}>
 						<div className="kt-testimonial-text-wrap" style={( 'bubble' === style || 'inlineimage' === style ? containerStyles : undefined )}>
 							{displayIcon && iconStyles[ 0 ].icon && 'card' !== style && (
 								renderTestimonialIcon( index )
@@ -260,9 +262,9 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 					{layout && layout === 'carousel' && (
 						<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle} kt-carousel-container-arrowstyle-${arrowStyle}`}>
 							<div className={`kt-blocks-carousel-init kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} data-columns-xxl={columns[ 0 ]} data-columns-xl={columns[ 1 ]}
-								data-columns-md={columns[ 2 ]} data-columns-sm={columns[ 3 ]} data-columns-xs={columns[ 4 ]} data-columns-ss={columns[ 5 ]} data-slider-anim-speed={transSpeed}
-								data-slider-scroll={slidesScroll} data-slider-arrows={( 'none' === arrowStyle ? false : true )} data-slider-dots={( 'none' === dotStyle ? false : true )}
-								data-slider-hover-pause="false" data-slider-auto={autoPlay} data-slider-speed={autoSpeed}>
+								 data-columns-md={columns[ 2 ]} data-columns-sm={columns[ 3 ]} data-columns-xs={columns[ 4 ]} data-columns-ss={columns[ 5 ]} data-slider-anim-speed={transSpeed}
+								 data-slider-scroll={slidesScroll} data-slider-arrows={( 'none' === arrowStyle ? false : true )} data-slider-dots={( 'none' === dotStyle ? false : true )}
+								 data-slider-hover-pause="false" data-slider-auto={autoPlay} data-slider-speed={autoSpeed}>
 								{times( itemsCount, n =>
 									<div className="kt-blocks-testimonial-carousel-item kb-slide-item" key={n}>
 										{renderTestimonialPreview( n )}
@@ -281,7 +283,8 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 					)}
 				</div>
 			);
-		}
+		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,

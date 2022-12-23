@@ -49,6 +49,8 @@ export { default as ResponsiveUnitControl } from './unit/responsive';
 export { default as InspectorControlTabs } from './inspector-control-tabs';
 export { default as HoverToggleControl } from './hover-toggle';
 export { default as TagSelect } from './tag-select';
+export { default as GapSizeControl } from './gap-controls';
+export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';

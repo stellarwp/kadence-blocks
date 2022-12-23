@@ -502,6 +502,132 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
+		/*
+		 * Global styles to apply to all testimonial items
+		 */
+		if( isset($attributes['style']) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+
+			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 . 'px');
+			$css->add_property('padding-top', ( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] && $attributes['iconStyles'][ 0 ]['icon'] && $attributes['iconStyles'][ 0 ]['margin'] && $attributes['iconStyles'][ 0 ]['margin'][ 0 ] && ( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] < 0 ) ? abs( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] ) . 'px' : 'undefined' ));
+		}
+
+		// See if container styles are applied to the item or text
+		if( !isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+
+		} else {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
+		}
+
+		if( isset( $attributes['displayShadow'] ) && $attributes['displayShadow'] ){
+			$default_shadow = array(
+				'color' => '#000000',
+				'opacity' => 0.2,
+				'spread' => 0,
+				'blur' => 14,
+				'hOffset' => 4,
+				'vOffset' => 2,
+
+			);
+			$shadow = isset( $attributes['shadow'][0] ) ? $attributes['shadow'][0] : $default_shadow;
+
+			$css->add_property( 'box-shadow', $shadow['hOffset'] .'px '. $shadow['vOffset'] .'px '. $shadow['blur'] . 'px '. $shadow['spread'] . 'px ' . $css->render_color( $shadow['color'], $shadow['opacity'] ) );
+		}
+
+		$css->render_measure_range( $attributes, 'containerBorderWidth', 'border-width' );
+
+		if( !isset( $attributes['containerBorder'] )){
+			$attributes['containerBorder'] = '#eeeeee';
+		}
+
+		$css->render_color_output( $attributes, 'containerBorder', 'border-color', 'containerBorderOpacity' );
+		$css->render_color_output( $attributes, 'containerBackground', 'background', 'containerBackgroundOpacity' );
+		$css->render_range( $attributes, 'containerBorderRadius', 'border-radius' );
+
+		$css->render_range( $attributes, 'containerPadding', 'padding' );
+
+		if( !isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && in_array( $attributes['style'], array('inlineimage', 'bubble') ) ) ){
+			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] . 'px' : '500px' );
+		}
+
+		/*
+		 * Global Media styles
+		 */
+		if( !isset( $attributes['displayMedia'] ) || ( isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ) ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap' );
+
+			if ( isset( $attributes['style'], $attributes['mediaStyles'][0]['width'] ) && $attributes['style'] !== 'card' ) {
+				$css->add_property( 'width', $attributes['mediaStyles'][0]['width'] . 'px' );
+			}
+
+			if ( isset( $attributes['mediaStyles'][0] ) ) {
+				if ( ! isset( $attributes['mediaStyles'][0]['border'] ) ) {
+					$attributes['mediaStyles'][0]['border'] = '#555555';
+				}
+				$css->render_color_output( $attributes['mediaStyles'][0], 'border', 'border-color' );
+
+				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
+				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
+				$css->render_range( $attributes['mediaStyles'][0], 'borderRadius', 'border-radius' );
+				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'border-color', 'backgroundOpacity' );
+				$css->render_measure_range( $attributes['mediaStyles'][0], 'borderWidth', 'border-width' );
+			}
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
+			$css->add_property( 'justify-content', 'center' );
+			$css->add_property( 'align-items', 'center' );
+		}
+
+		/*
+		 * Rating Styles
+		 */
+		if( isset( $attributes['displayRating'] ) && $attributes['displayRating'] ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap' );
+			$css->render_range( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array(
+				'margin' => array(
+					10,
+					0,
+					10,
+					0
+				)
+			), 'margin', 'margin' );
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap .kt-svg-testimonial-rating-icon' );
+			$css->render_color_output( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array( 'color' => '#ffd700' ), 'color', 'color' );
+			$css->add_property( 'font-size', isset( $attributes['ratingStyles'][0] ) && isset( $attributes['ratingStyles'][0]['size'] ) ? $attributes['ratingStyles'][0]['size'] . 'px' : '16px' );
+
+			$css->add_property( 'display', 'inline-flex' );
+			$css->add_property( 'justify-content', 'center' );
+			$css->add_property( 'align-items', 'center' );
+		}
+
+		/*
+		 * Icon Styles
+		 */
+		if( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] ) {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon-wrap' );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'margin', 'margin' );
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon' );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'padding', 'padding' );
+			$css->render_color_output( $attributes['iconStyles'][0], 'background', 'background', 'backgroundOpacity' );
+			$css->render_color_output( $attributes['iconStyles'][0], 'border', 'border-color', 'borderOpacity' );
+			$css->add_property( 'color', $css->render_color( $attributes['iconStyles'][0]['color'] ) );
+			$css->render_measure_range( $attributes['iconStyles'][0], 'borderWidth', 'border-width' );
+
+
+			if ( ! empty( $attributes['iconStyles'][0]['borderRadius'] ) ) {
+				$css->add_property( 'border-radius', $attributes['iconStyles'][0]['borderRadius'] . 'px' );
+			}
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon svg' );
+			$css->add_property( 'display', 'inline-block' );
+			$css->add_property( 'vertical-align', 'middle' );
+		}
+
+
+
 		return $css->css_output();
 	}
 

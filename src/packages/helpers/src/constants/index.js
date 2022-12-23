@@ -121,3 +121,33 @@ export const FONT_SIZES_MAP = [
 		name:  __( '3X Large', 'kadence-blocks' ),
 	},
 ];
+export const GAP_SIZES_MAP = [
+	{
+		value: 'none',
+		output: 'var(--global-kb-gap-none, 0px)',
+		size: 0,
+		label:  __( 'None', 'kadence-blocks' ),
+		name:  __( 'None', 'kadence-blocks' ),
+	},
+	{
+		value: 'sm',
+		output: 'var(--global-kb-gap-sm, 1rem)',
+		size: 16,
+		label:  __( 'SM', 'kadence-blocks' ),
+		name:  __( 'Small', 'kadence-blocks' ),
+	},
+	{
+		value: 'md',
+		output: 'var(--global-kb-gap-md, 2rem)',
+		size: 32,
+		label:  __( 'MD', 'kadence-blocks' ),
+		name:  __( 'Medium', 'kadence-blocks' ),
+	},
+	{
+		value: 'lg',
+		output: 'var(--global-kb-gap-lg, 4rem)',
+		size: 64,
+		label:  __( 'LG', 'kadence-blocks' ),
+		name:  __( 'Large', 'kadence-blocks' ),
+	},
+];

@@ -1,6 +1,11 @@
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
+ * Register sub blocks.
+ */
+import '../testimonial/block.js';
+
+/**
  * Internal dependencies
  */
 import edit from './edit';
