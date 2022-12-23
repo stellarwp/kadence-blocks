@@ -7,7 +7,7 @@
  */
 import classnames from 'classnames';
 
-const { RichText } = wp.blockEditor;
+const { RichText, useBlockProps } = wp.blockEditor;
 
 export default [
 	{
