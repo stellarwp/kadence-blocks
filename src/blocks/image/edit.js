@@ -137,6 +137,10 @@ export function ImageEdit( {
 		marginTablet,
 		marginMobile,
 		marginUnit,
+		paddingDesktop,
+		paddingTablet,
+		paddingMobile,
+		paddingUnit,
 	} = attributes;
 	function getDynamic() {
 		let contextPost = null;
@@ -256,6 +260,7 @@ export function ImageEdit( {
 		debounce( getDynamic, 200 );
 	}, [] );
 	const marginMouseOver = mouseOverVisualizer();
+	const paddingMouseOver = mouseOverVisualizer();
 	const [ temporaryURL, setTemporaryURL ] = useState();
 	const altRef = useRef();
 	useEffect( () => {
@@ -445,6 +450,10 @@ export function ImageEdit( {
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
 
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 	const classes = classnames( className, {
 		'is-transient': temporaryURL,
 		'is-resized': !! width || !! height,
@@ -468,6 +477,10 @@ export function ImageEdit( {
 			marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
 			marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
 			marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+			paddingTop: ( useRatio && '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+			paddingRight: ( useRatio &&'' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+			paddingBottom: ( useRatio && '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+			paddingLeft: ( useRatio && '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 		}}>
 			{ ( temporaryURL || url ) && (
 				<Image
@@ -485,6 +498,7 @@ export function ImageEdit( {
 					context={ context }
 					clientId={ clientId }
 					marginMouseOver={ marginMouseOver }
+					paddingMouseOver={ paddingMouseOver }
 				/>
 			) }
 			{ ! url && (
@@ -548,6 +562,13 @@ export function ImageEdit( {
 				forceShow={ marginMouseOver.isMouseOver }
 				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
 			/>
+			{ useRatio && (
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+			) }
 		</figure>
 	);
 }

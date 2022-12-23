@@ -61,19 +61,18 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		$key_positions = [ 'top', 'right', 'bottom', 'left' ];
-		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id );
-		if ( ! empty( $attributes['zIndex'] ) ) {
-			$css->add_property( 'position', 'relative' );
-			$css->add_property( 'z-index', $attributes['zIndex'] );
-		}
-
+		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id . ':not(.kb-specificity-added):not(.kb-extra-specificity-added)' );
 		// Margins
 		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', array(
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 			'unit_key' => 'marginUnit'
 		) );
-
+		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id );
+		if ( ! empty( $attributes['zIndex'] ) ) {
+			$css->add_property( 'position', 'relative' );
+			$css->add_property( 'z-index', $attributes['zIndex'] );
+		}
 		$align = ( ! empty( $attributes['align'] ) ? $attributes['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
 			$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
@@ -115,15 +114,14 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 			$css->set_media_state( 'desktop' );
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
-
+		$css->set_selector( '.kb-image' . $unique_id . ':not(.kb-image-is-ratio-size) .kb-img, .kb-image' . $unique_id . '.kb-image-is-ratio-size' );
 		// Padding
 		$css->render_measure_output( $attributes, 'paddingDesktop', 'padding', array(
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
 			'unit_key' => 'paddingUnit'
 		) );
-
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Border Color
 		if ( isset( $attributes['borderColor'] ) ) {
 			$css->add_property( 'border-style', 'solid' );

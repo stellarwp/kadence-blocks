@@ -128,7 +128,7 @@ function SectionEdit( {
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
@@ -667,7 +667,7 @@ function SectionEdit( {
 										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
 											<Fragment>
 												<ResponsiveRangeControls
-													label={__( 'Horizontal Gutter', 'kadence-blocks' )}
+													label={__( 'Gutter', 'kadence-blocks' )}
 													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
 													onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
 													tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}

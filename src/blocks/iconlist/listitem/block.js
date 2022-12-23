@@ -34,5 +34,9 @@ registerBlockType( 'kadence/listitem', {
         src: iconListItemBlockIcon,
     },
     edit,
-    save
+    save,
+    merge: ( a, { text = '' } ) => ( {
+		...a,
+		text: ( a.text || '' ) + text,
+	} ),
 } );

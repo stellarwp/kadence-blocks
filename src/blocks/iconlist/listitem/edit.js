@@ -52,12 +52,14 @@ import {createBlock} from '@wordpress/blocks';
 import {
     InspectorControls,
     RichText,
-    BlockControls
+    BlockControls,
+    store as blockEditorStore,
 } from '@wordpress/block-editor';
 
 import {
     useEffect,
     useState,
+    useRef,
     Fragment,
 } from '@wordpress/element';
 
@@ -74,7 +76,10 @@ import {
 import {compose} from '@wordpress/compose';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {formatIndent, formatOutdent} from "@wordpress/icons";
-
+/**
+ * Internal dependencies
+ */
+import useMerge from './merge';
 
 function KadenceListItem({attributes, className, setAttributes, clientId, onReplace, onRemove, mergeBlocks, context}) {
 
@@ -98,7 +103,11 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
     const displayIcon = icon ? icon : context['kadence/listIcon'];
     const displayWidth = width ? width : context['kadence/listIconWidth'];
     const [ activeTab, setActiveTab ] = useState( 'general' );
+    const onMerge = useMerge( clientId, mergeBlocks );
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+    // const useEnterRef = useEnter( { content, clientId } );
+	// const useSpaceRef = useSpace( clientId );
+    const textRef = useRef( clientId );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
@@ -345,6 +354,8 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
 
                 <RichText
                     tagName="div"
+                    ref={ textRef }
+					identifier="text"
                     value={text}
                     onChange={value => {
                         setAttributes({text: value});
@@ -352,8 +363,9 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                     onSplit={(value, isOriginal) => {
                         let newAttributes;
                         newAttributes = {...attributes};
-                        newAttributes.uniqueID = '';
-                        if (! isOriginal && !value) {
+                        newAttributes.text = value;
+                        if (! isOriginal ) {
+                            newAttributes.uniqueID = '';
                             newAttributes.link = '';
                         }
 

@@ -140,7 +140,7 @@
 	},
 	"itemBorderWidth": {
 	  "type": "array",
-	  "default": [ 0, 0, 0, 0 ]
+	  "default": [ "", "", "", "" ]
 	},
 	"itemTabletBorderWidth": {
 	  "type": "array",

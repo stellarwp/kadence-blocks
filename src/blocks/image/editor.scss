@@ -28,7 +28,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 			display: inline;
 		}
 	}
-
+	.kb-image-wrap {
+		min-width: 1px;
+	}
 	.kb-is-ratio-image {
 		height: 0;
 		position: relative;

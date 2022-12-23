@@ -91,7 +91,8 @@ export default function Image( {
 	context,
 	clientId,
 	previewDevice,
-	marginMouseOver
+	marginMouseOver,
+	paddingMouseOver
 } ) {
 	const {
 		url = '',
@@ -150,8 +151,6 @@ export default function Image( {
 		tabletBorderStyle,
 		mobileBorderStyle,
 	} = attributes;
-
-	const paddingMouseOver = mouseOverVisualizer();
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -1200,10 +1199,10 @@ export default function Image( {
 					maskSize: ( hasMask ? theMaskSize : undefined ),
 					maskPosition: ( hasMask ? theMaskPosition : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+					paddingTop: ( ! useRatio && '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight: ( ! useRatio && '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( ! useRatio && '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft: ( ! useRatio && '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 
 					borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
 					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
@@ -1231,11 +1230,13 @@ export default function Image( {
 				} }
 			/>
 			{ temporaryURL && <Spinner /> }
-			<SpacingVisualizer
-				type="inside"
-				forceShow={ paddingMouseOver.isMouseOver }
-				spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
-			/>
+			{ ! useRatio && (
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+			) }
 		</div>
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
@@ -1266,7 +1267,13 @@ export default function Image( {
 			/>
 		);
 	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
-		img = <div style={ { maxWidth: previewMaxWidth || width } }>{ img }</div>;
+		img = <div
+			className={ `kb-image-wrap` }
+			style={ {
+				maxWidth: previewMaxWidth || width,
+				width: ( previewMaxWidth ? '100%' : undefined ),
+			} }
+			>{ img }</div>;
 	} else {
 		const backupWidth = useRatio ? '100%' : 'auto';
 		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
