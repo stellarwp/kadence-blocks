@@ -1809,26 +1809,15 @@ function GalleryEdit( props ) {
 						data-columns-xs={columns[ 5 ]}
 				>
 					<div className={`kt-blocks-carousel kt-carousel-container-dotstyle-${dotStyle}`}>
-						{theImages.length > columns[ 0 ] && (
-							<Splide options={ carouselSettings } ref={ mainRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
-								{theImages.map( ( img, index ) => {
-									return (
-										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
-											{ renderGalleryImages( img, index ) }
-										</SplideSlide>
-									);
-								} )}
-							</Splide>
-						)}
-						{theImages.length <= columns[ 0 ] && (
-							theImages.map( ( img, index ) => {
+						<Splide options={ carouselSettings } ref={ mainRef } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
+							{theImages.map( ( img, index ) => {
 								return (
-									<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
 										{ renderGalleryImages( img, index ) }
-									</div>
+									</SplideSlide>
 								);
-							} )
-						)}
+							} )}
+						</Splide>
 					</div>
 				</div>
 			)}

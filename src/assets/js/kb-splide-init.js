@@ -24,7 +24,7 @@
 					return;
 				}
 
-				this.createSplideElements(thisSlider);
+				this.createSplideElements( thisSlider );
 				let parsedData = this.parseDataset(thisSlider.dataset);
 
 				if (document.querySelector('html[dir="rtl"]')) {
@@ -56,9 +56,19 @@
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
-					}).mount();
-
-					splideSlider.refresh();
+					});
+					splideSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						splideSlider.go( 0 );
+					  
+						splideSlider.options = {
+						  arrows    : splideOptions.arrows ? isOverflow : false,
+						  pagination: splideOptions.pagination ? isOverflow : false,
+						  drag      : splideOptions.drag ? isOverflow : false,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
+					splideSlider.mount();
 					var resizeTimer;
 					window.addEventListener("resize", function (e) {
 						clearTimeout(resizeTimer);
@@ -76,10 +86,6 @@
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.mount();
-
-					window.addEventListener("resize", function () {
-						splideSlider.refresh();
-					});
 				} else if (sliderType && sliderType === "thumbnail") {
 					let navSliderId = parsedData.sliderNav;
 					let navSlider = document.querySelector("#" + navSliderId);
@@ -93,6 +99,7 @@
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
+					navSliderOptions.type = 'slider';
 
 					mainSliderOptions.type = "fade";
 					mainSliderOptions.rewind = true;
@@ -107,17 +114,20 @@
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
-
-					window.addEventListener("resize", function () {
-						carouselSlider.refresh();
-					});
 				} else {
 					let splideSlider = new Splide(thisSlider, splideOptions);
+					splideSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						splideSlider.go( 0 );
+					  
+						splideSlider.options = {
+						  arrows    : splideOptions.arrows ? isOverflow : false,
+						  pagination: splideOptions.pagination ? isOverflow : false,
+						  drag      : splideOptions.drag ? isOverflow : false,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
 					splideSlider.mount();
-
-					window.addEventListener("resize", function () {
-						splideSlider.refresh();
-					});
 				}
 			}
 		},
@@ -138,6 +148,7 @@
 		},
 
 		createSplideElements: function (wrapperElem) {
+			const slideCount = wrapperElem.children.length;
 			for (let slide of wrapperElem.children) {
 				slide.classList.add("splide__slide");
 				slide.classList.add("slick-slide");
@@ -158,6 +169,7 @@
 			// The track goes inside them argument elem
 			wrapperElem.innerHTML = splideTrack.outerHTML;
 			wrapperElem.classList.add("splide");
+			return slideCount;
 		},
 
 		getSplideOptions: function (dataSet) {
@@ -167,7 +179,7 @@
 				//start: 0,
 				focus: 0,
 				trimSpace: true,
-				drag: false,
+				drag: true,
 				perPage: dataSet.columnsXxl || 1,
 				perMove: scrollIsOne || dataSet.columnsXxl || 1,
 				type: dataSet.sliderFade ? 'fade' : 'loop',
@@ -234,8 +246,6 @@
 			}
 		},
 	};
-
-	console.log("splide init");
 	if (document.readyState === "loading") {
 		// The DOM has not yet been loaded.
 		document.addEventListener("DOMContentLoaded", kadenceBlocksSplide.init);
