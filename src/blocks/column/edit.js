@@ -47,7 +47,7 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle, setBlockDefaults } from '@kadence/helpers';
 
 /**
  * Blocks Specific.
@@ -120,13 +120,8 @@ function SectionEdit( {
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/column' ] !== undefined && typeof blockConfigObject[ 'kadence/column' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/column' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/column' ][ attribute ];
-					} );
-				}
+				attributes = setBlockDefaults( 'kadence/column', attributes);
 			}
 			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
@@ -552,6 +547,11 @@ function SectionEdit( {
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-repeat:${ overlayImg[ 0 ].bgImgRepeat }; }` : '' ) }
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-attachment:${ overlayImg[ 0 ].bgImgAttachment }; }` : '' ) }
 
+				{ ( previewRadiusTop ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-top-left-radius:${ previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
+				{ ( previewRadiusRight ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-top-right-radius:${ previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
+				{ ( previewRadiusBottom ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-bottom-right-radius:${ previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
+				{ ( previewRadiusLeft ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-bottom-left-radius:${ previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
+
 				{ ( overlayHoverOpacity !== undefined && overlayHoverOpacity !== '' ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { opacity: ${ overlayHoverOpacity } }` : '' ) }
 				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) } }` : '' ) }
 				{ ( previewHoverOverlay ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-image:${ previewHoverOverlay }; }` : '' ) }
@@ -560,6 +560,11 @@ function SectionEdit( {
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-size:${ overlayImgHover[ 0 ].bgImgSize }; }` : '' ) }
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-repeat:${ overlayImgHover[ 0 ].bgImgRepeat }; }` : '' ) }
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-attachment:${ overlayImgHover[ 0 ].bgImgAttachment }; }` : '' ) }
+
+				{ ( previewHoverRadiusTop ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { border-top-left-radius:${ previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+				{ ( previewHoverRadiusRight ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { border-top-right-radius:${ previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+				{ ( previewHoverRadiusBottom ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { border-bottom-right-radius:${ previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+				{ (  previewHoverRadiusLeft ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { border-bottom-left-radius:${  previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
 
 				{ ( previewMaxWidth ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:${ previewMaxWidth + previewMaxWidthUnit }; margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }` : '' ) }

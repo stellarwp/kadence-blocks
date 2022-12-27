@@ -65,23 +65,6 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	public function build_css( $attributes, $css, $unique_id ) {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
-
-		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) && isset( $attributes['labelFont'][0]['google'] ) && $attributes['labelFont'][0]['google'] && ( ! isset( $attributes['labelFont'][0]['loadGoogle'] ) || true === $attributes['labelFont'][0]['loadGoogle'] ) && isset( $attributes['labelFont'][0]['family'] ) ) {
-			$label_font   = $attributes['labelFont'][0];
-			$font_variant = isset( $label_font['variant'] ) ? $label_font['variant'] : '';
-			$font_subset  = isset( $label_font['subset'] ) ? $label_font['subset'] : '';
-
-			$css->maybe_add_google_font( $label_font['family'], $font_variant, $font_subset );
-		}
-
-		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) && isset( $attributes['submitFont'][0]['google'] ) && $attributes['submitFont'][0]['google'] && ( ! isset( $attributes['submitFont'][0]['loadGoogle'] ) || true === $attributes['submitFont'][0]['loadGoogle'] ) && isset( $attributes['submitFont'][0]['family'] ) ) {
-			$submit_font  = $attributes['submitFont'][0];
-			$font_variant = isset( $submit_font['variant'] ) ? $submit_font['variant'] : '';
-			$font_subset  = isset( $submit_font['subset'] ) ? $submit_font['subset'] : '';
-
-			$css->maybe_add_google_font( $submit_font['family'], $font_variant, $font_subset );
-		}
-
 		// Container.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 
@@ -92,22 +75,26 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		) );
 
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap' );
-		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array(
-			'unit_key' => 'containerPaddingUnit',
-		) );
-
+		$css->render_measure_output(
+			$attributes,
+			'containerPadding',
+			'padding',
+			array(
+				'unit_key' => 'containerPaddingUnit',
+			)
+		);
 		if ( isset( $attributes['containerBackground'] ) && ! empty( $attributes['containerBackground'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $attributes['containerBackground'] ) );
 		}
-		if ( isset( $attributes['containerBorderColor'] ) && ! empty( $attributes['containerBorderColor'] ) ) {
-			$css->add_property( 'border-color', $css->render_color( $attributes['containerBorderColor'] ) );
+		if ( ! empty( $attributes['containerBorderColor'] ) || $css->is_number( $attributes['containerBorder'][0] ) || $css->is_number( $attributes['containerBorder'][1] ) || $css->is_number( $attributes['containerBorder'][2] ) || $css->is_number( $attributes['containerBorder'][3] ) ) {
+			if ( ! empty( $attributes['containerBorderColor'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attributes['containerBorderColor'] ) );
+			}
+			$css->render_measure_output( $attributes, 'containerBorder', 'border-width' );
+		} else {
+			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
-		if ( isset( $attributes['containerBorder'] ) && is_array( $attributes['containerBorder'] ) ) {
-			$css->add_property( 'border-width', $css->render_measure( $attributes['containerBorder'], 'px' ) );
-		}
-		if ( isset( $attributes['borderRadius'] ) && ! empty( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-			$css->add_property( 'border-radius', $css->render_measure( $attributes['borderRadius'], 'px' ) );
-		}
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 		if ( isset( $attributes['displayShadow'] ) && true == $attributes['displayShadow'] ) {
 			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
 				$css->add_property( 'box-shadow', $css->render_shadow( $attributes['shadow'][0] ) );
@@ -123,15 +110,23 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['titleAlign'] ) ) {
 			$css->add_property( 'text-align', $css->render_string( $attributes['titleAlign'] ) );
 		}
-		if ( isset( $attributes['titlePadding'] ) && is_array( $attributes['titlePadding'] ) ) {
-			$css->add_property( 'padding', $css->render_measure( $attributes['titlePadding'], ( isset( $attributes['titlePaddingUnit'] ) && ! empty( $attributes['titlePaddingUnit'] ) ? $attributes['titlePaddingUnit'] : 'px' ) ) );
-		}
-		if ( isset( $attributes['titleBorder'] ) && is_array( $attributes['titleBorder'] ) ) {
-			$css->add_property( 'border-width', $css->render_measure( $attributes['titleBorder'], 'px' ) );
-		}
-		if ( isset( $attributes['titleBorderColor'] ) && ! empty( $attributes['titleBorderColor'] ) ) {
-			$css->add_property( 'border-color', $css->render_color( $attributes['titleBorderColor'] ) );
-		}
+		$css->render_measure_output(
+			$attributes,
+			'titlePadding',
+			'padding',
+			array(
+				'unit_key' => 'titlePaddingType',
+			)
+		);
+		// Border, check old first.
+		if ( ! empty( $attributes['titleBorderColor'] ) || $css->is_number( $attributes['titleBorder'][0] ) || $css->is_number( $attributes['titleBorder'][1] ) || $css->is_number( $attributes['titleBorder'][2] ) || $css->is_number( $attributes['titleBorder'][3] ) ) {
+			if ( ! empty( $attributes['titleBorderColor'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attributes['titleBorderColor'] ) );
+			}
+			$css->render_measure_output( $attributes, 'titleBorder', 'border-width' );
+		} else {
+			$css->render_border_styles( $attributes, 'titleBorderStyle' );
+		}		
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . '.kb-collapsible-toc.kb-toc-toggle-hidden .kb-table-of-contents-title-wrap' );
 		if ( isset( $attributes['titleCollapseBorderColor'] ) && ! empty( $attributes['titleCollapseBorderColor'] ) ) {
 			$css->add_property( 'border-color', $css->render_color( $attributes['titleCollapseBorderColor'] ) );
@@ -140,11 +135,11 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['titleColor'] ) && ! empty( $attributes['titleColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['titleColor'] ) );
 		}
-		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][0] ) && ! empty( $attributes['titleSize'][0] ) ) {
-			$css->add_property( 'font-size', $attributes['titleSize'][0] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['titleSize'][0] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['titleSize'][0], ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) ) );
 		}
-		if ( isset( $attributes['titleLineHeight'] ) && is_array( $attributes['titleLineHeight'] ) && isset( $attributes['titleLineHeight'][0] ) && ! empty( $attributes['titleLineHeight'][0] ) ) {
-			$css->add_property( 'line-height', $attributes['titleLineHeight'][0] . ( isset( $attributes['titleLineType'] ) && ! empty( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
+		if ( ! empty( $attributes['titleLineHeight'][0] ) ) {
+			$css->add_property( 'line-height', $attributes['titleLineHeight'][0] . ( isset( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
 		}
 		if ( isset( $attributes['titleLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $css->render_number( $attributes['titleLetterSpacing'], 'px' ) );
@@ -167,11 +162,11 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['contentColor'] ) && ! empty( $attributes['contentColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['contentColor'] ) );
 		}
-		if ( isset( $attributes['contentSize'] ) && is_array( $attributes['contentSize'] ) && isset( $attributes['contentSize'][0] ) && ! empty( $attributes['contentSize'][0] ) ) {
-			$css->add_property( 'font-size', $attributes['contentSize'][0] . ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['contentSize'][0] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['contentSize'][0], ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) ) );
 		}
-		if ( isset( $attributes['contentLineHeight'] ) && is_array( $attributes['contentLineHeight'] ) && isset( $attributes['contentLineHeight'][0] ) && ! empty( $attributes['contentLineHeight'][0] ) ) {
-			$css->add_property( 'line-height', $attributes['contentLineHeight'][0] . ( isset( $attributes['contentLineType'] ) && ! empty( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
+		if ( ! empty( $attributes['contentLineHeight'][0] ) ) {
+			$css->add_property( 'line-height', $attributes['contentLineHeight'][0] . ( isset( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
 		}
 		if ( isset( $attributes['contentLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $css->render_number( $attributes['contentLetterSpacing'], 'px' ) );
@@ -190,9 +185,14 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['contentTextTransform'] ) ) {
 			$css->add_property( 'text-transform', $css->render_string( $attributes['contentTextTransform'] ) );
 		}
-		if ( isset( $attributes['contentMargin'] ) && is_array( $attributes['contentMargin'] ) ) {
-			$css->add_property( 'margin', $css->render_measure( $attributes['contentMargin'], ( isset( $attributes['contentMarginUnit'] ) && ! empty( $attributes['contentMarginUnit'] ) ? $attributes['contentMarginUnit'] : 'px' ) ) );
-		}
+		$css->render_measure_output(
+			$attributes,
+			'contentMargin',
+			'margin',
+			array(
+				'unit_key' => 'contentMarginType',
+			)
+		);
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list .kb-table-of-contents__entry:hover' );
 		if ( isset( $attributes['contentHoverColor'] ) && ! empty( $attributes['contentHoverColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['contentHoverColor'] ) );
@@ -216,22 +216,21 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		 * Tablet
 		 */
 		$css->set_media_state( 'tablet' );
-		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
-		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][1] ) && ! empty( $attributes['titleSize'][1] ) ) {
-			$css->add_property( 'font-size', $attributes['titleSize'][1] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['titleSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['titleSize'][1], ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) ) );
 		}
-		if ( isset( $attributes['titleLineHeight'] ) && is_array( $attributes['titleLineHeight'] ) && isset( $attributes['titleLineHeight'][1] ) && ! empty( $attributes['titleLineHeight'][1] ) ) {
-			$css->add_property( 'line-height', $attributes['titleLineHeight'][1] . ( isset( $attributes['titleLineType'] ) && ! empty( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
+		if ( ! empty( $attributes['titleLineHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['titleLineHeight'][1] . ( isset( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
 		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
-		if ( isset( $attributes['contentSize'] ) && is_array( $attributes['contentSize'] ) && isset( $attributes['contentSize'][1] ) && ! empty( $attributes['contentSize'][1] ) ) {
-			$css->add_property( 'font-size', $attributes['contentSize'][1] . ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['contentSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['contentSize'][1], ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) ) );
 		}
-		if ( isset( $attributes['contentLineHeight'] ) && is_array( $attributes['contentLineHeight'] ) && isset( $attributes['contentLineHeight'][1] ) && ! empty( $attributes['contentLineHeight'][1] ) ) {
-			$css->add_property( 'line-height', $attributes['contentLineHeight'][1] . ( isset( $attributes['contentLineType'] ) && ! empty( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
+		if ( ! empty( $attributes['contentLineHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['contentLineHeight'][1] . ( isset( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
 		}
-		if ( isset( $attributes['listGap'] ) && is_array( $attributes['listGap'] ) && isset( $attributes['listGap'][1] ) && ! empty( $attributes['listGap'][1] ) ) {
+		if ( ! empty( $attributes['listGap'][1] ) ) {
 			$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-list li' );
 			$css->add_property( 'margin-bottom', $css->render_string( $attributes['listGap'][1], 'px' ) );
 			$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-list li .kb-table-of-contents-list-sub' );
@@ -245,18 +244,18 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'mobile' );
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
-		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][2] ) && ! empty( $attributes['titleSize'][2] ) ) {
-			$css->add_property( 'font-size', $attributes['titleSize'][2] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['titleSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['titleSize'][2], ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) ) );
 		}
 		if ( isset( $attributes['titleLineHeight'] ) && is_array( $attributes['titleLineHeight'] ) && isset( $attributes['titleLineHeight'][2] ) && ! empty( $attributes['titleLineHeight'][2] ) ) {
-			$css->add_property( 'line-height', $attributes['titleLineHeight'][2] . ( isset( $attributes['titleLineType'] ) && ! empty( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
+			$css->add_property( 'line-height', $attributes['titleLineHeight'][2] . ( isset( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
 		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
-		if ( isset( $attributes['contentSize'] ) && is_array( $attributes['contentSize'] ) && isset( $attributes['contentSize'][2] ) && ! empty( $attributes['contentSize'][2] ) ) {
-			$css->add_property( 'font-size', $attributes['contentSize'][2] . ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) );
+		if ( ! empty( $attributes['contentSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['contentSize'][2], ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) ) );
 		}
 		if ( isset( $attributes['contentLineHeight'] ) && is_array( $attributes['contentLineHeight'] ) && isset( $attributes['contentLineHeight'][2] ) && ! empty( $attributes['contentLineHeight'][2] ) ) {
-			$css->add_property( 'line-height', $attributes['contentLineHeight'][2] . ( isset( $attributes['contentLineType'] ) && ! empty( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
+			$css->add_property( 'line-height', $attributes['contentLineHeight'][2] . ( isset( $attributes['contentLineType'] ) ? $attributes['contentLineType'] : 'px' ) );
 		}
 		if ( isset( $attributes['listGap'] ) && is_array( $attributes['listGap'] ) && isset( $attributes['listGap'][2] ) && ! empty( $attributes['listGap'][2] ) ) {
 			$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-list li' );

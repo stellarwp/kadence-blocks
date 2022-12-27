@@ -241,6 +241,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col,.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );
 		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 		// Border Hover Styles, check old first.
 		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
@@ -252,6 +253,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_border_styles( $attributes, 'borderHoverStyle' );
 		}
+		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col,.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
 		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius', array( 'unit_key' => 'borderHoverRadiusUnit' ) );
 
 		if ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) {

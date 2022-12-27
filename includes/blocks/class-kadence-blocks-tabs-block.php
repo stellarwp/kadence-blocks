@@ -89,7 +89,9 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 
 		$border_args = array( 'tablet_key' => false, 'mobile_key' => false );
 		$css->render_measure_output( $attributes, 'contentBorder', 'border-width', $border_args );
-		$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+		if ( ! empty( $attributes['contentBorderColor'] ) ) {
+			$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+		}
 
 		if ( isset( $attributes['contentBorderRadius'] ) && ! empty( $attributes['contentBorderRadius'] ) && is_array( $attributes['contentBorderRadius'] ) ) {
 			$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', $border_args );

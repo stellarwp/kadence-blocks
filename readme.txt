@@ -100,9 +100,10 @@ Release Date: December 16th, 2022
 * Add: Responsive container border styles to info box.
 * Add: Responsive border radius styles to info box.
 * Add: Responsive max width control to info box.
-* Add: Responsive container padding on Table of Contents block.
 * Add: Responsive container margin on Icon List block.
 * Add: Responsive Inner Container padding on Tabs block.
+* Add: Responsive list margin, title padding, container padding and margin to TOC Block.
+* Add: Option to search dynamic template in TOC Block.
 * Add: Support for external dotLottie files
 * Add: Ability to import, export, and reset block defaults
 * Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.

@@ -17,7 +17,6 @@ import {
 	BorderControl,
 	KadencePanelBody,
 	URLInputControl,
-	WebfontLoader,
 	KadenceWebfontLoader,
 	HeadingLevelIcon,
 	InlinePopColorControl,

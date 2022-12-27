@@ -22,6 +22,9 @@
     }
     .splide--fade > .splide__track > .splide__list > .splide__slide {
         position: relative;
+        left: unset;
+        right: unset;
+        top: unset;
     }
     .splide--fade>.splide__track>.splide__list {
         display: flex;

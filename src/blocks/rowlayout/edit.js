@@ -184,15 +184,10 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/rowlayout' ] !== undefined && typeof blockConfigObject[ 'kadence/rowlayout' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/rowlayout' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/rowlayout' ][ attribute ];
-					} );
-				}
+				attributes = setBlockDefaults( 'kadence/rowlayout', attributes);
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
@@ -963,9 +958,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				</>
 			) }
 			<style>
-				{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-				{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-				{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p, .kb-row-id-${ uniqueID } h1, .kb-row-id-${ uniqueID } h2, .kb-row-id-${ uniqueID } h3, .kb-row-id-${ uniqueID } h4, .kb-row-id-${ uniqueID } h5, .kb-row-id-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( linkColor ? `.kb-row-id-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				<>
 					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
 				</>

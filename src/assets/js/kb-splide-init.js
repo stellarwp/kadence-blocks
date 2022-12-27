@@ -99,7 +99,8 @@
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
-					navSliderOptions.type = 'slider';
+					navSliderOptions.type = 'loop';
+					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type = "fade";
 					mainSliderOptions.rewind = true;
@@ -110,7 +111,19 @@
 
 					let carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					let thumbnailSlider = new Splide(navSlider, navSliderOptions);
-
+					thumbnailSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						thumbnailSlider.go( 0 );
+					  
+						thumbnailSlider.options = {
+						  arrows    : navSliderOptions.arrows ? isOverflow : false,
+						  pagination: navSliderOptions.pagination ? isOverflow : false,
+						  drag      : navSliderOptions.drag ? isOverflow : false,
+						  rewind    : ! isOverflow ? true : false,
+						  type      : ! isOverflow ? 'slide' : navSliderOptions.type,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
@@ -174,7 +187,6 @@
 
 		getSplideOptions: function (dataSet) {
 			const scrollIsOne = dataSet.sliderScroll === 1 ? 1 : false;
-
 			return {
 				//start: 0,
 				focus: 0,
@@ -187,6 +199,7 @@
 					dataSet.sliderAnimSpeed && dataSet.sliderAnimSpeed > 1000
 						? "linear"
 						: "cubic-bezier(0.25, 1, 0.5, 1)",
+				lazyLoad: 'nearby',
 				pauseOnHover: dataSet.sliderPause || false,
 				autoplay: dataSet.sliderAuto || false,
 				interval: dataSet.sliderSpeed || 7000,

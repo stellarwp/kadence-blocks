@@ -512,6 +512,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
 								letterSpacingType={titleFont[ 0 ].letterType}
 								onLetterSpacingType={( value ) => saveTitleFont( { letterType: value } )}
+								textTransform={titleFont[ 0 ].textTransform}
+								onTextTransform={( value ) => saveTitleFont( { textTransform: value } )}
 							/>
 						</KadencePanelBody>
 
