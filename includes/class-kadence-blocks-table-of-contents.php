@@ -148,15 +148,42 @@ class Kadence_Blocks_Table_Of_Contents {
 			// Only one page, so return headings from entire post_content.
 			if ( is_null( self::$the_headings ) ) {
 				if ( isset( $attributes['enableDynamicSearch'] ) && $attributes['enableDynamicSearch'] ) {
-					$blocks = parse_blocks( $post->post_content );
-					self::$output_content = '';
-					foreach ( $blocks as $block ) {
-						$this->recursively_parse_blocks( $block );
-					}
-					if ( self::$output_content ) {
-						$page_content = do_shortcode( self::$output_content );
+					if ( isset( $attributes['enableTemplateSearch'] ) && $attributes['enableTemplateSearch'] && class_exists( 'Kadence_Pro\Elements_Controller' ) && is_singular() ) {
+						$kadence_pro = Kadence_Pro\Elements_Controller::get_instance();
+						$page_content = '';
+						if ( ! empty( $kadence_pro::$single_template ) ) {
+							$template_post = get_post( $kadence_pro::$single_template );
+							$blocks = parse_blocks( $template_post->post_content );
+							self::$output_content = '';
+							foreach ( $blocks as $block ) {
+								$this->recursively_parse_blocks( $block );
+							}
+							if ( self::$output_content ) {
+								$page_content .= do_shortcode( self::$output_content );
+							}
+						} else {
+							$blocks = parse_blocks( $post->post_content );
+							self::$output_content = '';
+							foreach ( $blocks as $block ) {
+								$this->recursively_parse_blocks( $block );
+							}
+							if ( self::$output_content ) {
+								$page_content .= do_shortcode( self::$output_content );
+							} else {
+								$page_content .= do_shortcode( $post->post_content );
+							}
+						}
 					} else {
-						$page_content = do_shortcode( $post->post_content );
+						$blocks = parse_blocks( $post->post_content );
+						self::$output_content = '';
+						foreach ( $blocks as $block ) {
+							$this->recursively_parse_blocks( $block );
+						}
+						if ( self::$output_content ) {
+							$page_content = do_shortcode( self::$output_content );
+						} else {
+							$page_content = do_shortcode( $post->post_content );
+						}
 					}
 				} else {
 					$page_content = $post->post_content;
@@ -242,7 +269,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 
 		wp_localize_script(
-			'kadence-blocks-table-of-contents',
+			'kadence-blocks-tableofcontents',
 			'kadence_blocks_toc',
 			array(
 				'headings'      => wp_json_encode( self::$headings ),

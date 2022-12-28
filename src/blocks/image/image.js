@@ -183,7 +183,6 @@ export default function Image( {
 	const captionRef = useRef();
 	const prevUrl = usePrevious( url );
 	const { allowResize = true } = context;
-
 	function saveDropShadow( value ) {
 		const newItems = dropShadow.map( ( item, thisIndex ) => {
 			if ( 0 === thisIndex ) {

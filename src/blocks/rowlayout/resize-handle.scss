@@ -155,7 +155,7 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 	opacity: 0;
 	transition: opacity 0.2s ease;
 }
-.block-editor-block-list__block[data-type="kadence/rowlayout"] .components-resizable-box__container .components-resizable-box__handle {
+.block-editor-block-list__block[data-type="kadence/rowlayout"] .kt-resizeable-column-container .components-resizable-box__container .components-resizable-box__handle {
 	height: 100%;
     top: 0px;
 	display: none;

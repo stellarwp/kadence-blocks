@@ -5,7 +5,7 @@
 /**
  * Import External
  */
-import { isEqual } from 'lodash';
+import { isEqual, uniqueId } from 'lodash';
 import classnames from 'classnames';
 import {
 	KadenceColorOutput,
@@ -13,7 +13,9 @@ import {
 	showSettings,
 	setBlockDefaults,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getFontSizeOptionOutput,
+	getBorderStyle,
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -21,15 +23,17 @@ import {
 	ResponsiveMeasurementControls,
 	MeasurementControls,
 	RangeControl,
-	WebfontLoader,
+	ResponsiveBorderControl,
 	BoxShadowControl,
 	KadenceIconPicker,
 	ResponsiveRangeControls,
 	KadencePanelBody,
+	KadenceWebfontLoader,
 	InspectorControlTabs,
 	KadenceInspectorControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
 } from '@kadence/components';
 
 /**
@@ -58,7 +62,7 @@ import TableOfContentsList from './list';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 
 import { ENTER } from '@wordpress/keycodes';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 import { Fragment, useState, useEffect, useLayoutEffect } from '@wordpress/element';
@@ -66,11 +70,13 @@ import { Fragment, useState, useEffect, useLayoutEffect } from '@wordpress/eleme
 import {
 	RichText,
 	BlockControls,
+	useBlockProps,
 } from '@wordpress/block-editor';
 
 import {
 	ToolbarGroup,
 	ToggleControl,
+	ToolbarDropdownMenu,
 	SelectControl,
 } from '@wordpress/components';
 
@@ -79,16 +85,11 @@ import {
 } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kbtableUniqueIDs = [];
 
 /**
- * Build the row edit
+ * Build the TOC edit
  */
-function KadenceTableOfContents( { attributes, setAttributes, clientId, className, getPreviewDevice, isSelected, pageIndex, postContent, blockOrder, isTyping } ) {
-
+function KadenceTableOfContents( { attributes, setAttributes, clientId, className, isSelected, pageIndex, postContent, blockOrder, isTyping } ) {
 	const {
 		uniqueID,
 		allowedHeaders,
@@ -146,6 +147,9 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		shadow,
 		displayShadow,
 		maxWidth,
+		tabletMaxWidth,
+		mobileMaxWidth,
+		maxWidthType,
 		smoothScrollOffset,
 		enableSmoothScroll,
 		containerMobileMargin,
@@ -156,65 +160,122 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		enableDynamicSearch,
 		enableTitleToggle,
 		containerMarginUnit,
+		enableTemplateSearch,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		borderRadiusUnit,
+		borderStyle,
+		mobileBorderStyle,
+		tabletBorderStyle,
+		tabletContentMargin,
+		mobileContentMargin,
+		contentMarginType,
+		titleBorderStyle,
+		mobileTitleBorderStyle,
+		tabletTitleBorderStyle,
+		tabletTitlePadding,
+		mobileTitlePadding,
+		titlePaddingType,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ headings, setHeadings ] = useState( [] );
 	const [ showContent, setShowContent ] = useState( true );
-	const [ titlePaddingControl, setTitlePaddingControl ] = useState( 'linked' );
-	const [ titleBorderControl, setTitleBorderControl ] = useState( 'linked' );
-	const [ contentMarginControl, setContentMarginControl ] = useState( 'individual' );
-	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
-
+	const titleMouseOver = mouseOverVisualizer();
+	const contentMouseOver = mouseOverVisualizer();
 	useEffect( () => {
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
 			attributes = setBlockDefaults( 'kadence/tableofcontents', attributes);
-
+			if ( ! isUniqueID( smallID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kbtableUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
-				kbtableUniqueIDs.push('_' + clientId.substr(2, 9));
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
 			}
 		} else {
-			kbtableUniqueIDs.push( uniqueID );
-		}
-		if ( undefined !== titlePadding && undefined !== titlePadding[ 0 ] && titlePadding[ 0 ] === titlePadding[ 1 ] && titlePadding[ 0 ] === titlePadding[ 2 ] && titlePadding[ 0 ] === titlePadding[ 3 ] ) {
-			setTitlePaddingControl( 'linked' );
-		} else {
-			setTitlePaddingControl( 'individual' );
-		}
-		if ( undefined !== titleBorder && undefined !== titleBorder[ 0 ] && titleBorder[ 0 ] === titleBorder[ 1 ] && titleBorder[ 0 ] === titleBorder[ 2 ] && titleBorder[ 0 ] === titleBorder[ 3 ] ) {
-			setTitleBorderControl( 'linked' );
-		} else {
-			setTitleBorderControl( 'individual' );
-		}
-		if ( undefined !== containerBorder && undefined !== containerBorder[ 0 ] && containerBorder[ 0 ] === containerBorder[ 1 ] && containerBorder[ 0 ] === containerBorder[ 2 ] && containerBorder[ 0 ] === containerBorder[ 3 ] ) {
-			setContainerBorderControl( 'linked' );
-		} else {
-			setContainerBorderControl( 'individual' );
-		}
-		if ( undefined !== contentMargin && undefined !== contentMargin[ 0 ] && contentMargin[ 0 ] === contentMargin[ 1 ] && contentMargin[ 0 ] === contentMargin[ 2 ] && contentMargin[ 0 ] === contentMargin[ 3 ] ) {
-			setContentMarginControl( 'linked' );
-		} else {
-			setContentMarginControl( 'individual' );
-		}
-		if ( borderRadius && borderRadius[ 0 ] === borderRadius[ 1 ] && borderRadius[ 0 ] === borderRadius[ 2 ] && borderRadius[ 0 ] === borderRadius[ 3 ] ) {
-			setBorderRadiusControl( 'linked' );
-		} else {
-			setBorderRadiusControl( 'individual' );
+			addUniqueID( uniqueID, clientId );
 		}
 		if ( undefined !== startClosed && startClosed ) {
 			setShowContent( false );
 		}
-
+		// Update from old border settings.
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
+		let updateBorderStyle = false;
+		if ( ( '' !== containerBorderColor ) ) {
+			tempBorderStyle[0].top[0] = containerBorderColor;
+			tempBorderStyle[0].right[0] = containerBorderColor;
+			tempBorderStyle[0].bottom[0] = containerBorderColor;
+			tempBorderStyle[0].left[0] = containerBorderColor;
+			updateBorderStyle = true;
+			setAttributes( { containerBorderColor: '' } );
+		}
+		if ( ( '' !== containerBorder?.[0] || '' !== containerBorder?.[1] || '' !== containerBorder?.[2] || '' !== containerBorder?.[3] ) ) {
+			tempBorderStyle[0].top[2] = containerBorder?.[0] || '';
+			tempBorderStyle[0].right[2] = containerBorder?.[1] || '';
+			tempBorderStyle[0].bottom[2] = containerBorder?.[2] || '';
+			tempBorderStyle[0].left[2] = containerBorder?.[3] || '';
+			updateBorderStyle = true;
+			setAttributes( { containerBorder:[ '', '', '', '' ] } );
+		}
+		if ( updateBorderStyle ) {
+			setAttributes( { borderStyle: tempBorderStyle } );
+		}
+		// Update from old title border settings.
+		let tempTitleBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorderStyle ? attributes.titleBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		  }] ) );
+		let updateTitleBorderStyle = false;
+		if ( ( '' !== titleBorderColor ) ) {
+			tempTitleBorderStyle[0].top[0] = titleBorderColor;
+			tempTitleBorderStyle[0].right[0] = titleBorderColor;
+			tempTitleBorderStyle[0].bottom[0] = titleBorderColor;
+			tempTitleBorderStyle[0].left[0] = titleBorderColor;
+			updateTitleBorderStyle = true;
+			setAttributes( { titleBorderColor: '' } );
+		}
+		if ( ( '' !== titleBorder?.[0] || '' !== titleBorder?.[1] || '' !== titleBorder?.[2] || '' !== titleBorder?.[3] ) ) {
+			tempTitleBorderStyle[0].top[2] = titleBorder?.[0] || '';
+			tempTitleBorderStyle[0].right[2] = titleBorder?.[1] || '';
+			tempTitleBorderStyle[0].bottom[2] = titleBorder?.[2] || '';
+			tempTitleBorderStyle[0].left[2] = titleBorder?.[3] || '';
+			updateTitleBorderStyle = true;
+			setAttributes( { titleBorder:[ '', '', '', '' ] } );
+		}
+		if ( updateTitleBorderStyle ) {
+			setAttributes( { titleBorderStyle: tempTitleBorderStyle } );
+		}
 	}, [] );
 
 	useLayoutEffect( () => {
@@ -253,18 +314,6 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			setShowContent( !showContent );
 		}
 	};
-	const gconfig = {
-		google: {
-			families: [ titleTypography + ( titleFontVariant ? ':' + titleFontVariant : '' ) ],
-		},
-	};
-	const config = ( titleGoogleFont ? gconfig : '' );
-	const cgconfig = {
-		google: {
-			families: [ contentTypography + ( contentFontVariant ? ':' + contentFontVariant : '' ) ],
-		},
-	};
-	const cconfig = ( contentGoogleFont ? cgconfig : '' );
 	const tableOfContentIconSet = [];
 	tableOfContentIconSet.arrow = <Fragment>
 		<g fill="#444">
@@ -360,6 +409,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			},
 		],
 	];
+	const columnOptionsIcon = ( 1 === columns ? oneColumnIcon : twoColumnIcon );
 	const listOptions = [
 		[
 			{
@@ -386,22 +436,57 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			},
 		],
 	];
-	const previewContentSize = getPreviewSize( getPreviewDevice, ( undefined !== contentSize && undefined !== contentSize[ 0 ] ? contentSize[ 0 ] : '' ), ( undefined !== contentSize && undefined !== contentSize[ 1 ] ? contentSize[ 1 ] : '' ), ( undefined !== contentSize && undefined !== contentSize[ 2 ] ? contentSize[ 2 ] : '' ) );
-	const previewContentHeight = getPreviewSize( getPreviewDevice, ( undefined !== contentLineHeight && undefined !== contentLineHeight[ 0 ] ? contentLineHeight[ 0 ] : '' ), ( undefined !== contentLineHeight && undefined !== contentLineHeight[ 1 ] ? contentLineHeight[ 1 ] : '' ), ( undefined !== contentLineHeight && undefined !== contentLineHeight[ 2 ] ? contentLineHeight[ 2 ] : '' ) );
+	const listOptionsIcon = ( 'numbered' === listStyle ? numberedIcon : bulletsIcon );
+	const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
+	const previewContentSize = getPreviewSize( previewDevice, ( undefined !== contentSize && undefined !== contentSize[0] ? contentSize[0] : '' ), ( undefined !== contentSize && undefined !== contentSize[1] ? contentSize[1] : '' ), ( undefined !== contentSize && undefined !== contentSize[2] ? contentSize[2] : '' ) );
+	const previewContentHeight = getPreviewSize( previewDevice, ( undefined !== contentLineHeight && undefined !== contentLineHeight[0] ? contentLineHeight[0] : '' ), ( undefined !== contentLineHeight && undefined !== contentLineHeight[1] ? contentLineHeight[1] : '' ), ( undefined !== contentLineHeight && undefined !== contentLineHeight[2] ? contentLineHeight[2] : '' ) );
 
-	const previewListGap = getPreviewSize( getPreviewDevice, ( undefined !== listGap && undefined !== listGap[ 0 ] ? listGap[ 0 ] : '' ), ( undefined !== listGap && undefined !== listGap[ 1 ] ? listGap[ 1 ] : '' ), ( undefined !== listGap && undefined !== listGap[ 2 ] ? listGap[ 2 ] : '' ) );
+	const previewTitleSize = getPreviewSize( previewDevice, ( undefined !== titleSize?.[0] ? titleSize[0] : '' ), ( undefined !== titleSize?.[1] ? titleSize[1] : '' ), ( undefined !== titleSize?.[2] ? titleSize[2] : '' ) );
+	const previewTitleHeight = getPreviewSize( previewDevice, ( undefined !== titleLineHeight?.[0] ? titleLineHeight[0] : '' ), ( undefined !== titleLineHeight?.[1] ? titleLineHeight[1] : '' ), ( undefined !== titleLineHeight?.[2] ? titleLineHeight[2] : '' ) );
 
-	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 0 ] ? containerTabletMargin[ 0 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 0 ] ? containerMobileMargin[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 1 ] ? containerTabletMargin[ 1 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 1 ] ? containerMobileMargin[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 2 ] ? containerTabletMargin[ 2 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 2 ] ? containerMobileMargin[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 3 ] ? containerTabletMargin[ 3 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 3 ] ? containerMobileMargin[ 3 ] : '' ) );
+	const previewListGap = getPreviewSize( previewDevice, ( undefined !== listGap?.[0] ? listGap[0] : '' ), ( undefined !== listGap?.[1] ? listGap[1] : '' ), ( undefined !== listGap?.[2] ? listGap[2] : '' ) );
+
+	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== tabletMaxWidth ? tabletMaxWidth : '' ), ( undefined !== mobileMaxWidth ? mobileMaxWidth : '' ) );
+
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[0] ? containerMargin[0] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[0] ? containerTabletMargin[0] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[0] ? containerMobileMargin[0] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[1] ? containerMargin[1] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[1] ? containerTabletMargin[1] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[1] ? containerMobileMargin[1] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[2] ? containerMargin[2] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[2] ? containerTabletMargin[2] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[2] ? containerMobileMargin[2] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[3] ? containerMargin[3] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[3] ? containerTabletMargin[3] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[3] ? containerMobileMargin[3] : '' ) );
 	const previewMarginUnit = ( containerMarginUnit ? containerMarginUnit : 'px' );
-	const previewPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 0 ] ? tabletContainerPadding[ 0 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 0 ] ? mobileContainerPadding[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 1 ] ? tabletContainerPadding[ 1 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 1 ] ? mobileContainerPadding[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 2 ] ? tabletContainerPadding[ 2 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 2 ] ? mobileContainerPadding[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 3 ] ? tabletContainerPadding[ 3 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 3 ] ? mobileContainerPadding[ 3 ] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[0] ? containerPadding[0] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[0] ? tabletContainerPadding[0] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[0] ? mobileContainerPadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[1] ? containerPadding[1] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[1] ? tabletContainerPadding[1] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[1] ? mobileContainerPadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[2] ? containerPadding[2] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[2] ? tabletContainerPadding[2] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[2] ? mobileContainerPadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[3] ? containerPadding[3] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[3] ? tabletContainerPadding[3] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[3] ? mobileContainerPadding[3] : '' ) );
+
+	const previewRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+	const previewRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+
+	const previewTitlePaddingTop = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[0] ? titlePadding[0] : '' ), ( undefined !== tabletTitlePadding && undefined !== tabletTitlePadding[0] ? tabletTitlePadding[0] : '' ), ( undefined !== mobileTitlePadding && undefined !== mobileTitlePadding[0] ? mobileTitlePadding[0] : '' ) );
+	const previewTitlePaddingRight = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[1] ? titlePadding[1] : '' ), ( undefined !== tabletTitlePadding && undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : '' ), ( undefined !== mobileTitlePadding && undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : '' ) );
+	const previewTitlePaddingBottom = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[2] ? titlePadding[2] : '' ), ( undefined !== tabletTitlePadding && undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : '' ), ( undefined !== mobileTitlePadding && undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : '' ) );
+	const previewTitlePaddingLeft = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[3] ? titlePadding[3] : '' ), ( undefined !== tabletTitlePadding && undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : '' ), ( undefined !== mobileTitlePadding && undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : '' ) );
+
+	const previewContentMarginTop = getPreviewSize( previewDevice, ( undefined !== contentMargin?.[0] ? contentMargin[0] : '' ), ( undefined !== tabletContentMargin?.[0] ? tabletContentMargin[0] : '' ), ( undefined !== mobileContentMargin?.[0] ? mobileContentMargin[0] : '' ) );
+	const previewContentMarginRight = getPreviewSize( previewDevice, ( undefined !== contentMargin?.[1] ? contentMargin[1] : '' ), ( undefined !== tabletContentMargin?.[1] ? tabletContentMargin[1] : '' ), ( undefined !== mobileContentMargin?.[1] ? mobileContentMargin[1] : '' ) );
+	const previewContentMarginBottom = getPreviewSize( previewDevice, ( undefined !== contentMargin?.[2] ? contentMargin[2] : '' ), ( undefined !== tabletContentMargin?.[2] ? tabletContentMargin[2] : '' ), ( undefined !== mobileContentMargin?.[2] ? mobileContentMargin[2] : '' ) );
+	const previewContentMarginLeft = getPreviewSize( previewDevice, ( undefined !== contentMargin?.[3] ? contentMargin[3] : '' ), ( undefined !== tabletContentMargin?.[3] ? tabletContentMargin[3] : '' ), ( undefined !== mobileContentMargin?.[3] ? mobileContentMargin[3] : '' ) );
+
+	const previewBorderTopStyle = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderRightStyle = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderLeftStyle = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+
+	const previewTitleBorderTopStyle = getBorderStyle( previewDevice, 'top', titleBorderStyle, tabletTitleBorderStyle, mobileTitleBorderStyle );
+	const previewTitleBorderRightStyle = getBorderStyle( previewDevice, 'right', titleBorderStyle, tabletTitleBorderStyle, mobileTitleBorderStyle );
+	const previewTitleBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', titleBorderStyle, tabletTitleBorderStyle, mobileTitleBorderStyle );
+	const previewTitleBorderLeftStyle = getBorderStyle( previewDevice, 'left', titleBorderStyle, tabletTitleBorderStyle, mobileTitleBorderStyle );
 
 	const classes = classnames( className, `kb-table-of-content-nav kb-table-of-content-id${uniqueID}` );
+	const blockProps = useBlockProps( {
+		className: classes,
+	} );
 	const renderCSS = (
 		<style>
 			{`.kb-table-of-content-id${uniqueID} .kb-table-of-content-list li {
@@ -423,16 +508,20 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	);
 	const blockControls = (
 		<BlockControls>
-			<ToolbarGroup
-				isCollapsed={false}
-				label={__( 'Columns', 'kadence-blocks' )}
-				controls={columnOptions}
-			/>
-			<ToolbarGroup
-				isCollapsed={false}
-				label={__( 'List Style', 'kadence-blocks' )}
-				controls={listOptions}
-			/>
+			<ToolbarGroup>
+				<ToolbarDropdownMenu
+					icon={ ( columns == 3 ? threeColumnIcon : columnOptionsIcon )}
+					label={__( 'Select List Columns', 'kadence-blocks' )}
+					controls={columnOptions}
+				/>
+			</ToolbarGroup>
+			<ToolbarGroup>
+				<ToolbarDropdownMenu
+					icon={ ( 'none' === listStyle ? noneIcon : listOptionsIcon )}
+					label={__( 'Select List Style', 'kadence-blocks' )}
+					controls={listOptions}
+				/>
+			</ToolbarGroup>
 		</BlockControls>
 	);
 	const inspectorControls = (
@@ -541,7 +630,24 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 						<>
 							<KadencePanelBody panelName={'kb-toc-spacing-settings'}>
 								<ResponsiveMeasureRangeControl
-									label={__( 'Container Margin', 'kadence-blocks' )}
+									label={__( 'Padding', 'kadence-blocks' )}
+									value={containerPadding}
+									onChange={( value ) => setAttributes( { containerPadding: value } )}
+									tabletValue={tabletContainerPadding}
+									onChangeTablet={( value ) => setAttributes( { tabletContainerPadding: value } )}
+									mobileValue={mobileContainerPadding}
+									onChangeMobile={( value ) => setAttributes( { mobileContainerPadding: value } )}
+									min={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -2 : -200 )}
+									max={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 12 : 200 )}
+									step={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 0.1 : 1 )}
+									unit={containerPaddingUnit}
+									units={[ 'px', 'em', 'rem' ]}
+									onUnit={( value ) => setAttributes( { containerPaddingUnit: value } )}
+									onMouseOver={ paddingMouseOver.onMouseOver }
+									onMouseOut={ paddingMouseOver.onMouseOut }
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__( 'Margin', 'kadence-blocks' )}
 									value={containerMargin}
 									onChange={( value ) => setAttributes( { containerMargin: value } )}
 									tabletValue={containerTabletMargin}
@@ -557,13 +663,22 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									onMouseOver={ marginMouseOver.onMouseOver }
 									onMouseOut={ marginMouseOver.onMouseOut }
 								/>
-								<RangeControl
+								<ResponsiveRangeControls
 									label={__( 'Max Width', 'kadence-blocks' )}
 									value={maxWidth ? maxWidth : ''}
 									onChange={( value ) => setAttributes( { maxWidth: value } )}
-									min={50}
-									max={1400}
+									tabletValue={tabletMaxWidth ? tabletMaxWidth : ''}
+									onChangeTablet={( value ) => setAttributes( { tabletMaxWidth: value } )}
+									mobileValue={mobileMaxWidth ? mobileMaxWidth : ''}
+									onChangeMobile={( value ) => setAttributes( { mobileMaxWidth: value } )}
+									min={0}
+									max={( maxWidthType === 'px' ? 2000 : 100 )}
 									step={1}
+									unit={maxWidthType ? maxWidthType : 'px'}
+									onUnit={( value ) => {
+										setAttributes( { maxWidthType: value } );
+									}}
+									units={[ 'px', '%', 'vw' ]}
 								/>
 							</KadencePanelBody>
 
@@ -576,10 +691,18 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								blockSlug={'kadence/tableofcontents'}
 							>
 								<ToggleControl
-									label={__('Search for Headings in Non static content?', 'kadence-blocks')}
+									label={__('Search for Headings in Non static post content?', 'kadence-blocks')}
 									checked={enableDynamicSearch}
 									onChange={value => setAttributes({enableDynamicSearch: value})}
 								/>
+								{ isKadenceT && enableDynamicSearch && (
+									<ToggleControl
+										label={__('Search for Headings in Template?', 'kadence-blocks')}
+										help={__('Expands heading search to use dynamic template from elements.', 'kadence-blocks')}
+										checked={enableTemplateSearch}
+										onChange={value => setAttributes({enableTemplateSearch: value})}
+									/>
+								) }
 							</KadencePanelBody>
 
 							<KadencePanelBody
@@ -625,112 +748,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 					{(activeTab === 'style') && (
 						<>
 							<KadencePanelBody
-								title={__('Container Settings', 'kadence-blocks')}
-								panelName={'containerSettings'}
-								blockSlug={'kadence/tableofcontents'}
-							>
-								<PopColorControl
-									label={__( 'Container Background', 'kadence-blocks' )}
-									value={( containerBackground ? containerBackground : '' )}
-									default={''}
-									onChange={( value ) => setAttributes( { containerBackground: value } )}
-								/>
-								<ResponsiveMeasureRangeControl
-									label={__( 'Container Padding', 'kadence-blocks' )}
-									value={containerPadding}
-									onChange={( value ) => setAttributes( { containerPadding: value } )}
-									tabletValue={tabletContainerPadding}
-									onChangeTablet={( value ) => setAttributes( { tabletContainerPadding: value } )}
-									mobileValue={mobileContainerPadding}
-									onChangeMobile={( value ) => setAttributes( { mobileContainerPadding: value } )}
-									min={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -2 : -200 )}
-									max={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 12 : 200 )}
-									step={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 0.1 : 1 )}
-									unit={containerPaddingUnit}
-									units={[ 'px', 'em', 'rem' ]}
-									onUnit={( value ) => setAttributes( { containerPaddingUnit: value } )}
-									onMouseOver={ paddingMouseOver.onMouseOver }
-									onMouseOut={ paddingMouseOver.onMouseOut }
-								/>
-								<PopColorControl
-									label={__( 'Border Color', 'kadence-blocks' )}
-									value={( containerBorderColor ? containerBorderColor : '' )}
-									default={''}
-									onChange={( value ) => setAttributes( { containerBorderColor: value } )}
-								/>
-								<MeasurementControls
-									label={__( 'Content Border Width (px)', 'kadence-blocks' )}
-									measurement={containerBorder}
-									control={containerBorderControl}
-									onChange={( value ) => setAttributes( { containerBorder: value } )}
-									onControl={( value ) => setContainerBorderControl( value )}
-									min={0}
-									max={100}
-									step={1}
-								/>
-								<MeasurementControls
-									label={__( 'Border Radius', 'kadence-blocks' )}
-									measurement={borderRadius}
-									control={borderRadiusControl}
-									onChange={( value ) => setAttributes( { borderRadius: value } )}
-									onControl={( value ) => setBorderRadiusControl( value  )}
-									min={0}
-									max={200}
-									step={1}
-									controlTypes={[
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-									]}
-									firstIcon={topLeftIcon}
-									secondIcon={topRightIcon}
-									thirdIcon={bottomRightIcon}
-									fourthIcon={bottomLeftIcon}
-								/>
-								<BoxShadowControl
-									label={__( 'Box Shadow', 'kadence-blocks' )}
-									enable={( undefined !== displayShadow ? displayShadow : false )}
-									color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
-									colorDefault={'#000000'}
-									onArrayChange={( color, opacity ) => saveShadow( { color: color, opacity: opacity } )}
-									opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
-									hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
-									vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
-									blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
-									spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
-									inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
-									onEnableChange={value => {
-										setAttributes( {
-											displayShadow: value,
-										} );
-									}}
-									onColorChange={value => {
-										saveShadow( { color: value } );
-									}}
-									onOpacityChange={value => {
-										saveShadow( { opacity: value } );
-									}}
-									onHOffsetChange={value => {
-										saveShadow( { hOffset: value } );
-									}}
-									onVOffsetChange={value => {
-										saveShadow( { vOffset: value } );
-									}}
-									onBlurChange={value => {
-										saveShadow( { blur: value } );
-									}}
-									onSpreadChange={value => {
-										saveShadow( { spread: value } );
-									}}
-									onInsetChange={value => {
-										saveShadow( { inset: value } );
-									}}
-								/>
-
-							</KadencePanelBody>
-
-							<KadencePanelBody
 								title={__('Title Settings', 'kadence-blocks')}
-								initialOpen={false}
+								initialOpen={true}
 								panelName={'titleSettings'}
 								blockSlug={'kadence/tableofcontents'}
 							>
@@ -778,33 +797,34 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 											onFontStyle={(value) => setAttributes({titleFontStyle: value})}
 											fontSubset={titleFontSubset}
 											onFontSubset={(value) => setAttributes({titleFontSubset: value})}
-											padding={titlePadding}
-											onPadding={(value) => setAttributes({titlePadding: value})}
-											paddingControl={titlePaddingControl}
-											onPaddingControl={(value) => setTitlePaddingControl(value)}
 											textTransform={titleTextTransform}
 											onTextTransform={(value) => setAttributes({titleTextTransform: value})}
 										/>
-										<MeasurementControls
-											label={__('Title Border Width (px)', 'kadence-blocks')}
-											measurement={titleBorder}
-											control={titleBorderControl}
-											onChange={(value) => setAttributes({titleBorder: value})}
-											onControl={(value) => setTitleBorderControl(value)}
-											min={0}
-											max={100}
-											step={1}
+										<ResponsiveMeasureRangeControl
+											label={__( 'Padding', 'kadence-blocks' )}
+											value={titlePadding}
+											onChange={( value ) => setAttributes( { titlePadding: value } )}
+											tabletValue={tabletTitlePadding}
+											onChangeTablet={( value ) => setAttributes( { mobileTitlePadding: value } )}
+											mobileValue={mobileTitlePadding}
+											onChangeMobile={( value ) => setAttributes( { mobileTitlePadding: value } )}
+											min={( titlePaddingType === 'em' || titlePaddingType === 'rem' ? -2 : -200 )}
+											max={( titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 200 )}
+											step={( titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0.1 : 1 )}
+											unit={titlePaddingType}
+											units={[ 'px', 'em', 'rem' ]}
+											onUnit={( value ) => setAttributes( { titlePaddingType: value } )}
+											onMouseOver={ titleMouseOver.onMouseOver }
+											onMouseOut={ titleMouseOver.onMouseOut }
 										/>
-										<PopColorControl
-											label={__('Title Border Color', 'kadence-blocks')}
-											swatchLabel={__('Normal Color', 'kadence-blocks')}
-											value={(titleBorderColor ? titleBorderColor : '')}
-											default={''}
-											onChange={(value) => setAttributes({titleBorderColor: value})}
-											swatchLabel2={__('Collapsed Color', 'kadence-blocks')}
-											value2={(titleCollapseBorderColor ? titleCollapseBorderColor : '')}
-											default2={''}
-											onChange2={(value) => setAttributes({titleCollapseBorderColor: value})}
+										<ResponsiveBorderControl
+											label={__( 'Border', 'kadence-blocks' )}
+											value={titleBorderStyle}
+											tabletValue={tabletTitleBorderStyle}
+											mobileValue={mobileTitleBorderStyle}
+											onChange={( value ) => setAttributes( { titleBorderStyle: value } )}
+											onChangeTablet={( value ) => setAttributes( { tabletTitleBorderStyle: value } )}
+											onChangeMobile={( value ) => setAttributes( { mobileTitleBorderStyle: value } )}
 										/>
 									</Fragment>
 								)}
@@ -818,15 +838,18 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 							>
 								<ResponsiveRangeControls
 									label={__('List Item Gap', 'kadence-blocks')}
-									value={listGap && listGap[0] ? listGap[0] : ''}
-									mobileValue={listGap && listGap[2] ? listGap[2] : ''}
-									tabletValue={listGap && listGap[1] ? listGap[1] : ''}
-									onChange={(value) => setAttributes({listGap: [value, (listGap && listGap[1] ? listGap[1] : ''), (listGap && listGap[2] ? listGap[2] : '')]})}
-									onChangeTablet={(value) => setAttributes({listGap: [(listGap && listGap[0] ? listGap[0] : ''), value, (listGap && listGap[2] ? listGap[2] : '')]})}
-									onChangeMobile={(value) => setAttributes({listGap: [(listGap && listGap[0] ? listGap[0] : ''), (listGap && listGap[1] ? listGap[1] : ''), value]})}
+									value={ listGap?.[0] ? listGap[0] : ''}
+									mobileValue={ listGap?.[2] ? listGap[2] : ''}
+									tabletValue={ listGap?.[1] ? listGap[1] : ''}
+									onChange={(value) => setAttributes({listGap: [value, ( listGap?.[1] ? listGap[1] : ''), ( listGap?.[2] ? listGap[2] : '')]})}
+									onChangeTablet={(value) => setAttributes({listGap: [( listGap?.[0] ? listGap[0] : ''), value, ( listGap?.[2] ? listGap[2] : '')]})}
+									onChangeMobile={(value) => setAttributes({listGap: [( listGap?.[0] ? listGap[0] : ''), ( listGap?.[1] ? listGap[1] : ''), value]})}
 									min={0}
 									max={60}
 									step={1}
+									unit={'px'}
+									units={['px']}
+									showUnit={ true }
 								/>
 								<PopColorControl
 									label={__('List Items Color', 'kadence-blocks')}
@@ -883,16 +906,102 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									textTransform={contentTextTransform}
 									onTextTransform={(value) => setAttributes({contentTextTransform: value})}
 								/>
-								<MeasurementControls
-									label={__('List Container Margin', 'kadence-blocks')}
-									measurement={contentMargin}
-									control={contentMarginControl}
-									onChange={(value) => setAttributes({contentMargin: value})}
-									onControl={(value) => setContentMarginControl(value)}
-									min={-100}
-									max={100}
-									step={1}
+								<ResponsiveMeasureRangeControl
+									label={__( 'Margin', 'kadence-blocks' )}
+									value={contentMargin}
+									onChange={( value ) => setAttributes( { contentMargin: value } )}
+									tabletValue={tabletContentMargin}
+									onChangeTablet={( value ) => setAttributes( { tabletContentMargin: value } )}
+									mobileValue={mobileContentMargin}
+									onChangeMobile={( value ) => setAttributes( { mobileContentMargin: value } )}
+									min={( contentMarginType === 'em' || contentMarginType === 'rem' ? -2 : -200 )}
+									max={( contentMarginType === 'em' || contentMarginType === 'rem' ? 12 : 200 )}
+									step={( contentMarginType === 'em' || contentMarginType === 'rem' ? 0.1 : 1 )}
+									unit={contentMarginType}
+									units={[ 'px', 'em', 'rem' ]}
+									onUnit={( value ) => setAttributes( { contentMarginType: value } )}
+									onMouseOver={ contentMouseOver.onMouseOver }
+									onMouseOut={ contentMouseOver.onMouseOut }
 								/>
+							</KadencePanelBody>
+							<KadencePanelBody
+								title={__('Container Settings', 'kadence-blocks')}
+								panelName={'containerSettings'}
+								initialOpen={false}
+								blockSlug={'kadence/tableofcontents'}
+							>
+								<PopColorControl
+									label={__( 'Background', 'kadence-blocks' )}
+									value={( containerBackground ? containerBackground : '' )}
+									default={''}
+									onChange={( value ) => setAttributes( { containerBackground: value } )}
+								/>
+								<ResponsiveBorderControl
+									label={__( 'Border', 'kadence-blocks' )}
+									value={borderStyle}
+									tabletValue={tabletBorderStyle}
+									mobileValue={mobileBorderStyle}
+									onChange={( value ) => setAttributes( { borderStyle: value } )}
+									onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+									onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+								/>
+								<ResponsiveMeasurementControls
+									label={__( 'Border Radius', 'kadence-blocks' )}
+									value={borderRadius}
+									tabletValue={tabletBorderRadius}
+									mobileValue={mobileBorderRadius}
+									onChange={( value ) => setAttributes( { borderRadius: value } )}
+									onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
+									onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
+									unit={borderRadiusUnit}
+									units={[ 'px', 'em', 'rem', '%' ]}
+									onUnit={( value ) => setAttributes( { borderRadiusUnit: value } )}
+									max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
+									step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
+									min={ 0 }
+									isBorderRadius={ true }
+									allowEmpty={true}
+								/>
+								<BoxShadowControl
+									label={__( 'Box Shadow', 'kadence-blocks' )}
+									enable={( undefined !== displayShadow ? displayShadow : false )}
+									color={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color ? shadow[0].color : '#000000' )}
+									colorDefault={'#000000'}
+									onArrayChange={( color, opacity ) => saveShadow( { color: color, opacity: opacity } )}
+									opacity={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity ? shadow[0].opacity : 0.2 )}
+									hOffset={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0 )}
+									vOffset={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0 )}
+									blur={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].blur ? shadow[0].blur : 14 )}
+									spread={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].spread ? shadow[0].spread : 0 )}
+									inset={( undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].inset ? shadow[0].inset : false )}
+									onEnableChange={value => {
+										setAttributes( {
+											displayShadow: value,
+										} );
+									}}
+									onColorChange={value => {
+										saveShadow( { color: value } );
+									}}
+									onOpacityChange={value => {
+										saveShadow( { opacity: value } );
+									}}
+									onHOffsetChange={value => {
+										saveShadow( { hOffset: value } );
+									}}
+									onVOffsetChange={value => {
+										saveShadow( { vOffset: value } );
+									}}
+									onBlurChange={value => {
+										saveShadow( { blur: value } );
+									}}
+									onSpreadChange={value => {
+										saveShadow( { spread: value } );
+									}}
+									onInsetChange={value => {
+										saveShadow( { inset: value } );
+									}}
+								/>
+
 							</KadencePanelBody>
 						</>
 					)}
@@ -901,7 +1010,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		</>
 	);
 	const ListTag = ( listStyle === 'numbered' ? 'ol' : 'ul' );
-	// if ( headings.length === 0 || headings[ 0 ].content === '' ) {
+	// if ( headings.length === 0 || headings[0].content === '' ) {
 	// 	return (
 	// 		<div className={ classes } >
 	// 			{ blockControls }
@@ -916,11 +1025,11 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	// 	);
 	// }
 	return (
-		<Fragment>
+		<>
 			{renderCSS}
 			{blockControls}
 			{inspectorControls}
-			<nav className={classes}>
+			<nav {...blockProps}>
 				<div className="kb-table-of-content-wrap" style={{
 					paddingTop	   : ( previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, containerPaddingUnit) : undefined ),
 					paddingRight	   : ( previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, containerPaddingUnit) : undefined ),
@@ -930,27 +1039,41 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 					marginRight    : ( previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
 					marginBottom   : ( previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
 					marginLeft     : ( previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
-					borderWidth    : ( containerBorder ? containerBorder[ 0 ] + 'px ' + containerBorder[ 1 ] + 'px ' + containerBorder[ 2 ] + 'px ' + containerBorder[ 3 ] + 'px' : '' ),
+					borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
+					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
+					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
+					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
 					backgroundColor: KadenceColorOutput( containerBackground ),
-					borderColor    : KadenceColorOutput( containerBorderColor ),
-					borderRadius   : ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
-					boxShadow      : ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? ( undefined !== shadow[ 0 ].inset && shadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 1 ) ) : undefined ),
-					maxWidth       : ( maxWidth ? maxWidth + 'px' : undefined ),
+					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					boxShadow      : ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color ? ( undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '' ) + ( undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0 ) + 'px ' + ( undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0 ) + 'px ' + ( undefined !== shadow[0].blur ? shadow[0].blur : 14 ) + 'px ' + ( undefined !== shadow[0].spread ? shadow[0].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[0].color ? shadow[0].color : '#000000' ), ( undefined !== shadow[0].opacity ? shadow[0].opacity : 1 ) ) : undefined ),
+					maxWidth       : ( previewMaxWidth ? previewMaxWidth + maxWidthType : undefined ),
 				}}>
 					{enableTitle && (
 						<div
 							className={`kb-table-of-contents-title-wrap kb-toggle-icon-style-${( enableToggle && toggleIcon ? toggleIcon : 'none' )} kb-toc-toggle-${( showContent ? 'active' : 'hidden' )}`}
 							style={{
-								borderWidth: ( titleBorder ? titleBorder[ 0 ] + 'px ' + titleBorder[ 1 ] + 'px ' + titleBorder[ 2 ] + 'px ' + titleBorder[ 3 ] + 'px' : '' ),
-								borderColor: KadenceColorOutput( titleBorderColor ),
+								borderTop: ( previewTitleBorderTopStyle ? previewTitleBorderTopStyle : undefined ),
+								borderRight: ( previewTitleBorderRightStyle ? previewTitleBorderRightStyle : undefined ),
+								borderBottom: ( previewTitleBorderBottomStyle ? previewTitleBorderBottomStyle : undefined ),
+								borderLeft: ( previewTitleBorderLeftStyle ? previewTitleBorderLeftStyle : undefined ),
 								color      : titleColor ? KadenceColorOutput( titleColor ) : undefined,
-								padding    : ( titlePadding && undefined !== titlePadding[ 0 ] ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
+								paddingTop	   : ( previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingType ) : undefined ),
+								paddingRight   : ( previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingType ) : undefined ),
+								paddingBottom  : ( previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingType ) : undefined ),
+								paddingLeft	   : ( previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingType ) : undefined ),
 							}}
 						>
-							{titleGoogleFont && (
-								<WebfontLoader config={config}>
-								</WebfontLoader>
-							)}
+							<SpacingVisualizer
+								type="inside"
+								forceShow={ titleMouseOver.isMouseOver }
+								spacing={ [ getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingType ), getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingType ), getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingType ), getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingType ) ] }
+							/>
+							{ titleGoogleFont && titleTypography && (
+								<KadenceWebfontLoader typography={ [{family: titleTypography, variant: ( titleFontVariant ? titleFontVariant : '' ) }] } clientId={ clientId } id={ 'titleTOC' } />
+							) }
 							<RichText
 								tagName="div"
 								placeholder={__( 'Optional Title', 'kadence-blocks' )}
@@ -965,8 +1088,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									color        : 'inherit',
 									fontWeight   : titleFontWeight,
 									fontStyle    : titleFontStyle,
-									fontSize     : ( titleSize && titleSize[ 0 ] ? titleSize[ 0 ] + titleSizeType : undefined ),
-									lineHeight   : ( titleLineHeight && titleLineHeight[ 0 ] ? titleLineHeight[ 0 ] + titleLineType : undefined ),
+									fontSize     : ( previewTitleSize ? getFontSizeOptionOutput( previewTitleSize, titleSizeType ) : undefined ),
+									lineHeight   : ( previewTitleHeight ? previewTitleHeight + titleLineType : undefined ),
 									letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + 'px' : undefined ),
 									textTransform: ( titleTextTransform ? titleTextTransform : undefined ),
 									fontFamily   : ( titleTypography ? titleTypography : '' ),
@@ -999,20 +1122,27 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 							className={`kb-table-of-content-list kb-table-of-content-list-columns-${columns} kb-table-of-content-list-style-${listStyle} kb-table-of-content-link-style-${linkStyle}`}
 							style={{
 								color        : contentColor ? KadenceColorOutput( contentColor ) : undefined,
-								margin       : ( contentMargin && undefined !== contentMargin[ 0 ] ? contentMargin[ 0 ] + 'px ' + contentMargin[ 1 ] + 'px ' + contentMargin[ 2 ] + 'px ' + contentMargin[ 3 ] + 'px' : '' ),
 								fontWeight   : contentFontWeight,
 								fontStyle    : contentFontStyle,
-								fontSize     : ( previewContentSize ? previewContentSize + contentSizeType : undefined ),
+								fontSize     : ( previewContentSize ? getFontSizeOptionOutput( previewContentSize, contentSizeType ) : undefined ),
 								lineHeight   : ( previewContentHeight ? previewContentHeight + contentLineType : undefined ),
 								letterSpacing: ( contentLetterSpacing ? contentLetterSpacing + 'px' : undefined ),
 								textTransform: ( contentTextTransform ? contentTextTransform : undefined ),
 								fontFamily   : ( contentTypography ? contentTypography : '' ),
+								marginTop	   : ( previewContentMarginTop ? getSpacingOptionOutput( previewContentMarginTop, contentMarginType ) : undefined ),
+								marginRight   : ( previewContentMarginRight ? getSpacingOptionOutput( previewContentMarginRight, contentMarginType ) : undefined ),
+								marginBottom  : ( previewContentMarginBottom ? getSpacingOptionOutput( previewContentMarginBottom, contentMarginType ) : undefined ),
+								marginLeft	   : ( previewContentMarginLeft ? getSpacingOptionOutput( previewContentMarginLeft, contentMarginType ) : undefined ),
 							}}
 						>
-							{contentGoogleFont && (
-								<WebfontLoader config={cconfig}>
-								</WebfontLoader>
-							)}
+							<SpacingVisualizer
+								type="outside"
+								forceShow={ contentMouseOver.isMouseOver }
+								spacing={ [ getSpacingOptionOutput( previewContentMarginTop, contentMarginType ), getSpacingOptionOutput( previewContentMarginRight, contentMarginType ), getSpacingOptionOutput( previewContentMarginBottom, contentMarginType ), getSpacingOptionOutput( previewContentMarginLeft, contentMarginType ) ] }
+							/>
+							{ contentGoogleFont && contentTypography && (
+								<KadenceWebfontLoader typography={ [{family: contentTypography, variant: ( contentFontVariant ? contentFontVariant : '' ) }] } clientId={ clientId } id={ 'contentTOC' } />
+							) }
 							{headings.length !== 0 && (
 								<TableOfContentsList
 									nestedHeadingList={linearToNestedHeadingList( headings )}
@@ -1022,22 +1152,35 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 						</ListTag>
 					)}
 				</div>
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
+						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+					} }
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, containerPaddingUnit ), getSpacingOptionOutput( previewPaddingRight, containerPaddingUnit ), getSpacingOptionOutput( previewPaddingBottom, containerPaddingUnit ), getSpacingOptionOutput( previewPaddingLeft, containerPaddingUnit ) ] }
+				/>
+				<SpacingVisualizer
+					type="outsideVertical"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginUnit ), getSpacingOptionOutput( previewMarginRight, previewMarginUnit ), getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ), getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) ] }
+				/>
 			</nav>
-		</Fragment>
+		</>
 	);
 }
-
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
 		const {
-			getBlock,
 			getBlockIndex,
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
 		const postContent = ( select( 'core/editor' ) ) ? select( 'core/editor' ).getEditedPostContent() : '';
-
 		const blockIndex = getBlockIndex( clientId );
 		const blockOrder = getBlockOrder();
 
@@ -1054,13 +1197,10 @@ export default compose( [
 			}
 		}
 		return {
-			block           : getBlock( clientId ),
-			postContent     : postContent,
-			getBlock,
 			pageIndex       : page,
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			blockOrder: select( 'core/block-editor' ).getBlockOrder(),
-			isTyping: select( 'core/block-editor' ).isTyping(),
+			postContent     : postContent,
+			blockOrder      : blockOrder,
+			isTyping        : select( 'core/block-editor' ).isTyping(),
 		};
 	} ),
 ] )( KadenceTableOfContents );

@@ -78,7 +78,7 @@ function kadence_gutenberg_editor_assets() {
 		'rowlayout',
 		'show-more',
 		'spacer',
-		'table-of-contents',
+		'tableofcontents',
 		'tabs',
 		'testimonials',
 	);

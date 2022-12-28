@@ -24,7 +24,7 @@
 					return;
 				}
 
-				this.createSplideElements(thisSlider);
+				this.createSplideElements( thisSlider );
 				let parsedData = this.parseDataset(thisSlider.dataset);
 
 				if (document.querySelector('html[dir="rtl"]')) {
@@ -56,9 +56,19 @@
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
-					}).mount();
-
-					splideSlider.refresh();
+					});
+					splideSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						splideSlider.go( 0 );
+					  
+						splideSlider.options = {
+						  arrows    : splideOptions.arrows ? isOverflow : false,
+						  pagination: splideOptions.pagination ? isOverflow : false,
+						  drag      : splideOptions.drag ? isOverflow : false,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
+					splideSlider.mount();
 					var resizeTimer;
 					window.addEventListener("resize", function (e) {
 						clearTimeout(resizeTimer);
@@ -76,10 +86,6 @@
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.mount();
-
-					window.addEventListener("resize", function () {
-						splideSlider.refresh();
-					});
 				} else if (sliderType && sliderType === "thumbnail") {
 					let navSliderId = parsedData.sliderNav;
 					let navSlider = document.querySelector("#" + navSliderId);
@@ -93,6 +99,8 @@
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
+					navSliderOptions.type = 'loop';
+					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type = "fade";
 					mainSliderOptions.rewind = true;
@@ -103,21 +111,36 @@
 
 					let carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					let thumbnailSlider = new Splide(navSlider, navSliderOptions);
-
+					thumbnailSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						thumbnailSlider.go( 0 );
+					  
+						thumbnailSlider.options = {
+						  arrows    : navSliderOptions.arrows ? isOverflow : false,
+						  pagination: navSliderOptions.pagination ? isOverflow : false,
+						  drag      : navSliderOptions.drag ? isOverflow : false,
+						  rewind    : ! isOverflow ? true : false,
+						  type      : ! isOverflow ? 'slide' : navSliderOptions.type,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
-
-					window.addEventListener("resize", function () {
-						carouselSlider.refresh();
-					});
 				} else {
 					let splideSlider = new Splide(thisSlider, splideOptions);
+					splideSlider.on( 'overflow', function ( isOverflow ) {
+						// Reset the carousel position
+						splideSlider.go( 0 );
+					  
+						splideSlider.options = {
+						  arrows    : splideOptions.arrows ? isOverflow : false,
+						  pagination: splideOptions.pagination ? isOverflow : false,
+						  drag      : splideOptions.drag ? isOverflow : false,
+						  clones    : isOverflow ? undefined : 0, // Toggle clones
+						};
+					} );
 					splideSlider.mount();
-
-					window.addEventListener("resize", function () {
-						splideSlider.refresh();
-					});
 				}
 			}
 		},
@@ -138,6 +161,7 @@
 		},
 
 		createSplideElements: function (wrapperElem) {
+			const slideCount = wrapperElem.children.length;
 			for (let slide of wrapperElem.children) {
 				slide.classList.add("splide__slide");
 				slide.classList.add("slick-slide");
@@ -158,16 +182,16 @@
 			// The track goes inside them argument elem
 			wrapperElem.innerHTML = splideTrack.outerHTML;
 			wrapperElem.classList.add("splide");
+			return slideCount;
 		},
 
 		getSplideOptions: function (dataSet) {
 			const scrollIsOne = dataSet.sliderScroll === 1 ? 1 : false;
-
 			return {
 				//start: 0,
 				focus: 0,
 				trimSpace: true,
-				drag: false,
+				drag: true,
 				perPage: dataSet.columnsXxl || 1,
 				perMove: scrollIsOne || dataSet.columnsXxl || 1,
 				type: dataSet.sliderFade ? 'fade' : 'loop',
@@ -175,6 +199,7 @@
 					dataSet.sliderAnimSpeed && dataSet.sliderAnimSpeed > 1000
 						? "linear"
 						: "cubic-bezier(0.25, 1, 0.5, 1)",
+				lazyLoad: 'nearby',
 				pauseOnHover: dataSet.sliderPause || false,
 				autoplay: dataSet.sliderAuto || false,
 				interval: dataSet.sliderSpeed || 7000,
@@ -234,8 +259,6 @@
 			}
 		},
 	};
-
-	console.log("splide init");
 	if (document.readyState === "loading") {
 		// The DOM has not yet been loaded.
 		document.addEventListener("DOMContentLoaded", kadenceBlocksSplide.init);

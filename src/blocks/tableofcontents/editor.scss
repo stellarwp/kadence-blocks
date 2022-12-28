@@ -2,6 +2,9 @@
  * #.# Editor Styles
  */
 .kb-table-of-content-nav {
+	.kb-table-of-contents-title-wrap {
+		position: relative;
+	}
 	.kb-table-of-content-wrap {
 		border-style: solid;
 		border-width: 0;
@@ -15,6 +18,7 @@
 			font-weight: bold;
 		}
 		.kb-table-of-content-list {
+			position: relative;
 			margin: 0;
 			padding-left: 1.75em;
 			list-style: disc;
