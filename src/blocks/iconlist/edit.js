@@ -129,7 +129,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {

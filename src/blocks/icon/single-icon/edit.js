@@ -138,7 +138,7 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
         if ( ! uniqueID ) {
             attributes = setBlockDefaults( 'kadence/icon', attributes);
 
-            if ( ! isUniqueID( uniqueID ) ) {
+            if ( ! isUniqueID( smallID ) ) {
                 smallID = uniqueId( smallID );
             }
             setAttributes( {

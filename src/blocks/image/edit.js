@@ -173,7 +173,7 @@ export function ImageEdit( {
 					attributes[ attribute ] = blockConfigObject[ 'kadence/image' ][ attribute ];
 				} );
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {

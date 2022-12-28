@@ -207,7 +207,7 @@ function GalleryEdit( props ) {
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {

@@ -216,7 +216,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {

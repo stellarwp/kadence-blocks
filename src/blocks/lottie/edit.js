@@ -145,7 +145,7 @@ export function Edit( {
 		let smallID = '_' + clientId.substr( 2, 9 );
 
 		if ( ! uniqueID ) {
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 

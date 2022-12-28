@@ -129,7 +129,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
+			if ( ! isUniqueID( smallID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
