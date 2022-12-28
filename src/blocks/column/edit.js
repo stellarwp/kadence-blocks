@@ -20,7 +20,7 @@ import {
  * Import Controls
  */
 import classnames from 'classnames';
-import { debounce, uniqueId } from 'lodash';
+import { debounce } from 'lodash';
 /**
  * Kadence Components.
  */
@@ -47,7 +47,16 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
+
+import { 
+	KadenceColorOutput,
+	getPreviewSize,
+	showSettings,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getBorderStyle,
+	getUniqueId,
+} from '@kadence/helpers';
 
 /**
  * Blocks Specific.
@@ -118,32 +127,11 @@ function SectionEdit( {
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/column' ] !== undefined && typeof blockConfigObject[ 'kadence/column' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/column' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/column' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		attributes = setBlockDefaultAttributes( 'kadence/column', attributes );
+
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
