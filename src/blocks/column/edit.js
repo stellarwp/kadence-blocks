@@ -21,6 +21,7 @@ import {
  */
 import classnames from 'classnames';
 import { debounce } from 'lodash';
+
 /**
  * Kadence Components.
  */
@@ -47,7 +48,20 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle, setBlockDefaults } from '@kadence/helpers';
+
+/**
+ * Kadence Helpers.
+ */
+import { 
+	KadenceColorOutput,
+	getPreviewSize,
+	showSettings,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getBorderStyle,
+	setBlockDefaults,
+	getUniqueId
+} from '@kadence/helpers';
 
 /**
  * Blocks Specific.
@@ -118,27 +132,16 @@ function SectionEdit( {
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
 				attributes = setBlockDefaults( 'kadence/column', attributes);
 			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
 		}
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
