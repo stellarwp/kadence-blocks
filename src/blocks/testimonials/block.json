@@ -133,7 +133,7 @@
 	},
 	"containerBorder": {
 	  "type": "string",
-	  "default": "#eeeeee"
+	  "default": ""
 	},
 	"containerBorderOpacity": {
 	  "type": "number",
@@ -177,7 +177,7 @@
 		  "isize": 50,
 		  "istroke": 2,
 		  "ititle": "",
-		  "color": "#555555",
+		  "color": "",
 		  "title": "",
 		  "content": "",
 		  "name": "",
@@ -194,7 +194,7 @@
 		  "backgroundSize": "cover",
 		  "background": "",
 		  "backgroundOpacity": 1,
-		  "border": "#555555",
+		  "border": "",
 		  "borderRadius": "",
 		  "borderWidth": [
 			0,
@@ -280,7 +280,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#333333",
+		  "color": "",
 		  "size": [
 			"",
 			"",
@@ -313,7 +313,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#333333",
+		  "color": "",
 		  "size": [
 			"",
 			"",
@@ -346,7 +346,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#555555",
+		  "color": "",
 		  "size": [
 			15,
 			"",
