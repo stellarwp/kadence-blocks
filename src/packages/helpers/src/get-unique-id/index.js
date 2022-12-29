@@ -1,7 +1,10 @@
 import { uniqueId } from 'lodash';
 
-export default function getUniqueId( uniqueID, clientId, isUniqueID ) {
-    /* global kadence_blocks_params */
+/**
+ * Creates or keeps a uniqueId for a block depending on it's status.
+ * requires the current block unique Id, client id, and the useSelect functions for isUniqueId and isUniqueBlock
+ */
+export default function getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock ) {
     let smallID = '_' + clientId.substr( 2, 9 );
 
     if ( ! uniqueID ) {

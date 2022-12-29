@@ -138,10 +138,10 @@ function SectionEdit( {
 			}
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
-		
+
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
