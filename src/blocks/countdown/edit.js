@@ -200,11 +200,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	);
 
 	useEffect( () => {
-		if ( ! uniqueID ) {
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				attributes = setBlockDefaults( 'kadence/column', attributes);
-			}
-		}
+		setBlockDefaults( 'kadence/countdown', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
