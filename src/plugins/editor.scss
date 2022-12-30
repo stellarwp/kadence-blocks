@@ -76,7 +76,7 @@
 .components-button-group .kt-editor-width-btn {
     background: transparent;
     box-shadow: none;
-    border: 1px solid #eee;
+    border: 1px solid var(--kb-border-color, #859CB6 );
     padding: 8px;
     margin-right: 0px;
     height: auto;
@@ -95,7 +95,7 @@
     background:#444;
 }
 .kb-block-settings-visibility {
-  border: 1px solid #ddd;
+  border: 1px solid var(--kb-border-color, #859CB6 );
   background: #fff;
   width: 100%;
   margin-bottom: 10px;

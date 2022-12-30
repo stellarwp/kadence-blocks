@@ -23,3 +23,33 @@
 	font-weight: 500;
 	text-transform: uppercase;
 }
+.typography-family-select-form-row {
+	.kb-react-select__control {
+		border-color: var(--kb-border-color, #859CB6 );
+		min-height: 32px;
+		&:hover{
+			border-color: var(--kb-border-dark-color, #6F8094 );
+		}
+	}
+	.kb-react-select__indicator-separator {
+		width: 0;
+	}
+	.kb-react-select__dropdown-indicator {
+		color: var(--kb-border-color, #859CB6 );
+	}
+}
+
+.kb-select-style .components-input-control__backdrop:not(.specific):not(.more-specific) {
+    border-color: var(--kb-border-color, #859CB6 );
+}
+.kb-textbox-style {
+	.components-base-control__label {
+		font-weight: 400;
+	}
+	.components-text-control__input {
+		border-color: var(--kb-border-color, #859CB6 );
+	}
+	.components-input-control__backdrop:not(.specific):not(.more-specific) {
+		border-color: var(--kb-border-color, #859CB6 );
+	}
+}

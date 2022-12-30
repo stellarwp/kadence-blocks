@@ -175,7 +175,7 @@ button.components-button.kb-grid-btns svg {
 		border: 5px solid #fff;
 		border-radius: 0 !important;
 		height: 0;
-		background: #eee;
+		background: var(--kb-border-color, #859CB6 );
 		width: 100%;
 		overflow: hidden;
 		position: relative;

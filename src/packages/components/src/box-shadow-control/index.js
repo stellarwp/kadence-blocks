@@ -14,6 +14,10 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 /**
+ * Import Css
+ */
+import './editor.scss';
+/**
  * Build the BoxShadow controls
  * @returns {object} BoxShadow settings.
  */

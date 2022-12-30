@@ -22,7 +22,7 @@
 		display: inline-block;
 	}
 	> .kb-dynamic-background-sidebar-wrap .kb-dynamic-background-sidebar.has-icon, > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon {
-		border: 1px solid #ddd;
+		border: 1px solid var(--kb-border-color, #859CB6 );
 		margin-bottom: 10px;
 		margin-left: 5px;
 		color: #1e1e1e;

@@ -1,12 +1,12 @@
 // Colors
 .kadence-color-group .components-base-control.kadence-pop-color-control {
     margin-bottom:0;
-    border:1px solid #eee;
+    border:1px solid var(--kb-border-color, #859CB6 );
     border-bottom:0;
     padding:4px 8px;
 }
 .kadence-color-group .components-base-control.kadence-pop-color-control:last-child {
-    border-bottom:1px solid #eee;
+    border-bottom:1px solid var(--kb-border-color, #859CB6 );
 }
 .kadence-color-group .kadence-pop-color-control .kadence-pop-color-icon-indicate .kadence-pop-color-indicate {
     width: 24px;

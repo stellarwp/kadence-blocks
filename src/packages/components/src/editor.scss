@@ -73,3 +73,26 @@ svg {
     height: 18px;
     min-width: 0;
 }
+
+/// Old size type, needs to be updated to new radio component.
+.kt-btn-size-settings-container .kt-button-size-type-options {
+	margin-bottom: 0;
+	display: flex;
+}
+.kt-btn-size-settings-container {
+    display: flex;
+	align-items: center;
+	margin: 20px 0;
+}
+.kt-btn-size-settings-container .kt-beside-btn-group {
+    flex-grow: 1;
+    margin: 0;
+}
+.kt-button-size-type-options .dashicon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+}
+.kt-btn-size-settings-container .components-button-group .components-button.is-primary svg {
+    fill: white;
+}

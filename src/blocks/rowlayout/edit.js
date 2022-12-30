@@ -59,7 +59,7 @@ import {
 	KadenceBlockDefaults,
 	SpacingVisualizer
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components

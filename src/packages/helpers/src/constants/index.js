@@ -130,6 +130,13 @@ export const GAP_SIZES_MAP = [
 		name:  __( 'None', 'kadence-blocks' ),
 	},
 	{
+		value: 'xs',
+		output: 'var(--global-kb-gap-xs, 0.5rem)',
+		size: 8,
+		label:  __( 'XS', 'kadence-blocks' ),
+		name:  __( 'X Small', 'kadence-blocks' ),
+	},
+	{
 		value: 'sm',
 		output: 'var(--global-kb-gap-sm, 1rem)',
 		size: 16,

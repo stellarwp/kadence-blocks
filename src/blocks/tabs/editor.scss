@@ -57,7 +57,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 }
  .kt-select-starter-style-tabs {
     padding: 20px;
-    border: 2px dashed #ddd;
+    border: 2px dashed var(--kb-border-color, #859CB6 );
     text-align: center;
     position: relative;
     z-index: 10;
