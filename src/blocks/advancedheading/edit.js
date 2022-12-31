@@ -31,6 +31,7 @@ import {
 	ResponsiveFontSizeControl,
 	KadenceRadioButtons,
 	TagSelect,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 
 import {
@@ -191,6 +192,8 @@ function KadenceAdvancedHeading( props ) {
 		tabletMarkLetterSpacing,
 		mobileMarkLetterSpacing,
 		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles,
 		maxWidthType,
 		maxWidth,
 		beforeIcon,
@@ -257,6 +260,8 @@ function KadenceAdvancedHeading( props ) {
 		}
 		if ( updateBorderStyle ) {
 			setAttributes( { markBorderStyles: tempBorderStyle } );
+			setAttributes( { tabletMarkBorderStyles: tempBorderStyle } );
+			setAttributes( { mobileMarkBorderStyles: tempBorderStyle } );
 		}
 	}, [] );
 
@@ -306,10 +311,10 @@ function KadenceAdvancedHeading( props ) {
 
 	const previewMaxWidth = getPreviewSize( getPreviewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 
-	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, '', '' );
-	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, '', '' );
-	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, '', '' );
-	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, '', '' );
+	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
 	const headingOptions = [
 		[
 			{
@@ -484,6 +489,8 @@ function KadenceAdvancedHeading( props ) {
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
+
+	console.log(previewMarkBorderTopStyle);
 
 	return (
 		<div {...blockProps}>
@@ -862,10 +869,14 @@ function KadenceAdvancedHeading( props ) {
 										onOpacityChange={value => setAttributes( { markBGOpacity: value } )}
 										onArrayChange={( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } )}
 									/>
-									<BorderControl
+									<ResponsiveBorderControl
 										label={__( 'Border', 'kadence-blocks' )}
 										value={markBorderStyles}
+										tabletValue={tabletMarkBorderStyles}
+										mobileValue={mobileMarkBorderStyles}
 										onChange={( value ) => setAttributes( { markBorderStyles: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderStyles: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
 									/>
 									<TypographyControls
 										fontGroup={'mark-heading'}

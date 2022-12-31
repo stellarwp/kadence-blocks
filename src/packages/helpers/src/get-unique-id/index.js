@@ -18,8 +18,7 @@ export default function getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlo
         if ( ! isUniqueBlock( uniqueID, clientId ) ) {
             return smallID
         }
-    } else {
-        //normal block loading
-        return uniqueID;
     }
+    //normal block loading 
+    return uniqueID;
 }
