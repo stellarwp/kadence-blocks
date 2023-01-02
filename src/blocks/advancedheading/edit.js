@@ -490,8 +490,6 @@ function KadenceAdvancedHeading( props ) {
 		className: wrapperClasses,
 	} );
 
-	console.log(previewMarkBorderTopStyle);
-
 	return (
 		<div {...blockProps}>
 			<style>
