@@ -183,7 +183,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 			if( $attributes['delay'] !== 0){
 				$playerProps['intermission'] = 1000 * $attributes['delay'];
 			}
-			$width = $attributes['width'] === '0' ? 'auto' : $attributes['width']  + 'px';
+			$width = $attributes['width'] === '0' ? 'auto' : $attributes['width'] . 'px';
 
 			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . '">';
 				$content .= '<dotlottie-player ';
