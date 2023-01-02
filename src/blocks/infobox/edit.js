@@ -59,6 +59,9 @@ import {
 	getSpacingOptionOutput,
 	ConvertColor,
 	getBorderStyle,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
 } from '@kadence/helpers';
 
 /**
@@ -206,43 +209,14 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		[ clientId ]
 	);
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/infobox' ] !== undefined && typeof blockConfigObject[ 'kadence/infobox' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/infobox' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/infobox' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( uniqueID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/infobox', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
 		debounce( getDynamic.bind( this ), 200 );
 	}, [] );
 	useEffect( () => {
