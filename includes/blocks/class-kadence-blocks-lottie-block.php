@@ -39,6 +39,13 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
+	 * Block determines if style needs to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -95,8 +102,8 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
-			wp_enqueue_script( 'kadence-blocks-lottieplayer-js' );
+		if ( ! wp_script_is( 'kadence-blocks-dotlottie-player-js', 'enqueued' ) ) {
+			wp_enqueue_script( 'kadence-blocks-dotlottie-player-js' );
 		}
 
 		if ( isset( $attributes['uniqueID'] ) ) {
@@ -124,7 +131,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 					$frames    = '';
 				}
 
-				$content = $content . "
+				$content .= "
 				<script>
 						
 						var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
@@ -234,11 +241,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-dotlottie-player-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-dotlottie.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-
 	}
-
-
 }
 
 Kadence_Blocks_Lottie_Block::get_instance();
