@@ -48,7 +48,9 @@ import {
 	KadenceColorOutput,
 	getPreviewDevice,
 	showSettings,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getUniqueId,
+	setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -148,7 +150,20 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect( () => {
+		setBlockDefaults( 'kadence/accordion', attributes);
+
 		// This runs when we switch from desktop to tablet.
 		if ( !uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
@@ -171,8 +186,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 							} );
 						}
 						setTitleTag( blockConfigObject[ 'kadence/accordion' ][ attribute ] );
-					} else {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
 					}
 				} );
 			} else {
@@ -183,20 +196,12 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					setTitleTag( blockConfigObject[ 'kadence/pane' ].titleTag );
 				}
 			}
-
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktaccordUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktaccordUniqueIDs.includes( uniqueID ) ) {
-			// This will force a rebuild of the unique ID when preview changes.
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				ktaccordUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-			}
-		} else {
-			ktaccordUniqueIDs.push( uniqueID );
 		}
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
 		if ( titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 1 ] && titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 2 ] && titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 3 ] ) {
 			setTitlePaddingControl( 'linked' );
 		} else {
