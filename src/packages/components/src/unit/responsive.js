@@ -36,7 +36,7 @@
 		step = 1,
 		max = 200,
 		min = 0,
-		unit = 'px',
+		unit = '',
 		defaultValue = [ '', '', '' ],
 		compressedDevice = false,
 		reset = true,

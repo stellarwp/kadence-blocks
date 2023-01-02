@@ -186,6 +186,22 @@
 		"type": "string",
 		"default": ""
 	},
+	"padding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"tablePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"mobilePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"paddingUnit": {
+		"type": "string",
+		"default": "px"
+	},
 	"orientation": {
 		"type": "array",
 		"default": [ "", "", "" ]

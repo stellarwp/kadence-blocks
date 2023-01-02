@@ -12,7 +12,7 @@ import { getFontSizeOptionOutput } from '../font-size-utilities';
 		}
 		const previewTypographyLineHeight = getPreviewSize( previewDevice, ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].lineHeight && undefined !== data[ 0 ].lineHeight[ 0 ] ? data[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].lineHeight && undefined !== data[ 0 ].lineHeight[ 1 ] ? data[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].lineHeight && undefined !== data[ 0 ].lineHeight[ 2 ] ? data[ 0 ].lineHeight[ 2 ] : '' ) );
 		if ( previewTypographyLineHeight ) {
-			outputCSS = outputCSS + 'line-height:' + previewTypographyLineHeight + ( undefined !== data[ 0 ].lineType ? data[ 0 ].lineType : 'px' ) + ';';
+			outputCSS = outputCSS + 'line-height:' + previewTypographyLineHeight + ( undefined !== data[ 0 ].lineType ? data[ 0 ].lineType : '' ) + ';';
 		}
 		const previewTypographyLetterSpacing = getPreviewSize( previewDevice, ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].letterSpacing && undefined !== data[ 0 ].letterSpacing[ 0 ] ? data[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].letterSpacing && undefined !== data[ 0 ].letterSpacing[ 1 ] ? data[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== data && undefined !== data[ 0 ] && undefined !== data[ 0 ].letterSpacing && undefined !== data[ 0 ].letterSpacing[ 2 ] ? data[ 0 ].letterSpacing[ 2 ] : '' ) );
 		if ( previewTypographyLetterSpacing ) {

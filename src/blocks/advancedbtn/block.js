@@ -7,6 +7,11 @@
 import { advancedBtnIcon } from '@kadence/icons';
 
 /**
+ * Register sub blocks.
+ */
+import '../singlebtn/block.js';
+
+/**
  * Import Css
  */
  import './style.scss';

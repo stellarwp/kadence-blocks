@@ -12,27 +12,33 @@
 	},
 	"text": {
 		"type": "string",
-		"default": ""
+		"default": "",
+		"__experimentalRole": "content"
 	},
 	"link": {
 		"type": "string",
-		"default": ""
+		"default": "",
+		"__experimentalRole": "content"
 	},
 	"target": {
 		"type": "string",
-		"default": "_self"
+		"default": "_self",
+		"__experimentalRole": "content"
 	},
 	"noFollow": {
 		"type": "boolean",
-		"default": false
+		"default": false,
+		"__experimentalRole": "content"
 	},
 	"sponsored": {
 		"type": "boolean",
-		"default": false
+		"default": false,
+		"__experimentalRole": "content"
 	},
 	"download": {
 		"type": "boolean",
-		"default": false
+		"default": false,
+		"__experimentalRole": "content"
 	},
 	"style": {
 		"type": "string",
@@ -270,7 +276,6 @@
 		"type": "array",
 		"default": [
 			{
-			"color": "",
 			"size": [
 				"",
 				"",
@@ -342,6 +347,10 @@
 	"hideLink": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"noCustomDefaults": {
+		"type": "boolean",
+		"default": false
 	}
   },
   "supports": {

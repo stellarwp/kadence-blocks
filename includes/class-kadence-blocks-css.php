@@ -742,14 +742,11 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'font-weight', $font['weight'] );
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : 'px' );
+		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
 		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
-		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
-			$this->add_property( 'font-size', $font['size']['desktop'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][0] ) && ! empty( $font['size'][0] ) ) {
-			$this->add_property( 'font-size', $font['size'][0] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][0], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['desktop'] . $line_type );
@@ -782,11 +779,8 @@ class Kadence_Blocks_CSS {
 		}
 		// Tablet.
 		$this->set_media_state( 'tablet' );
-		if ( isset( $font['size'] ) && isset( $font['size']['tablet'] ) && ! empty( $font['size']['tablet'] ) ) {
-			$this->add_property( 'font-size', $font['size']['tablet'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][1] ) && ! empty( $font['size'][1] ) ) {
-			$this->add_property( 'font-size', $font['size'][1] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][1], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['tablet'] ) && ! empty( $font['lineHeight']['tablet'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['tablet'] . $line_type );
@@ -802,11 +796,8 @@ class Kadence_Blocks_CSS {
 		}
 		// Mobile.
 		$this->set_media_state( 'mobile' );
-		if ( isset( $font['size'] ) && isset( $font['size']['mobile'] ) && ! empty( $font['size']['mobile'] ) ) {
-			$this->add_property( 'font-size', $font['size']['mobile'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][2] ) && ! empty( $font['size'][2] ) ) {
-			$this->add_property( 'font-size', $font['size'][2] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][2], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['mobile'] ) && ! empty( $font['lineHeight']['mobile'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['mobile'] . $line_type );
@@ -1692,7 +1683,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */
-	public function render_border_styles( $attributes, $name = 'borderStyle', $args = array() ) {
+	public function render_border_styles( $attributes, $name = 'borderStyle', $output_color = false, $args = array() ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1718,21 +1709,29 @@ class Kadence_Blocks_CSS {
 				$border_style = ( ! empty( $desktop_border['top'][1] ) ? $desktop_border['top'][1] : 'solid' );
 				$border_color = ( ! empty( $desktop_border['top'][0] ) ? $this->sanitize_color( $desktop_border['top'][0] ) : 'transparent' );
 				$this->add_property( $args['first_prop'], $desktop_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $desktop_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $desktop_border['top'][0] ) );
 			}
 			if ( $this->is_number( $desktop_border['right'][2] ) ) {
 				$border_style = ( ! empty( $desktop_border['right'][1] ) ? $desktop_border['right'][1] : 'solid' );
 				$border_color = ( ! empty( $desktop_border['right'][0] ) ? $this->sanitize_color( $desktop_border['right'][0] ) : 'transparent' );
 				$this->add_property( $args['second_prop'], $desktop_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $desktop_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $desktop_border['right'][0] ) );
 			}
 			if ( $this->is_number( $desktop_border['bottom'][2] ) ) {
 				$border_style = ( ! empty( $desktop_border['bottom'][1] ) ? $desktop_border['bottom'][1] : 'solid' );
 				$border_color = ( ! empty( $desktop_border['bottom'][0] ) ? $this->sanitize_color( $desktop_border['bottom'][0] ) : 'transparent' );
 				$this->add_property( $args['third_prop'], $desktop_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $desktop_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $desktop_border['bottom'][0] ) );
 			}
 			if ( $this->is_number( $desktop_border['left'][2] ) ) {
 				$border_style = ( ! empty( $desktop_border['left'][1] ) ? $desktop_border['left'][1] : 'solid' );
 				$border_color = ( ! empty( $desktop_border['left'][0] ) ? $this->sanitize_color( $desktop_border['left'][0] ) : 'transparent' );
 				$this->add_property( $args['fourth_prop'], $desktop_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $desktop_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $desktop_border['left'][0] ) );
 			}
 		}
 		$this->set_media_state( 'tablet' );
@@ -1743,21 +1742,29 @@ class Kadence_Blocks_CSS {
 				$border_style = ( ! empty( $tablet_border['top'][1] ) ? $tablet_border['top'][1] : 'solid' );
 				$border_color = ( ! empty( $tablet_border['top'][0] ) ? $this->sanitize_color( $tablet_border['top'][0] ) : 'transparent' );
 				$this->add_property( $args['first_prop'], $tablet_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $tablet_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $tablet_border['top'][0] ) );
 			}
 			if ( $this->is_number( $tablet_border['right'][2] ) ) {
 				$border_style = ( ! empty( $tablet_border['right'][1] ) ? $tablet_border['right'][1] : 'solid' );
 				$border_color = ( ! empty( $tablet_border['right'][0] ) ? $this->sanitize_color( $tablet_border['right'][0] ) : 'transparent' );
 				$this->add_property( $args['second_prop'], $tablet_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $tablet_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $tablet_border['right'][0] ) );
 			}
 			if ( $this->is_number( $tablet_border['bottom'][2] ) ) {
 				$border_style = ( ! empty( $tablet_border['bottom'][1] ) ? $tablet_border['bottom'][1] : 'solid' );
 				$border_color = ( ! empty( $tablet_border['bottom'][0] ) ? $this->sanitize_color( $tablet_border['bottom'][0] ) : 'transparent' );
 				$this->add_property( $args['third_prop'], $tablet_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $tablet_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $tablet_border['bottom'][0] ) );
 			}
 			if ( $this->is_number( $tablet_border['left'][2] ) ) {
 				$border_style = ( ! empty( $tablet_border['left'][1] ) ? $tablet_border['left'][1] : 'solid' );
 				$border_color = ( ! empty( $tablet_border['left'][0] ) ? $this->sanitize_color( $tablet_border['left'][0] ) : 'transparent' );
 				$this->add_property( $args['fourth_prop'], $tablet_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $tablet_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $tablet_border['left'][0] ) );
 			}
 		}
 		$this->set_media_state( 'mobile' );
@@ -1768,21 +1775,105 @@ class Kadence_Blocks_CSS {
 				$border_style = ( ! empty( $mobile_border['top'][1] ) ? $mobile_border['top'][1] : 'solid' );
 				$border_color = ( ! empty( $mobile_border['top'][0] ) ? $this->sanitize_color( $mobile_border['top'][0] ) : 'transparent' );
 				$this->add_property( $args['first_prop'], $mobile_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $mobile_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $mobile_border['top'][0] ) );
 			}
 			if ( $this->is_number( $mobile_border['right'][2] ) ) {
 				$border_style = ( ! empty( $mobile_border['right'][1] ) ? $mobile_border['right'][1] : 'solid' );
 				$border_color = ( ! empty( $mobile_border['right'][0] ) ? $this->sanitize_color( $mobile_border['right'][0] ) : 'transparent' );
 				$this->add_property( $args['second_prop'], $mobile_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $mobile_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $mobile_border['right'][0] ) );
 			}
 			if ( $this->is_number( $mobile_border['bottom'][2] ) ) {
 				$border_style = ( ! empty( $mobile_border['bottom'][1] ) ? $mobile_border['bottom'][1] : 'solid' );
 				$border_color = ( ! empty( $mobile_border['bottom'][0] ) ? $this->sanitize_color( $mobile_border['bottom'][0] ) : 'transparent' );
 				$this->add_property( $args['third_prop'], $mobile_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $mobile_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $mobile_border['bottom'][0] ) );
 			}
 			if ( $this->is_number( $mobile_border['left'][2] ) ) {
 				$border_style = ( ! empty( $mobile_border['left'][1] ) ? $mobile_border['left'][1] : 'solid' );
 				$border_color = ( ! empty( $mobile_border['left'][0] ) ? $this->sanitize_color( $mobile_border['left'][0] ) : 'transparent' );
 				$this->add_property( $args['fourth_prop'], $mobile_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
+			} else if ( $output_color && ! empty( $mobile_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $mobile_border['left'][0] ) );
+			}
+		}
+		$this->set_media_state( 'desktop' );
+	}
+	/**
+	 * Generates the border styles output.
+	 *
+	 * @param array  $attributes an array of attributes.
+	 * @param string $name an string of the attribute name.
+	 * @param array  $args an array of settings.
+	 * @return string
+	 */
+	public function render_border_style_color( $attributes, $name = 'borderStyle', $args = array() ) {
+		if ( empty( $attributes ) || empty( $name ) ) {
+			return false;
+		}
+		if ( ! is_array( $attributes ) ) {
+			return false;
+		}
+		$defaults = array(
+			'desktop_key' => $name,
+			'tablet_key'  => 'tablet' . ucfirst( $name ),
+			'mobile_key'  => 'mobile' . ucfirst( $name ),
+			'unit_key'    => 'unit',
+			'first_prop'  => 'border-top-color',
+			'second_prop' => 'border-right-color',
+			'third_prop'  => 'border-bottom-color',
+			'fourth_prop' => 'border-left-color',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+		if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_array( $attributes[ $args['desktop_key'] ][0] ) ) {
+			$desktop_border = $attributes[ $args['desktop_key'] ][0];
+			if ( ! empty( $desktop_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->sanitize_color( $desktop_border['top'][0] ) );
+			}
+			if ( ! empty( $desktop_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'], $this->sanitize_color( $desktop_border['right'][0] ) );
+			}
+			if ( ! empty( $desktop_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'], $this->sanitize_color( $desktop_border['bottom'][0] ) );
+			}
+			if ( ! empty( $desktop_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $desktop_border['left'][0] ) );
+			}
+		}
+		$this->set_media_state( 'tablet' );
+		if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_array( $attributes[ $args['tablet_key'] ][0] ) ) {
+			$tablet_border = $attributes[ $args['tablet_key'] ][0];
+			if ( ! empty( $tablet_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->sanitize_color( $tablet_border['top'][0] ) );
+			}
+			if ( ! empty( $tablet_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'], $this->sanitize_color( $tablet_border['right'][0] ) );
+			}
+			if ( ! empty( $tablet_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'], $this->sanitize_color( $tablet_border['bottom'][0] ) );
+			}
+			if ( ! empty( $tablet_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $tablet_border['left'][0] ) );
+			}
+		}
+		$this->set_media_state( 'mobile' );
+		if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_array( $attributes[ $args['mobile_key'] ][0] ) ) {
+			$mobile_border = $attributes[ $args['mobile_key'] ][0];
+			if ( ! empty( $mobile_border['top'][0] ) ) {
+				$this->add_property( $args['first_prop'], $this->sanitize_color( $mobile_border['top'][0] ) );
+			}
+			if ( ! empty( $mobile_border['right'][0] ) ) {
+				$this->add_property( $args['second_prop'], $this->sanitize_color( $mobile_border['right'][0] ) );
+			}
+			if ( ! empty( $mobile_border['bottom'][0] ) ) {
+				$this->add_property( $args['third_prop'], $this->sanitize_color( $mobile_border['bottom'][0] ) );
+			}
+			if ( ! empty( $mobile_border['left'][0] ) ) {
+				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $mobile_border['left'][0] ) );
 			}
 		}
 		$this->set_media_state( 'desktop' );
