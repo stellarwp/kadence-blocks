@@ -201,6 +201,10 @@ class Kadence_Blocks_CSS {
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
 		'default' => 'var(--global-kb-gap-md, 2rem)',
 		'wider' => 'var(--global-kb-gap-lg, 4rem)',
+		'xs' => 'var(--global-kb-gap-xs, 0.5rem )',
+		'sm' => 'var(--global-kb-gap-sm, 1rem)',
+		'md' => 'var(--global-kb-gap-md, 2rem)',
+		'lg' => 'var(--global-kb-gap-lg, 4rem)',
 	);
 
 	/**
@@ -1210,7 +1214,34 @@ class Kadence_Blocks_CSS {
 	 * @param array  $shadow an array of shadow settings.
 	 * @return string
 	 */
-	public function render_gap( $attributes, $name = array( 'width', 'tabletWidth', 'mobileWidth' ), $property = 'column-gap', $custom = '', $unit_name = 'gapType' ) {
+	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit' ) {
+		if ( empty( $attributes ) || empty( $name ) ) {
+			return false;
+		}
+		if ( ! is_array( $attributes ) ) {
+			return false;
+		}
+		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
+		if ( ! empty( $attributes[ $name ][0] ) ) {
+			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
+		}
+		if ( ! empty( $attributes[ $name ][1] ) ) {
+			$this->set_media_state( 'tablet' );
+			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
+		}
+		if ( ! empty( $attributes[ $name ][2] ) ) {
+			$this->set_media_state( 'mobile' );
+			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
+		}
+		$this->set_media_state( 'desktop' );
+	}
+	/**
+	 * Generates the shadow output.
+	 *
+	 * @param array  $shadow an array of shadow settings.
+	 * @return string
+	 */
+	public function render_row_gap( $attributes, $name = array( 'gap', 'tabletGap', 'mobileGap' ), $property = 'gap', $custom = '', $unit_name = 'gapUnit' ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -2198,6 +2229,19 @@ class Kadence_Blocks_CSS {
 		self::$styles[ $this->_style_id ] = $this->_output;
 		$this->clear();
 		return self::$styles[ $this->_style_id ];
+	}
+	/**
+	 * Generates the gap output.
+	 *
+	 * @param string  $size a string or number with the gap size.
+	 * @param string $unit a string with the unit type.
+	 * @return string
+	 */
+	public function get_gap_size( $size, $unit ) {
+		if ( $this->is_variable_gap_value( $size ) ) {
+			return $this->get_variable_gap_value( $size );
+		}
+		return $size . $unit;
 	}
 	/**
 	 * @param $value

@@ -617,6 +617,7 @@ class TypographyControls extends Component {
 									value={ ( '400' === fontWeight && usingReg ? 'regular' : fontWeight ) }
 									options={ typographyWeights }
 									onChange={ onTypoFontWeightChange }
+									className={ 'kb-select-style' }
 								/>
 							) }
 							{ fontFamily && onFontStyle && (
@@ -625,6 +626,7 @@ class TypographyControls extends Component {
 									value={ fontStyle }
 									options={ typographyStyles }
 									onChange={ onTypoFontStyleChange }
+									className={ 'kb-select-style' }
 								/>
 							) }
 							{ fontFamily && googleFont && onLoadGoogleFont && (

@@ -116,6 +116,8 @@ function KadenceTestimonials({
         occupation,
         rating,
         sizes,
+        tabletIsize,
+        mobileIsize,
         inQueryBlock,
         useBlockQuoteTags
     } = attributes;
@@ -210,26 +212,7 @@ function KadenceTestimonials({
         }
     }, []);
 
-    const onMove = (oldIndex, newIndex) => {
-        let newTestimonials = [...testimonials];
-        newTestimonials.splice(newIndex, 1, testimonials[oldIndex]);
-        newTestimonials.splice(oldIndex, 1, testimonials[newIndex]);
-        setAttributes({testimonials: newTestimonials});
-    };
-
-    const onMoveForward = (oldIndex) => {
-        if (oldIndex === testimonials.length - 1) {
-            return;
-        }
-        onMove(oldIndex, oldIndex + 1);
-    };
-
-    const onMoveBackward = (oldIndex) => {
-        if (oldIndex === 0) {
-            return;
-        }
-        onMove(oldIndex, oldIndex - 1);
-    };
+    const previewIconSize = getPreviewSize( previewDevice, ( undefined !== isize ? isize : ''), ( undefined !== tabletIsize ? tabletIsize : ''), ( undefined !== mobileIsize ? mobileIsize : '') );
 
     const previewContainerPaddingTop = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[0] ? containerPadding[0] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[0] ? tabletContainerPadding[0] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[0] ? mobileContainerPadding[0] : ''));
     const previewContainerPaddingRight = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[1] ? containerPadding[1] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[1] ? tabletContainerPadding[1] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[1] ? mobileContainerPadding[1] : ''));
@@ -316,14 +299,20 @@ function KadenceTestimonials({
                                 setAttributes({icon: value});
                             }}
                         />
-                        <RangeControl
-                            label={__('Icon Size', 'kadence-blocks')}
-                            value={isize}
-                            onChange={value => {
-                                setAttributes({isize: value});
-                            }}
-                            min={5}
-                            max={250}
+                        <ResponsiveRangeControls
+                            label={__( 'Icon Size', 'kadence-blocks' )}
+                            value={( undefined !== isize ? isize : '' )}
+                            onChange={ value => setAttributes( { isize: value } ) }
+                            tabletValue={( undefined !== tabletIsize ? tabletIsize : '' )}
+                            onChangeTablet={ value => setAttributes( { tabletIsize: value } )}
+                            mobileValue={( undefined !== mobileIsize ? mobileIsize : '' )}
+                            onChangeMobile={value => setAttributes( { mobileIsize: value } )}
+                            min={0}
+                            max={300}
+                            step={1}
+                            unit={'px'}
+                            showUnit={true}
+                            units={[ 'px' ]}
                         />
                         {icon && 'fe' === icon.substring(0, 2) && (
                             <RangeControl
@@ -439,7 +428,7 @@ function KadenceTestimonials({
                         {'icon' === media && icon && (
                             <IconRender
                                 className={`kt-svg-testimonial-icon kt-svg-testimonial-icon-${icon}`}
-                                name={icon} size={isize}
+                                name={icon} size={previewIconSize}
                                 title={(ititle ? ititle : '')}
                                 strokeWidth={('fe' === icon.substring(0, 2) ? istroke : undefined)}
                                 style={{
@@ -574,28 +563,6 @@ function KadenceTestimonials({
                     marginTop: isCarousel && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
                     marginBottom: isCarousel && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
                 })}>
-                {/*{itemCount > 1 && (*/}
-                {/*    <div className="kt-testimonial-item__move-menu">*/}
-                {/*        <Button*/}
-                {/*            icon="arrow-left"*/}
-                {/*            onClick={() => {*/}
-                {/*                0 === index ? undefined : onMoveBackward(index)*/}
-                {/*            }}*/}
-                {/*            className="kt-testimonial-item__move-backward"*/}
-                {/*            aria-label={__('Move Testimonial Backward', 'kadence-blocks')}*/}
-                {/*            aria-disabled={0 === index}*/}
-                {/*        />*/}
-                {/*        <Button*/}
-                {/*            icon="arrow-right"*/}
-                {/*            onClick={() => {*/}
-                {/*                itemCount === (index + 1) ? undefined : onMoveForward(index)*/}
-                {/*            }}*/}
-                {/*            className="kt-testimonial-item__move-forward"*/}
-                {/*            aria-label={__('Move Testimonial Forward', 'kadence-blocks')}*/}
-                {/*            aria-disabled={itemCount === (index + 1)}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*)}*/}
                 <div className="kt-testimonial-text-wrap"
                      style={('bubble' === style || 'inlineimage' === style ? containerStyles : undefined)}>
                     {displayIcon && iconStyles[0].icon && 'card' !== style && (

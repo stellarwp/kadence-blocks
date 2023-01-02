@@ -70,6 +70,7 @@
 			unit: 'px',
 		},
 		reset = true,
+		defaultLinked = true,
 	 } ) {
 	 const ref = useRef();
 	 const measureIcons = {
@@ -90,6 +91,23 @@
 	 if ( theDevice !== deviceType ) {
 		 setDeviceType( theDevice );
 	 }
+	 useEffect( () => {
+		if ( defaultLinked ) {
+			if ( theDevice === 'Mobile' ) {
+				if ( isEqual( mobileValue?.[0]?.top, mobileValue?.[0]?.bottom ) && isEqual( mobileValue?.[0]?.top, mobileValue?.[0]?.bottom ) && isEqual( mobileValue?.[0]?.top, mobileValue?.[0]?.right ) && isEqual( mobileValue?.[0]?.top, mobileValue?.[0]?.left ) ) {
+					realSetOnControl( 'linked' );
+				}
+			} else if ( theDevice === 'Tablet' ) {
+				if ( isEqual( tabletValue?.[0]?.top, tabletValue?.[0]?.bottom ) && isEqual( tabletValue?.[0]?.top, tabletValue?.[0]?.bottom ) && isEqual( tabletValue?.[0]?.top, tabletValue?.[0]?.right ) && isEqual( tabletValue?.[0]?.top, tabletValue?.[0]?.left ) ) {
+					realSetOnControl( 'linked' );
+				}
+			} else {
+				if ( isEqual( value?.[0]?.top, value?.[0]?.bottom ) && isEqual( value?.[0]?.top, value?.[0]?.bottom ) && isEqual( value?.[0]?.top, value?.[0]?.right ) && isEqual( value?.[0]?.top, value?.[0]?.left ) ) {
+					realSetOnControl( 'linked' );
+				}
+			}
+ 		}
+	}, [] );
 	 const {
 		 setPreviewDeviceType,
 	 } = useDispatch( 'kadenceblocks/data' );

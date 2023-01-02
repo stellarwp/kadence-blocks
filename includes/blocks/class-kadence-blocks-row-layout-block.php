@@ -280,8 +280,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		// Gutter.
-		$css->render_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
-		$css->render_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
+		$css->render_row_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
+		$css->render_row_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
 		// Padding, check for old attributes and use if present.
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
@@ -1162,7 +1162,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) {
 				$outer_classes[] = 'kt-jarallax';
 			}
-			$inner_anchor  = 'kb-layout-id' . $unique_id;
 			$inner_classes = array( 'kt-row-column-wrap' );
 			$inner_classes[] = ! empty( $attributes['columns'] ) ? 'kt-has-' . $attributes['columns'] . '-columns' : 'kt-has-2-columns';
 			$inner_classes[] = ! empty( $attributes['colLayout'] ) ? 'kt-row-layout-' . $attributes['colLayout'] : 'kt-row-layout-equal';
@@ -1180,7 +1179,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['inheritMaxWidth'] ) && $attributes['inheritMaxWidth'] ) {
 				$inner_classes[] = 'kb-theme-content-width';
 			}
-			$classes = implode( ' ', $inner_classes );
 			$wrapper_args = array(
 				'class' => implode( ' ', $outer_classes ),
 			);

@@ -53,6 +53,14 @@
 	  "type": "number",
 	  "default": 50
 	},
+	"tabletIsize": {
+		"type": "number",
+		"default": ""
+	},
+	"mobileIsize": {
+		"type": "number",
+		"default":""
+	},
 	"istroke": {
 	  "type": "number",
 	  "default": 2
@@ -63,7 +71,7 @@
 	},
 	"color": {
 	  "type": "string",
-	  "default": "#555555"
+	  "default": ""
 	},
 	"title": {
 	  "type": "string",

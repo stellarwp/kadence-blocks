@@ -64,7 +64,6 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'on_init' ), 20 );
-		add_action( 'enqueue_block_assets', array( $this, 'blocks_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 		add_action( 'wp_footer', array( $this, 'frontend_footer_gfonts' ), 90 );
@@ -206,93 +205,6 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
-	 * Render Inline CSS helper function
-	 *
-	 * @param array $css the css for each rendered block.
-	 * @param string $style_id the unique id for the rendered style.
-	 * @param bool $in_content the bool for whether or not it should run in content.
-	 */
-	public function render_inline_css( $css, $style_id, $in_content = false ) {
-		if ( ! is_admin() ) {
-			wp_register_style( $style_id, false );
-			wp_enqueue_style( $style_id );
-			wp_add_inline_style( $style_id, $css );
-			if ( 1 === did_action( 'wp_head' ) && $in_content ) {
-				wp_print_styles( $style_id );
-			}
-		}
-	}
-
-	/**
-	 * Check if block stylesheet should render inline.
-	 *
-	 * @param string $name the stylesheet name.
-	 */
-	public function should_render_inline_stylesheet( $name ) {
-		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) ) {
-			if ( function_exists( 'wp_is_block_theme' ) ) {
-				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() ) {
-					wp_print_styles( $name );
-				}
-			} elseif ( ! doing_filter( 'the_content' ) ) {
-				wp_print_styles( $name );
-			}
-		}
-	}
-
-	/**
-	 * Render Column Block CSS Inline
-	 *
-	 * @param array $attributes the blocks attributes.
-	 * @param string $content the blocks content.
-	 */
-	public function render_column_layout_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-column', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-column' );
-		}
-		$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
-		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-		} else {
-			$unique_id = rand( 100, 10000 );
-			$pos       = strpos( $content, 'inner-column-' );
-			if ( false !== $pos ) {
-				$content = substr_replace( $content, 'kadence-column' . $unique_id . ' inner-column-', $pos, strlen( 'inner-column-' ) );
-			}
-		}
-		$style_id = 'kb-column' . esc_attr( $unique_id );
-		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'column', $unique_id ) ) {
-			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-			$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
-			$this->should_render_inline_stylesheet( 'kadence-blocks-column' );
-			$css = $this->column_layout_css( $attributes, $unique_id );
-			if ( ! empty( $css ) ) {
-				if ( $this->should_render_inline( 'column', $unique_id ) ) {
-					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
-				} else {
-					$this->render_inline_css( $css, $style_id, true );
-				}
-			}
-		};
-
-		return $content;
-	}
-
-	/**
-	 * Check if block should render inline.
-	 *
-	 * @param string $name the blocks name.
-	 * @param string $unique_id the blocks unique id.
-	 */
-	public function should_render_inline( $name, $unique_id ) {
-		if ( ( doing_filter( 'the_content' ) && ! is_feed() ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, $name, $unique_id ) || is_customize_preview() ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Render Pane Schema in Head
 	 *
 	 * @param array $block the blocks object.
@@ -374,48 +286,6 @@ class Kadence_Blocks_Frontend {
 			return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
 		}
 		return false;
-	}
-
-	/**
-	 *
-	 * Register and Enqueue block assets
-	 *
-	 * @since 1.0.0
-	 */
-	public function blocks_assets() {
-		// If in the backend, bail out.
-		if ( is_admin() ) {
-			return;
-		}
-		$this->register_scripts();
-	}
-
-	/**
-	 * Registers scripts and styles.
-	 */
-	public function register_scripts() {
-		// If in the backend, bail out.
-		if ( is_admin() || $this->is_rest() ) {
-			return;
-		}
-
-		// Next all the extras that are shared.
-		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-
-		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
-	}
-
-	/**
-	 * Registers and enqueue's script.
-	 *
-	 * @param string $handle the handle for the script.
-	 */
-	public function enqueue_script( $handle ) {
-		if ( ! wp_script_is( $handle, 'registered' ) ) {
-			$this->register_scripts();
-		}
-		wp_enqueue_script( $handle );
 	}
 
 	/**

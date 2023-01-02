@@ -4,7 +4,7 @@
 }
  // Sidebar Buttons
  .kt-cta-upload-btn {
-    border: 1px solid #ddd;
+    border: 1px solid var(--kb-border-color, #859CB6 );
     margin-bottom: 10px;
 	border-radius: 4px;
 	display: inline-flex;
@@ -30,7 +30,7 @@
 .kt-inspect-tabs {
 	padding-top: 10px;
 	.components-tab-panel__tabs {
-		border-bottom: 4px solid #ddd;
+		border-bottom: 4px solid var(--kb-border-color, #859CB6 );
 		button {
 			justify-content: center;
 			background:transparent;

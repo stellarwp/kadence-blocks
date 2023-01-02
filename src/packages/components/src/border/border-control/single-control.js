@@ -49,6 +49,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 	onUnit,
 	units = [ 'px', 'em', 'rem' ],
 	styles = ['solid', 'dashed', 'dotted', 'double'],
+	defaultLinked = true,
 } ) {
 	const onChangeStyle = ( style ) => {
 		const newVal = value;

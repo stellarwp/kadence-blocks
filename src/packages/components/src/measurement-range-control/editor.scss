@@ -2,7 +2,7 @@
     margin-bottom: 6px;
 	color: #1e1e1e;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
 	gap: 2px;
 	display:flex;
 	.kadence-component__header__title {
@@ -77,7 +77,7 @@
 	align-items: center;
 }
 .kadence-measure-range-control .kadence-single-measure-range-control .kadence-controls-content .kadence-popover-spacing-btn {
-	border: 1px solid #718096;
+	border: 1px solid var(--kb-border-color, #859CB6 );
 	background: transparent;
 	color: inherit;
 	padding: 0px;
@@ -138,7 +138,7 @@
 		font-weight: 500;
 		display: block;
 		border: 0;
-		border-bottom: 1px solid #CBD5E0;
+		border-bottom: 1px solid var(--kb-border-color, #859CB6 );
 		border-radius: 0;
 		text-align: center;
 		text-transform: uppercase;
@@ -154,7 +154,7 @@
 		max-width: 100%;
 	}
 	.components-unit-control-wrapper {
-		border: 1px solid #718096;
+		border: 1px solid var(--kb-border-color, #859CB6 );
 		border-radius: 2px;
 		.components-input-control__container {
 			.components-input-control__backdrop {
@@ -165,22 +165,22 @@
 	}
 	.kadence-single-measure-range-control.kb-measure-box-left {
 		 .components-unit-control-wrapper .components-input-control__backdrop, .kadence-spacing-btn-val {
-			box-shadow: inset 2px 0 #718096;
+			box-shadow: inset 2px 0 var(--kb-border-color, #859CB6 );
 		}
 	}
 	.kadence-single-measure-range-control.kb-measure-box-top{
 		.components-unit-control-wrapper .components-input-control__backdrop, .kadence-spacing-btn-val {
-			box-shadow: inset 0px 2px #718096;
+			box-shadow: inset 0px 2px var(--kb-border-color, #859CB6 );
 		}
 	}
 	.kadence-single-measure-range-control.kb-measure-box-right {
 		.components-unit-control-wrapper .components-input-control__backdrop, .kadence-spacing-btn-val {
-			box-shadow: inset -2px 0px #718096;
+			box-shadow: inset -2px 0px var(--kb-border-color, #859CB6 );
 		}
 	}
 	.kadence-single-measure-range-control.kb-measure-box-bottom {
 		.components-unit-control-wrapper .components-input-control__backdrop, .kadence-spacing-btn-val {
-			box-shadow: inset 0px -2px #718096;
+			box-shadow: inset 0px -2px var(--kb-border-color, #859CB6 );
 		}
 	}
 	.kadence-measure-control-select {
@@ -202,7 +202,7 @@
 		text-transform: uppercase;
 		text-align-last: center;
 		height: 100%;
-		border: 1px solid #e2e4e7;
+		border: 1px solid var(--kb-border-color, #859CB6 );
 		transition: box-shadow 0.1s linear 0s, border 0.1s linear 0s;
 		cursor: pointer;
 		&:not(:disabled):hover {

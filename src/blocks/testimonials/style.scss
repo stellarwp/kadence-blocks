@@ -46,145 +46,109 @@
     display: block;
 }
 .kt-testimonial-grid-wrap {
-	display: -ms-grid;
 	display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
+	grid-template-columns: repeat(2, minmax(0, 1fr) );
     gap: 30px 30px;
 }
 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap {
-	margin:0 30px 30px 0;
-	width: auto;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child {
-	margin-right:0;
-}
-.kt-testimonial-columns-1 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child {
-    margin-right: auto;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(1) {
-	-ms-grid-column: 1;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(2) {
-	-ms-grid-column: 2;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(3) {
-	-ms-grid-column: 3;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(4) {
-	-ms-grid-column: 4;
-}
-.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(5) {
-	-ms-grid-column: 5;
-}
-@supports( grid-gap: 30px 30px ) {
-	.kt-testimonial-grid-wrap .kt-testimonial-item-wrap {
-		margin:0 auto;
-		width: 100%;
-	}
-	.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child:first-child {
-		margin-right:auto;
-	}
+	margin:0 auto;
+	width: 100%;
 }
 .kt-testimonial-columns-1 .kt-testimonial-grid-wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
 }
 .kt-testimonial-columns-3 .kt-testimonial-grid-wrap {
-    grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: repeat(3, minmax(0, 1fr) );
 }
 .kt-testimonial-columns-4 .kt-testimonial-grid-wrap {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, minmax(0, 1fr) );
 }
 .kt-testimonial-columns-5 .kt-testimonial-grid-wrap {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: repeat(5, minmax(0, 1fr) );
 }
 @media (min-width: 1200px) and (max-width: 1499px) {
 	.kt-t-xl-col-1 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.kt-t-xl-col-2 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr) );
 	}
 	.kt-t-xl-col-3 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr) );
 	}
 	.kt-t-xl-col-4 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr) );
 	}
 	.kt-t-xl-col-5 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(5, minmax(0, 1fr) );
 	}
 }
 @media (min-width: 992px) and (max-width: 1199px) {
 	.kt-t-lg-col-1 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.kt-t-lg-col-2 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr) );
 	}
 	.kt-t-lg-col-3 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr) );
 	}
 	.kt-t-lg-col-4 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr) );
 	}
 	.kt-t-lg-col-5 .kt-testimonial-grid-wrap {
-		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(5, minmax(0, 1fr) );
 	}
 }
 @media (min-width: 768px) and (max-width: 991px) {
 	.kt-t-md-col-1 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.kt-t-md-col-2 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr) );
 	}
 	.kt-t-md-col-3 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr) );
 	}
 	.kt-t-md-col-4 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr) );
 	}
 	.kt-t-md-col-5 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(5, minmax(0, 1fr) );
 	}
 }
 @media (min-width: 544px) and (max-width: 767px) {
 	.kt-t-sm-col-1 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.kt-t-sm-col-2 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr) );
 	}
 	.kt-t-sm-col-3 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr) );
 	}
 	.kt-t-sm-col-4 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr) );
 	}
 	.kt-t-sm-col-5 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(5, minmax(0, 1fr) );
 	}
 }
 @media (max-width: 543px) {
 	.kt-t-xs-col-1 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.kt-t-xs-col-2 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr) );
 	}
 	.kt-t-xs-col-3 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr) );
 	}
 	.kt-t-xs-col-4 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr) );
 	}
 	.kt-t-xs-col-5 .kt-testimonial-grid-wrap {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(5, minmax(0, 1fr) );
 	}
 }
  .kt-testimonial-media-inner-wrap {

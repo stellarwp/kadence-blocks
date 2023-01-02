@@ -58,18 +58,182 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id ) {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
-
-		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
-			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
-				if ( is_array( $btnvalue ) ) {
-					if ( isset( $btnvalue['target'] ) && ! empty( $btnvalue['target'] ) && 'video' == $btnvalue['target'] ) {
-						$this->enqueue_style( 'kadence-blocks-magnific-css' );
-						$this->enqueue_script( 'kadence-blocks-magnific-js' );
-					}
-				}
+		$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .wp-block-kadence-advancedbtn.kb-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
+		if ( isset( $attributes['margin'][0] ) ) {
+			$css->render_measure_output(
+				$attributes['margin'][0],
+				'margin',
+				'margin',
+				array(
+					'desktop_key' => 'desk',
+					'tablet_key'  => 'tablet',
+					'mobile_key'  => 'mobile',
+					'unit_key'    => 'marginUnit',
+				)
+			);
+		}
+		$css->set_selector( '.wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
+		$css->render_gap( $attributes );
+		$h_property = 'justify-content';
+		$v_property = 'align-items';
+		if ( ! empty( $attributes['orientation'][0] ) ) {
+			$css->add_property( 'flex-direction', $attributes['orientation'][0] );
+			if ( $attributes['orientation'][0] === 'column' || $attributes['orientation'][0] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
 			}
 		}
-
+		if ( ! empty( $attributes['hAlign'] ) ) {
+			switch ( $attributes['hAlign'] ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
+		}
+		if ( ! empty( $attributes['vAlign'] ) ) {
+			switch ( $attributes['vAlign'] ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		// Tablet.
+		$css->set_media_state( 'tablet' );
+		$update_align = false;
+		if ( ! empty( $attributes['orientation'][1] ) ) {
+			$update_align = true;
+			$css->add_property( 'flex-direction', $attributes['orientation'][1] );
+			if ( $attributes['orientation'][1] === 'column' || $attributes['orientation'][1] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
+			} else if ( $attributes['orientation'][1] === 'row' || $attributes['orientation'][1] === 'row-reverse' ) {
+				$h_property = 'justify-content';
+				$v_property = 'align-items';
+			}
+		}
+		if ( ! empty( $attributes['thAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['thAlign'] ) ? $attributes['thAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['hAlign'] ) ? $attributes['hAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
+		}
+		if ( ! empty( $attributes['tvAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['tvAlign'] ) ? $attributes['tvAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['vAlign'] ) ? $attributes['vAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		// Mobile.
+		$css->set_media_state( 'mobile' );
+		$update_align = false;
+		if ( ! empty( $attributes['orientation'][2] ) ) {
+			$update_align = true;
+			$css->add_property( 'flex-direction', $attributes['orientation'][2] );
+			if ( $attributes['orientation'][2] === 'column' || $attributes['orientation'][2] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
+			} else if ( $attributes['orientation'][2] === 'row' || $attributes['orientation'][2] === 'row-reverse' ) {
+				$h_property = 'justify-content';
+				$v_property = 'align-items';
+			}
+		}
+		if ( ! empty( $attributes['mhAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['mhAlign'] ) ? $attributes['mhAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['thAlign'] ) ? $attributes['thAlign'] : '';
+			}
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['hAlign'] ) ? $attributes['hAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
+		}
+		if ( ! empty( $attributes['mvAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['mvAlign'] ) ? $attributes['mvAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['tvAlign'] ) ? $attributes['tvAlign'] : '';
+			}
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['vAlign'] ) ? $attributes['vAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		$css->set_media_state( 'desktop' );
+		// Old CSS for backwards support.
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
@@ -96,18 +260,10 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if ( isset( $attributes['margin'][0] ) ) {
-			$css->render_measure_output( $attributes['margin'][0], 'margin', 'margin', [
-				'desktop_key' => 'desk',
-				'tablet_key'  => 'tablet',
-				'mobile_key'  => 'mobile',
-				'unit_key'    => 'marginUnit'
-			] );
-		}
-
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
+					$this->enqueue_style( 'kb-button-deprecated-styles' );
 					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
 						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
 						$css->add_property( 'margin-right', $btnvalue['gap'] . 'px' );
@@ -376,14 +532,11 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
+		wp_register_style( 'kb-button-deprecated-styles', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-button-deprecated-style.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
-		if ( $this->has_script ) {
-			wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'includes/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
-			wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-video-popup.min.js', array(
-				'jquery',
-				'magnific-popup'
-			), KADENCE_BLOCKS_VERSION, true );
-		}
+		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

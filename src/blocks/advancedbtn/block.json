@@ -161,13 +161,38 @@
 	"hideLink": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"gap": {
+		"type": "array",
+		"default": [
+			"xs",
+			"",
+			""
+		]
+	},
+	"gapUnit": {
+		"type": "string",
+		"default": "px"
+	},
+	"vAlign": {
+		"type": "string",
+		"default": "center"
+	},
+	"tvAlign": {
+		"type": "string",
+		"default": ""
+	},
+	"mvAlign": {
+		"type": "string",
+		"default": ""
+	},
+	"orientation": {
+		"type": "array",
+		"default": [ "", "", "" ]
 	}
   },
   "supports": {
-	"ktanimate": true,
-	"ktanimateadd": true,
-	"ktanimatepreview": true,
-	"ktdynamic": true
+	"anchor":true
   },
   "usesContext": [
 	"postId",
