@@ -219,12 +219,16 @@ export function Edit( props ) {
 			default:
 				return 50;
 		}
-	}
+	}	
+	
+	const classes = classnames( {
+		[ className ]: className,
+		[ `size-${ sizeSlug }` ]: sizeSlug,
+		[ `kadence-googlemaps-${ uniqueID }` ]: uniqueID,
+	} );
 
 	const blockProps = useBlockProps( {
-		className: classnames( className, {
-			[ `size-${ sizeSlug }` ]: sizeSlug,
-		} ),
+		className: classes,
 	} );
 
 	let mapQueryParams = {
