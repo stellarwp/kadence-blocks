@@ -8,7 +8,9 @@ import {
 	getPreviewSize,
 	showSettings,
 	getSpacingOptionOutput,
-	mouseOverVisualizer
+	mouseOverVisualizer,
+	getUniqueId,
+	setBlockDefaults,
 } from '@kadence/helpers';
 
 import {
@@ -34,6 +36,7 @@ import {
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import { times, filter, map } from 'lodash';
+import { useSelect, useDispatch  } from '@wordpress/data';
 
 const defaultBtns = [ {
 	text: '',
@@ -159,11 +162,6 @@ import {
 	applyFilters,
 } from '@wordpress/hooks';
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktadvancedbuttonUniqueIDs = [];
-
 function KadenceAdvancedButton( props ) {
 
 	const { attributes, setAttributes, getPreviewDevice, className, isSelected, context, clientId } = props;
@@ -201,37 +199,22 @@ function KadenceAdvancedButton( props ) {
 	const [ buttonMarginControl, setButtonMarginControl ] = useState( 'individual' );
 	const [ iconPaddingControl, setIconPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId )
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
-		if ( !uniqueID ) {
-			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/advancedbtn' ];
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/advancedbtn' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedbtn' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/advancedbtn' ] ).map( ( attribute ) => {
-					if ( attribute === 'btns' ) {
-						attributes[ attribute ][0] = {...attributes[ attribute ][0], ...blockConfigObject[ 'kadence/advancedbtn' ][ attribute ][0] };
-					} else {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/advancedbtn' ][ attribute ];
-					}
-				} );
-			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
-				Object.keys( oldBlockConfig ).map( ( attribute ) => {
-					attributes[ attribute ] = oldBlockConfig[ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktadvancedbuttonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktadvancedbuttonUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				ktadvancedbuttonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-			}
-		} else {
-			ktadvancedbuttonUniqueIDs.push( uniqueID );
-		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		setBlockDefaults( 'kadence/advancedbtn', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 
 		if ( btns && btns[ 0 ] && undefined === btns[ 0 ].btnSize ) {
 			saveArrayUpdate( { btnSize: 'custom' }, 0 );

@@ -200,7 +200,7 @@ function GalleryEdit( props ) {
 		}
 	}, [ mainRef.current, thumbsRef.current] );
 	useEffect( () => {
-		setBlockDefaults( 'kadence/advancedheading', attributes);
+		setBlockDefaults( 'kadence/advancedgallery', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
