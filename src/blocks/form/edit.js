@@ -29,7 +29,9 @@ import {
 	getPreviewSize,
 	KadenceColorOutput,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getUniqueId,
+	setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -169,32 +171,11 @@ function KadenceForm( props ) {
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/form' ] !== undefined && typeof blockConfigObject[ 'kadence/form' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/form' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/form' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( uniqueID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		setBlockDefaults( 'kadence/form', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
