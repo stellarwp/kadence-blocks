@@ -20,7 +20,9 @@ import {
 	getPreviewSize,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	setBlockDefaults,
+	getUniqueId,
 } from '@kadence/helpers';
 
 import {
@@ -103,7 +105,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		[ clientId ]
 	);
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
+		setBlockDefaults( 'kadence/iconlist', attributes);
+
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
@@ -123,28 +126,15 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 								item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0 );
 								return item;
 							} );
-						} else {
-							attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
 						}
 					} );
 				}
 			}
-			if ( ! isUniqueID( uniqueID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
 		}
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 
 
