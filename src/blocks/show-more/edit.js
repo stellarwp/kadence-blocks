@@ -31,8 +31,7 @@ import {
 	getInQueryBlock
 } from '@kadence/helpers';
 
-import { createElement } from '@wordpress/element'
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
@@ -98,8 +97,6 @@ export function Edit ({
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const paddingMouseOver = mouseOverVisualizer();
@@ -146,6 +143,47 @@ export function Edit ({
 		className: classes,
 		ref,
 	} );
+	const innerClasses = classnames( {
+		'kb-block-show-more-inner-container': true,
+	} );
+	const innerBlockProps = useInnerBlocksProps(
+		{
+			className: innerClasses,
+		},
+		{
+			templateLock: 'all',
+			renderAppender: false,
+            template: [
+				['kadence/column', {
+					className: 'kb-show-more-content',
+				} ],
+				['kadence/advancedbtn', {
+					lock: { remove: true, move: true },
+					lockBtnCount: true,
+					hAlign: 'left',
+					uniqueID: buttonOneUniqueID,
+					className: 'kb-show-more-buttons',
+				},
+					[
+						['kadence/singlebtn', {
+							lock: { remove: true, move: true },
+							hideLink: true,
+							text: __( 'Show More', 'kadence-blocks' ),
+							sizePreset: 'small',
+							noCustomDefaults: true,
+						}],
+						['kadence/singlebtn', {
+							lock: { remove: true, move: true },
+							hideLink: true,
+							text: __( 'Show Less', 'kadence-blocks' ),
+							sizePreset: 'small',
+							noCustomDefaults: true,
+						}]
+					]
+				]
+			],
+		}
+	);
 
 	const FadeOut = () => {
 
@@ -154,8 +192,8 @@ export function Edit ({
 		return (
 			<div className="Class">
 				<style>{`
-        .kb-block-show-more-container${ uniqueID } .kb-show-more-buttons .btn-area-wrap:last-of-type {
-       	display: ${ showHideMore ? 'inline' : 'none' };
+        .kb-block-show-more-container${ uniqueID } .kb-show-more-buttons .wp-block-kadence-singlebtn:last-of-type {
+       	display: ${ showHideMore ? 'inline-flex' : 'none' };
        	}
 
         .kb-block-show-more-container${ uniqueID } .kb-show-more-content:not(.is-selected, .has-child-selected) {
@@ -314,258 +352,7 @@ export function Edit ({
 				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
 				paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 			} }>
-				{ createElement( InnerBlocks, {
-					templateLock: "all",
-					renderAppender: false,
-					template: [
-						['kadence/column', {
-							className: 'kb-show-more-content',
-						} ],
-						['kadence/advancedbtn', {
-							lock: { remove: true, move: true },
-							lockBtnCount: true,
-							hideLink: true,
-							hAlign: 'left',
-							thAlign: "",
-							mhAlign: "",
-							btnCount: 2,
-							uniqueID: buttonOneUniqueID,
-							className: 'kb-show-more-buttons',
-							btns: [
-								{
-									'text': __( 'Show More', 'kadence-blocks' ),
-									'link': '',
-									'target': '_self',
-									'size': '',
-									'paddingBT': '',
-									'paddingLR': '',
-									'color': '',
-									'background': '',
-									'border': '',
-									'backgroundOpacity': 1,
-									'borderOpacity': 1,
-									'borderRadius': '',
-									'borderWidth': '',
-									'colorHover': '',
-									'backgroundHover': '',
-									'borderHover': '',
-									'backgroundHoverOpacity': 1,
-									'borderHoverOpacity': 1,
-									'icon': '',
-									'iconSide': 'right',
-									'iconHover': false,
-									'cssClass': '',
-									'noFollow': false,
-									'gap': 5,
-									'responsiveSize': [
-										'',
-										''
-									],
-									'gradient': [
-										'#999999',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'gradientHover': [
-										'#777777',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'btnStyle': 'basic',
-									'btnSize': 'small',
-									'backgroundType': 'solid',
-									'backgroundHoverType': 'solid',
-									'width': [
-										'',
-										'',
-										''
-									],
-									'responsivePaddingBT': [
-										'',
-										''
-									],
-									'responsivePaddingLR': [
-										'',
-										''
-									],
-									'boxShadow': [
-										false,
-										'#000000',
-										0.2,
-										1,
-										1,
-										2,
-										0,
-										false
-									],
-									'boxShadowHover': [
-										false,
-										'#000000',
-										0.4,
-										2,
-										2,
-										3,
-										0,
-										false
-									],
-									'inheritStyles': 'inherit',
-									'borderStyle': '',
-									'onlyIcon': [
-										false,
-										'',
-										''
-									]
-								},
-								{
-									'text': __( 'Show Less', 'kadence-blocks' ),
-									'link': '',
-									'target': '_self',
-									'size': '',
-									'paddingBT': '',
-									'paddingLR': '',
-									'color': '',
-									'background': '',
-									'border': '',
-									'backgroundOpacity': 1,
-									'borderOpacity': 1,
-									'borderRadius': '',
-									'borderWidth': '',
-									'colorHover': '',
-									'backgroundHover': '',
-									'borderHover': '',
-									'backgroundHoverOpacity': 1,
-									'borderHoverOpacity': 1,
-									'icon': '',
-									'iconSide': 'right',
-									'iconHover': false,
-									'cssClass': '',
-									'noFollow': false,
-									'gap': 5,
-									'responsiveSize': [
-										'',
-										''
-									],
-									'gradient': [
-										'#999999',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'gradientHover': [
-										'#777777',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'btnStyle': 'basic',
-									'btnSize': 'small',
-									'backgroundType': 'solid',
-									'backgroundHoverType': 'solid',
-									'width': [
-										'',
-										'',
-										''
-									],
-									'responsivePaddingBT': [
-										'',
-										''
-									],
-									'responsivePaddingLR': [
-										'',
-										''
-									],
-									'boxShadow': [
-										false,
-										'#000000',
-										0.2,
-										1,
-										1,
-										2,
-										0,
-										false
-									],
-									'boxShadowHover': [
-										false,
-										'#000000',
-										0.4,
-										2,
-										2,
-										3,
-										0,
-										false
-									],
-									'inheritStyles': 'inherit',
-									'borderStyle': '',
-									'onlyIcon': [
-										false,
-										'',
-										''
-									]
-								}
-							],
-							"typography": "",
-							"googleFont": false,
-							"loadGoogleFont": true,
-							"fontSubset": "",
-							"fontVariant": "",
-							"fontWeight": "regular",
-							"fontStyle": "normal",
-							"textTransform": "",
-							"widthType": "auto",
-							"widthUnit": "px",
-							"forceFullwidth": false,
-							"collapseFullwidth": false,
-							"margin": [
-								{
-									"desk": [
-										"",
-										"",
-										"",
-										""
-									],
-									"tablet": [
-										"",
-										"",
-										"",
-										""
-									],
-									"mobile": [
-										"",
-										"",
-										"",
-										""
-									]
-								}
-							],
-							"marginUnit": "px",
-							"inQueryBlock": false,
-							"kadenceAOSOptions": [
-								{
-									"duration": "",
-									"offset": "",
-									"easing": "",
-									"once": "",
-									"delay": "",
-									"delayOffset": ""
-								}
-							]
-						}],
-					],
-				}) }
+				<div {...innerBlockProps }></div>
 				<SpacingVisualizer
 					style={ {
 						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),

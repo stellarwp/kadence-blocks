@@ -542,17 +542,19 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 						}}
 					/>
 				</ToolbarGroup>
-				<ToolbarGroup>
-					<ToolbarButton
-						name="link"
-						icon={ linkIcon }
-						title={ __( 'Link', 'kadence-blocks' ) }
-						shortcut={ displayShortcut.primary( 'k' ) }
-						onClick={ startEditing }
-					/>
-				</ToolbarGroup>
+				{ ! hideLink && (
+					<ToolbarGroup>
+						<ToolbarButton
+							name="link"
+							icon={ linkIcon }
+							title={ __( 'Link', 'kadence-blocks' ) }
+							shortcut={ displayShortcut.primary( 'k' ) }
+							onClick={ startEditing }
+						/>
+					</ToolbarGroup>
+				) }
 			</BlockControls>
-			{ isSelected && isEditingURL && (
+			{ ! hideLink && isSelected && isEditingURL && (
 				<URLInputInline
 					url={link}
 					onChangeUrl={value => {
