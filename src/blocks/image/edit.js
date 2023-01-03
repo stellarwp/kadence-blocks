@@ -26,7 +26,7 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl, SpacingVisualizer } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer } from '@kadence/helpers';
+import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
 
 /* global wp */
 
@@ -141,6 +141,7 @@ export function ImageEdit( {
 		paddingTablet,
 		paddingMobile,
 		paddingUnit,
+		inQueryBlock,
 	} = attributes;
 	function getDynamic() {
 		let contextPost = null;
@@ -165,41 +166,14 @@ export function ImageEdit( {
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/image' ] !== undefined && typeof blockConfigObject[ 'kadence/image' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/image' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/image' ][ attribute ];
-				} );
-			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/image', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
 		// Update from old border settings.
 		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
 			top: [ '', '', '' ],
@@ -462,6 +436,7 @@ export function ImageEdit( {
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
 		'image-is-svg': url && url.endsWith( '.svg' ),
+		[ `kadence-image${ uniqueID }` ]: uniqueID
 	} );
 
 	const blockProps = useBlockProps( {

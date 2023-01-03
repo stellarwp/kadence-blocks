@@ -16,6 +16,9 @@ import {
 	mouseOverVisualizer,
 	getPreviewSize,
 	getFontSizeOptionOutput,
+	getUniqueId,
+	getInQueryBlock,
+	setBlockDefaults,
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -197,43 +200,13 @@ function GalleryEdit( props ) {
 		}
 	}, [ mainRef.current, thumbsRef.current] );
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/advancedgallery' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedgallery' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/advancedgallery' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/advancedgallery' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/advancedgallery', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		// Old Static Image source.
 		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
 			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );

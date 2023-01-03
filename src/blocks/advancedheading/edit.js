@@ -31,6 +31,7 @@ import {
 	ResponsiveFontSizeControl,
 	KadenceRadioButtons,
 	TagSelect,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 
 import {
@@ -40,7 +41,10 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getFontSizeOptionOutput,
-	getBorderStyle
+	getBorderStyle,
+	getUniqueId,
+	getInQueryBlock,
+	setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -188,6 +192,8 @@ function KadenceAdvancedHeading( props ) {
 		tabletMarkLetterSpacing,
 		mobileMarkLetterSpacing,
 		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles,
 		maxWidthType,
 		maxWidth,
 		beforeIcon,
@@ -199,38 +205,13 @@ function KadenceAdvancedHeading( props ) {
 	const marginMouseOver = mouseOverVisualizer();
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/advancedheading' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedheading' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/advancedheading' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedheading' ][ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( !isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( !isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID );
-		}
-		if ( context && context.queryId && context.postId ) {
-			if ( ! inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/advancedheading', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
 		// Update Old Styles
 		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
@@ -279,6 +260,8 @@ function KadenceAdvancedHeading( props ) {
 		}
 		if ( updateBorderStyle ) {
 			setAttributes( { markBorderStyles: tempBorderStyle } );
+			setAttributes( { tabletMarkBorderStyles: tempBorderStyle } );
+			setAttributes( { mobileMarkBorderStyles: tempBorderStyle } );
 		}
 	}, [] );
 
@@ -328,10 +311,10 @@ function KadenceAdvancedHeading( props ) {
 
 	const previewMaxWidth = getPreviewSize( getPreviewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 
-	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, '', '' );
-	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, '', '' );
-	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, '', '' );
-	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, '', '' );
+	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
 	const headingOptions = [
 		[
 			{
@@ -884,10 +867,14 @@ function KadenceAdvancedHeading( props ) {
 										onOpacityChange={value => setAttributes( { markBGOpacity: value } )}
 										onArrayChange={( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } )}
 									/>
-									<BorderControl
+									<ResponsiveBorderControl
 										label={__( 'Border', 'kadence-blocks' )}
 										value={markBorderStyles}
+										tabletValue={tabletMarkBorderStyles}
+										mobileValue={mobileMarkBorderStyles}
 										onChange={( value ) => setAttributes( { markBorderStyles: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderStyles: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
 									/>
 									<TypographyControls
 										fontGroup={'mark-heading'}

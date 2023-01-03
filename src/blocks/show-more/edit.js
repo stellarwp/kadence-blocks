@@ -26,7 +26,9 @@ import {
 import {
 	setBlockDefaults,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getUniqueId,
+	getInQueryBlock
 } from '@kadence/helpers';
 
 import { createElement } from '@wordpress/element'
@@ -87,36 +89,13 @@ export function Edit ({
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			if ( ! isUniqueID( uniqueID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			attributes = setBlockDefaults( 'kadence/show-more', attributes);
+		setBlockDefaults( 'kadence/show-more', attributes);
 
-			setAttributes( { uniqueID: smallID } );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID(uniqueID)) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				setAttributes( { uniqueID: smallID } );
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( smallID, clientId );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 
-		if (context && (context.queryId || Number.isFinite(context.queryId)) && context.postId) {
-			if (!inQueryBlock) {
-				setAttributes({
-					inQueryBlock: true,
-				});
-			}
-		} else if (inQueryBlock) {
-			setAttributes({
-				inQueryBlock: false,
-			});
-		}
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
 
 	const [ marginControl, setMarginControl ] = useState( 'individual' );

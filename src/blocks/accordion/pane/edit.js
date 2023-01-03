@@ -5,6 +5,7 @@
  */
 
 import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
+import { getUniqueId } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
 import {
@@ -65,24 +66,11 @@ function PaneEdit( {
 		updateBlockAttributes( rootID, { paneCount: value } );
 	}
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				setAttributes( {
-					uniqueID: smallID,
-				} );
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		
 		if ( ! id ) {
 			const newPaneCount = accordionBlock[0].attributes.paneCount + 1;
 			setAttributes( {

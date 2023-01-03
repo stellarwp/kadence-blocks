@@ -51,7 +51,8 @@ import {
 import {
 	setBlockDefaults,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getUniqueId,
 } from '@kadence/helpers';
 
 export function Edit( {
@@ -142,25 +143,11 @@ export function Edit( {
 	} );
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
+		setBlockDefaults( 'kadence/lottie', attributes);
 
-		if ( ! uniqueID ) {
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-
-			attributes = setBlockDefaults( 'kadence/lottie', attributes);
-			setAttributes( { uniqueID: smallID } );
-            addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 	const containerClasses = classnames( {
 		'kb-lottie-container': true,

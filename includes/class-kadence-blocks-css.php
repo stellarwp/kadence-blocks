@@ -1683,7 +1683,8 @@ class Kadence_Blocks_CSS {
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */
-	public function render_border_styles( $attributes, $name = 'borderStyle', $output_color = false, $args = array() ) {
+	public function render_border_styles( $attributes, $name = 'borderStyle', $args = array() ) {
+
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1700,183 +1701,119 @@ class Kadence_Blocks_CSS {
 			'third_prop'  => 'border-bottom',
 			'fourth_prop' => 'border-left',
 		);
-
 		$args = wp_parse_args( $args, $defaults );
-		if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_array( $attributes[ $args['desktop_key'] ][0] ) ) {
-			$desktop_border = $attributes[ $args['desktop_key'] ][0];
-			$border_unit = ( ! empty( $desktop_border['unit'] ) ? $desktop_border['unit'] : 'px' );
-			if ( $this->is_number( $desktop_border['top'][2] ) ) {
-				$border_style = ( ! empty( $desktop_border['top'][1] ) ? $desktop_border['top'][1] : 'solid' );
-				$border_color = ( ! empty( $desktop_border['top'][0] ) ? $this->sanitize_color( $desktop_border['top'][0] ) : 'transparent' );
-				$this->add_property( $args['first_prop'], $desktop_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $desktop_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $desktop_border['top'][0] ) );
-			}
-			if ( $this->is_number( $desktop_border['right'][2] ) ) {
-				$border_style = ( ! empty( $desktop_border['right'][1] ) ? $desktop_border['right'][1] : 'solid' );
-				$border_color = ( ! empty( $desktop_border['right'][0] ) ? $this->sanitize_color( $desktop_border['right'][0] ) : 'transparent' );
-				$this->add_property( $args['second_prop'], $desktop_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $desktop_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $desktop_border['right'][0] ) );
-			}
-			if ( $this->is_number( $desktop_border['bottom'][2] ) ) {
-				$border_style = ( ! empty( $desktop_border['bottom'][1] ) ? $desktop_border['bottom'][1] : 'solid' );
-				$border_color = ( ! empty( $desktop_border['bottom'][0] ) ? $this->sanitize_color( $desktop_border['bottom'][0] ) : 'transparent' );
-				$this->add_property( $args['third_prop'], $desktop_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $desktop_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $desktop_border['bottom'][0] ) );
-			}
-			if ( $this->is_number( $desktop_border['left'][2] ) ) {
-				$border_style = ( ! empty( $desktop_border['left'][1] ) ? $desktop_border['left'][1] : 'solid' );
-				$border_color = ( ! empty( $desktop_border['left'][0] ) ? $this->sanitize_color( $desktop_border['left'][0] ) : 'transparent' );
-				$this->add_property( $args['fourth_prop'], $desktop_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $desktop_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $desktop_border['left'][0] ) );
+
+		$sides_prop_keys = array(
+			'top' => 'first_prop',
+			'right' => 'second_prop',
+			'bottom' => 'third_prop',
+			'left' => 'fourth_prop',
+		);
+		$sizes = array(
+			'desktop',
+			'tablet',
+			'mobile',
+		);
+
+		foreach ( $sizes as $size ) {
+			$this->set_media_state( $size );
+
+			foreach ( $sides_prop_keys as $side => $prop_key ) {
+				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width' );
+				if ( $width ) {
+					$color = $this->get_border_value( $attributes, $args, $side, $size, 'color' );
+					$style = $this->get_border_value( $attributes, $args, $side, $size, 'style' );
+					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
+				}
 			}
 		}
-		$this->set_media_state( 'tablet' );
-		if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_array( $attributes[ $args['tablet_key'] ][0] ) ) {
-			$tablet_border = $attributes[ $args['tablet_key'] ][0];
-			$border_unit = ( ! empty( $tablet_border['unit'] ) ? $tablet_border['unit'] : 'px' );
-			if ( $this->is_number( $tablet_border['top'][2] ) ) {
-				$border_style = ( ! empty( $tablet_border['top'][1] ) ? $tablet_border['top'][1] : 'solid' );
-				$border_color = ( ! empty( $tablet_border['top'][0] ) ? $this->sanitize_color( $tablet_border['top'][0] ) : 'transparent' );
-				$this->add_property( $args['first_prop'], $tablet_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $tablet_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $tablet_border['top'][0] ) );
-			}
-			if ( $this->is_number( $tablet_border['right'][2] ) ) {
-				$border_style = ( ! empty( $tablet_border['right'][1] ) ? $tablet_border['right'][1] : 'solid' );
-				$border_color = ( ! empty( $tablet_border['right'][0] ) ? $this->sanitize_color( $tablet_border['right'][0] ) : 'transparent' );
-				$this->add_property( $args['second_prop'], $tablet_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $tablet_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $tablet_border['right'][0] ) );
-			}
-			if ( $this->is_number( $tablet_border['bottom'][2] ) ) {
-				$border_style = ( ! empty( $tablet_border['bottom'][1] ) ? $tablet_border['bottom'][1] : 'solid' );
-				$border_color = ( ! empty( $tablet_border['bottom'][0] ) ? $this->sanitize_color( $tablet_border['bottom'][0] ) : 'transparent' );
-				$this->add_property( $args['third_prop'], $tablet_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $tablet_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $tablet_border['bottom'][0] ) );
-			}
-			if ( $this->is_number( $tablet_border['left'][2] ) ) {
-				$border_style = ( ! empty( $tablet_border['left'][1] ) ? $tablet_border['left'][1] : 'solid' );
-				$border_color = ( ! empty( $tablet_border['left'][0] ) ? $this->sanitize_color( $tablet_border['left'][0] ) : 'transparent' );
-				$this->add_property( $args['fourth_prop'], $tablet_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $tablet_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $tablet_border['left'][0] ) );
-			}
-		}
-		$this->set_media_state( 'mobile' );
-		if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_array( $attributes[ $args['mobile_key'] ][0] ) ) {
-			$mobile_border = $attributes[ $args['mobile_key'] ][0];
-			$border_unit = ( ! empty( $mobile_border['unit'] ) ? $mobile_border['unit'] : 'px' );
-			if ( $this->is_number( $mobile_border['top'][2] ) ) {
-				$border_style = ( ! empty( $mobile_border['top'][1] ) ? $mobile_border['top'][1] : 'solid' );
-				$border_color = ( ! empty( $mobile_border['top'][0] ) ? $this->sanitize_color( $mobile_border['top'][0] ) : 'transparent' );
-				$this->add_property( $args['first_prop'], $mobile_border['top'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $mobile_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'] . '-color', $this->sanitize_color( $mobile_border['top'][0] ) );
-			}
-			if ( $this->is_number( $mobile_border['right'][2] ) ) {
-				$border_style = ( ! empty( $mobile_border['right'][1] ) ? $mobile_border['right'][1] : 'solid' );
-				$border_color = ( ! empty( $mobile_border['right'][0] ) ? $this->sanitize_color( $mobile_border['right'][0] ) : 'transparent' );
-				$this->add_property( $args['second_prop'], $mobile_border['right'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $mobile_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'] . '-color', $this->sanitize_color( $mobile_border['right'][0] ) );
-			}
-			if ( $this->is_number( $mobile_border['bottom'][2] ) ) {
-				$border_style = ( ! empty( $mobile_border['bottom'][1] ) ? $mobile_border['bottom'][1] : 'solid' );
-				$border_color = ( ! empty( $mobile_border['bottom'][0] ) ? $this->sanitize_color( $mobile_border['bottom'][0] ) : 'transparent' );
-				$this->add_property( $args['third_prop'], $mobile_border['bottom'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $mobile_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'] . '-color', $this->sanitize_color( $mobile_border['bottom'][0] ) );
-			}
-			if ( $this->is_number( $mobile_border['left'][2] ) ) {
-				$border_style = ( ! empty( $mobile_border['left'][1] ) ? $mobile_border['left'][1] : 'solid' );
-				$border_color = ( ! empty( $mobile_border['left'][0] ) ? $this->sanitize_color( $mobile_border['left'][0] ) : 'transparent' );
-				$this->add_property( $args['fourth_prop'], $mobile_border['left'][2] . $border_unit . ' ' . $border_style . ' ' . $border_color );
-			} else if ( $output_color && ! empty( $mobile_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'] . '-color', $this->sanitize_color( $mobile_border['left'][0] ) );
-			}
-		}
+
 		$this->set_media_state( 'desktop' );
 	}
 	/**
-	 * Generates the border styles output.
+	 * Gets a border value for a side and size.
+	 * Checks for values in sizes above itself if the given size has none
 	 *
 	 * @param array  $attributes an array of attributes.
-	 * @param string $name an string of the attribute name.
 	 * @param array  $args an array of settings.
+	 * @param string $side the side to retrieve a value for (desktop, tablet, mobile).
+	 * @param string $size the size to retrieve a value for (top, right, bottom, left).
+	 * @param string $value the name of the value to retreive (color, style, width).
 	 * @return string
 	 */
-	public function render_border_style_color( $attributes, $name = 'borderStyle', $args = array() ) {
-		if ( empty( $attributes ) || empty( $name ) ) {
-			return false;
-		}
-		if ( ! is_array( $attributes ) ) {
-			return false;
-		}
-		$defaults = array(
-			'desktop_key' => $name,
-			'tablet_key'  => 'tablet' . ucfirst( $name ),
-			'mobile_key'  => 'mobile' . ucfirst( $name ),
-			'unit_key'    => 'unit',
-			'first_prop'  => 'border-top-color',
-			'second_prop' => 'border-right-color',
-			'third_prop'  => 'border-bottom-color',
-			'fourth_prop' => 'border-left-color',
+	public function get_border_value( $attributes, $args, $given_side, $given_size, $given_value ) {
+		//border styles come in an array like this:
+		// [
+		// 	  "top": [ {{color}}, {{style}}, {{width}} ],
+		// 	  "right": [ {{color}}, {{style}}, {{width}} ],
+		// 	  "bottom": [ {{color}}, {{style}}, {{width}} ],
+		// 	  "left": [ {{color}}, {{style}}, {{width}} ],
+		// 	  "unit": "px"
+		// ]
+		// one for each size
+
+		// key setup.
+		$value_positions = array(
+			'color' => 0,
+			'style' => 1,
+			'width' => 2,
+		);
+		$value_defaults = array(
+			'color' => 'transparent',
+			'style' => 'solid',
+			'width' => '',
+		);
+		$size_keys = array(
+			'mobile' => 'mobile_key',
+			'tablet' => 'tablet_key',
+			'desktop' => 'desktop_key',
+		);
+		$sized_values = array(
+			'mobile' => '',
+			'tablet' => '',
+			'desktop' => '',
+		);
+		$sized_units = array(
+			'mobile' => 'px',
+			'tablet' => 'px',
+			'desktop' => 'px',
 		);
 
-		$args = wp_parse_args( $args, $defaults );
-		if ( isset( $attributes[ $args['desktop_key'] ][0] ) && is_array( $attributes[ $args['desktop_key'] ][0] ) ) {
-			$desktop_border = $attributes[ $args['desktop_key'] ][0];
-			if ( ! empty( $desktop_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->sanitize_color( $desktop_border['top'][0] ) );
-			}
-			if ( ! empty( $desktop_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'], $this->sanitize_color( $desktop_border['right'][0] ) );
-			}
-			if ( ! empty( $desktop_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'], $this->sanitize_color( $desktop_border['bottom'][0] ) );
-			}
-			if ( ! empty( $desktop_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $desktop_border['left'][0] ) );
+		// get the value for the given side for each size, load into array.
+		foreach ($size_keys as $size => $size_key) {
+			if ( isset( $attributes[ $args[$size_key] ][0] ) && is_array( $attributes[ $args[$size_key] ][0] ) ) {
+				$border_values = $attributes[ $args[$size_key] ][0];
+				$border_unit = ( ! empty( $border_values['unit'] ) ? $border_values['unit'] : 'px' );
+				$border_value = ( $border_values[$given_side][$value_positions[$given_value]] ?? '' );
+				$sized_units[$size] = $border_unit;
+				$sized_values[$size] = $border_value;
 			}
 		}
-		$this->set_media_state( 'tablet' );
-		if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_array( $attributes[ $args['tablet_key'] ][0] ) ) {
-			$tablet_border = $attributes[ $args['tablet_key'] ][0];
-			if ( ! empty( $tablet_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->sanitize_color( $tablet_border['top'][0] ) );
-			}
-			if ( ! empty( $tablet_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'], $this->sanitize_color( $tablet_border['right'][0] ) );
-			}
-			if ( ! empty( $tablet_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'], $this->sanitize_color( $tablet_border['bottom'][0] ) );
-			}
-			if ( ! empty( $tablet_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $tablet_border['left'][0] ) );
-			}
+
+		// return the value for this size or a size above it.
+		// if none is found return a default value.
+		switch ( $given_size ) {
+			case 'desktop':
+				$return_value = $sized_values[$given_size];
+				break;
+			case 'tablet':
+				$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				break;
+			default:
+				$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				break;
 		}
-		$this->set_media_state( 'mobile' );
-		if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_array( $attributes[ $args['mobile_key'] ][0] ) ) {
-			$mobile_border = $attributes[ $args['mobile_key'] ][0];
-			if ( ! empty( $mobile_border['top'][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->sanitize_color( $mobile_border['top'][0] ) );
-			}
-			if ( ! empty( $mobile_border['right'][0] ) ) {
-				$this->add_property( $args['second_prop'], $this->sanitize_color( $mobile_border['right'][0] ) );
-			}
-			if ( ! empty( $mobile_border['bottom'][0] ) ) {
-				$this->add_property( $args['third_prop'], $this->sanitize_color( $mobile_border['bottom'][0] ) );
-			}
-			if ( ! empty( $mobile_border['left'][0] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->sanitize_color( $mobile_border['left'][0] ) );
-			}
+		$return_value = $return_value ?: $value_defaults[$given_value];
+
+		// extra processing for specific values.
+		if( $given_value == 'color') {
+			$return_value = $this->sanitize_color($return_value);
 		}
-		$this->set_media_state( 'desktop' );
+		if( $given_value == 'width') {
+			$return_value = $this->is_number($return_value) ? $return_value . $sized_units[$given_size] : '';
+		}
+
+		return $return_value;
 	}
 	/**
 	 * Generates the measure output.

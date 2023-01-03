@@ -44,7 +44,8 @@ import {
 	getPreviewSize,
 	setBlockDefaults,
 	getSpacingOptionOutput,
-	mouseOverVisualizer
+	mouseOverVisualizer,
+	getUniqueId,
 } from '@kadence/helpers';
 
 /**
@@ -59,6 +60,8 @@ import { __ } from '@wordpress/i18n';
 import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
 
 import { applyFilters } from '@wordpress/hooks';
+
+import { useSelect, useDispatch } from '@wordpress/data';
 
 import {
 	Component,
@@ -89,7 +92,6 @@ import {
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
-const ktcountdownUniqueIDs = [];
 const COUNTDOWN_TEMPLATE = [
 	[ 'kadence/countdown-timer', {} ],
 ];
@@ -186,22 +188,24 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		evergreenStrict,
 	} = attributes;
 
-	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/countdown', attributes);
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktcountdownUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktcountdownUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
-				ktcountdownUniqueIDs.push('_' + clientId.substr(2, 9));
-			}
-		} else {
-			ktcountdownUniqueIDs.push( uniqueID );
-		}
+	useEffect( () => {
+		setBlockDefaults( 'kadence/countdown', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
 		if ( borderRadius && borderRadius[ 0 ] === borderRadius[ 1 ] && borderRadius[ 0 ] === borderRadius[ 2 ] && borderRadius[ 0 ] === borderRadius[ 3 ] ) {
 			setBorderRadiusControl( 'linked' );
 		} else {
