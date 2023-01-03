@@ -247,6 +247,11 @@ function KadenceTestimonials({
     const previewOccupationLineHeight = getPreviewSize(previewDevice, (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[0] && '' !== occupationFont[0].lineHeight[0] ? occupationFont[0].lineHeight[0] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[1] && '' !== occupationFont[0].lineHeight[1] ? occupationFont[0].lineHeight[1] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[2] && '' !== occupationFont[0].lineHeight[2] ? occupationFont[0].lineHeight[2] : ''));
     const previewOccupationLineHeightLineType = undefined !== occupationFont[0].lineType ? occupationFont[0].lineType : 'px';
 
+    const previewRatingMarginTop = undefined !== ratingStyles?.[0]?.margin?.[0] ? ratingStyles[0].margin[0] + 'px' : '';
+    const previewRatingMarginRight = undefined !== ratingStyles?.[0]?.margin?.[1] ? ratingStyles[0].margin[1] + 'px' : '';
+    const previewRatingMarginBottom = undefined !== ratingStyles?.[0]?.margin?.[2] ? ratingStyles[0].margin[2] + 'px' : '';
+    const previewRatingMarginLeft = undefined !== ratingStyles?.[0]?.margin?.[3] ? ratingStyles[0].margin[3] + 'px' : '';
+
     const containerStyles = {
         boxShadow: (displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined),
         borderColor: (containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1))),
@@ -605,34 +610,52 @@ function KadenceTestimonials({
                         <div
                             className={`kt-testimonial-rating-wrap kt-testimonial-rating-${rating}`}
                             style={{
-                                margin: (ratingStyles[0].margin ? ratingStyles[0].margin[0] + 'px ' + ratingStyles[0].margin[1] + 'px ' + ratingStyles[0].margin[2] + 'px ' + ratingStyles[0].margin[3] + 'px' : ''),
+                                marginTop: previewRatingMarginTop,
+                                marginRight: previewRatingMarginRight,
+                                marginBottom: previewRatingMarginBottom,
+                                marginLeft: previewRatingMarginLeft,
                             }}>
                             <IconRender className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1'}
-                                        name={'fas_star'} size={ratingStyles[0].size}
-                                        style={{color: KadenceColorOutput(ratingStyles[0].color)}}/>
+                                name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
+                                style={{
+                                    color: ( undefined !== ratingStyles?.[0]?.color ? KadenceColorOutput(ratingStyles[0].color) : undefined ),
+                                }}
+                            />
                             {rating > 1 && (
                                 <IconRender
                                     className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2'}
-                                    name={'fas_star'} size={ratingStyles[0].size}
-                                    style={{color: KadenceColorOutput(ratingStyles[0].color)}}/>
+                                    name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
+                                    style={{
+                                        color: ( undefined !== ratingStyles?.[0]?.color ? KadenceColorOutput(ratingStyles[0].color) : undefined ),
+                                    }}
+                                />
                             )}
                             {rating > 2 && (
                                 <IconRender
                                     className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3'}
-                                    name={'fas_star'} size={ratingStyles[0].size}
-                                    style={{color: KadenceColorOutput(ratingStyles[0].color)}}/>
+                                    name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
+                                    style={{
+                                        color: ( undefined !== ratingStyles?.[0]?.color ? KadenceColorOutput(ratingStyles[0].color) : undefined ),
+                                    }}
+                                />
                             )}
                             {rating > 3 && (
                                 <IconRender
                                     className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4'}
-                                    name={'fas_star'} size={ratingStyles[0].size}
-                                    style={{color: KadenceColorOutput(ratingStyles[0].color)}}/>
+                                    name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
+                                    style={{
+                                        color: ( undefined !== ratingStyles?.[0]?.color ? KadenceColorOutput(ratingStyles[0].color) : undefined ),
+                                    }}
+                                />
                             )}
                             {rating > 4 && (
                                 <IconRender
                                     className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5'}
-                                    name={'fas_star'} size={ratingStyles[0].size}
-                                    style={{color: KadenceColorOutput(ratingStyles[0].color)}}/>
+                                    name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
+                                    style={{
+                                        color: ( undefined !== ratingStyles?.[0]?.color ? KadenceColorOutput(ratingStyles[0].color) : undefined ),
+                                    }}
+                                />
                             )}
                         </div>
                     )}

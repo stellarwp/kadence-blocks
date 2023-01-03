@@ -147,7 +147,8 @@
 	"kadence/testimonials-mediaStyles",
 	"kadence/testimonials-columns",
 	"kadence/testimonials-gap",
-	"kadence/testimonials-gapUnit"
+	"kadence/testimonials-gapUnit",
+	"kadence/testimonials-ratingStyles"
   ],
   "supports": {
 	"anchor": true

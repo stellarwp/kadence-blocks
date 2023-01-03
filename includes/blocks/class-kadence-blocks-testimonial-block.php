@@ -269,8 +269,12 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	private function render_rating( $attributes, $ratingStyles ) {
-		$extras = ' height="'.$ratingStyles[ 0 ]['size'].'" width="'.$ratingStyles[ 0 ]['size'].'"';
-		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', $ratingStyles[ 0 ]['size'], 'fas_star', false, $extras);
+		if ( ! empty( $ratingStyles[ 0 ]['size'] ) ) {
+			$extras = ' height="'. $ratingStyles[ 0 ]['size'] .'" width="'.$ratingStyles[ 0 ]['size'].'"';
+		} else {
+			$extras = '';
+		}
+		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty(  $ratingStyles[ 0 ]['size'] ) ? $ratingStyles[ 0 ]['size'] : '' ), 'fas_star', false, $extras );
 
 		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. $attributes['rating'] .'">';
 
