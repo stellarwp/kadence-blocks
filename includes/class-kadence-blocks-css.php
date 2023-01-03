@@ -1683,7 +1683,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */
-	public function render_border_styles( $attributes, $name = 'borderStyle', $args = array() ) {
+	public function render_border_styles( $attributes, $name = 'borderStyle', $single_styles = false, $args = array() ) {
 
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
@@ -1720,10 +1720,17 @@ class Kadence_Blocks_CSS {
 
 			foreach ( $sides_prop_keys as $side => $prop_key ) {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width' );
+				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color' );
+				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style' );
 				if ( $width ) {
-					$color = $this->get_border_value( $attributes, $args, $side, $size, 'color' );
-					$style = $this->get_border_value( $attributes, $args, $side, $size, 'style' );
 					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
+				} elseif ( $single_styles && $color ) {
+					$this->add_property( $args[ $prop_key ] . '-color', $color );
+					if ( $style ) {
+						$this->add_property( $args[ $prop_key ] . '-style', $style );
+					}
+				} elseif ( $single_styles && $style ) {
+					$this->add_property( $args[ $prop_key ] . '-style', $style );
 				}
 			}
 		}
