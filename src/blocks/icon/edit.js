@@ -26,8 +26,10 @@ import {
 import {
 	KadenceColorOutput,
 	getPreviewSize,
-	setBlockDefaults,
 	getSpacingOptionOutput,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
 } from '@kadence/helpers';
 import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -86,37 +88,13 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/icon', attributes);
+		setBlockDefaults( 'kadence/advancedheading', attributes);
 
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = icons.map( ( item, thisIndex ) => {

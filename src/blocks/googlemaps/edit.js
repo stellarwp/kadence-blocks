@@ -46,19 +46,14 @@ import {
 import {
 	getPreviewSize,
 	showSettings,
-	setBlockDefaults,
 	getSpacingOptionOutput,
-	mouseOverVisualizer
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
 } from '@kadence/helpers';
 
-const ktmapsUniqueIDs = [];
-
-export function Edit( {
-						  attributes,
-						  setAttributes,
-						  className,
-						  clientId,
-					  } ) {
+export function Edit( props ) {
+	const { attributes, setAttributes, className, clientId } = props;
 
 	const {
 		uniqueID,
@@ -162,6 +157,17 @@ export function Edit( {
 		noticesStore
 	);
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect(() => {
 		/**
 		 * Get settings
@@ -173,21 +179,11 @@ export function Edit( {
 			setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
 		});
 
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/googlemaps', attributes);
+		setBlockDefaults( 'kadence/googlemaps', attributes);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktmapsUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-			}
-		} else {
-			ktmapsUniqueIDs.push( uniqueID );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 
 	}, []);
 
@@ -223,12 +219,16 @@ export function Edit( {
 			default:
 				return 50;
 		}
-	}
+	}	
+	
+	const classes = classnames( {
+		[ className ]: className,
+		[ `size-${ sizeSlug }` ]: sizeSlug,
+		[ `kadence-googlemaps-${ uniqueID }` ]: uniqueID,
+	} );
 
 	const blockProps = useBlockProps( {
-		className: classnames( className, {
-			[ `size-${ sizeSlug }` ]: sizeSlug,
-		} ),
+		className: classes,
 	} );
 
 	let mapQueryParams = {

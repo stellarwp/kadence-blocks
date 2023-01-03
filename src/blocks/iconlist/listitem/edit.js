@@ -19,7 +19,9 @@ import {
     showSettings,
     getPreviewSize,
     mouseOverVisualizer,
-    getSpacingOptionOutput
+    getSpacingOptionOutput,
+	setBlockDefaults,
+	getUniqueId,
 } from '@kadence/helpers';
 
 import {
@@ -119,32 +121,11 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
 		[ clientId ]
 	);
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/listitem' ] !== undefined && typeof blockConfigObject[ 'kadence/listitem' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/listitem' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/listitem' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		setBlockDefaults( 'kadence/listitem', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 
     const iconAlignOptions = [

@@ -11,7 +11,8 @@ import {
 	KadenceColorOutput,
 	setBlockDefaults,
 	mouseOverVisualizer,
-	getSpacingOptionOutput
+	getSpacingOptionOutput,
+	getUniqueId
 } from '@kadence/helpers';
 import {
 	WebfontLoader,
@@ -40,21 +41,22 @@ import {
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useDispatch, useSelect } from '@wordpress/data';
 
 const kbCountUpUniqueIDs = [];
 
 /**
  * Build the count up edit
  */
-function KadenceCounterUp( {
-							   clientId,
-							   attributes,
-							   className,
-							   isSelected,
-							   setAttributes,
-							   getPreviewDevice,
-						   } ) {
+function KadenceCounterUp( props ) {
+	const {
+		clientId,
+		attributes,
+		className,
+		isSelected,
+		setAttributes,
+		getPreviewDevice 
+	} = props;
 
 	const {
 		uniqueID,
@@ -96,22 +98,23 @@ function KadenceCounterUp( {
 		decimalSpaces,
 	} = attributes;
 
-	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/countup', attributes);
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId )
+			};
+		},
+		[ clientId ]
+	);
 
-			setAttributes( {
-				uniqueID  : '_' + clientId.substr( 2, 9 ),
-			} );
-			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kbCountUpUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-			}
-		} else {
-			kbCountUpUniqueIDs.push( uniqueID );
-		}
+	useEffect( () => {
+		setBlockDefaults( 'kadence/countup', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 
 		if( start !== 0 || end !== 0 ) {
 			setAttributes( { startDecimal: start, endDecimal: end, start: 0, end: 0 } );

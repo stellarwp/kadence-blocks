@@ -301,6 +301,26 @@
 		  "unit": "px"
 		} ]
 	},
+	"tabletMarkBorderStyles": {
+		"type": "array",
+		"default": [ { 
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+		} ]
+	},
+	"mobileMarkBorderStyles": {
+		"type": "array",
+		"default": [ { 
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+		} ]
+	},
 	"markBorderOpacity": {
 	  "type": "number",
 	  "default": 1

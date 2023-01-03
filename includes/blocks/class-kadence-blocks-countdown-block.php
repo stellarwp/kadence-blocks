@@ -582,7 +582,8 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$countdown               = array();
+		//$countdown should grow with each countdown that gets loaded to the page
+		static $countdown        = array();
 		$campaign_id             = ( ! empty( $attributes['campaignID'] ) ? $attributes['campaignID'] : $unique_id );
 		$countdown_type          = ( ! empty( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' );
 		$site_slug               = apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) );
