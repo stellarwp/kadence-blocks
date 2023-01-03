@@ -14,6 +14,8 @@ import {
 	getBorderStyle,
 	setBlockDefaults,
 	getBorderColor,
+	getUniqueId,
+	getInQueryBlock,
 } from '@kadence/helpers';
 
 import {
@@ -296,36 +298,13 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/singlebtn', attributes);
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/singlebtn', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );

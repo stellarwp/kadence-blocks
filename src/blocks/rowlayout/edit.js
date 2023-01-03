@@ -182,7 +182,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		[ clientId ]
 	);
 	useEffect( () => {
-		setBlockDefaults( 'kadence/advancedheading', attributes);
+		setBlockDefaults( 'kadence/rowlayout', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
