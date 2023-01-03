@@ -62,7 +62,6 @@ function kadence_gutenberg_editor_assets() {
 	$blocks = array(
 		'accordion',
 		'advancedbtn',
-		'singlebtn',
 		'advancedgallery',
 		'advancedheading',
 		'column',

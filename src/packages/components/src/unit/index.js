@@ -41,7 +41,7 @@ export default function UnitControl( {
 	max = 200,
 	min = 0,
 	defaultValue = '',
-	unit = 'px',
+	unit = '',
 	onUnit,
 	units = [ 'px', 'em', 'rem' ],
 	parentLabel = null,

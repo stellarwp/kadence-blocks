@@ -742,14 +742,11 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'font-weight', $font['weight'] );
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : 'px' );
+		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
 		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
-		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
-			$this->add_property( 'font-size', $font['size']['desktop'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][0] ) && ! empty( $font['size'][0] ) ) {
-			$this->add_property( 'font-size', $font['size'][0] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][0], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['desktop'] . $line_type );
@@ -782,11 +779,8 @@ class Kadence_Blocks_CSS {
 		}
 		// Tablet.
 		$this->set_media_state( 'tablet' );
-		if ( isset( $font['size'] ) && isset( $font['size']['tablet'] ) && ! empty( $font['size']['tablet'] ) ) {
-			$this->add_property( 'font-size', $font['size']['tablet'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][1] ) && ! empty( $font['size'][1] ) ) {
-			$this->add_property( 'font-size', $font['size'][1] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][1], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['tablet'] ) && ! empty( $font['lineHeight']['tablet'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['tablet'] . $line_type );
@@ -802,11 +796,8 @@ class Kadence_Blocks_CSS {
 		}
 		// Mobile.
 		$this->set_media_state( 'mobile' );
-		if ( isset( $font['size'] ) && isset( $font['size']['mobile'] ) && ! empty( $font['size']['mobile'] ) ) {
-			$this->add_property( 'font-size', $font['size']['mobile'] . $size_type );
-		}
 		if ( isset( $font['size'] ) && isset( $font['size'][2] ) && ! empty( $font['size'][2] ) ) {
-			$this->add_property( 'font-size', $font['size'][2] . $size_type );
+			$this->add_property( 'font-size', $this->get_font_size( $font['size'][2], $size_type ) );
 		}
 		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['mobile'] ) && ! empty( $font['lineHeight']['mobile'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['mobile'] . $line_type );

@@ -264,7 +264,6 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		mobileMargin,
 		kadenceAOSOptions,
 		kadenceAnimation,
-		collapseFullwidth,
 		hideLink,
 		inQueryBlock,
 	} = attributes;
@@ -298,13 +297,38 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect( () => {
-		setBlockDefaults( 'kadence/singlebtn', attributes);
-
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
+			if ( ! attributes.noCustomDefaults ) {
+				attributes = setBlockDefaults( 'kadence/singlebtn', attributes);
+			}
+			if ( ! isUniqueID( smallID ) ) {
+				smallID = uniqueId( smallID );
+			}
+			setAttributes( {
+				uniqueID: smallID,
+			} );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
+			}
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
+		if ( context && context.queryId && context.postId ) {
+			if ( !inQueryBlock ) {
+				setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( inQueryBlock ) {
+			setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );
@@ -419,6 +443,11 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const previewBorderHoverBottomColor = getBorderColor( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
 	const previewBorderHoverLeftColor = getBorderColor( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
 
+	const previewHoverRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 0 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 0 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 0 ] : '' ) );
+	const previewHoverRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 1 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 1 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 1 ] : '' ) );
+	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
+	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
+
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.hAlign ? btnsBlock?.[0]?.attributes?.hAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.thAlign ? btnsBlock?.[0]?.attributes?.thAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mhAlign ? btnsBlock?.[0]?.attributes?.mhAlign : '' ) );
 	const previewVertical = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.vAlign ? btnsBlock?.[0]?.attributes?.vAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.tvAlign ? btnsBlock?.[0]?.attributes?.tvAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mvAlign ? btnsBlock?.[0]?.attributes?.mvAlign : '' ) );
 	const previewOnlyIcon = getPreviewSize( previewDevice, ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : undefined ), ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : undefined ) );
@@ -495,6 +524,10 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				{( previewBorderHoverRightStyle ? 'border-right:' + previewBorderHoverRightStyle + '!important;' : '' )}
 				{( previewBorderHoverLeftStyle ? 'border-left:' + previewBorderHoverLeftStyle + '!important;' : '' )}
 				{( previewBorderHoverBottomStyle ? 'border-bottom:' + previewBorderHoverBottomStyle + '!important;' : '' )}
+				{( previewHoverRadiusTop ? 'border-top-left-radius:' + previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( previewHoverRadiusRight ? 'border-top-right-radius:' + previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( previewHoverRadiusLeft ? 'border-bottom-left-radius:' + previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( previewHoverRadiusBottom ? 'border-bottom-right-radius:' + previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
 			{'}'}
 			{( iconColorHover ? `.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon { color:${KadenceColorOutput( iconColorHover )} !important;}` : '' )}
 			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before {`}
@@ -1077,7 +1110,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 							<>
 								{showSettings('marginSettings', 'kadence/advancedbtn') && (
 									<>
-										<KadencePanelBody panelName={'kb-adv-button-margin-settings'}>
+										<KadencePanelBody panelName={'kb-single-button-margin-settings'}>
 											<ResponsiveMeasureRangeControl
 												label={__( 'Padding', 'kadence-blocks' )}
 												value={padding}
@@ -1124,7 +1157,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 									</>
 								)}
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/singlebtn' } excludedAttrs={ [ 'btnCount', 'lockBtnCount', 'hideLink' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/singlebtn' } excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', ] } />
 							</>
 						)}
 					</InspectorControls>
@@ -1193,17 +1226,16 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 						}}/>
 					)}
 					<SpacingVisualizer
-						style={ {
-							marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-							marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-							marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-							marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-						} }
-						type="outside"
-						forceShow={ marginMouseOver.isMouseOver }
-						spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+						type="inside"
+						forceShow={ paddingMouseOver.isMouseOver }
+						spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
 					/>
 				</span>
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginUnit ), getSpacingOptionOutput( previewMarginRight, previewMarginUnit ), getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ), getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) ] }
+				/>
 				{ typography?.[ 0 ]?.google && (
 					<KadenceWebfontLoader typography={ typography } clientId={ clientId } id={ 'typography' } />
 				) }

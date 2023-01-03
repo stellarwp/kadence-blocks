@@ -198,7 +198,7 @@ class TypographyControls extends Component {
 			tagLowLevel = 1,
 			tagHighLevel = 7,
 			lineHeight,
-			lineHeightType = 'px',
+			lineHeightType = '',
 			fontSize,
 			fontSizeType = 'px',
 			googleFont,
@@ -539,7 +539,7 @@ class TypographyControls extends Component {
 							min={ lineMin }
 							max={ lineMax }
 							step={ lineStep }
-							unit={ ( lineHeightType ? lineHeightType : 'px' ) }
+							unit={ ( lineHeightType ? lineHeightType : '-' ) }
 							onUnit={ ( value ) => onLineHeightType( value ) }
 							units={ [ '-', 'px', 'em', 'rem' ] }
 						/>
@@ -557,7 +557,7 @@ class TypographyControls extends Component {
 								min={ lineMin }
 								max={ lineMax }
 								step={ lineStep }
-								unit={ ( lineHeightType ? lineHeightType : '' ) }
+								unit={ ( lineHeightType ? lineHeightType : '-' ) }
 								onUnit={ ( value ) => onLineHeightType( value ) }
 								units={ [  '-', 'px', 'em', 'rem' ] }
 								compressedDevice={ true }
@@ -653,7 +653,7 @@ class TypographyControls extends Component {
 									mobileValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) }
 									onChangeMobile={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), value ] ) }
 									min={ -5 }
-									max={ 15 }
+									max={ 25 }
 									step={ ( onLetterSpacingType && onLetterSpacingType === 'px' ? 0.1 : 0.01 ) }
 									unit={ ( onLetterSpacingType ? letterSpacingType : 'px' ) }
 									onUnit={ ( value ) => onLetterSpacingType( value ) }
@@ -666,7 +666,7 @@ class TypographyControls extends Component {
 									value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
 									onChange={ ( value ) => onLetterSpacing( value ) }
 									min={ -5 }
-									max={ 15 }
+									max={ 25 }
 									step={ 0.1 }
 								/>
 							) }

@@ -17,6 +17,10 @@
 	text-align: center;
 	align-items: center;
 	justify-content: center;
+    &.kt-btn-width-type-full {
+        flex: 1;
+        width: 100%;
+    }
 }
 .kb-button:not(.kb-btn-global-inherit) {
     padding: 0.4em 1em;
@@ -25,6 +29,9 @@
     border-radius: 3px;
     transition: all .3s ease-in-out;
 	box-shadow: none;
+    &:hover {
+        box-shadow: none;
+    }
 }
 .kb-button.kb-btn-global-fill {
     border: 0px solid transparent;
@@ -33,6 +40,7 @@
     color: var(--global-palette-btn, #FFFFFF);
     &:hover {
         color: var(--global-palette-btn-hover, #FFFFFF);
+        background: var(--global-palette-btn-bg-hover, #2F2FFC);
     }
 }
 .kb-button.kb-btn-global-outline {
@@ -56,12 +64,6 @@
 	opacity: 0;
 	background:transparent;
 	transition: all .3s ease-in-out;
-}
-.kb-button.kb-btn-global-fill::before {
-    background: var(--global-palette-btn-bg-hover, #2F2FFC);
-}
-.wp-block-kadence-advancedbtn .kb-button:not(.kb-btn-global-inherit):hover {
-    box-shadow: none;
 }
 .kb-button:hover::before {
 	opacity: 1;
@@ -87,8 +89,7 @@
 .kt-btn-has-svg-true {
     gap: 0.5em;
 }
-.kb-svg-icon-wrap {
-    transition: all .3s ease-in-out;
+.wp-block-kadence-advancedbtn .kb-svg-icon-wrap {
 	display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -96,7 +97,4 @@
 		width: 1em;
 		height: 1em;
 	}
-}
-.kb-btn-only-icon .kt-button-text {
-    display:none;
 }

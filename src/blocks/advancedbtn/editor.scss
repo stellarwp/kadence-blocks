@@ -294,6 +294,9 @@
                     width: 100%;
                 }
             }
+            .kt-button {
+                display: flex;
+            }
         }
     }
 }
@@ -347,9 +350,6 @@
 // Icon Settings.
 .kb-btn-has-icon {
     gap: 0.5em;
-}
-.kt-btn-svg-icon {
-    transition: all .3s ease-in-out;
 }
 .kb-btn-only-icon .kt-button-text {
     display:none;
