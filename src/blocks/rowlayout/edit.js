@@ -59,7 +59,7 @@ import {
 	KadenceBlockDefaults,
 	SpacingVisualizer
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -145,7 +145,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	isSelected,
 	clientId,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -182,38 +182,14 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		[ clientId ]
 	);
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				attributes = setBlockDefaults( 'kadence/rowlayout', attributes);
-			}
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
+		setBlockDefaults( 'kadence/advancedheading', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
 		debounce( getDynamic, 200 );
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
