@@ -198,7 +198,7 @@ import {
 } from '@wordpress/hooks';
 
 
-export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId } ) {
+export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId, name } ) {
 	const {
 		uniqueID,
 		text,
@@ -601,14 +601,14 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 					}}
 					dynamicAttribute={'link'}
 					allowClear={true}
-					{...{ attributes, setAttributes, className, isSelected, context, clientId }}
+					{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
 				/>
 			) }
 			{showSettings( 'allSettings', 'kadence/advancedbtn' ) && (
 				<>
 					<InspectorControls>
 						<InspectorControlTabs
-							panelName={'advancedbtn'}
+							panelName={'singlebtn'}
 							setActiveTab={( value ) => setActiveTab( value )}
 							activeTab={ activeTab}
 						/>
@@ -647,7 +647,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 											}}
 											dynamicAttribute={'link'}
 											allowClear={true}
-											{...{ attributes, setAttributes, className, isSelected, context, clientId }}
+											{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
 										/>
 									)}
 									<KadenceRadioButtons

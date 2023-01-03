@@ -21,14 +21,12 @@ function convertAlphaColors( hex, alpha ) {
 	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
 }
 export function migrateToInnerblocks( attributes ) {
-    const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth } = attributes;
+    const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth, kadenceAOSOptions, kadenceAnimation, kadenceDynamic } = attributes;
 	const newGap = [ 'xs', '', '' ];
     let buttonInnerBlocks = [];
-	btnCount
 	times( btnCount, n => {
 		let btn = btns[n];
 		let newAttrs = { ...btn };
-		console.log( newAttrs );
 		// 1. Update Typography to new format.
 		newAttrs.typography = [ {
 			size: [ '', '', '' ],
@@ -282,7 +280,23 @@ export function migrateToInnerblocks( attributes ) {
 			delete newAttrs.mobileGap;
 		}
 		// 7. Update Animations to inner block.
+		if ( undefined !== kadenceAOSOptions ) {
+			newAttrs.kadenceAOSOptions = kadenceAOSOptions;
+		}
+		if ( undefined !== kadenceAnimation ) {
+			newAttrs.kadenceAnimation = kadenceAnimation;
+		}
 		// 8. Update Dynamic content to inner block.
+		if ( undefined !== kadenceDynamic?.['btns:' + n + ':link' ] ) {
+			newAttrs.kadenceDynamic = {};
+			newAttrs.kadenceDynamic.link = kadenceDynamic['btns:' + n + ':link' ];
+		}
+		if ( undefined !== kadenceDynamic?.['btns:' + n + ':text'] ) {
+			if ( undefined === newAttrs.kadenceDynamic ) {
+				newAttrs.kadenceDynamic = {};
+			}
+			newAttrs.kadenceDynamic.text = kadenceDynamic['btns:' + n + ':text' ];
+		}
 		// 9. Update inheritStyles to new default of fill.
 		if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
 			newAttrs.inheritStyles = 'inherit';
@@ -343,6 +357,11 @@ export function migrateToInnerblocks( attributes ) {
 		} else if ( undefined !== widthType && widthType == 'fixed' ) {
 			newAttrs.widthType = 'fixed';
 		}
+		// 14. Text Convert
+		if ( undefined !== newAttrs?.text ) {
+			newAttrs.text = newAttrs.text.toString();
+		}
+		// 15. No defaults.
 		newAttrs.noCustomDefaults = true;
         buttonInnerBlocks.push( createBlock( 'kadence/singlebtn', newAttrs ) );
 	} )
