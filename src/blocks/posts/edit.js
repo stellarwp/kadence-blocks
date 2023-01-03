@@ -18,10 +18,17 @@ import './editor.scss';
 import metadata from './block.json';
 
 /**
+ * Import helpers
+ */
+import {
+	getUniqueId,
+} from '@kadence/helpers';
+
+/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import {
 	getPreviewSize,
 	setBlockDefaults
@@ -120,6 +127,18 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	const [ loaded, setLoaded ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'content' );
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
 	const getPosts = () => {
 		setLoaded( false );
 		apiFetch( {
@@ -139,21 +158,10 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	};
 
 	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/posts', attributes);
-
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
-		} else if ( kbpostsUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
-			}
-		} else {
-			kbpostsUniqueIDs.push( uniqueID );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		
 		getPosts();
 	}, [] );
 
