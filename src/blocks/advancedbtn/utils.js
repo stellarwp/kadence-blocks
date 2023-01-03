@@ -21,7 +21,7 @@ function convertAlphaColors( hex, alpha ) {
 	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
 }
 export function migrateToInnerblocks( attributes ) {
-    const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth, kadenceAOSOptions, kadenceAnimation, kadenceDynamic } = attributes;
+    const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth, kadenceAOSOptions, kadenceAnimation, kadenceDynamic, hideLink, lockBtnCount } = attributes;
 	const newGap = [ 'xs', '', '' ];
     let buttonInnerBlocks = [];
 	times( btnCount, n => {
@@ -361,7 +361,15 @@ export function migrateToInnerblocks( attributes ) {
 		if ( undefined !== newAttrs?.text ) {
 			newAttrs.text = newAttrs.text.toString();
 		}
-		// 15. No defaults.
+		// 15. Convert hide link attribute to block level.
+		if ( undefined !== hideLink && hideLink ) {
+			newAttrs.hideLink = true;
+		}
+		// Have to use lockBtnCount to support show more.
+		if ( undefined !== lockBtnCount && lockBtnCount ) {
+			newAttrs.hideLink = true;
+		}
+		// 16. No defaults.
 		newAttrs.noCustomDefaults = true;
         buttonInnerBlocks.push( createBlock( 'kadence/singlebtn', newAttrs ) );
 	} )

@@ -251,7 +251,7 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 								const newBlock = createBlock( 'kadence/singlebtn', latestAttributes );
 								insertButton( newBlock );
 							} }
-							label={  __( 'Add Another Button', 'kadence-blocks' ) }
+							label={  __( 'Duplicate Previous Button', 'kadence-blocks' ) }
 							showTooltip={ true }
 						/>
 					</ToolbarGroup>
