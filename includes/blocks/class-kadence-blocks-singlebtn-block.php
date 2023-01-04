@@ -64,6 +64,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$this->enqueue_style( 'kadence-glightbox' );
 			$this->enqueue_script( 'kadence-blocks-glight-video-init' );
+			$gallery_translation_array = array(
+				'plyr_js'          => KADENCE_BLOCKS_URL . 'includes/assets/js/plyr.min.js',
+				'plyr_css'         => KADENCE_BLOCKS_URL . 'includes/assets/css/plyr.min.css',
+			);
+			wp_localize_script( 'kadence-blocks-glight-video-init', 'kadence_video_pop', $gallery_translation_array );
 		}
 	}
 
@@ -78,10 +83,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
-			$this->enqueue_style( 'kadence-glightbox' );
-			$this->enqueue_script( 'kadence-blocks-glight-video-init' );
-		}
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$width_type = ! empty( $attributes['widthType'] ) ? $attributes['widthType'] : 'auto';
 		if ( 'fixed' === $width_type ) {

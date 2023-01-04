@@ -25,7 +25,6 @@ import {
 /**
  * Import External
  */
-import Slider from 'react-slick';
 import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
 import {map} from 'lodash';
 /**
@@ -721,7 +720,7 @@ function KadenceTestimonials({
 		pagination    : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
-		draggable     : false,
+		drag     : false,
 		focus        : 0,
 		perPage      : previewColumns,
 		interval     : autoSpeed,

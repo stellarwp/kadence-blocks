@@ -47,15 +47,13 @@
 				let carousel = [];
 				for ( let i = 0; i < foundGalleries.length; i++ ) {
 					carousel[i] = foundGalleries[i].querySelector( '.kt-blocks-carousel-init' );
-					let carouselClass = ' .splide__slide:not(.splide__slide--clone) ';
+					let carouselClass = ' .splide__slide:not(.splide__slide--clone)';
 					if ( carousel[i] ) {
-						carouselClass
 						setTimeout( function() {
 							kadenceBlocksGLight.handleClones( carousel[i] );
 						}, 200 );
 					}
 					let galleryClass = foundGalleries[i].classList;
-					let showCaption = foundGalleries[i].getAttribute( 'data-lightbox-caption' );
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
 					let foundGalleryClass = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
@@ -65,24 +63,6 @@
 						}
 					}
 					if ( foundGalleryClass ) {
-						// if ( filter ) {
-						// 	GLightbox.defaults.elementClass = 'slg-kt-blocks kb-gal-light-filter-' + filter;
-						// } else {
-						// 	GLightbox.defaults.elementClass = 'slg-kt-blocks';
-						// }
-						// new GLightbox({
-						// 	elements: '.' + foundGalleryClass + ' a.kb-gallery-item-link',
-						// });
-						const customLightboxHTML = `<div id="glightbox-body" class="glightbox-container glightbox-kadence-dark kb-gal-light-filter-${filter}">
-							<div class="gloader visible"></div>
-							<div class="goverlay"></div>
-							<div class="gcontainer">
-							<div id="glightbox-slider" class="gslider"></div>
-							<button class="gnext gbtn" tabindex="0" aria-label="Next" data-customattribute="example">{nextSVG}</button>
-							<button class="gprev gbtn" tabindex="1" aria-label="Previous">{prevSVG}</button>
-							<button class="gclose gbtn" tabindex="2" aria-label="Close">{closeSVG}</button>
-						</div>
-						</div>`;
 						const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
 						new GLightbox({
 							selector: '.' + foundGalleryClass + carouselClass + ' a.kb-gallery-item-link:not([target="_blank"])',

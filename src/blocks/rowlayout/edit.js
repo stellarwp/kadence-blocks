@@ -941,14 +941,38 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
 				</>
 				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
-				{ columns && columns === 2 && 'grid-layout' !== previewLayout && 'Desktop' === previewDevice && (
+				{ columns && columns === 2 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
 					<>
 						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
 					</>
 				) }
-				{ columns && columns === 3 && 'grid-layout' !== previewLayout && 'Desktop' === previewDevice && (
+				{ columns && columns === 3 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
 					<>
 						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
+					</>
+				) }
+				{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
+					<>
+					{ times( columns, n => {
+							const item = n + 1;
+							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( columns - item ) } }`;
+						} )
+					}
+					{ times( columns, n => {
+							const item = n + 1 + columns;
+							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 10 + ( columns - ( n + 1 ) ) ) } }`;
+						} )
+					}
+					{ times( columns, n => {
+							const item = n + 1 + columns + columns;
+							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 20 + ( columns - ( n + 1 ) ) ) } }`;
+						} )
+					}
+					{ times( columns, n => {
+							const item = n + 1 + columns + columns + columns;
+							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 30 + ( columns - ( n + 1 ) ) ) } }`;
+						} )
+					}
 					</>
 				) }
 				{ zIndex && zIndex > 30 && (
