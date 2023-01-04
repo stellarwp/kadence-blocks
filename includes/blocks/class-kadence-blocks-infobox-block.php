@@ -376,7 +376,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && is_array( $attributes['titleFont'][0] ) ) {
 				$title_font = $attributes['titleFont'][0];
 				if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
-					$css->add_property( 'font-size', $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+					$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][0], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
 				}
 				if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
 					$css->add_property( 'line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
@@ -434,7 +434,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleFont'][0]['size'][1] ) && ! empty( $attributes['titleFont'][0]['size'][1] ) ) {
-				$css->add_property( 'font-size', $attributes['titleFont'][0]['size'][1] . ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['titleFont'][0]['size'][1], ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['titleFont'][0]['lineHeight'][1] ) && ! empty( $attributes['titleFont'][0]['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $attributes['titleFont'][0]['lineHeight'][1] . ( ! isset( $attributes['titleFont'][0]['lineType'] ) ? 'px' : $attributes['titleFont'][0]['lineType'] ) );
@@ -445,7 +445,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleFont'][0]['size'][2] ) && ! empty( $attributes['titleFont'][0]['size'][2] ) ) {
-				$css->add_property( 'font-size', $attributes['titleFont'][0]['size'][2] . ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['titleFont'][0]['size'][2], ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['titleFont'][0]['lineHeight'][2] ) && ! empty( $attributes['titleFont'][0]['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $attributes['titleFont'][0]['lineHeight'][2] . ( ! isset( $attributes['titleFont'][0]['lineType'] ) ? 'px' : $attributes['titleFont'][0]['lineType'] ) );
@@ -544,7 +544,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['textFont'] ) && is_array( $attributes['textFont'] ) && is_array( $attributes['textFont'][0] ) ) {
 				$text_font = $attributes['textFont'][0];
 				if ( isset( $text_font['size'] ) && is_array( $text_font['size'] ) && ! empty( $text_font['size'][0] ) ) {
-					$css->add_property( 'font-size', $text_font['size'][0] . ( ! isset( $text_font['sizeType'] ) ? 'px' : $text_font['sizeType'] ) );
+					$css->add_property( 'font-size', $css->get_font_size( $text_font['size'][0], ( ! isset( $text_font['sizeType'] ) ? 'px' : $text_font['sizeType'] ) ) );
 				}
 				if ( isset( $text_font['lineHeight'] ) && is_array( $text_font['lineHeight'] ) && ! empty( $text_font['lineHeight'][0] ) ) {
 					$css->add_property( 'line-height', $text_font['lineHeight'][0] . ( ! isset( $text_font['lineType'] ) ? 'px' : $text_font['lineType'] ) );
@@ -605,7 +605,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text' );
 			if ( isset( $attributes['textFont'][0]['size'][1] ) && ! empty( $attributes['textFont'][0]['size'][1] ) ) {
-				$css->add_property( 'font-size', $attributes['textFont'][0]['size'][1] . ( ! isset( $attributes['textFont'][0]['sizeType'] ) ? 'px' : $attributes['textFont'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['textFont'][0]['size'][1], ( ! isset( $attributes['textFont'][0]['sizeType'] ) ? 'px' : $attributes['textFont'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['textFont'][0]['lineHeight'][1] ) && ! empty( $attributes['textFont'][0]['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $attributes['textFont'][0]['lineHeight'][1] . ( ! isset( $attributes['textFont'][0]['lineType'] ) ? 'px' : $attributes['textFont'][0]['lineType'] ) );
@@ -616,7 +616,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text' );
 			if ( isset( $attributes['textFont'][0]['size'][2] ) && ! empty( $attributes['textFont'][0]['size'][2] ) ) {
-				$css->add_property( 'font-size', $attributes['textFont'][0]['size'][2] . ( ! isset( $attributes['textFont'][0]['sizeType'] ) ? 'px' : $attributes['textFont'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['textFont'][0]['size'][2], ( ! isset( $attributes['textFont'][0]['sizeType'] ) ? 'px' : $attributes['textFont'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['textFont'][0]['lineHeight'][2] ) && ! empty( $attributes['textFont'][0]['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $attributes['textFont'][0]['lineHeight'][2] . ( ! isset( $attributes['textFont'][0]['lineType'] ) ? 'px' : $attributes['textFont'][0]['lineType'] ) );
@@ -657,7 +657,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'border-radius', $learn_more_styles['borderRadius'] . 'px' );
 			}
 			if ( isset( $learn_more_styles['size'] ) && is_array( $learn_more_styles['size'] ) && ! empty( $learn_more_styles['size'][0] ) ) {
-				$css->add_property( 'font-size', $learn_more_styles['size'][0] . ( ! isset( $learn_more_styles['sizeType'] ) ? 'px' : $learn_more_styles['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $learn_more_styles['size'][0], ( ! isset( $learn_more_styles['sizeType'] ) ? 'px' : $learn_more_styles['sizeType'] ) ) );
 			}
 			if ( isset( $learn_more_styles['lineHeight'] ) && is_array( $learn_more_styles['lineHeight'] ) && ! empty( $learn_more_styles['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $learn_more_styles['lineHeight'][0] . ( ! isset( $learn_more_styles['lineType'] ) ? 'px' : $learn_more_styles['lineType'] ) );
@@ -703,7 +703,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore' );
 			if ( isset( $attributes['learnMoreStyles'][0]['size'][1] ) && ! empty( $attributes['learnMoreStyles'][0]['size'][1] ) ) {
-				$css->add_property( 'font-size', $attributes['learnMoreStyles'][0]['size'][1] . ( ! isset( $attributes['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['learnMoreStyles'][0]['size'][1], ( ! isset( $attributes['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['learnMoreStyles'][0]['lineHeight'][1] ) && ! empty( $attributes['learnMoreStyles'][0]['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $attributes['learnMoreStyles'][0]['lineHeight'][1] . ( ! isset( $attributes['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['lineType'] ) );
@@ -714,7 +714,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore' );
 			if ( isset( $attributes['learnMoreStyles'][0]['size'][2] ) && ! empty( $attributes['learnMoreStyles'][0]['size'][2] ) ) {
-				$css->add_property( 'font-size', $attributes['learnMoreStyles'][0]['size'][2] . ( ! isset( $attributes['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['learnMoreStyles'][0]['size'][2], ( ! isset( $attributes['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attributes['learnMoreStyles'][0]['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $attributes['learnMoreStyles'][0]['lineHeight'][2] . ( ! isset( $attributes['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attributes['learnMoreStyles'][0]['lineType'] ) );

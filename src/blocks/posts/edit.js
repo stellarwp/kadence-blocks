@@ -22,6 +22,7 @@ import metadata from './block.json';
  */
 import {
 	getUniqueId,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -942,7 +943,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<HtmlTagOut
 							className="entry-title"
 							style={{
-								fontSize     : ( titleSize ? titleSize + titleFont[ 0 ].sizeType : undefined ),
+								fontSize     : ( titleSize ? getFontSizeOptionOutput( titleSize, titleFont[ 0 ].sizeType ) : undefined ),
 								lineHeight   : ( titleLineHeight ? titleLineHeight + titleFont[ 0 ].lineType : undefined ),
 								letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + titleFont[ 0 ].letterType : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),

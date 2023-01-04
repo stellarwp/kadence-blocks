@@ -62,6 +62,7 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -3174,7 +3175,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 								fontStyle    : titleFont[ 0 ].style,
 								textTransform: titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined,
 								color        : KadenceColorOutput( titleColor ),
-								fontSize     : previewTitleFontSize + titleFont[ 0 ].sizeType,
+								fontSize     : getFontSizeOptionOutput( previewTitleFontSize, titleFont[ 0 ].sizeType ),
 								lineHeight   : previewTitleLineHeight + titleFont[ 0 ].lineType,
 								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
 								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
@@ -3201,7 +3202,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 								fontWeight   : textFont[ 0 ].weight,
 								fontStyle    : textFont[ 0 ].style,
 								color        : KadenceColorOutput( textColor ),
-								fontSize     : previewTextFontSize + textFont[ 0 ].sizeType,
+								fontSize     : getFontSizeOptionOutput( previewTextFontSize, textFont[ 0 ].sizeType ),
 								lineHeight   : previewTextLineHeight + textFont[ 0 ].lineType,
 								letterSpacing: textFont[ 0 ].letterSpacing + 'px',
 								textTransform: ( undefined !== textFont[ 0 ].textTransform && textFont[ 0 ].textTransform ) ? textFont[ 0 ].textTransform : undefined,
@@ -3235,7 +3236,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									borderRadius : learnMoreStyles[ 0 ].borderRadius + 'px',
 									background   : KadenceColorOutput( learnMoreStyles[ 0 ].background ),
 									borderColor  : KadenceColorOutput( learnMoreStyles[ 0 ].border ),
-									fontSize     : previewLearnMoreFontSize + learnMoreStyles[ 0 ].sizeType,
+									fontSize     : getFontSizeOptionOutput( previewLearnMoreFontSize, learnMoreStyles[ 0 ].sizeType ),
 									lineHeight   : previewLearnMoreLineHeight + learnMoreStyles[ 0 ].lineType,
 									letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
 									textTransform: ( undefined !== learnMoreStyles[ 0 ].textTransform && learnMoreStyles[ 0 ].textTransform ) ? learnMoreStyles[ 0 ].textTransform : undefined,
