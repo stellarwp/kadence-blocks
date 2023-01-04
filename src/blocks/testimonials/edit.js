@@ -56,6 +56,7 @@ import {
     setBlockDefaults,
     mouseOverVisualizer,
     getGapSizeOptionOutput,
+    getSpacingOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -285,11 +286,38 @@ function KadenceTestimonials({
     const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[3] ? wrapperMobilePadding[3] : ''));
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
+    const previewTitleMinHeight = getPreviewSize(previewDevice, (undefined !== titleMinHeight && undefined !== titleMinHeight[0] ? titleMinHeight[0] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[1] ? titleMinHeight[1] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[2] ? titleMinHeight[2] : ''));
     const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
+
+    const previewContainerPaddingTop = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[0] ? containerPadding[0] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[0] ? tabletContainerPadding[0] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[0] ? mobileContainerPadding[0] : ''));
+    const previewContainerPaddingRight = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[1] ? containerPadding[1] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[1] ? tabletContainerPadding[1] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[1] ? mobileContainerPadding[1] : ''));
+    const previewContainerPaddingBottom = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[2] ? containerPadding[2] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[2] ? tabletContainerPadding[2] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[2] ? mobileContainerPadding[2] : ''));
+    const previewContainerPaddingLeft = getPreviewSize(previewDevice, (undefined !== containerPadding && undefined !== containerPadding[3] ? containerPadding[3] : ''), (undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[3] ? tabletContainerPadding[3] : ''), (undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[3] ? mobileContainerPadding[3] : ''));
+    const previewContainerMinHeight = getPreviewSize(previewDevice, (undefined !== containerMinHeight && undefined !== containerMinHeight[0] ? containerMinHeight[0] : ''), (undefined !== containerMinHeight && undefined !== containerMinHeight[1] ? containerMinHeight[1] : ''), (undefined !== containerMinHeight && undefined !== containerMinHeight[2] ? containerMinHeight[2] : ''));
+
+    const previewContentFont = getPreviewSize(previewDevice, (undefined !== contentFont[0].size && undefined !== contentFont[0].size[0] && '' !== contentFont[0].size[0] ? contentFont[0].size[0] : ''), (undefined !== contentFont[0].size && undefined !== contentFont[0].size[1] && '' !== contentFont[0].size[1] ? contentFont[0].size[1] : ''), (undefined !== contentFont[0].size && undefined !== contentFont[0].size[2] && '' !== contentFont[0].size[2] ? contentFont[0].size[2] : ''));
+    const previewContentFontSizeType = undefined !== contentFont[0].sizeType ? contentFont[0].sizeType : 'px';
+    const previewContentLineHeight = getPreviewSize(previewDevice, (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[0] && '' !== contentFont[0].lineHeight[0] ? contentFont[0].lineHeight[0] : ''), (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[1] && '' !== contentFont[0].lineHeight[1] ? contentFont[0].lineHeight[1] : ''), (undefined !== contentFont[0].lineHeight && undefined !== contentFont[0].lineHeight[2] && '' !== contentFont[0].lineHeight[2] ? contentFont[0].lineHeight[2] : ''));
+    const previewContentLineHeightLineType = undefined !== contentFont[0].lineType ? contentFont[0].lineType : 'px';
+
+    const previewOccupationFont = getPreviewSize(previewDevice, (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[0] && '' !== occupationFont[0].size[0] ? occupationFont[0].size[0] : ''), (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[1] && '' !== occupationFont[0].size[1] ? occupationFont[0].size[1] : ''), (undefined !== occupationFont[0].size && undefined !== occupationFont[0].size[2] && '' !== occupationFont[0].size[2] ? occupationFont[0].size[2] : ''));
+    const previewOccupationFontSizeType = undefined !== occupationFont[0].sizeType ? occupationFont[0].sizeType : 'px';
+    const previewOccupationLineHeight = getPreviewSize(previewDevice, (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[0] && '' !== occupationFont[0].lineHeight[0] ? occupationFont[0].lineHeight[0] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[1] && '' !== occupationFont[0].lineHeight[1] ? occupationFont[0].lineHeight[1] : ''), (undefined !== occupationFont[0].lineHeight && undefined !== occupationFont[0].lineHeight[2] && '' !== occupationFont[0].lineHeight[2] ? occupationFont[0].lineHeight[2] : ''));
+    const previewOccupationLineHeightLineType = undefined !== occupationFont[0].lineType ? occupationFont[0].lineType : 'px';
+
+    const previewNameFont = getPreviewSize(previewDevice, (undefined !== nameFont[0].size && undefined !== nameFont[0].size[0] && '' !== nameFont[0].size[0] ? nameFont[0].size[0] : ''), (undefined !== nameFont[0].size && undefined !== nameFont[0].size[1] && '' !== nameFont[0].size[1] ? nameFont[0].size[1] : ''), (undefined !== nameFont[0].size && undefined !== nameFont[0].size[2] && '' !== nameFont[0].size[2] ? nameFont[0].size[2] : ''));
+    const previewNameLineHeight = getPreviewSize(previewDevice, (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[0] && '' !== nameFont[0].lineHeight[0] ? nameFont[0].lineHeight[0] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[1] && '' !== nameFont[0].lineHeight[1] ? nameFont[0].lineHeight[1] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[2] && '' !== nameFont[0].lineHeight[2] ? nameFont[0].lineHeight[2] : ''));
+    const previewNameLineHeightType = undefined !== nameFont[0].lineType ? nameFont[0].lineType : 'px';
+    const previewNameFontType = undefined !== nameFont[0].sizeType ? nameFont[0].sizeType : 'px';
 
     const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[0] ? columns[0] : 3 ), ( undefined !== columns[3] ? columns[3] : '' ), ( undefined !== columns[5] ? columns[5] : '' ) );
 
     const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
+
+    let iconPadding = (displayIcon && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] < 0) ? Math.abs(iconStyles[0].margin[0]) + 'px' : undefined);
+    if (iconPadding === undefined && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] >= 0)) {
+        iconPadding = '0px';
+    }
 
     const onColumnChange = (value) => {
         let columnarray = [];
@@ -340,6 +368,134 @@ function KadenceTestimonials({
         {key: 'middle', name: __('Middle', 'kadence-blocks'), icon: alignMiddleIcon},
         {key: 'bottom', name: __('Bottom', 'kadence-blocks'), icon: alignBottomIcon},
     ];
+
+    const containerStyles = () => {
+        let applyTo = '.kt-testimonial-item-wrap';
+
+        if( style === 'bubble' || style === 'inlineimage' ) {
+            applyTo = '.kt-testimonial-text-wrap';
+        }
+
+        return (
+            <style>
+                {`
+                    /* Container */
+                    .kt-blocks-testimonials-wrap${uniqueID} ${applyTo} {
+                        box-shadow: ${(displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined) };
+                        border-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1))) };
+                        background: ${(containerBackground ? KadenceColorOutput(containerBackground, (undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1)) : undefined) };
+                        border-radius: ${!isNaN(containerBorderRadius) ? containerBorderRadius + 'px' : undefined };
+                        border-top-width: ${(containerBorderWidth && undefined !== containerBorderWidth[0] ? containerBorderWidth[0] + 'px' : undefined) };
+                        border-right-width: ${(containerBorderWidth && undefined !== containerBorderWidth[1] ? containerBorderWidth[1] + 'px' : undefined) };
+                        border-bottom-width: ${(containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] + 'px' : undefined) };
+                        border-left-width: ${(containerBorderWidth && undefined !== containerBorderWidth[3] ? containerBorderWidth[3] + 'px' : undefined) };
+                        padding-top: ${(previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
+                        padding-right: ${(previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
+                        padding-bottom: ${(previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
+                        padding-left: ${(previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
+                        max-width: ${('bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px') };
+                        min-height: ${('bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px') };
+                        margin-top: ${layout && layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
+                        margin-bottom: ${layout && layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
+                    }
+                    
+                    ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
+                        .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: ${ containerVAlign === 'bottom' ? 'flex-end' : 'center' };
+                        }
+                    `}
+                    
+                    ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+                        max-width: ${ containerMaxWidth + 'px' };
+                        min-height: ${ (previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined) };
+                        padding-top:  ${(iconPadding ? iconPadding : undefined) };
+                        margin-top:  ${layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
+                        margin-bottom:  ${layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
+                    }` }
+                    
+                    /* Title */
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap .kt-testimonial-title {
+                        font-weight: ${titleFont[0].weight };
+                        font-style: ${titleFont[0].style };
+                        color: ${KadenceColorOutput(titleFont[0].color) };
+                        font-size: ${previewTitleFont ? previewTitleFont + previewTitleFontSizeType : undefined };
+                        line-height: ${(previewTitleLineHeight ? previewTitleLineHeight + previewTitleLineHeightLineType : undefined) };
+                        letter-spacing: ${titleFont[0].letterSpacing + 'px' };
+                        text-transform: ${(titleFont[0].textTransform ? titleFont[0].textTransform : undefined) };
+                        font-family: ${(titleFont[0].family ? titleFont[0].family : '') };
+                        padding: ${(titleFont[0].padding ? titleFont[0].padding[0] + 'px ' + titleFont[0].padding[1] + 'px ' + titleFont[0].padding[2] + 'px ' + titleFont[0].padding[3] + 'px' : '') };
+                        margin: ${(titleFont[0].margin ? titleFont[0].margin[0] + 'px ' + titleFont[0].margin[1] + 'px ' + titleFont[0].margin[2] + 'px ' + titleFont[0].margin[3] + 'px' : '') };
+                    }
+                    
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap {
+                        min-height: ${previewTitleMinHeight + 'px'};
+                    }
+                    
+                    /* Content */
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap .kt-testimonial-content {
+                        font-weight: ${contentFont[0].weight };
+                        font-style: ${contentFont[0].style };
+                        color: ${KadenceColorOutput(contentFont[0].color) };
+                        font-size: ${previewContentFont ? previewContentFont + previewContentFontSizeType : undefined };
+                        line-height: ${(previewContentLineHeight ? previewContentLineHeight + previewContentLineHeightLineType : undefined) };
+                        text-transform: ${(contentFont[0].textTransform ? contentFont[0].textTransform : undefined) };
+                        letter-spacing: ${contentFont[0].letterSpacing + 'px' };
+                        font-family: ${(contentFont[0].family ? contentFont[0].family : '') };
+                    }
+                    
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap {
+                        min-height: ${previewContentMinHeight ? previewContentMinHeight + 'px' : undefined };
+                    }
+                    
+                    /* Occupation */
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-occupation-wrap .kt-testimonial-occupation {
+                        font-weight: ${occupationFont[0].weight };
+                        font-style: ${occupationFont[0].style };
+                        color: ${KadenceColorOutput(occupationFont[0].color) };
+                        font-size: ${previewOccupationFont ? previewOccupationFont + previewOccupationFontSizeType : undefined };
+                        line-height: ${(previewOccupationLineHeight ? previewOccupationLineHeight + previewOccupationLineHeightLineType : undefined) };
+                        text-transform: ${(occupationFont[0].textTransform ? occupationFont[0].textTransform : undefined) };
+                        letter-spacing: ${occupationFont[0].letterSpacing + 'px' };
+                        font-family: ${(occupationFont[0].family ? occupationFont[0].family : '') };
+                    }
+    
+                    /* Media */
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap {
+                        width: ${'card' !== style ? mediaStyles[0].width + 'px' : undefined };
+                        border-color: ${KadenceColorOutput(mediaStyles[0].border) };
+                        background-color: ${(mediaStyles[0].background ? KadenceColorOutput(mediaStyles[0].background, (undefined !== mediaStyles[0].backgroundOpacity ? mediaStyles[0].backgroundOpacity : 1)) : undefined) };
+                        border-radius: ${mediaStyles[0].borderRadius + 'px' };
+                        border-width: ${(mediaStyles[0].borderWidth ? mediaStyles[0].borderWidth[0] + 'px ' + mediaStyles[0].borderWidth[1] + 'px ' + mediaStyles[0].borderWidth[2] + 'px ' + mediaStyles[0].borderWidth[3] + 'px' : '') };
+                        padding: ${(mediaStyles[0].padding ? mediaStyles[0].padding[0] + 'px ' + mediaStyles[0].padding[1] + 'px ' + mediaStyles[0].padding[2] + 'px ' + mediaStyles[0].padding[3] + 'px' : '') };
+                        margin-top: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[0] ? mediaStyles[0].margin[0] + 'px' : undefined) };
+                        margin-right: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[1] ? mediaStyles[0].margin[1] + 'px' : undefined) };
+                        margin-bottom: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[2] ? mediaStyles[0].margin[2] + 'px' : undefined) };
+                        margin-left: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[3] ? mediaStyles[0].margin[3] + 'px' : undefined) };
+                    }
+                    
+                    .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic {
+                        padding-bottom: ${('card' === style && (undefined !== mediaStyles[0].ratio || '' !== mediaStyles[0].ratio) ? mediaStyles[0].ratio + '%' : undefined) };
+                    }
+                    
+                    /* Name */
+                    .kt-blocks-testimonials-wrap${uniqueID}  .kt-testimonial-name-wrap .kt-testimonial-name {
+                        font-weight: ${ nameFont[0].weight };
+                        font-style: ${ nameFont[0].style };
+                        color: ${KadenceColorOutput(nameFont[0].color) };
+                        font-size: ${( previewNameFont ? previewNameFont + previewNameFontType : undefined ) };
+                        line-height: ${(previewNameLineHeight ? previewNameLineHeight + previewNameLineHeightType : undefined) };
+                        text-transform: ${(nameFont[0].textTransform ? nameFont[0].textTransform : undefined) };
+                        letter-spacing: ${nameFont[0].letterSpacing + 'px' };
+                        font-family: ${(nameFont[0].family ? nameFont[0].family : '') };
+                    }
+
+                `}
+            </style>
+        );
+    }
+
     const paddingMin = (wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0 : 0);
     const paddingMax = (wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200);
     const paddingStep = (wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1);
@@ -469,18 +625,6 @@ function KadenceTestimonials({
     const lconfig = (nameFont[0].google ? lgconfig : '');
     const oconfig = (occupationFont[0].google ? ogconfig : '');
 
-    const saveTestimonials = (value, thisIndex) => {
-        const newUpdate = testimonials.map((item, index) => {
-            if (index === thisIndex) {
-                item = {...item, ...value};
-            }
-            return item;
-        });
-        setAttributes({
-            testimonials: newUpdate,
-        });
-    };
-
     const savemediaStyles = (value) => {
         const newUpdate = mediaStyles.map((item, index) => {
             if (0 === index) {
@@ -599,6 +743,7 @@ function KadenceTestimonials({
 	);
     return (
         <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
+            {containerStyles()}
             <style>
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
                 {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
