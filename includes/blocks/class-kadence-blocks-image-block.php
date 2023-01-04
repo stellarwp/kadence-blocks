@@ -206,10 +206,10 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 			$css->set_selector( '.kb-image' . $unique_id . ' figcaption' );
 			if ( isset( $caption_font['color'] ) && ! empty( $caption_font['color'] ) ) {
-				$css->add_property( 'color', $this->kadence_color_output( $caption_font['color'] ) );
+				$css->add_property( 'color', $css->render_color( $caption_font['color'] ) );
 			}
 			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
-				$css->add_property( 'background', $this->kadence_color_output( $caption_font['background'] ) );
+				$css->add_property( 'background', $css->render_color( $caption_font['background'] ) );
 			}
 			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) && ! empty( $caption_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $caption_font['size'][0] . ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) );
