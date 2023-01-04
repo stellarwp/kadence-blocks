@@ -199,22 +199,23 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		} else if ( columnGutter == 'widest' ) {
 			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
+		
 		// Update from old padding settings.
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
-			setAttributes( { padding: [ ( ! topPadding ? 25 : topPadding ), rightPadding, ( ! bottomPadding ? 25 : bottomPadding ), leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
+			setAttributes( { padding: [ ( '' !== topPadding ? topPadding : 25 ), rightPadding, ( '' !== bottomPadding ? bottomPadding : 25 ), leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
 		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
 		}
 		// Update from old margin settings.
 		if ( ( '' !== topMargin || '' !== bottomMargin ) ) {
-			setAttributes( { margin: [ ( ! topMargin ? '' : topMargin ), ( ! bottomMargin ? '' : bottomMargin ), '' ], topMargin:'', bottomMargin:''} );
+			setAttributes( { margin: [ ( '' !== topMargin ? topMargin : '' ), '', ( '' !== bottomMargin ? bottomMargin : '' ), '' ], topMargin:'', bottomMargin:''} );
 		}
 		if ( ( '' !== topMarginT || '' !== bottomMarginT ) ) {
-			setAttributes( { tabletMargin: [ ( ! topMarginT ? '' : topMarginT ), ( ! bottomMarginT ? '' : bottomMarginT ), '' ], topMarginT:'', bottomMarginT:''} );
+			setAttributes( { tabletMargin: [ ( '' !== topMarginT ? topMarginT : '' ), '', ( '' !== bottomMarginT ? bottomMarginT : '' ), '' ], topMarginT:'', bottomMarginT:''} );
 		}
 		if ( ( '' !== topMarginM || '' !== bottomMarginM ) ) {
-			setAttributes( { mobileMargin: [ ( ! topMarginM ? '' : topMarginM ), ( ! bottomMarginM ? '' : bottomMarginM ), '' ], topMarginM:'', bottomMarginM:''} );
+			setAttributes( { mobileMargin: [ ( '' !== topMarginM ? topMarginM : '' ), '', ( '' !== bottomMarginM ? bottomMarginM : '' ), '' ], topMarginM:'', bottomMarginM:''} );
 		}
 		// Update from old gradient settings.
 		if ( currentOverlayTab == 'grad' ) {

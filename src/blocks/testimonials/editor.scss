@@ -16,7 +16,10 @@
  .kt-spacer-sidebar-15 {
 	 height: 15px;
  }
- 
+ .wp-block[data-type="kadence/testimonials"], .wp-block[data-type="kadence/testimonial"] {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .components-button-group.kt-style-btn-group button.components-button.kt-style-btn {
     width: 50%;
     border: 0;

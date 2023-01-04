@@ -47,8 +47,9 @@
 				let carousel = [];
 				for ( let i = 0; i < foundGalleries.length; i++ ) {
 					carousel[i] = foundGalleries[i].querySelector( '.kt-blocks-carousel-init' );
-					let carouselClass = ' .splide__slide:not(.splide__slide--clone)';
+					let carouselClass = '';
 					if ( carousel[i] ) {
+						carouselClass = ' .splide__slide:not(.splide__slide--clone)';
 						setTimeout( function() {
 							kadenceBlocksGLight.handleClones( carousel[i] );
 						}, 200 );

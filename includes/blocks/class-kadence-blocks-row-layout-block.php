@@ -283,6 +283,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_row_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
 		$css->render_row_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
 		// Padding, check for old attributes and use if present.
+		if ( empty( $attributes['kbVersion'] ) ) {
+			// Add old defaults back in.
+			$css->add_property( 'padding-top', '25px' );
+			$css->add_property( 'padding-bottom', '25px' );
+		}
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
 				$css->add_property( 'padding-top', ( $css->is_number( $attributes['topPadding'] ) ? $attributes['topPadding'] : '25' ) . ( ! empty( $attributes['paddingUnit'] ) ? $attributes['paddingUnit'] : 'px' ) );
