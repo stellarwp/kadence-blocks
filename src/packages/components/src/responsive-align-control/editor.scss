@@ -1,15 +1,19 @@
-.kb-responsive-align-control-inner .components-toolbar {
-	border: 1px solid var(--kb-border-color, #859CB6 );
-	min-height: 38px;
-	.components-button {
-		height: 36px;
-		padding-top: 4px;
-		padding-bottom: 4px;
-		color: #4A5568;
-		&.is-pressed {
-			color: white;
-			&:before {
-				background: var(--wp-admin-theme-color, #00669b);
+.kb-responsive-align-control-inner {
+	position: relative;
+	z-index: 0;
+	.components-toolbar {
+		border: 1px solid var(--kb-border-color, #859CB6 );
+		min-height: 38px;
+		.components-button {
+			height: 36px;
+			padding-top: 4px;
+			padding-bottom: 4px;
+			color: #4A5568;
+			&.is-pressed {
+				color: white;
+				&:before {
+					background: var(--wp-admin-theme-color, #00669b);
+				}
 			}
 		}
 	}

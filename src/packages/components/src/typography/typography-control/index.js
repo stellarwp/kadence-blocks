@@ -499,14 +499,16 @@ class TypographyControls extends Component {
 								/>
 							) }
 							{ ! onTagLevelHTML && (
-								<div className="kb-tag-level-control">
-									<p>{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
-									<ToolbarGroup
-										isCollapsed={ false }
-										label={ __( 'Change Heading Tag', 'kadence-blocks' ) }
-										controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) }
-									/>
-								</div>
+								<TagSelect
+									label={__( 'HTML Tag', 'kadence-blocks' )}
+									value={ tagLevel }
+									headingOnly={ true }
+									tagHighLevel={ tagHighLevel }
+									tagLowLevel={ tagLowLevel }
+									onChange={ (value) => {
+										onTagLevel( value);
+									} }
+								/>
 							) }
 						</>
 					) }

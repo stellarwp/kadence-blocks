@@ -371,6 +371,15 @@ import { __ } from '@wordpress/i18n';
 										}}
 										units={[ 'px', 'em', 'rem' ]}
 									/>
+									<SelectControl
+										label={ __( 'Collapse Order', 'kadence-blocks' ) }
+										value={ collapseOrder }
+										options={ [
+											{ value: 'left-to-right', label: __( 'Normal ->', 'kadence-blocks' ) },
+											{ value: 'right-to-left', label: __( 'Reverse <-', 'kadence-blocks' ) },
+										] }
+										onChange={ value => setAttributes( { collapseOrder: value } ) }
+									/>
 								</>
 							) }
 						</KadencePanelBody>

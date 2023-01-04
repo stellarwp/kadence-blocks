@@ -163,7 +163,6 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function render_css( $attributes, $content, $block_instance ) {
 		$this->render_scripts( $attributes, true );
-
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$css_class = Kadence_Blocks_CSS::get_instance();

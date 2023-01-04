@@ -8,6 +8,7 @@
  */
  import { __ } from '@wordpress/i18n';
 import { useInstanceId } from '@wordpress/compose';
+import { range } from 'lodash';
 import {
 	Button,
 	DropdownMenu,
@@ -46,9 +47,12 @@ export default function tagSelect( {
 	className = '',
 	ariaLabel = __( 'Change HTML Tag', 'kadence-blocks' ),
 	reset = false,
+	headingOnly = false,
+	tagLowLevel = 1,
+	tagHighLevel = 7,
 } ) {
 	const level = ( value !== 'span' && value !== 'div' && value !== 'p' ? value : 2 );
-	const htmlTag = ( value === 'span' || value === 'div' || value === 'p' ? value : 'heading' )
+	const htmlTag = ( value === 'span' || value === 'div' || value === 'p' ? value : 'heading' );
 	const headingOptions = [
 		[
 			{
@@ -123,6 +127,19 @@ export default function tagSelect( {
 			},
 		],
 	];
+	const createhtmlTagControl = ( targetLevel ) => {
+		return [ {
+			icon: <HeadingLevelIcon level={ targetLevel } isPressed={ ( targetLevel === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+			title: sprintf(
+				/* translators: %d: heading level e.g: "1", "2", "3" */
+				__( 'Heading %d', 'kadence-blocks' ),
+				targetLevel
+			),
+			isActive: ( targetLevel === level && htmlTag && htmlTag === 'heading' ? true : false ),
+			onClick: () => onChange( targetLevel ),
+		} ];
+	};
+	const headingOnlyOptions = range( tagLowLevel, tagHighLevel ).map( createhtmlTagControl );
 	return [
 		onChange && (
 			<div className={ `kb-tag-level-control components-base-control${ className ? ' ' + className : '' }`}>
@@ -148,11 +165,11 @@ export default function tagSelect( {
 						) }
 					</div>
 				) }
-				<div className={ 'kadence-controls-content' }>
+				<div className={ 'kadence-controls-content kb-tag-select-control-inner' }>
 					<ToolbarGroup
 						isCollapsed={false}
 						label={ ariaLabel }
-						controls={ headingOptions }
+						controls={ headingOnly ? headingOnlyOptions : headingOptions }
 					/>
 				</div>
 			</div>

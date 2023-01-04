@@ -6,7 +6,7 @@
     color:#191e23;
 }
 .kb-tag-level-control .components-toolbar__control.components-button:before {
-    left: 0px;
+    left: -1px;
     right: 0px;
 }
 .kb-tag-level-control .components-icon-button.is-active, .kb-tag-level-control .components-button.is-active {
@@ -39,7 +39,7 @@
 }
 .kb-tag-level-control .components-toolbar>div+div.has-left-divider:before {
     top: 9px;
-    left: 0;
+    left: -1px;
 }
 .kb-tag-level-control .components-toolbar__control.components-button {
     width: 100%;
@@ -55,5 +55,24 @@
 	&:focus:before {
 		box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color),inset 0 0 0 2px #fff;
 		outline: 2px solid transparent;
+	}
+}
+.kb-tag-level-control .kb-tag-select-control-inner {
+	position: relative;
+	z-index: 0;
+	.components-toolbar {
+		border: 1px solid var(--kb-border-color, #859CB6 );
+		.components-button {
+			color: #4A5568;
+			&.is-pressed {
+				color: white;
+				&:before {
+					background: var(--wp-admin-theme-color, #00669b);
+				}
+			}
+		}
+        > div+div.has-left-divider:before {
+            background-color: var(--kb-border-color, #859CB6 );
+        }
 	}
 }

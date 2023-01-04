@@ -13,13 +13,12 @@ import classnames from 'classnames';
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
-	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align, direction, overlayGradient, overlayHoverGradient } = attributes;
+	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align, direction, overlayGradient, overlayGradientHover } = attributes;
 	const deskDirection = ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : false );
 	const tabDirection = ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : false );
 	const mobileDirection = ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : false );
-	const hasOverlay = ( overlay || overlayGradient || overlayHoverGradient || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
+	const hasOverlay = ( overlay || overlayGradient || overlayGradientHover || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
 	const classes = classnames( {
-		[ `inner-column-${ id }` ]: id,
 		[ `kadence-column${ uniqueID }` ]: uniqueID,
 		'kvs-lg-false': vsdesk !== undefined && vsdesk,
 		'kvs-md-false': vstablet !== undefined && vstablet,
