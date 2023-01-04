@@ -76,8 +76,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.0.1 Alpha Version 2 =
+Release Date: January 4th, 2023
+* Fix: Issue with Lightbox on non carousel Gallery.
+* Fix: Issue with 0 spacing not outputting in editor.
+* Fix: Issue with how row padding and margins conversions were handled.
+
+
 = 3.0.0 Alpha Version 1 =
-Release Date: December 16th, 2022
+Release Date: January 4th, 2023
 * Update: Block Settings to use a tab structure.
 * Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
@@ -113,6 +120,13 @@ Release Date: December 16th, 2022
 * Fix: Issue when using more than 36 tabs in Tabs block.
 * Add: Ability to use decimals for start & end values in count up block.
 * Add: Ability to force specific language in reCaptchas
+
+= 2.4.22 =
+Release Date: November 17th, 2022
+* Fix: Issue with mobile background video loading.
+* Fix: Issue with undefined index: color.
+* Fix: Allow clearing border radius in image block.
+* Fix: Issue with converting list blocks to icon list blocks since 6.1
 
 = 2.4.21 =
 Release Date: November 11th, 2022

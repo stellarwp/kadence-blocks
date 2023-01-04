@@ -1678,7 +1678,7 @@ function KadenceTestimonials({
                             <>
                                 <KadencePanelBody panelName={'kb-testimonials-spacings-settings'}>
                                     <ResponsiveMeasureRangeControl
-                                        label={__('Container Padding', 'kadence-blocks')}
+                                        label={__('Padding', 'kadence-blocks')}
                                         value={containerPadding}
                                         tabletValue={tabletContainerPadding}
                                         mobileValue={mobileContainerPadding}

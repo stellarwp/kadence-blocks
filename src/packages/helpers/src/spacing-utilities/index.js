@@ -17,7 +17,7 @@ export function getSpacingOptionName( value, unit, spacingMap = SPACING_SIZES_MA
 	return found.name;
 }
 export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_MAP ) {
-	if ( ! value ) {
+	if ( undefined === value ) {
 		return '';
 	}
 	if ( ! spacingMap ) {
@@ -25,6 +25,9 @@ export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_
 	}
 	if ( value === '0') {
 		return '0';
+	}
+	if ( value === 0 ) {
+		return '0' + unit;
 	}
 	const found = spacingMap.find( ( option ) => option.value === value );
 	if ( ! found ) {
