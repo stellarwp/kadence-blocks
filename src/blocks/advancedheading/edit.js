@@ -686,7 +686,7 @@ function KadenceAdvancedHeading( props ) {
 										onChange={value => setAttributes( { linkStyle: value } )}
 									/>
 									<URLInputControl
-										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
+										label={__( 'Text Wrap Link', 'kadence-blocks' )}
 										url={link}
 										onChangeUrl={value => setAttributes( { link: value } )}
 										additionalControls={true}

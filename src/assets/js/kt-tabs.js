@@ -181,13 +181,13 @@
 			wrapper.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber )
 				.setAttribute( 'aria-hidden', 'false');
 			// Accordion tabs
-			wrapper.querySelectorAll('.kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabNumber + ')')
+			wrapper.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabNumber + ')')
 				.forEach((tab) => {
 					tab.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
 					tab.setAttribute('tabindex', '-1');
 					tab.setAttribute('aria-selected', 'false');
 				});
-			const activeAccordionTab = wrapper.querySelector('.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber);
+			const activeAccordionTab = wrapper.querySelector(':scope >.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber);
 			if( activeAccordionTab ) {
 				activeAccordionTab.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
 				activeAccordionTab.setAttribute('tabindex', '0');

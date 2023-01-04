@@ -243,6 +243,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			'rest_url' => get_rest_url(),
+			'wp_version' => get_bloginfo( 'version' ),
 			'rcp_levels' => $level_ids,
 			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',

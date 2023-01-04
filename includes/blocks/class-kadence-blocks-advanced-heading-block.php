@@ -136,7 +136,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 						$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 					}
-			} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+			} else if ( strpos( $attributes['background'], 'palette' ) === 0 ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
@@ -241,14 +241,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
 		}
 		if ( ! empty( $attributes['linkStyle'] ) ) {
-			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id );
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id );
 			if ( 'none' === $attributes['linkStyle'] ) {
 				$css->add_property( 'text-decoration', 'none' );
 			} else if ( $attributes['linkStyle'] === 'underline' ) {
 				$css->add_property( 'text-decoration', 'underline' );
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id . ':hover' );
+				$css->add_property( 'text-decoration', 'underline' );
 			} else if ( $attributes['linkStyle'] === 'hover_underline' ) {
 				$css->add_property( 'text-decoration', 'none' );
-				$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover' );
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id . ':hover' );
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}
