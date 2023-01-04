@@ -77,6 +77,7 @@ import { DELETE } from '@wordpress/keycodes';
 
 const RETRIEVE_KEY_URL = 'https://www.google.com/recaptcha/admin';
 const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
+const LANGUAGE_URL = 'https://developers.google.com/recaptcha/docs/language';
 
 const actionOptionsList = [
 	{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
@@ -244,6 +245,7 @@ function KadenceForm( props ) {
 		} ).then( ( response ) => {
 			setSiteKey( response.kadence_blocks_recaptcha_site_key );
 			setSecretKey( response.kadence_blocks_recaptcha_secret_key );
+			setRecaptchaLanguage( response.kadence_blocks_recaptcha_language );
 
 			if ( '' !== siteKey && '' !== secretKey ) {
 				setIsSavedKey( true );
@@ -272,6 +274,7 @@ function KadenceForm( props ) {
 	const [ mobileMarginControl, setMobileMarginControl ] = useState( 'individual' );
 	const [ siteKey, setSiteKey ] = useState( '' );
 	const [ secretKey, setSecretKey ] = useState( '' );
+	const [ recaptchaLanguage, setRecaptchaLanguage ] = useState( '' );
 
 	const [ isSavedKey, setIsSavedKey ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
@@ -611,6 +614,7 @@ function KadenceForm( props ) {
 			const settingModel = new wp.api.models.Settings( {
 				kadence_blocks_recaptcha_site_key  : '',
 				kadence_blocks_recaptcha_secret_key: '',
+				kadence_blocks_recaptcha_language: ''
 			} );
 			settingModel.save().then( () => {
 				setIsSavedKey( false );
@@ -624,7 +628,9 @@ function KadenceForm( props ) {
 		const settingModel = new wp.api.models.Settings( {
 			kadence_blocks_recaptcha_site_key  : siteKey,
 			kadence_blocks_recaptcha_secret_key: secretKey,
+			kadence_blocks_recaptcha_language: recaptchaLanguage,
 		} );
+
 		settingModel.save().then( response => {
 			setIsSaving( false );
 			setIsSavedKey( true );
@@ -1790,13 +1796,20 @@ function KadenceForm( props ) {
 											) )}
 										</ButtonGroup>
 									</div>
+
 									<p>
-										<>
 											<ExternalLink href={RETRIEVE_KEY_URL}>{__( 'Get keys', 'kadence-blocks' )}</ExternalLink>
 											|&nbsp;
 											<ExternalLink href={HELP_URL}>{__( 'Get help', 'kadence-blocks' )}</ExternalLink>
-										</>
+											<br/>
+											<ExternalLink href={LANGUAGE_URL}>{__( 'Language Codes', 'kadence-blocks' )}</ExternalLink>
 									</p>
+
+									<TextControl
+										label={__( 'Force Specific Language', 'kadence-blocks' )}
+										value={recaptchaLanguage}
+										onChange={ ( value ) => setRecaptchaLanguage( value )}
+									/>
 									<TextControl
 										label={__( 'Site Key', 'kadence-blocks' )}
 										value={siteKey}
@@ -1810,7 +1823,7 @@ function KadenceForm( props ) {
 									<div className="components-base-control">
 										<Button
 											isPrimary
-											onClick={() => saveKeys}
+											onClick={() => saveKeys()}
 											disabled={'' === siteKey || '' === secretKey}
 										>
 											{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
@@ -1820,7 +1833,7 @@ function KadenceForm( props ) {
 												&nbsp;
 												<Button
 													isSecondary
-													onClick={() => removeKeys}
+													onClick={() => removeKeys()}
 												>
 													{__( 'Remove', 'kadence-blocks' )}
 												</Button>

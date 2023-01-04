@@ -530,6 +530,17 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
+			'kadence_blocks_recaptcha_language',
+			'kadence_blocks_recaptcha_language',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Google reCaptcha Language', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
 			'kadence_blocks_mailerlite_api',
 			'kadence_blocks_mailerlite_api',
 			array(

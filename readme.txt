@@ -111,7 +111,8 @@ Release Date: December 16th, 2022
 * Fix: Only generate dynamic CSS for rtl sites when needed.
 * Fix: Google Maps filter initial value issue.
 * Fix: Issue when using more than 36 tabs in Tabs block.
-* Add: Ability to use decimals for start & end vaules in count up block.
+* Add: Ability to use decimals for start & end values in count up block.
+* Add: Ability to force specific language in reCaptchas
 
 = 2.4.21 =
 Release Date: November 11th, 2022
