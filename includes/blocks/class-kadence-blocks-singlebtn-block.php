@@ -115,7 +115,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['iconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColor'] ) );
 		}
-		$css->render_measure_output( $attributes, 'iconPadding', 'padding' );
+		$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
 		// Icon Hover.
 		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap' );
