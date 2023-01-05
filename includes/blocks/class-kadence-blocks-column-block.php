@@ -377,7 +377,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Background Hover.
 		$hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
-		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:hover' );
 		switch ( $hover_type ) {
 			case 'normal':
 				if ( ! empty( $attributes['backgroundHover'] ) ) {
