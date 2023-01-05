@@ -6,14 +6,8 @@
  * WordPress dependencies
  */
 import { createBlock } from '@wordpress/blocks';
-import { times } from 'lodash';
-
-import {
-	join,
-	split,
-	create,
-	toHTMLString
-} from '@wordpress/rich-text';
+import { get } from 'lodash';
+import metadata from './block.json';
 
 import {
 	LINE_SEPARATOR,
@@ -27,53 +21,18 @@ const transforms = {
 		{
 			type: 'block',
 			blocks: [ 'core/list' ],
-			transform: ( { values } ) => {
-				const listArray = split( create( {
-					html: values,
-					multilineTag: 'li',
-					multilineWrapperTags: [ 'ul', 'ol' ],
-				} ), lineSep );
-				const newitems = [ {
-					icon: 'fe_checkCircle',
-					link: '',
-					target: '_self',
-					size: 20,
-					width: 2,
-					text: toHTMLString( { value: listArray[ 0 ] } ),
-					color: '',
-					background: '',
-					border: '',
-					borderRadius: 0,
-					padding: 5,
-					borderWidth: 1,
-					style: 'default',
-					level: 0
-				} ];
-				const amount = Math.abs( listArray.length );
-				{ times( amount, n => {
-					if ( n !== 0 ) {
-						newitems.push( {
-							icon: 'fe_checkCircle',
-							link: '',
-							target: '_self',
-							size: 20,
-							width: 2,
-							text: toHTMLString( { value: listArray[ n ] } ),
-							color: '',
-							background: '',
-							border: '',
-							borderRadius: 0,
-							padding: 5,
-							borderWidth: 1,
-							style: 'default',
-							level: 0
-						} );
-					}
-				} ); }
+			transform: ( attributes, innerBlocks ) => {
+
+				const listItems = innerBlocks.map( ( listItem ) => {
+					return createBlock( 'kadence/listitem', { text: listItem.attributes.content } );
+				});
+
 				return createBlock( 'kadence/iconlist', {
-					items: newitems,
-					listCount: amount,
-				} );
+					listStyles: [ {
+						...metadata['attributes']['listStyles']['default'][0],
+						color: get( attributes, [ 'style', 'color', 'text' ], '' )
+					}]
+				}, listItems );
 			},
 		},
 	],
@@ -81,15 +40,22 @@ const transforms = {
 		{
 			type: 'block',
 			blocks: [ 'core/list' ],
-			transform: ( blockAttributes ) => {
-				return createBlock( 'core/list', {
-					values: toHTMLString( {
-						value: join( blockAttributes.items.map( ( { text } ) => {
-							return create( { html: text } );
-						} ), lineSep ),
-						multilineTag: 'li',
-					} ),
-				} );
+			transform: ( blockAttributes, innerBlocks ) => {
+
+				const listItems = innerBlocks.map( ( listItem ) => {
+					return createBlock( 'core/list-item', { content: listItem.attributes.text } );
+				});
+
+				return createBlock('core/list', {
+						ordered: false,
+						style: {
+							color: {
+								text: blockAttributes.listStyles[0].color,
+							}
+						}
+					},
+					listItems
+				);
 			},
 		},
 	],
