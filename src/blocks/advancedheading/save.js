@@ -20,7 +20,41 @@ import {
 } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
-	const { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass, linkStyle } = attributes;
+	const {
+		anchor,
+		level,
+		content,
+		colorClass,
+		color,
+		textShadow,
+		letterSpacing,
+		topMargin,
+		bottomMargin,
+		marginType,
+		align,
+		uniqueID,
+		className,
+		kadenceAnimation,
+		kadenceAOSOptions,
+		htmlTag,
+		link,
+		linkNoFollow,
+		linkSponsored,
+		linkTarget,
+		backgroundColorClass,
+		linkStyle,
+		icon,
+		iconColor,
+		iconColorHover,
+		iconSide,
+		iconHover,
+		iconPadding,
+		tabletIconPadding,
+		mobileIconPadding,
+		iconSize,
+		iconSizeUnit,
+		iconPaddingUnit
+	} = attributes;
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 	const textColorClass = getColorClassName( 'color', colorClass );
 	const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );

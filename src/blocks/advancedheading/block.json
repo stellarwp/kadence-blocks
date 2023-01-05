@@ -7,9 +7,7 @@
   "attributes": {
 	"content": {
 	  "type": "string",
-	  "source": "html",
-	  "selector": "h1,h2,h3,h4,h5,h6,p.wp-block-kadence-advancedheading,span.wp-block-kadence-advancedheading,div.wp-block-kadence-advancedheading",
-	  "__experimentalRole": "content"
+	  "default": ""
 	},
 	"level": {
 	  "type": "number",
@@ -438,6 +436,50 @@
 	"maxWidthType": {
 		"type": "string",
 		"default": "px"
+	},
+	"icon": {
+	  "type": "string",
+	  "default": ""
+	},
+	"iconColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"iconColorHover": {
+	  "type": "string",
+	  "default": ""
+	},
+	"iconSide": {
+	  "type": "string",
+	  "default": "right"
+	},
+	"iconHover": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"iconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletIconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileIconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"iconSize": {
+	  "type": "array",
+	  "default": [ "", "", "" ]
+	},
+	"iconSizeUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"iconVerticalAlign": {
+	  "type": "string",
+	  "default": "unset"
 	}
   },
   "usesContext": [
