@@ -556,7 +556,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				) }
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', ] } 
+					excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', 'text', 'sponsor' ] } 
 					defaultAttributes={ metadata['attributes'] } 
 					blockSlug={ metadata['name'] } 
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }

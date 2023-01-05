@@ -1,7 +1,7 @@
 /**
  * BLOCK: Kadence Info box
  */
-
+import classnames from 'classnames';
 import { IconSpanTag } from '@kadence/components';
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 
@@ -19,6 +19,7 @@ function Save( { attributes, className } ) {
 	if ( undefined !== linkSponsored && true === linkSponsored ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
+	const WrapperTag = link ? 'a' : 'span';
 	const image = (
 		<div className={ `kadence-info-box-image-inner-intrisic-container${ ( kadenceDynamic && kadenceDynamic['mediaImage:0:url'] && kadenceDynamic['mediaImage:0:url'].enable ? ' kadence-info-dynamic-image' : '' ) }` }>
 			<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }${ imageRatio && 'inherit' !== imageRatio ? ' kb-info-box-image-ratio kb-info-box-image-ratio-' + imageRatio : '' }` }>
@@ -110,15 +111,18 @@ function Save( { attributes, className } ) {
 			) }
 		</div>
 	);
-
+	const allClasses = classnames( {
+		[ `kt-info-box${ uniqueID }` ]: uniqueID,
+		[ className ]: className,
+	} );
 	const blockProps = useBlockProps.save( {
-		className: className
+		className: allClasses
 	} );
 
 	return (
-		<div id={ `kt-info-box${ uniqueID }` } {...blockProps}>
+		<div {...blockProps}>
 			{ linkProperty !== 'learnmore' && (
-				<a className={ `kt-blocks-info-box-link-wrap info-box-link kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }${ ( hAlignTablet && '' !== hAlignTablet ? ' kb-info-tablet-halign-' + hAlignTablet : '' ) }${ ( hAlignMobile && '' !== hAlignMobile ? ' kb-info-mobile-halign-' + hAlignMobile : '' ) }` } target={ ( '_blank' === target ? target : undefined ) } rel={ relAttr } href={ link } aria-label={ linkTitle ? linkTitle : undefined }>
+				<WrapperTag className={ `kt-blocks-info-box-link-wrap info-box-link kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }${ ( hAlignTablet && '' !== hAlignTablet ? ' kb-info-tablet-halign-' + hAlignTablet : '' ) }${ ( hAlignMobile && '' !== hAlignMobile ? ' kb-info-mobile-halign-' + hAlignMobile : '' ) }` } target={ ( '_blank' === target && link ? target : undefined ) } rel={ link ? relAttr : undefined } href={ link ? link : undefined } aria-label={ linkTitle ? linkTitle : undefined }>
 					{ 'none' !== mediaType && (
 						<div className={ 'kt-blocks-info-box-media-container' }>
 							<div className={ `kt-blocks-info-box-media ${ 'number' === mediaType ? 'kt-info-media-animate-' + mediaNumber[ 0 ].hoverAnimation : '' }${ 'image' === mediaType ? 'kt-info-media-animate-' + mediaImage[ 0 ].hoverAnimation : '' }${ 'image' !== mediaType && 'number' !== mediaType ? 'kt-info-media-animate-' + mediaIcon[ 0 ].hoverAnimation : '' }` }>
@@ -135,7 +139,7 @@ function Save( { attributes, className } ) {
 						</div>
 					) }
 					{ textOutput }
-				</a>
+				</WrapperTag>
 			) }
 			{ linkProperty === 'learnmore' && (
 				<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }` }>

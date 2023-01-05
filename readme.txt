@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.0
+Stable tag: 3.0.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,11 +77,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.0.1 Alpha Version 2 =
-Release Date: January 4th, 2023
+Release Date: January 5th, 2023
+* Update: Duplicate styles component.
 * Fix: Issue with Lightbox on non carousel Gallery.
 * Fix: Issue with 0 spacing not outputting in editor.
 * Fix: Issue with how row padding and margins conversions were handled.
-
+* Fix: Defaults with Info Box.
+* Fix: CSS specificity with column handles.
+* Fix: Transforms for icon list block.
 
 = 3.0.0 Alpha Version 1 =
 Release Date: January 4th, 2023

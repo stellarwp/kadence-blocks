@@ -48,6 +48,7 @@ import {
 	ResponsiveMeasurementControls,
 	SpacingVisualizer,
 	HoverToggleControl,
+	ColorGroup,
 	CopyPasteAttributes,
 } from '@kadence/components';
 
@@ -190,6 +191,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		mobileBorderHoverRadius,
 		tabletMaxWidth,
 		mobileMaxWidth,
+		kbVersion,
 	} = attributes;
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
@@ -217,7 +219,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		addUniqueID( uniqueId, clientId );
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
-
+		if ( ! kbVersion || kbVersion < 2 ) {
+			setAttributes( { kbVersion: 2 } );
+		}
 		debounce( getDynamic.bind( this ), 200 );
 	}, [] );
 	useEffect( () => {
@@ -378,11 +382,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		if ( 'simple' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
-				containerHoverBackground: ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
+				containerBackground     : ( '#ffffff' === containerBackground ? '' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ '', '', '' ],
+					right: [ '', '', '' ],
+					bottom: [ '', '', '' ],
+					left: [ '', '', '' ],
+					unit: 'px'
+				}  ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
 				tabletContainerMargin   : [ '', '', '', '' ],
 				mobileContainerMargin   : [ '', '', '', '' ],
@@ -399,10 +409,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : mediaIcon[ 0 ].background,
-					hoverBackground: mediaIcon[ 0 ].hoverBackground,
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background ? '' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : [ 10, 10, 10, 10 ],
@@ -432,13 +442,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else if ( 'basic' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 30,
-				containerPadding        : [ 20, 20, 20, 20 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 30, 30, 30, 30 ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
 				tabletContainerMargin   : [ '', '', '', '' ],
 				mobileContainerMargin   : [ '', '', '', '' ],
@@ -455,10 +469,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( '' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -504,13 +518,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else if ( 'leftabove' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ '', '', '', '' ],
 				tabletContainerMargin   : [ '', '', '', '' ],
 				mobileContainerMargin   : [ '', '', '', '' ],
@@ -527,10 +545,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( '' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -576,13 +594,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else if ( 'left' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 30, 30, 30, 30 ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
 				tabletContainerMargin   : [ '', '', '', '' ],
 				mobileContainerMargin   : [ '', '', '', '' ],
@@ -599,12 +621,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? '' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
-					borderWidth    : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 5, 5, 5, 5 ] : [ 0, 0, 0, 0 ] ),
+					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 					margin         : [ 0, 20, 0, 0 ],
 				} ],
@@ -648,13 +670,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else if ( 'overlay' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 20, 20, 20, 20 ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ 50, '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
@@ -669,10 +695,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '' === mediaStyle[ 0 ].background ? '#ffffff' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : ( '' === mediaStyle[ 0 ].border ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].border ),
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
 					borderWidth    : [ 5, 5, 5, 5 ],
 					padding        : ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -718,13 +744,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		} else if ( 'overlayleft' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ 50, '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
@@ -739,10 +769,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '' === mediaStyle[ 0 ].background ? '#ffffff' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : ( '' === mediaStyle[ 0 ].border ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].border ),
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 5, 5, 5, 5 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -784,379 +814,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					margin        : [ 5, 0, 10, 0 ],
 					marginControl : 'individual',
 				} ],
-			} );
-		}
-	};
-	const setInitalLayout = ( key ) => {
-		if ( 'skip' === key ) {
-		} else if ( 'simple' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#f2f2f2',
-				containerHoverBackground: '#f2f2f2',
-				containerBorder         : '#eeeeee',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'top',
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 70,
-					width         : 2,
-					title         : '',
-					color         : '#444444',
-					hoverColor    : '#444444',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 3, 3, 3, 3 ],
-					padding        : [ 16, 16, 16, 16 ],
-					margin         : [ 0, 15, 8, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '#444444',
-				titleHoverColor         : '#444444',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#777777',
-				textHoverColor          : '#777777',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : false,
-				displayShadow           : false,
-			} );
-		} else if ( 'left' === key ) {
-			setAttributes( {
-				hAlign                  : 'left',
-				containerBackground     : '#ffffff',
-				containerHoverBackground: '#ffffff',
-				containerBorder         : '#888888',
-				containerHoverBorder    : '#888888',
-				containerBorderWidth    : [ 2, 2, 2, 2 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'left',
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 50,
-					width         : 2,
-					title         : '',
-					color         : '#ffffff',
-					hoverColor    : '#ffffff',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : '#555555',
-					hoverBackground: '#444444',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 20, 20, 20, 20 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '',
-				titleHoverColor         : '',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#555555',
-				textHoverColor          : '',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : false,
-				displayShadow           : true,
-			} );
-		} else if ( 'bold' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#0A6689',
-				containerHoverBackground: '#0A6689',
-				containerBorder         : '#eeeeee',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'top',
-				mediaImage              : [ {
-					url           : '',
-					id            : '',
-					alt           : '',
-					width         : '',
-					height        : '',
-					maxWidth      : '',
-					hoverAnimation: 'none',
-					flipUrl       : '',
-					flipId        : '',
-					flipAlt       : '',
-					flipWidth     : '',
-					flipHeight    : '',
-					subtype       : '',
-					flipSubtype   : '',
-				} ],
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 80,
-					width         : 2,
-					title         : '',
-					color         : '#ffffff',
-					hoverColor    : '#ffffff',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 0,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 10, 10, 10, 10 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '#ffffff',
-				titleHoverColor         : '#ffffff',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : false,
-				textColor               : '#ffffff',
-				textHoverColor          : '#ffffff',
-				displayLearnMore        : true,
-				learnMoreStyles         : [ {
-					size           : [ '', '', '' ],
-					sizeType       : 'px',
-					lineHeight     : [ '', '', '' ],
-					lineType       : 'px',
-					letterSpacing  : '',
-					family         : '',
-					google         : '',
-					style          : '',
-					weight         : '',
-					variant        : '',
-					subset         : '',
-					loadGoogle     : true,
-					padding        : [ 4, 8, 4, 8 ],
-					paddingControl : 'individual',
-					margin         : [ 10, 0, 10, 0 ],
-					marginControl  : 'individual',
-					color          : '#ffffff',
-					background     : '#0A6689',
-					border         : '#ffffff',
-					borderRadius   : 0,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					borderControl  : 'linked',
-					colorHover     : '#0A6689',
-					backgroundHover: '#ffffff',
-					borderHover    : '#ffffff',
-					hoverEffect    : 'revealBorder',
-					textTransform  : '',
-				} ],
-				displayShadow           : false,
-			} );
-		} else if ( 'image' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#ffffff',
-				containerHoverBackground: '#ffffff',
-				containerBorder         : '#ffffff',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 30,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'image',
-				mediaAlign              : 'top',
-				mediaImage              : [ {
-					url           : '',
-					id            : '',
-					alt           : '',
-					width         : '',
-					height        : '',
-					maxWidth      : '200',
-					hoverAnimation: 'none',
-					flipUrl       : '',
-					flipId        : '',
-					flipAlt       : '',
-					flipWidth     : '',
-					flipHeight    : '',
-					subtype       : '',
-					flipSubtype   : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 10, 10, 10, 10 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '',
-				titleHoverColor         : '',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#555555',
-				textHoverColor          : '',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : true,
-				learnMoreStyles         : [ {
-					size           : [ '', '', '' ],
-					sizeType       : 'px',
-					lineHeight     : [ '', '', '' ],
-					lineType       : 'px',
-					letterSpacing  : '',
-					family         : '',
-					google         : '',
-					style          : '',
-					weight         : '',
-					variant        : '',
-					subset         : '',
-					loadGoogle     : true,
-					padding        : [ 4, 8, 4, 8 ],
-					paddingControl : 'individual',
-					margin         : [ 10, 0, 10, 0 ],
-					marginControl  : 'individual',
-					color          : '#444444',
-					background     : '#ffffff',
-					border         : '#444444',
-					borderRadius   : 0,
-					borderWidth    : [ 1, 0, 0, 0 ],
-					borderControl  : 'linked',
-					colorHover     : '#222222',
-					backgroundHover: '#ffffff',
-					borderHover    : '#222222',
-					hoverEffect    : 'revealBorder',
-					textTransform  : '',
-				} ],
-				displayShadow           : false,
 			} );
 		}
 	};
@@ -2460,49 +2117,16 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									/>
 									{displayTitle && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Hover Color', 'kadence-blocks' )}
-																		value={( titleHoverColor ? titleHoverColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { titleHoverColor: value } )}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Title Color', 'kadence-blocks' )}
-																		value={( titleColor ? titleColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { titleColor: value } )}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<PopColorControl
+												label={__( 'Title Color', 'kadence-blocks' )}
+												value={( titleColor ? titleColor : '' )}
+												default={''}
+												onChange={value => setAttributes( { titleColor: value } )}
+												swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+												value2={ ( titleHoverColor ? titleHoverColor : '' ) }
+												default2={''}
+												onChange2={value => setAttributes( { titleHoverColor: value } )}
+											/>
 											<TypographyControls
 												fontGroup={'heading'}
 												tagLevel={titleFont[ 0 ].level}
@@ -2582,49 +2206,16 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									/>
 									{displayText && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Hover Color', 'kadence-blocks' )}
-																		value={( textHoverColor ? textHoverColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { textHoverColor: value } )}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Text Color', 'kadence-blocks' )}
-																		value={( textColor ? textColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { textColor: value } )}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<PopColorControl
+												label={__( 'Text Color', 'kadence-blocks' )}
+												value={( textColor ? textColor : '' )}
+												default={''}
+												onChange={value => setAttributes( { textColor: value } )}
+												swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+												value2={( textHoverColor ? textHoverColor : '' )}
+												default2={''}
+												onChange2={value => setAttributes( { textHoverColor: value } )}
+											/>
 											<TypographyControls
 												fontSize={textFont[ 0 ].size}
 												onFontSize={( value ) => saveTextFont( { size: value } )}
@@ -2670,7 +2261,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												marginControl={( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].marginControl ? textSpacing[ 0 ].marginControl : 'linked' )}
 												onMarginControl={( value ) => saveTextSpacing( { marginControl: value } )}
 											/>
-
 											<ResponsiveRangeControls
 												label={__( 'Min Height', 'kadence-blocks' )}
 												value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
@@ -2704,77 +2294,36 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									/>
 									{displayLearnMore && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<Fragment>
-																		<PopColorControl
-																			label={__( 'HOVER: Text Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' )}
-																			default={'#ffffff'}
-																			onChange={value => saveLearnMoreStyles( { colorHover: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'HOVER: Background', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' )}
-																			default={'#444444'}
-																			onChange={value => saveLearnMoreStyles( { backgroundHover: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'HOVER: Border Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' )}
-																			default={'#444444'}
-																			onChange={value => saveLearnMoreStyles( { borderHover: value } )}
-																		/>
-																	</Fragment>
-																);
-															} else {
-																tabout = (
-																	<Fragment>
-																		<PopColorControl
-																			label={__( 'Text Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' )}
-																			default={''}
-																			onChange={value => saveLearnMoreStyles( { color: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'Background', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' )}
-																			default={'transparent'}
-																			onChange={value => saveLearnMoreStyles( { background: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'Border Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' )}
-																			default={'#555555'}
-																			onChange={value => saveLearnMoreStyles( { border: value } )}
-																		/>
-																	</Fragment>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<ColorGroup>
+												<PopColorControl
+													label={__( 'Text Color', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { color: value } )}
+													swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+													value2={( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '' )}
+													default2={''}
+													onChange2={value => saveLearnMoreStyles( { colorHover: value } )}
+												/>
+												<PopColorControl
+													label={__( 'Background', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { background: value } )}
+													value2={( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '' )}
+													default2={ '' }
+													onChange2={value => saveLearnMoreStyles( { backgroundHover: value } )}
+												/>
+												<PopColorControl
+													label={__( 'Border Color', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { border: value } )}
+													value2={( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '' )}
+													default2={''}
+													onChange2={value => saveLearnMoreStyles( { borderHover: value } )}
+												/>
+											</ColorGroup>
 											<MeasurementControls
 												label={__( 'Learn More Border Width (px)', 'kadence-blocks' )}
 												measurement={learnMoreStyles[ 0 ].borderWidth}

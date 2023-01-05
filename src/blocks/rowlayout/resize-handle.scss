@@ -17,7 +17,7 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 
 
 .block-editor-block-list__block.is-selected[data-type="kadence/rowlayout"] {
-	> .kt-resizeable-column-container {
+	> .kt-resizeable-column-container .components-resizable-box__container {
 		.components-button.kt-fluid-grid-btn {
 			opacity: 1;
 		}

@@ -14,6 +14,17 @@
 .wp-block-kadence-column * {
 	box-sizing: border-box;
 }
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-top {
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+	margin-bottom: auto;
+    margin-top: auto;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+}
 .wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-middle {
 	display: flex;
 	justify-content: center;

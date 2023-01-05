@@ -178,8 +178,8 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "background": "transparent",
-		  "hoverBackground": "transparent",
+		  "background": "",
+		  "hoverBackground": "",
 		  "border": "",
 		  "hoverBorder": "",
 		  "borderRadius": 0,
@@ -398,7 +398,7 @@
 		  "marginControl": "individual",
 		  "color": "",
 		  "background": "transparent",
-		  "border": "#555555",
+		  "border": "",
 		  "borderRadius": 0,
 		  "borderWidth": [
 			0,
@@ -407,9 +407,9 @@
 			0
 		  ],
 		  "borderControl": "linked",
-		  "colorHover": "#ffffff",
-		  "backgroundHover": "#444444",
-		  "borderHover": "#444444",
+		  "colorHover": "",
+		  "backgroundHover": "",
+		  "borderHover": "",
 		  "hoverEffect": "revealBorder",
 		  "paddingTablet": [
 			"",
@@ -683,6 +683,10 @@
 	"borderHoverRadiusUnit": {
 		"type": "string",
 		"default": "px"
+	},
+	"kbVersion": {
+		"type": "number",
+		"default": ""
 	}
   }
 }

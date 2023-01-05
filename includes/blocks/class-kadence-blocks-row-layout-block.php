@@ -282,6 +282,39 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Gutter.
 		$css->render_row_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
 		$css->render_row_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
+		// Max Width.
+		if ( isset( $attributes['inheritMaxWidth'] ) && true === $attributes['inheritMaxWidth'] ) {
+			global $content_width;
+			if ( isset( $content_width ) ) {
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					$css->add_property( 'max-width', 'var( --global-content-width, ' . absint( $content_width ) . 'px )' );
+					$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
+					$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
+				} else {
+					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
+				}
+			}
+		} else {
+			if ( $css->is_number( $attributes['maxWidth'] ) ) {
+				$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+				$css->add_property( 'margin-left', 'auto' );
+				$css->add_property( 'margin-right', 'auto' );
+			}
+			if ( $css->is_number( $attributes['responsiveMaxWidth'][0] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][0] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+				$css->add_property( 'margin-left', 'auto' );
+				$css->add_property( 'margin-right', 'auto' );
+				$css->set_media_state( 'desktop' );
+			}
+			if ( $css->is_number( $attributes['responsiveMaxWidth'][1] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][1] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+				$css->add_property( 'margin-left', 'auto' );
+				$css->add_property( 'margin-right', 'auto' );
+				$css->set_media_state( 'desktop' );
+			}
+		}
 		// Padding, check for old attributes and use if present.
 		if ( empty( $attributes['kbVersion'] ) ) {
 			// Add old defaults back in.
@@ -345,39 +378,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'min-height', $attributes['minHeightMobile'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
 			$css->set_media_state( 'desktop' );
 		}
-		// Max Width.
-		if ( isset( $attributes['inheritMaxWidth'] ) && true === $attributes['inheritMaxWidth'] ) {
-			global $content_width;
-			if ( isset( $content_width ) ) {
-				if ( class_exists( 'Kadence\Theme' ) ) {
-					$css->add_property( 'max-width', 'var( --global-content-width, ' . absint( $content_width ) . 'px )' );
-					$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
-					$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
-				} else {
-					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
-				}
-			}
-		} else {
-			if ( $css->is_number( $attributes['maxWidth'] ) ) {
-				$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-			}
-			if ( $css->is_number( $attributes['responsiveMaxWidth'][0] ) ) {
-				$css->set_media_state( 'tablet' );
-				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][0] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-				$css->set_media_state( 'desktop' );
-			}
-			if ( $css->is_number( $attributes['responsiveMaxWidth'][1] ) ) {
-				$css->set_media_state( 'mobile' );
-				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][1] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-				$css->set_media_state( 'desktop' );
-			}
-		}
+		
 		// Layout.
 		$columns = ( ! empty( $attributes['columns'] ) ? $attributes['columns'] : 2 );
 		$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
