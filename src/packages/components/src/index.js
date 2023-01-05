@@ -51,6 +51,7 @@ export { default as HoverToggleControl } from './hover-toggle';
 export { default as TagSelect } from './tag-select';
 export { default as GapSizeControl } from './gap-controls';
 export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
+export { default as CopyPasteAttributes } from './copy-paste-attributes';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';

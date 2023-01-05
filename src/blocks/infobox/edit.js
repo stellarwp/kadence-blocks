@@ -48,9 +48,9 @@ import {
 	ResponsiveMeasurementControls,
 	SpacingVisualizer,
 	HoverToggleControl,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
-import InfoBoxStyleCopyPaste from './copy-paste-style';
 import {
 	KadenceColorOutput,
 	getPreviewSize,
@@ -1434,6 +1434,21 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			shadowHover: newUpdate,
 		} );
 	};
+	const onPaste = ( attributesToPaste ) => {
+		if ( attributesToPaste ) {
+			if ( attributesToPaste.mediaImage ) {
+				saveMediaImage( attributesToPaste.mediaImage[ 0 ] );
+				delete attributesToPaste.mediaImage;
+			}
+			if ( attributesToPaste.mediaIcon ) {
+				saveMediaIcon( attributesToPaste.mediaIcon[ 0 ] );
+				delete attributesToPaste.mediaIcon;
+			}
+
+			setAttributes( attributesToPaste );
+		}
+	}
+
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 	const renderCSS = (
 		<style>
@@ -1566,7 +1581,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
             [`kb-info-box-wrap${uniqueID}`]: true
@@ -1628,11 +1642,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 					value={hAlign}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
-				<InfoBoxStyleCopyPaste
-					onPaste={value => setAttributes( value )}
-					onPasteMediaImage={value => saveMediaImage( value )}
-					onPasteMediaIcon={value => saveMediaIcon( value )}
-					blockAttributes={attributes}
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ [ 'link', 'linkTitle' ] }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => onPaste( attributesToPaste ) }
 				/>
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/infobox' ) && (
