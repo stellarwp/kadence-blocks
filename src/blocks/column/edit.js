@@ -47,6 +47,7 @@ import {
 	SpacingVisualizer,
 	ColorGroup,
 	HoverToggleControl,
+	CopyPasteAttributes
 } from '@kadence/components';
 
 /**
@@ -63,11 +64,6 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 } from '@kadence/helpers';
-
-/**
- * Blocks Specific.
- */
-import ColumnStyleCopyPaste from './copy-paste-style';
 
 import './editor.scss';
 import metadata from './block.json';
@@ -612,9 +608,12 @@ function SectionEdit( {
 							label={ __( 'Vertical Align', 'kadence-blocks' )  }
 							controls={ verticalAlignOptions }
 						/>
-						<ColumnStyleCopyPaste
-							onPaste={ value => setAttributes( value ) }
-							blockAttributes={ attributes }
+						<CopyPasteAttributes
+							attributes={ attributes }
+							excludedAttrs={ [ 'images', 'imagesDynamic' ] } 
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
 					<InspectorControls>

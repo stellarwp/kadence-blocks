@@ -32,6 +32,7 @@ import {
 	KadenceRadioButtons,
 	TagSelect,
 	ResponsiveBorderControl,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 import {
@@ -50,7 +51,6 @@ import {
 /**
  * Block dependencies
  */
-import HeadingStyleCopyPaste from './copy-paste-style';
 import './markformat';
 
 /**
@@ -595,9 +595,12 @@ function KadenceAdvancedHeading( props ) {
 						setAttributes( { align: nextAlign } );
 					}}
 				/>
-				<HeadingStyleCopyPaste
-					onPaste={value => setAttributes( value )}
-					blockAttributes={attributes}
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ [ 'content' ] } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/advancedheading' ) && (

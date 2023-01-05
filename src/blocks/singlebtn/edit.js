@@ -41,7 +41,8 @@ import {
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
@@ -553,6 +554,13 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 						/>
 					</ToolbarGroup>
 				) }
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', ] } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
 			{ ! hideLink && isSelected && isEditingURL && (
 				<URLInputInline
