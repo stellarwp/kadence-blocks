@@ -425,7 +425,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background      : '#ffffff',
 					border          : [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
 					borderRadius    : [ 0, 0, 0, 0 ],
-					borderWidth     : [ 1, 1, 1, 2 ],
+					borderWidth     : [ 0, 0, 0, 0 ],
 					colorHover      : '#444444',
 					backgroundHover : '#ffffff',
 					borderHover     : [ '#d4d4d4', '#d4d4d4', '#d4d4d4', '#d4d4d4' ],
@@ -493,24 +493,24 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
 				titleBorder: [ {
-					"top": [ "#f2f2f2", "", "" ],
-					"right": [ "#f2f2f2", "", "" ],
-					"bottom": [ "#f2f2f2", "", "" ],
-					"left": [ "#f2f2f2", "", "" ],
+					"top": [ "#f2f2f2", "", 0 ],
+					"right": [ "#f2f2f2", "", 0 ],
+					"bottom": [ "#f2f2f2", "", 4 ],
+					"left": [ "#f2f2f2", "", 0 ],
 					"unit": "px"
 				} ],
 				titleBorderActive: [ {
-					"top": [ "#0e9cd1", "", "" ],
-					"right": [ "#0e9cd1", "", "" ],
-					"bottom": [ "#0e9cd1", "", "" ],
-					"left": [ "#0e9cd1", "", "" ],
+					"top": [ "#0e9cd1", "", 0 ],
+					"right": [ "#0e9cd1", "", 0 ],
+					"bottom": [ "#0e9cd1", "", 4 ],
+					"left": [ "#0e9cd1", "", 0 ],
 					"unit": "px"
 				} ],
 				titleBorderHover: [ {
-					"top": [ "#eeeeee", "", "" ],
-					"right": [ "#eeeeee", "", "" ],
-					"bottom": [ "#eeeeee", "", "" ],
-					"left": [ "#eeeeee", "", "" ],
+					"top": [ "#eeeeee", "", 0 ],
+					"right": [ "#eeeeee", "", 0 ],
+					"bottom": [ "#eeeeee", "", 4 ],
+					"left": [ "#eeeeee", "", 0 ],
 					"unit": "px"
 				} ],
 			} );
