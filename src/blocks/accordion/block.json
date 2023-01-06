@@ -115,6 +115,112 @@
 		"paddingType": "px"
 	  } ]
 	},
+	"titleBorder": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "#555555", "", "" ],
+		"right": [ "#555555", "", "" ],
+		"bottom": [ "#555555", "", "" ],
+		"left": [ "#555555", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"tabletTitleBorder": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "", "", "" ],
+	    "right": [ "", "", "" ],
+	    "bottom": [ "", "", "" ],
+	    "left": [ "", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"mobileTitleBorder": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "", "", "" ],
+	    "right": [ "", "", "" ],
+	    "bottom": [ "", "", "" ],
+	    "left": [ "", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"titleBorderHover": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "#eeeeee", "", "" ],
+	    "right": [ "#eeeeee", "", "" ],
+	    "bottom": [ "#eeeeee", "", "" ],
+	    "left": [ "#eeeeee", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"tabletTitleBorderHover": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "", "", "" ],
+	    "right": [ "", "", "" ],
+	    "bottom": [ "", "", "" ],
+	    "left": [ "", "", "" ],
+	    "unit": "px"
+	   } ]
+	},
+	"mobileTitleBorderHover": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "", "", "" ],
+	    "right": [ "", "", "" ],
+	    "bottom": [ "", "", "" ],
+	    "left": [ "", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"titleBorderActive": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "#444444", "", "" ],
+	    "right": [ "#444444", "", "" ],
+	    "bottom": [ "#444444", "", "" ],
+	    "left": [ "#444444", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"tabletTitleBorderActive": {
+	  "type": "array",
+	  "default": [ {
+	    "top": [ "", "", "" ],
+	    "right": [ "", "", "" ],
+	    "bottom": [ "", "", "" ],
+	    "left": [ "", "", "" ],
+	    "unit": "px"
+	  } ]
+	},
+	"mobileTitleBorderActive": {
+	 "type": "array",
+	 "default": [ {
+	   "top": [ "", "", "" ],
+	   "right": [ "", "", "" ],
+	   "bottom": [ "", "", "" ],
+	   "left": [ "", "", "" ],
+	   "unit": "px"
+	 } ]
+	},
+	"titleBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletTitleBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitleBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titleBorderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"showIcon": {
 	  "type": "boolean",
 	  "default": true

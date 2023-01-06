@@ -1,11 +1,7 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Accordion
  */
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktaccordUniqueIDs = [];
 /**
  * Import Icons
  */
@@ -31,26 +27,26 @@ import { times, map } from 'lodash';
 
 import {
 	PopColorControl,
-	BorderColorControls,
 	TypographyControls,
 	MeasurementControls,
 	KadencePanelBody,
-	WebfontLoader,
+	ResponsiveBorderControl,
 	KadenceWebfontLoader,
 	RangeControl,
 	KadenceIconPicker,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
-	ResponsiveMeasureRangeControl
+	ResponsiveMeasureRangeControl,
+	ResponsiveMeasurementControls
 } from '@kadence/components';
 import {
 	getPreviewSize,
 	KadenceColorOutput,
-	getPreviewDevice,
 	showSettings,
 	getSpacingOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
+	getBorderStyle
 } from '@kadence/helpers';
 
 /**
@@ -65,7 +61,6 @@ import {
 import {
 	useEffect,
 	useState,
-	Component,
 	Fragment,
 } from '@wordpress/element';
 import {
@@ -83,7 +78,6 @@ import {
 	ButtonGroup,
 	ToggleControl,
 	SelectControl,
-	IconButton,
 } from '@wordpress/components';
 
 import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
@@ -109,7 +103,7 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane } ) {
+function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane, getPreviewDevice } ) {
 	const {
 		uniqueID,
 		paneCount,
@@ -134,18 +128,25 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		iconStyle,
 		iconSide,
 		iconColor,
-		showPresets
+		showPresets,
+		titleBorder,
+		tabletTitleBorder,
+		titleBorderActive,
+		mobileTitleBorder,
+		tabletTitleBorderActive,
+		mobileTitleBorderActive,
+		titleBorderHover,
+		tabletTitleBorderHover,
+		mobileTitleBorderHover,
+		titleBorderRadius,
+		tabletTitleBorderRadius,
+		mobileTitleBorderRadius,
+		titleBorderRadiusUnit
 	} = attributes;
 
 	const [ contentPaddingControl, setContentPaddingControl ] = useState( 'linked' );
 	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
 	const [ contentBorderControl, setContentBorderControl ] = useState( 'linked' );
-	const [ titleBorderControl, setTitleBorderControl ] = useState( 'linked' );
-	const [ titlePaddingControl, setTitlePaddingControl ] = useState( 'individual' );
-	const [ titleBorderRadiusControl, setTitleBorderRadiusControl ] = useState( 'linked' );
-	const [ titleBorderColorControl, setTitleBorderColorControl ] = useState( 'linked' );
-	const [ titleBorderHoverColorControl, setTitleBorderHoverColorControl ] = useState( 'linked' );
-	const [ titleBorderActiveColorControl, setTitleBorderActiveColorControl ] = useState( 'linked' );
 	const [ titleTag, setTitleTag ] = useState( 'div' );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -202,21 +203,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 
-		if ( titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 1 ] && titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 2 ] && titleStyles[ 0 ].padding[ 0 ] === titleStyles[ 0 ].padding[ 3 ] ) {
-			setTitlePaddingControl( 'linked' );
-		} else {
-			setTitlePaddingControl( 'individual' );
-		}
-		if ( titleStyles[ 0 ].borderWidth[ 0 ] === titleStyles[ 0 ].borderWidth[ 1 ] && titleStyles[ 0 ].borderWidth[ 0 ] === titleStyles[ 0 ].borderWidth[ 2 ] && titleStyles[ 0 ].borderWidth[ 0 ] === titleStyles[ 0 ].borderWidth[ 3 ] ) {
-			setTitleBorderControl( 'linked' );
-		} else {
-			setTitleBorderControl( 'individual' );
-		}
-		if ( titleStyles[ 0 ].borderRadius[ 0 ] === titleStyles[ 0 ].borderRadius[ 1 ] && titleStyles[ 0 ].borderRadius[ 0 ] === titleStyles[ 0 ].borderRadius[ 2 ] && titleStyles[ 0 ].borderRadius[ 0 ] === titleStyles[ 0 ].borderRadius[ 3 ] ) {
-			setTitleBorderRadiusControl( 'linked' );
-		} else {
-			setTitleBorderRadiusControl( 'individual' );
-		}
 		if ( contentBorder[ 0 ] === contentBorder[ 1 ] && contentBorder[ 0 ] === contentBorder[ 2 ] && contentBorder[ 0 ] === contentBorder[ 3 ] ) {
 			setContentBorderControl( 'linked' );
 		} else {
@@ -232,28 +218,51 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		} else {
 			setContentPaddingControl( 'individual' );
 		}
-		if ( titleStyles[ 0 ].border[ 0 ] === titleStyles[ 0 ].border[ 1 ] && titleStyles[ 0 ].border[ 0 ] === titleStyles[ 0 ].border[ 2 ] && titleStyles[ 0 ].border[ 0 ] === titleStyles[ 0 ].border[ 3 ] ) {
-			setTitleBorderColorControl( 'linked' );
-		} else {
-			setTitleBorderColorControl( 'individual' );
-		}
-		if ( titleStyles[ 0 ].borderHover[ 0 ] === titleStyles[ 0 ].borderHover[ 1 ] && titleStyles[ 0 ].borderHover[ 0 ] === titleStyles[ 0 ].borderHover[ 2 ] && titleStyles[ 0 ].borderHover[ 0 ] === titleStyles[ 0 ].borderHover[ 3 ] ) {
-			setTitleBorderHoverColorControl( 'linked' );
-		} else {
-			setTitleBorderHoverColorControl( 'individual' );
-		}
-		if ( titleStyles[ 0 ].borderActive[ 0 ] === titleStyles[ 0 ].borderActive[ 1 ] && titleStyles[ 0 ].borderActive[ 0 ] === titleStyles[ 0 ].borderActive[ 2 ] && titleStyles[ 0 ].borderActive[ 0 ] === titleStyles[ 0 ].borderActive[ 3 ] ) {
-			setTitleBorderActiveColorControl( 'linked' );
-		} else {
-			setTitleBorderActiveColorControl( 'individual' );
-		}
-
 		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			setTitleTag( accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag );
 		}
 		if ( accordionBlock && accordionBlock.innerBlocks[ 0 ] && accordionBlock.innerBlocks[ 0 ].attributes && accordionBlock.innerBlocks[ 0 ].attributes.titleTag ) {
 			setTitleTag( accordionBlock.innerBlocks[ 0 ].attributes.titleTag );
 		}
+
+		// Update Old Styles
+		if ( ( 0 !== titleStyles[0].borderWidth[0] || 0 !== titleStyles[0].borderWidth[1] || 0 !== titleStyles[0].borderWidth[2] || 0 !== titleStyles[0].borderWidth[3] ) ) {
+			setAttributes( {
+				titleBorder: [{
+					top: [titleStyles[0].border[0], "", titleStyles[0].borderWidth[0]],
+					right: [titleStyles[0].border[1], "", titleStyles[0].borderWidth[1]],
+					bottom: [titleStyles[0].border[2], "", titleStyles[0].borderWidth[2]],
+					left: [titleStyles[0].border[3], "", titleStyles[0].borderWidth[3]],
+				}],
+				titleBorderHover: [{
+					top: [titleStyles[0].borderHover[0], "", titleStyles[0].borderWidth[0]],
+					right: [titleStyles[0].borderHover[1], "", titleStyles[0].borderWidth[1]],
+					bottom: [titleStyles[0].borderHover[2], "", titleStyles[0].borderWidth[2]],
+					left: [titleStyles[0].borderHover[3], "", titleStyles[0].borderWidth[3]],
+				}],
+				titleBorderActive: [{
+					top: [titleStyles[0].borderActive[0], "", titleStyles[0].borderWidth[0]],
+					right: [titleStyles[0].borderActive[1], "", titleStyles[0].borderWidth[1]],
+					bottom: [titleStyles[0].borderActive[2], "", titleStyles[0].borderWidth[2]],
+					left: [titleStyles[0].borderActive[3], "", titleStyles[0].borderWidth[3]],
+				}],
+				titleStyles: [{
+					...titleStyles[0],
+					borderWidth: [0,0,0,0],
+				} ]
+			} );
+		}
+
+		if ( ( 0 !== titleStyles[0].borderRadius[0] || 0 !== titleStyles[0].borderRadius[1] || 0 !== titleStyles[0].borderRadius[2] || 0 !== titleStyles[0].borderRadius[3] ) ) {
+			setAttributes( {
+				titleBorderRadius: [ titleStyles[0].borderRadius[0], titleStyles[0].borderRadius[1], titleStyles[0].borderRadius[2], titleStyles[0].borderRadius[3] ],
+				titleStyles: [{
+					...titleStyles[0],
+					borderRadius: [0,0,0,0],
+				} ]
+			} );
+		}
+
 
 	}, [] );
 
@@ -280,6 +289,30 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const previewTitlePaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 1 ] ? titleStyles[ 0 ].padding[ 1 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 1 ] ? titleStyles[ 0 ].paddingTablet[ 1 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 1 ] ? titleStyles[ 0 ].paddingMobile[ 1 ] : '' ) );
 	const previewTitlePaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 2 ] ? titleStyles[ 0 ].padding[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 2 ] ? titleStyles[ 0 ].paddingTablet[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 2 ] ? titleStyles[ 0 ].paddingMobile[ 2 ] : '' ) );
 	const previewTitlePaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 3 ] ? titleStyles[ 0 ].padding[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 3 ] ? titleStyles[ 0 ].paddingTablet[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 3 ] ? titleStyles[ 0 ].paddingMobile[ 3 ] : '' ) );
+
+	// Border
+	const previewTitleBorderTop = getBorderStyle( getPreviewDevice, 'top', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderRight = getBorderStyle( getPreviewDevice, 'right', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderLeft = getBorderStyle( getPreviewDevice, 'left', titleBorder, tabletTitleBorder, mobileTitleBorder );
+
+	// Border Radius
+	const previewTitleRadiusTop = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 0 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 0 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 0 ] : '' ) );
+	const previewTitleRadiusRight = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 1 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 1 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 1 ] : '' ) );
+	const previewTitleRadiusBottom = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 2 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 2 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 2 ] : '' ) );
+	const previewTitleRadiusLeft = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 3 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 3 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 3 ] : '' ) );
+
+	// Hover Border
+	const previewTitleBorderHoverTop = getBorderStyle( getPreviewDevice, 'top', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
+	const previewTitleBorderHoverRight = getBorderStyle( getPreviewDevice, 'right', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
+	const previewTitleBorderHoverBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
+	const previewTitleBorderHoverLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
+
+	// Active Border
+	const previewTitleBorderActiveTop = getBorderStyle( getPreviewDevice, 'top', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
+	const previewTitleBorderActiveRight = getBorderStyle( getPreviewDevice, 'right', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
+	const previewTitleBorderActiveBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
+	const previewTitleBorderActiveLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
 
 	const setInitalLayout = ( key ) => {
 		if ( 'skip' === key ) {
@@ -355,6 +388,14 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					borderActive    : [ '#f3690e', '#f3690e', '#f3690e', '#f3690e' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
+				titleBorderActive: [ {
+					"top": [ "#f3690e", "", "" ],
+					"right": [ "#f3690e", "", "" ],
+					"bottom": [ "#f3690e", "", "" ],
+					"left": [ "#f3690e", "", "" ],
+					"unit": "px"
+				} ],
+				titleBorderRadius: [ 6, 6, 6, 6 ],
 			} );
 		} else if ( 'subtle' === key ) {
 			setAttributes( {
@@ -392,6 +433,27 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					borderActive    : [ '#eeeeee', '#eeeeee', '#eeeeee', '#0e9cd1' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
+				titleBorder: [ {
+					"top": [ "#eeeeee", "", 1 ],
+					"right": [ "#eeeeee", "", 1 ],
+					"bottom": [ "#eeeeee", "", 1 ],
+					"left": [ "#eeeeee", "", 2 ],
+					"unit": "px"
+				} ],
+				titleBorderActive: [ {
+					"top": [ "#eeeeee", "", 1 ],
+					"right": [ "#eeeeee", "", 1 ],
+					"bottom": [ "#eeeeee", "", 1 ],
+					"left": [ "#eeeeee", "", 2 ],
+					"unit": "px"
+				} ],
+				titleBorderHover: [ {
+					"top": [ "#d4d4d4", "", 1 ],
+					"right": [ "#d4d4d4", "", 1 ],
+					"bottom": [ "#d4d4d4", "", 1 ],
+					"left": [ "#d4d4d4", "", 2 ],
+					"unit": "px"
+				} ],
 			} );
 		} else if ( 'bottom' === key ) {
 			setAttributes( {
@@ -428,6 +490,27 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					backgroundActive: '#ffffff',
 					borderActive    : [ '#0e9cd1', '#0e9cd1', '#0e9cd1', '#0e9cd1' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
+				} ],
+				titleBorder: [ {
+					"top": [ "#f2f2f2", "", "" ],
+					"right": [ "#f2f2f2", "", "" ],
+					"bottom": [ "#f2f2f2", "", "" ],
+					"left": [ "#f2f2f2", "", "" ],
+					"unit": "px"
+				} ],
+				titleBorderActive: [ {
+					"top": [ "#0e9cd1", "", "" ],
+					"right": [ "#0e9cd1", "", "" ],
+					"bottom": [ "#0e9cd1", "", "" ],
+					"left": [ "#0e9cd1", "", "" ],
+					"unit": "px"
+				} ],
+				titleBorderHover: [ {
+					"top": [ "#eeeeee", "", "" ],
+					"right": [ "#eeeeee", "", "" ],
+					"bottom": [ "#eeeeee", "", "" ],
+					"left": [ "#eeeeee", "", "" ],
+					"unit": "px"
 				} ],
 			} );
 		}
@@ -513,14 +596,16 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			{`
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header {
 					color: ${KadenceColorOutput( titleStyles[ 0 ].color )};
-					border-color: ${KadenceColorOutput( titleStyles[ 0 ].border[ 0 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 1 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 2 ] )} ${KadenceColorOutput( titleStyles[ 0 ].border[ 3 ] )};
+					border-top: ${previewTitleBorderTop};
+					border-right: ${previewTitleBorderRight};
+					border-bottom: ${previewTitleBorderBottom};
+					border-left: ${previewTitleBorderLeft};
+					border-radius:${previewTitleRadiusTop}${titleBorderRadiusUnit} ${previewTitleRadiusRight}${titleBorderRadiusUnit} ${previewTitleRadiusBottom}${titleBorderRadiusUnit} ${previewTitleRadiusLeft}${titleBorderRadiusUnit};
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].background )};
 					${'' !== previewTitlePaddingTop ? `padding-top:${ getSpacingOptionOutput( previewTitlePaddingTop, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingRight ? `padding-right:${ getSpacingOptionOutput(previewTitlePaddingRight, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingBottom ? `padding-bottom:${ getSpacingOptionOutput( previewTitlePaddingBottom, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingLeft ? `padding-left:${ getSpacingOptionOutput( previewTitlePaddingLeft, previewTitlePaddingType ) };` : ''}
-					border-width:${titleStyles[ 0 ].borderWidth[ 0 ]}px ${titleStyles[ 0 ].borderWidth[ 1 ]}px ${titleStyles[ 0 ].borderWidth[ 2 ]}px ${titleStyles[ 0 ].borderWidth[ 3 ]}px;
-					border-radius:${titleStyles[ 0 ].borderRadius[ 0 ]}px ${titleStyles[ 0 ].borderRadius[ 1 ]}px ${titleStyles[ 0 ].borderRadius[ 2 ]}px ${titleStyles[ 0 ].borderRadius[ 3 ]}px;
 					font-size:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
 					line-height:${titleStyles[ 0 ].lineHeight[ 0 ]}${titleStyles[ 0 ].lineType};
 					letter-spacing:${titleStyles[ 0 ].letterSpacing}px;
@@ -561,7 +646,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header:hover {
 					color: ${KadenceColorOutput( titleStyles[ 0 ].colorHover )};
-					border-color: ${KadenceColorOutput( titleStyles[ 0 ].borderHover[ 0 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderHover[ 1 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderHover[ 2 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderHover[ 3 ] )};
+					border-top: ${previewTitleBorderHoverTop};
+					border-right: ${previewTitleBorderHoverRight};
+					border-bottom: ${previewTitleBorderHoverBottom};
+					border-left: ${previewTitleBorderHoverLeft};					
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
@@ -574,8 +662,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1} .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-header {
-					color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
-					border-color: ${KadenceColorOutput( titleStyles[ 0 ].borderActive[ 0 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderActive[ 1 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderActive[ 2 ] )} ${KadenceColorOutput( titleStyles[ 0 ].borderActive[ 3 ] )};
+					color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};				
+					border-top: ${previewTitleBorderActiveTop};
+					border-right: ${previewTitleBorderActiveRight};
+					border-bottom: ${previewTitleBorderActiveBottom};
+					border-left: ${previewTitleBorderActiveLeft};	
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundActive )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:after {
@@ -800,28 +891,77 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									initialOpen={true}
 									panelName={'kb-accordion-pane-title-color-settings'}
 								>
-									<PopColorControl
-										label={__( 'Title Color', 'kadence-blocks' )}
-										value={( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' )}
-										onChange={( value ) => saveTitleStyles( { color: value } )}
-										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
-										value2={( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' )}
-										onChange2={( value ) => saveTitleStyles( { colorHover: value } )}
-										swatchLabel3={__( 'Active Color', 'kadence-blocks' )}
-										value3={( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' )}
-										onChange3={( value ) => saveTitleStyles( { colorActive: value } )}
-									/>
-									<PopColorControl
-										label={__( 'Title Background', 'kadence-blocks' )}
-										value={( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' )}
-										onChange={( value ) => saveTitleStyles( { background: value } )}
-										swatchLabel2={__( 'Hover Background', 'kadence-blocks' )}
-										value2={( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' )}
-										onChange2={( value ) => saveTitleStyles( { backgroundHover: value } )}
-										swatchLabel3={__( 'Active Background', 'kadence-blocks' )}
-										value3={( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' )}
-										onChange3={( value ) => saveTitleStyles( { backgroundActive: value } )}
-									/>
+									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+											  activeClass="active-tab"
+											  tabs={[
+												  {
+													  name     : 'normal',
+													  title    : __( 'Normal' ),
+													  className: 'kt-normal-tab',
+												  },
+												  {
+													  name     : 'hover',
+													  title    : __( 'Hover' ),
+													  className: 'kt-hover-tab',
+												  },
+												  {
+													  name     : 'active',
+													  title    : __( 'Active' ),
+													  className: 'kt-active-tab',
+												  },
+											  ]}>
+										{ ( tab ) => {
+
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Hover Color', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' )}
+																onChange={( value ) => saveTitleStyles( { colorHover: value } )}
+															/>
+															<PopColorControl
+																label={__( 'Hover Background', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' )}
+																onChange={( value ) => saveTitleStyles( { backgroundHover: value } )}
+															/>
+														</div>
+													);
+												} else if ( 'active' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Active Color', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' )}
+																onChange={( value ) => saveTitleStyles( { colorActive: value } )}
+															/>
+															<PopColorControl
+																label={__( 'Active Background', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' )}
+																onChange={( value ) => saveTitleStyles( { backgroundActive: value } )}
+															/>
+														</div>
+													);
+												} else {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Title Color', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' )}
+																onChange={( value ) => saveTitleStyles( { color: value } )}
+															/>
+															<PopColorControl
+																label={__( 'Title Background', 'kadence-blocks' )}
+																value={( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' )}
+																onChange={( value ) => saveTitleStyles( { background: value } )}
+															/>
+														</div>
+													);
+												}
+											}
+										} }
+									</TabPanel>
 								</KadencePanelBody>
 							) }
 							{ showSettings( 'titleBorder', 'kadence/accordion' ) && (
@@ -830,44 +970,93 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									initialOpen={true}
 									panelName={'kb-accordion-pane-title-border'}
 								>
-									<BorderColorControls
-										label={__( 'Title Border Color' )}
-										values={titleStyles[ 0 ].border}
-										onChange={( value ) => saveTitleStyles( { border: value } )}
-										swatchLabel2={__( 'Hover Border', 'kadence-blocks' )}
-										value2={( titleStyles[ 0 ].borderHover ? titleStyles[ 0 ].borderHover : '' )}
-										onChange2={( value ) => saveTitleStyles( { borderHover: value } )}
-										swatchLabel3={__( 'Active Border', 'kadence-blocks' )}
-										value3={( titleStyles[ 0 ].borderActive ? titleStyles[ 0 ].borderActive : '' )}
-										onChange3={( value ) => saveTitleStyles( { borderActive: value } )}
-									/>
-									<MeasurementControls
-										label={__( 'Pane Title Border Width (px)', 'kadence-blocks' )}
-										measurement={titleStyles[ 0 ].borderWidth}
-										control={titleBorderControl}
-										onChange={( value ) => saveTitleStyles( { borderWidth: value } )}
-										onControl={( value ) => setTitleBorderControl( value )}
-										min={0}
-										max={100}
-										step={1}
-									/>
-									<MeasurementControls
-										label={__( 'Pane Title Border Radius (px)', 'kadence-blocks' )}
-										measurement={titleStyles[ 0 ].borderRadius}
-										control={titleBorderRadiusControl}
-										onChange={( value ) => saveTitleStyles( { borderRadius: value } )}
-										onControl={( value ) => setTitleBorderRadiusControl( value )}
-										min={0}
-										max={100}
-										step={1}
-										controlTypes={[
-											{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
+									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+											  activeClass="active-tab"
+											  tabs={[
+												  {
+													  name     : 'normal',
+													  title    : __( 'Normal' ),
+													  className: 'kt-normal-tab',
+												  },
+												  {
+													  name     : 'hover',
+													  title    : __( 'Hover' ),
+													  className: 'kt-hover-tab',
+												  },
+												  {
+													  name     : 'active',
+													  title    : __( 'Active' ),
+													  className: 'kt-active-tab',
+												  },
+											  ]}>
+										{ ( tab ) => {
+
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<ResponsiveBorderControl
+																label={__( 'Hover Border', 'kadence-blocks' )}
+																value={ titleBorderHover }
+																tabletValue={ tabletTitleBorderHover }
+																mobileValue={ mobileTitleBorderHover }
+																onChange={( value ) => setAttributes( { titleBorderHover: value } )}
+																onChangeTablet={( value ) => setAttributes( { tabletTitleBorderHover: value } )}
+																onChangeMobile={( value ) => setAttributes( { mobileTitleBorderHover: value } )}
+															/>
+														</div>
+													);
+												} else if ( 'active' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<ResponsiveBorderControl
+																label={__( 'Active Border', 'kadence-blocks' )}
+																value={ titleBorderActive }
+																tabletValue={ tabletTitleBorderActive }
+																mobileValue={ mobileTitleBorderActive }
+																onChange={( value ) => setAttributes( { titleBorderActive: value } )}
+																onChangeTablet={( value ) => setAttributes( { tabletTitleBorderActive: value } )}
+																onChangeMobile={( value ) => setAttributes( { mobileTitleBorderActive: value } )}
+															/>
+														</div>
+													);
+												} else {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<ResponsiveBorderControl
+																label={__( 'Border', 'kadence-blocks' )}
+																value={ titleBorder }
+																tabletValue={ tabletTitleBorder }
+																mobileValue={ mobileTitleBorder }
+																onChange={( value ) => setAttributes( { titleBorder: value } )}
+																onChangeTablet={( value ) => setAttributes( { tabletTitleBorder: value } )}
+																onChangeMobile={( value ) => setAttributes( { mobileTitleBorder: value } )}
+															/>
+														</div>
+													);
+												}
+											}
+										} }
+									</TabPanel>
+
+									<hr/>
+
+									<ResponsiveMeasurementControls
+										label={ __( 'Border Radius', 'kadence-blocks' ) }
+										value={ titleBorderRadius }
+										tabletValue={ tabletTitleBorderRadius }
+										mobileValue={ mobileTitleBorderRadius }
+										onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletTitleBorderRadius: value } ) }
+										onChangeMobile={ ( value ) => setAttributes( { mobileTitleBorderRadius: value } ) }
+										min={ 0 }
+										max={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+										step={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+										unit={ titleBorderRadiusUnit }
+										units={ [ 'px', 'em', 'rem', '%' ] }
+										onUnit={ ( value ) => setAttributes( { titleBorderRadiusUnit: value } ) }
+										isBorderRadius={ true }
+										allowEmpty={true}
 									/>
 								</KadencePanelBody>
 							)}
