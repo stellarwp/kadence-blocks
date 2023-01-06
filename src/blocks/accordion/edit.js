@@ -248,7 +248,8 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				}],
 				titleStyles: [{
 					...titleStyles[0],
-					borderWidth: [0,0,0,0],
+					borderWidth: [0, 0, 0, 0],
+					border: [0, 0, 0, 0],
 				} ]
 			} );
 		}
