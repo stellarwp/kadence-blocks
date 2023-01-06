@@ -73,14 +73,14 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$title_styles = $attributes['titleStyles'][0];
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header' );
 
-			// Support legacy non-responsive broder widths & Radius
+			// Support legacy non-responsive broder widths
 			if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
 				$css->render_border_color( $title_styles, 'border' );
 				$css->render_measure_range( $title_styles, 'borderWidth', 'border-width' );
 			} else {
 				$css->render_border_styles( $attributes, 'titleBorder' );
 			}
-
+			// Support legacy non-responsive broder radius
 			if ( ! empty( $title_styles['borderRadius'] ) && $title_styles['borderRadius'] !== array(0, 0, 0, 0) ) {
 				$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
 			} else {
@@ -111,7 +111,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'colorHover', 'color' );
 					$css->render_color_output( $title_styles, 'backgroundHover', 'background' );
 
-					// Support pre-responsive broder widths
+					// Support legacy non-responsive broder widths
 					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
 						$css->render_border_color( $title_styles, 'borderHover' );
 					} else {
@@ -141,7 +141,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'colorActive', 'color' );
 					$css->render_color_output( $title_styles, 'backgroundActive', 'background' );
 
-					// Support pre-responsive broder widths
+					// Support legacy non-responsive broder widths
 					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
 						$css->render_border_color( $title_styles, 'borderActive' );
 					} else {
@@ -167,7 +167,6 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'backgroundActive', 'background' );
 				}
 			}
-
 		}
 
 		return $css->css_output();
