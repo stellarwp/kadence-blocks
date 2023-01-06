@@ -77,9 +77,13 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
 				$css->render_border_color( $title_styles, 'border' );
 				$css->render_measure_range( $title_styles, 'borderWidth', 'border-width' );
-				$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
 			} else {
 				$css->render_border_styles( $attributes, 'titleBorder' );
+			}
+
+			if ( ! empty( $title_styles['borderRadius'] ) && $title_styles['borderRadius'] !== array(0, 0, 0, 0) ) {
+				$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
+			} else {
 				$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius', array( 'unit_key' => 'titleBorderRadiusUnit' ) );
 			}
 			$css->render_color_output( $title_styles, 'background', 'background' );
