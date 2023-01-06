@@ -193,11 +193,38 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		// SVG
 		if( $attributes['icon'] && in_array( $attributes['iconSide'], array( 'left', 'right') )) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'justify-content', $attributes['align'] );
+
+			if( !empty( $attributes['tabletAlign'] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'justify-content', $attributes['tabletAlign'] );
+				$css->set_media_state( 'desktop' );
+			}
+
+			if( !empty( $attributes['mobileAlign'] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'justify-content', $attributes['mobileAlign'] );
+				$css->set_media_state( 'desktop' );
+			}
+
+			if( isset( $attributes['iconVerticalAlign'] ) ) {
+				$css->add_property( 'align-items', $attributes['iconVerticalAlign'] );
+			} else {
+				$css->add_property( 'align-items', 'center' );
+			}
+
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg' );
 
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
-			$css->render_responsive_range( $attributes,'iconSize', 'width', 'iconSizeUnit' );
+			$css->render_responsive_range( $attributes,'iconSize', 'font-size', 'iconSizeUnit' );
 			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit') );
+
+
+			if( isset( $attributes['lineHeight'] ) ) {
+				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+			}
 
 			if( isset( $attributes['iconHover'] ) && $attributes['iconHover'] ) {
 				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg:hover' );
@@ -299,11 +326,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
-		// Icon
-		$css->set_selector( '.kt-adv-heading' . $unique_id . ' .kt-svg-advanced-heading' );
-		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-
-
 		return $css->css_output();
 	}
 	
@@ -380,7 +402,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array( 'kadence-blocks-' . $this->block_name ), KADENCE_BLOCKS_VERSION, true );
 
 	private function get_icon( $attributes ) {
-		$extras = ' height="'.$attributes['iconSize'][0] .'" width="'.$attributes['iconSize'][0] .'"';
+		$extras = ' height="1em" width="1em"';
 		return Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'none', '2', '', false, $extras);
 	}
 
