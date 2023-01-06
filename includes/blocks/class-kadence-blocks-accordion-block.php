@@ -73,16 +73,17 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$title_styles = $attributes['titleStyles'][0];
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header' );
 
-			// Support pre-responsive broder widths
+			// Support legacy non-responsive broder widths & Radius
 			if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
 				$css->render_border_color( $title_styles, 'border' );
 				$css->render_measure_range( $title_styles, 'borderWidth', 'border-width' );
+				$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
 			} else {
 				$css->render_border_styles( $attributes, 'titleBorder' );
+				$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius', array( 'unit_key' => 'titleBorderRadiusUnit' ) );
 			}
 			$css->render_color_output( $title_styles, 'background', 'background' );
 			$css->render_typography( $title_styles, '' );
-			$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
 			$css->render_measure_output( $title_styles, 'padding', 'padding' );
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap' );
 			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
