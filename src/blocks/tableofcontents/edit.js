@@ -34,6 +34,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -522,6 +523,12 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 					controls={listOptions}
 				/>
 			</ToolbarGroup>
+			<CopyPasteAttributes
+				attributes={ attributes }
+				defaultAttributes={ metadata['attributes'] } 
+				blockSlug={ metadata['name'] } 
+				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+			/>
 		</BlockControls>
 	);
 	const inspectorControls = (
@@ -741,7 +748,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								)}
 							</KadencePanelBody>
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tableofcontents' } />
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={metadata['name']} />
 						</>
 					}
 
