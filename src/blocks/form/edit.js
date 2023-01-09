@@ -21,7 +21,8 @@ import {
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
@@ -282,6 +283,8 @@ function KadenceForm( props ) {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const marginMouseOver = mouseOverVisualizer();
+
+	const nonTransAttrs = [ 'postID' ];
 
 	const deselectField = () => {
 		setSelectedField( null );
@@ -1628,6 +1631,13 @@ function KadenceForm( props ) {
 				<AlignmentToolbar
 					value={hAlign}
 					onChange={value => setAttributes( { hAlign: value } )}
+				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
 			<InspectorControls>
@@ -3561,7 +3571,7 @@ function KadenceForm( props ) {
 
 				{ (activeTab === 'advanced') && (
 					<>
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/form' } excludedAttrs={ [ 'postID' ] } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
 			</InspectorControls>

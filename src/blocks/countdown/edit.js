@@ -1273,7 +1273,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ nonTransAttrs } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 
 							</>
 						}
