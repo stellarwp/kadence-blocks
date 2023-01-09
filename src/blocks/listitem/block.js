@@ -4,6 +4,7 @@
 
 import edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 import metadata from './block.json';
 
 /**
@@ -39,4 +40,5 @@ registerBlockType( 'kadence/listitem', {
 		...a,
 		text: ( a.text || '' ) + text,
 	} ),
+    deprecated
 } );

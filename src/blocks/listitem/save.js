@@ -5,6 +5,9 @@
 import {
     useBlockProps,
 } from '@wordpress/block-editor';
+import { dispatch, select } from "@wordpress/data";
+import { RichText } from '@wordpress/block-editor';
+
 /**
  * Kadence dependencies
  */
@@ -13,23 +16,17 @@ import { IconSpanTag } from '@kadence/components';
  * External dependencies
  */
 import classnames from 'classnames';
-import { RichText } from '@wordpress/block-editor';
 
-function Save( { attributes } ) {
+function Save( props ) {
+
+    const { attributes, clientId } = props;
     const {
         uniqueID,
         icon,
         link,
         target,
-        size,
         width,
         text,
-        color,
-        background,
-        border,
-        borderRadius,
-        padding,
-        borderWidth,
         style,
         level
     } = attributes;
@@ -44,13 +41,14 @@ function Save( { attributes } ) {
 	const blockProps = useBlockProps.save( {
 		className: classes,
 	} );
+
+    const iconName = icon ? icon : 'USE_PARENT_DEFAULT_ICON';
+
     return (
         <li {...blockProps}>
             { link && (
                 <a href={ link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === target ? target : undefined ) } rel={ '_blank' === target ? 'noopener noreferrer' : undefined }>
-                    { icon && (
-                        <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ icon } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
-                    ) }
+                    <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
                     <RichText.Content
                         tagName="span"
                         value={ text }
@@ -60,9 +58,7 @@ function Save( { attributes } ) {
             ) }
             { ! link && (
                 <>
-                    { icon && (
-                        <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ icon } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
-                    ) }
+                    <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
                     <RichText.Content
                         tagName="span"
                         value={ text }
