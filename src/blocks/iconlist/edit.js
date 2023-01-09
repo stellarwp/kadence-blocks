@@ -40,6 +40,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -196,6 +197,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 	];
 
+	const nonTransAttrs = [ 'listCount' ];
+
 	const blockProps = useBlockProps( {
 		className: className,
 		// 'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
@@ -230,6 +233,13 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 							showTooltip={ true }
 						/>
 					</ToolbarGroup>
+					<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ nonTransAttrs } 
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+					/>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/iconlist' ) && (
 					<InspectorControls>
@@ -650,7 +660,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 									</KadencePanelBody>
 								)} */}
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/iconlist' } excludedAttrs={ [ 'listCount' ] } preventMultiple={ [ 'items' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } preventMultiple={ [ 'items' ] } />
 
 							</>
 						}
