@@ -20,7 +20,8 @@ import {
     KadenceBlockDefaults,
     KadenceIconPicker,
     ResponsiveMeasureRangeControl,
-    SpacingVisualizer
+    SpacingVisualizer,
+    CopyPasteAttributes,
 } from '@kadence/components';
 import {
     KadenceColorOutput,
@@ -43,7 +44,8 @@ import metadata from './block.json';
 import { __ } from '@wordpress/i18n';
 
 import {
-    useBlockProps
+    useBlockProps,
+    BlockControls,
 } from '@wordpress/block-editor';
 import {
     Fragment,
@@ -121,6 +123,8 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
         level
     };
 
+    const nonTransAttrs = ['icon', 'link', 'target' ];
+
     const [ activeTab, setActiveTab ] = useState( 'general' );
 
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -162,6 +166,15 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
     return (
         <div {...blockProps}>
             {renderCSS}
+            <BlockControls>
+                <CopyPasteAttributes
+                    attributes={ attributes }
+                    excludedAttrs={ nonTransAttrs }
+                    defaultAttributes={ metadata['attributes'] } 
+                    blockSlug={ metadata['name'] } 
+                    onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+                />
+            </BlockControls>
             <KadenceInspectorControls blockSlug={ 'kadence/icon' }>
 
                 <InspectorControlTabs
@@ -345,7 +358,7 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
                     <>
                         <AdvancedSettings attributes={ attributes } setAttributes={ setAttributes } />
 
-                        <KadenceBlockDefaults attributes={ attributes } defaultAttributes={ metadata['attributes'] } blockSlug={ 'kadence/icon' } />
+                        <KadenceBlockDefaults attributes={ attributes } defaultAttributes={ metadata['attributes'] } blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
                     </>
                 }
             </KadenceInspectorControls>
