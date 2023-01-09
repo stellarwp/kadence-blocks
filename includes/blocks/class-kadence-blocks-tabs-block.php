@@ -324,6 +324,12 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
+		/* SVG Icon */
+		if( array_filter( array_column( $attributes['titles'], 'icon') ) ) {
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li svg' );
+			$css->add_property( 'font-size', $attributes['iSize'] . 'px' );
+		}
+
 		return $css->css_output();
 	}
 
