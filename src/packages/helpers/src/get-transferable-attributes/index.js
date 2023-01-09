@@ -1,4 +1,4 @@
-import { omit, isEqual } from 'lodash';
+import { omit, isEqual, head } from 'lodash';
 
 /**
  * Gets attributes from a kadence block that can be transfered to another block via block defaults or copy/pasting.
