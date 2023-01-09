@@ -436,7 +436,7 @@ class Kadence_Blocks_Frontend {
 								$reusable_block = get_post( $blockattr['ref'] );
 								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
 									$reuse_data_block = parse_blocks( $reusable_block->post_content );
-									$this->blocks_cycle_through( $reuse_data_block );
+									$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
 								}
 							}
 						}
@@ -481,7 +481,7 @@ class Kadence_Blocks_Frontend {
 								if ( isset( $reuse_data_block[0] ) && isset( $reuse_data_block[0]['blockName'] ) && 'core/block' === $reuse_data_block[0]['blockName'] && isset( $reuse_data_block[0]['attrs'] ) && isset( $reuse_data_block[0]['attrs']['ref'] ) && $reuse_data_block[0]['attrs']['ref'] === $blockattr['ref'] ) {
 									return;
 								}
-								$this->blocks_cycle_through( $reuse_data_block );
+								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
 							}
 						}
 					}
