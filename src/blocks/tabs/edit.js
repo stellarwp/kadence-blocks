@@ -43,7 +43,8 @@ import {
 	MeasurementControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	InspectorControlTabs
+	InspectorControlTabs,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -401,6 +402,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 
 		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
+
+		const nonTransAttrs = ['currentTab', 'tabCount'];
 
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
@@ -1040,6 +1043,13 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							setAttributes( { tabAlignment: nextAlign } );
 						} }
 					/>
+					<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ nonTransAttrs } 
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+					/>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/tabs' ) && (
 					<InspectorControls>
@@ -1612,10 +1622,13 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 								<div className="kt-sidebar-settings-spacer"></div>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
-													  blockSlug={'kadence/tabs'}
-													  excludedAttrs={['currentTab', 'tabCount']}
-													  preventMultiple={['titles']}/>
+								<KadenceBlockDefaults 
+									attributes={attributes} 
+									defaultAttributes={metadata['attributes']}
+									blockSlug={metadata['name']}
+									excludedAttrs={nonTransAttrs}
+									preventMultiple={['titles']}
+								/>
 
 							</>
 						)}
