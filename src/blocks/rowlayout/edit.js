@@ -138,7 +138,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	attributes,
 	setAttributes,
 	updateAlignment,
-	insertSection,
 	context,
 	updateColumns,
 	toggleSelection,
@@ -651,8 +650,15 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 							className="kb-row-add-section"
 							icon={ plusCircle }
 							onClick={ () => {
-								const newBlock = createBlock( 'kadence/column', {} );
-								insertSection( newBlock );
+								updateColumns( innerItemCount, columns + 1 );
+								setAttributes( {
+									columns: columns + 1,
+									colLayout: 'equal',
+									firstColumnWidth: undefined,
+									secondColumnWidth: undefined,
+									tabletLayout: 'inherit',
+									mobileLayout: 'row',
+								} );
 							} }
 							label={  __( 'Add Another Section', 'kadence-blocks' ) }
 							showTooltip={ true }
@@ -1188,14 +1194,7 @@ const RowLayoutEditContainerWrapper = withDispatch(
 			}
 
 			replaceInnerBlocks( clientId, innerBlocks );
-		},
-		insertSection( newBlock ) {
-			const { clientId } = ownProps;
-			const { insertBlock } = dispatch( blockEditorStore );
-			const { getBlock } = registry.select( blockEditorStore );
-			const block = getBlock( clientId );
-			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
-		},
+		}
 	} )
 )( RowLayoutEditContainer );
 const KadenceRowLayout = ( props ) => {
