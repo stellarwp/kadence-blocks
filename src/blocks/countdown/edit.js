@@ -497,6 +497,8 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		}
 	}
 
+	const nonTransAttrs = [ 'date', 'timestamp' ];
+
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
@@ -626,6 +628,13 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 								</ToolbarGroup>
 							</>
 						)}
+						<CopyPasteAttributes
+							attributes={ attributes }
+							excludedAttrs={ nonTransAttrs } 
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
 					</BlockControls>
 					<InspectorControls>
 
@@ -1263,7 +1272,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ [ 'date', 'timestamp' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ nonTransAttrs } />
 
 							</>
 						}
