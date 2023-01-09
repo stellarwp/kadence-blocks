@@ -36,7 +36,8 @@ import {
 	MeasurementControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
