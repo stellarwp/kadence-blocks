@@ -117,6 +117,7 @@ function PaneEdit( {
 					<KadenceIconPicker
 						value={ icon }
 						onChange={ value => setAttributes( { icon: value } ) }
+						allowClear={ true }
 					/>
 					<SelectControl
 						label={ __( 'Icon Side', 'kadence-blocks' ) }
