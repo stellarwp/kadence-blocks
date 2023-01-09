@@ -16,7 +16,8 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveAlignControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -153,6 +154,12 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 						<AlignmentToolbar
 							value={hAlign}
 							onChange={value => setAttributes( { hAlign: value } )}
+						/>
+						<CopyPasteAttributes
+							attributes={ attributes }
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
 					<InspectorControls>
@@ -316,7 +323,7 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 								</KadencePanelBody>
 
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
-													  blockSlug={'kadence/spacer'}/>
+													  blockSlug={metadata['name']}/>
 							</>
 						}
 					</InspectorControls>
