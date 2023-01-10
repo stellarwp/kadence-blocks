@@ -628,7 +628,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 							$bg_attach = 'scroll';
 						}
 						$is_important = ( isset( $attributes['bgImg'] ) && ! empty( $attributes['bgImg'] ) && isset( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' );
-						if ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+						if ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
 							$is_important = '!important';
 						}
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
@@ -644,7 +644,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 						$css->add_property( 'display', 'none !important' );
 					}
-					if ( ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) && isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+					if ( ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) && isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
 						$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 						$css->add_property( 'display', 'none !important' );
 					}
@@ -652,14 +652,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				case 'gradient':
 					if ( ! empty( $mobile_background['gradient'] ) ) {
 						$is_important = ( ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ? '!important' : '' );
-						if ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) {
+						if ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) {
 							$is_important = '!important';
 						}
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
 							$is_important = '!important';
 						}
 						$css->add_property( 'background-image', $mobile_background['gradient'] . $is_important );
-						if ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $tablet_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) {
+						if ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) {
 							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 							$css->add_property( 'display', 'none !important' );
 						}
