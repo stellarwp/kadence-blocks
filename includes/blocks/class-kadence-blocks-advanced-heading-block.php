@@ -218,7 +218,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg' );
-
+			$css->add_property( 'width', '1em');
+			$css->add_property( 'height', '1em');
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
 			$css->render_responsive_range( $attributes,'iconSize', 'font-size', 'iconSizeUnit' );
 			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit') );

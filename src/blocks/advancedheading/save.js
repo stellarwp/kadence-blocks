@@ -53,9 +53,11 @@ function Save( { attributes } ) {
 		mobileIconPadding,
 		iconSize,
 		iconSizeUnit,
-		iconPaddingUnit
+		iconPaddingUnit,
+		iconVerticalAlign
 	} = attributes;
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
+	const TagHTML = tagName;
 	const textColorClass = getColorClassName( 'color', colorClass );
 	const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
 	const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
@@ -81,20 +83,40 @@ function Save( { attributes } ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
 
+	const renderIcon = () => {
+		if( !icon ) {
+			return null;
+		}
+
+		return (
+			<IconSpanTag name={ icon } extraClass={ `kb-adv-heading-icon kb-adv-heading-icon${ uniqueID }` } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? '2' : undefined ) } />
+		);
+	}
+
 	const htmlItem = (
-		<RichText.Content
-			tagName={ tagName }
-			id={ anchor ? anchor : undefined }
-			className={ classes }
-			data-kb-block={ `kb-adv-heading${ uniqueID }` }
-			data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-			data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-			data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-			data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-			data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-			data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-			value={ content }
-		/>
+		<TagHTML style={{
+				display: ( icon ? 'flex' : undefined ),
+				alignItems: ( icon ? iconVerticalAlign : undefined ),
+			}}
+			 data-kb-block={ `kb-adv-heading${ uniqueID }` }
+			 className={ classes }
+			 id={ anchor ? anchor : undefined }
+			 data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
+			 data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
+			 data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
+			 data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
+			 data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
+			 data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
+		>
+			{iconSide === 'left' && renderIcon()}
+
+			<RichText.Content
+				value={ content }
+			/>
+
+			{iconSide === 'right' && renderIcon()}
+
+		</TagHTML>
 	);
 	const linkHTMLItem = (
 		<a
