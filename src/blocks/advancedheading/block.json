@@ -451,7 +451,7 @@
 	},
 	"iconSide": {
 	  "type": "string",
-	  "default": "right"
+	  "default": "left"
 	},
 	"iconHover": {
 	  "type": "boolean",
