@@ -7,6 +7,11 @@
 			);
 			this.bootstrapSliders(advancedSliders);
 
+			let testimonialSliders = document.querySelectorAll(
+				".wp-block-kadence-testimonials .kt-blocks-carousel-init"
+			);
+			this.bootstrapSliders(testimonialSliders);
+
 			let bgSliders = document.querySelectorAll(
 				".kb-blocks-bg-slider > .kt-blocks-carousel-init"
 			);

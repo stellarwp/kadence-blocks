@@ -516,7 +516,6 @@ function KadenceTestimonials({
             [`kt-t-md-col-${columns[3]}`]: true,
             [`kt-t-sm-col-${columns[4]}`]: true,
             [`kt-t-xs-col-${columns[5]}`]: true,
-            [`kt-blocks-testimonials-wrap${uniqueID}${layout && layout === 'carousel' ? ' tns-carousel-wrap' : ''}`]: true
         })
     });
 

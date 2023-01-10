@@ -74,7 +74,6 @@ function Save( { attributes } ) {
 			[ `kt-t-sm-col-${columns[ 4 ]}` ]                                                                         : true,
 			[ `kt-t-xs-col-${columns[ 5 ]}` ]                                                                         : true,
 			[ `kt-blocks-testimonials-wrap${uniqueID}` ]: true,
-			[ `tns-carousel-wrap` ]: layout && layout == 'carousel',
 		} )
 	} );
 

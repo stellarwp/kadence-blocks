@@ -1,10 +1,12 @@
 /**
- * #.# Editor Styles
+ * #.# Front End Styles
  *
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .wp-block-kadence-testimonials {
+
+//@import './splide.scss';
+.wp-block-kadence-testimonials {
 	.kt-testimonial-rating-wrap {
 		margin: 10px 0 10px 0;
 		.kb-svg-icon-wrap {
@@ -27,16 +29,18 @@
 	.kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
 	}
-	&.tns-carousel-wrap .kt-blocks-carousel:not(.kt-carousel-container-arrowstyle-none) {
-		padding-left: 35px;
-		padding-right: 35px;
-	}
 	.kt-blocks-carousel .kt-blocks-carousel-init:not(.kt-carousel-arrowstyle-none):not(.tns-slider) {
 		padding-left: 35px;
 		padding-right: 35px;
 	}
 	.kt-blocks-carousel .kt-blocks-testimonial-carousel-item {
 		padding: 0 15px;
+	}
+	.splide:not(.kt-carousel-dotstyle-none) {
+		padding-bottom: 30px;
+	}
+	.splide .splide__pagination {
+		bottom: 6px;
 	}
 }
 .kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item {

@@ -75,8 +75,8 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		/* Tiny slider is required if we're using a carousel layout */
 		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
-			$this->enqueue_style( 'kadence-blocks-tiny-slider' );
-			$this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
+			$this->enqueue_style( 'kadence-blocks-splide' );
+			$this->enqueue_script( 'kadence-blocks-splide-init' );
 		}
 		// Main Icon.
 		if ( isset( $attributes['iconStyles'][0] ) && is_array( $attributes['iconStyles'][0] ) ) {
@@ -644,9 +644,9 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		wp_register_style( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'includes/assets/css/tiny-slider.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'includes/assets/js/tiny-slider.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-tiny-slider-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tiny-init.min.js', array( 'kadence-blocks-tiny-slider' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kadence-splide' ), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kadence-blocks-splide' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 
