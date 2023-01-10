@@ -1,9 +1,9 @@
 /* Custom Additions */
-.kb-blocks-fluid-carousel:not(.slick-initialized):not(.tns-slider) .splide__slide.kb-slide-item {
+.kb-blocks-fluid-carousel:not(.splide-initialized):not(.tns-slider) .splide__slide.kb-slide-item {
 	display: block;
 }
 
-.kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider)[data-slider-type="slider"] .splide__slide.kb-slide-item {
+.kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)[data-slider-type="slider"] .splide__slide.kb-slide-item {
 	display: block;
 }
 
