@@ -96,6 +96,9 @@ function kadence_apply_aos_wrapper_args( $attributes, &$wrapper_args ) {
 		if ( isset( $attributes['kadenceAOSOptions'] ) && $attributes['kadenceAOSOptions'] && isset( $attributes['kadenceAOSOptions'][0] ) ) {
 			$kadence_aos_options = $attributes['kadenceAOSOptions'][0];
 
+			if ( isset( $kadence_aos_options['offset'] ) && $kadence_aos_options['offset'] ) {
+				$wrapper_args['data-aos-offset'] = $kadence_aos_options['offset'];
+			}
 			if ( isset( $kadence_aos_options['duration'] ) && $kadence_aos_options['duration'] ) {
 				$wrapper_args['data-aos-duration'] = $kadence_aos_options['duration'];
 			}
