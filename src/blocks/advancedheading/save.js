@@ -98,8 +98,8 @@ function Save( { attributes } ) {
 				display: ( icon ? 'flex' : undefined ),
 				alignItems: ( icon ? iconVerticalAlign : undefined ),
 			}}
-			 data-kb-block={ `kb-adv-heading${ uniqueID }` }
 			 className={ classes }
+			 data-kb-block={ `kb-adv-heading${ uniqueID }` }
 			 id={ anchor ? anchor : undefined }
 			 data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
 			 data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
