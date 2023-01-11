@@ -500,21 +500,21 @@ function KadenceAdvancedHeading( props ) {
 	const headingContent = (
 		<div style={{
 			maxWidth: previewMaxWidth,
-			backgroundColor: background ? KadenceColorOutput(background) : undefined,
-			paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
-			paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
-			paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),
-			paddingLeft: ('' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingType) : undefined),
-			marginTop: ('' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined),
-			marginRight: ('' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined),
-			marginBottom: ('' !== previewMarginBottom ? getSpacingOptionOutput(previewMarginBottom, marginType) : undefined),
-			marginLeft: ('' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined),
-			lineHeight: (previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined),
 		}}>
 			<TagHTML style={{
 				display: 'flex',
 				alignItems: iconVerticalAlign,
 				justifyContent: previewAlign,
+				backgroundColor: background ? KadenceColorOutput(background) : undefined,
+				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
+				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
+				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),
+				paddingLeft: ('' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingType) : undefined),
+				marginTop: ('' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined),
+				marginRight: ('' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined),
+				marginBottom: ('' !== previewMarginBottom ? getSpacingOptionOutput(previewMarginBottom, marginType) : undefined),
+				marginLeft: ('' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined),
+				lineHeight: (previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined),
 			}}>
 				{iconSide === 'left' && renderIcon()}
 
