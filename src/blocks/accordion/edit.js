@@ -37,6 +37,7 @@ import {
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
+	CopyPasteAttributes,
 	ResponsiveMeasurementControls,
 	ColorGroup,
 } from '@kadence/components';
@@ -895,6 +896,12 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						setAttributes( { titleAlignment: nextAlign } );
 					}}
 				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
 			{ showSettings( 'allSettings', 'kadence/accordion' ) && (
 				<InspectorControls>
@@ -1470,7 +1477,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 								</>
 							)}
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/accordion' } />
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 
 						</>
 					}

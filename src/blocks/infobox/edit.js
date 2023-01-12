@@ -1238,6 +1238,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
+	const nonTransAttrs = [ 'link', 'linkTitle' ];
+
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
             [`kb-info-box-wrap${uniqueID}`]: true
@@ -1301,7 +1303,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ [ 'link', 'linkTitle' ] }
+					excludedAttrs={ nonTransAttrs }
 					defaultAttributes={ metadata['attributes'] } 
 					blockSlug={ metadata['name'] } 
 					onPaste={ attributesToPaste => onPaste( attributesToPaste ) }
@@ -2588,7 +2590,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 
 							<div className="kt-sidebar-settings-spacer"></div>
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/infobox' } excludedAttrs={ [ 'link', 'linkTitle' ] } />
+							<KadenceBlockDefaults attributes={ attributes } defaultAttributes={ metadata['attributes'] } blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 						</>
 					)}
 				</InspectorControls>
