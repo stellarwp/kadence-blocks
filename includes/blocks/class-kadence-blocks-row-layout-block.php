@@ -253,7 +253,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		} else {
-			$css->render_measure_output( $attributes, 'margin', 'margin' );
+			$args = array(
+				'unit_key' => 'marginUnit',
+			);
+			$css->render_measure_output( $attributes, 'margin', 'margin', $args );
 		}
 		// Vertical Alignment.
 		$css->set_selector( $inner_selector );
@@ -362,7 +365,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		} else {
-			$css->render_measure_output( $attributes, 'padding', 'padding' );
+			$args = array(
+				'unit_key' => 'paddingUnit',
+			);
+			$css->render_measure_output( $attributes, 'padding', 'padding', $args );
 		}
 		// Min Height.
 		if ( ! empty( $attributes['minHeight'] ) ) {
