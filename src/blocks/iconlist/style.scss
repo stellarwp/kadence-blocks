@@ -16,6 +16,10 @@
     list-style: none;
 	margin: 0 0 10px 0;
 	text-align: left;
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 	.kt-svg-icon-list-item-wrap {
 		display: flex;
 		align-items: center;

@@ -67,30 +67,46 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-single' );
+
 		if ( ! empty( $attributes['size'] ) ) {
-			$css->add_property( 'font-size', $attributes['size'] . 'px' );
+			$css->add_property( 'font-size', $attributes['size'] . 'px !important' );
 		}
 		if ( ! empty( $attributes['color'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+			$css->add_property( 'color', $css->render_color( $attributes['color'] ) . ' !important' );
 		}
 		if ( ! empty( $attributes['background'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
-			$css->add_property( 'font-size', $css->render_color( $attributes['background'] ) );
+			$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) . '!important' );
 		}
 		if ( ! empty( $attributes['padding'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
-			$css->add_property( 'padding', $attributes['padding'] . 'px' );
+			$css->add_property( 'padding', $attributes['padding'] . 'px !important' );
 		}
 		if ( ! empty( $attributes['border'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
-			$css->add_property( 'border-color', $css->render_color( $attributes['border'] ) );
+			$css->add_property( 'border-color', $css->render_color( $attributes['border'] ) . ' !important' );
 		}
 		if ( ! empty( $attributes['borderWidth'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
-			$css->add_property( 'border-width', $attributes['borderWidth'] . 'px'  );
+			$css->add_property( 'border-width', $attributes['borderWidth'] . 'px !important'  );
 		}
 		if ( ! empty( $attributes['borderRadius'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
-			$css->add_property( 'border-radius', $attributes['borderRadius'] . '%'  );
+			$css->add_property( 'border-radius', $attributes['borderRadius'] . '% !important'  );
 		}
 		return $css->css_output();
 	}
 
+	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$parent_default = $block_instance->context['kadence/listIcon'];
+
+		return str_replace('USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+	}
 }
 
 Kadence_Blocks_Listitem_Block::get_instance();

@@ -11,7 +11,10 @@ import {
     __experimentalConfirmDialog as ConfirmDialog
 } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { SafeParseJSON } from '@kadence/helpers'
+import { 
+    SafeParseJSON,
+    getTransferableAttributes 
+} from '@kadence/helpers'
 /**
  * Display Kadence Block Default settings -- intended for use in Inspector Controls.
  *
@@ -24,7 +27,13 @@ import { SafeParseJSON } from '@kadence/helpers'
  *
  * @public
  */
-export default function KadenceBlockDefaults({attributes, defaultAttributes = {}, blockSlug, excludedAttrs = [], preventMultiple = []}) {
+export default function KadenceBlockDefaults( {
+    attributes,
+    defaultAttributes = {},
+    blockSlug,
+    excludedAttrs = [],
+    preventMultiple = []
+} ) {
 
 	const [ user, setUser ] = useState( ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ) );
 	if( user !== 'admin' ) {
@@ -46,26 +55,8 @@ export default function KadenceBlockDefaults({attributes, defaultAttributes = {}
 	const hasConfig = Object.keys(currentBlockDefaults).length !== 0;
 
 	const calculate = () => {
-		const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
-
-		let newConfig = omit(attributes, allExcludedAttrs);
-
-		if (preventMultiple !== []) {
-
-			preventMultiple.forEach((item) => {
-				newConfig[item] = [head(newConfig[item])];
-			});
-
-		}
-		// Since block attributes have their defaults set in the editor, lets check if the default is the same default as the block and exclude those to keep the settings simpler.
-		Object.keys(newConfig).map((key, index) => {
-			if ( undefined !== defaultAttributes[key] && undefined !== defaultAttributes[key].default ) {
-				if ( isEqual(newConfig[key], defaultAttributes[key].default ) ) {
-					delete(newConfig[key])
-				}
-			}
-		});
-		return newConfig;
+        //grab all block attributes, minus the exclusions
+		return getTransferableAttributes( attributes, defaultAttributes, excludedAttrs, preventMultiple );
 	}
 
     const reset = () => {

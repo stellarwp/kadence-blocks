@@ -76,6 +76,21 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.0.2 Alpha Version 3 =
+Release Date: TBD
+*Fix: Hover background color not showing on sections
+*Fix: Icons not showing in tab titles
+*Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
+*Fix: Icon list block not displaying properly on front end
+*Fix: Warning when using custom font without a font variant selected
+*Fix: Warning with some mobile background settings on row layout
+*Update: Allow icons to be removed from Accordion titles
+*Update: Searches in icon selector are now case insensitive
+--------------- PENDING IN PRS ----------------
+*Fix: Issue where padding/margin was limited to 12px in some cases
+*Fix: "Add another section" in row layout now increases column count
+*Update: Accordion block now has responsive border & border radius
+
 = 3.0.0.1 Alpha Version 2 =
 Release Date: January 5th, 2023
 * Update: Duplicate styles component.

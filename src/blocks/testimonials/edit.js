@@ -46,6 +46,7 @@ import {
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
     ResponsiveGapSizeControl,
+    CopyPasteAttributes,
 } from '@kadence/components';
 
 import {
@@ -739,6 +740,9 @@ function KadenceTestimonials({
             allowedBlocks: [ 'kadence/testimonial' ],
 		}
 	);
+
+    const nonTransAttrs = [ 'itemsCount' ];
+
     return (
         <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
             {containerStyles()}
@@ -757,6 +761,14 @@ function KadenceTestimonials({
                         <AlignmentToolbar
                             value={hAlign}
                             onChange={value => setAttributes({hAlign: value})}
+                        />
+                        <CopyPasteAttributes
+                            attributes={ attributes }
+                            excludedAttrs={ nonTransAttrs } 
+                            defaultAttributes={ metadata['attributes'] } 
+                            blockSlug={ metadata['name'] } 
+                            onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+                            preventMultiple={ [ 'testimonials' ] }
                         />
                     </BlockControls>
                     <InspectorControls>
@@ -1720,7 +1732,7 @@ function KadenceTestimonials({
 
                                 <div className="kt-sidebar-settings-spacer"></div>
 
-                                <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'itemsCount' ] } preventMultiple={ [ 'testimonials' ] } />
+                                <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } preventMultiple={ [ 'testimonials' ] } />
                             </>
                         )}
 

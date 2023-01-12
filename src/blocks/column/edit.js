@@ -495,6 +495,7 @@ function SectionEdit( {
 			},
 		],
 	];
+	const nonTransAttrs = [ 'images', 'imagesDynamic' ];
 	const innerClasses = classnames( {
 		'kadence-inner-column-inner': true,
 		'aos-animate': true,
@@ -610,7 +611,7 @@ function SectionEdit( {
 						/>
 						<CopyPasteAttributes
 							attributes={ attributes }
-							excludedAttrs={ [ 'images', 'imagesDynamic' ] } 
+							excludedAttrs={ nonTransAttrs } 
 							defaultAttributes={ metadata['attributes'] } 
 							blockSlug={ metadata['name'] } 
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
@@ -1020,7 +1021,7 @@ function SectionEdit( {
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/column' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 							</>
 						}

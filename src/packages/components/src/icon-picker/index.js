@@ -62,12 +62,14 @@ export default function KadenceIconPicker({
     const results = useMemo(() => {
         let results = {}
         if ( ! icons ) {
+            const searchLower = search.toLowerCase();
             Object.keys(iconNames).map((label, groupIndex) => {
                 if (filter === 'all' || groupIndex === parseInt(filter)) {
                     {
                         iconNames[label].map((icon, iconIndex) => {
+                            const iconLower = icon.toLowerCase();
 
-                            if (search === '' || icon.includes(search)) {
+                            if (search === '' || iconLower.includes(searchLower)) {
 
                                 results = {
                                     ...results, [groupIndex]: {

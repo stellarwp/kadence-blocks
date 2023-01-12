@@ -106,21 +106,36 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
 .kt-blocks-accordion-header {
     align-content: space-between;
     align-items: center;
-    background-color: #f2f2f2;
+    background-color: var(--global-palette8, #f2f2f2 );
 	border: 0 solid transparent;
     border-radius: 0px;
-    color: #444444;
+    color: var(--global-palette5, #444444 );
     display: flex;
     padding: 8px 12px;
     text-align: left;
     transition: all ease-in-out .2s;
 	width: 100%;
 	box-sizing: border-box;
+	&:hover {
+		background-color: var(--global-palette7, #eeeeee );
+		color: var(--global-palette5, #444444 );
+		box-shadow: none;
+		text-shadow: none;
+		.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+			background-color: currentColor;
+		}
+	}
 }
-
+.kt-accordion-panel-active .kt-blocks-accordion-header {
+	background-color: var(--global-palette5, #444444 );
+	color: #ffffff;
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: currentColor;
+	}
+}
 .kt-accordion-panel-inner {
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px solid var(--global-palette7, #eeeeee );
     border-top-width: 0;
 }
 .kt-accordion-add-selecter {
@@ -178,6 +193,9 @@ button.components-button.kt-accordion-add.is-primary svg {
 	width: 24px;
 	min-width: 24px;
     box-sizing: content-box;
+}
+.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+    background-color: var(--global-palette5, #444444 );
 }
 .rtl .kt-blocks-accordion-icon-trigger {
     margin-left: 0;
@@ -242,7 +260,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		transform-origin: 50%;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-basic .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(0deg);
 	}
@@ -261,7 +279,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		top: 10px;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-basiccircle .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(0deg);
 	}
@@ -297,7 +315,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		transform-origin: 50%;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-xclose .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(45deg);
 	}
@@ -316,7 +334,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		top: 10px;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-xclosecircle .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(45deg);
 	}
@@ -345,7 +363,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		transform-origin: 50%;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-arrow .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(-45deg);
 	}
@@ -368,7 +386,7 @@ button.components-button.kt-accordion-add.is-primary svg {
 		right: 4px;
 	}
 }
-.kt-start-active-pane-1.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+.kt-accodion-icon-style-arrowcircle .kt-accordion-panel-active .kt-blocks-accordion-header {
 	.kt-blocks-accordion-icon-trigger:before {
 		transform: rotate(-45deg);
 	}

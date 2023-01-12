@@ -112,7 +112,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google = isset( $attributes['googleFont'] ) && $attributes['googleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $attributes['fontVariant'] ) );
+			$variant = !empty( $attributes['variant'] ) ? $attributes['variant'] : null;
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
@@ -194,7 +195,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markTypography'] ) ) {
 			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $attributes['markFontVariant'] ) );
+			$variant = !empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['markFontWeight'] ) ) {
 			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['markFontWeight'] ) );

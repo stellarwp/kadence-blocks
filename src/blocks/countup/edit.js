@@ -16,7 +16,8 @@ import {
 } from '@kadence/helpers';
 import {
 	WebfontLoader,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -24,6 +25,7 @@ import {
  */
 import CountUp from 'react-countup';
 import classnames from 'classnames';
+import metadata from './block.json';
 
 /**
  * Import Css
@@ -33,7 +35,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import {
  	useEffect,
 	Component,
@@ -175,14 +177,25 @@ function KadenceCounterUp( props ) {
 	return (
 		<div {...blockProps}>
 			{isSelected &&
-				<Inspector
-					setAttributes={setAttributes}
-					attributes={ attributes }
-					numberPaddingMouseOver={numberPaddingMouseOver}
-					numberMarginMouseOver={numberMarginMouseOver}
-					titlePaddingMouseOver={titlePaddingMouseOver}
-					titleMarginMouseOver={titleMarginMouseOver}
-				/>
+				<>
+					<BlockControls>
+						<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
+					</BlockControls>
+					<Inspector
+						setAttributes={setAttributes}
+						attributes={ attributes }
+						numberPaddingMouseOver={numberPaddingMouseOver}
+						numberMarginMouseOver={numberMarginMouseOver}
+						titlePaddingMouseOver={titlePaddingMouseOver}
+						titleMarginMouseOver={titleMarginMouseOver}
+					/>
+				</>
 			}
 
 			{displayTitle && titleFont[ 0 ].google && (

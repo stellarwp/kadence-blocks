@@ -4,7 +4,7 @@
 /**
  * Register sub blocks.
  */
-import './listitem/block.js';
+import '../listitem/block.js';
 
 import edit from './edit';
 import save from './save';

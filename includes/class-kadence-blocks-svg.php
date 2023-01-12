@@ -71,7 +71,7 @@ class Kadence_Blocks_Svg_Render {
 						continue;
 					}
 					$data_split = explode( '=', $value, 2 );
-					if ( $data_split[0] === 'title' ) {
+					if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
 						$data_split[1] = str_replace( '_', ' ', $data_split[1] );
 					}
 					$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
