@@ -20,6 +20,7 @@ import {
 	MeasurementControls,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
+	KadenceInspectorControls,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer
 } from '@kadence/components';
@@ -1630,7 +1631,7 @@ function KadenceForm( props ) {
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/form' }>
 
 				<InspectorControlTabs
 					panelName={'form'}
@@ -3564,7 +3565,7 @@ function KadenceForm( props ) {
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/form' } excludedAttrs={ [ 'postID' ] } />
 					</>
 				)}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{

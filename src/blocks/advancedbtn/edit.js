@@ -260,7 +260,7 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 			<KadenceInspectorControls blockSlug={ 'kadence/advancedbtn' }>
 
 				<InspectorControlTabs
-					panelName={ 'kadence/advancedbtn' }
+					panelName={ 'advancedbtn' }
 					allowedTabs={ [ 'general', 'advanced' ] }
 					setActiveTab={ ( value ) => setActiveTab( value ) }
 					activeTab={ activeTab }
