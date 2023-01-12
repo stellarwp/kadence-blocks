@@ -11,10 +11,10 @@
 .kt-blocks-accordion-header {
     align-content: space-between;
     align-items: center;
-    background-color: #f2f2f2;
+    background-color: var(--global-palette8, #f2f2f2 );
 	border: 0 solid transparent;
     border-radius: 0px;
-    color: #555555;
+    color: var(--global-palette5, #555555 );
 	display: flex;
 	font-size: 18px;
 	padding: 10px 14px;
@@ -35,8 +35,8 @@
 	text-shadow: none;
 }
 .kt-blocks-accordion-header:hover {
-    background-color: #eeeeee;
-	color: #444444;
+    background-color: var(--global-palette7, #eeeeee );
+	color: var(--global-palette5, #444444 );
 	box-shadow: none;
     text-shadow: none;
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
@@ -44,7 +44,7 @@
 	}
 }
 .kt-blocks-accordion-header.kt-accordion-panel-active {
-    background-color: #444444;
+    background-color: var(--global-palette5, #444444 );
 	color: #ffffff;
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
 		background-color: currentColor;
@@ -52,10 +52,10 @@
 }
 .kt-accodion-icon-style-basiccircle .kt-blocks-accordion-header:hover, .kt-accodion-icon-style-xclosecircle .kt-blocks-accordion-header:hover, .kt-accodion-icon-style-arrowcircle .kt-blocks-accordion-header:hover {
 	.kt-blocks-accordion-icon-trigger {
-		background-color: #444444;
+		background-color: var(--global-palette5, #444444 );
 	}
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
-		background-color: #eeeeee;
+		background-color: var(--global-palette7, #eeeeee );
 	}
 }
 .kt-accodion-icon-style-basiccircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-xclosecircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-arrowcircle .kt-blocks-accordion-header.kt-accordion-panel-active {
@@ -63,7 +63,7 @@
 		background-color: #ffffff;
 	}
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
-		background-color: #444444;
+		background-color: var(--global-palette5, #444444 );
 	}
 }
 .kt-blocks-accordion-title-wrap {
@@ -116,6 +116,9 @@
 	width: 24px;
 	min-width: 24px;
     box-sizing: content-box;
+}
+.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+    background-color: var(--global-palette5, #444444 );
 }
 // Basic
 .kt-accodion-icon-style-basic, .kt-accodion-icon-style-basiccircle {
@@ -253,7 +256,7 @@
 }
 .kt-accordion-panel-inner {
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px solid var(--global-palette7, #eeeeee );
     border-top-width: 0;
 }
 .kt-accordion-panel {

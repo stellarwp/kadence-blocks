@@ -37,15 +37,18 @@ import {
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	ResponsiveMeasurementControls
+	ResponsiveMeasurementControls,
+	ColorGroup,
 } from '@kadence/components';
 import {
 	getPreviewSize,
 	KadenceColorOutput,
 	showSettings,
 	getSpacingOptionOutput,
+	getFontSizeOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
+	getBorderColor,
 	getBorderStyle
 } from '@kadence/helpers';
 
@@ -141,12 +144,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		titleBorderRadius,
 		tabletTitleBorderRadius,
 		mobileTitleBorderRadius,
-		titleBorderRadiusUnit
+		titleBorderRadiusUnit,
+		contentBorderStyle,
+		tabletContentBorderStyle,
+		mobileContentBorderStyle,
+		tabletContentBorderRadius,
+		mobileContentBorderRadius,
+		contentBorderRadiusUnit,
 	} = attributes;
 
-	const [ contentPaddingControl, setContentPaddingControl ] = useState( 'linked' );
-	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
-	const [ contentBorderControl, setContentBorderControl ] = useState( 'linked' );
 	const [ titleTag, setTitleTag ] = useState( 'div' );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -203,68 +209,137 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 
-		if ( contentBorder[ 0 ] === contentBorder[ 1 ] && contentBorder[ 0 ] === contentBorder[ 2 ] && contentBorder[ 0 ] === contentBorder[ 3 ] ) {
-			setContentBorderControl( 'linked' );
-		} else {
-			setContentBorderControl( 'individual' );
-		}
-		if ( contentBorderRadius[ 0 ] === contentBorderRadius[ 1 ] && contentBorderRadius[ 0 ] === contentBorderRadius[ 2 ] && contentBorderRadius[ 0 ] === contentBorderRadius[ 3 ] ) {
-			setContentBorderRadiusControl( 'linked' );
-		} else {
-			setContentBorderRadiusControl( 'individual' );
-		}
-		if ( contentPadding[ 0 ] === contentPadding[ 1 ] && contentPadding[ 0 ] === contentPadding[ 2 ] && contentPadding[ 0 ] === contentPadding[ 3 ] ) {
-			setContentPaddingControl( 'linked' );
-		} else {
-			setContentPaddingControl( 'individual' );
-		}
 		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			setTitleTag( accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag );
 		}
 		if ( accordionBlock && accordionBlock.innerBlocks[ 0 ] && accordionBlock.innerBlocks[ 0 ].attributes && accordionBlock.innerBlocks[ 0 ].attributes.titleTag ) {
 			setTitleTag( accordionBlock.innerBlocks[ 0 ].attributes.titleTag );
 		}
-
-		// Update Old Styles
-		if ( ( 0 !== titleStyles[0].borderWidth[0] || 0 !== titleStyles[0].borderWidth[1] || 0 !== titleStyles[0].borderWidth[2] || 0 !== titleStyles[0].borderWidth[3] ) ) {
-			setAttributes( {
-				titleBorder: [{
-					top: [titleStyles[0].border[0], "", titleStyles[0].borderWidth[0]],
-					right: [titleStyles[0].border[1], "", titleStyles[0].borderWidth[1]],
-					bottom: [titleStyles[0].border[2], "", titleStyles[0].borderWidth[2]],
-					left: [titleStyles[0].border[3], "", titleStyles[0].borderWidth[3]],
-				}],
-				titleBorderHover: [{
-					top: [titleStyles[0].borderHover[0], "", titleStyles[0].borderWidth[0]],
-					right: [titleStyles[0].borderHover[1], "", titleStyles[0].borderWidth[1]],
-					bottom: [titleStyles[0].borderHover[2], "", titleStyles[0].borderWidth[2]],
-					left: [titleStyles[0].borderHover[3], "", titleStyles[0].borderWidth[3]],
-				}],
-				titleBorderActive: [{
-					top: [titleStyles[0].borderActive[0], "", titleStyles[0].borderWidth[0]],
-					right: [titleStyles[0].borderActive[1], "", titleStyles[0].borderWidth[1]],
-					bottom: [titleStyles[0].borderActive[2], "", titleStyles[0].borderWidth[2]],
-					left: [titleStyles[0].borderActive[3], "", titleStyles[0].borderWidth[3]],
-				}],
-				titleStyles: [{
-					...titleStyles[0],
-					borderWidth: [0, 0, 0, 0],
-					border: [0, 0, 0, 0],
-				} ]
-			} );
+		// Update from old border settings.
+		let tempContentBorderStyle = JSON.parse( JSON.stringify( attributes.contentBorderStyle ? attributes.contentBorderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		let updateContentBorderStyle = false;
+		if ( ( '' !== contentBorderColor ) ) {
+			tempContentBorderStyle[0].top[0] = contentBorderColor;
+			tempContentBorderStyle[0].right[0] = contentBorderColor;
+			tempContentBorderStyle[0].bottom[0] = contentBorderColor;
+			tempContentBorderStyle[0].left[0] = contentBorderColor;
+			updateContentBorderStyle = true;
+			setAttributes( { contentBorderColor: '' } );
 		}
+		if ( ( '' !== contentBorder?.[0] || '' !== contentBorder?.[1] || '' !== contentBorder?.[2] || '' !== contentBorder?.[3] ) ) {
+			tempContentBorderStyle[0].top[2] = contentBorder?.[0] || '';
+			tempContentBorderStyle[0].right[2] = contentBorder?.[1] || '';
+			tempContentBorderStyle[0].bottom[2] = contentBorder?.[2] || '';
+			tempContentBorderStyle[0].left[2] = contentBorder?.[3] || '';
+			updateContentBorderStyle = true;
+			setAttributes( { contentBorder:[ '', '', '', '' ] } );
+		}
+		if ( updateContentBorderStyle ) {
+			setAttributes( { contentBorderStyle: tempContentBorderStyle } );
+		}
+		// Update from old border settings.
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorder ? attributes.titleBorder : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		// Update from old border settings.
+		let tempBorderHoverStyle = JSON.parse( JSON.stringify( attributes.titleBorderHover ? attributes.titleBorderHover : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		// Update from old border settings.
+		let tempBorderActiveStyle = JSON.parse( JSON.stringify( attributes.titleBorderActive ? attributes.titleBorderActive : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		let updateTitleStyle = false;
+		let updateBorderStyle = false;
+		let updateBorderHoverStyle = false;
+		let updateBorderActiveStyle = false;
+		if ( undefined !== titleStyles?.[0]?.border?.[0] && ( '' !== titleStyles?.[0]?.border?.[0] || '' !== titleStyles?.[0]?.border?.[1] || '' !== titleStyles?.[0]?.border?.[2] || '' !== titleStyles?.[0]?.border?.[3] ) ) {
+			tempBorderStyle[0].top[0] = titleStyles[0].border[0];
+			tempBorderStyle[0].right[0] = titleStyles[0].border[1];
+			tempBorderStyle[0].bottom[0] = titleStyles[0].border[2];
+			tempBorderStyle[0].left[0] = titleStyles[0].border[3];
+			updateBorderStyle = true;
+			updateTitleStyle = true;
+		}
+		if ( undefined !== titleStyles?.[0]?.borderHover?.[0] && ( '' !== titleStyles?.[0]?.borderHover?.[0] || '' !== titleStyles?.[0]?.borderHover?.[1] || '' !== titleStyles?.[0]?.borderHover?.[2] || '' !== titleStyles?.[0]?.borderHover?.[3] ) ) {
+			tempBorderHoverStyle[0].top[0] = titleStyles[0].borderHover[0];
+			tempBorderHoverStyle[0].right[0] = titleStyles[0].borderHover[1];
+			tempBorderHoverStyle[0].bottom[0] = titleStyles[0].borderHover[2];
+			tempBorderHoverStyle[0].left[0] = titleStyles[0].borderHover[3];
+			updateBorderHoverStyle = true;
+			updateTitleStyle = true;
+		}
+		if ( undefined !== titleStyles?.[0]?.borderActive?.[0] && ( '' !== titleStyles?.[0]?.borderActive?.[0] || '' !== titleStyles?.[0]?.borderActive?.[1] || '' !== titleStyles?.[0]?.borderActive?.[2] || '' !== titleStyles?.[0]?.borderActive?.[3] ) ) {
+			tempBorderActiveStyle[0].top[0] = titleStyles[0].borderActive[0];
+			tempBorderActiveStyle[0].right[0] = titleStyles[0].borderActive[1];
+			tempBorderActiveStyle[0].bottom[0] = titleStyles[0].borderActive[2];
+			tempBorderActiveStyle[0].left[0] = titleStyles[0].borderActive[3];
+			updateBorderHoverStyle = true;
+			updateTitleStyle = true;
+		}
+		if ( undefined !== titleStyles?.[0]?.borderWidth?.[0] && ( '' !== titleStyles?.[0]?.borderWidth?.[0] || '' !== titleStyles?.[0]?.borderWidth?.[1] || '' !== titleStyles?.[0]?.borderWidth?.[2] || '' !== titleStyles?.[0]?.borderWidth?.[3] ) ) {
+			tempBorderStyle[0].top[2] = titleStyles[0].borderWidth[0] || '';
+			tempBorderStyle[0].right[2] = titleStyles[0].borderWidth[1] || '';
+			tempBorderStyle[0].bottom[2] = titleStyles[0].borderWidth[2] || '';
+			tempBorderStyle[0].left[2] = titleStyles[0].borderWidth[3] || '';
 
-		if ( ( 0 !== titleStyles[0].borderRadius[0] || 0 !== titleStyles[0].borderRadius[1] || 0 !== titleStyles[0].borderRadius[2] || 0 !== titleStyles[0].borderRadius[3] ) ) {
+			tempBorderHoverStyle[0].top[2] = titleStyles[0].borderWidth[0] || '';
+			tempBorderHoverStyle[0].right[2] = titleStyles[0].borderWidth[1] || '';
+			tempBorderHoverStyle[0].bottom[2] = titleStyles[0].borderWidth[2] || '';
+			tempBorderHoverStyle[0].left[2] = titleStyles[0].borderWidth[3] || '';
+
+			tempBorderActiveStyle[0].top[2] = titleStyles[0].borderWidth[0] || '';
+			tempBorderActiveStyle[0].right[2] = titleStyles[0].borderWidth[1] || '';
+			tempBorderActiveStyle[0].bottom[2] = titleStyles[0].borderWidth[2] || '';
+			tempBorderActiveStyle[0].left[2] = titleStyles[0].borderWidth[3] || '';
+
+			updateBorderStyle = true;
+			updateBorderHoverStyle = true;
+			updateBorderActiveStyle = true;
+			updateTitleStyle = true;
+		}
+		if ( updateBorderStyle ) {
+			setAttributes( { titleBorder: tempBorderStyle } );
+		}
+		if ( updateBorderHoverStyle ) {
+			setAttributes( { titleBorderHover: tempBorderHoverStyle } );
+		}
+		if ( updateBorderActiveStyle ) {
+			setAttributes( { titleBorderActive: tempBorderActiveStyle } );
+		}
+		if ( ( '' !== titleStyles[0].borderRadius[0] || '' !== titleStyles[0].borderRadius[1] || '' !== titleStyles[0].borderRadius[2] || '' !== titleStyles[0].borderRadius[3] ) ) {
+			updateTitleStyle = true;
 			setAttributes( {
 				titleBorderRadius: [ titleStyles[0].borderRadius[0], titleStyles[0].borderRadius[1], titleStyles[0].borderRadius[2], titleStyles[0].borderRadius[3] ],
-				titleStyles: [{
-					...titleStyles[0],
-					borderRadius: [0,0,0,0],
-				} ]
 			} );
 		}
-
-
+		if ( updateTitleStyle ) {
+			saveTitleStyles( {
+				borderHover: ['', '', '', ''],
+				borderActive: ['', '', '', ''],
+				borderWidth: ['', '', '', ''],
+				border: ['', '', '', ''],
+				borderRadius: ['','','',''],
+			} );
+		}
 	}, [] );
 
 	const startlayoutOptions = [
@@ -291,35 +366,69 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const previewTitlePaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 2 ] ? titleStyles[ 0 ].padding[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 2 ] ? titleStyles[ 0 ].paddingTablet[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 2 ] ? titleStyles[ 0 ].paddingMobile[ 2 ] : '' ) );
 	const previewTitlePaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 3 ] ? titleStyles[ 0 ].padding[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 3 ] ? titleStyles[ 0 ].paddingTablet[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 3 ] ? titleStyles[ 0 ].paddingMobile[ 3 ] : '' ) );
 
-	// Border
+	// Content Border
+	const previewContentBorderTop = getBorderStyle( getPreviewDevice, 'top', contentBorderStyle, tabletContentBorderStyle, mobileContentBorderStyle );
+	const previewContentBorderRight = getBorderStyle( getPreviewDevice, 'right', contentBorderStyle, tabletContentBorderStyle, mobileContentBorderStyle );
+	const previewContentBorderBottom = getBorderStyle( getPreviewDevice, 'bottom', contentBorderStyle, tabletContentBorderStyle, mobileContentBorderStyle );
+	const previewContentBorderLeft = getBorderStyle( getPreviewDevice, 'left', contentBorderStyle, tabletContentBorderStyle, mobileContentBorderStyle );
+	// Border Radius
+	const previewContentRadiusTop = getPreviewSize( getPreviewDevice, ( undefined !== contentBorderRadius?.[0] ? contentBorderRadius[ 0 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 0 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 0 ] : '' ) );
+	const previewContentRadiusRight = getPreviewSize( getPreviewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 1 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 1 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 1 ] : '' ) );
+	const previewContentRadiusBottom = getPreviewSize( getPreviewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 2 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 2 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 2 ] : '' ) );
+	const previewContentRadiusLeft = getPreviewSize( getPreviewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 3 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 3 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 3 ] : '' ) );
+
+	// Title Font size.
+	const previewTitleSize = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles?.[ 0 ]?.size?.[ 0 ] ? titleStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== titleStyles?.[ 0 ]?.size?.[ 1 ] ? titleStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== titleStyles?.[ 0 ]?.size?.[ 2 ] ? titleStyles[ 0 ].size[ 2 ] : '' ) );
+	const previewTitleHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleStyles?.[ 0 ]?.lineHeight?.[ 0 ] ? titleStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleStyles?.[ 0 ]?.lineHeight?.[ 1 ] ? titleStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleStyles?.[ 0 ]?.lineHeight?.[ 2 ] ? titleStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+	// Title Border
 	const previewTitleBorderTop = getBorderStyle( getPreviewDevice, 'top', titleBorder, tabletTitleBorder, mobileTitleBorder );
 	const previewTitleBorderRight = getBorderStyle( getPreviewDevice, 'right', titleBorder, tabletTitleBorder, mobileTitleBorder );
 	const previewTitleBorderBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorder, tabletTitleBorder, mobileTitleBorder );
 	const previewTitleBorderLeft = getBorderStyle( getPreviewDevice, 'left', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderColorTop = getBorderColor( getPreviewDevice, 'top', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderColorRight = getBorderColor( getPreviewDevice, 'right', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderColorBottom = getBorderColor( getPreviewDevice, 'bottom', titleBorder, tabletTitleBorder, mobileTitleBorder );
+	const previewTitleBorderColorLeft = getBorderColor( getPreviewDevice, 'left', titleBorder, tabletTitleBorder, mobileTitleBorder );
 
-	// Border Radius
+	// Title Border Radius
 	const previewTitleRadiusTop = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 0 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 0 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 0 ] : '' ) );
 	const previewTitleRadiusRight = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 1 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 1 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 1 ] : '' ) );
 	const previewTitleRadiusBottom = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 2 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 2 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 2 ] : '' ) );
 	const previewTitleRadiusLeft = getPreviewSize( getPreviewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 3 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 3 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 3 ] : '' ) );
 
-	// Hover Border
-	const previewTitleBorderHoverTop = getBorderStyle( getPreviewDevice, 'top', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
-	const previewTitleBorderHoverRight = getBorderStyle( getPreviewDevice, 'right', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
-	const previewTitleBorderHoverBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
-	const previewTitleBorderHoverLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover );
+	const inheritBorder = [ titleBorder, tabletTitleBorder, mobileTitleBorder ];
 
-	// Active Border
-	const previewTitleBorderActiveTop = getBorderStyle( getPreviewDevice, 'top', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
-	const previewTitleBorderActiveRight = getBorderStyle( getPreviewDevice, 'right', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
-	const previewTitleBorderActiveBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
-	const previewTitleBorderActiveLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive );
+	// Title Hover Border
+	const previewTitleBorderHoverTop = getBorderStyle( getPreviewDevice, 'top', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderHoverRight = getBorderStyle( getPreviewDevice, 'right', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderHoverBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderHoverLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderColorHoverTop = getBorderColor( getPreviewDevice, 'top', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderColorHoverRight = getBorderColor( getPreviewDevice, 'right', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderColorHoverBottom = getBorderColor( getPreviewDevice, 'bottom', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+	const previewTitleBorderColorHoverLeft = getBorderColor( getPreviewDevice, 'left', titleBorderHover, tabletTitleBorderHover, mobileTitleBorderHover, inheritBorder );
+
+	// Title Active Border
+	const previewTitleBorderActiveTop = getBorderStyle( getPreviewDevice, 'top', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderActiveRight = getBorderStyle( getPreviewDevice, 'right', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderActiveBottom = getBorderStyle( getPreviewDevice, 'bottom', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderActiveLeft = getBorderStyle( getPreviewDevice, 'left', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderColorActiveTop = getBorderColor(  getPreviewDevice, 'top', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderColorActiveRight = getBorderColor(  getPreviewDevice, 'right', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderColorActiveBottom = getBorderColor(  getPreviewDevice, 'bottom', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
+	const previewTitleBorderColorActiveLeft = getBorderColor(  getPreviewDevice, 'left', titleBorderActive, tabletTitleBorderActive, mobileTitleBorderActive, inheritBorder );
 
 	const setInitalLayout = ( key ) => {
 		if ( 'skip' === key ) {
 		} else if ( 'base' === key ) {
 			setAttributes( {
-				contentBorder : [ 0, 0, 0, 0 ],
+				contentBorderStyle: [ {
+					"top": [ "", "", 0 ],
+					"right": [ "", "", 0 ],
+					"bottom": [ "", "", 0 ],
+					"left": [ "", "", 0 ],
+					"unit": "px"
+				} ],
 				titleAlignment: 'left',
 				showIcon      : true,
 				iconStyle     : 'basic',
@@ -341,21 +450,49 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					marginTop       : 0,
 					color           : '#555555',
 					background      : '#f2f2f2',
-					border          : [ '#555555', '#555555', '#555555', '#555555' ],
-					borderRadius    : [ 0, 0, 0, 0 ],
-					borderWidth     : [ 0, 0, 0, 0 ],
+					border          : [ '', '', '', '' ],
+					borderRadius    : [ '', '', '', '' ],
+					borderWidth     : [ '', '', '', '' ],
 					colorHover      : '#444444',
 					backgroundHover : '#eeeeee',
-					borderHover     : [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+					borderHover     : [ '', '', '', '' ],
 					colorActive     : '#ffffff',
 					backgroundActive: '#444444',
-					borderActive    : [ '#444444', '#444444', '#444444', '#444444' ],
+					borderActive    : [ '', '', '', '' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
+				titleBorderRadius: [ 0, 0, 0, 0 ],
+				titleBorder: [{
+					top: [ '#f2f2f2', '', 0 ],
+					right: [ '#f2f2f2', '', 0 ],
+					bottom: [ '#f2f2f2', '', 0 ],
+					left: [ '#f2f2f2', '', 0 ],
+					unit: 'px'
+				}],
+				titleBorderHover: [{
+					top: [ '#eeeeee', '', '' ],
+					right: [ '#eeeeee', '', '' ],
+					bottom: [ '#eeeeee', '', '' ],
+					left: [ '#eeeeee', '', '' ],
+					unit: 'px'
+				}],
+				titleBorderActive: [{
+					top: [ '#444444', '', '' ],
+					right: [ '#444444', '', '' ],
+					bottom: [ '#444444', '', '' ],
+					left: [ '#444444', '', '' ],
+					unit: 'px'
+				}]
 			} );
 		} else if ( 'highlight' === key ) {
 			setAttributes( {
-				contentBorder : [ 0, 0, 0, 0 ],
+				contentBorderStyle: [ {
+					"top": [ "", "", 0 ],
+					"right": [ "", "", 0 ],
+					"bottom": [ "", "", 0 ],
+					"left": [ "", "", 0 ],
+					"unit": "px"
+				} ],
 				contentBgColor: '#ffffff',
 				titleAlignment: 'left',
 				showIcon      : true,
@@ -378,29 +515,49 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					marginTop       : 10,
 					color           : '#555555',
 					background      : '#f2f2f2',
-					border          : [ '#555555', '#555555', '#555555', '#555555' ],
-					borderRadius    : [ 6, 6, 6, 6 ],
-					borderWidth     : [ 0, 0, 0, 0 ],
+					border          : [ '', '', '', '' ],
+					borderRadius    : [ '', '', '', '' ],
+					borderWidth     : [ '', '', '', '' ],
 					colorHover      : '#444444',
 					backgroundHover : '#eeeeee',
-					borderHover     : [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+					borderHover     : [ '', '', '', '' ],
 					colorActive     : '#ffffff',
 					backgroundActive: '#f3690e',
-					borderActive    : [ '#f3690e', '#f3690e', '#f3690e', '#f3690e' ],
+					borderActive    : [ '', '', '', '' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
-				titleBorderActive: [ {
-					"top": [ "#f3690e", "", "" ],
-					"right": [ "#f3690e", "", "" ],
-					"bottom": [ "#f3690e", "", "" ],
-					"left": [ "#f3690e", "", "" ],
-					"unit": "px"
-				} ],
-				titleBorderRadius: [ 6, 6, 6, 6 ],
+				titleBorderRadius: [6, 6, 6, 6 ],
+				titleBorder: [{
+					top: [ '#f2f2f2', '', 0 ],
+					right: [ '#f2f2f2', '', 0 ],
+					bottom: [ '#f2f2f2', '', 0 ],
+					left: [ '#f2f2f2', '', 0 ],
+					unit: 'px'
+				}],
+				titleBorderHover: [{
+					top: [ '#eeeeee', '', '' ],
+					right: [ '#eeeeee', '', '' ],
+					bottom: [ '#eeeeee', '', '' ],
+					left: [ '#eeeeee', '', '' ],
+					unit: 'px'
+				}],
+				titleBorderActive: [{
+					top: [ '#f3690e', '', '' ],
+					right: [ '#f3690e', '', '' ],
+					bottom: [ '#f3690e', '', '' ],
+					left: [ '#f3690e', '', '' ],
+					unit: 'px'
+				}],
 			} );
 		} else if ( 'subtle' === key ) {
 			setAttributes( {
-				contentBorder : [ 0, 1, 1, 1 ],
+				contentBorderStyle: [ {
+					"top": [ "", "", 0 ],
+					"right": [ "", "", 1 ],
+					"bottom": [ "", "", 1 ],
+					"left": [ "", "", 1 ],
+					"unit": "px"
+				} ],
 				contentBgColor: '#ffffff',
 				titleAlignment: 'left',
 				showIcon      : true,
@@ -423,42 +580,49 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					marginTop       : 10,
 					color           : '#444444',
 					background      : '#ffffff',
-					border          : [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
-					borderRadius    : [ 0, 0, 0, 0 ],
-					borderWidth     : [ 0, 0, 0, 0 ],
+					border          : [ '', '', '', '' ],
+					borderRadius    : [ '', '', '', '' ],
+					borderWidth     : [ '', '', '', '' ],
 					colorHover      : '#444444',
 					backgroundHover : '#ffffff',
-					borderHover     : [ '#d4d4d4', '#d4d4d4', '#d4d4d4', '#d4d4d4' ],
+					borderHover     : [ '', '', '', '' ],
 					colorActive     : '#444444',
 					backgroundActive: '#ffffff',
-					borderActive    : [ '#eeeeee', '#eeeeee', '#eeeeee', '#0e9cd1' ],
+					borderActive    : [ '', '', '', '' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
+				titleBorderRadius: [ 0, 0, 0, 0 ],
 				titleBorder: [ {
-					"top": [ "#eeeeee", "", 1 ],
-					"right": [ "#eeeeee", "", 1 ],
-					"bottom": [ "#eeeeee", "", 1 ],
-					"left": [ "#eeeeee", "", 2 ],
-					"unit": "px"
-				} ],
-				titleBorderActive: [ {
-					"top": [ "#eeeeee", "", 1 ],
-					"right": [ "#eeeeee", "", 1 ],
-					"bottom": [ "#eeeeee", "", 1 ],
-					"left": [ "#eeeeee", "", 2 ],
-					"unit": "px"
+					'top': [ '#eeeeee', '', 1 ],
+					'right': [ '#eeeeee', '', 1 ],
+					'bottom': [ '#eeeeee', '', 1 ],
+					'left': [ '#eeeeee', '', 2 ],
+					'unit': 'px'
 				} ],
 				titleBorderHover: [ {
-					"top": [ "#d4d4d4", "", 1 ],
-					"right": [ "#d4d4d4", "", 1 ],
-					"bottom": [ "#d4d4d4", "", 1 ],
-					"left": [ "#d4d4d4", "", 2 ],
-					"unit": "px"
+					'top': [ '#d4d4d4', '', '' ],
+					'right': [ '#d4d4d4', '', '' ],
+					'bottom': [ '#d4d4d4', '', '' ],
+					'left': [ '#d4d4d4', '', '' ],
+					'unit': 'px'
+				} ],
+				titleBorderActive: [ {
+					'top': [ '#eeeeee', '', '' ],
+					'right': [ '#eeeeee', '', '' ],
+					'bottom': [ '#eeeeee', '', '' ],
+					'left': [ '#0e9cd1', '', '' ],
+					'unit': 'px'
 				} ],
 			} );
 		} else if ( 'bottom' === key ) {
 			setAttributes( {
-				contentBorder : [ 0, 0, 0, 0 ],
+				contentBorderStyle: [ {
+					'top': [ '', '', 0 ],
+					'right': [ '', '', 0 ],
+					'bottom': [ '', '', 0 ],
+					'left': [ '', '', 0 ],
+					'unit': 'px'
+				} ],
 				contentBgColor: '#ffffff',
 				titleAlignment: 'left',
 				showIcon      : false,
@@ -481,37 +645,38 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					marginTop       : 8,
 					color           : '#444444',
 					background      : '#ffffff',
-					border          : [ '#f2f2f2', '#f2f2f2', '#f2f2f2', '#f2f2f2' ],
-					borderRadius    : [ 0, 0, 0, 0 ],
-					borderWidth     : [ 0, 0, 4, 0 ],
+					border          : [ '', '', '', '' ],
+					borderRadius    : [ '', '', '', '' ],
+					borderWidth     : [ '', '', '', '' ],
 					colorHover      : '#444444',
 					backgroundHover : '#ffffff',
-					borderHover     : [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+					borderHover     : [ '', '', '', '' ],
 					colorActive     : '#333333',
 					backgroundActive: '#ffffff',
-					borderActive    : [ '#0e9cd1', '#0e9cd1', '#0e9cd1', '#0e9cd1' ],
+					borderActive    : [ '', '', '', '' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
+				titleBorderRadius: [ 0, 0, 0, 0 ],
 				titleBorder: [ {
-					"top": [ "#f2f2f2", "", 0 ],
-					"right": [ "#f2f2f2", "", 0 ],
-					"bottom": [ "#f2f2f2", "", 4 ],
-					"left": [ "#f2f2f2", "", 0 ],
-					"unit": "px"
-				} ],
-				titleBorderActive: [ {
-					"top": [ "#0e9cd1", "", 0 ],
-					"right": [ "#0e9cd1", "", 0 ],
-					"bottom": [ "#0e9cd1", "", 4 ],
-					"left": [ "#0e9cd1", "", 0 ],
-					"unit": "px"
+					'top': [ '#f2f2f2', '', 0 ],
+					'right': [ '#f2f2f2', '', 0 ],
+					'bottom': [ '#f2f2f2', '', 4 ],
+					'left': [ '#f2f2f2', '', 0 ],
+					'unit': 'px'
 				} ],
 				titleBorderHover: [ {
-					"top": [ "#eeeeee", "", 0 ],
-					"right": [ "#eeeeee", "", 0 ],
-					"bottom": [ "#eeeeee", "", 4 ],
-					"left": [ "#eeeeee", "", 0 ],
-					"unit": "px"
+					'top': [ '#eeeeee', '', '' ],
+					'right': [ '#eeeeee', '', '' ],
+					'bottom': [ '#eeeeee', '', '' ],
+					'left': [ '#eeeeee', '', '' ],
+					'unit': 'px'
+				} ],
+				titleBorderActive: [ {
+					'top': [ '#0e9cd1', '', '' ],
+					'right': [ '#0e9cd1', '', '' ],
+					'bottom': [ '#0e9cd1', '', '' ],
+					'left': [ '#0e9cd1', '', '' ],
+					'unit': 'px'
 				} ],
 			} );
 		}
@@ -527,12 +692,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			titleStyles: newUpdate,
 		} );
 	};
-	const lgconfig = {
-		google: {
-			families: [ titleStyles[ 0 ].family + ( titleStyles[ 0 ].variant ? ':' + titleStyles[ 0 ].variant : '' ) ],
-		},
-	};
-	const config = ( titleStyles[ 0 ].google ? lgconfig : '' );
 	const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${uniqueID} kt-accordion-has-${paneCount}-panes kt-accordion-block kt-pane-header-alignment-${ titleAlignment }` );
 	const accordionIconSet = [];
 	accordionIconSet.basic = <>
@@ -596,30 +755,37 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		<style>
 			{`
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header {
-					color: ${KadenceColorOutput( titleStyles[ 0 ].color )};
-					border-top: ${previewTitleBorderTop};
-					border-right: ${previewTitleBorderRight};
-					border-bottom: ${previewTitleBorderBottom};
-					border-left: ${previewTitleBorderLeft};
-					border-radius:${previewTitleRadiusTop}${titleBorderRadiusUnit} ${previewTitleRadiusRight}${titleBorderRadiusUnit} ${previewTitleRadiusBottom}${titleBorderRadiusUnit} ${previewTitleRadiusLeft}${titleBorderRadiusUnit};
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].background )};
+					${titleStyles?.[ 0 ]?.color ? 'color:' + KadenceColorOutput( titleStyles[ 0 ].color ) : '' };
+					${previewTitleBorderTop ? 'border-top:' + previewTitleBorderTop : '' };
+					${previewTitleBorderRight ? 'border-right:' + previewTitleBorderRight : '' };
+					${previewTitleBorderBottom ? 'border-bottom:' + previewTitleBorderBottom : '' };
+					${previewTitleBorderLeft ? 'border-left:' + previewTitleBorderLeft : '' };
+					${ ! previewTitleBorderTop && previewTitleBorderColorTop ? 'border-top-color:' + previewTitleBorderColorTop : '' };
+					${ ! previewTitleBorderRight && previewTitleBorderColorRight ? 'border-right-color:' + previewTitleBorderColorRight : '' };
+					${ ! previewTitleBorderBottom && previewTitleBorderColorBottom ? 'border-bottom-color:' + previewTitleBorderColorBottom : '' };
+					${ ! previewTitleBorderLeft && previewTitleBorderColorLeft ? 'border-left-color:' + previewTitleBorderColorLeft : '' };
+					${previewTitleRadiusTop ? 'border-radius-top-left:' + previewTitleRadiusTop + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusRight ? 'border-radius-top-right:' + previewTitleRadiusRight + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusBottom ? 'border-radius-bottom-right:' + previewTitleRadiusBottom + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusLeft ? 'border-radius-bottom-left:' + previewTitleRadiusLeft + titleBorderRadiusUnit : '' };
+					${titleStyles?.[ 0 ]?.background ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].background ) : '' };
 					${'' !== previewTitlePaddingTop ? `padding-top:${ getSpacingOptionOutput( previewTitlePaddingTop, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingRight ? `padding-right:${ getSpacingOptionOutput(previewTitlePaddingRight, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingBottom ? `padding-bottom:${ getSpacingOptionOutput( previewTitlePaddingBottom, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingLeft ? `padding-left:${ getSpacingOptionOutput( previewTitlePaddingLeft, previewTitlePaddingType ) };` : ''}
-					font-size:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
-					line-height:${titleStyles[ 0 ].lineHeight[ 0 ]}${titleStyles[ 0 ].lineType};
-					letter-spacing:${titleStyles[ 0 ].letterSpacing}px;
-					text-transform:${titleStyles[ 0 ].textTransform};
-					font-family:${titleStyles[ 0 ].family};
-					font-style:${titleStyles[ 0 ].style};
-					font-weight:${titleStyles[ 0 ].weight};
+					${ previewTitleSize ? 'font-size:' + getFontSizeOptionOutput( previewTitleSize, titleStyles[ 0 ].sizeType ) : '' };
+					${ previewTitleHeight ? 'line-height:' + previewTitleHeight + titleStyles[ 0 ].lineType : '' };
+					${ titleStyles?.[ 0 ]?.letterSpacing ? 'letter-spacing:' + titleStyles[ 0 ].letterSpacing + 'px' : '' };
+					${ titleStyles?.[ 0 ]?.textTransform ? 'text-transform:' + titleStyles[ 0 ].textTransform : '' };
+					${ titleStyles?.[ 0 ]?.family ? 'font-family:' + titleStyles[ 0 ].family : '' };
+					${ titleStyles?.[ 0 ]?.style ? 'font-style:' + titleStyles[ 0 ].style : '' };
+					${ titleStyles?.[ 0 ]?.weight ? 'font-weight:' + titleStyles[ 0 ].weight : '' };
 				}
 				.kt-accordion-${uniqueID} .wp-block-kadence-pane {
-					margin-top:${( titleStyles[ 0 ].marginTop ? titleStyles[ 0 ].marginTop : 0 )}px;
+					margin-top:${( titleStyles?.[ 0 ]?.marginTop ? titleStyles[ 0 ].marginTop : 0 )}px;
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-blocks-accordion-title {
-					line-height:${titleStyles[ 0 ].lineHeight[ 0 ]}${titleStyles[ 0 ].lineType};
+					${ previewTitleHeight ? 'line-height:' + previewTitleHeight + titleStyles[ 0 ].lineType : '' };
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-btn-svg-icon svg {
 					width:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
@@ -630,10 +796,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${'' !== previewContentPaddingRight ? `padding-right:${ getSpacingOptionOutput(previewContentPaddingRight, previewPaddingType ) };` : ''}
 					${'' !== previewContentPaddingBottom ? `padding-bottom:${ getSpacingOptionOutput(previewContentPaddingBottom, previewPaddingType) };` : ''}
 					${'' !== previewContentPaddingLeft ? `padding-left:${ getSpacingOptionOutput( previewContentPaddingLeft, previewPaddingType ) };` : ''}
-					background-color: ${KadenceColorOutput( contentBgColor )};
-					border-color: ${KadenceColorOutput( contentBorderColor )};
-					border-width:${contentBorder[ 0 ]}px ${contentBorder[ 1 ]}px ${contentBorder[ 2 ]}px ${contentBorder[ 3 ]}px;
-					border-radius:${contentBorderRadius[ 0 ]}px ${contentBorderRadius[ 1 ]}px ${contentBorderRadius[ 2 ]}px ${contentBorderRadius[ 3 ]}px;
+					${contentBgColor ? 'background-color:' + KadenceColorOutput( contentBgColor ) : '' };
+					${previewContentBorderTop ? 'border-top:' + previewContentBorderTop : '' };
+					${previewContentBorderRight ? 'border-right:' + previewContentBorderRight : '' };
+					${previewContentBorderBottom ? 'border-bottom:' + previewContentBorderBottom : '' };
+					${previewContentBorderLeft ? 'border-left:' + previewContentBorderLeft : '' };
+					${previewContentRadiusTop ? 'border-radius-top-left:' + previewContentRadiusTop + contentBorderRadiusUnit : '' };
+					${previewContentRadiusRight ? 'border-radius-top-right:' + previewContentRadiusRight + contentBorderRadiusUnit : '' };
+					${previewContentRadiusBottom ? 'border-radius-bottom-right:' + previewContentRadiusBottom + contentBorderRadiusUnit : '' };
+					${previewContentRadiusLeft ? 'border-radius-bottom-left:' + previewContentRadiusLeft + contentBorderRadiusUnit : '' };
 					min-height:${( minHeight ? minHeight + 'px' : '0' )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
@@ -646,12 +817,16 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background-color: ${ '' !== iconColor.standard ? KadenceColorOutput(iconColor.standard) : KadenceColorOutput( titleStyles[ 0 ].color )};
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header:hover {
-					color: ${KadenceColorOutput( titleStyles[ 0 ].colorHover )};
-					border-top: ${previewTitleBorderHoverTop};
-					border-right: ${previewTitleBorderHoverRight};
-					border-bottom: ${previewTitleBorderHoverBottom};
-					border-left: ${previewTitleBorderHoverLeft};					
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
+					${titleStyles?.[ 0 ]?.colorHover ? 'color:' + KadenceColorOutput( titleStyles[ 0 ].colorHover ) : '' };
+					${previewTitleBorderHoverTop ? 'border-top:' + previewTitleBorderHoverTop : '' };
+					${previewTitleBorderHoverRight ? 'border-right:' + previewTitleBorderHoverRight : '' };
+					${previewTitleBorderHoverBottom ? 'border-bottom:' + previewTitleBorderHoverBottom : '' };
+					${previewTitleBorderHoverLeft ? 'border-left:' + previewTitleBorderHoverLeft : '' };
+					${ ! previewTitleBorderHoverTop && previewTitleBorderColorHoverTop ? 'border-top-color:' + previewTitleBorderColorHoverTop : '' };
+					${ ! previewTitleBorderHoverRight && previewTitleBorderColorHoverRight ? 'border-right-color:' + previewTitleBorderColorHoverRight : '' };
+					${ ! previewTitleBorderHoverBottom && previewTitleBorderColorHoverBottom ? 'border-bottom-color:' + previewTitleBorderColorHoverBottom : '' };
+					${ ! previewTitleBorderHoverLeft && previewTitleBorderColorHoverLeft ? 'border-left-color:' + previewTitleBorderColorHoverLeft : '' };
+					${titleStyles?.[ 0 ]?.backgroundHover ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].backgroundHover ) : '' };
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
@@ -663,12 +838,16 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1} .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-header {
-					color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};				
-					border-top: ${previewTitleBorderActiveTop};
-					border-right: ${previewTitleBorderActiveRight};
-					border-bottom: ${previewTitleBorderActiveBottom};
-					border-left: ${previewTitleBorderActiveLeft};	
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundActive )};
+					${titleStyles?.[ 0 ]?.colorActive ? 'color:' + KadenceColorOutput( titleStyles[ 0 ].colorActive ) : '' };
+					${previewTitleBorderActiveTop ? 'border-top:' + previewTitleBorderActiveTop : '' };
+					${previewTitleBorderActiveRight ? 'border-right:' + previewTitleBorderActiveRight : '' };
+					${previewTitleBorderActiveBottom ? 'border-bottom:' + previewTitleBorderActiveBottom : '' };
+					${previewTitleBorderActiveLeft ? 'border-left:' + previewTitleBorderActiveLeft : '' };
+					${ ! previewTitleBorderActiveTop && previewTitleBorderColorActiveTop ? 'border-top-color:' + previewTitleBorderColorActiveTop : '' };
+					${ ! previewTitleBorderActiveRight && previewTitleBorderColorActiveRight ? 'border-right-color:' + previewTitleBorderColorActiveRight : '' };
+					${ ! previewTitleBorderActiveBottom && previewTitleBorderColorActiveBottom ? 'border-bottom-color:' + previewTitleBorderColorActiveBottom : '' };
+					${ ! previewTitleBorderActiveLeft && previewTitleBorderColorActiveLeft ? 'border-left-color:' + previewTitleBorderColorActiveLeft : '' };
+					${titleStyles?.[ 0 ]?.backgroundActive ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].backgroundActive ) : '' };
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.active ? KadenceColorOutput(iconColor.active) : KadenceColorOutput( titleStyles[ 0 ].colorActive )};
@@ -809,7 +988,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										theme="dividers"
 										allowClear={ true }
 										placeholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
-										showSearch={ false }
 									/>
 									<SelectControl
 										label={ __( 'Icon Side', 'kadence-blocks' ) }
@@ -1041,7 +1219,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									</TabPanel>
 
 									<hr/>
-
 									<ResponsiveMeasurementControls
 										label={ __( 'Border Radius', 'kadence-blocks' ) }
 										value={ titleBorderRadius }
@@ -1111,44 +1288,42 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									panelName={'kb-accordion-inner-content-settings'}
 								>
 									<PopColorControl
-										label={__( 'Inner Content Background', 'kadence-blocks' )}
+										label={__( 'Background', 'kadence-blocks' )}
 										value={( contentBgColor ? contentBgColor : '' )}
 										default={''}
 										onChange={( value ) => setAttributes( { contentBgColor: value } )}
 									/>
 									<PopColorControl
-										label={__( 'Inner Content Border Color', 'kadence-blocks' )}
+										label={__( 'Border Color', 'kadence-blocks' )}
 										value={( contentBorderColor ? contentBorderColor : '' )}
 										default={''}
 										onChange={( value ) => setAttributes( { contentBorderColor: value } )}
 									/>
-									<MeasurementControls
-										label={__( 'Inner Content Border Width (px)', 'kadence-blocks' )}
-										measurement={contentBorder}
-										control={contentBorderControl}
-										onChange={( value ) => setAttributes( { contentBorder: value } )}
-										onControl={( value ) => setContentBorderControl( value )}
-										min={0}
-										max={40}
-										step={1}
+									<ResponsiveBorderControl
+										label={__( 'Border', 'kadence-blocks' )}
+										value={ contentBorderStyle }
+										tabletValue={ tabletContentBorderStyle }
+										mobileValue={ mobileContentBorderStyle }
+										onChange={( value ) => setAttributes( { contentBorderStyle: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletContentBorderStyle: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileContentBorderStyle: value } )}
 									/>
-									<MeasurementControls
-										label={__( 'Inner Content Border Radius (px)', 'kadence-blocks' )}
-										measurement={contentBorderRadius}
-										control={contentBorderRadiusControl}
-										onChange={( value ) => setAttributes( { contentBorderRadius: value } )}
-										onControl={( value ) => setContentBorderRadiusControl( value )}
-										min={0}
-										max={100}
-										step={1}
-										controlTypes={[
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
+									<ResponsiveMeasurementControls
+										label={ __( 'Border Radius', 'kadence-blocks' ) }
+										value={ contentBorderRadius }
+										tabletValue={ tabletContentBorderRadius }
+										mobileValue={ mobileContentBorderRadius }
+										onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletContentBorderRadius: value } ) }
+										onChangeMobile={ ( value ) => setAttributes( { mobileContentBorderRadius: value } ) }
+										min={ 0 }
+										max={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+										step={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+										unit={ contentBorderRadiusUnit }
+										units={ [ 'px', 'em', 'rem', '%' ] }
+										onUnit={ ( value ) => setAttributes( { contentBorderRadiusUnit: value } ) }
+										isBorderRadius={ true }
+										allowEmpty={true}
 									/>
 								</KadencePanelBody>
 							)}
@@ -1158,12 +1333,12 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						<>
 						{ showSettings( 'titleSpacing', 'kadence/accordion' ) && (
 								<KadencePanelBody
-									title={__( 'Pane Title Padding', 'kadence-blocks' )}
+									title={__( 'Pane Title Sizing', 'kadence-blocks' )}
 									panelName={'kb-accordion-pane-title-spacing'}
 									initialOpen={ true }
 								>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Pane Title Padding', 'kadence-blocks' )}
+										label={__( 'Padding', 'kadence-blocks' )}
 										value={titleStyles[ 0 ].padding}
 										tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
 										mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
@@ -1202,10 +1377,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									panelName={'kb-accordion-inner-padding-settings'}
 								>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Inner Content Padding', 'kadence-blocks' )}
+										label={__( 'Padding', 'kadence-blocks' )}
 										value={ contentPadding }
-										tabletValue={contentPaddingControl}
-										mobileValue={contentPaddingControl}
+										tabletValue={contentTabletPadding}
+										mobileValue={contentMobilePadding}
 										onChange={( value ) => {
 											setAttributes( { contentPadding: value } );
 										}}

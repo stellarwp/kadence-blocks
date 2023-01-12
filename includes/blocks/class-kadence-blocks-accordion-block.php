@@ -58,10 +58,15 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner' );
-		$css->render_color_output( $attributes, 'contentBorderColor', 'border-color' );
-		$css->render_border_radius( $attributes, 'contentBorderRadius', 'px' );
+		// Support legacy non-responsive broder widths
+		if ( ! empty( $attributes['contentBorder'] ) && $attributes['contentBorder'] !== array( '', '', '', '' ) ) {
+			$css->render_measure_range( $attributes, 'contentBorder', 'border-width' );
+			$css->render_color_output( $attributes, 'contentBorderColor', 'border-color' );
+		} else {
+			$css->render_border_styles( $attributes, 'contentBorderStyle', true );
+		}
+		$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', array( 'unit_key' => 'contentBorderRadiusUnit' ) );
 		$css->render_color_output( $attributes, 'contentBgColor', 'background' );
-		$css->render_measure_range( $attributes, 'contentBorder', 'border-width' );
 		$content_padding_args = array(
 			'desktop_key' => 'contentPadding',
 			'tablet_key'  => 'contentTabletPadding',
@@ -74,14 +79,14 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header' );
 
 			// Support legacy non-responsive broder widths
-			if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
+			if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array( '', '', '', '' ) ) {
 				$css->render_border_color( $title_styles, 'border' );
 				$css->render_measure_range( $title_styles, 'borderWidth', 'border-width' );
 			} else {
-				$css->render_border_styles( $attributes, 'titleBorder' );
+				$css->render_border_styles( $attributes, 'titleBorder', true );
 			}
 			// Support legacy non-responsive broder radius
-			if ( ! empty( $title_styles['borderRadius'] ) && $title_styles['borderRadius'] !== array(0, 0, 0, 0) ) {
+			if ( ! empty( $title_styles['borderRadius'] ) && $title_styles['borderRadius'] !== array( '', '', '', '' ) ) {
 				$css->render_border_radius( $title_styles, 'borderRadius', 'px' );
 			} else {
 				$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius', array( 'unit_key' => 'titleBorderRadiusUnit' ) );
@@ -112,10 +117,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'backgroundHover', 'background' );
 
 					// Support legacy non-responsive broder widths
-					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
+					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array( '', '', '', '' ) ) {
 						$css->render_border_color( $title_styles, 'borderHover' );
 					} else {
-						$css->render_border_styles( $attributes, 'titleBorderHover' );
+						$css->render_border_styles( $attributes, 'titleBorderHover', true );
 					}
 				}
 				if ( ! empty( $attributes['iconColor']['hover'] ) || ! empty( $title_styles['colorHover'] ) ) {
@@ -142,10 +147,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'backgroundActive', 'background' );
 
 					// Support legacy non-responsive broder widths
-					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array(0, 0, 0, 0) ) {
+					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array( '', '', '', '' ) ) {
 						$css->render_border_color( $title_styles, 'borderActive' );
 					} else {
-						$css->render_border_styles( $attributes, 'titleBorderActive' );
+						$css->render_border_styles( $attributes, 'titleBorderActive', true );
 					}
 				}
 				if ( ! empty( $attributes['iconColor']['active'] ) || ! empty( $title_styles['colorActive'] ) ) {
