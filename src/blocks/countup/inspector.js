@@ -542,9 +542,9 @@ function Inspector( {
 				</>
 			}
 
-			{( activeTab === 'advanced' ) && (
+			{( activeTab === 'advanced' ) && ( 
 				<>
-					<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countup' } />
+					<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] } />
 				</>
 			)}
 

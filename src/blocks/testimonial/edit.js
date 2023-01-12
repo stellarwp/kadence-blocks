@@ -41,6 +41,7 @@ import {
     InspectorControlTabs,
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
+    CopyPasteAttributes,
 } from '@kadence/components';
 
 import {
@@ -62,6 +63,7 @@ import {
     RichText,
     InspectorControls,
     useBlockProps,
+    BlockControls,
 } from '@wordpress/block-editor';
 
 import {useSelect, useDispatch} from '@wordpress/data';
@@ -193,6 +195,8 @@ function KadenceTestimonials({
     const previewRatingMarginRight = undefined !== ratingStyles?.[0]?.margin?.[1] ? ratingStyles[0].margin[1] + 'px' : '';
     const previewRatingMarginBottom = undefined !== ratingStyles?.[0]?.margin?.[2] ? ratingStyles[0].margin[2] + 'px' : '';
     const previewRatingMarginLeft = undefined !== ratingStyles?.[0]?.margin?.[3] ? ratingStyles[0].margin[3] + 'px' : '';
+
+    const nonTransAttrs = [ 'url', 'media', 'title', 'content' ];
 
     const blockProps = useBlockProps({});
 
@@ -592,6 +596,15 @@ function KadenceTestimonials({
             <div {...blockProps}>
                 {showSettings('allSettings') && (
                     <>
+                        <BlockControls>
+                            <CopyPasteAttributes
+                                attributes={ attributes }
+                                excludedAttrs={ nonTransAttrs } 
+                                defaultAttributes={ metadata['attributes'] } 
+                                blockSlug={ metadata['name'] } 
+                                onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+                            />
+                        </BlockControls>
                         <InspectorControls>
 
                             <InspectorControlTabs
@@ -620,7 +633,7 @@ function KadenceTestimonials({
 
                             {( activeTab === 'advanced') && (
                                 <>
-                                    <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/testimonials' } excludedAttrs={ [ 'url', 'media', 'title', 'content' ] } />
+                                    <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
                                 </>
                             )}
 
