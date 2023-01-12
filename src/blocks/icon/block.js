@@ -7,7 +7,7 @@ import metadata from './block.json';
 /**
  * Register sub blocks.
  */
-import './single-icon/block.js';
+import '../single-icon/block.js';
 
 /**
  * Import Icon stuff
