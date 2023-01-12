@@ -94,8 +94,8 @@ import SingleBorderControl from './single-control';
 		unlink: unlinkIcon,
 	}
 	const currentObject = value?.[0] || defaultValue;
-	const step = value.unit !== 'px' ? 0.1 : 1;
-	const max = value.unit !== 'px' ? 12 : 200;
+	const step = currentObject.unit !== 'px' ? 0.1 : 1;
+	const max = currentObject.unit !== 'px' ? 12 : 200;
 	const min = 0;
 	const onChangeAll = ( newBorder ) => {
 		currentObject.top = newBorder;

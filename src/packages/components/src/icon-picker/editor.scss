@@ -42,6 +42,7 @@
 	text-align: center;
 	&:hover {
 		background: #e5e5e5;
+		cursor: pointer;
 	}
 	> * {
 		transform: scale(1);
@@ -106,6 +107,7 @@
 	display:flex;
 	&:hover {
 		background: #D2DAE4;
+		cursor: pointer;
 	}
 }
 .kadence-icon-picker-pop-theme-dividers .kadence-icon-picker-content {

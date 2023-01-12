@@ -3,6 +3,7 @@
  *
  * Registering a basic block with Gutenberg.
  */
+import classnames from 'classnames';
 
 import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
 import { getUniqueId } from '@kadence/helpers';
@@ -66,7 +67,6 @@ function PaneEdit( {
 		updateBlockAttributes( rootID, { paneCount: value } );
 	}
 	useEffect( () => {
-
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
@@ -94,9 +94,14 @@ function PaneEdit( {
 			addUniquePane( id, clientId, rootID );
 		}
 	}, [] );
-
+	const blockClasses = classnames( {
+		'kt-accordion-pane'                   : true,
+		[ `kt-accordion-pane-${id}` ]  : id,
+		[ `kt-pane${uniqueID}` ]  : uniqueID,
+		[ `kt-accordion-panel-active` ]         : undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id ),
+	} );
 	const blockProps = useBlockProps( {
-		className: `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }`
+		className: blockClasses
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -117,6 +122,7 @@ function PaneEdit( {
 					<KadenceIconPicker
 						value={ icon }
 						onChange={ value => setAttributes( { icon: value } ) }
+						allowClear={ true }
 					/>
 					<SelectControl
 						label={ __( 'Icon Side', 'kadence-blocks' ) }
@@ -139,7 +145,7 @@ function PaneEdit( {
 					/>
 				</KadencePanelBody>
 			</InspectorControls>
-			<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
+			<HtmlTagOut className={ `kt-accordion-header-wrap` } >
 				<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 					<div className="kt-blocks-accordion-title-wrap">
 						{ icon && 'left' === iconSide && (

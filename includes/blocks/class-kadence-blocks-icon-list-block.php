@@ -106,7 +106,8 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_media_state( 'desktop' );
 
-
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .kb-svg-icon-wrap' );
+		$css->render_responsive_range( $attributes, 'iconSize', 'font-size');
 
 		if ( ! empty( $attributes['listLabelGap'] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single' );
@@ -119,6 +120,32 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->sanitize_color( $list_styles['color'] ) );
 			}
 			$css->render_typography( $attributes, 'listStyles' );
+		}
+
+		/* Stacked display style */
+		if( isset( $attributes['style'] ) && $attributes['style'] === 'stacked' ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-single' );
+
+			if( isset( $attributes['background'] )) {
+				$css->add_property( 'background-color', $css->sanitize_color( $attributes['background'] ) );
+			}
+
+			if( isset( $attributes['borderRadius'] ) ){
+				$css->add_property( 'border-radius',  $attributes['borderRadius'] . '%' );
+			}
+
+			if( isset( $attributes['border'] )) {
+				$css->add_property( 'border-color',  $css->sanitize_color( $attributes['border'] ) );
+			}
+
+			if( isset( $attributes['borderWidth'] ) ) {
+				$css->add_property( 'border-width',  $attributes['borderWidth'] . 'px' );
+			}
+			$css->add_property( 'border-style',  'solid' );
+
+			if( isset( $attributes['padding'] ) ) {
+				$css->add_property( 'padding',  $attributes['padding'] . 'px' );
+			}
 		}
 		return $css->css_output();
 	}

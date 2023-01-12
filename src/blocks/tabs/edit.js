@@ -729,6 +729,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				>
 					<KadenceIconPicker
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
+						allowClear={ true }
 						onChange={ value => {
 							saveArrayUpdate( { icon: value }, index );
 						} }
