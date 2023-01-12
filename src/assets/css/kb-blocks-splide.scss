@@ -31,6 +31,11 @@
     }
 }
 
+.splide--fade > .splide__slider > .splide__track > .splide__list > .splide__slide,
+.splide--fade > .splide__track > .splide__list > .splide__slide {
+    transform: translateX(0%) !important;
+}
+
 /* end custom */
 
 // .kt-blocks-carousel .kt-blocks-carousel {

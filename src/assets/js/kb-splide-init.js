@@ -44,8 +44,8 @@
 
 				let splideOptions = this.getSplideOptions(parsedData);
 				// Add this to remove slick based css from hiding elements
-				thisSlider.classList.add("slick-initialized");
-				thisSlider.classList.add("slick-slider");
+				thisSlider.classList.add("splide-initialized");
+				thisSlider.classList.add("splide-slider");
 
 				let { sliderType } = parsedData;
 

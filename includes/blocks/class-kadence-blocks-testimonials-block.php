@@ -644,6 +644,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
+		wp_register_style( 'kadence-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-splide.min.css', array( 'kadence-splide' ), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kadence-splide' ), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kadence-blocks-splide' ), KADENCE_BLOCKS_VERSION, true );
