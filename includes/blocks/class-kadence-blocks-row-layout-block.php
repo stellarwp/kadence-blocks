@@ -215,7 +215,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
+	 * @param array  $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 */
@@ -223,7 +223,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$base_selector = '.kb-row-layout-id' . $unique_id;
-			$inner_selector = '.kb-row-layout-id' . $unique_id . ' > .kt-row-column-wrap';
+			$inner_selector = '.kb-row-layout-id' . $unique_id . ' > .kt-row-column-wrap.kt-row-column-wrap'; // Doubling .kt-row-column-wrap here to increase specificty to avoid conflict with alignment.
 		} else {
 			$base_selector = '#kt-layout-id' . $unique_id;
 			$inner_selector = '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap';
