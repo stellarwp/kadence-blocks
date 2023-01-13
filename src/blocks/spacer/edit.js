@@ -57,9 +57,10 @@ const ktspacerUniqueIDs = [];
 /**
  * Build the spacer edit
  */
-function KadenceSpacerDivider( { attributes, className, clientId, setAttributes, toggleSelection, getPreviewDevice } ) {
+function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSelection, getPreviewDevice } ) {
 
 	const {
+		className,
 		blockAlignment,
 		spacerHeight,
 		tabletSpacerHeight,
@@ -120,7 +121,6 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 
 	const blockProps = useBlockProps( {
 		className: className,
-		style: { color: 'blue' },
 	} );
 
 	let alp;
