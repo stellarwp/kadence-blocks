@@ -919,7 +919,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 									<KadencePanelBody
 										title={__( 'Icon Settings', 'kadence-blocks' ) }
 										initialOpen={false}
-										panelName={'kb-adv-single-btn-styles'}
+										panelName={'kb-adv-single-btn-icons'}
 									>
 										<div className="kt-select-icon-container">
 											<KadenceIconPicker
