@@ -1164,18 +1164,19 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes for the block.
 	 */
 	public function get_video_render( $attributes ) {
-		if ( empty( $attributes['bgVideo'][0]['local'] ) ) {
+		if ( empty( $attributes['backgroundVideo'][0]['local'] ) ) {
 			return '';
 		}
 		$output = '';
+		$video_attributes = $attributes['backgroundVideo'][0];
 		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
 		$video_args = array(
 			'class' => 'kb-blocks-bg-video',
 			'id' => 'bg-row-video-' . $attributes['uniqueID'],
 			'playsinline' => '',
-			'muted' => ( isset( $attributes['bgVideo'][0]['local'] ) && false === $attributes['bgVideo'][0]['local'] ? 'false' : '' ),
-			'loop' => ( isset( $attributes['bgVideo'][0]['loop'] ) && false === $attributes['bgVideo'][0]['loop'] ? 'false' : '' ),
-			'src' => $attributes['bgVideo'][0]['local'],
+			'muted' => ( isset( $video_attributes['local'] ) && false === $video_attributes['local'] ? 'false' : '' ),
+			'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
+			'src' => $video_attributes['local'],
 		);
 		if ( ! empty( $attributes['bgImg'] ) ) {
 			$video_args['poster'] = $attributes['bgImg'];
@@ -1184,27 +1185,31 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$video_args['preload'] = 'none';
 		}
 		if ( ! $prevent_preload ) {
-			$video_args['autoplay'];
+			$video_args['autoplay'] = '';
 		}
-		$video_attributes = array();
+		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
 			if ( empty( $value ) ) {
-				$video_attributes[] = $key;
+				$video_html_attributes[] = $key;
 			} else {
-				$video_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+				$video_html_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 			}
 		}
-		$output = sprintf( '<video %1$s></video>', implode( ' ', $video_attributes ) );
-		if ( isset( $attributes['bgVideo'][0]['btns'] ) && $attributes['bgVideo'][0]['btns'] ) {
-			$output .= '<div className="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">';
-			$output .= '<button class="kb-background-video-play kb-toggle-video-btn" aria-label="' . __( 'Play', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></button>';
-			$output .= '<button class="kb-background-video-pause kb-toggle-video-btn" aria-label="' . __( 'Pause', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg></button>';
-			if ( isset( $attributes['bgVideo'][0]['mute'] ) && false === $attributes['bgVideo'][0]['mute'] ) {
-				$output .= '<button class="kb-background-video-unmute kb-toggle-video-btn" aria-label="' . __( 'Unmute', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 256 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971z"></path></svg></button>';
-				$output .= '<button className="kb-background-video-mute kb-toggle-video-btn" aria-label=' . __( 'Mute', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 576 512" height="16" width="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971zm182.056-77.876C422.982.92 403.283 5.668 394.061 20.745c-9.221 15.077-4.473 34.774 10.604 43.995C468.967 104.063 512 174.983 512 256c0 73.431-36.077 142.292-96.507 184.206-14.522 10.072-18.129 30.01-8.057 44.532 10.076 14.528 30.016 18.126 44.531 8.057C529.633 438.927 576 350.406 576 256c0-103.244-54.579-194.877-137.944-245.859zM480 256c0-68.547-36.15-129.777-91.957-163.901-15.076-9.22-34.774-4.471-43.994 10.607-9.22 15.078-4.471 34.774 10.607 43.994C393.067 170.188 416 211.048 416 256c0 41.964-20.62 81.319-55.158 105.276-14.521 10.073-18.128 30.01-8.056 44.532 6.216 8.96 16.185 13.765 26.322 13.765a31.862 31.862 0 0 0 18.21-5.709C449.091 377.953 480 318.938 480 256zm-96 0c0-33.717-17.186-64.35-45.972-81.944-15.079-9.214-34.775-4.463-43.992 10.616s-4.464 34.775 10.615 43.992C314.263 234.538 320 244.757 320 256a32.056 32.056 0 0 1-13.802 26.332c-14.524 10.069-18.136 30.006-8.067 44.53 10.07 14.525 30.008 18.136 44.53 8.067C368.546 316.983 384 287.478 384 256z"></path></svg></button>';
+
+		$btns_output = '';
+		if ( isset( $video_attributes['btns'] ) && $video_attributes['btns'] ) {
+			$btns_output .= '<div class="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">';
+			$btns_output .= '<button class="kb-background-video-play kb-toggle-video-btn" aria-label="' . __( 'Play', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></button>';
+			$btns_output .= '<button class="kb-background-video-pause kb-toggle-video-btn" aria-label="' . __( 'Pause', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg></button>';
+			if ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ) {
+				$btns_output .= '<button class="kb-background-video-unmute kb-toggle-video-btn" aria-label="' . __( 'Unmute', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 256 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971z"></path></svg></button>';
+				$btns_output .= '<button class="kb-background-video-mute kb-toggle-video-btn" aria-label=' . __( 'Mute', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 576 512" height="16" width="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971zm182.056-77.876C422.982.92 403.283 5.668 394.061 20.745c-9.221 15.077-4.473 34.774 10.604 43.995C468.967 104.063 512 174.983 512 256c0 73.431-36.077 142.292-96.507 184.206-14.522 10.072-18.129 30.01-8.057 44.532 10.076 14.528 30.016 18.126 44.531 8.057C529.633 438.927 576 350.406 576 256c0-103.244-54.579-194.877-137.944-245.859zM480 256c0-68.547-36.15-129.777-91.957-163.901-15.076-9.22-34.774-4.471-43.994 10.607-9.22 15.078-4.471 34.774 10.607 43.994C393.067 170.188 416 211.048 416 256c0 41.964-20.62 81.319-55.158 105.276-14.521 10.073-18.128 30.01-8.056 44.532 6.216 8.96 16.185 13.765 26.322 13.765a31.862 31.862 0 0 0 18.21-5.709C449.091 377.953 480 318.938 480 256zm-96 0c0-33.717-17.186-64.35-45.972-81.944-15.079-9.214-34.775-4.463-43.992 10.616s-4.464 34.775 10.615 43.992C314.263 234.538 320 244.757 320 256a32.056 32.056 0 0 1-13.802 26.332c-14.524 10.069-18.136 30.006-8.067 44.53 10.07 14.525 30.008 18.136 44.53 8.067C368.546 316.983 384 287.478 384 256z"></path></svg></button>';
 			}
-			$output .= '</div>';
+			$btns_output .= '</div>';
 		}
+
+		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+
 		return $output;
 	}
 	/**
