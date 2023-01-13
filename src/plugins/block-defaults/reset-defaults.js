@@ -60,8 +60,6 @@ function ResetDefaults() {
 
     }
 
-    console.log( blockVisibility );
-
     return (
         <Fragment>
 

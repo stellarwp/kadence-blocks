@@ -96,8 +96,6 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 		interval     : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].speed ? backgroundSliderSettings[ 0 ].speed : 7000 ),
 		autoplay     : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ),
 	};
-	console.log(backgroundSliderSettings);
-	console.log(sliderSettings);
 
 	const renderSliderImages = ( index ) => {
 		return (

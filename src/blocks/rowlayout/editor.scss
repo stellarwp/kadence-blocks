@@ -5,7 +5,13 @@
  * which makes it higher in priority.
  */
  @import './resize-handle.scss';
-
+ @import './splide.scss';
+ .wp-block-kadence-rowlayout .kb-blocks-bg-slider {
+	.splide .splide__pagination {
+		bottom: 10px;
+		z-index: 1000;
+	}
+}
  /* Padding Resizer */
 .kt-row-padding.kb-static-row-padding {
     height: 0;

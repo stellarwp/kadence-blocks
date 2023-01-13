@@ -49,8 +49,6 @@
     --splide-nav-background: rgba(0,0,0,0.8);
 	--splide-nav-border: 2px solid transparent;
 	--splide-pagination-background: #000;
-    --splide-dot-color: black;
-	--splide-dot-color-active: black;
 	&[data-slider-dots="true"] {
 		margin-bottom: 30px;
 	}
@@ -69,49 +67,37 @@
 	--splide-nav-border: 2px solid #fff;
 	--splide-nav-background: transparent;
 }
-.splide.kt-carousel-dotstyle-light {
-	--slick-dot-color: white;
-	--splide-dot-color-active: white;
-}
-.splide.kt-carousel-dotstyle-outlinedark  {
-	--slick-dot-color: transparent;
-	--splide-dot-color-active: transparent;
-}
-.splide.kt-carousel-dotstyle-outlinelight  {
-	--slick-dot-color: transparent;
-	--splide-dot-color-active: white;
-}
 
 .kt-blocks-carousel .splide__pagination__page.is-active {
-background-color: var(--splide-dot-color);
+    background-color: #000;
 }
 .kt-blocks-carousel .splide__pagination__page:hover,
 .kt-blocks-carousel .splide__pagination__page:focus,
 .kt-blocks-carousel .splide__pagination__page:focus-visible {
     outline: none;
 }
-
 .kt-blocks-carousel .kt-carousel-dotstyle-light .splide__pagination__page,
 .kt-blocks-carousel .kt-carousel-dotstyle-light .splide__pagination__page.is-active {
-    background-color: var(--splide-dot-color);
+    background-color: #fff;
 }
  
 .kt-blocks-carousel .kt-carousel-dotstyle-outlinedark .splide__pagination__page {
-    background-color: var(--splide-dot-color);
+    background-color: transparent;
     box-shadow: inset 0 0 0 1px #000;
     transition: box-shadow 0.3s ease;
 }
 .kt-blocks-carousel .kt-carousel-dotstyle-outlinedark .splide__pagination__page.is-active {
+    background-color: transparent;
     box-shadow: inset 0 0 0 8px #000;
 }
 
 .kt-blocks-carousel .kt-carousel-dotstyle-outlinelight .splide__pagination__page {
-    background-color: var(--splide-dot-color);
+    background-color: transparent;
     box-shadow: inset 0 0 0 1px #fff;
     transition: box-shadow 0.3s ease;
 }
 .kt-blocks-carousel .kt-carousel-dotstyle-outlinelight .splide__pagination__page.is-active {
-    background-color: var(--splide-dot-color-active);
+    background-color: transparent;
     box-shadow: inset 0 0 0 8px #fff;
 }
 .splide.is-initialized,

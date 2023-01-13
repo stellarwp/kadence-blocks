@@ -200,17 +200,8 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/*
 		 * columnGap
 		 */
-		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] && isset( $attributes['columnGap'] ) && ! empty( $attributes['columnGap'] ) ) {
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
-			$css->add_property( 'padding', '0 ' . ( $attributes['columnGap'] / 2 ) . 'px' );
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel' );
-			$css->add_property( 'margin', '0 -' . ( $attributes['columnGap'] / 2 ) . 'px' );
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-prev' );
-			$css->add_property( 'left', ( $attributes['columnGap'] / 2 ) . 'px' );
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-next' );
-			$css->add_property( 'right', ( $attributes['columnGap'] / 2 ) . 'px' );
-		}
-
+		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-grid-wrap' );
+		$css->render_gap( $attributes );
 
 		if ( isset( $attributes['style'] ) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ) {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
@@ -631,8 +622,91 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 
-
 		return $css->css_output();
+	}
+	/**
+	 * Build HTML for dynamic blocks
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
+			$columns_xxl  = ( ! empty( $attributes['columns'][0] ) ? $attributes['columns'][0] : '1' );
+			$columns_xl   = ( ! empty( $attributes['columns'][1] ) ? $attributes['columns'][1] : '1' );
+			$columns_md   = ( ! empty( $attributes['columns'][2] ) ? $attributes['columns'][2] : '1' );
+			$columns_sm   = ( ! empty( $attributes['columns'][3] ) ? $attributes['columns'][3] : '1' );
+			$columns_xs   = ( ! empty( $attributes['columns'][4] ) ? $attributes['columns'][4] : '1' );
+			$columns_ss   = ( ! empty( $attributes['columns'][5] ) ? $attributes['columns'][5] : '1' );
+			$gap          = ( ! empty( $attributes['gap'][0] ) ? $attributes['gap'][0] : 'md' );
+			$tablet_gap   = ( ! empty( $attributes['gap'][1] ) ? $attributes['gap'][1] : $gap );
+			$mobile_gap   = ( ! empty( $attributes['gap'][2] ) ? $attributes['gap'][2] : $tablet_gap );
+			$gap_unit     = ( ! empty( $attributes['gapUnit'] ) ? $attributes['gapUnit'] : 'px' );
+			$dot_style    = ( ! empty( $attributes['dotStyle'] ) ? $attributes['dotStyle'] : 'dark' );
+			$arrow_style  = ( ! empty( $attributes['arrowStyle'] ) ? $attributes['arrowStyle'] : 'whiteondark' );
+			$autoplay     = ( ! empty( $attributes['autoPlay'] ) && $attributes['autoPlay'] ? true : false );
+			$trans_speed  = ( ! empty( $attributes['transSpeed'] ) ? $attributes['transSpeed'] : 400 );
+			$auto_speed   = ( ! empty( $attributes['autoSpeed'] ) ? $attributes['autoSpeed'] : 7000 );
+			$slides_sc    = ( ! empty( $attributes['slidesScroll'] ) ? $attributes['slidesScroll'] : '1' );
+
+			$outer_classes = array( 'kt-blocks-testimonials-wrap' . $unique_id );
+			$outer_classes[] = ! empty( $attributes['hAlign'] ) ? 'kt-testimonial-halign-' . $attributes['hAlign'] : 'kt-testimonial-halign-center';
+			$outer_classes[] = ! empty( $attributes['style'] ) ? 'kt-testimonial-style-' . $attributes['style'] : 'kt-testimonial-style-basic';
+			$outer_classes[] = isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ? 'kt-testimonials-media-on' : 'kt-testimonials-media-off';
+			$outer_classes[] = isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] ? 'kt-testimonials-icon-on' : 'kt-testimonials-icon-off';
+			$outer_classes[] = 'kt-t-xxl-col-' . $columns_xxl;
+			$outer_classes[] = 'kt-t-xl-col-' . $columns_xl;
+			$outer_classes[] = 'kt-t-lg-col-' . $columns_md;
+			$outer_classes[] = 'kt-t-md-col-' . $columns_sm;
+			$outer_classes[] = 'kt-t-sm-col-' . $columns_xs;
+			$outer_classes[] = 'kt-t-xs-col-' . $columns_ss;
+
+			$inner_classes = array( 'kt-blocks-testimonials-inner-wrap' );
+			$inner_classes[] = ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ? 'kt-blocks-carousel' : 'kt-testimonial-grid-wrap';
+			if ( ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
+				$inner_classes[] = 'kt-carousel-container-dotstyle-' . $dot_style;
+				$inner_classes[] = 'kt-carousel-container-arrowstyle-' . $arrow_style;
+
+				$inner_args = array(
+					'class' => implode( ' ', $inner_classes ),
+				);
+				$inner_wrap_attributes = array();
+				foreach ( $inner_args as $key => $value ) {
+					$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+				}
+				$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
+				$carousel_content = '';
+				$carousel_content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '">';
+				$carousel_content .= $content;
+				$carousel_content .= '</div>';
+				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $carousel_content );
+			} else {
+				$inner_args = array(
+					'class' => implode( ' ', $inner_classes ),
+				);
+				$inner_wrap_attributes = array();
+				foreach ( $inner_args as $key => $value ) {
+					$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+				}
+				$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
+				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $content );
+			}
+			$wrapper_args = array(
+				'class' => implode( ' ', $outer_classes ),
+			);
+			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+			$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $inner_content );
+		} elseif ( ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
+			$gap        = isset( $attributes['columnGap'] ) && '' !== $attributes['columnGap'] ? $attributes['columnGap'] : 30;
+			$columns_ss = ! empty( $attributes['columns'][5] ) ? $attributes['columns'][5] : '1';
+			$gap_unit   = 'px';
+			$content = str_replace( 'data-columns-ss="' . esc_attr( $columns_ss ) . '"', 'data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $gap . $gap_unit ) . '"', $content );
+		}
+		return $content;
 	}
 
 	/**

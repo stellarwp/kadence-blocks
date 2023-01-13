@@ -515,6 +515,10 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"kbVersion": {
+		"type": "number",
+		"default": ""
 	}
   },
   "usesContext": [
