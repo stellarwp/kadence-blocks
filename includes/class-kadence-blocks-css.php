@@ -1719,9 +1719,9 @@ class Kadence_Blocks_CSS {
 			$this->set_media_state( $size );
 
 			foreach ( $sides_prop_keys as $side => $prop_key ) {
-				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width' );
-				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color' );
-				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style' );
+				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
+				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
+				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
 				if ( $width ) {
 					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {
@@ -1743,12 +1743,13 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @param array  $attributes an array of attributes.
 	 * @param array  $args an array of settings.
-	 * @param string $side the side to retrieve a value for (desktop, tablet, mobile).
-	 * @param string $size the size to retrieve a value for (top, right, bottom, left).
-	 * @param string $value the name of the value to retreive (color, style, width).
+	 * @param string $given_side the side to retrieve a value for (desktop, tablet, mobile).
+	 * @param string $given_size the size to retrieve a value for (top, right, bottom, left).
+	 * @param string $given_value the name of the value to retreive (color, style, width).
+	 * @param string $single_styles if this value is being calculated to be output alone.
 	 * @return string
 	 */
-	public function get_border_value( $attributes, $args, $given_side, $given_size, $given_value ) {
+	public function get_border_value( $attributes, $args, $given_side, $given_size, $given_value, $single_styles ) {
 		//border styles come in an array like this:
 		// [
 		// 	  "top": [ {{color}}, {{style}}, {{width}} ],
@@ -1810,7 +1811,13 @@ class Kadence_Blocks_CSS {
 				$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
 				break;
 		}
-		$return_value = $return_value ?: $value_defaults[$given_value];
+
+		// if color is not set and single styles is selected, don't return the default, instead return blank as to not override some inherited styles.
+		if ( $given_value == 'color' && ! $return_value && $single_styles) {
+			return '';
+		}
+
+		$return_value = $return_value ? $return_value : $value_defaults[ $given_value ];
 
 		// extra processing for specific values.
 		if( $given_value == 'color') {
