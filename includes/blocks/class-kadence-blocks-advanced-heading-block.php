@@ -166,14 +166,14 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Old size first.
 		if ( ! empty( $attributes['mobileSize'] ) ) {
 			$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-		} else if ( ! empty( $attributes['fontSize'][1] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][1], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
+		} else if ( ! empty( $attributes['fontSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][2], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
 		// Old line height first.
 		if ( ! empty( $attributes['mobileLineHeight'] ) ) {
 			$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-		} else if ( ! empty( $attributes['fontHeight'][1] ) ) {
-			$css->add_property( 'line-height', $attributes['fontHeight'][1] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][2] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][2] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
 		}
 		if ( ! empty( $attributes['mobileAlign'] ) ) {
 			$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
