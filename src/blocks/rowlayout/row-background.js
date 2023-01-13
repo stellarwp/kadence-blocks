@@ -3,7 +3,7 @@
  */
 
  import { times } from 'lodash';
- import Slider from 'react-slick';
+ import { Splide, SplideSlide } from '@splidejs/react-splide';
  import { KadenceColorOutput, getPreviewSize, getBorderStyle } from '@kadence/helpers';
  import {
 	PaddingVisualizer,
@@ -82,20 +82,21 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 			</button>
 		);
 	}
+
 	const sliderSettings = {
-		dots: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
-		arrows: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].arrowStyle !== 'none' ? true : false ),
-		infinite: true,
-		fade: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade ? backgroundSliderSettings[ 0 ].fade : true ),
-		speed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ),
-		draggable: false,
-		autoplaySpeed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].speed ? backgroundSliderSettings[ 0 ].speed : 7000 ),
-		autoplay: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ),
-		slidesToShow: 1,
-		slidesToScroll: 1,
-		nextArrow: <CustomNextArrow />,
-		prevArrow: <CustomPrevArrow />,
+		type         : backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && backgroundSliderSettings[ 0 ].fade ? 'fade' : 'slide',
+		dots         : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
+		arrows       : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].arrowStyle !== 'none' ? true : false ),
+		rewind       : true,
+		perPage      : 1,
+		rewind       : true,
+		pagination   : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
+		speed        : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ),
+		drag         : false,
+		interval     : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].speed ? backgroundSliderSettings[ 0 ].speed : 7000 ),
+		autoplay     : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ),
 	};
+
 	const renderSliderImages = ( index ) => {
 		return (
 			<div className="kb-bg-slide-contain">
@@ -142,9 +143,20 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 				{ ( 'slider' === previewBackgroundSettingTab ) && (
 					<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` }>
 						{ backgroundSliderCount !== 1 && (
-							<Slider className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
-								{ times( backgroundSliderCount, n => renderSliderImages( n ) ) }
-							</Slider>
+							<Splide options={ sliderSettings } className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
+								{ times( backgroundSliderCount, n => 
+									<SplideSlide className={ 'kadence-blocks-gallery-item' }>
+										{renderSliderImages( n )}
+									</SplideSlide>
+								) }
+								{/* {theImages.map( ( img, index ) => {
+									return (
+										<SplideSlide className={ 'kadence-blocks-gallery-item' } key={img.id || img.url}>
+											{ renderGalleryImages( img, index ) }
+										</SplideSlide>
+									);
+								} )} */}
+							</Splide>
 						) }
 						{ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) === 1 && (
 							times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => renderSliderImages( n ) )

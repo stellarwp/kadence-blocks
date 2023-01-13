@@ -48,7 +48,6 @@ export default function useMerge( clientId, onMerge ) {
 			const previousBlockClientId = getPreviousBlockClientId( clientId );
 			if ( previousBlockClientId ) {
 				const trailingId = getTrailingId( previousBlockClientId );
-				console.log( 'has content' );
 				registry.batch( () => {
 					// moveBlocksToPosition(
 					// 	getBlockOrder( clientId ),
@@ -58,7 +57,6 @@ export default function useMerge( clientId, onMerge ) {
 					mergeBlocks( trailingId, clientId );
 				} );
 			} else {
-				console.log( 'no content' );
 				onMerge( forward );
 			}
 		}

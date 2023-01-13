@@ -5,7 +5,13 @@
  * which makes it higher in priority.
  */
  @import './resize-handle.scss';
-
+ @import './splide.scss';
+ .wp-block-kadence-rowlayout .kb-blocks-bg-slider {
+	.splide .splide__pagination {
+		bottom: 10px;
+		z-index: 1000;
+	}
+}
  /* Padding Resizer */
 .kt-row-padding.kb-static-row-padding {
     height: 0;
@@ -146,7 +152,7 @@
 		padding-right: 20px;
 	}
 }
- .wp-block-kadence-rowlayout .kb-blocks-bg-slider, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slider {
+ .wp-block-kadence-rowlayout .kb-blocks-bg-slider, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__slider {
     position: absolute;
     left: 0;
     right: 0;
@@ -157,14 +163,14 @@
 .kt-popover-color > .components-popover__content > .components-color-palette {
 	padding: 12px 3px;
 }
-.wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-track, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-list, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slide {
+.wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__track, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__slide {
     height: 100%;
 }
-.wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slide div.kb-bg-slide {
+.wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__slide div.kb-bg-slide {
     background-position: center;
     background-size: cover;
 }
-.wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-dots {
+.wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__dots {
     bottom: 0;
 }
 .kb-blocks-bg-slider > .kb-bg-slide-contain, .kb-blocks-bg-slider > .kb-bg-slide-contain .kb-bg-slide {
@@ -174,7 +180,7 @@
 	right:0;
 	position: absolute;
 }
-.wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slide div {
+.wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide__slide div {
 	position: relative;
 	height: 100%;
 }
@@ -229,10 +235,10 @@ div.kb-blocks-bg-video {
 }
 
 // Tabs
-.kt-inspect-tabs .components-button-group {
-	margin-bottom: 1em;
-	border:0;
-}
+// .kt-inspect-tabs .components-button-group {
+// 	margin-bottom: 1em;
+// 	border:0;
+// }
 // Tab Controls
 .edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body {
 	border-top:0;

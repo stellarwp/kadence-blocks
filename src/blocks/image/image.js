@@ -67,6 +67,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	ResponsiveBorderControl,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import {
 	bottomLeftIcon,
@@ -420,6 +421,7 @@ export default function Image( {
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
+	const nonTransAttrs = [ 'url', 'id', 'caption', 'alt' ];
 	const controls = (
 		<>
 			<BlockControls group="block">
@@ -467,6 +469,13 @@ export default function Image( {
 						label={ __( 'Upload external image', 'kadence-blocks' ) }
 					/>
 				) }
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
 			{ ! isEditingImage && ! isDynamic && (
 				<BlockControls group="other">
@@ -1117,7 +1126,7 @@ export default function Image( {
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/image' } excludedAttrs={ [ 'url', 'id', 'caption', 'alt' ] } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
 

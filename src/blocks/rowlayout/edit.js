@@ -57,7 +57,8 @@ import {
 	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
 
@@ -658,6 +659,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 							showTooltip={ true }
 						/>
 					</ToolbarGroup>
+					<CopyPasteAttributes
+						attributes={ attributes }
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+					/>
 				</BlockControls>
 			)}
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
@@ -921,7 +928,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 									</>
 								) }
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 							</>
 						) }
 					</InspectorControls>

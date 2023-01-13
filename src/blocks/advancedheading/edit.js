@@ -486,6 +486,7 @@ function KadenceAdvancedHeading( props ) {
 		'kb-is-heading' : htmlTag && htmlTag === 'heading',
 		'kb-adv-text'   : true,
 	});
+	const nonTransAttrs = [ 'content' ];
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
@@ -597,7 +598,7 @@ function KadenceAdvancedHeading( props ) {
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ [ 'content' ] } 
+					excludedAttrs={ nonTransAttrs } 
 					defaultAttributes={ metadata['attributes'] } 
 					blockSlug={ metadata['name'] } 
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
@@ -983,7 +984,7 @@ function KadenceAdvancedHeading( props ) {
 								</>
 							)}
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedheading' } excludedAttrs={ [ 'content' ] }  />
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 						</>
 

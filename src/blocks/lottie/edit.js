@@ -47,6 +47,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components'
 import {
 	setBlockDefaults,
@@ -136,6 +137,8 @@ export function Edit( {
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const nonTransAttrs = ['fileSrc', 'fileUrl', 'label'];
 
 	const classes = classnames( className );
 	const blockProps = useBlockProps( {
@@ -294,10 +297,17 @@ export function Edit( {
 
 	return (
 		<div { ...blockProps }>
-			<BlockControls group="block">
+			<BlockControls>
 				<BlockAlignmentControl
 					value={ align }
 					onChange={ ( value ) => setAttributes( { align: value } ) }
+				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/lottie' }>
@@ -553,7 +563,7 @@ export function Edit( {
 							/>
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/lottie' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				}
 

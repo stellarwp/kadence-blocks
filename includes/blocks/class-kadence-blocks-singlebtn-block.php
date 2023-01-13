@@ -230,6 +230,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['rel'] = $rel_add;
 			}
 		}
+		kadence_apply_aos_wrapper_args( $attributes, $wrapper_args );
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 		$text       = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
