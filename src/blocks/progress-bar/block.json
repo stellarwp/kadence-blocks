@@ -109,16 +109,16 @@
 		"type": "string",
 		"default": "px"
 	},
-	"borderColor": {
+	"progressColor": {
 		"type": "string",
 		"default": "#4A5568"
 	},
-	"borderOpacity": {
+	"progressOpacity": {
 		"type": "number",
 		"default": 1
 	},
 	"barType": {
-		"enum": [ "line", "circle" ],
+		"enum": [ "line", "circle", "semicircle" ],
 		"default": "line",
 		"type": "string"
 	},
@@ -209,6 +209,11 @@
 	"duration":{
 		"type": "number",
 	  	"default": 2.5
+	},
+	"easing":{
+		"enum": [ "easeIn" , "easeOut", "linear", "easeInOut"],
+		"default": "linear",
+		"type": "string"
 	},
 	"progressBorderRadius":{
 		"type":"array",

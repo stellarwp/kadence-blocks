@@ -88,8 +88,8 @@ export function Edit( {
 		marginUnit,
 		barBackground,
 		barBackgroundOpacity,
-		borderColor,
-		borderOpacity,
+		progressColor,
+		progressOpacity,
 		barType,
 		containerMaxWidth,
 		tabletContainerMaxWidth,
@@ -108,6 +108,7 @@ export function Edit( {
 		progressWidthMobile,
 		progressWidthType,
 		progressBorderRadius,
+		easing,
 		
 
 	} = attributes;
@@ -211,9 +212,10 @@ export function Edit( {
 	const ProgressLine = ({animate}) => { 
 		const line = useMemo(()=>
 		new Line(container,{
-			color: KadenceColorOutput( borderColor , borderOpacity ),
+			color: KadenceColorOutput( progressColor , progressOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: duration * 1000,
+			easing: easing,
 			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
 			svgStyle: {
@@ -236,9 +238,10 @@ export function Edit( {
 	const ProgressCircle = ({animate}) => { 
 		const circle = useMemo(()=>
 		new Circle(container,{
-			color: KadenceColorOutput( borderColor , borderOpacity ),
+			color: KadenceColorOutput( progressColor , progressOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: duration * 1000,
+			easing: easing,
 			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
 			svgStyle: {
@@ -261,9 +264,10 @@ export function Edit( {
 	const ProgressSemicircle = ({animate}) => {
 		const semicircle = useMemo(()=>
 		new SemiCircle(container,{
-			color: KadenceColorOutput( borderColor , borderOpacity ),
+			color: KadenceColorOutput( progressColor , progressOpacity ),
 			strokeWidth: previewProgressWidth,
 			duration: 1200,
+			easing: easing,
 			trailWidth: previewProgressWidth,
 			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
 			svgStyle: {
@@ -381,11 +385,11 @@ export function Edit( {
 					/>
 					<PopColorControl
 						label={ __( 'Progress Color', 'kadence-blocks' ) }
-						colorValue={ ( borderColor ? borderColor : '#4A5568' ) }
+						colorValue={ ( progressColor ? progressColor : '#4A5568' ) }
 						colorDefault={ '#4A5568' }
-						opacityValue={ borderOpacity }
-						onColorChange={ value => setAttributes( { borderColor: value } ) }
-						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
+						opacityValue={ progressOpacity }
+						onColorChange={ value => setAttributes( { progressColor: value } ) }
+						onOpacityChange={ value => setAttributes( { progressOpacity: value } ) }
 					/>
 					<ResponsiveRangeControls
 						label={ __( 'Progress Thickness', 'kadence-blocks' ) }
@@ -407,22 +411,6 @@ export function Edit( {
 						max={ 50 }
 						step={ 1 }
 						
-					/>
-					<ResponsiveRangeControls
-						label={__( 'Width', 'kadence-blocks' )}
-						value={containerMaxWidth}
-						onChange={value => setAttributes( { containerMaxWidth: value } )}
-						tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
-						onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
-						mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
-						onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
-						min={0}
-						max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
-						step={1}
-						unit={containerMaxWidthUnits}
-						onUnit={ ( value ) => setAttributes( { containerMaxWidthUnits: value } )}
-						reset={ () => setAttributes( { containerMaxWidth: 200 , tabletContainerMaxWidth: '' , mobileContainerMaxWidth: '' })}
-						units={[ 'px', 'vh' , '%' ]}
 					/>
 					<ResponsiveRangeControls
 						label={ __( 'Border Radius', 'kadence-blocks' ) }
@@ -455,6 +443,17 @@ export function Edit( {
 						min={0.1}
 						max={25}
 						step={0.1}
+					/>
+					<SelectControl
+						label={__( 'Animation Type', 'kadence-blocks' )}
+						options={
+							[{ value: 'linear', label: __( 'Linear', 'kadence-blocks' )},
+							{ value: 'easeIn', label: __( 'Ease In', 'kadence-blocks' )},
+							{ value: 'easeOut', label: __( 'Ease Out', 'kadence-blocks' )},
+							{ value: 'easeInOut', label: __( 'Ease In Out', 'kadence-blocks' )},]
+						}
+						value={easing}
+						onChange={( value ) => setAttributes( { easing: value } )}
 					/>
 
 				</PanelBody>
