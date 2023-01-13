@@ -223,12 +223,16 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-
-		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
-
+		// See if container styles are applied to the item or text
+		if( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+		} else {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
+		}
 		/* Container Padding */
 		$css->render_measure_output( $attributes, 'containerPadding', 'padding' );
 
+		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 		/* Container min-height */
 		$css->render_responsive_range( $attributes, 'containerMinHeight', 'min-height' );
 
@@ -508,7 +512,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if( isset( $attributes['style'] ) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 
-			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 . 'px');
+			$css->add_property( 'max-width', ( isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 ) . 'px');
 			if ( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] && $attributes['iconStyles'][ 0 ]['icon'] && $attributes['iconStyles'][ 0 ]['margin'] && $attributes['iconStyles'][ 0 ]['margin'][ 0 ] && ( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] < 0 ) ) {
 				$css->add_property( 'padding-top', abs( $attributes['iconStyles'][0]['margin'][0] ) . 'px' );
 			}
@@ -520,7 +524,6 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
 		}
-
 		if( isset( $attributes['displayShadow'] ) && $attributes['displayShadow'] ){
 			$default_shadow = array(
 				'color' => '#000000',
@@ -546,7 +549,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_color_output( $attributes, 'containerBackground', 'background', 'containerBackgroundOpacity' );
 		$css->render_range( $attributes, 'containerBorderRadius', 'border-radius' );
 
-		$css->render_range( $attributes, 'containerPadding', 'padding' );
+		// $css->render_range( $attributes, 'containerPadding', 'padding' );
 
 		if( !isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && in_array( $attributes['style'], array('inlineimage', 'bubble') ) ) ){
 			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] . 'px' : '500px' );

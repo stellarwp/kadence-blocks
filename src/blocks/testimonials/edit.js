@@ -517,7 +517,11 @@ function KadenceTestimonials({
             [`kt-t-md-col-${columns[3]}`]: true,
             [`kt-t-sm-col-${columns[4]}`]: true,
             [`kt-t-xs-col-${columns[5]}`]: true,
-        })
+        }),
+        style:{
+            paddingRight: layout && layout === 'carousel' && previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+            paddingLeft: layout && layout === 'carousel' && previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+        }
     });
 
     const columnControls = (
@@ -1770,10 +1774,6 @@ function KadenceTestimonials({
                             aria-label={ __( 'Testimonial Carousel', 'kadence-woo-extras' ) }
                             className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
                             hasTrack={ false }
-                            style={{
-                                paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                                paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            }}
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>

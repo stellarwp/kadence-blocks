@@ -12,6 +12,11 @@
 	.splide .splide__pagination {
 		bottom: 6px;
 	}
+	.splide:not(.kt-carousel-arrowstyle-none) {
+		padding-left: 35px !important;
+		padding-right: 35px !important;
+	}
+	
 }
  .kt-spacer-sidebar-15 {
 	 height: 15px;
