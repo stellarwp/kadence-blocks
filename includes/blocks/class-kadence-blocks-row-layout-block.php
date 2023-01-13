@@ -675,7 +675,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Overlay.
 		if ( ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlaySecond'] ) || ! empty( $attributes['overlayGradient'] ) ) {
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			$css->render_opacity_from_100( $attributes['overlayOpacity'] );
+			$css->render_opacity_from_100( $attributes, 'overlayOpacity' );
 			$overlay_type = ! empty( $attributes['currentOverlayTab'] ) ? $attributes['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
@@ -725,9 +725,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			if ( $css->is_number( $tablet_overlay['overlayOpacity'] ) ) {
-				$css->render_opacity_from_100( $tablet_overlay['overlayOpacity'] );
-			}
+			$css->render_opacity_from_100( $tablet_overlay, 'overlayOpacity' );
 			$overlay_type = ! empty( $tablet_overlay['currentOverlayTab'] ) ? $tablet_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
@@ -778,9 +776,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			if ( $css->is_number( $mobile_overlay['overlayOpacity'] ) ) {
-				$css->render_opacity_from_100( $mobile_overlay['overlayOpacity'] );
-			}
+			$css->render_opacity_from_100( $mobile_overlay, 'overlayOpacity' );
 			$overlay_type = ! empty( $mobile_overlay['currentOverlayTab'] ) ? $mobile_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
