@@ -1266,6 +1266,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $attributes['anchor'] ) ) {
 				$wrapper_args['id'] = $attributes['anchor'];
 			}
+			if ( ! empty( $attributes['kadenceDynamic'] ) || ! empty( $attributes['kadenceDynamic'] ) || ! empty( $attributes['kadenceDynamic']['bgImg'] ) ) {
+				$wrapper_args['style'] = 'background-image: ' . sprintf( "url('%s')", $attributes['bgImg'] );
+			}
 			$inner_args = array(
 				'class' => implode( ' ', $inner_classes ),
 			);
