@@ -1,5 +1,5 @@
 === Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
-Contributors: britner, oakesjosh
+Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
@@ -77,19 +77,19 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.2 Alpha Version 3 =
-Release Date: TBD
+Release Date: January 13th, 2023
+* Update: Searches in icon selector are now case insensitive,
+* Update: Accordion block now has responsive border & border radius.
+* Update: All sliders, carousels using splide.
+* Update: Allow icons to be removed from Accordion titles
 * Fix: Hover background color not showing on sections
 * Fix: Icons not showing in tab titles
 * Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
 * Fix: Icon list block not displaying properly on front end
 * Fix: Warning when using custom font without a font variant selected
 * Fix: Warning with some mobile background settings on row layout
-* Update: Allow icons to be removed from Accordion titles
-* Update: Searches in icon selector are now case insensitive
---------------- PENDING IN PRS ----------------
 * Fix: Issue where padding/margin was limited to 12px in some cases
-* Fix: "Add another section" in row layout now increases column count
-* Update: Accordion block now has responsive border & border radius
+* Fix: Issue with font size not showing in testimonials.
 
 = 3.0.1 Alpha Version 2 =
 Release Date: January 5th, 2023

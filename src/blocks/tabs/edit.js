@@ -31,7 +31,8 @@ import {
 	KadenceColorOutput,
 	showSettings,
 	getSpacingOptionOutput,
-	getPreviewSize
+	getPreviewSize,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -159,6 +160,12 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const previewInnerPaddingRight = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[1] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 1 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 1 ] : '' ) );
 	const previewInnerPaddingBottom = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[2] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 2 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 2 ] : '' ) );
 	const previewInnerPaddingLeft = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[3] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 3 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 3 ] : '' ) );
+
+	const previewSubFontSize = getPreviewSize( previewDevice, ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 0 ] ? subtitleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 1 ] ? subtitleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 2 ] ? subtitleFont[ 0 ].size[ 2 ] : '' ) );
+	const previewSubLineHeight = getPreviewSize( previewDevice, ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 0 ] ? subtitleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 1 ] ? subtitleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 2 ] ? subtitleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
+	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== size ? size : '' ), ( undefined !== tabSize ? tabSize : '' ), ( undefined !== mobileSize ? mobileSize : '' ) );
+	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
 
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
@@ -566,8 +573,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: KadenceColorOutput( titleBg ),
 							color: KadenceColorOutput( titleColor ),
-							fontSize: size + sizeType,
-							lineHeight: lineHeight + lineType,
+							fontSize: previewFontSize ? getFontSizeOptionOutput( previewFontSize, sizeType ) : undefined,
+							lineHeight: previewLineHeight ? previewLineHeight + lineType : undefined,
 							fontWeight: fontWeight,
 							fontStyle: fontStyle,
 							letterSpacing: letterSpacing + 'px',
@@ -631,8 +638,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										style={ {
 											fontWeight: subFont[ 0 ].weight,
 											fontStyle: subFont[ 0 ].style,
-											fontSize: subFont[ 0 ].size[ 0 ] + subFont[ 0 ].sizeType,
-											lineHeight: ( subFont[ 0 ].lineHeight && subFont[ 0 ].lineHeight[ 0 ] ? subFont[ 0 ].lineHeight[ 0 ] + subFont[ 0 ].lineType : undefined ),
+											fontSize: previewSubFontSize ? getFontSizeOptionOutput( previewSubFontSize, subFont[ 0 ].sizeType ) : undefined,
+											lineHeight: previewSubLineHeight ? previewSubLineHeight + subFont[ 0 ].lineType : undefined,
 											textTransform: ( subFont[ 0 ].textTransform ? subFont[ 0 ].textTransform : undefined ),
 											letterSpacing: subFont[ 0 ].letterSpacing + 'px',
 											fontFamily: ( subFont[ 0 ].family ? subFont[ 0 ].family : '' ),
@@ -1577,14 +1584,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							<>
 								<KadencePanelBody panelName={'kb-tabs-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
-										label={__('Container Padding', 'kadence-blocks')}
+										label={__('Padding', 'kadence-blocks')}
 										value={innerPadding}
 										onChange={(value) => setAttributes({innerPadding: value})}
 										tabletValue={tabletInnerPadding}
 										onChangeTablet={(value) => setAttributes({tabletInnerPadding: value})}
 										mobileValue={mobileInnerPadding}
 										onChangeMobile={(value) => setAttributes({mobileInnerPadding: value})}
-										min={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? -2 : -200)}
+										min={0}
 										max={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 12 : 200)}
 										step={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 0.1 : 1)}
 										unit={innerPaddingType}

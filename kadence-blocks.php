@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.0.1' );
+define( 'KADENCE_BLOCKS_VERSION', '3.0.2' );
 /**
  * Add a check before redirecting
  */

@@ -2,6 +2,7 @@
  * Utilities for the icon list block.
  */
 import { createBlock } from '@wordpress/blocks';
+import { times } from 'lodash';
 
 export function migrateToInnerblocks( attributes ) {
 
