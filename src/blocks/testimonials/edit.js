@@ -505,12 +505,12 @@ function KadenceTestimonials({
     const blockProps = useBlockProps({
         ref,
         className: classnames({
-            'wp-block-kadence-testimonials': true,
             [`kt-testimonial-halign-${hAlign}`]: true,
             [`kt-testimonial-style-${style}`]: true,
             [`kt-testimonials-media-${(displayMedia ? 'on' : 'off')}`]: true,
             [`kt-testimonials-icon-${(displayIcon ? 'on' : 'off')}`]: true,
             [`kt-testimonial-columns-${columns[0]}`]: true,
+            [`kt-blocks-testimonials-wrap${uniqueID}`]: uniqueID,
             [`kt-t-xxl-col-${columns[0]}`]: true,
             [`kt-t-xl-col-${columns[1]}`]: true,
             [`kt-t-lg-col-${columns[2]}`]: true,
@@ -744,11 +744,11 @@ function KadenceTestimonials({
     const nonTransAttrs = [ 'itemsCount' ];
 
     return (
-        <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
+        <div {...blockProps}>
             {containerStyles()}
             <style>
-                {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
-                {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
                 {(layout === 'grid' ) && (
                     `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
                         gap: ${getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) )};

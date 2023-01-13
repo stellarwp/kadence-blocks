@@ -207,6 +207,13 @@
 	background: transparent;
 	color: var(--global-palette4, #444444 );
 	padding: 20px;
+	display: inline-flex;
+    justify-content: center;
+    align-items: center;
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 }
 .kt-svg-testimonial-global-icon-wrap {
 	margin: 0 0 10px 0;

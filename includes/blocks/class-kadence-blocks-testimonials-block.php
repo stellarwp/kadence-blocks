@@ -505,17 +505,18 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/*
 		 * Global styles to apply to all testimonial items
 		 */
-		if( isset($attributes['style']) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ){
+		if( isset( $attributes['style'] ) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 
 			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 . 'px');
-			$css->add_property('padding-top', ( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] && $attributes['iconStyles'][ 0 ]['icon'] && $attributes['iconStyles'][ 0 ]['margin'] && $attributes['iconStyles'][ 0 ]['margin'][ 0 ] && ( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] < 0 ) ? abs( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] ) . 'px' : 'undefined' ));
+			if ( isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] && $attributes['iconStyles'][ 0 ]['icon'] && $attributes['iconStyles'][ 0 ]['margin'] && $attributes['iconStyles'][ 0 ]['margin'][ 0 ] && ( $attributes['iconStyles'][ 0 ]['margin'][ 0 ] < 0 ) ) {
+				$css->add_property( 'padding-top', abs( $attributes['iconStyles'][0]['margin'][0] ) . 'px' );
+			}
 		}
 
 		// See if container styles are applied to the item or text
-		if( !isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
+		if( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
-
 		} else {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
 		}
@@ -537,7 +538,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_range( $attributes, 'containerBorderWidth', 'border-width' );
 
-		if( !isset( $attributes['containerBorder'] )){
+		if ( ! isset( $attributes['containerBorder'] )){
 			$attributes['containerBorder'] = '#eeeeee';
 		}
 

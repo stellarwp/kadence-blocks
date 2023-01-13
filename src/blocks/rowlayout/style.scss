@@ -125,6 +125,7 @@
 	.splide__list {
 		height: 100% !important;
 	}
+	
 	.kb-bg-slide-contain div.kb-bg-slide {
 		background-position: center;
 		background-size: cover;
@@ -140,6 +141,9 @@
 		position: relative;
 		height: 100%;
 	}
+}
+.kb-blocks-bg-slider-init.splide .splide__pagination {
+    bottom: 10px;
 }
 // background Video
 .kb-blocks-bg-video-container {

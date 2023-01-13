@@ -63,7 +63,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_measure_range( $attributes, 'contentBorder', 'border-width' );
 			$css->render_color_output( $attributes, 'contentBorderColor', 'border-color' );
 		} else {
-			$css->render_border_styles( $attributes, 'contentBorderStyle', true );
+			$css->render_border_styles( $attributes, 'contentBorderStyle' );
 		}
 		$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', array( 'unit_key' => 'contentBorderRadiusUnit' ) );
 		$css->render_color_output( $attributes, 'contentBgColor', 'background' );
