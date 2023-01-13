@@ -6,6 +6,7 @@
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "providesContext": {
+	"kadence/testimonials-layout": "layout",
 	"kadence/testimonials-displayContent": "displayContent",
 	"kadence/testimonials-displayOccupation": "displayOccupation",
 	"kadence/testimonials-displayTitle": "displayTitle",
@@ -514,6 +515,10 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"kbVersion": {
+		"type": "number",
+		"default": ""
 	}
   },
   "usesContext": [

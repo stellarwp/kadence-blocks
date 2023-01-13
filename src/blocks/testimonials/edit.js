@@ -56,7 +56,8 @@ import {
     setBlockDefaults,
     mouseOverVisualizer,
     getGapSizeOptionOutput,
-    getSpacingOptionOutput
+    getSpacingOptionOutput,
+    getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -97,14 +98,13 @@ import classnames from 'classnames';
  * Build the overlay edit
  */
 function KadenceTestimonials({
-                                 attributes,
-                                 setAttributes,
-                                 className,
-                                 clientId,
-                                 isSelected,
-                                 context,
-                             }) {
-
+    attributes,
+    setAttributes,
+    className,
+    clientId,
+    isSelected,
+    context,
+}) {
     const {
         uniqueID,
         testimonials,
@@ -158,6 +158,7 @@ function KadenceTestimonials({
         inQueryBlock,
         gap,
         gapUnit,
+        kbVersion,
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
@@ -172,7 +173,6 @@ function KadenceTestimonials({
     const [iconMarginControl, setIconMarginControl] = useState('linked');
     const [iconPaddingControl, setIconPaddingControl] = useState('linked');
     const [showPreset, setShowPreset] = useState(false);
-    const [wrapperPaddingControls, setWrapperPaddingControls] = useState('linked');
     const carouselRef = useRef( null );
     const paddingMouseOver = mouseOverVisualizer();
 
@@ -266,7 +266,9 @@ function KadenceTestimonials({
         } else {
             setIconMarginControl('individual');
         }
-
+        if ( ! kbVersion || kbVersion < 2 ) {
+			setAttributes( { kbVersion: 2 } );
+		}
         if (context && context.queryId && context.postId) {
             if (context.queryId !== inQueryBlock) {
                 setAttributes({
@@ -285,6 +287,8 @@ function KadenceTestimonials({
     const previewWrapperPaddingBottom = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[2] ? wrapperPadding[2] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[2] ? wrapperTabletPadding[2] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[2] ? wrapperMobilePadding[2] : ''));
     const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[3] ? wrapperMobilePadding[3] : ''));
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
+    const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
+
     const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
     const previewTitleMinHeight = getPreviewSize(previewDevice, (undefined !== titleMinHeight && undefined !== titleMinHeight[0] ? titleMinHeight[0] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[1] ? titleMinHeight[1] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[2] ? titleMinHeight[2] : ''));
     const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
@@ -395,8 +399,6 @@ function KadenceTestimonials({
                         padding-left: ${(previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
                         max-width: ${('bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px') };
                         min-height: ${('bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px') };
-                        margin-top: ${layout && layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
-                        margin-bottom: ${layout && layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
                     }
                     
                     ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
@@ -411,8 +413,6 @@ function KadenceTestimonials({
                         max-width: ${ containerMaxWidth + 'px' };
                         min-height: ${ (previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined) };
                         padding-top:  ${(iconPadding ? iconPadding : undefined) };
-                        margin-top:  ${layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
-                        margin-bottom:  ${layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined };
                     }` }
                     
                     /* Title */
@@ -420,7 +420,7 @@ function KadenceTestimonials({
                         font-weight: ${titleFont[0].weight };
                         font-style: ${titleFont[0].style };
                         color: ${KadenceColorOutput(titleFont[0].color) };
-                        font-size: ${previewTitleFont ? previewTitleFont + previewTitleFontSizeType : undefined };
+                        font-size: ${previewTitleFont ? getFontSizeOptionOutput( previewTitleFont, previewTitleFontSizeType ) : undefined };
                         line-height: ${(previewTitleLineHeight ? previewTitleLineHeight + previewTitleLineHeightLineType : undefined) };
                         letter-spacing: ${titleFont[0].letterSpacing + 'px' };
                         text-transform: ${(titleFont[0].textTransform ? titleFont[0].textTransform : undefined) };
@@ -438,7 +438,7 @@ function KadenceTestimonials({
                         font-weight: ${contentFont[0].weight };
                         font-style: ${contentFont[0].style };
                         color: ${KadenceColorOutput(contentFont[0].color) };
-                        font-size: ${previewContentFont ? previewContentFont + previewContentFontSizeType : undefined };
+                        font-size: ${previewContentFont ? getFontSizeOptionOutput( previewContentFont, previewContentFontSizeType ) : undefined };
                         line-height: ${(previewContentLineHeight ? previewContentLineHeight + previewContentLineHeightLineType : undefined) };
                         text-transform: ${(contentFont[0].textTransform ? contentFont[0].textTransform : undefined) };
                         letter-spacing: ${contentFont[0].letterSpacing + 'px' };
@@ -454,7 +454,7 @@ function KadenceTestimonials({
                         font-weight: ${occupationFont[0].weight };
                         font-style: ${occupationFont[0].style };
                         color: ${KadenceColorOutput(occupationFont[0].color) };
-                        font-size: ${previewOccupationFont ? previewOccupationFont + previewOccupationFontSizeType : undefined };
+                        font-size: ${previewOccupationFont ? getFontSizeOptionOutput( previewOccupationFont, previewOccupationFontSizeType ) : undefined };
                         line-height: ${(previewOccupationLineHeight ? previewOccupationLineHeight + previewOccupationLineHeightLineType : undefined) };
                         text-transform: ${(occupationFont[0].textTransform ? occupationFont[0].textTransform : undefined) };
                         letter-spacing: ${occupationFont[0].letterSpacing + 'px' };
@@ -484,7 +484,7 @@ function KadenceTestimonials({
                         font-weight: ${ nameFont[0].weight };
                         font-style: ${ nameFont[0].style };
                         color: ${KadenceColorOutput(nameFont[0].color) };
-                        font-size: ${( previewNameFont ? previewNameFont + previewNameFontType : undefined ) };
+                        font-size: ${( previewNameFont ? getFontSizeOptionOutput( previewNameFont, previewNameFontType ) : undefined ) };
                         line-height: ${(previewNameLineHeight ? previewNameLineHeight + previewNameLineHeightType : undefined) };
                         text-transform: ${(nameFont[0].textTransform ? nameFont[0].textTransform : undefined) };
                         letter-spacing: ${nameFont[0].letterSpacing + 'px' };
@@ -505,20 +505,25 @@ function KadenceTestimonials({
     const blockProps = useBlockProps({
         ref,
         className: classnames({
-            'wp-block-kadence-testimonials': true,
             [`kt-testimonial-halign-${hAlign}`]: true,
             [`kt-testimonial-style-${style}`]: true,
             [`kt-testimonials-media-${(displayMedia ? 'on' : 'off')}`]: true,
             [`kt-testimonials-icon-${(displayIcon ? 'on' : 'off')}`]: true,
             [`kt-testimonial-columns-${columns[0]}`]: true,
+            [`kt-blocks-testimonials-wrap${uniqueID}`]: uniqueID,
             [`kt-t-xxl-col-${columns[0]}`]: true,
             [`kt-t-xl-col-${columns[1]}`]: true,
             [`kt-t-lg-col-${columns[2]}`]: true,
             [`kt-t-md-col-${columns[3]}`]: true,
             [`kt-t-sm-col-${columns[4]}`]: true,
             [`kt-t-xs-col-${columns[5]}`]: true,
-            [`kt-blocks-testimonials-wrap${uniqueID}${layout && layout === 'carousel' ? ' tns-carousel-wrap' : ''}`]: true
-        })
+        }),
+        style:{
+            paddingTop: previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+            paddingBottom: previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
+        }
     });
 
     const columnControls = (
@@ -745,11 +750,11 @@ function KadenceTestimonials({
     const nonTransAttrs = [ 'itemsCount' ];
 
     return (
-        <div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
+        <div {...blockProps}>
             {containerStyles()}
             <style>
-                {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
-                {(style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
                 {(layout === 'grid' ) && (
                     `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
                         gap: ${getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) )};
@@ -825,21 +830,19 @@ function KadenceTestimonials({
                                     {showSettings('columnSettings', 'kadence/testimonials') && (
                                         <Fragment>
                                             {columnControls}
-                                            <ResponsiveGapSizeControl
+                                            <ResponsiveRangeControls
                                                 label={__( 'Column Gutter', 'kadence-blocks' )}
-                                                value={ ( undefined !== gap?.[0] ? gap[0] : '' ) }
-                                                onChange={ value => setAttributes( { gap: [value,( undefined !== gap[1] ? gap[1] : '' ),( undefined !== gap[2] ? gap[2] : '' )] } )}
-                                                tabletValue={( undefined !== gap?.[1] ? gap[1] : '' )}
-                                                onChangeTablet={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),value,( undefined !== gap[2] ? gap[2] : '' )] } )}
-                                                mobileValue={( undefined !== gap?.[2] ? gap[2] : '' )}
-                                                onChangeMobile={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),( undefined !== gap[1] ? gap[1] : '' ),value] } )}
+                                                value={( '' !== gap?.[0] ? gap[0] : '' )}
+                                                onChange={value => setAttributes( { gap: [ value, ( '' !== gap?.[1] ? gap[1] : '' ), ( '' !== gap?.[2] ? gap[2] : '' ) ] } )}
+                                                tabletValue={( '' !== gap?.[1] ? gap[1] : '' )}
+                                                onChangeTablet={value => setAttributes( { gap: [ (  '' !== gap?.[0] ? gap[0] : '' ), value, ( '' !== gap?.[2] ? gap[2] : '' ) ] } )}
+                                                mobileValue={( '' !== gap?.[2] ? gap[2] : '' )}
+                                                onChangeMobile={value => setAttributes( { gap: [ (  '' !== gap?.[0] ? gap[0] : '' ), ( '' !== gap?.[1] ? gap[1] : '' ), value ] } )}
                                                 min={0}
-                                                max={( gapUnit === 'px' ? 200 : 12 )}
-                                                step={( gapUnit === 'px' ? 1 : 0.1 )}
-                                                unit={ gapUnit ? gapUnit : 'px' }
-                                                onUnit={( value ) => {
-                                                    setAttributes( { gapUnit: value } );
-                                                }}
+                                                max={( gapUnit !== 'px' ? 12 : 200 )}
+                                                step={( gapUnit !== 'px' ? 0.1 : 1 )}
+                                                unit={gapUnit}
+                                                onUnit={( value ) => setAttributes( { gapUnit: value } )}
                                                 units={[ 'px', 'em', 'rem' ]}
                                             />
                                         </Fragment>
@@ -996,117 +999,63 @@ function KadenceTestimonials({
                                             opacityValue={containerBorderOpacity}
                                             onOpacityChange={value => setAttributes({containerBorderOpacity: value})}
                                         />
-                                        <div className="kt-spacer-sidebar-15"></div>
-
-                                        {containerMinHeight && (containerMinHeight[0] || containerMinHeight[1] || containerMinHeight[2]) && (
-                                            <div className="kt-btn-size-settings-container">
-                                                <h2 className="kt-beside-btn-group">{__('Inner Content Align', 'kadence-blocks')}</h2>
-                                                <ButtonGroup className="kt-button-size-type-options"
-                                                             aria-label={__('Inner Content Align', 'kadence-blocks')}>
-                                                    {map(VAlignOptions, ({name, icon, key}) => (
-                                                        <Tooltip text={name}>
-                                                            <Button
-                                                                key={key}
-                                                                className="kt-btn-size-btn"
-                                                                isSmall
-                                                                isPrimary={containerVAlign === key}
-                                                                aria-pressed={containerVAlign === key}
-                                                                onClick={() => setAttributes({containerVAlign: key})}
-                                                            >
-                                                                {icon}
-                                                            </Button>
-                                                        </Tooltip>
-                                                    ))}
-                                                </ButtonGroup>
-                                            </div>
+                                        {showSettings('shadowSettings', 'kadence/testimonials') && (
+                                            <>
+                                                <ToggleControl
+                                                    label={__('Enable Shadow', 'kadence-blocks')}
+                                                    checked={displayShadow}
+                                                    onChange={value => setAttributes({displayShadow: value})}
+                                                />
+                                                {displayShadow && (
+                                                    <Fragment>
+                                                        <PopColorControl
+                                                            label={__('Shadow Color', 'kadence-blocks')}
+                                                            value={(shadow[0].color ? shadow[0].color : '')}
+                                                            default={''}
+                                                            onChange={value => saveShadow({color: value})}
+                                                            opacityValue={shadow[0].opacity}
+                                                            onOpacityChange={value => saveShadow({opacity: value})}
+                                                            onArrayChange={(color, opacity) => saveShadow({
+                                                                color: color,
+                                                                opacity: opacity
+                                                            })}
+                                                        />
+                                                        <RangeControl
+                                                            label={__('Shadow Blur', 'kadence-blocks')}
+                                                            value={shadow[0].blur}
+                                                            onChange={value => saveShadow({blur: value})}
+                                                            min={0}
+                                                            max={100}
+                                                            step={1}
+                                                        />
+                                                        <RangeControl
+                                                            label={__('Shadow Spread', 'kadence-blocks')}
+                                                            value={shadow[0].spread}
+                                                            onChange={value => saveShadow({spread: value})}
+                                                            min={-100}
+                                                            max={100}
+                                                            step={1}
+                                                        />
+                                                        <RangeControl
+                                                            label={__('Shadow Vertical Offset', 'kadence-blocks')}
+                                                            value={shadow[0].vOffset}
+                                                            onChange={value => saveShadow({vOffset: value})}
+                                                            min={-100}
+                                                            max={100}
+                                                            step={1}
+                                                        />
+                                                        <RangeControl
+                                                            label={__('Shadow Horizontal Offset', 'kadence-blocks')}
+                                                            value={shadow[0].hOffset}
+                                                            onChange={value => saveShadow({hOffset: value})}
+                                                            min={-100}
+                                                            max={100}
+                                                            step={1}
+                                                        />
+                                                    </Fragment>
+                                                )}
+                                            </>
                                         )}
-                                    </KadencePanelBody>
-                                )}
-
-                                {showSettings('shadowSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Container Shadow', 'kadence-blocks')}
-                                        initialOpen={false}
-                                        panelName={'kb-testimonials-container-shadow'}
-                                    >
-                                        <ToggleControl
-                                            label={__('Enable Shadow', 'kadence-blocks')}
-                                            checked={displayShadow}
-                                            onChange={value => setAttributes({displayShadow: value})}
-                                        />
-                                        {displayShadow && (
-                                            <Fragment>
-                                                <PopColorControl
-                                                    label={__('Shadow Color', 'kadence-blocks')}
-                                                    value={(shadow[0].color ? shadow[0].color : '')}
-                                                    default={''}
-                                                    onChange={value => saveShadow({color: value})}
-                                                    opacityValue={shadow[0].opacity}
-                                                    onOpacityChange={value => saveShadow({opacity: value})}
-                                                    onArrayChange={(color, opacity) => saveShadow({
-                                                        color: color,
-                                                        opacity: opacity
-                                                    })}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Blur', 'kadence-blocks')}
-                                                    value={shadow[0].blur}
-                                                    onChange={value => saveShadow({blur: value})}
-                                                    min={0}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Spread', 'kadence-blocks')}
-                                                    value={shadow[0].spread}
-                                                    onChange={value => saveShadow({spread: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Vertical Offset', 'kadence-blocks')}
-                                                    value={shadow[0].vOffset}
-                                                    onChange={value => saveShadow({vOffset: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Shadow Horizontal Offset', 'kadence-blocks')}
-                                                    value={shadow[0].hOffset}
-                                                    onChange={value => saveShadow({hOffset: value})}
-                                                    min={-100}
-                                                    max={100}
-                                                    step={1}
-                                                />
-                                            </Fragment>
-                                        )}
-                                    </KadencePanelBody>
-                                )}
-                                {showSettings('wrapperSettings', 'kadence/testimonials') && (
-                                    <KadencePanelBody
-                                        title={__('Wrapper Padding', 'kadence-blocks')}
-                                        initialOpen={false}
-                                        panelName={'kb-testimonials-wrapper-padding'}
-                                    >
-                                        <ResponsiveMeasurementControls
-                                            label={__('Wrapper Padding', 'kadence-blocks')}
-                                            value={wrapperPadding}
-                                            control={wrapperPaddingControls}
-                                            tabletValue={wrapperTabletPadding}
-                                            mobileValue={wrapperMobilePadding}
-                                            onChange={(value) => setAttributes({wrapperPadding: value})}
-                                            onChangeTablet={(value) => setAttributes({wrapperTabletPadding: value})}
-                                            onChangeMobile={(value) => setAttributes({wrapperMobilePadding: value})}
-                                            onChangeControl={(value) => setWrapperPaddingControls(value)}
-                                            min={paddingMin}
-                                            max={paddingMax}
-                                            step={paddingStep}
-                                            unit={wrapperPaddingType}
-                                            units={['px', 'em', 'rem', '%']}
-                                            onUnit={(value) => setAttributes({wrapperPaddingType: value})}
-                                        />
                                     </KadencePanelBody>
                                 )}
 
@@ -1729,7 +1678,54 @@ function KadenceTestimonials({
                                         showUnit={true}
                                         units={['px']}
                                     />
+                                    {containerMinHeight && (containerMinHeight[0] || containerMinHeight[1] || containerMinHeight[2]) && (
+                                        <>
+                                            <div className="kt-btn-size-settings-container">
+                                                <h2 className="kt-beside-btn-group">{__('Inner Content Align', 'kadence-blocks')}</h2>
+                                                <ButtonGroup className="kt-button-size-type-options"
+                                                            aria-label={__('Inner Content Align', 'kadence-blocks')}>
+                                                    {map(VAlignOptions, ({name, icon, key}) => (
+                                                        <Tooltip text={name}>
+                                                            <Button
+                                                                key={key}
+                                                                className="kt-btn-size-btn"
+                                                                isSmall
+                                                                isPrimary={containerVAlign === key}
+                                                                aria-pressed={containerVAlign === key}
+                                                                onClick={() => setAttributes({containerVAlign: key})}
+                                                            >
+                                                                {icon}
+                                                            </Button>
+                                                        </Tooltip>
+                                                    ))}
+                                                </ButtonGroup>
+                                            </div>
+                                        </>
+                                    )}
                                 </KadencePanelBody>
+                                {showSettings('wrapperSettings', 'kadence/testimonials') && (
+                                    <KadencePanelBody
+                                        title={__('Wrapper Padding', 'kadence-blocks')}
+                                        initialOpen={false}
+                                        panelName={'kb-testimonials-wrapper-padding'}
+                                    >
+                                        <ResponsiveMeasurementControls
+                                            label={__('Wrapper Padding', 'kadence-blocks')}
+                                            value={wrapperPadding}
+                                            tabletValue={wrapperTabletPadding}
+                                            mobileValue={wrapperMobilePadding}
+                                            onChange={(value) => setAttributes({wrapperPadding: value})}
+                                            onChangeTablet={(value) => setAttributes({wrapperTabletPadding: value})}
+                                            onChangeMobile={(value) => setAttributes({wrapperMobilePadding: value})}
+                                            min={0}
+                                            max={(wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200)}
+                                            step={(wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1)}
+                                            unit={wrapperPaddingType}
+                                            units={['px', 'em', 'rem', '%']}
+                                            onUnit={(value) => setAttributes({wrapperPaddingType: value})}
+                                        />
+                                    </KadencePanelBody>
+                                )}
 
                                 <div className="kt-sidebar-settings-spacer"></div>
 
@@ -1771,10 +1767,6 @@ function KadenceTestimonials({
                             aria-label={ __( 'Testimonial Carousel', 'kadence-woo-extras' ) }
                             className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
                             hasTrack={ false }
-                            style={{
-                                paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                                paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            }}
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>
@@ -1784,10 +1776,6 @@ function KadenceTestimonials({
                         <div className={'kt-testimonial-grid-wrap'} style={{
                             'grid-row-gap': columnGap + 'px',
                             'grid-column-gap': columnGap + 'px',
-                            paddingTop: previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            paddingBottom: previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-                            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
                         }}>
                             <InnerBlocks
                                 template={ [ [ 'kadence/testimonial' ] ] }
