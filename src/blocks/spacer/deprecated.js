@@ -6,6 +6,8 @@
  import SvgPattern from './svg-pattern';
  import { KadenceColorOutput, DeprecatedKadenceColorOutput } from '@kadence/helpers';
  import classnames from 'classnames';
+import { useBlockProps } from '@wordpress/block-editor';
+
 import {
 	Fragment,
 	renderToString,
@@ -17,6 +19,154 @@ import {
  import { __ } from '@wordpress/i18n';
 
  export default [
+ {
+	 attributes: {
+		 blockAlignment: {
+			 type: 'string',
+			 default: 'none',
+		 },
+		 hAlign: {
+			 type: 'string',
+			 default: 'center',
+		 },
+		 spacerHeight: {
+			 type: 'number',
+			 default: 60,
+		 },
+		 spacerHeightUnits: {
+			 type: 'string',
+			 default: 'px',
+		 },
+		 tabletSpacerHeight: {
+			 type: 'number',
+			 default: '',
+		 },
+		 mobileSpacerHeight: {
+			 type: 'number',
+			 default: '',
+		 },
+		 dividerEnable: {
+			 type: 'boolean',
+			 default: true,
+		 },
+		 dividerStyle: {
+			 type: 'string',
+			 default: 'solid',
+		 },
+		 dividerOpacity: {
+			 type: 'number',
+			 default: 100,
+		 },
+		 dividerColor: {
+			 type: 'string',
+			 default: '#eee',
+		 },
+		 dividerWidth: {
+			 type: 'number',
+			 default: 80,
+		 },
+		 dividerHeight: {
+			 type: 'number',
+			 default: 1,
+		 },
+		 uniqueID: {
+			 type: 'string',
+			 default: '',
+		 },
+		 rotate: {
+			 type: 'number',
+			 default: 40,
+		 },
+		 strokeWidth: {
+			 type: 'number',
+			 default: 4,
+		 },
+		 strokeGap: {
+			 type: 'number',
+			 default: 5,
+		 },
+		 tabletHAlign: {
+			 type: 'string',
+			 default: '',
+		 },
+		 mobileHAlign: {
+			 type: 'string',
+			 default: '',
+		 },
+		 vsdesk: {
+			 type: 'boolean',
+			 default: false,
+		 },
+		 vstablet: {
+			 type: 'boolean',
+			 default: false,
+		 },
+		 vsmobile: {
+			 type: 'boolean',
+			 default: false,
+		 },
+	 },
+	 save: ( props ) => {
+		 const { attributes } = props;
+		 const {
+			 className,
+			 blockAlignment,
+			 dividerEnable,
+			 dividerStyle,
+			 hAlign,
+			 dividerColor,
+			 dividerOpacity,
+			 uniqueID,
+			 rotate,
+			 strokeWidth,
+			 strokeGap,
+			 tabletHAlign,
+			 mobileHAlign,
+			 vsdesk,
+			 vstablet,
+			 vsmobile,
+		 } = attributes;
+
+		 const innerSpacerClasses = classnames( {
+			 'kt-block-spacer'                            : true,
+			 [ `kt-block-spacer-halign-${hAlign}` ]       : hAlign,
+			 [ `kt-block-spacer-thalign-${tabletHAlign}` ]: tabletHAlign,
+			 [ `kt-block-spacer-malign-${mobileHAlign}` ] : mobileHAlign,
+		 } );
+
+		 const blockProps = useBlockProps.save( {
+			 className: classnames( {
+					 [ `align${( blockAlignment ? blockAlignment : 'none' )}` ]: true,
+					 [ `kt-block-spacer-${uniqueID}` ]                         : uniqueID,
+					 'kvs-lg-false'                                            : vsdesk !== 'undefined' && vsdesk,
+					 'kvs-md-false'                                            : vstablet !== 'undefined' && vstablet,
+					 'kvs-sm-false'                                            : vsmobile !== 'undefined' && vsmobile,
+				 },
+				 className
+			 ),
+		 } );
+
+		 return (
+			 <div {...blockProps}>
+				 <div className={innerSpacerClasses}>
+					 {dividerEnable && (
+						 <>
+							 {dividerStyle === 'stripe' && (
+								 <span className="kt-divider-stripe">
+								<SvgPattern uniqueID={uniqueID} color={KadenceColorOutput( dividerColor )} opacity={dividerOpacity} rotate={rotate} strokeWidth={strokeWidth}
+											strokeGap={strokeGap}/>
+							</span>
+							 )}
+							 {dividerStyle !== 'stripe' && (
+								 <hr className="kt-divider"/>
+							 )}
+						 </>
+					 )}
+				 </div>
+			 </div>
+		 );
+	 }
+ },
 	{
 		attributes: {
 			blockAlignment: {
