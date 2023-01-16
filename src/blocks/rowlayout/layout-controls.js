@@ -270,9 +270,15 @@ import { __ } from '@wordpress/i18n';
 										className={ 'kadence-row-layout-radio-btns' }
 											hideLabel={true}
 										onChange={ value => {
-											setAttributes( {
-												tabletLayout: value,
-											} );
+											if ( value === tabletLayout ) {
+												setAttributes( {
+													tabletLayout: 'inherit',
+												} );
+											} else {
+												setAttributes( {
+													tabletLayout: value,
+												} );
+											}
 										}}
 									/>}
 									mobileChildren={<KadenceRadioButtons
@@ -544,6 +550,7 @@ import { __ } from '@wordpress/i18n';
 							showSearch={ false }
 							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
 							theme="dividers"
+							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
 						/>
 						<PopColorControl

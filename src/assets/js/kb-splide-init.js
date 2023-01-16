@@ -7,6 +7,11 @@
 			);
 			this.bootstrapSliders(advancedSliders);
 
+			let testimonialSliders = document.querySelectorAll(
+				".wp-block-kadence-testimonials .kt-blocks-carousel-init"
+			);
+			this.bootstrapSliders(testimonialSliders);
+
 			let bgSliders = document.querySelectorAll(
 				".kb-blocks-bg-slider > .kt-blocks-carousel-init"
 			);
@@ -39,8 +44,8 @@
 
 				let splideOptions = this.getSplideOptions(parsedData);
 				// Add this to remove slick based css from hiding elements
-				thisSlider.classList.add("slick-initialized");
-				thisSlider.classList.add("slick-slider");
+				thisSlider.classList.add("splide-initialized");
+				thisSlider.classList.add("splide-slider");
 
 				let { sliderType } = parsedData;
 

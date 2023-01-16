@@ -13,6 +13,7 @@ import SvgPattern from './svg-pattern';
 
 function Save( { attributes } ) {
 	const {
+		className,
 		blockAlignment,
 		dividerEnable,
 		dividerStyle,
@@ -44,7 +45,9 @@ function Save( { attributes } ) {
 			'kvs-lg-false'                                            : vsdesk !== 'undefined' && vsdesk,
 			'kvs-md-false'                                            : vstablet !== 'undefined' && vstablet,
 			'kvs-sm-false'                                            : vsmobile !== 'undefined' && vsmobile,
-		} ),
+		},
+			className
+		),
 	} );
 
 	return (

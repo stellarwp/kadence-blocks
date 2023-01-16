@@ -1,10 +1,12 @@
 /**
- * #.# Editor Styles
+ * #.# Front End Styles
  *
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .wp-block-kadence-testimonials {
+
+//@import './splide.scss';
+.wp-block-kadence-testimonials {
 	.kt-testimonial-rating-wrap {
 		margin: 10px 0 10px 0;
 		.kb-svg-icon-wrap {
@@ -21,28 +23,29 @@
 	}
 	.kt-blocks-carousel {
 		padding-bottom: 35px;
-		margin-left: -15px;
-		margin-right: -15px;
 	}
 	.kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
-	}
-	&.tns-carousel-wrap .kt-blocks-carousel:not(.kt-carousel-container-arrowstyle-none) {
-		padding-left: 35px;
-		padding-right: 35px;
 	}
 	.kt-blocks-carousel .kt-blocks-carousel-init:not(.kt-carousel-arrowstyle-none):not(.tns-slider) {
 		padding-left: 35px;
 		padding-right: 35px;
 	}
-	.kt-blocks-carousel .kt-blocks-testimonial-carousel-item {
-		padding: 0 15px;
+	// .kt-blocks-carousel .kt-blocks-testimonial-carousel-item {
+	// 	padding: 0 15px;
+	// }
+	.splide:not(.kt-carousel-dotstyle-none) {
+		padding-bottom: 30px;
+		margin-bottom: 0;
+	}
+	.splide .splide__pagination {
+		bottom: 6px;
 	}
 }
-.kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item {
+.kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item {
     display: none;
 }
-.kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item:first-child {
+.kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item:first-child {
     display: block;
 }
 .kt-testimonial-grid-wrap {
@@ -203,6 +206,13 @@
 	background: transparent;
 	color: var(--global-palette4, #444444 );
 	padding: 20px;
+	display: inline-flex;
+    justify-content: center;
+    align-items: center;
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 }
 .kt-svg-testimonial-global-icon-wrap {
 	margin: 0 0 10px 0;

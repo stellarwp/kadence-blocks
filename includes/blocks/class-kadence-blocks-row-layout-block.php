@@ -60,11 +60,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-parallax-js' );
 		}
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
-			$this->enqueue_style( 'kadence-blocks-pro-slick' );
+			$this->enqueue_style( 'kadence-blocks-splide' );
 			if ( $inline ) {
-				$this->should_render_inline_stylesheet( 'kadence-blocks-pro-slick' );
+				$this->should_render_inline_stylesheet( 'kadence-blocks-splide' );
 			}
-			$this->enqueue_script( 'kadence-blocks-slick-init' );
+			$this->enqueue_script( 'kadence-blocks-splide-init' );
 		}
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && isset( $attributes['backgroundVideo'] ) && isset( $attributes['backgroundVideo'][0] ) && isset( $attributes['backgroundVideo'][0]['btns'] ) && true === $attributes['backgroundVideo'][0]['btns'] ) {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
@@ -681,7 +681,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Overlay.
 		if ( ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlaySecond'] ) || ! empty( $attributes['overlayGradient'] ) ) {
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			$css->render_opacity_from_100( $attributes['overlayOpacity'] );
+			$css->render_opacity_from_100( $attributes, 'overlayOpacity' );
 			$overlay_type = ! empty( $attributes['currentOverlayTab'] ) ? $attributes['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
@@ -731,9 +731,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			if ( $css->is_number( $tablet_overlay['overlayOpacity'] ) ) {
-				$css->render_opacity_from_100( $tablet_overlay['overlayOpacity'] );
-			}
+			$css->render_opacity_from_100( $tablet_overlay, 'overlayOpacity' );
 			$overlay_type = ! empty( $tablet_overlay['currentOverlayTab'] ) ? $tablet_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
@@ -784,9 +782,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
-			if ( $css->is_number( $mobile_overlay['overlayOpacity'] ) ) {
-				$css->render_opacity_from_100( $mobile_overlay['overlayOpacity'] );
-			}
+			$css->render_opacity_from_100( $mobile_overlay, 'overlayOpacity' );
 			$overlay_type = ! empty( $mobile_overlay['currentOverlayTab'] ) ? $mobile_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
@@ -1104,14 +1100,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			return '';
 		}
 		$output = '';
-		$dot_style = ! empty( $attributes['bgSliderSettings'][0]['dotStyle'] ) ? $attributes['bgSliderSettings'][0]['dotStyle'] : 'dark';
-		$arrow_style = ! empty( $attributes['bgSliderSettings'][0]['arrowStyle'] ) ? $attributes['bgSliderSettings'][0]['arrowStyle'] : 'none';
-		$tran_speed = ! empty( $attributes['bgSliderSettings'][0]['tranSpeed'] ) ? $attributes['bgSliderSettings'][0]['tranSpeed'] : 400;
-		$speed = ! empty( $attributes['bgSliderSettings'][0]['speed'] ) ? $attributes['bgSliderSettings'][0]['speed'] : 7000;
-		$fade = ! empty( $attributes['bgSliderSettings'][0]['fade'] ) ? $attributes['bgSliderSettings'][0]['fade'] : true;
-		$auto = ! empty( $attributes['bgSliderSettings'][0]['autoPlay'] ) ? $attributes['bgSliderSettings'][0]['autoPlay'] : true;
+		$dot_style = ! empty( $attributes['backgroundSliderSettings'][0]['dotStyle'] ) ? $attributes['backgroundSliderSettings'][0]['dotStyle'] : 'dark';
+		$arrow_style = ! empty( $attributes['backgroundSliderSettings'][0]['arrowStyle'] ) ? $attributes['backgroundSliderSettings'][0]['arrowStyle'] : 'none';
+		$tran_speed = ! empty( $attributes['backgroundSliderSettings'][0]['tranSpeed'] ) ? $attributes['backgroundSliderSettings'][0]['tranSpeed'] : 400;
+		$speed = ! empty( $attributes['backgroundSliderSettings'][0]['speed'] ) ? $attributes['backgroundSliderSettings'][0]['speed'] : 7000;
+		$fade = isset( $attributes['backgroundSliderSettings'][0]['fade'] ) ? $attributes['backgroundSliderSettings'][0]['fade'] : true;
+		$auto = isset( $attributes['backgroundSliderSettings'][0]['autoPlay'] ) ? $attributes['backgroundSliderSettings'][0]['autoPlay'] : true;
+		$temp = empty( $attributes['backgroundSliderSettings'][0]['autoPlay'] );
 		$output .= '<div class="kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
-		$output .= '<div class="kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots=" ' . ( 'none' === $dot_style ? false : true ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '">';
+		$output .= '<div class="kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '">';
 		$item = 1;
 		foreach ( $attributes['backgroundSlider'] as $key => $slide ) {
 			$style_args = array();
@@ -1344,9 +1341,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'speed' => apply_filters( 'kadence_blocks_parallax_speed', -0.1 ),
 			)
 		);
-		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'includes/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'includes/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-slick-init.min.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_style( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kadence-blocks-splide' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 }

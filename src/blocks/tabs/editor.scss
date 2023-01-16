@@ -15,6 +15,10 @@
 .kt-title-text.is-selected, .kt-title-sub-text.is-selected {
     min-width: 5px;
 }
+.wp-block[data-type="kadence/tab"] {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .wp-block[data-type="kadence/tab"] > .block-editor-block-list__block-edit > .block-editor-block-mover {
     display:none !important;
 }

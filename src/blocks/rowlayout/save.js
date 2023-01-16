@@ -204,8 +204,11 @@ import {
 			bgSliderSettings = backgroundSliderSettings;
 		}
 		return (
-			<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ bgSliderSettings[ 0 ].dotStyle }` }>
-				<div className={ `kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-${ bgSliderSettings[ 0 ].arrowStyle } kt-carousel-dotstyle-${ bgSliderSettings[ 0 ].dotStyle }` } data-slider-anim-speed={ bgSliderSettings[ 0 ].tranSpeed } data-slider-type="slider" data-slider-scroll="1" data-slider-arrows={ ( 'none' === bgSliderSettings[ 0 ].arrowStyle ? false : true ) } data-slider-fade={ bgSliderSettings[ 0 ].fade } data-slider-dots={ ( 'none' === bgSliderSettings[ 0 ].dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ bgSliderSettings[ 0 ].autoPlay } data-slider-speed={ bgSliderSettings[ 0 ].speed }>
+			<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ bgSliderSettings[ 0 ].dotStyle } kt-carousel-container-arrowstyle-${bgSliderSettings[ 0 ].arrowStyle} kb-blocks-bg-slider ` }>
+				<div className={ `kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-${ bgSliderSettings[ 0 ].arrowStyle } kt-carousel-dotstyle-${ bgSliderSettings[ 0 ].dotStyle }` }
+					 data-slider-anim-speed={ bgSliderSettings[ 0 ].tranSpeed } data-slider-type="slider" 
+					 data-slider-scroll="1" data-slider-arrows={ ( 'none' === bgSliderSettings[ 0 ].arrowStyle ? false : true ) } data-slider-fade={ bgSliderSettings[ 0 ].fade } data-slider-dots={ ( 'none' === bgSliderSettings[ 0 ].dotStyle ? false : true ) } 
+					 data-slider-hover-pause="false" data-slider-auto={ bgSliderSettings[ 0 ].autoPlay } data-slider-speed={ bgSliderSettings[ 0 ].speed }>
 					{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => renderSliderImages( n ) ) }
 				</div>
 			</div>

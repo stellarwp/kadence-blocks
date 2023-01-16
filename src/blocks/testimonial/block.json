@@ -109,6 +109,7 @@
   "usesContext": [
 	"postId",
 	"queryId",
+	"kadence/testimonials-layout",
 	"kadence/testimonials-displayOccupation",
 	"kadence/testimonials-displayContent",
     "kadence/testimonials-displayTitle",

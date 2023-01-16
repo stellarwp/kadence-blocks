@@ -79,7 +79,6 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$titleFont         = $this->get_context( $block_instance->context, 'titleFont' );
 		$mediaStyles	   = $this->get_context( $block_instance->context, 'mediaStyles' );
 		$ratingStyles	   = $this->get_context( $block_instance->context, 'ratingStyles' );
-
 		if ( $layout === 'carousel' ) {
 			$content .= '<div class="kt-blocks-testimonial-carousel-item kb-slide-item">';
 		}
@@ -164,12 +163,16 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	private function render_icon( $attributes, $iconStyles ) {
 		$icon = '<div class="kt-svg-testimonial-global-icon-wrap">';
 
-		$strokeWidth = 'fe' === substr($iconStyles[ 0 ]['icon'], 0, 2) ? $iconStyles[ 0 ]['stroke'] : false;
 		$title = isset( $iconStyles[ 0 ]['title'] ) ? $iconStyles[ 0 ]['title'] : '';
-		$size = isset( $iconStyles[ 0 ]['size'] ) ? $iconStyles[ 0 ]['size'] : 30;
-		$extras = ' height="'.$size .'" width="'.$size .'"';
+		$type = substr($iconStyles[ 0 ]['icon'], 0, 2 );
+		$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
+		$fill = ( $line_icon ? 'none' : 'currentColor' );
+		$stroke_width = false;
+		if ( $line_icon ) {
+			$stroke_width = ( ! empty( $iconStyles[ 0 ]['stroke'] ) ? $iconStyles[ 0 ]['stroke'] : 2 );
+		}
 
-		$svg = Kadence_Blocks_Svg_Render::render( $iconStyles[ 0 ]['icon'], 'none', $strokeWidth, $title, false, $extras);
+		$svg = Kadence_Blocks_Svg_Render::render( $iconStyles[ 0 ]['icon'], $fill, $stroke_width, $title );
 
 		$icon .= "<div class='kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-icon-" . $iconStyles[ 0 ]['icon'] . "'>";
 		$icon .= $svg;

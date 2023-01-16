@@ -2011,18 +2011,19 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the opacity css output.
 	 *
-	 * @param array  $opacity a number up to 100.
+	 * @param array $attributes an array of attributes.
+	 * @param null|integer $name name of opacity attribute.
 	 */
-	public function render_opacity_from_100( $opacity = null ) {
-		if ( ! $this->is_number( $opacity ) ) {
+	public function render_opacity_from_100( $attributes, $name = null ) {
+		if ( ! isset( $attributes[ $name ] ) || ! $this->is_number( $attributes[ $name ] ) ) {
 			return;
 		}
-		if ( $opacity < 10 ) {
-			$this->add_property( 'opacity', '0.0' . $opacity );
-		} elseif ( $opacity >= 100 ) {
+		if ( $attributes[ $name ] < 10 ) {
+			$this->add_property( 'opacity', '0.0' . $attributes[ $name ] );
+		} elseif ( $attributes[ $name ] >= 100 ) {
 			$this->add_property( 'opacity', '1' );
 		} else {
-			$this->add_property( 'opacity', '0.' . $opacity );
+			$this->add_property( 'opacity', '0.' . $attributes[ $name ] );
 		}
 	}
 	/**
