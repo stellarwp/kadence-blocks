@@ -79,6 +79,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.3 Alpha Version 4 =
 Release Date - TBD
 * Fix: Removing bottom divider on Row Layout
+* Fix: Variable based font sizes in countdown block
 
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023
