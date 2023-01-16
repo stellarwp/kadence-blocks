@@ -7,6 +7,10 @@
 	display: block;
 }
 
+.kb-gallery-type-thumbslider .kt-blocks-carousel-init.splide-initialized:not(.tns-slider)[data-slider-type="thumbnail"] .splide__slide.kb-slide-item {
+	display: block;
+}
+
 .wp-block-kadence-advancedgallery .kt-blocks-carousel {
 	overflow: hidden;
 }
