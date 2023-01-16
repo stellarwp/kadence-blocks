@@ -509,9 +509,10 @@ import { __ } from '@wordpress/i18n';
 							onChangeMobile={ ( value ) => {
 								setAttributes( { topSepWidthMobile: value } );
 							} }
-							min={ 0 }
-							max={ 100 }
+							min={ 100 }
+							max={ 400 }
 							step={ 1 }
+							showUnit={ true }
 							unit={ '%' }
 							units={ ['%'] }
 						/>
@@ -594,12 +595,12 @@ import { __ } from '@wordpress/i18n';
 							onChangeMobile={ ( value ) => {
 								setAttributes( { bottomSepWidthMobile: value } );
 							} }
-							min={ 0 }
-							max={ 100 }
+							min={ 100 }
+							max={ 400 }
 							step={ 1 }
+							showUnit={ true }
 							unit={ '%' }
 							units={ ['%'] }
-							showUnit={ true }
 						/>
 					</KadencePanelBody>
 				</>
