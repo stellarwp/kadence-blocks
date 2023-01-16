@@ -223,7 +223,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$base_selector = '.kb-row-layout-id' . $unique_id;
-			$inner_selector = '.kb-row-layout-id' . $unique_id . ' > .kt-row-column-wrap.kt-row-column-wrap'; // Doubling .kt-row-column-wrap here to increase specificty to avoid conflict with alignment.
+			$inner_selector = '.kb-row-layout-id' . $unique_id . ' > .kt-row-column-wrap';
 		} else {
 			$base_selector = '#kt-layout-id' . $unique_id;
 			$inner_selector = '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap';
