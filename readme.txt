@@ -76,6 +76,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.3 Alpha Version 4 =
+Release Date - TBD
+* Fix: Removing bottom divider on Row Layout
+
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023
 * Update: Searches in icon selector are now case insensitive,

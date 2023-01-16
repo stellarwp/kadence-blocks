@@ -549,6 +549,7 @@ import { __ } from '@wordpress/i18n';
 							showSearch={ false }
 							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
 							theme="dividers"
+							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
 						/>
 						<PopColorControl
