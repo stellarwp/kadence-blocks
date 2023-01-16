@@ -86,6 +86,7 @@ export default function MeasurementSingleControl( {
 							max={ max }
 							step={ step }
 						/>
+						{ unit !== '' || ( preset && Array.isArray( preset ) && preset.length > 1 ) && (
 						<ButtonGroup className="kb-preset-size-options" aria-label={ __( 'Choose a Preset Size', 'kadence-blocks' ) }>
 							{ map( ( preset && Array.isArray( preset ) && preset.length > 1 ? preset : presetSizes[ unit ] ), ( size ) => (
 								<Button
@@ -98,6 +99,7 @@ export default function MeasurementSingleControl( {
 								</Button>
 							) ) }
 						</ButtonGroup>
+						) }
 					</Popover>
 				) }
 			</div>
