@@ -68,8 +68,7 @@ import {
 	CheckboxControl,
 	SelectControl,
 	TabPanel,
-	ExternalLink,
-	IconButton
+	ExternalLink
 } from '@wordpress/components';
 
 import {
@@ -939,23 +938,23 @@ function KadenceForm( props ) {
 										onChange={( text ) => saveFieldsOptions( { label: text, value: text }, index, n )}
 									/>
 									<div className="kadence-blocks-list-item__control-menu">
-										<IconButton
+										<Button
 											icon="arrow-up"
-											onClick={n === 0 ? undefined : onOptionMoveUp( n, index )}
+											onClick={() => n === 0 ? undefined : onOptionMoveUp( n, index )}
 											className="kadence-blocks-list-item__move-up"
 											label={__( 'Move Item Up' )}
 											aria-disabled={n === 0}
 											disabled={n === 0}
 										/>
-										<IconButton
+										<Button
 											icon="arrow-down"
-											onClick={( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
+											onClick={() => ( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
 											className="kadence-blocks-list-item__move-down"
 											label={__( 'Move Item Down' )}
 											aria-disabled={( n + 1 ) === fields[ index ].options.length}
 											disabled={( n + 1 ) === fields[ index ].options.length}
 										/>
-										<IconButton
+										<Button
 											icon="no-alt"
 											onClick={() => removeOptionItem( n, index )}
 											className="kadence-blocks-list-item__remove"
