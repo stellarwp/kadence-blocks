@@ -81,6 +81,7 @@ Release Date - TBD
 * Fix: Removing bottom divider on Row Layout
 * Fix: Variable based font sizes in countdown block
 * Fix: Video background on Row Layout
+* Fix: Issue where section collapse order was applying in tablet when it shouldn't.
 
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023

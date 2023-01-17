@@ -498,7 +498,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'flex', '1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 		}
 		if ( isset( $attributes['collapseOrder'] ) ) {
-			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id . ', .kadence-column' . $unique_id );
+			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id );
 			$css->add_property( 'order', $attributes['collapseOrder'] );
 		}
 		if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && isset( $attributes['textAlign'][1] ) && ! empty( $attributes['textAlign'][1] ) ) {
