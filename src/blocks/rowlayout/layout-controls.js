@@ -492,6 +492,7 @@ import { __ } from '@wordpress/i18n';
 							max={ 500 }
 							step={ 1 }
 							unit={ 'px' }
+							units={ ['px'] }
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
@@ -511,8 +512,9 @@ import { __ } from '@wordpress/i18n';
 							min={ 100 }
 							max={ 400 }
 							step={ 1 }
-							unit={ '%' }
 							showUnit={ true }
+							unit={ '%' }
+							units={ ['%'] }
 						/>
 					</KadencePanelBody>
 					<KadencePanelBody
@@ -576,6 +578,7 @@ import { __ } from '@wordpress/i18n';
 							max={ 500 }
 							step={ 1 }
 							unit={ 'px' }
+							units={ ['px'] }
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
@@ -595,8 +598,9 @@ import { __ } from '@wordpress/i18n';
 							min={ 100 }
 							max={ 400 }
 							step={ 1 }
-							unit={ '%' }
 							showUnit={ true }
+							unit={ '%' }
+							units={ ['%'] }
 						/>
 					</KadencePanelBody>
 				</>
