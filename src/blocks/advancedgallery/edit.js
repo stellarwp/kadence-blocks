@@ -185,6 +185,7 @@ function GalleryEdit( props ) {
 	const mainRef = useRef( null );
 	const thumbsRef = useRef();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
@@ -220,7 +221,7 @@ function GalleryEdit( props ) {
 		}
 
 		if ( ! kbVersion || kbVersion < 2 ) {
-			if ( images ) {
+			if ( images && ! dynamicSource ) {
 				const newImageData = [];
 				forEach( images, ( image ) => {
 					newImageData.push( {
@@ -272,9 +273,6 @@ function GalleryEdit( props ) {
 
 	const [ selectedImage, setSelectedImage ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
-	const [ sliderSlides, setSliderSlides ] = useState( null );
-	const [ sliderThumbs, setSliderThumbs ] = useState( null );
 
 	const setAttribs = ( attribs ) => {
 		let newAttribs = attribs;
@@ -453,8 +451,6 @@ function GalleryEdit( props ) {
 
 		return;
 	};
-
-	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
 	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
 	const theImages = imagesDynamic;
 	const hasImages = !!theImages.length;
@@ -582,7 +578,7 @@ function GalleryEdit( props ) {
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
 	const fluidCarouselSettings = {
-		type         : 'slide',
+		type         : 'loop',
 		autoplay     : autoPlay,
 		rewind       : true,
 		arrows       : ( arrowStyle === 'none' ? false : true ),
@@ -591,7 +587,6 @@ function GalleryEdit( props ) {
 		interval     : autoSpeed,
 		autoWidth    : true,
 		pagination   : ( dotStyle === 'none' ? false : true ),
-		centerMode   : ( carouselAlign === false ? false : true ),
 		focus        : carouselAlign === false ? 0 : "center",
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
