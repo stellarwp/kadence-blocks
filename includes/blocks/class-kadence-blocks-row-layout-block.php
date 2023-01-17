@@ -368,6 +368,12 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$args = array(
 				'unit_key' => 'paddingUnit',
 			);
+			// If no padding is set, use the default.
+			if( !isset( $attributes['padding'] ) ) {
+				$attributes['padding'] = [
+					'sm', '', 'sm', ''
+				];
+			}
 			$css->render_measure_output( $attributes, 'padding', 'padding', $args );
 		}
 		// Min Height.
