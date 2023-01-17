@@ -1106,7 +1106,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$speed = ! empty( $attributes['backgroundSliderSettings'][0]['speed'] ) ? $attributes['backgroundSliderSettings'][0]['speed'] : 7000;
 		$fade = isset( $attributes['backgroundSliderSettings'][0]['fade'] ) ? $attributes['backgroundSliderSettings'][0]['fade'] : true;
 		$auto = isset( $attributes['backgroundSliderSettings'][0]['autoPlay'] ) ? $attributes['backgroundSliderSettings'][0]['autoPlay'] : true;
-		$temp = empty( $attributes['backgroundSliderSettings'][0]['autoPlay'] );
 		$output .= '<div class="kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
 		$output .= '<div class="kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '">';
 		$item = 1;
@@ -1182,7 +1181,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$video_args['preload'] = 'none';
 		}
 		if ( ! $prevent_preload ) {
-			$video_args['autoplay'] = '';
+			$video_args['autoplay'] = true;
 		}
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
@@ -1205,8 +1204,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$btns_output .= '</div>';
 		}
 
-		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
-
+		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_attributes ), $btns_output );
 		return $output;
 	}
 	/**
