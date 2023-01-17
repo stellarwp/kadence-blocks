@@ -21,7 +21,6 @@ import { __ } from '@wordpress/i18n';
 import { RichText, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import { migrateToInnerblocks } from './utils';
 
-
 /**
  * Register: a Gutenberg Block.
  *
@@ -548,6 +547,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -765,6 +765,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -982,6 +983,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -1199,6 +1201,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -1415,7 +1418,8 @@ export default [
 					) }
 				</div>
 			);
-		}
+		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -1633,6 +1637,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -1850,6 +1855,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -2064,6 +2070,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -2278,6 +2285,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -2492,6 +2500,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -2706,6 +2715,7 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	},
 	{
 		attributes,
@@ -2910,5 +2920,6 @@ export default [
 				</div>
 			);
 		},
+		migrate: migrateToInnerblocks
 	}
 ];
