@@ -10,6 +10,9 @@
    .kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
    }
+   .kt-blocks-carousel-init[data-slider-dots="true"] {
+		margin-bottom: 30px;
+	}
 }
 .wp-block-kadence-advancedgallery.alignright, .wp-block-kadence-advancedgallery.alignleft {
     max-width: 420px;
@@ -442,7 +445,6 @@
 	}
 }
 .kt-blocks-carousel-init:not( .splide-initialized ):not(.tns-slider) {
-	margin: 0 -5px;
 	@media (max-width: 543px) {
 		@for $i from 1 through 2 {
 			&[data-columns-ss="#{ $i }"] .kb-slide-item {

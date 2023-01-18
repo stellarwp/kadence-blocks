@@ -147,6 +147,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
 				$css->add_property('right', ( $desk_gutter / 2 ) . $gutter_unit );
+			} else {
+				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
+				$css->add_property( 'margin-left', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
+				$css->add_property( 'margin-right', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
+
+				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
+				$css->add_property( 'padding-left', ( $desk_gutter / 2 ) . $gutter_unit );
+				$css->add_property( 'padding-right', ( $desk_gutter / 2 ) . $gutter_unit );
 			}
 		} else if ( 'fluidcarousel' === $gallery_type ) {
 			if ( ! $updated_version ) {
@@ -582,7 +590,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? $caption : '' ) . '</' . $fig_tag . '>';
 		$padding_bottom = '';
-		if ( ( 'masonry' === $type || 'fluidcarousel' === $type ) && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
+		if ( ( 'masonry' === $type ) && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
 			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
 		} else if ( ! empty( $image_ratio ) && 'inherit' === $image_ratio && 'grid' === $type && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
 			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
