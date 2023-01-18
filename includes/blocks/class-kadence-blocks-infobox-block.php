@@ -291,7 +291,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img' );
+			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media .kadence-info-box-image-intrisic img' );
 			$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
 		}
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media' );
