@@ -79,9 +79,13 @@ function KadenceTabsSave( { attributes } ) {
 
 	return (
 		<div {...blockProps}>
-			<div className={innerClasses} style={{
-				maxWidth: ( maxWidth ? maxWidth + 'px' : 'none' ),
-			}}>
+			<div 
+				className={innerClasses}
+				style={{
+					maxWidth: ( maxWidth ? maxWidth + 'px' : 'none' ),
+				}}
+				role="tablist"
+			>
 				<ul className={`kt-tabs-title-list${( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' )}`}>
 					{times( tabCount, n => renderTitles( n ) )}
 				</ul>
