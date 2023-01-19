@@ -126,6 +126,22 @@
 	  "type": "number",
 	  "default": ""
 	},
+	"responsiveContainerBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletContainerBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+    "mobileContainerBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+    },
+	"containerBorderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"containerPadding": {
 	  "type": "array",
 	  "default": [
@@ -191,6 +207,22 @@
 		  "ratio": ""
 		}
 	  ]
+	},
+	"iconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletIconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileIconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"iconBorderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"itemsCount": {
 	  "type": "number",

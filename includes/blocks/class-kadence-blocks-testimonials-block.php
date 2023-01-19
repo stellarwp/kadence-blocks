@@ -538,7 +538,18 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_color_output( $attributes, 'containerBorder', 'border-color', 'containerBorderOpacity' );
 		$css->render_color_output( $attributes, 'containerBackground', 'background', 'containerBackgroundOpacity' );
-		$css->render_range( $attributes, 'containerBorderRadius', 'border-radius' );
+
+		if( !empty( $attributes['containerBorderRadius'] ) ){
+			$css->render_range( $attributes, 'containerBorderRadius', 'border-radius' );
+		} else {
+			$br_attributes = array(
+				'unit_key' => 'containerBorderRadiusUnit',
+				'desktop_key' => 'responsiveContainerBorderRadius',
+				'tablet_key' => 'tabletContainerBorderRadius',
+				'mobile_key' => 'mobileContainerBorderRadius',
+			);
+			$css->render_measure_output( $attributes, 'containerBorderRadius', 'border-radius', $br_attributes );
+		}
 
 		// $css->render_range( $attributes, 'containerPadding', 'padding' );
 

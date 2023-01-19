@@ -159,6 +159,14 @@ function KadenceTestimonials({
         gap,
         gapUnit,
         kbVersion,
+        responsiveContainerBorderRadius,
+        tabletContainerBorderRadius,
+        mobileContainerBorderRadius,
+        containerBorderRadiusUnit,
+        iconBorderRadius,
+        tabletIconBorderRadius,
+        mobileIconBorderRadius,
+        IconBorderRadiusUnit
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
@@ -280,6 +288,32 @@ function KadenceTestimonials({
                 inQueryBlock: false,
             });
         }
+
+        // Update old non-responsive settings.
+        if (containerBorderRadius !== '') {
+            console.log('Updating old containerBorderRadius to responsiveContainerBorderRadius');
+            setAttributes({
+                responsiveContainerBorderRadius: [containerBorderRadius, containerBorderRadius, containerBorderRadius, containerBorderRadius],
+                containerBorderRadius: '',
+            });
+        }
+
+        if( iconStyles[0].borderRadius !== '' ) {
+            console.log('Updating old iconBorderRadius to responsiveIconBorderRadius');
+            setAttributes({
+                iconBorderRadius: [iconStyles[0].borderRadius, iconStyles[0].borderRadius, iconStyles[0].borderRadius, iconStyles[0].borderRadius],
+            });
+
+            const newUpdate = iconStyles.map((item, index) => {
+                if (0 === index) {
+                    item = {...item, borderRadius: ''};
+                }
+                return item;
+            });
+            setAttributes({
+                iconStyles: newUpdate,
+            });
+        }
     }, []);
 
     const previewWrapperPaddingTop = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[0] ? wrapperPadding[0] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[0] ? wrapperTabletPadding[0] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[0] ? wrapperMobilePadding[0] : ''));
@@ -313,6 +347,16 @@ function KadenceTestimonials({
     const previewNameLineHeight = getPreviewSize(previewDevice, (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[0] && '' !== nameFont[0].lineHeight[0] ? nameFont[0].lineHeight[0] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[1] && '' !== nameFont[0].lineHeight[1] ? nameFont[0].lineHeight[1] : ''), (undefined !== nameFont[0].lineHeight && undefined !== nameFont[0].lineHeight[2] && '' !== nameFont[0].lineHeight[2] ? nameFont[0].lineHeight[2] : ''));
     const previewNameLineHeightType = undefined !== nameFont[0].lineType ? nameFont[0].lineType : 'px';
     const previewNameFontType = undefined !== nameFont[0].sizeType ? nameFont[0].sizeType : 'px';
+
+    const previewContainerRadiusTop = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius?.[0] ? responsiveContainerBorderRadius[ 0 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 0 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 0 ] : '' ) );
+    const previewContainerRadiusRight = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius ? responsiveContainerBorderRadius[ 1 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 1 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 1 ] : '' ) );
+    const previewContainerRadiusBottom = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius ? responsiveContainerBorderRadius[ 2 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 2 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 2 ] : '' ) );
+    const previewContainerRadiusLeft = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius ? responsiveContainerBorderRadius[ 3 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 3 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 3 ] : '' ) );
+
+    const previewIconRadiusTop = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius?.[0] ? iconBorderRadius[ 0 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 0 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 0 ] : '' ) );
+    const previewIconRadiusRight = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 1 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 1 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 1 ] : '' ) );
+    const previewIconRadiusBottom = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 2 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 2 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 2 ] : '' ) );
+    const previewIconRadiusLeft = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 3 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 3 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 3 ] : '' ) );
 
     const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[0] ? columns[0] : 3 ), ( undefined !== columns[3] ? columns[3] : '' ), ( undefined !== columns[5] ? columns[5] : '' ) );
 
@@ -388,7 +432,10 @@ function KadenceTestimonials({
                         box-shadow: ${(displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined) };
                         border-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1))) };
                         background: ${(containerBackground ? KadenceColorOutput(containerBackground, (undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1)) : undefined) };
-                        border-radius: ${!isNaN(containerBorderRadius) ? containerBorderRadius + 'px' : undefined };
+                        ${previewContainerRadiusTop ? 'border-top-left-radius:' + previewContainerRadiusTop + containerBorderRadiusUnit + ';' : '' }
+                        ${previewContainerRadiusRight ? 'border-top-right-radius:' + previewContainerRadiusRight + containerBorderRadiusUnit + ';' : '' }
+                        ${previewContainerRadiusBottom ? 'border-bottom-right-radius:' + previewContainerRadiusBottom + containerBorderRadiusUnit + ';' : '' }
+                        ${previewContainerRadiusLeft ? 'border-bottom-left-radius:' + previewContainerRadiusLeft + containerBorderRadiusUnit + ';' : '' }
                         border-top-width: ${(containerBorderWidth && undefined !== containerBorderWidth[0] ? containerBorderWidth[0] + 'px' : undefined) };
                         border-right-width: ${(containerBorderWidth && undefined !== containerBorderWidth[1] ? containerBorderWidth[1] + 'px' : undefined) };
                         border-bottom-width: ${(containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] + 'px' : undefined) };
@@ -975,13 +1022,22 @@ function KadenceTestimonials({
                                             max={40}
                                             step={1}
                                         />
-                                        <RangeControl
-                                            label={__('Container Border Radius (px)', 'kadence-blocks')}
-                                            value={containerBorderRadius}
-                                            onChange={value => setAttributes({containerBorderRadius: value})}
-                                            step={1}
-                                            min={0}
-                                            max={200}
+                                        <ResponsiveMeasurementControls
+                                            label={ __( 'Border Radius', 'kadence-blocks' ) }
+                                            value={ responsiveContainerBorderRadius }
+                                            tabletValue={ tabletContainerBorderRadius }
+                                            mobileValue={ mobileContainerBorderRadius }
+                                            onChange={ ( value ) => setAttributes( { responsiveContainerBorderRadius: value } ) }
+                                            onChangeTablet={ ( value ) => setAttributes( { tabletContainerBorderRadius: value } ) }
+                                            onChangeMobile={ ( value ) => setAttributes( { mobileContainerBorderRadius: value } ) }
+                                            min={ 0 }
+                                            max={ ( containerBorderRadiusUnit === 'em' || containerBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+                                            step={ ( containerBorderRadiusUnit === 'em' || containerBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+                                            unit={ containerBorderRadiusUnit }
+                                            units={ [ 'px', 'em', 'rem', '%' ] }
+                                            onUnit={ ( value ) => setAttributes( { containerBorderRadiusUnit: value } ) }
+                                            isBorderRadius={ true }
+                                            allowEmpty={true}
                                         />
                                         <PopColorControl
                                             label={__('Container Background', 'kadence-blocks')}
@@ -1122,6 +1178,23 @@ function KadenceTestimonials({
                                                     step={1}
                                                     min={0}
                                                     max={200}
+                                                />
+                                                <ResponsiveMeasurementControls
+                                                    label={ __( 'Icon Border Radius', 'kadence-blocks' ) }
+                                                    value={ iconBorderRadius }
+                                                    tabletValue={ tabletIconBorderRadius }
+                                                    mobileValue={ mobileIconBorderRadius }
+                                                    onChange={ ( value ) => setAttributes( { iconBorderRadius: value } ) }
+                                                    onChangeTablet={ ( value ) => setAttributes( { tabletIconBorderRadius: value } ) }
+                                                    onChangeMobile={ ( value ) => setAttributes( { mobileIconBorderRadius: value } ) }
+                                                    min={ 0 }
+                                                    max={ ( iconBorderRadiusUnit === 'em' || iconBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+                                                    step={ ( iconBorderRadiusUnit === 'em' || iconBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+                                                    unit={ iconBorderRadiusUnit }
+                                                    units={ [ 'px', 'em', 'rem', '%' ] }
+                                                    onUnit={ ( value ) => setAttributes( { iconBorderRadiusUnit: value } ) }
+                                                    isBorderRadius={ true }
+                                                    allowEmpty={true}
                                                 />
                                                 <PopColorControl
                                                     label={__('Icon Background', 'kadence-blocks')}
