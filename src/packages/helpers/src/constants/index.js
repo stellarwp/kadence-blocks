@@ -158,3 +158,4 @@ export const GAP_SIZES_MAP = [
 		name:  __( 'Large', 'kadence-blocks' ),
 	},
 ];
+export const isRTL = (document.body.classList.contains('rtl'));

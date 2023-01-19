@@ -1,21 +1,3 @@
-// RTL Resizing.
-body.rtl .editor-row-first-column__resizer {
-    right: 0;
-    left: auto;
-    z-index: 2;
-    transform: rotateY(180deg);
-}
-body.rtl .editor-row-first-column__resizer.second_resizer {
-    z-index: 1;
-}
-body.rtl .editor-row-first-column__resizer .left-column-width-size {transform: rotateY(180deg);padding-left: 10px;padding-right: 0;}
-
-body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: rotateY(180deg);padding-left: 0px;padding-right: 10px;}
-.rtl .wp-block-kadence-rowlayout .block-editor-block-list__layout .block-editor-block-list__block {
-    z-index: 2;
-}
-
-
 .block-editor-block-list__block.is-selected[data-type="kadence/rowlayout"] {
 	> .kt-resizeable-column-container .components-resizable-box__container {
 		.components-button.kt-fluid-grid-btn {

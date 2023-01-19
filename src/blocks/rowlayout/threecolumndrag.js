@@ -3,6 +3,7 @@ import {
 	Tooltip,
 	ResizableBox,
 } from '@wordpress/components';
+import {isRTL} from '@kadence/helpers';
 import classnames from 'classnames';
 /**
  * Internal block libraries
@@ -81,6 +82,7 @@ export default function ThreeColumnDrag( {
 	const secondRoundDown = ( '33.3' === secondWidthNumber ? 30 : parseFloat( secondWidthNumber ) );
 	const realThirdsSecondWidth = ( ! secondColumnWidth ? secondRoundDown : secondColumnWidth );
 	const onResizeThirds = ( event, direction, elt ) => {
+		console.log(3)
 		let tempFirstW;
 		let tempChange;
 		let tempSecondW;
@@ -93,14 +95,24 @@ export default function ThreeColumnDrag( {
 			tempChange = tempFirstW - ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth );
 			tempSecondW = Math.round( Math.abs( ( ! secondColumnWidth ? secondWidthNumber : secondColumnWidth ) - tempChange ) / 5 ) * 5;
 		}
-		const tempThird = Math.abs( Math.round( ( ( tempSecondW + tempFirstW ) - 100 ) * 10 ) / 10 );
-		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondW }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
+		let tempThird = Math.abs( Math.round( ( ( tempSecondW + tempFirstW ) - 100 ) * 10 ) / 10 );
+
+		//set text width percentages on resizer flags
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempFirstW + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = tempSecondW + '%';
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = tempSecondW + '%';
 		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( ( tempSecondW + tempFirstW ) - 100 ) * 10 ) / 10 ) + '%';
+
+		//if we're in rtl, the resizers should actually apply to different columns, flipped.
+		if(isRTL){
+			[tempFirstW, tempSecondW, tempThird] = [tempFirstW, tempSecondW, tempThird].reverse();
+		}
+
+		//set the temp resized styles on underlying columns
+		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondW }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
 	};
 	const onResizeStopThirds = ( event, direction, elt ) => {
+		console.log('stop')
 		let tempFirstW;
 		let tempChange;
 		let tempSecondW;
@@ -113,12 +125,15 @@ export default function ThreeColumnDrag( {
 			tempChange = tempFirstW - ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth );
 			tempSecondW = Math.round( Math.abs( ( ! secondColumnWidth ? secondWidthNumber : secondColumnWidth ) - tempChange ) / 5 ) * 5;
 		}
+		let tempThird = Math.abs( Math.round( ( ( tempSecondW + tempFirstW ) - 100 ) * 10 ) / 10 );
+
 		setAttributes( { firstColumnWidth: tempFirstW, secondColumnWidth: tempSecondW } );
 		setTimeout( () => {
 			setResizeStyles ( null );
 		}, 400 );
 	};
 	const onResizeSecond = ( event, direction, elt ) => {
+		console.log(2)
 		let tempFirstW;
 		let tempSecondWidth;
 		let tempSecondW;
@@ -131,13 +146,21 @@ export default function ThreeColumnDrag( {
 			tempSecondW = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
 			tempSecondWidth = Math.round( ( tempSecondW - tempFirstW ) / 5 ) * 5;
 		}
-		const tempThird = Math.abs( Math.round( ( ( tempSecondWidth + tempFirstW ) - 100 ) * 10 ) / 10 );
-		//setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, ${ tempFirstW }% ) minmax(0, ${ tempSecondW }% ) minmax(0, ${ tempThird }% ) !important; }` );
-		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondWidth }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
+		let tempThird = Math.abs( Math.round( ( ( tempSecondWidth + tempFirstW ) - 100 ) * 10 ) / 10 );
+
+		//set text width percentages on resizer flags
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempFirstW + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempSecondWidth ) + '%';
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempSecondWidth ) + '%';
 		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( parseFloat( tempSecondWidth ) + parseFloat( tempFirstW ) - 100 ) * 10 ) / 10 ) + '%';
+
+		//if we're in rtl, the resizers should actually apply to different columns, flipped.
+		if(isRTL){
+			[tempFirstW, tempSecondW, tempThird] = [tempFirstW, tempSecondW, tempThird].reverse();
+		}
+
+		//set the temp resized styles on underlying columns
+		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondWidth }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
 	};
 	const onResizeStopSecond = ( event, direction, elt ) => {
 		let tempFirstW;
@@ -152,6 +175,7 @@ export default function ThreeColumnDrag( {
 			tempSecondW = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
 			tempSecondWidth = Math.round( ( tempSecondW - tempFirstW ) / 5 ) * 5;
 		}
+
 		setAttributes( { firstColumnWidth: tempFirstW, secondColumnWidth: tempSecondWidth } );
 		setTimeout( () => {
 			setResizeStyles ( null );

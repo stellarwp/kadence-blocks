@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import {isRTL} from '@kadence/helpers';
 import {
 	Button,
 	Tooltip,
@@ -43,6 +44,12 @@ export default function TwoColumnResizer( {
 		}
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
+		
+		//if we're in rtl, the resizers should actually apply to different columns, flipped.
+		if(isRTL){
+			[firstCol, secondCol] = [firstCol, secondCol].reverse();
+		}
+
 		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ firstCol }% - (${ currentGutterTotal } / 2 ) ) ) minmax(0, calc( ${ secondCol }% - (${ currentGutterTotal } / 2 ) ) ) !important;}` );
 	};
 	const onResizeStop = ( event, direction, elt, delta ) => {

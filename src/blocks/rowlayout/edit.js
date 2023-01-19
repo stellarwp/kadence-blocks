@@ -60,7 +60,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -395,9 +395,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	}
 	const widthString = `${ firstColumnWidth || colLayout }`;
 	const secondWidthString = `${ secondColumnWidth || colLayout }`;
-	let thirdWidthNumber;
 	let widthNumber;
 	let secondWidthNumber;
+	let thirdWidthNumber;
 	if ( 3 === columns ) {
 		if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
 			widthNumber = widthString;
@@ -470,6 +470,18 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			secondWidthNumber = 50;
 		}
 	}
+
+	//if we're in rtl, the resizers should actually apply to different columns, flipped.
+	if ( isRTL ) {
+		//if only two columns, the thrid column value is not used, so should not be flipped
+		if ( columns && columns === 2 ) {
+			[widthNumber, secondWidthNumber] = [widthNumber, secondWidthNumber].reverse();
+		} else {
+			[widthNumber, secondWidthNumber, thirdWidthNumber] = [widthNumber, secondWidthNumber, thirdWidthNumber].reverse();
+		}
+
+	}
+
 	const previewColumnGutter = getPreviewSize( previewDevice, columnGutter, tabletGutter, mobileGutter );
 	const columnGap = getPreviewGutterSize( previewDevice, previewColumnGutter, customGutter, gutterType );
 	const previewRowGutter = getPreviewSize( previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter );
