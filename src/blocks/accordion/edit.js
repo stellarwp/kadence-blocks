@@ -765,10 +765,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${ ! previewTitleBorderRight && previewTitleBorderColorRight ? 'border-right-color:' + previewTitleBorderColorRight : '' };
 					${ ! previewTitleBorderBottom && previewTitleBorderColorBottom ? 'border-bottom-color:' + previewTitleBorderColorBottom : '' };
 					${ ! previewTitleBorderLeft && previewTitleBorderColorLeft ? 'border-left-color:' + previewTitleBorderColorLeft : '' };
-					${previewTitleRadiusTop ? 'border-radius-top-left:' + previewTitleRadiusTop + titleBorderRadiusUnit : '' };
-					${previewTitleRadiusRight ? 'border-radius-top-right:' + previewTitleRadiusRight + titleBorderRadiusUnit : '' };
-					${previewTitleRadiusBottom ? 'border-radius-bottom-right:' + previewTitleRadiusBottom + titleBorderRadiusUnit : '' };
-					${previewTitleRadiusLeft ? 'border-radius-bottom-left:' + previewTitleRadiusLeft + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusTop ? 'border-top-left-radius:' + previewTitleRadiusTop + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusRight ? 'border-top-right-radius:' + previewTitleRadiusRight + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusBottom ? 'border-bottom-right-radius:' + previewTitleRadiusBottom + titleBorderRadiusUnit : '' };
+					${previewTitleRadiusLeft ? 'border-bottom-left-radius:' + previewTitleRadiusLeft + titleBorderRadiusUnit : '' };
 					${titleStyles?.[ 0 ]?.background ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].background ) : '' };
 					${'' !== previewTitlePaddingTop ? `padding-top:${ getSpacingOptionOutput( previewTitlePaddingTop, previewTitlePaddingType ) };` : ''}
 					${'' !== previewTitlePaddingRight ? `padding-right:${ getSpacingOptionOutput(previewTitlePaddingRight, previewTitlePaddingType ) };` : ''}
@@ -802,10 +802,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${previewContentBorderRight ? 'border-right:' + previewContentBorderRight : '' };
 					${previewContentBorderBottom ? 'border-bottom:' + previewContentBorderBottom : '' };
 					${previewContentBorderLeft ? 'border-left:' + previewContentBorderLeft : '' };
-					${previewContentRadiusTop ? 'border-radius-top-left:' + previewContentRadiusTop + contentBorderRadiusUnit : '' };
-					${previewContentRadiusRight ? 'border-radius-top-right:' + previewContentRadiusRight + contentBorderRadiusUnit : '' };
-					${previewContentRadiusBottom ? 'border-radius-bottom-right:' + previewContentRadiusBottom + contentBorderRadiusUnit : '' };
-					${previewContentRadiusLeft ? 'border-radius-bottom-left:' + previewContentRadiusLeft + contentBorderRadiusUnit : '' };
+					${previewContentRadiusTop ? 'border-top-left-radius:' + previewContentRadiusTop + contentBorderRadiusUnit : '' };
+					${previewContentRadiusRight ? 'border-top-right-radius:' + previewContentRadiusRight + contentBorderRadiusUnit : '' };
+					${previewContentRadiusBottom ? 'border-bottom-right-radius:' + previewContentRadiusBottom + contentBorderRadiusUnit : '' };
+					${previewContentRadiusLeft ? 'border-bottom-left-radius:' + previewContentRadiusLeft + contentBorderRadiusUnit : '' };
 					min-height:${( minHeight ? minHeight + 'px' : '0' )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
