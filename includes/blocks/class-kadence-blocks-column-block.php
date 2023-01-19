@@ -469,15 +469,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Hover Text colors.
 		if ( isset( $attributes['textColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ', .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover, .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
 			$css->add_property( 'color', $css->render_color( $attributes['textColorHover'] ) );
 		}
 		if ( isset( $attributes['linkColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' a' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover a' );
 			$css->add_property( 'color', $css->render_color( $attributes['linkColorHover'] ) );
 		}
 		if ( isset( $attributes['linkHoverColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' a:hover' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover a:hover' );
 			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColorHover'] ) );
 		}
 		if ( isset( $attributes['zIndex'] ) ) {
