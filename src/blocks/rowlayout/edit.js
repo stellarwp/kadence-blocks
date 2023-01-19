@@ -479,7 +479,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		} else {
 			[widthNumber, secondWidthNumber, thirdWidthNumber] = [widthNumber, secondWidthNumber, thirdWidthNumber].reverse();
 		}
-
 	}
 
 	const previewColumnGutter = getPreviewSize( previewDevice, columnGutter, tabletGutter, mobileGutter );
