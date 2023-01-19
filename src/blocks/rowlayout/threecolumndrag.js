@@ -82,7 +82,6 @@ export default function ThreeColumnDrag( {
 	const secondRoundDown = ( '33.3' === secondWidthNumber ? 30 : parseFloat( secondWidthNumber ) );
 	const realThirdsSecondWidth = ( ! secondColumnWidth ? secondRoundDown : secondColumnWidth );
 	const onResizeThirds = ( event, direction, elt ) => {
-		console.log(3)
 		let tempFirstW;
 		let tempChange;
 		let tempSecondW;
@@ -112,7 +111,6 @@ export default function ThreeColumnDrag( {
 		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondW }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
 	};
 	const onResizeStopThirds = ( event, direction, elt ) => {
-		console.log('stop')
 		let tempFirstW;
 		let tempChange;
 		let tempSecondW;
@@ -133,7 +131,6 @@ export default function ThreeColumnDrag( {
 		}, 400 );
 	};
 	const onResizeSecond = ( event, direction, elt ) => {
-		console.log(2)
 		let tempFirstW;
 		let tempSecondWidth;
 		let tempSecondW;
