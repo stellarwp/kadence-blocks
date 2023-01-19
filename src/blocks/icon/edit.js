@@ -157,7 +157,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 				/>
 				<ToolbarGroup
 					isCollapsed={true}
-					icon={<VerticalAlignmentIcon value={( verticalAlignment ? verticalAlignment : 'bottom' )}/>}
+					icon={<VerticalAlignmentIcon value={( verticalAlignment ? verticalAlignment : 'middle' )}/>}
 					label={__( 'Vertical Align', 'kadence-blocks' )}
 					controls={verticalAlignOptions}
 				/>
