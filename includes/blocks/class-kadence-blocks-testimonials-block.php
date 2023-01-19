@@ -658,6 +658,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$outer_classes[] = ! empty( $attributes['style'] ) ? 'kt-testimonial-style-' . $attributes['style'] : 'kt-testimonial-style-basic';
 			$outer_classes[] = isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ? 'kt-testimonials-media-on' : 'kt-testimonials-media-off';
 			$outer_classes[] = isset( $attributes['displayIcon'] ) && $attributes['displayIcon'] ? 'kt-testimonials-icon-on' : 'kt-testimonials-icon-off';
+			$outer_classes[] = 'kt-testimonial-columns-' . $columns_xxl; // assume column count is the one set for the biggest size.
 			$outer_classes[] = 'kt-t-xxl-col-' . $columns_xxl;
 			$outer_classes[] = 'kt-t-xl-col-' . $columns_xl;
 			$outer_classes[] = 'kt-t-lg-col-' . $columns_md;
