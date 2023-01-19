@@ -100,11 +100,6 @@ function KadenceTestimonials({
         uniqueID,
         url,
         id,
-        alt,
-        width,
-        height,
-        maxWidth,
-        subtype,
         media,
         icon,
         isize,
@@ -120,7 +115,6 @@ function KadenceTestimonials({
         tabletIsize,
         mobileIsize,
         inQueryBlock,
-        useBlockQuoteTags
     } = attributes;
 
     const displayContent = context['kadence/testimonials-displayContent'];
