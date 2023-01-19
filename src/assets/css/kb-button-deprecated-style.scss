@@ -2,13 +2,13 @@
  * #.# Styles
  */
  .kt-btn-wrap {
-	.kt-button {
+	.kt-button:where(:not(.kb-button)) {
 		text-decoration: none;
 		position: relative;
 		z-index: 1;
 		overflow: hidden;
 	}
-	.kt-button:not(.kb-btn-global-inherit) {
+	.kt-button:not(.kb-btn-global-inherit):where(:not(.kb-button)) {
 		padding: 8px 16px;
 		cursor: pointer;
 		font-size: 18px;
@@ -27,17 +27,17 @@
 		box-shadow: none;
 		border-style: solid;
 	}
-	.kt-button:not(.kb-btn-global-inherit):hover, .kt-button:not(.kb-btn-global-inherit):focus {
+	.kt-button:where(:not(.kb-button)):not(.kb-btn-global-inherit):hover, .kt-button:where(:not(.kb-button)):not(.kb-btn-global-inherit):focus {
 		border-color:#444444;
 		color:#ffffff;
 		box-shadow: none;
 	}
-	.kt-button.kt-btn-size-small {
+	.kt-button:where(:not(.kb-button)).kt-btn-size-small {
 		font-size: 16px;
 		padding: 4px 8px;
 		border-width: 1px;
 	}
-	.kt-button.kt-btn-size-large {
+	.kt-button:where(:not(.kb-button)).kt-btn-size-large {
 		font-size: 20px;
 		padding: 12px 24px;
 		border-width: 3px;
@@ -51,10 +51,10 @@
 		}
 	}
 }
-.wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:not(.link) {
+.wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:where(:not(.kb-button)):not(.link) {
     text-decoration: none;
 }
-.kt-btn-wrap .kt-button::before {
+.kt-btn-wrap .kt-button:where(:not(.kb-button))::before {
     position: absolute;
 	content: "";
 	top: 0;
@@ -67,10 +67,10 @@
 	display: block;
 	filter: none;
 }
-.kt-button:not(.kb-btn-global-inherit)::before {
+.kt-button:where(:not(.kb-button)):not(.kb-btn-global-inherit)::before {
 	background:#444444;
 }
-.kt-btn-wrap .kt-button:hover::before, .kt-btn-wrap .kt-button:focus::before {
+.kt-btn-wrap .kt-button:where(:not(.kb-button)):hover::before, .kt-btn-wrap .kt-button:where(:not(.kb-button)):focus::before {
 	opacity: 1;
 }
 .kt-btn-svg-icon.kt-btn-side-right, .kb-svg-icon-wrap.kt-btn-side-right {
@@ -113,7 +113,7 @@
     display: block;
     flex: 1;
 }
-.kt-force-btn-fullwidth .kt-btn-wrap .kt-button {
+.kt-force-btn-fullwidth .kt-btn-wrap .kt-button:where(:not(.kb-button)) {
     justify-content: center;
 	display: flex;
 }
