@@ -832,11 +832,11 @@ function KadenceTestimonials({
                                             {columnControls}
                                             <ResponsiveRangeControls
                                                 label={__( 'Column Gutter', 'kadence-blocks' )}
-                                                value={( '' !== gap?.[0] ? gap[0] : '' )}
+                                                value={( undefined !== gap?.[0] ? gap[0] : '' )}
                                                 onChange={value => setAttributes( { gap: [ value, ( '' !== gap?.[1] ? gap[1] : '' ), ( '' !== gap?.[2] ? gap[2] : '' ) ] } )}
-                                                tabletValue={( '' !== gap?.[1] ? gap[1] : '' )}
+                                                tabletValue={( undefined !== gap?.[1] ? gap[1] : '' )}
                                                 onChangeTablet={value => setAttributes( { gap: [ (  '' !== gap?.[0] ? gap[0] : '' ), value, ( '' !== gap?.[2] ? gap[2] : '' ) ] } )}
-                                                mobileValue={( '' !== gap?.[2] ? gap[2] : '' )}
+                                                mobileValue={( undefined !== gap?.[2] ? gap[2] : '' )}
                                                 onChangeMobile={value => setAttributes( { gap: [ (  '' !== gap?.[0] ? gap[0] : '' ), ( '' !== gap?.[1] ? gap[1] : '' ), value ] } )}
                                                 min={0}
                                                 max={( gapUnit !== 'px' ? 12 : 200 )}

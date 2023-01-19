@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,11 +77,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.3 Alpha Version 4 =
-Release Date - TBD
+Release Date: January 19th, 2023
 * Fix: Removing bottom divider on Row Layout
 * Fix: Variable based font sizes in countdown block
-* Fix: Video background on Row Layout
+* Fix: Video background on Row Layout.
+* Fix: Various issues with unit selector.
+* Fix: Issue with default icon alignment.
 * Fix: Issue where section collapse order was applying in tablet when it shouldn't.
+* Fix: Form button styling issue.
+* Fix: Possible issue with border styling.
+* Fix: Issue with editor row spacing.
 
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023

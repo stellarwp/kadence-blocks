@@ -78,14 +78,17 @@ export function getSpacingOptionName( value, unit ) {
 	return found.name;
 }
 export function getSpacingOptionOutput( value, unit ) {
-	if ( ! value ) {
+	if ( undefined === value ) {
 		return '';
 	}
 	if ( ! SPACING_SIZES_MAP ) {
 		return value;
 	}
 	if ( value === '0') {
-		return '0';
+		return '0' + unit;
+	}
+	if ( value === 0 ) {
+		return '0' + unit;
 	}
 	const found = SPACING_SIZES_MAP.find( ( option ) => option.value === value );
 	if ( ! found ) {

@@ -166,10 +166,13 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	//height: auto;
-	//width: auto;
+	height: auto;
+	width: 100%;
 	min-width: 100%;
 	min-height: 100%;
+	&::-webkit-media-controls {
+		display:none !important;
+	}
 }
 .kb-background-video-buttons-wrapper {
 	position: absolute;

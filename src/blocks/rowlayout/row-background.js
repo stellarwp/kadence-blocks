@@ -57,31 +57,6 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	const previewBackgroundRepeat = getPreviewSize( previewDevice, ( bgImgRepeat ? bgImgRepeat : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgRepeat && tabletBackground[0].enable ? tabletBackground[0].bgImgRepeat : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgRepeat && mobileBackground[0].enable ? mobileBackground[0].bgImgRepeat : '' ) );
 	const previewBackgroundAttachment = getPreviewSize( previewDevice, ( bgImgAttachment ? bgImgAttachment : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgAttachment && tabletBackground[0].enable ? tabletBackground[0].bgImgAttachment : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgAttachment && mobileBackground[0].enable ? mobileBackground[0].bgImgAttachment : '' ) );
 	const previewBackgroundSettingTab = getPreviewSize( previewDevice, ( backgroundSettingTab ? backgroundSettingTab : 'normal' ), ( undefined !== tabletBackground && tabletBackground?.[0] && tabletBackground?.[0]?.enable ? 'normal' : '' ), ( undefined !== mobileBackground && mobileBackground?.[0] && mobileBackground?.[0]?.enable ? 'normal' : '' ) );
-	function CustomNextArrow( props ) {
-		const { className, style, onClick } = props;
-		return (
-			<button
-				className={ className }
-				style={ { ...style, display: 'block' } }
-				onClick={ onClick }
-			>
-				<Dashicon icon="arrow-right-alt2" />
-			</button>
-		);
-	}
-
-	function CustomPrevArrow( props ) {
-		const { className, style, onClick } = props;
-		return (
-			<button
-				className={ className }
-				style={ { ...style, display: 'block' } }
-				onClick={ onClick }
-			>
-				<Dashicon icon="arrow-left-alt2" />
-			</button>
-		);
-	}
 
 	const sliderSettings = {
 		type         : backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && backgroundSliderSettings[ 0 ].fade ? 'fade' : 'slide',

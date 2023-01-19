@@ -4,6 +4,7 @@
 		setupTabs: function() {
 			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
+				thisElem.setAttribute('role', 'tablist');
 				thisElem.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
 					subElem.setAttribute('role', 'tabpanel');
 					subElem.setAttribute('aria-hidden', 'true');

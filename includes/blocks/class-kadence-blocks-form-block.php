@@ -593,7 +593,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) ) {
 			$submit_font = $attributes['submitFont'][0];
-			$css->add_property( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
+			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 			if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $submit_font['size'][0] . ( ! isset( $submit_font['sizeType'] ) ? 'px' : $submit_font['sizeType'] ) );
 			}

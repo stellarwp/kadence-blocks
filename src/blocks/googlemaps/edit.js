@@ -617,21 +617,27 @@ export function Edit( props ) {
 				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined),
 				paddingLeft: ('' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined)
 			} }>
-				<div className={ `kb-map-container kb-map-align-${ previewTextAlign }` } style={ {
-					height: previewHeight + 'px',
-					maxWidth: ( previewWidth === '' ? '100%' : previewWidth + 'px' ),
-					webkitFilter: (mapFilter !== 'standard' ? mapFilter + '(' + mapFilterAmount + '%)' : 'none' )
-				} }>
-					<div className={ 'kb-map-container-infobar' }></div>
-					{ apiType === 'embed' ? <>
+				<div className={`kb-map-container kb-map-align-${previewTextAlign}`} style={{}}>
+					<div className={'kb-map-container-infobar'}></div>
+					{apiType === 'embed' ? <div style={{
+							webkitFilter: (mapFilter !== 'standard' ? mapFilter + '(' + mapFilterAmount + '%)' : 'none'),
+							height: previewHeight + 'px',
+							maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+						}}>
 
-							<iframe width={ '100%' } height={ '100%' }
-									src={ 'https://www.google.com/maps/embed/v1/place?' + qs }>
+							<iframe width={'100%'} height={'100%'}
+									src={'https://www.google.com/maps/embed/v1/place?' + qs}>
 							</iframe>
-						</> :
-						<>
-							<EditJsMap zoom={ zoom } customSnazzy={ customSnazzy } lat={ lat } lng={ lng } showMarker={showMarker} mapType={mapType} mapStyle={ mapStyle } googleApiKey={ 'AIzaSyDzwRtJXFMk604PIwm2H667t8_ex4QqOyI' } />
-						</>
+						</div> :
+						<div style={{
+							webkitFilter: (mapFilter !== 'standard' ? mapFilter + '(' + mapFilterAmount + '%)' : 'none'),
+							height: previewHeight + 'px',
+							maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+						}}>
+							<EditJsMap zoom={zoom} customSnazzy={customSnazzy} lat={lat} lng={lng}
+									   showMarker={showMarker} mapType={mapType} mapStyle={mapStyle}
+									   googleApiKey={'AIzaSyDzwRtJXFMk604PIwm2H667t8_ex4QqOyI'}/>
+						</div>
 					}
 				</div>
 

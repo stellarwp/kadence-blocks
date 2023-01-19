@@ -45,9 +45,15 @@
             }
         }
     }
-    .kt-title-item svg {
+    .kt-title-item {
+      svg {
         width: 1em;
         height: 1em;
+      }
+
+      .kb-svg-icon-wrap {
+        display: inline-flex;
+      }
     }
 }
 .kt-tabs-icon-side-top .kt-tab-title {
