@@ -24,7 +24,7 @@ export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_
 		return value;
 	}
 	if ( value === '0') {
-		return '0';
+		return '0' + unit;
 	}
 	if ( value === 0 ) {
 		return '0' + unit;

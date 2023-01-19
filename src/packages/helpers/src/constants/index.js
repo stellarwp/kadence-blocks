@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 export const SPACING_SIZES_MAP = [
 	{
 		value: '0',
+		output: '0',
 		label: __( 'None', 'kadence-blocks' ),
 		size: 0,
 		name: __( 'None', 'kadence-blocks' ),
