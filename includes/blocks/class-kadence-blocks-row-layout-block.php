@@ -1187,7 +1187,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$video_args['preload'] = 'none';
 		}
 		if ( ! $prevent_preload ) {
-			$video_args['autoplay'] = true;
+			$video_args['autoplay'] = '';
 		}
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
@@ -1210,7 +1210,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$btns_output .= '</div>';
 		}
 
-		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_attributes ), $btns_output );
+		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
 		return $output;
 	}
 	/**
