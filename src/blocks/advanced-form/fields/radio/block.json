@@ -34,7 +34,7 @@
 	"options": {
 	  "type": "array",
 	  "default": [
-		{"value": "", "label": ""}
+		{"value": "", "label": "", "selected": false}
 	  ]
 	},
 	"width": {

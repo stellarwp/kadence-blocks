@@ -28,7 +28,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 			display: inline;
 		}
 	}
-
+	.kb-image-wrap {
+		min-width: 1px;
+	}
 	.kb-is-ratio-image {
 		height: 0;
 		position: relative;
@@ -183,6 +185,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 		height: inherit;
 	}
 }
+.wp-block-kadence-image.kb-image-is-ratio-size .components-resizable-box__container {
+	display:block;
+}
 
 .block-editor-block-list__block[data-type="kadence/image"] .block-editor-block-toolbar .block-editor-url-input__button-modal {
 	position: absolute;
@@ -207,9 +212,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 .wp-block[data-align="right"] {
 	> .wp-block-kadence-image {
 		display: table;
-
 		> figcaption {
 			display: table-caption;
+			/* autoprefixer: ignore next */
 			caption-side: bottom;
 		}
 	}

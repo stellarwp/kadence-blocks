@@ -20,18 +20,19 @@ import {
 	infoTopOverlayIcon,
 	infoLeftOverlayIcon,
 } from '@kadence/icons';
+import classnames from 'classnames';
 
 import { debounce, map, get } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	RangeControl,
 	KadencePanelBody,
-	IconControl,
+	KadenceIconPicker,
 	IconRender,
 	URLInputControl,
 	WebfontLoader,
+	BoxShadowControl,
 	KadenceImageControl,
 	KadenceMediaPlaceholder,
 	ImageSizeControl,
@@ -40,14 +41,29 @@ import {
 	InspectorControlTabs,
 	ResponsiveAlignControls,
 	ResponsiveControl,
-	KadenceBlockDefaults
+	SmallResponsiveControl,
+	ResponsiveBorderControl,
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	ResponsiveMeasurementControls,
+	SpacingVisualizer,
+	HoverToggleControl,
+	ColorGroup,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
-import InfoBoxStyleCopyPaste from './copy-paste-style';
 import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	ConvertColor,
+	getBorderStyle,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -60,8 +76,6 @@ import {
 	Fragment,
 } from '@wordpress/element';
 
-import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
 import {
 	MediaUpload,
 	RichText,
@@ -91,16 +105,12 @@ import {
 	plusCircleFilled,
 } from '@wordpress/icons';
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktinfoboxUniqueIDs = [];
-
+import { useSelect, useDispatch } from '@wordpress/data';
 /**
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, getPreviewDevice, context, clientId } ) {
+function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId } ) {
 
 	const {
 		uniqueID,
@@ -154,6 +164,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		hAlignMobile,
 		hAlignTablet,
 		containerMargin,
+		tabletContainerMargin,
+		mobileContainerMargin,
 		containerMarginUnit,
 		linkNoFollow,
 		linkSponsored,
@@ -163,36 +175,56 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		linkTitle,
 		kadenceDynamic,
 		inQueryBlock,
+		borderStyle,
+		borderRadius,
+		borderRadiusUnit,
+		tabletBorderStyle,
+		tabletBorderRadius,
+		mobileBorderStyle,
+		mobileBorderRadius,
+		borderHoverRadius,
+		borderHoverStyle,
+		borderHoverRadiusUnit,
+		tabletBorderHoverStyle,
+		tabletBorderHoverRadius,
+		mobileBorderHoverStyle,
+		mobileBorderHoverRadius,
+		tabletMaxWidth,
+		mobileMaxWidth,
+		kbVersion,
 	} = attributes;
-
-	const [ containerPaddingControl, setContainerPaddingControl ] = useState( 'linked' );
-	const [ containerBorderControl, setContainerBorderControl ] = useState( 'linked' );
-	const [ containerMarginControl, setContainerMarginControl ] = useState( 'linked' );
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
-		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/infobox' ] !== undefined && typeof blockConfigObject[ 'kadence/infobox' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/infobox' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/infobox' ][ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
+		setBlockDefaults( 'kadence/infobox', attributes);
 
-			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktinfoboxUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			ktinfoboxUniqueIDs.push( uniqueID );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		if ( ! kbVersion || kbVersion < 2 ) {
+			setAttributes( { kbVersion: 2 } );
 		}
+		debounce( getDynamic.bind( this ), 200 );
+	}, [] );
+	useEffect( () => {
 		if ( mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 1 ] && mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 2 ] && mediaStyle[ 0 ].borderWidth[ 0 ] === mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 			setMediaBorderControl( 'linked' );
 		} else {
@@ -208,36 +240,57 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else {
 			setMediaMarginControl( 'individual' );
 		}
-		if ( containerBorderWidth[ 0 ] === containerBorderWidth[ 1 ] && containerBorderWidth[ 0 ] === containerBorderWidth[ 2 ] && containerBorderWidth[ 0 ] === containerBorderWidth[ 3 ] ) {
-			setContainerBorderControl( 'linked' );
-		} else {
-			setContainerBorderControl( 'individual' );
+		// Update from old border settings.
+		if ( ( '' !== containerBorderRadius ) ) {
+			setAttributes( { borderRadius: [ containerBorderRadius, containerBorderRadius, containerBorderRadius, containerBorderRadius ], containerBorderRadius: '' } );
 		}
-		if ( containerPadding[ 0 ] === containerPadding[ 1 ] && containerPadding[ 0 ] === containerPadding[ 2 ] && containerPadding[ 0 ] === containerPadding[ 3 ] ) {
-			setContainerPaddingControl( 'linked' );
-		} else {
-			setContainerPaddingControl( 'individual' );
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ) );
+		let updateBorderStyle = false;
+		if ( ( '' !== containerBorder ) ) {
+			tempBorderStyle[0].top[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].right[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].bottom[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			tempBorderStyle[0].left[0] = ConvertColor( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+			updateBorderStyle = true;
+			setAttributes( { containerBorder: '' } );
 		}
-		if ( containerMargin && containerMargin[ 0 ] && containerMargin[ 0 ] === containerMargin[ 1 ] && containerMargin[ 0 ] === containerMargin[ 2 ] && containerMargin[ 0 ] === containerMargin[ 3 ] ) {
-			setContainerMarginControl( 'linked' );
-		} else {
-			setContainerMarginControl( 'individual' );
+		if ( ( '' !== containerBorderWidth?.[0] || '' !== containerBorderWidth?.[1] || '' !== containerBorderWidth?.[2] || '' !== containerBorderWidth?.[3] ) ) {
+			tempBorderStyle[0].top[2] = containerBorderWidth?.[0] || '';
+			tempBorderStyle[0].right[2] = containerBorderWidth?.[1] || '';
+			tempBorderStyle[0].bottom[2] = containerBorderWidth?.[2] || '';
+			tempBorderStyle[0].left[2] = containerBorderWidth?.[3] || '';
+			updateBorderStyle = true;
+			setAttributes( { containerBorderWidth:[ '', '', '', '' ] } );
 		}
-
-		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
+		if ( updateBorderStyle ) {
+			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-
-		debounce( getDynamic.bind( this ), 200 );
-
+		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{ 
+			top: [ '', '', '' ],
+			right: [ '', '', '' ],
+			bottom: [ '', '', '' ],
+			left: [ '', '', '' ],
+			unit: 'px'
+		}] ));
+		if ( ( '' !== containerHoverBorder ) ) {
+			tempBorderHoverStyle[0].top[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].right[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].bottom[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			tempBorderHoverStyle[0].left[0] = ConvertColor( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) );
+			setAttributes( { containerHoverBorder:'', borderHoverStyle: tempBorderHoverStyle } );
+		}
+		if ( '' !== containerBackgroundOpacity && 1 !== containerBackgroundOpacity && containerBackground ) {
+			setAttributes( { containerBackground: ConvertColor( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ), containerBackgroundOpacity: '' } );
+		}
+		if ( '' !== containerHoverBackgroundOpacity && 1 !== containerHoverBackgroundOpacity && containerHoverBackground ) {
+			setAttributes( { containerHoverBackground: ConvertColor( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ), containerHoverBackgroundOpacity: '' } );
+		}
 	}, [] );
 
 	const getDynamic = () => {
@@ -255,26 +308,50 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
 	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
 	const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
-	const previewContainerPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
-	const previewContainerPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
-	const previewContainerPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
-	const previewContainerPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
+	const previewContainerPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
+	const previewContainerPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
+	const previewContainerPaddingBottom = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
+	const previewContainerPaddingLeft = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
 
-	const previewTitleFontSize = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
-	const previewTitleLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewTitleMinHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight[ 1 ] && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight[ 2 ] && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
+	const previewContainerMarginTop = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+	const previewContainerMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+	const previewContainerMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+	const previewContainerMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
 
-	const previewTextFontSize = getPreviewSize( getPreviewDevice, ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 0 ] ? textFont[ 0 ].size[ 0 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 1 ] ? textFont[ 0 ].size[ 1 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 2 ] ? textFont[ 0 ].size[ 2 ] : '' ) );
-	const previewTextLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 1 ] ? textFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 2 ] ? textFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewTextMinHeight = getPreviewSize( getPreviewDevice, ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] : '' ), ( undefined !== textMinHeight[ 1 ] && undefined !== textMinHeight[ 1 ] ? textMinHeight[ 1 ] : '' ), ( undefined !== textMinHeight[ 2 ] && undefined !== textMinHeight[ 2 ] ? textMinHeight[ 2 ] : '' ) );
+	// Border.
+	const previewBorderTopStyle = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderRightStyle = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderLeftStyle = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+	const previewRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+	// Hover Border
+	const previewBorderHoverTopStyle = getBorderStyle( previewDevice, 'top', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverRightStyle = getBorderStyle( previewDevice, 'right', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverBottomStyle = getBorderStyle( previewDevice, 'bottom', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewBorderHoverLeftStyle = getBorderStyle( previewDevice, 'left', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle );
+	const previewHoverRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 0 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 0 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 0 ] : '' ) );
+	const previewHoverRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 1 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 1 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 1 ] : '' ) );
+	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
+	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
 
-	const previewLearnMoreFontSize = getPreviewSize( getPreviewDevice, ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 0 ] ? learnMoreStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 1 ] ? learnMoreStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 2 ] ? learnMoreStyles[ 0 ].size[ 2 ] : '' ) );
-	const previewLearnMoreLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 1 ] ? learnMoreStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 2 ] ? learnMoreStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewTitleFontSize = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
+	const previewTitleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewTitleMinHeight = getPreviewSize( previewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight[ 1 ] && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight[ 2 ] && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
 
-	const previewMediaIconSize = getPreviewSize( getPreviewDevice, ( undefined !== mediaIcon[ 0 ] && undefined !== mediaIcon[ 0 ].size ? mediaIcon[ 0 ].size : '14' ), ( undefined !== mediaIcon[ 0 ].tabletSize && undefined !== mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' ), ( undefined !== mediaIcon[ 0 ].mobileSize && undefined !== mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' ) );
+	const previewTextFontSize = getPreviewSize( previewDevice, ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 0 ] ? textFont[ 0 ].size[ 0 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 1 ] ? textFont[ 0 ].size[ 1 ] : '' ), ( undefined !== textFont[ 0 ].size && undefined !== textFont[ 0 ].size[ 2 ] ? textFont[ 0 ].size[ 2 ] : '' ) );
+	const previewTextLineHeight = getPreviewSize( previewDevice, ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 1 ] ? textFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== textFont[ 0 ].lineHeight && undefined !== textFont[ 0 ].lineHeight[ 2 ] ? textFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewTextMinHeight = getPreviewSize( previewDevice, ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] : '' ), ( undefined !== textMinHeight[ 1 ] && undefined !== textMinHeight[ 1 ] ? textMinHeight[ 1 ] : '' ), ( undefined !== textMinHeight[ 2 ] && undefined !== textMinHeight[ 2 ] ? textMinHeight[ 2 ] : '' ) );
 
-	const previewhAlign = getPreviewSize( getPreviewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
-	const previewMediaAlign = getPreviewSize( getPreviewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
+	const previewLearnMoreFontSize = getPreviewSize( previewDevice, ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 0 ] ? learnMoreStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 1 ] ? learnMoreStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].size && undefined !== learnMoreStyles[ 0 ].size[ 2 ] ? learnMoreStyles[ 0 ].size[ 2 ] : '' ) );
+	const previewLearnMoreLineHeight = getPreviewSize( previewDevice, ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 1 ] ? learnMoreStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 2 ] ? learnMoreStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+
+	const previewMediaIconSize = getPreviewSize( previewDevice, ( undefined !== mediaIcon[ 0 ] && undefined !== mediaIcon[ 0 ].size ? mediaIcon[ 0 ].size : '14' ), ( undefined !== mediaIcon[ 0 ].tabletSize && undefined !== mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' ), ( undefined !== mediaIcon[ 0 ].mobileSize && undefined !== mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' ) );
+
+	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
+	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
 	const widthTypes = [
 		{ key: 'px', name: 'px' },
@@ -305,12 +382,20 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		if ( 'simple' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
-				containerHoverBackground: ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
+				containerBackground     : ( '#ffffff' === containerBackground ? '' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ '', '', '' ],
+					right: [ '', '', '' ],
+					bottom: [ '', '', '' ],
+					left: [ '', '', '' ],
+					unit: 'px'
+				}  ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -324,10 +409,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : mediaIcon[ 0 ].background,
-					hoverBackground: mediaIcon[ 0 ].hoverBackground,
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background ? '' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : [ 10, 10, 10, 10 ],
@@ -357,14 +442,20 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else if ( 'basic' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 30,
-				containerPadding        : [ 20, 20, 20, 20 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 30, 30, 30, 30 ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -378,10 +469,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( '' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -427,14 +518,20 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else if ( 'leftabove' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
 				mediaIcon               : [ {
@@ -448,10 +545,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
-					border         : mediaIcon[ 0 ].border,
-					hoverBorder    : mediaIcon[ 0 ].hoverBorder,
+					background     : ( '' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -497,14 +594,20 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else if ( 'left' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 30, 30, 30, 30 ],
+				containerPadding        : [ 'xs', 'xs', 'xs', 'xs' ],
 				containerMargin         : [ '', '', '', '' ],
+				tabletContainerMargin   : [ '', '', '', '' ],
+				mobileContainerMargin   : [ '', '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'left',
 				mediaIcon               : [ {
@@ -518,12 +621,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '#ffffff' === mediaStyle[ 0 ].background ? '' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : mediaStyle[ 0 ].border,
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
-					borderWidth    : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 5, 5, 5, 5 ] : [ 0, 0, 0, 0 ] ),
+					borderWidth    : [ 0, 0, 0, 0 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 					margin         : [ 0, 20, 0, 0 ],
 				} ],
@@ -567,13 +670,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else if ( 'overlay' === key ) {
 			setAttributes( {
 				hAlign                  : 'center',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ 20, 20, 20, 20 ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ 50, '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
@@ -588,10 +695,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '' === mediaStyle[ 0 ].background ? '#ffffff' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : ( '' === mediaStyle[ 0 ].border ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].border ),
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 200,
 					borderWidth    : [ 5, 5, 5, 5 ],
 					padding        : ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -637,13 +744,17 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		} else if ( 'overlayleft' === key ) {
 			setAttributes( {
 				hAlign                  : 'left',
-				containerBackground     : ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
-				containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
-				containerBorder         : ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
-				containerHoverBorder    : ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 24, 24, 24, 24 ],
+				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
+				containerHoverBackground: containerHoverBackground,
+				borderStyle             : [ { 
+					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					left: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
+					unit: 'px'
+				} ],
+				borderRadius            : [ '', '', '', '' ],
+				containerPadding        : [ 'sm', 'sm', 'sm', 'sm' ],
 				containerMargin         : [ 50, '', '', '' ],
 				containerMarginUnit     : 'px',
 				mediaAlign              : 'top',
@@ -658,10 +769,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					flipIcon      : mediaIcon[ 0 ].flipIcon,
 				} ],
 				mediaStyle              : [ {
-					background     : ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
-					hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
-					border         : ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
-					hoverBorder    : ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+					background     : ( 'var(--global-palette7, #eeeeee)' === mediaStyle[ 0 ].background || '#eeeeee' === mediaStyle[ 0 ].background || '' === mediaStyle[ 0 ].background ? '#ffffff' : mediaStyle[ 0 ].background ),
+					hoverBackground: mediaStyle[ 0 ].hoverBackground,
+					border         : ( '' === mediaStyle[ 0 ].border ? 'var(--global-palette7, #eeeeee)' : mediaStyle[ 0 ].border ),
+					hoverBorder    : mediaStyle[ 0 ].hoverBorder,
 					borderRadius   : 0,
 					borderWidth    : [ 5, 5, 5, 5 ],
 					padding        : ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
@@ -703,379 +814,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					margin        : [ 5, 0, 10, 0 ],
 					marginControl : 'individual',
 				} ],
-			} );
-		}
-	};
-	const setInitalLayout = ( key ) => {
-		if ( 'skip' === key ) {
-		} else if ( 'simple' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#f2f2f2',
-				containerHoverBackground: '#f2f2f2',
-				containerBorder         : '#eeeeee',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'top',
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 70,
-					width         : 2,
-					title         : '',
-					color         : '#444444',
-					hoverColor    : '#444444',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 3, 3, 3, 3 ],
-					padding        : [ 16, 16, 16, 16 ],
-					margin         : [ 0, 15, 8, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '#444444',
-				titleHoverColor         : '#444444',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#777777',
-				textHoverColor          : '#777777',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : false,
-				displayShadow           : false,
-			} );
-		} else if ( 'left' === key ) {
-			setAttributes( {
-				hAlign                  : 'left',
-				containerBackground     : '#ffffff',
-				containerHoverBackground: '#ffffff',
-				containerBorder         : '#888888',
-				containerHoverBorder    : '#888888',
-				containerBorderWidth    : [ 2, 2, 2, 2 ],
-				containerBorderRadius   : 20,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'left',
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 50,
-					width         : 2,
-					title         : '',
-					color         : '#ffffff',
-					hoverColor    : '#ffffff',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : '#555555',
-					hoverBackground: '#444444',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 20, 20, 20, 20 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '',
-				titleHoverColor         : '',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#555555',
-				textHoverColor          : '',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : false,
-				displayShadow           : true,
-			} );
-		} else if ( 'bold' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#0A6689',
-				containerHoverBackground: '#0A6689',
-				containerBorder         : '#eeeeee',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 0, 0, 0, 0 ],
-				containerBorderRadius   : 0,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'icon',
-				mediaAlign              : 'top',
-				mediaImage              : [ {
-					url           : '',
-					id            : '',
-					alt           : '',
-					width         : '',
-					height        : '',
-					maxWidth      : '',
-					hoverAnimation: 'none',
-					flipUrl       : '',
-					flipId        : '',
-					flipAlt       : '',
-					flipWidth     : '',
-					flipHeight    : '',
-					subtype       : '',
-					flipSubtype   : '',
-				} ],
-				mediaIcon               : [ {
-					icon          : 'ic_star',
-					size          : 80,
-					width         : 2,
-					title         : '',
-					color         : '#ffffff',
-					hoverColor    : '#ffffff',
-					hoverAnimation: 'none',
-					flipIcon      : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 0,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 10, 10, 10, 10 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '#ffffff',
-				titleHoverColor         : '#ffffff',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : false,
-				textColor               : '#ffffff',
-				textHoverColor          : '#ffffff',
-				displayLearnMore        : true,
-				learnMoreStyles         : [ {
-					size           : [ '', '', '' ],
-					sizeType       : 'px',
-					lineHeight     : [ '', '', '' ],
-					lineType       : 'px',
-					letterSpacing  : '',
-					family         : '',
-					google         : '',
-					style          : '',
-					weight         : '',
-					variant        : '',
-					subset         : '',
-					loadGoogle     : true,
-					padding        : [ 4, 8, 4, 8 ],
-					paddingControl : 'individual',
-					margin         : [ 10, 0, 10, 0 ],
-					marginControl  : 'individual',
-					color          : '#ffffff',
-					background     : '#0A6689',
-					border         : '#ffffff',
-					borderRadius   : 0,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					borderControl  : 'linked',
-					colorHover     : '#0A6689',
-					backgroundHover: '#ffffff',
-					borderHover    : '#ffffff',
-					hoverEffect    : 'revealBorder',
-					textTransform  : '',
-				} ],
-				displayShadow           : false,
-			} );
-		} else if ( 'image' === key ) {
-			setAttributes( {
-				hAlign                  : 'center',
-				containerBackground     : '#ffffff',
-				containerHoverBackground: '#ffffff',
-				containerBorder         : '#ffffff',
-				containerHoverBorder    : '#eeeeee',
-				containerBorderWidth    : [ 5, 5, 5, 5 ],
-				containerBorderRadius   : 30,
-				containerPadding        : [ 20, 20, 20, 20 ],
-				mediaType               : 'image',
-				mediaAlign              : 'top',
-				mediaImage              : [ {
-					url           : '',
-					id            : '',
-					alt           : '',
-					width         : '',
-					height        : '',
-					maxWidth      : '200',
-					hoverAnimation: 'none',
-					flipUrl       : '',
-					flipId        : '',
-					flipAlt       : '',
-					flipWidth     : '',
-					flipHeight    : '',
-					subtype       : '',
-					flipSubtype   : '',
-				} ],
-				mediaStyle              : [ {
-					background     : 'transparent',
-					hoverBackground: 'transparent',
-					border         : '#444444',
-					hoverBorder    : '#444444',
-					borderRadius   : 200,
-					borderWidth    : [ 0, 0, 0, 0 ],
-					padding        : [ 10, 10, 10, 10 ],
-					margin         : [ 0, 15, 0, 15 ],
-				} ],
-				displayTitle            : true,
-				titleColor              : '',
-				titleHoverColor         : '',
-				titleFont               : [ {
-					level         : 2,
-					size          : [ '', '', '' ],
-					sizeType      : 'px',
-					lineHeight    : [ '', '', '' ],
-					lineType      : 'px',
-					letterSpacing : '',
-					textTransform : '',
-					family        : '',
-					google        : false,
-					style         : '',
-					weight        : '',
-					variant       : '',
-					subset        : '',
-					loadGoogle    : true,
-					padding       : [ 0, 0, 0, 0 ],
-					paddingControl: 'linked',
-					margin        : [ 5, 0, 10, 0 ],
-					marginControl : 'individual',
-				} ],
-				displayText             : true,
-				textColor               : '#555555',
-				textHoverColor          : '',
-				textFont                : [ {
-					size         : [ '', '', '' ],
-					sizeType     : 'px',
-					lineHeight   : [ '', '', '' ],
-					lineType     : 'px',
-					letterSpacing: '',
-					family       : '',
-					google       : '',
-					style        : '',
-					weight       : '',
-					variant      : '',
-					subset       : '',
-					loadGoogle   : true,
-					textTransform: '',
-				} ],
-				displayLearnMore        : true,
-				learnMoreStyles         : [ {
-					size           : [ '', '', '' ],
-					sizeType       : 'px',
-					lineHeight     : [ '', '', '' ],
-					lineType       : 'px',
-					letterSpacing  : '',
-					family         : '',
-					google         : '',
-					style          : '',
-					weight         : '',
-					variant        : '',
-					subset         : '',
-					loadGoogle     : true,
-					padding        : [ 4, 8, 4, 8 ],
-					paddingControl : 'individual',
-					margin         : [ 10, 0, 10, 0 ],
-					marginControl  : 'individual',
-					color          : '#444444',
-					background     : '#ffffff',
-					border         : '#444444',
-					borderRadius   : 0,
-					borderWidth    : [ 1, 0, 0, 0 ],
-					borderControl  : 'linked',
-					colorHover     : '#222222',
-					backgroundHover: '#ffffff',
-					borderHover    : '#222222',
-					hoverEffect    : 'revealBorder',
-					textTransform  : '',
-				} ],
-				displayShadow           : false,
 			} );
 		}
 	};
@@ -1353,46 +1091,73 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			shadowHover: newUpdate,
 		} );
 	};
+	const onPaste = ( attributesToPaste ) => {
+		if ( attributesToPaste ) {
+			if ( attributesToPaste.mediaImage ) {
+				saveMediaImage( attributesToPaste.mediaImage[ 0 ] );
+				delete attributesToPaste.mediaImage;
+			}
+			if ( attributesToPaste.mediaIcon ) {
+				saveMediaIcon( attributesToPaste.mediaIcon[ 0 ] );
+				delete attributesToPaste.mediaIcon;
+			}
+
+			setAttributes( attributesToPaste );
+		}
+	}
+
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 	const renderCSS = (
 		<style>
-			{( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput( mediaIcon[ 0 ].hoverColor )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) .editor-media-placeholder { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }` : '' )}
-			{( titleHoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput( titleHoverColor )} !important; }` : '' )}
-			{( textHoverColor ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${KadenceColorOutput( textHoverColor )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput( learnMoreStyles[ 0 ].colorHover )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].borderHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].borderHover )} !important; }` : '' )}
-			{( learnMoreStyles[ 0 ].backgroundHover ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover )} !important; }` : '' )}
-			{( containerHoverBackground ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { background: ${( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) )} !important; }` : '' )}
-			{( containerHoverBorder ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-color: ${( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) )} !important; }` : '' )}
-			{( displayShadow ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBackground ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
-			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaIcon[ 0 ].hoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput( mediaIcon[ 0 ].hoverColor )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].borderRadius ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[ 0 ].borderRadius}px !important; }` : '' )}
+			{( titleHoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput( titleHoverColor )} !important; }` : '' )}
+			{( textHoverColor ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${KadenceColorOutput( textHoverColor )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].colorHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput( learnMoreStyles[ 0 ].colorHover )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].borderHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].borderHover )} !important; }` : '' )}
+			{( learnMoreStyles[ 0 ].backgroundHover ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover )} !important; }` : '' )}
+
+			{ ( previewBorderHoverTopStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top:${ previewBorderHoverTopStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverRightStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-right:${ previewBorderHoverRightStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverBottomStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom:${ previewBorderHoverBottomStyle } !important; }` : '' ) }
+			{ ( previewBorderHoverLeftStyle ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-left:${ previewBorderHoverLeftStyle } !important; }` : '' ) }
+
+			{ ( '' !== previewHoverRadiusTop ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-left-radius:${ previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusRight ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-right-radius:${ previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusBottom ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-right-radius:${ previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+			{ ( '' !== previewHoverRadiusLeft ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-left-radius:${  previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+
+			{ ( containerHoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background:${ KadenceColorOutput( containerHoverBackground ) } !important; }` : '' ) }
+			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
+
+
+			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{'icon' === mediaType && 'drawborder' === mediaIcon[ 0 ].hoverAnimation && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+					`.kb-info-box-wrap${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ KadenceColorOutput( mediaStyle[ 0 ].border ) }; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 			{'number' === mediaType && mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation && 'drawborder' === mediaNumber[ 0 ].hoverAnimation && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+				`.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 			{'image' === mediaType && true === mediaImagedraw && (
-				`#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
-					#kt-info-box${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
+				`.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${mediaStyle[ 0 ].borderWidth[ 0 ]}px ${mediaStyle[ 0 ].border}; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${mediaStyle[ 0 ].borderRadius}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} ; border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-bottom-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} }
+					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )}; border-right-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-bottom-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; border-top-width: ${mediaStyle[ 0 ].borderWidth[ 0 ]}px; }`
 			)}
 		</style>
 	);
@@ -1437,9 +1202,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 		showImageToolbar = false;
 	}
 
-	const mediaSettingsMobile = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsMobile = <>
 		<SelectControl
-			label={__( 'Mobile Media Align', 'kadence-blocks' )}
 			value={( mediaAlignMobile ? mediaAlignMobile : mediaAlign )}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1448,11 +1212,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			]}
 			onChange={value => setAttributes( { mediaAlignMobile: value } )}
 		/>
-	</div>;
+	</>;
 
-	const mediaSettingsTablet = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsTablet = <>
 		<SelectControl
-			label={__( 'Tablet Media Align', 'kadence-blocks' )}
 			value={( mediaAlignTablet ? mediaAlignTablet : mediaAlign )}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1461,11 +1224,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			]}
 			onChange={value => setAttributes( { mediaAlignTablet: value } )}
 		/>
-	</div>;
+	</>;
 
-	const mediaSettingsDesktop = <div style={ { marginTop: '15px'} }>
+	const mediaSettingsDesktop = <>
 		<SelectControl
-			label={__( 'Media Align', 'kadence-blocks' )}
 			value={mediaAlign}
 			options={[
 				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
@@ -1474,15 +1236,18 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 			]}
 			onChange={value => setAttributes( { mediaAlign: value } )}
 		/>
-	</div>;
+	</>;
 
+	const nonTransAttrs = [ 'link', 'linkTitle' ];
 
 	const blockProps = useBlockProps( {
-		className: className,
+		className: classnames( className, {
+            [`kb-info-box-wrap${uniqueID}`]: true
+        }),
 	} );
 
 	return (
-		<div id={`kt-info-box${uniqueID}`} {...blockProps}>
+		<div {...blockProps}>
 			{renderCSS}
 			<BlockControls key="controls">
 				{showImageToolbar && (
@@ -1513,9 +1278,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									aria-expanded={isOpen}/>
 						)}
 						renderContent={() => (
-							<Fragment>
+							<>
 								<div className="kb-inline-icon-control">
-									<IconControl
+									<KadenceIconPicker
 										value={mediaIcon[ 0 ].icon}
 										onChange={value => saveMediaIcon( { icon: value } )}
 									/>
@@ -1528,7 +1293,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										step={1}
 									/>
 								</div>
-							</Fragment>
+							</>
 						)}
 					/>
 				)}
@@ -1536,18 +1301,19 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					value={hAlign}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
-				<InfoBoxStyleCopyPaste
-					onPaste={value => setAttributes( value )}
-					onPasteMediaImage={value => saveMediaImage( value )}
-					onPasteMediaIcon={value => saveMediaIcon( value )}
-					blockAttributes={attributes}
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => onPaste( attributesToPaste ) }
 				/>
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/infobox' ) && (
 				<InspectorControls>
 
 					<InspectorControlTabs
-						panelName={'info-box'}
+						panelName={'infobox'}
 						setActiveTab={( value ) => setActiveTab( value )}
 						activeTab={activeTab}
 					/>
@@ -1556,7 +1322,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						<>
 
 							<KadencePanelBody panelName={'kb-info-all-settings'}>
-								<Fragment>
+								<>
 									<h2>{__( 'InfoBox Quick Layout Presets', 'kadence-blocks' )}</h2>
 									<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'InfoBox Style', 'kadence-blocks' )}>
 										{map( layoutPresetOptions, ( { name, key, icon } ) => (
@@ -1574,7 +1340,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											</Button>
 										) )}
 									</ButtonGroup>
-								</Fragment>
+								</>
 								<URLInputControl
 									label={__( 'Link', 'kadence-blocks' )}
 									url={link}
@@ -1621,175 +1387,176 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									onChangeMobile={( nextAlign ) => setAttributes( { hAlignMobile: nextAlign } )}
 								/>
 							</KadencePanelBody>
+						</>
+					}
+
+					{( activeTab === 'style' ) &&
+						<>
 							{showSettings( 'containerSettings', 'kadence/infobox' ) && (
-								<KadencePanelBody
-									title={__( 'Container Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-info-container-settings'}
-								>
-									<MeasurementControls
-										label={__( 'Container Border Width (px)', 'kadence-blocks' )}
-										measurement={containerBorderWidth}
-										control={containerBorderControl}
-										onChange={( value ) => setAttributes( { containerBorderWidth: value } )}
-										onControl={( value ) => this.setState( { containerBorderControl: value } )}
-										min={0}
-										max={40}
-										step={1}
-									/>
-									<RangeControl
-										label={__( 'Container Border Radius (px)', 'kadence-blocks' )}
-										value={containerBorderRadius}
-										onChange={value => setAttributes( { containerBorderRadius: value } )}
-										step={1}
-										min={0}
-										max={200}
-									/>
-									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'normal',
-													  title    : __( 'Normal', 'kadence-blocks' ),
-													  className: 'kt-normal-tab',
-												  },
-												  {
-													  name     : 'hover',
-													  title    : __( 'Hover', 'kadence-blocks' ),
-													  className: 'kt-hover-tab',
-												  },
-											  ]}>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'hover' === tab.name ) {
-														tabout = (
-															<Fragment>
-																<PopColorControl
-																	label={__( 'Hover Background', 'kadence-blocks' )}
-																	value={( containerHoverBackground ? containerHoverBackground : '#f2f2f2' )}
-																	default={'#f2f2f2'}
-																	opacityValue={containerHoverBackgroundOpacity}
-																	onChange={value => setAttributes( { containerHoverBackground: value } )}
-																	onOpacityChange={value => setAttributes( { containerHoverBackgroundOpacity: value } )}
-																/>
-																<PopColorControl
-																	label={__( 'Hover Border', 'kadence-blocks' )}
-																	value={( containerHoverBorder ? containerHoverBorder : '#eeeeee' )}
-																	default={'#eeeeee'}
-																	opacityValue={containerHoverBorderOpacity}
-																	onChange={value => setAttributes( { containerHoverBorder: value } )}
-																	onOpacityChange={value => setAttributes( { containerHoverBorderOpacity: value } )}
-																/>
-															</Fragment>
-														);
-													} else {
-														tabout = (
-															<Fragment>
-																<PopColorControl
-																	label={__( 'Container Background', 'kadence-blocks' )}
-																	value={( containerBackground ? containerBackground : '#f2f2f2' )}
-																	default={'#f2f2f2'}
-																	opacityValue={containerBackgroundOpacity}
-																	onChange={value => setAttributes( { containerBackground: value } )}
-																	onOpacityChange={value => setAttributes( { containerBackgroundOpacity: value } )}
-																/>
-																<PopColorControl
-																	label={__( 'Container Border', 'kadence-blocks' )}
-																	value={( containerBorder ? containerBorder : '#eeeeee' )}
-																	default={'#eeeeee'}
-																	opacityValue={containerBorderOpacity}
-																	onChange={value => setAttributes( { containerBorder: value } )}
-																	onOpacityChange={value => setAttributes( { containerBorderOpacity: value } )}
-																/>
-															</Fragment>
-														);
-													}
-												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
+								<>
+									<KadencePanelBody
+										title={__( 'Container Settings', 'kadence-blocks' )}
+										initialOpen={true}
+										panelName={'kb-info-container-settings'}
+									>
+										<HoverToggleControl
+											hover={
+												<>
+													<PopColorControl
+														label={__( 'Hover Background', 'kadence-blocks' )}
+														value={( containerHoverBackground ? containerHoverBackground : '' )}
+														default={''}
+														onChange={value => setAttributes( { containerHoverBackground: value } )}
+													/>
+													<ResponsiveBorderControl
+														label={__( 'Border', 'kadence-blocks' )}
+														value={borderHoverStyle}
+														tabletValue={tabletBorderHoverStyle}
+														mobileValue={mobileBorderHoverStyle}
+														onChange={( value ) => setAttributes( { borderHoverStyle: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderHoverStyle: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderHoverStyle: value } )}
+													/>
+													<ResponsiveMeasurementControls
+														label={__( 'Border Radius', 'kadence-blocks' )}
+														value={borderHoverRadius}
+														tabletValue={tabletBorderHoverRadius}
+														mobileValue={mobileBorderHoverRadius}
+														onChange={( value ) => setAttributes( { borderHoverRadius: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderHoverRadius: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderHoverRadius: value } )}
+														unit={borderHoverRadiusUnit}
+														units={[ 'px', 'em', 'rem', '%' ]}
+														onUnit={( value ) => setAttributes( { borderHoverRadiusUnit: value } )}
+														max={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 24 : 500)}
+														step={(borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem' ? 0.1 : 1)}
+														min={ 0 }
+														isBorderRadius={ true }
+														allowEmpty={true}
+													/>
+													<BoxShadowControl
+														label={__( 'Box Shadow', 'kadence-blocks' )}
+														enable={( undefined !== displayShadow ? displayShadow : false )}
+														color={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' )}
+														colorDefault={'#000000'}
+														onArrayChange={( color, opacity ) => {
+															saveShadowHover( { color: color, opacity: opacity } );
+														}}
+														opacity={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 )}
+														hOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 )}
+														vOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 )}
+														blur={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 )}
+														spread={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 )}
+														inset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false )}
+														onEnableChange={value => {
+															setAttributes( {
+																displayShadow: value,
+															} );
+														}}
+														onColorChange={value => {
+															saveShadowHover( { color: value } );
+														}}
+														onOpacityChange={value => {
+															saveShadowHover( { opacity: value } );
+														}}
+														onHOffsetChange={value => {
+															saveShadowHover( { hOffset: value } );
+														}}
+														onVOffsetChange={value => {
+															saveShadowHover( { vOffset: value } );
+														}}
+														onBlurChange={value => {
+															saveShadowHover( { blur: value } );
+														}}
+														onSpreadChange={value => {
+															saveShadowHover( { spread: value } );
+														}}
+														onInsetChange={value => {
+															saveShadowHover( { inset: value } );
+														}}
+													/>
+												</>
 											}
-										}
-									</TabPanel>
-									<ResponsiveMeasurementControls
-										label={__( 'Container Padding', 'kadence-blocks' )}
-										control={containerPaddingControl}
-										tabletControl={containerPaddingControl}
-										mobileControl={containerPaddingControl}
-										value={containerPadding}
-										tabletValue={containerTabletPadding}
-										mobileValue={containerMobilePadding}
-										onChange={( value ) => {
-											setAttributes( { containerPadding: value } );
-										}}
-										onChangeTablet={( value ) => {
-											setAttributes( { containerTabletPadding: value } );
-										}}
-										onChangeMobile={( value ) => {
-											setAttributes( { containerMobilePadding: value } );
-										}}
-										onChangeControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeTabletControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										onChangeMobileControl={( value ) => this.setState( { containerPaddingControl: value } )}
-										allowEmpty={true}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={containerPaddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { containerPaddingType: value } )}
-									/>
-									<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
-										{map( marginTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={containerMarginUnit === key}
-												aria-pressed={containerMarginUnit === key}
-												onClick={() => setAttributes( { containerMarginUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-									<MeasurementControls
-										label={__( 'Margin', 'kadence-blocks' )}
-										measurement={containerMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										control={containerMarginControl}
-										onControl={( value ) => this.setState( { containerMarginControl: value } )}
-										min={marginMin}
-										max={marginMax}
-										step={marginStep}
-										allowEmpty={true}
-									/>
-									<ButtonGroup className="kt-size-type-options" aria-label={__( 'Max Width Type', 'kadence-blocks' )}>
-										{map( widthTypes, ( { name, key } ) => (
-											<Button
-												key={key}
-												className="kt-size-btn"
-												isSmall
-												isPrimary={maxWidthUnit === key}
-												aria-pressed={maxWidthUnit === key}
-												onClick={() => setAttributes( { maxWidthUnit: key } )}
-											>
-												{name}
-											</Button>
-										) )}
-									</ButtonGroup>
-									<RangeControl
-										label={__( 'Container Max Width', 'kadence-blocks' )}
-										value={maxWidth}
-										onChange={( value ) => {
-											setAttributes( {
-												maxWidth: value,
-											} );
-										}}
-										min={0}
-										max={widthMax}
-									/>
-								</KadencePanelBody>
+											normal={
+												<>
+													<PopColorControl
+														label={__( 'Background', 'kadence-blocks' )}
+														value={ ( containerBackground ? containerBackground : '' )}
+														default={''}
+														onChange={value => setAttributes( { containerBackground: value } )}
+													/>
+													<ResponsiveBorderControl
+														label={__( 'Border', 'kadence-blocks' )}
+														value={borderStyle}
+														tabletValue={tabletBorderStyle}
+														mobileValue={mobileBorderStyle}
+														onChange={( value ) => setAttributes( { borderStyle: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+													/>
+													<ResponsiveMeasurementControls
+														label={__( 'Border Radius', 'kadence-blocks' )}
+														value={borderRadius}
+														tabletValue={tabletBorderRadius}
+														mobileValue={mobileBorderRadius}
+														onChange={( value ) => setAttributes( { borderRadius: value } )}
+														onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
+														onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
+														unit={borderRadiusUnit}
+														units={[ 'px', 'em', 'rem', '%' ]}
+														onUnit={( value ) => setAttributes( { borderRadiusUnit: value } )}
+														max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
+														step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
+														min={ 0 }
+														isBorderRadius={ true }
+														allowEmpty={true}
+													/>
+													<BoxShadowControl
+														label={__( 'Box Shadow', 'kadence-blocks' )}
+														enable={( undefined !== displayShadow ? displayShadow : false )}
+														color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
+														colorDefault={'#000000'}
+														onArrayChange={( color, opacity ) => {
+															saveShadow( { color: color, opacity: opacity } );
+														}}
+														opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
+														hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
+														vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
+														blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
+														spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
+														inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
+														onEnableChange={value => {
+															setAttributes( {
+																displayShadow: value,
+															} );
+														}}
+														onColorChange={value => {
+															saveShadow( { color: value } );
+														}}
+														onOpacityChange={value => {
+															saveShadow( { opacity: value } );
+														}}
+														onHOffsetChange={value => {
+															saveShadow( { hOffset: value } );
+														}}
+														onVOffsetChange={value => {
+															saveShadow( { vOffset: value } );
+														}}
+														onBlurChange={value => {
+															saveShadow( { blur: value } );
+														}}
+														onSpreadChange={value => {
+															saveShadow( { spread: value } );
+														}}
+														onInsetChange={value => {
+															saveShadow( { inset: value } );
+														}}
+													/>
+												</>
+											}
+										/>										
+									</KadencePanelBody>
+								</>
 							)}
 							{showSettings( 'mediaSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
@@ -1797,14 +1564,15 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									initialOpen={false}
 									panelName={'kb-info-media-settings'}
 								>
-									<ResponsiveControl
+									<SmallResponsiveControl
+										label={__( 'Media Align', 'kadence-blocks' )}
 										desktopChildren={ mediaSettingsDesktop }
 										tabletChildren={ mediaSettingsTablet }
 										mobileChildren={ mediaSettingsMobile }
 									/>
 
 									{mediaAlign !== 'top' && (
-										<Fragment>
+										<>
 											<SelectControl
 												label={__( 'Media Vertical Align', 'kadence-blocks' )}
 												value={mediaVAlign}
@@ -1815,7 +1583,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												]}
 												onChange={value => setAttributes( { mediaVAlign: value } )}
 											/>
-										</Fragment>
+										</>
 									)}
 									<SelectControl
 										label={__( 'Media Type', 'kadence-blocks' )}
@@ -1829,7 +1597,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										onChange={value => setAttributes( { mediaType: value } )}
 									/>
 									{'image' === mediaType && (
-										<Fragment>
+										<>
 											<KadenceImageControl
 												label={__( 'Image', 'kadence-blocks' )}
 												hasImage={( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].url ? true : false )}
@@ -1918,7 +1686,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												onChange={value => saveMediaImage( { hoverAnimation: value } )}
 											/>
 											{'flip' === mediaImage[ 0 ].hoverAnimation && (
-												<Fragment>
+												<>
 													<h2>{__( 'Flip Image (Use same size as start image', 'kadence-blocks' )}</h2>
 													<KadenceImageControl
 														label={__( 'Image', 'kadence-blocks' )}
@@ -1939,14 +1707,14 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 															onChange={changeFlipImageSize}
 														/>
 													)}
-												</Fragment>
+												</>
 											)}
 											<MeasurementControls
 												label={__( 'Image Border', 'kadence-blocks' )}
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -1979,9 +1747,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'hover' === tab.name ) {
 																tabout = (
-																	<Fragment>
+																	<>
 																		{mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
-																			<Fragment>
+																			<>
 																				<PopColorControl
 																					label={__( 'SVG Hover Color', 'kadence-blocks' )}
 																					value={( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' )}
@@ -1989,7 +1757,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																					onChange={value => saveMediaIcon( { hoverColor: value } )}
 																				/>
 																				<small>{__( '*you must force inline svg for this to have effect.', 'kadence-blocks' )}</small>
-																			</Fragment>
+																			</>
 																		)}
 																		<PopColorControl
 																			label={__( 'Image Hover Background', 'kadence-blocks' )}
@@ -2003,13 +1771,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { hoverBorder: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															} else {
 																tabout = (
-																	<Fragment>
+																	<>
 																		{mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
-																			<Fragment>
+																			<>
 																				<PopColorControl
 																					label={__( 'SVG Color', 'kadence-blocks' )}
 																					value={( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' )}
@@ -2017,7 +1785,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																					onChange={value => saveMediaIcon( { color: value } )}
 																				/>
 																				<small>{__( '*you must force inline svg for this to have effect.', 'kadence-blocks' )}</small>
-																			</Fragment>
+																			</>
 																		)}
 																		<PopColorControl
 																			label={__( 'Image Background', 'kadence-blocks' )}
@@ -2031,7 +1799,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { border: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															}
 														}
@@ -2039,11 +1807,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 													}
 												}
 											</TabPanel>
-										</Fragment>
+										</>
 									)}
 									{'icon' === mediaType && (
 										<>
-											<IconControl
+											<KadenceIconPicker
 												value={mediaIcon[ 0 ].icon}
 												onChange={value => saveMediaIcon( { icon: value } )}
 											/>
@@ -2074,7 +1842,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -2098,7 +1866,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												onChange={value => saveMediaIcon( { hoverAnimation: value } )}
 											/>
 											{mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-												<IconControl
+												<KadenceIconPicker
 													value={mediaIcon[ 0 ].flipIcon}
 													onChange={value => saveMediaIcon( { flipIcon: value } )}
 												/>
@@ -2123,7 +1891,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'hover' === tab.name ) {
 																tabout = (
-																	<Fragment>
+																	<>
 																		<PopColorControl
 																			label={__( 'Icon Hover Color', 'kadence-blocks' )}
 																			value={( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' )}
@@ -2142,11 +1910,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { hoverBorder: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															} else {
 																tabout = (
-																	<Fragment>
+																	<>
 																		<PopColorControl
 																			label={__( 'Icon Color', 'kadence-blocks' )}
 																			value={( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' )}
@@ -2165,7 +1933,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																			default={'#444444'}
 																			onChange={value => saveMediaStyle( { border: value } )}
 																		/>
-																	</Fragment>
+																	</>
 																);
 															}
 														}
@@ -2222,7 +1990,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												measurement={mediaStyle[ 0 ].borderWidth}
 												control={mediaBorderControl}
 												onChange={( value ) => saveMediaStyle( { borderWidth: value } )}
-												onControl={( value ) => this.setState( { mediaBorderControl: value } )}
+												onControl={( value ) => setMediaBorderControl( value )}
 												min={0}
 												max={40}
 												step={1}
@@ -2321,7 +2089,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										measurement={mediaStyle[ 0 ].padding}
 										control={mediaPaddingControl}
 										onChange={( value ) => saveMediaStyle( { padding: value } )}
-										onControl={( value ) => this.setState( { mediaPaddingControl: value } )}
+										onControl={( value ) => setMediaPaddingControl( value )}
 										min={0}
 										max={100}
 										step={1}
@@ -2331,7 +2099,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										measurement={mediaStyle[ 0 ].margin}
 										control={mediaMarginControl}
 										onChange={( value ) => saveMediaStyle( { margin: value } )}
-										onControl={( value ) => this.setState( { mediaMarginControl: value } )}
+										onControl={( value ) => setMediaMarginControl( value )}
 										min={-200}
 										max={200}
 										step={1}
@@ -2351,49 +2119,16 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									/>
 									{displayTitle && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Hover Color', 'kadence-blocks' )}
-																		value={( titleHoverColor ? titleHoverColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { titleHoverColor: value } )}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Title Color', 'kadence-blocks' )}
-																		value={( titleColor ? titleColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { titleColor: value } )}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<PopColorControl
+												label={__( 'Title Color', 'kadence-blocks' )}
+												value={( titleColor ? titleColor : '' )}
+												default={''}
+												onChange={value => setAttributes( { titleColor: value } )}
+												swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+												value2={ ( titleHoverColor ? titleHoverColor : '' ) }
+												default2={''}
+												onChange2={value => setAttributes( { titleHoverColor: value } )}
+											/>
 											<TypographyControls
 												fontGroup={'heading'}
 												tagLevel={titleFont[ 0 ].level}
@@ -2473,49 +2208,16 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									/>
 									{displayText && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Hover Color', 'kadence-blocks' )}
-																		value={( textHoverColor ? textHoverColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { textHoverColor: value } )}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<PopColorControl
-																		label={__( 'Text Color', 'kadence-blocks' )}
-																		value={( textColor ? textColor : '' )}
-																		default={''}
-																		onChange={value => setAttributes( { textColor: value } )}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<PopColorControl
+												label={__( 'Text Color', 'kadence-blocks' )}
+												value={( textColor ? textColor : '' )}
+												default={''}
+												onChange={value => setAttributes( { textColor: value } )}
+												swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+												value2={( textHoverColor ? textHoverColor : '' )}
+												default2={''}
+												onChange2={value => setAttributes( { textHoverColor: value } )}
+											/>
 											<TypographyControls
 												fontSize={textFont[ 0 ].size}
 												onFontSize={( value ) => saveTextFont( { size: value } )}
@@ -2561,7 +2263,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												marginControl={( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].marginControl ? textSpacing[ 0 ].marginControl : 'linked' )}
 												onMarginControl={( value ) => saveTextSpacing( { marginControl: value } )}
 											/>
-
 											<ResponsiveRangeControls
 												label={__( 'Min Height', 'kadence-blocks' )}
 												value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
@@ -2581,6 +2282,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									)}
 								</KadencePanelBody>
 							)}
+
 							{showSettings( 'learnMoreSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
 									title={__( 'Learn More Settings', 'kadence-blocks' )}
@@ -2594,77 +2296,36 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									/>
 									{displayLearnMore && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'normal',
-															  title    : __( 'Normal', 'kadence-blocks' ),
-															  className: 'kt-normal-tab',
-														  },
-														  {
-															  name     : 'hover',
-															  title    : __( 'Hover', 'kadence-blocks' ),
-															  className: 'kt-hover-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'hover' === tab.name ) {
-																tabout = (
-																	<Fragment>
-																		<PopColorControl
-																			label={__( 'HOVER: Text Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' )}
-																			default={'#ffffff'}
-																			onChange={value => saveLearnMoreStyles( { colorHover: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'HOVER: Background', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' )}
-																			default={'#444444'}
-																			onChange={value => saveLearnMoreStyles( { backgroundHover: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'HOVER: Border Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' )}
-																			default={'#444444'}
-																			onChange={value => saveLearnMoreStyles( { borderHover: value } )}
-																		/>
-																	</Fragment>
-																);
-															} else {
-																tabout = (
-																	<Fragment>
-																		<PopColorControl
-																			label={__( 'Text Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' )}
-																			default={''}
-																			onChange={value => saveLearnMoreStyles( { color: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'Background', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' )}
-																			default={'transparent'}
-																			onChange={value => saveLearnMoreStyles( { background: value } )}
-																		/>
-																		<PopColorControl
-																			label={__( 'Border Color', 'kadence-blocks' )}
-																			value={( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' )}
-																			default={'#555555'}
-																			onChange={value => saveLearnMoreStyles( { border: value } )}
-																		/>
-																	</Fragment>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<ColorGroup>
+												<PopColorControl
+													label={__( 'Text Color', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { color: value } )}
+													swatchLabel2={ __( 'Hover', 'kadence-blocks' ) }
+													value2={( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '' )}
+													default2={''}
+													onChange2={value => saveLearnMoreStyles( { colorHover: value } )}
+												/>
+												<PopColorControl
+													label={__( 'Background', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { background: value } )}
+													value2={( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '' )}
+													default2={ '' }
+													onChange2={value => saveLearnMoreStyles( { backgroundHover: value } )}
+												/>
+												<PopColorControl
+													label={__( 'Border Color', 'kadence-blocks' )}
+													value={( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '' )}
+													default={''}
+													onChange={value => saveLearnMoreStyles( { border: value } )}
+													value2={( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '' )}
+													default2={''}
+													onChange2={value => saveLearnMoreStyles( { borderHover: value } )}
+												/>
+											</ColorGroup>
 											<MeasurementControls
 												label={__( 'Learn More Border Width (px)', 'kadence-blocks' )}
 												measurement={learnMoreStyles[ 0 ].borderWidth}
@@ -2730,14 +2391,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									)}
 								</KadencePanelBody>
 							)}
-						</>
-					}
-
-					{( activeTab === 'style' ) &&
-						<>
 							{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
 									title={__( 'Container Shadow', 'kadence-blocks' )}
+									initialOpen={false}
 									panelName={'kb-info-container-shadow'}
 								>
 									<ToggleControl
@@ -2747,19 +2404,19 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									/>
 									{displayShadow && (
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-												  activeClass="active-tab"
-												  tabs={[
-													  {
-														  name     : 'normal',
-														  title    : __( 'Normal' ),
-														  className: 'kt-normal-tab',
-													  },
-													  {
-														  name     : 'hover',
-														  title    : __( 'Hover' ),
-														  className: 'kt-hover-tab',
-													  },
-												  ]}>
+													activeClass="active-tab"
+													tabs={[
+														{
+															name     : 'normal',
+															title    : __( 'Normal' ),
+															className: 'kt-normal-tab',
+														},
+														{
+															name     : 'hover',
+															title    : __( 'Hover' ),
+															className: 'kt-hover-tab',
+														},
+													]}>
 											{
 												( tab ) => {
 													if ( tab.name ) {
@@ -2863,30 +2520,102 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 							)}
 						</>
 					}
-
 					{( activeTab === 'advanced') && (
 						<>
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/infobox' } excludedAttrs={ [ 'link', 'linkTitle' ] } />
+							<KadencePanelBody panelName={'kb-infobox-spacing-settings'}>
+								<ResponsiveMeasureRangeControl
+									label={__('Padding', 'kadence-blocks')}
+									value={containerPadding}
+									tabletValue={containerTabletPadding}
+									mobileValue={containerMobilePadding}
+									onChange={(value) => {
+										setAttributes({containerPadding: value});
+									}}
+									onChangeTablet={(value) => {
+										setAttributes({containerTabletPadding: value});
+									}}
+									onChangeMobile={(value) => {
+										setAttributes({containerMobilePadding: value});
+									}}
+									min={paddingMin}
+									max={paddingMax}
+									step={paddingStep}
+									unit={containerPaddingType}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({containerPaddingType: value})}
+									onMouseOver={paddingMouseOver.onMouseOver}
+									onMouseOut={paddingMouseOver.onMouseOut}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Margin', 'kadence-blocks')}
+									value={containerMargin}
+									tabletValue={tabletContainerMargin}
+									mobileValue={mobileContainerMargin}
+									onChange={(value) => {
+										setAttributes({containerMargin: value});
+									}}
+									onChangeTablet={(value) => {
+										setAttributes({tabletContainerMargin: value});
+									}}
+									onChangeMobile={(value) => {
+										setAttributes({mobileContainerMargin: value});
+									}}
+									min={marginMin}
+									max={marginMax}
+									step={marginStep}
+									unit={containerMarginUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({containerMarginUnit: value})}
+									onMouseOver={marginMouseOver.onMouseOver}
+									onMouseOut={marginMouseOver.onMouseOut}
+								/>
+								<ResponsiveRangeControls
+									label={__( 'Max Width', 'kadence-blocks' )}
+									value={ maxWidth }
+									onChange={ ( value ) => setAttributes( { maxWidth: value } ) }
+									tabletValue={tabletMaxWidth}
+									onChangeTablet={( value ) => setAttributes( { tabletMaxWidth: value } ) }
+									mobileValue={mobileMaxWidth}
+									onChangeMobile={ ( value ) => setAttributes( { mobileMaxWidth: value } ) }
+									min={0}
+									max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+									step={1}
+									unit={maxWidthUnit ? maxWidthUnit : 'px'}
+									onUnit={( value ) => {
+										setAttributes( { maxWidthUnit: value } );
+									}}
+									units={[ 'px', '%', 'vw' ]}
+								/>
+							</KadencePanelBody>
+
+							<div className="kt-sidebar-settings-spacer"></div>
+
+							<KadenceBlockDefaults attributes={ attributes } defaultAttributes={ metadata['attributes'] } blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 						</>
 					)}
 				</InspectorControls>
 			)}
 			<div className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}
 				 style={{
-					 boxShadow    : ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-					 borderColor  : ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-					 background   : ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
-					 borderRadius : containerBorderRadius + 'px',
-					 borderWidth  : ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					 paddingTop   : ( '' !== previewContainerPaddingTop ? previewContainerPaddingTop + previewPaddingType : undefined ),
-					 paddingRight : ( '' !== previewContainerPaddingRight ? previewContainerPaddingRight + previewPaddingType : undefined ),
-					 paddingBottom: ( '' !== previewContainerPaddingBottom ? previewContainerPaddingBottom + previewPaddingType : undefined ),
-					 paddingLeft  : ( '' !== previewContainerPaddingLeft ? previewContainerPaddingLeft + previewPaddingType : undefined ),
-					 maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
-					 marginTop    : ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
-					 marginRight  : ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
-					 marginBottom : ( containerMargin && '' !== containerMargin[ 2 ] ? containerMargin[ 2 ] + containerMarginUnit : undefined ),
-					 marginLeft   : ( containerMargin && '' !== containerMargin[ 3 ] ? containerMargin[ 3 ] + containerMarginUnit : undefined ),
+					boxShadow    : ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
+					background   : ( containerBackground ? KadenceColorOutput( containerBackground ) : undefined ),
+					borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
+					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
+					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
+					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
+					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					paddingTop   : ( '' !== previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ) : undefined ),
+					paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
+					paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
+					paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
+					maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
+					marginTop    : ( '' !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+					marginRight  : ( '' !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+					marginBottom : ( '' !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					marginLeft   : ( '' !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
 				 }}>
 				{'none' !== mediaType && (
 					<div className={'kt-blocks-info-box-media-container'} style={{
@@ -2969,7 +2698,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 							{'number' === mediaType && (
 								<div
 									className={`kadence-info-box-number-container kt-info-number-animate-${mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none'}`}>
-									<div className={'kadence-info-box-number-inner-container'}>
+									<div className={'kadence-info-box-number-inner-container'} style={{
+												fontWeight: mediaNumber[ 0 ].weight,
+												fontStyle : mediaNumber[ 0 ].style,
+												color     : ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
+												fontSize  : mediaIcon[ 0 ].size + 'px',
+												fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : undefined ),
+											}}>
 										<RichText
 											className="kt-blocks-info-box-number"
 											allowedFormats={( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) )}
@@ -2977,13 +2712,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											placeholder={'1'}
 											onChange={onChangeNumber}
 											value={number}
-											style={{
-												fontWeight: mediaNumber[ 0 ].weight,
-												fontStyle : mediaNumber[ 0 ].style,
-												color     : ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
-												fontSize  : mediaIcon[ 0 ].size + 'px',
-												fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : undefined ),
-											}}
 										/>
 									</div>
 									{mediaNumber[ 0 ].google && (
@@ -3013,7 +2741,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 								fontStyle    : titleFont[ 0 ].style,
 								textTransform: titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined,
 								color        : KadenceColorOutput( titleColor ),
-								fontSize     : previewTitleFontSize + titleFont[ 0 ].sizeType,
+								fontSize     : getFontSizeOptionOutput( previewTitleFontSize, titleFont[ 0 ].sizeType ),
 								lineHeight   : previewTitleLineHeight + titleFont[ 0 ].lineType,
 								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
 								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
@@ -3040,7 +2768,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 								fontWeight   : textFont[ 0 ].weight,
 								fontStyle    : textFont[ 0 ].style,
 								color        : KadenceColorOutput( textColor ),
-								fontSize     : previewTextFontSize + textFont[ 0 ].sizeType,
+								fontSize     : getFontSizeOptionOutput( previewTextFontSize, textFont[ 0 ].sizeType ),
 								lineHeight   : previewTextLineHeight + textFont[ 0 ].lineType,
 								letterSpacing: textFont[ 0 ].letterSpacing + 'px',
 								textTransform: ( undefined !== textFont[ 0 ].textTransform && textFont[ 0 ].textTransform ) ? textFont[ 0 ].textTransform : undefined,
@@ -3074,7 +2802,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									borderRadius : learnMoreStyles[ 0 ].borderRadius + 'px',
 									background   : KadenceColorOutput( learnMoreStyles[ 0 ].background ),
 									borderColor  : KadenceColorOutput( learnMoreStyles[ 0 ].border ),
-									fontSize     : previewLearnMoreFontSize + learnMoreStyles[ 0 ].sizeType,
+									fontSize     : getFontSizeOptionOutput( previewLearnMoreFontSize, learnMoreStyles[ 0 ].sizeType ),
 									lineHeight   : previewLearnMoreLineHeight + learnMoreStyles[ 0 ].lineType,
 									letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
 									textTransform: ( undefined !== learnMoreStyles[ 0 ].textTransform && learnMoreStyles[ 0 ].textTransform ) ? learnMoreStyles[ 0 ].textTransform : undefined,
@@ -3087,15 +2815,25 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 						</div>
 					)}
 				</div>
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) : undefined ),
+						marginRight: ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
+						marginTop: ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
+					} }
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) ] }
+				/>
+				<SpacingVisualizer
+					type="outsideVertical"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ), getSpacingOptionOutput( previewContainerMarginLeft, containerMarginUnit ) ] }
+				/>
 			</div>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-] )( KadenceInfoBox );
+export default KadenceInfoBox;

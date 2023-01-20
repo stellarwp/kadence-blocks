@@ -831,6 +831,7 @@ add_action( 'init', function () {
 				"borderActive"            => "",
 				"backgroundActiveOpacity" => 1,
 				"borderActiveOpacity"     => 1,
+				"placeholderColor"        => "",
 				"gradient"                => array(
 					"#999999",
 					1,
@@ -914,6 +915,7 @@ add_action( 'init', function () {
 						'borderActive'            => array( 'type' => 'string' ),
 						'backgroundActiveOpacity' => array( 'type' => 'number' ),
 						'borderActiveOpacity'     => array( 'type' => 'number' ),
+						'placeholderColor'        => array( 'type' => 'string' ),
 						'gradient'                => array( 'type' => 'array' ),
 						'gradientActive'          => array( 'type' => 'array' ),
 						'backgroundType'          => array( 'type' => 'string' ),

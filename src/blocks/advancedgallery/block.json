@@ -90,7 +90,8 @@
 		  "selector": "img",
 		  "attribute": "data-sponsored"
 		}
-	  }
+	  },
+	  "__experimentalRole": "content"
 	},
 	"lightSize": {
 	  "type": "string",
@@ -170,6 +171,18 @@
 		""
 	  ]
 	},
+	"gap": {
+		"type": "array",
+		"default": [
+		  "",
+		  "",
+		  ""
+		]
+	},
+	"gutterUnit": {
+		"type": "string",
+		"default": "px"
+	},
 	"carouselHeight": {
 	  "type": "array",
 	  "default": [
@@ -186,6 +199,18 @@
 		0,
 		0
 	  ]
+	},
+	"tabletImageRadius": {
+		"type": "array",
+		"default": [ "","","","" ]
+	},
+	"mobileImageRadius": {
+		"type": "array",
+		"default": [ "","","","" ]
+	},
+	"imageRadiusUnit": {
+		"type": "string",
+		"default": "px"
 	},
 	"autoPlay": {
 	  "type": "boolean",
@@ -316,6 +341,29 @@
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"imagesData": {
+		"type": "array",
+		"default": [
+			{
+				"url": "",
+				"thumbUrl": "",
+			  	"lightUrl": "",
+			  	"link": "",
+			  	"customLink": "",
+				"linkTarget": "",
+				"width": "",
+				"height": "",
+				"alt": "",
+				"id": "",
+				"caption": "",
+				"linkSponsored": ""
+			}
+		]
+	},
+	"kbVersion": {
+		"type": "number",
+		"default": ""
 	}
   },
   "supports": {

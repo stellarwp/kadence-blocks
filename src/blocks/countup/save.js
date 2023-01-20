@@ -26,6 +26,8 @@ function KadenceCounterUpSave( props ) {
 		title,
 		start,
 		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -46,12 +48,11 @@ function KadenceCounterUpSave( props ) {
 	const blockProps = useBlockProps.save( {
 		className: classes
 	} );
-
 	return (
 		<div
 			{...blockProps}
-			data-start={start}
-			data-end={end}
+			data-start={start || startDecimal }
+			data-end={end || endDecimal }
 			data-prefix={prefix}
 			data-suffix={suffix}
 			data-duration={duration}

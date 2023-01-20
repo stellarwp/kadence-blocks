@@ -48,18 +48,16 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 	const [ groupFieldsLoaded, setGroupFieldsLoaded ] = useState( false );
 
 	useEffect( () => {
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
-				setAPI( response.kadence_blocks_mailerlite_api );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setAPI( response.kadence_blocks_mailerlite_api );
 
-				if ( '' !== response.kadence_blocks_mailerlite_api ) {
-					setIsSavedAPI( true );
-				}
-
-			} );
-		} );
+			if ( '' !== response.kadence_blocks_mailerlite_api ) {
+				setIsSavedAPI( true );
+			}
+		});
 	}, [] );
 
 	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);

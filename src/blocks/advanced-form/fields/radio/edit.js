@@ -12,7 +12,6 @@ import {
 	PanelBody,
 	Dashicon,
 	Button,
-	IconButton,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
@@ -70,6 +69,24 @@ function FieldRadio( {
 		const newOptions = filter( options, ( item, i ) => previousIndex !== i );
 		setAttributes( { options: newOptions } );
 	};
+
+	const removeSelection = () => {
+		let newOptions = options;
+
+		newOptions.forEach( function( item, index ) {
+			item.selected = false;
+		});
+
+		setAttributes( { options: newOptions} );
+	}
+
+	const toggleSelected = ( index, value ) => {
+		const previousValue = options[ index ].selected;
+
+		removeSelection();
+
+		updateOption( index, { selected: !previousValue } );
+	}
 
 	const updateOption = ( index, value ) => {
 		const newOptions = options.map( ( item, iteration ) => {
@@ -129,7 +146,7 @@ function FieldRadio( {
 								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
-								<IconButton
+								<Button
 									icon="arrow-up"
 									onClick={ () => ( n === 0  ? undefined : onOptionMoveUp( n ) ) }
 									className="kadence-blocks-list-item__move-up"
@@ -137,7 +154,7 @@ function FieldRadio( {
 									aria-disabled={n === 0}
 									disabled={n === 0}
 								/>
-								<IconButton
+								<Button
 									icon="arrow-down"
 									onClick={ () => ( ( n + 1 ) === options.length ? undefined : onOptionMoveDown( n ) ) }
 									className="kadence-blocks-list-item__move-down"
@@ -145,7 +162,7 @@ function FieldRadio( {
 									aria-disabled={( n + 1 ) === options.length}
 									disabled={( n + 1 ) === options.length}
 								/>
-								<IconButton
+								<Button
 									icon="no-alt"
 									onClick={() => removeOptionItem( n )}
 									className="kadence-blocks-list-item__remove"
@@ -206,11 +223,10 @@ function FieldRadio( {
 								<input
 									type={'radio'}
 									className={'kb-sub-field kb-checkbox-style'}
-									value={options}
-									onChange={( value ) => false }
+									onClick={( value ) => { toggleSelected( n, value.target.value ); } }
+									checked={ options[ n ].selected }
 								/>
-
-								<TextControl value={options[ n ].label} onChange={( value ) => updateOption( n, { label: value } )}/>
+								<input key={ 'text' + n } type={'text'} value={options[ n ].label} className={ 'ignore-field-styles' } onChange={( value ) => updateOption( n, { label: value.target.value } )}/>
 								<Button onClick={() => removeOptionItem( n )}>
 									<span className="dashicon dashicons dashicons-trash"></span>
 								</Button>

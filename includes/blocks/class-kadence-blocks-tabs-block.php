@@ -89,14 +89,15 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 
 		$border_args = array( 'tablet_key' => false, 'mobile_key' => false );
 		$css->render_measure_output( $attributes, 'contentBorder', 'border-width', $border_args );
-		$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+		if ( ! empty( $attributes['contentBorderColor'] ) ) {
+			$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+		}
 
 		if ( isset( $attributes['contentBorderRadius'] ) && ! empty( $attributes['contentBorderRadius'] ) && is_array( $attributes['contentBorderRadius'] ) ) {
 			$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', $border_args );
 		}
 
-		$padding_args = array( 'tablet_key' => false, 'mobile_key' => false );
-		$css->render_measure_output( $attributes, 'innerPadding', 'padding', $padding_args );
+		$css->render_measure_output( $attributes, 'innerPadding', 'padding' );
 
 		if ( ! empty( $attributes['minHeight'] ) ) {
 			$css->add_property( 'min-height', $attributes['minHeight'] );
@@ -321,6 +322,12 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'line-height', $attributes['subtitleFont'][0]['lineHeight'][2] . ( ! isset( $attributes['subtitleFont'][0]['lineType'] ) ? 'px' : $attributes['subtitleFont'][0]['lineType'] ) );
 			}
 			$css->set_media_state( 'desktop' );
+		}
+
+		/* SVG Icon */
+		if ( isset( $attributes['titles'] ) && array_filter( array_column( $attributes['titles'], 'icon' ) ) ) {
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li svg' );
+			$css->add_property( 'font-size', $attributes['iSize'] . 'px' );
 		}
 
 		return $css->css_output();

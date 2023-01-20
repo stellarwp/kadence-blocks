@@ -45,10 +45,44 @@
             }
         }
     }
+    .kt-title-item {
+      svg {
+        width: 1em;
+        height: 1em;
+      }
+
+      .kb-svg-icon-wrap {
+        display: inline-flex;
+      }
+    }
 }
 .kt-tabs-icon-side-top .kt-tab-title {
     flex-direction: column;
 }
+
+.kt-tabs-icon-side- {
+    &top {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-bottom: 5px;
+        }
+    }
+    &bottom {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-top: 5px;
+        }
+    }
+    &left {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-right: 5px;
+        }
+    }
+    &right {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-left: 5px;
+        }
+    }
+}
+
 .kt-tabs-accordion-title.kt-tabs-icon-side-top .kt-tab-title {
     align-items: flex-start;
 }
@@ -104,108 +138,6 @@
 }
 .kt-tabs-wrap .wp-block-kadence-tab[role="tabpanel"] {
 	display: none;
-}
-.kt-tabs-wrap.kt-active-tab-1 > .kt-tabs-content-wrap > .kt-inner-tab-1 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-2 > .kt-tabs-content-wrap > .kt-inner-tab-2 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-3 > .kt-tabs-content-wrap > .kt-inner-tab-3 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-4 > .kt-tabs-content-wrap > .kt-inner-tab-4 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-5 > .kt-tabs-content-wrap > .kt-inner-tab-5 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-6 > .kt-tabs-content-wrap > .kt-inner-tab-6 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-7 > .kt-tabs-content-wrap > .kt-inner-tab-7 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-8 > .kt-tabs-content-wrap > .kt-inner-tab-8 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-9 > .kt-tabs-content-wrap > .kt-inner-tab-9 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-10 > .kt-tabs-content-wrap > .kt-inner-tab-10 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-11 > .kt-tabs-content-wrap > .kt-inner-tab-11 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-12 > .kt-tabs-content-wrap > .kt-inner-tab-12 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-13 > .kt-tabs-content-wrap > .kt-inner-tab-13 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-14 > .kt-tabs-content-wrap > .kt-inner-tab-14 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-15 > .kt-tabs-content-wrap > .kt-inner-tab-15 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-16 > .kt-tabs-content-wrap > .kt-inner-tab-16 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-17 > .kt-tabs-content-wrap > .kt-inner-tab-17 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-18 > .kt-tabs-content-wrap > .kt-inner-tab-18 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-19 > .kt-tabs-content-wrap > .kt-inner-tab-19 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-20 > .kt-tabs-content-wrap > .kt-inner-tab-20 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-21 > .kt-tabs-content-wrap > .kt-inner-tab-21 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-22 > .kt-tabs-content-wrap > .kt-inner-tab-22 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-23 > .kt-tabs-content-wrap > .kt-inner-tab-23 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-24 > .kt-tabs-content-wrap > .kt-inner-tab-24 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-25 > .kt-tabs-content-wrap > .kt-inner-tab-25 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-26 > .kt-tabs-content-wrap > .kt-inner-tab-26 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-27 > .kt-tabs-content-wrap > .kt-inner-tab-27 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-28 > .kt-tabs-content-wrap > .kt-inner-tab-28 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-29 > .kt-tabs-content-wrap > .kt-inner-tab-29 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-30 > .kt-tabs-content-wrap > .kt-inner-tab-30 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-31 > .kt-tabs-content-wrap > .kt-inner-tab-31 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-32 > .kt-tabs-content-wrap > .kt-inner-tab-32 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-33 > .kt-tabs-content-wrap > .kt-inner-tab-33 {
-	display: block;
-}
-.kt-tabs-wrap.kt-active-tab-34 > .kt-tabs-content-wrap > .kt-inner-tab-31 {
-	display: block;
 }
 
 .kb-tab-titles-wrap {

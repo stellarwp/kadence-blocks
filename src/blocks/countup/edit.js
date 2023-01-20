@@ -6,14 +6,26 @@
  * Internal dependencies
  */
 import Inspector from './inspector';
-import { getPreviewSize, KadenceColorOutput, setBlockDefaults } from '@kadence/helpers';
-import { WebfontLoader } from '@kadence/components';
+import {
+	getPreviewSize,
+	KadenceColorOutput,
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getUniqueId
+} from '@kadence/helpers';
+import {
+	WebfontLoader,
+	SpacingVisualizer,
+	CopyPasteAttributes,
+} from '@kadence/components';
 
 /**
  * Import External
  */
 import CountUp from 'react-countup';
 import classnames from 'classnames';
+import metadata from './block.json';
 
 /**
  * Import Css
@@ -23,7 +35,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import {
  	useEffect,
 	Component,
@@ -31,27 +43,30 @@ import {
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useDispatch, useSelect } from '@wordpress/data';
 
 const kbCountUpUniqueIDs = [];
 
 /**
  * Build the count up edit
  */
-function KadenceCounterUp( {
-							   clientId,
-							   attributes,
-							   className,
-							   isSelected,
-							   setAttributes,
-							   getPreviewDevice,
-						   } ) {
+function KadenceCounterUp( props ) {
+	const {
+		clientId,
+		attributes,
+		className,
+		isSelected,
+		setAttributes,
+		getPreviewDevice 
+	} = props;
 
 	const {
 		uniqueID,
 		title,
 		start,
 		end,
+		startDecimal,
+		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -85,24 +100,31 @@ function KadenceCounterUp( {
 		decimalSpaces,
 	} = attributes;
 
-	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/countup', attributes);
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId )
+			};
+		},
+		[ clientId ]
+	);
 
-			setAttributes( {
-				uniqueID  : '_' + clientId.substr( 2, 9 ),
-			} );
-			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kbCountUpUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			kbCountUpUniqueIDs.push( uniqueID );
+	useEffect( () => {
+		setBlockDefaults( 'kadence/countup', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		// Backward Compatibility.
+		if ( start !== '' || end !== '' ) {
+			setAttributes( { startDecimal: start || 0, endDecimal: end, start: '', end: '' } );
 		}
+
 	}, [] );
 
-	const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
+	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
 
 	const gconfig = {
 		google: {
@@ -138,6 +160,11 @@ function KadenceCounterUp( {
 	const previewTitlePaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 2 ] ? titlePadding[ 2 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 2 ] ? titleTabletPadding[ 2 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 2 ] ? titleMobilePadding[ 2 ] : '' ) );
 	const previewTitlePaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 3 ] ? titlePadding[ 3 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 3 ] ? titleTabletPadding[ 3 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 3 ] ? titleMobilePadding[ 3 ] : '' ) );
 
+	const numberPaddingMouseOver = mouseOverVisualizer();
+	const numberMarginMouseOver = mouseOverVisualizer();
+	const titlePaddingMouseOver = mouseOverVisualizer();
+	const titleMarginMouseOver = mouseOverVisualizer();
+
 	const classes = classnames( {
 		[ `kb-count-up-${uniqueID}` ]: uniqueID,
 		'kb-count-up'                : true,
@@ -149,7 +176,27 @@ function KadenceCounterUp( {
 
 	return (
 		<div {...blockProps}>
-			{isSelected && <Inspector setAttributes={setAttributes} attributes={ attributes } />}
+			{isSelected &&
+				<>
+					<BlockControls>
+						<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
+					</BlockControls>
+					<Inspector
+						setAttributes={setAttributes}
+						attributes={ attributes }
+						numberPaddingMouseOver={numberPaddingMouseOver}
+						numberMarginMouseOver={numberMarginMouseOver}
+						titlePaddingMouseOver={titlePaddingMouseOver}
+						titleMarginMouseOver={titleMarginMouseOver}
+					/>
+				</>
+			}
 
 			{displayTitle && titleFont[ 0 ].google && (
 				<WebfontLoader config={config}/>
@@ -171,19 +218,19 @@ function KadenceCounterUp( {
 						fontFamily   : ( numberFont[ 0 ].family ? numberFont[ 0 ].family : '' ),
 						minHeight    : ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 0 ] ? numberMinHeight[ 0 ] + 'px' : undefined ),
 						textAlign    : previewNumberAlign,
-						paddingTop   : ( '' !== previewNumberPaddingTop ? previewNumberPaddingTop + numberPaddingType : undefined ),
-						paddingRight : ( '' !== previewNumberPaddingRight ? previewNumberPaddingRight + numberPaddingType : undefined ),
-						paddingBottom: ( '' !== previewNumberPaddingBottom ? previewNumberPaddingBottom + numberPaddingType : undefined ),
-						paddingLeft  : ( '' !== previewNumberPaddingLeft ? previewNumberPaddingLeft + numberPaddingType : undefined ),
-						marginTop    : ( previewNumberMarginTop ? previewNumberMarginTop + numberMarginType : undefined ),
-						marginRight  : ( previewNumberMarginRight ? previewNumberMarginRight + numberMarginType : undefined ),
-						marginBottom : ( previewNumberMarginBottom ? previewNumberMarginBottom + numberMarginType : undefined ),
-						marginLeft   : ( previewNumberMarginLeft ? previewNumberMarginLeft + numberMarginType : undefined ),
+						paddingTop   : ( '' !== previewNumberPaddingTop ? getSpacingOptionOutput( previewNumberPaddingTop, numberPaddingType ) : undefined ),
+						paddingRight : ( '' !== previewNumberPaddingRight ? getSpacingOptionOutput( previewNumberPaddingRight, numberPaddingType ) : undefined ),
+						paddingBottom: ( '' !== previewNumberPaddingBottom ? getSpacingOptionOutput( previewNumberPaddingBottom, numberPaddingType ) : undefined ),
+						paddingLeft  : ( '' !== previewNumberPaddingLeft ? getSpacingOptionOutput( previewNumberPaddingLeft, numberPaddingType ) : undefined ),
+						marginTop    : ( previewNumberMarginTop ? getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ) : undefined ),
+						marginRight  : ( previewNumberMarginRight ? getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ) : undefined ),
+						marginBottom : ( previewNumberMarginBottom ? getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ) : undefined ),
+						marginLeft   : ( previewNumberMarginLeft ? getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) : undefined ),
 					}}
 				>
 					<CountUp
-						start={start}
-						end={end}
+						start={ startDecimal }
+						end={ endDecimal }
 						duration={duration}
 						separator={theSeparator}
 						decimal={decimal ? decimal : undefined}
@@ -191,36 +238,69 @@ function KadenceCounterUp( {
 						prefix={prefix}
 						suffix={suffix}
 					/>
+					<SpacingVisualizer
+						// style={ {
+						// 	marginLeft: ( undefined !== previewNumberMarginLeft ? getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) : undefined ),
+						// 	marginRight: ( undefined !== previewNumberMarginRight ? getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ) : undefined ),
+						// 	marginTop: ( undefined !== previewNumberMarginTop ? getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ) : undefined ),
+						// 	marginBottom: ( undefined !== previewNumberMarginBottom ? getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ) : undefined ),
+						// } }
+						type="outside"
+						forceShow={ numberMarginMouseOver.isMouseOver }
+						spacing={ [ getSpacingOptionOutput( previewNumberMarginTop, numberMarginType ), getSpacingOptionOutput( previewNumberMarginRight, numberMarginType ), getSpacingOptionOutput( previewNumberMarginBottom, numberMarginType ), getSpacingOptionOutput( previewNumberMarginLeft, numberMarginType ) ] }
+					/>
+					<SpacingVisualizer
+						type="inside"
+						forceShow={ numberPaddingMouseOver.isMouseOver }
+						spacing={ [ getSpacingOptionOutput( previewNumberPaddingTop, numberPaddingType ), getSpacingOptionOutput( previewNumberPaddingRight, numberPaddingType ), getSpacingOptionOutput( previewNumberPaddingBottom, numberPaddingType ), getSpacingOptionOutput( previewNumberPaddingLeft, numberPaddingType ) ] }
+					/>
 				</div>
 
 				{displayTitle &&
-					<RichText
-						tagName={tagName}
-						className={'kb-count-up-title'}
-						value={title}
-						onChange={( content ) => setAttributes( { title: content } )}
-						placeholder={__( 'Type Here...', 'kadence-blocks' )}
+					<TitleTagName className={'kb-count-up-wrap'}
 						style={{
-							fontWeight   : titleFont[ 0 ].weight,
-							fontStyle    : titleFont[ 0 ].style,
-							color        : KadenceColorOutput( titleColor ),
-							fontSize     : titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
-							lineHeight   : ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
-							letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
-							fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
-							minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
-							textAlign    : previewTitleAlign,
-							paddingTop   : ( '' !== previewTitlePaddingTop ? previewTitlePaddingTop + titlePaddingType : undefined ),
-							paddingRight : ( '' !== previewTitlePaddingRight ? previewTitlePaddingRight + titlePaddingType : undefined ),
-							paddingBottom: ( '' !== previewTitlePaddingBottom ? previewTitlePaddingBottom + titlePaddingType : undefined ),
-							paddingLeft  : ( '' !== previewTitlePaddingLeft ? previewTitlePaddingLeft + titlePaddingType : undefined ),
-							marginTop    : ( previewTitleMarginTop ? previewTitleMarginTop + titleMarginType : undefined ),
-							marginRight  : ( previewTitleMarginRight ? previewTitleMarginRight + titleMarginType : undefined ),
-							marginBottom : ( previewTitleMarginBottom ? previewTitleMarginBottom + titleMarginType : undefined ),
-							marginLeft   : ( previewTitleMarginLeft ? previewTitleMarginLeft + titleMarginType : undefined ),
+							position:'relative',
+							paddingTop   : ( '' !== previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingType ) : undefined ),
+							paddingRight : ( '' !== previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingType ) : undefined ),
+							paddingBottom: ( '' !== previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingType ) : undefined ),
+							paddingLeft  : ( '' !== previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingType ) : undefined ),
+							marginTop    : ( previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, titleMarginType ) : undefined ),
+							marginRight  : ( previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, titleMarginType ) : undefined ),
+							marginBottom : ( previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, titleMarginType ) : undefined ),
+							marginLeft   : ( previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, titleMarginType ) : undefined ),
 							textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
-						}}
-					/>
+						}}>
+						<RichText
+							tagName={'span'}
+							className={'kb-count-up-title'}
+							value={title}
+							onChange={( content ) => setAttributes( { title: content } )}
+							placeholder={__( 'Type Here...', 'kadence-blocks' )}
+							style={{
+								display: 'block',
+								fontWeight   : titleFont[ 0 ].weight,
+								fontStyle    : titleFont[ 0 ].style,
+								color        : KadenceColorOutput( titleColor ),
+								fontSize     : titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
+								lineHeight   : ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
+								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
+								minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
+								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
+								textAlign    : previewTitleAlign,								
+							}}
+						/>
+						<SpacingVisualizer
+							type="outside"
+							forceShow={ titleMarginMouseOver.isMouseOver }
+							spacing={ [ getSpacingOptionOutput( previewTitleMarginTop, numberMarginType ), getSpacingOptionOutput( previewTitleMarginRight, numberMarginType ), getSpacingOptionOutput( previewTitleMarginBottom, numberMarginType ), getSpacingOptionOutput( previewTitleMarginLeft, numberMarginType ) ] }
+						/>
+						<SpacingVisualizer
+							type="inside"
+							forceShow={ titlePaddingMouseOver.isMouseOver }
+							spacing={ [ getSpacingOptionOutput( previewTitlePaddingTop, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingRight, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingBottom, numberPaddingType ), getSpacingOptionOutput( previewTitlePaddingLeft, numberPaddingType ) ] }
+						/>
+					</TitleTagName>
 				}
 			</div>
 		</div>

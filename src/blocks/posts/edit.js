@@ -18,10 +18,18 @@ import './editor.scss';
 import metadata from './block.json';
 
 /**
+ * Import helpers
+ */
+import {
+	getUniqueId,
+	getFontSizeOptionOutput
+} from '@kadence/helpers';
+
+/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import {
 	getPreviewSize,
 	setBlockDefaults
@@ -33,7 +41,8 @@ import {
 	TypographyControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	CopyPasteAttributes
 } from '@kadence/components';
 import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import {
@@ -41,6 +50,10 @@ import {
 	useEffect,
 	useState,
 } from '@wordpress/element';
+import {
+	useBlockProps,
+	BlockControls,
+} from '@wordpress/block-editor';
 import {
 	TextControl,
 	Placeholder,
@@ -120,6 +133,18 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	const [ loaded, setLoaded ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'content' );
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
 	const getPosts = () => {
 		setLoaded( false );
 		apiFetch( {
@@ -139,21 +164,10 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	};
 
 	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/posts', attributes);
-
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
-		} else if ( kbpostsUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbpostsUniqueIDs.push( clientId.substr( 2, 9 ) );
-		} else {
-			kbpostsUniqueIDs.push( uniqueID );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		
 		getPosts();
 	}, [] );
 
@@ -161,6 +175,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		setLoaded( false );
 		getPosts();
 	}, [ postType, taxType, offsetQuery, postTax, excludeTax, allowSticky, orderBy, order, categories, tags, postsToShow ] );
+
+	const blockProps = useBlockProps();
 
 	const taxonomyList = [];
 	const taxonomyOptions = [];
@@ -231,10 +247,18 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	const settingspanel = (
 		<>
+			<BlockControls>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
+			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/posts' }>
 
 				<InspectorControlTabs
-					panelName={'countdown'}
+					panelName={'posts'}
 					setActiveTab={( value ) => setActiveTab( value )}
 					activeTab={activeTab}
 				/>
@@ -483,6 +507,40 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								onChange={( value ) => setAttributes( { loopStyle: value } )}
 							/>
 						</KadencePanelBody>
+
+					</>
+				}
+
+				{( activeTab === 'style' ) &&
+					<>
+						<KadencePanelBody
+							title={__( 'Title Size', 'kadence-blocks' )}
+							panelName={'titleSettings'}
+							blockSlug={ 'kadence/posts' }
+						>
+							<TypographyControls
+								fontGroup={'post-title'}
+								tagLevel={titleFont[ 0 ].level}
+								tagLowLevel={2}
+								tagHighLevel={7}
+								onTagLevel={( value ) => saveTitleFont( { level: value } )}
+								fontSize={titleFont[ 0 ].size}
+								onFontSize={( value ) => saveTitleFont( { size: value } )}
+								fontSizeType={titleFont[ 0 ].sizeType}
+								onFontSizeType={( value ) => saveTitleFont( { sizeType: value } )}
+								lineHeight={titleFont[ 0 ].lineHeight}
+								onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
+								lineHeightType={titleFont[ 0 ].lineType}
+								onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
+								reLetterSpacing={titleFont[ 0 ].letterSpacing}
+								onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
+								letterSpacingType={titleFont[ 0 ].letterType}
+								onLetterSpacingType={( value ) => saveTitleFont( { letterType: value } )}
+								textTransform={titleFont[ 0 ].textTransform}
+								onTextTransform={( value ) => saveTitleFont( { textTransform: value } )}
+							/>
+						</KadencePanelBody>
+
 						<KadencePanelBody
 							title={__( 'Image Settings', 'kadence-blocks' )}
 							initialOpen={false}
@@ -627,36 +685,6 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								)}
 							</KadencePanelBody>
 						)}
-					</>
-				}
-
-				{( activeTab === 'style' ) &&
-					<>
-						<KadencePanelBody
-							title={__( 'Title Size', 'kadence-blocks' )}
-							panelName={'titleSettings'}
-							blockSlug={ 'kadence/posts' }
-						>
-							<TypographyControls
-								fontGroup={'post-title'}
-								tagLevel={titleFont[ 0 ].level}
-								tagLowLevel={2}
-								tagHighLevel={7}
-								onTagLevel={( value ) => saveTitleFont( { level: value } )}
-								fontSize={titleFont[ 0 ].size}
-								onFontSize={( value ) => saveTitleFont( { size: value } )}
-								fontSizeType={titleFont[ 0 ].sizeType}
-								onFontSizeType={( value ) => saveTitleFont( { sizeType: value } )}
-								lineHeight={titleFont[ 0 ].lineHeight}
-								onLineHeight={( value ) => saveTitleFont( { lineHeight: value } )}
-								lineHeightType={titleFont[ 0 ].lineType}
-								onLineHeightType={( value ) => saveTitleFont( { lineType: value } )}
-								reLetterSpacing={titleFont[ 0 ].letterSpacing}
-								onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
-								letterSpacingType={titleFont[ 0 ].letterType}
-								onLetterSpacingType={( value ) => saveTitleFont( { letterType: value } )}
-							/>
-						</KadencePanelBody>
 					</>
 				}
 
@@ -828,7 +856,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							)}
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/posts' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 					</>
 				}
 			</KadenceInspectorControls>
@@ -836,7 +864,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	);
 	if ( !loaded ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -845,12 +873,12 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 					<Spinner/>
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	if ( !hasPosts ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -861,7 +889,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<Spinner/> :
 						__( 'No posts found.', 'kadence-blocks' )}
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	// Removing posts from display should be instant.
@@ -930,7 +958,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<HtmlTagOut
 							className="entry-title"
 							style={{
-								fontSize     : ( titleSize ? titleSize + titleFont[ 0 ].sizeType : undefined ),
+								fontSize     : ( titleSize ? getFontSizeOptionOutput( titleSize, titleFont[ 0 ].sizeType ) : undefined ),
 								lineHeight   : ( titleLineHeight ? titleLineHeight + titleFont[ 0 ].lineType : undefined ),
 								letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + titleFont[ 0 ].letterType : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
@@ -1061,7 +1089,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		);
 	};
 	return (
-		<>
+		<div { ...blockProps }>
 			{settingspanel}
 			<div
 				className={`${className} kb-posts kb-posts-id-${uniqueID} ${columnsClass} grid-cols content-wrap kb-posts-style-${loopStyle ? loopStyle : 'boxed'} item-image-style-${columns === 1 ? alignImage : 'above'}`}>
@@ -1069,7 +1097,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					renderPosts( post, i ),
 				)}
 			</div>
-		</>
+		</div>
 	);
 }
 

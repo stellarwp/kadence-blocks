@@ -40,6 +40,11 @@ function ImportDefaults() {
                 return;
             }
 
+            if (! has(fileData, 'block_defaults') && !has(fileData, 'block_visibility') ) {
+                createErrorNotice(__('Invalid File. No block defaults or visibility settings.', 'kadence-blocks'));
+            }
+
+
             if (has(fileData, 'block_defaults')) {
                 let blockDefaults = JSON.stringify(fileData.block_defaults);
 
@@ -53,8 +58,6 @@ function ImportDefaults() {
                     })
                     kadence_blocks_params.configuration = blockDefaults;
                 });
-            } else {
-                createErrorNotice(__('Invalid File. No block defaults', 'kadence-blocks'));
             }
 
             if (has(fileData, 'block_visibility')) {
@@ -82,7 +85,7 @@ function ImportDefaults() {
     return (
         <Fragment>
 
-            <p>{ __('Import block defaults from an export file.', 'kadence-blocks' ) }</p>
+            <p>{ __('Import settings from an export file.', 'kadence-blocks' ) }</p>
 
             <FormFileUpload
                 accept="application/json"

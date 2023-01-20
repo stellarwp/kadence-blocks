@@ -56,17 +56,16 @@ function ConvertKitControls( { settings, save, parentClientId } ) {
 	const [ listTagsLoaded, setListTagsLoaded ] = useState( false );
 
 	useEffect( () => {
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
-				setApi( response.kadence_blocks_convertkit_api );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setApi( response.kadence_blocks_convertkit_api );
 
-				if ( '' !== response.kadence_blocks_convertkit_api ) {
-					setIsSavedApi( true );
-				}
-			} );
-		} );
+			if ( '' !== response.kadence_blocks_convertkit_api ) {
+				setIsSavedApi( true );
+			}
+		});
 	}, [] );
 
 	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );

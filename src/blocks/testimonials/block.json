@@ -5,6 +5,22 @@
   "name": "kadence/testimonials",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
+  "providesContext": {
+	"kadence/testimonials-layout": "layout",
+	"kadence/testimonials-displayContent": "displayContent",
+	"kadence/testimonials-displayOccupation": "displayOccupation",
+	"kadence/testimonials-displayTitle": "displayTitle",
+	"kadence/testimonials-displayRating": "displayRating",
+	"kadence/testimonials-displayName": "displayName",
+	"kadence/testimonials-displayIcon": "displayIcon",
+	"kadence/testimonials-iconStyles": "iconStyles",
+	"kadence/testimonials-style": "style",
+	"kadence/testimonials-containerMaxWidth": "containerMaxWidth",
+	"kadence/testimonials-displayMedia": "displayMedia",
+	"kadence/testimonials-titleFont": "titleFont",
+	"kadence/testimonials-mediaStyles": "mediaStyles",
+	"kadence/testimonials-ratingStyles": "ratingStyles"
+  },
   "attributes": {
 	"uniqueID": {
 	  "type": "string",
@@ -35,7 +51,19 @@
 	},
 	"columnGap": {
 	  "type": "number",
-	  "default": 30
+	  "default": ""
+	},
+	"gap": {
+		"type": "array",
+		"default": [
+			"md",
+			"",
+			""
+		]
+	},
+	"gapUnit": {
+		"type": "string",
+		"default": "px"
 	},
 	"autoPlay": {
 	  "type": "boolean",
@@ -79,7 +107,7 @@
 	},
 	"containerBorder": {
 	  "type": "string",
-	  "default": "#eeeeee"
+	  "default": ""
 	},
 	"containerBorderOpacity": {
 	  "type": "number",
@@ -123,7 +151,7 @@
 		  "isize": 50,
 		  "istroke": 2,
 		  "ititle": "",
-		  "color": "#555555",
+		  "color": "",
 		  "title": "",
 		  "content": "",
 		  "name": "",
@@ -140,7 +168,7 @@
 		  "backgroundSize": "cover",
 		  "background": "",
 		  "backgroundOpacity": 1,
-		  "border": "#555555",
+		  "border": "",
 		  "borderRadius": "",
 		  "borderWidth": [
 			0,
@@ -226,7 +254,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#333333",
+		  "color": "",
 		  "size": [
 			"",
 			"",
@@ -259,7 +287,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#333333",
+		  "color": "",
 		  "size": [
 			"",
 			"",
@@ -292,7 +320,7 @@
 	  "type": "array",
 	  "default": [
 		{
-		  "color": "#555555",
+		  "color": "",
 		  "size": [
 			15,
 			"",
@@ -487,6 +515,10 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"kbVersion": {
+		"type": "number",
+		"default": ""
 	}
   },
   "usesContext": [

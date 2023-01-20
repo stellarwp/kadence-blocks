@@ -1,10 +1,10 @@
 === Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
-Contributors: britner, oakesjosh
+Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.9
-Tested up to: 5.9
-Stable tag: 2.5.0
+Requires at least: 6.0
+Tested up to: 6.1
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,30 +76,134 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.5.0 Beta Version =
-Release Date: April 20th, 2022
-* Update: RowLayout to use grid css.
+= 3.0.3 Alpha Version 4 =
+Release Date: January 19th, 2023
+* Fix: Removing bottom divider on Row Layout
+* Fix: Variable based font sizes in countdown block
+* Fix: Video background on Row Layout.
+* Fix: Various issues with unit selector.
+* Fix: Issue with default icon alignment.
+* Fix: Issue where section collapse order was applying in tablet when it shouldn't.
+* Fix: Form button styling issue.
+* Fix: Possible issue with border styling.
+* Fix: Issue with editor row spacing.
+* Fix: Hover Text colors in section.
+* Fix: Editor Map styles issue.
+* Fix: Editor border radius issues with accordion.
+
+= 3.0.2 Alpha Version 3 =
+Release Date: January 13th, 2023
+* Update: Searches in icon selector are now case insensitive,
+* Update: Accordion block now has responsive border & border radius.
+* Update: All sliders, carousels using splide.
+* Update: Allow icons to be removed from Accordion titles
+* Fix: Hover background color not showing on sections
+* Fix: Icons not showing in tab titles
+* Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
+* Fix: Icon list block not displaying properly on front end
+* Fix: Warning when using custom font without a font variant selected
+* Fix: Warning with some mobile background settings on row layout
+* Fix: Issue where padding/margin was limited to 12px in some cases
+* Fix: Issue with font size not showing in testimonials.
+
+= 3.0.1 Alpha Version 2 =
+Release Date: January 5th, 2023
+* Update: Duplicate styles component.
+* Fix: Issue with Lightbox on non carousel Gallery.
+* Fix: Issue with 0 spacing not outputting in editor.
+* Fix: Issue with how row padding and margins conversions were handled.
+* Fix: Defaults with Info Box.
+* Fix: CSS specificity with column handles.
+* Fix: Transforms for icon list block.
+
+= 3.0.0 Alpha Version 1 =
+Release Date: January 4th, 2023
+* Update: Block Settings to use a tab structure.
+* Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
-* Update: Inline SVGs removed from content html.
+* Update: Improved CSS generation for blocks.
+* Update: Kadence Block defaults structure, new controls and management. 
+* Update: Inline SVGs removed from content html, all svgs load through filter.
 * Update: Sections can move freely in and out of rows.
-* Update: Icons flex layout with gap settings.
-* Update: Add Icon option to advanced text block.
-* Update: Lightbox to use glightbox.
+* Update: Rows can be content locked to preserve inner block settings and simplify updating.
+* Update: Border control for more flexibility.
+* Update: New Margin and Padding control with added visualizer.
+* Update: New Icon Picker Control.
+* Update: New Font size control.
+* Update: Line Height to support none unit values.
+* Update: Lightbox to use glightbox (adds mobile swipe).
 * Update: Gallery Carousels to use splide.
-* Update: Testimonial Carousels to use Splide.
-* Fix: Parallax background issue with border radius.
-* Add: Block defaults for button style in advanced button.
-* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
-* Update: Gallery to allow links in captions, separate from image link.
-* Fix: Updating gallery can lose added captions.
-* Fix: Issue with aligning in buttons with icons.
+* Update: Icon List block to use innerBlocks for list items.
+* Update: Accordion js to handle issues with offset in accordion hash.
 * Update: Facebook logo svg.
-* Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
-* Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
-* Tweek - Accordion animation when nesting accordions, with both "closed".
-* Fix: Google Maps filer initial value issue.
-* Add: Text Transform option on title in Count Up block
+* Add: Responsive container margin on Info Box block.
+* Add: Responsive container border styles to info box.
+* Add: Responsive border radius styles to info box.
+* Add: Responsive max width control to info box.
+* Add: Responsive container margin on Icon List block.
+* Add: Responsive Inner Container padding on Tabs block.
+* Add: Responsive list margin, title padding, container padding and margin to TOC Block.
+* Add: Option to search dynamic template in TOC Block.
+* Add: Support for external dotLottie files
+* Add: Ability to import, export, and reset block defaults
+* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
+* Fix: Issue with gallery possibly losing added captions.
 * Fix: Only generate dynamic CSS for rtl sites when needed.
+* Fix: Google Maps filter initial value issue.
+* Fix: Issue when using more than 36 tabs in Tabs block.
+* Add: Ability to use decimals for start & end values in count up block.
+* Add: Ability to force specific language in reCaptchas
+
+= 2.4.22 =
+Release Date: November 17th, 2022
+* Fix: Issue with mobile background video loading.
+* Fix: Issue with undefined index: color.
+* Fix: Allow clearing border radius in image block.
+* Fix: Issue with converting list blocks to icon list blocks since 6.1
+
+= 2.4.21 =
+Release Date: November 11th, 2022
+* Fix: Issue with bottom separator color in row layout.
+* Fix: Issue with possible js error in video background.
+
+= 2.4.20 =
+Release Date: November 9th, 2022
+* Fix: Issue with Reusable Blocks and endlessly looping in editor.
+* Fix: Issue with toc in widget area.
+* Fix: Issue with background position in section when 0.
+* Fix: Issue with min height in section when 0.
+* Fix: Issue with inline font selector.
+* Fix: Issue with border on image block in firefox.
+
+ = 2.4.19 =
+ Release Date: November 1st, 2022
+ * Update: Prevent issue with RankMath in sitemap XML sitemap.
+ * Update: Image margin settings not applying correctly when aligned left or right.
+
+ = 2.4.18 =
+ Release Date: October 31st, 2022
+ * Update: Prevent issue with RankMath in sitemap XML sitemap.
+ * Fix: Gallery not pulling in alt text changes when updating in block.
+
+ = 2.4.17 =
+ Release Date: October 24th, 2022
+ * Fix: Issue with row padding not outputing 0.
+
+ = 2.4.16 =
+ Release Date: October 24th, 2022
+ * Update: Tabs js to not use jQuery.
+ * Update: Google Fonts.
+ * Update: Improve performance of Row Layout background videos. Prevent preload when hidden.
+ * Fix: Issue with variable colors in some selectors.
+ * Fix: Issue with info box icon hover background in editor.
+
+ = 2.4.15 =
+ Release Date: October 6th, 2022
+ * Update: timeout for cloud libraries.
+ * Fix: Parallax in Safari 16.
+ * Fix: zIndex issue with sections.
+ * Fix: Issue with some responsive row layouts.
+ * Fix: Issue with individual border radius for tab content.
 
 = 2.4.14 =
 Release Date: September 6th, 2022
@@ -1352,7 +1456,7 @@ You can also set the block defaults.
 * Add: You can now define which Tab should be open regardless of what is open in the editor.
 * Fix: Small change with parallax settings.
 * Fix: Unique IDs causing revisions needlessly.
-* Tweek: Setting Page styles.
+* Tweak: Setting Page styles.
 * Add: BorderRadius Property to columns - thanks @DizzySquirrel
 * Fix: Correct naming for 'Left Bottom' background - thanks @DizzySquirrel
 
@@ -1423,7 +1527,7 @@ You can also set the block defaults.
 * Fix: Issue with button top and bottom padding.
 
 = 1.1.6 =
-* Update: Layouts css tweek.
+* Update: Layouts css Tweak.
 
 = 1.1.5 =
 * Add: Support for tabs within tabs.

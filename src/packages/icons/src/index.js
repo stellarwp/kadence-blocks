@@ -44,6 +44,9 @@ export { default as slider } from './slider'
 export { default as video } from './video'
 export { default as gradient } from './gradient'
 export { default as brush } from './brush'
+export { default as hoverToggle } from './hover'
+export { default as copy } from './copy'
+export { default as paste } from './paste'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
@@ -56,6 +59,7 @@ export { default as tabIcon } from './block-icons/tab/icon'
 export { default as tabsBlockIcon } from './block-icons/tabs/icon'
 export { default as accordionBlockIcon } from './block-icons/accordion-block/icon'
 export { default as iconListBlockIcon } from './block-icons/icon-list-block'
+export { default as iconListItemBlockIcon } from './block-icons/icon-list-item-block'
 export { default as formBlockIcon } from './block-icons/form-block'
 export { default as blockColumnIcon } from './block-icons/column'
 export { default as advancedBtnIcon } from './block-icons/advanced-btn'
@@ -82,6 +86,7 @@ export { default as testimonialBubbleIcon } from './block-icons/testimonial/test
 export { default as testimonialInLineIcon } from './block-icons/testimonial/testimonial-in-line'
 export { default as testimonialBasicIcon } from './block-icons/testimonial/testimonial-basic'
 export { default as testimonialBlockIcon } from './block-icons/testimonial/testimonial-block'
+export { default as testimonialSingleBlockIcon } from './block-icons/testimonial/testimonial-single'
 export { default as testimonialCardIcon } from './block-icons/testimonial/testimonial-card'
 
 // Tabs Block
@@ -124,13 +129,13 @@ export { default as sixColIcon } from './block-icons/row-layout/six-col'
 export { default as twoColIcon } from './block-icons/row-layout/two-col'
 
 // Advanced Gallery
-export { default as galCarouselIcon } from './block-icons/advanced-gallery/gal-carousel'
-export { default as galFluidIcon } from './block-icons/advanced-gallery/gal-fluid'
-export { default as galGridIcon } from './block-icons/advanced-gallery/gal-grid'
-export { default as galMasonryIcon } from './block-icons/advanced-gallery/gal-masonry'
-export { default as galSliderIcon } from './block-icons/advanced-gallery/gal-slider'
-export { default as galTilesIcon } from './block-icons/advanced-gallery/gal-tiles'
-export { default as thumbSliderIcon } from './thumbs-slider'
+export { default as galleryCarouselIcon } from './block-icons/advanced-gallery/gal-carousel'
+export { default as galleryFluidIcon } from './block-icons/advanced-gallery/gal-fluid'
+export { default as galleryGridIcon } from './block-icons/advanced-gallery/gal-grid'
+export { default as galleryMasonryIcon } from './block-icons/advanced-gallery/gal-masonry'
+export { default as gallerySliderIcon } from './block-icons/advanced-gallery/gal-slider'
+export { default as galleryTilesIcon } from './block-icons/advanced-gallery/gal-tiles'
+export { default as galleryThumbSliderIcon } from './thumbs-slider'
 
 // Table of contents
 export { default as noneIcon } from './block-icons/table-of-contents/none'

@@ -42,6 +42,7 @@ class KadenceImageControl extends Component {
 			disableMediaButtons,
 			imageURL,
 			imageID,
+			kadenceDynamic,
 			dynamicAttribute = '' } = this.props;
 		return (
 			<div className="kadence-image-media-control kadence-image-background-control">
@@ -68,9 +69,9 @@ class KadenceImageControl extends Component {
 						{ label && (
 							<div class="components-kadence-image-background__label">{ label }</div>
 						) }
-						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic[ dynamicAttribute ] && this.props.attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
+						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && kadenceDynamic && kadenceDynamic[ dynamicAttribute ] && kadenceDynamic[ dynamicAttribute ].enable ? (
 							<div className="kb-dynamic-background-sidebar-top">
-								<DynamicImageControl startOpen={ this.props.attributes.kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
+								<DynamicImageControl startOpen={ kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
 							</div>
 						) : (
 							<Fragment>

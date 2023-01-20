@@ -101,56 +101,9 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
 		}
 
+		$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
+		$css->render_measure_output( $attributes, 'containerMargin', 'margin');
 
-		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['containerMargin'][0] ) && is_numeric( $attributes['containerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['containerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][1] ) && is_numeric( $attributes['containerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['containerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][2] ) && is_numeric( $attributes['containerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['containerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['containerMargin'][3] ) && is_numeric( $attributes['containerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['containerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-		}
-		if ( isset( $attributes['tabletContainerMargin'] ) && is_array( $attributes['tabletContainerMargin'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['tabletContainerMargin'][0] ) && is_numeric( $attributes['tabletContainerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['tabletContainerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][1] ) && is_numeric( $attributes['tabletContainerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['tabletContainerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][2] ) && is_numeric( $attributes['tabletContainerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['tabletContainerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['tabletContainerMargin'][3] ) && is_numeric( $attributes['tabletContainerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['tabletContainerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
-		if ( isset( $attributes['mobileContainerMargin'] ) && is_array( $attributes['mobileContainerMargin'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap' );
-			if ( isset( $attributes['mobileContainerMargin'][0] ) && is_numeric( $attributes['mobileContainerMargin'][0] ) ) {
-				$css->add_property( 'margin-top', $attributes['mobileContainerMargin'][0] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][1] ) && is_numeric( $attributes['mobileContainerMargin'][1] ) ) {
-				$css->add_property( 'margin-right', $attributes['mobileContainerMargin'][1] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][2] ) && is_numeric( $attributes['mobileContainerMargin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $attributes['mobileContainerMargin'][2] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			if ( isset( $attributes['mobileContainerMargin'][3] ) && is_numeric( $attributes['mobileContainerMargin'][3] ) ) {
-				$css->add_property( 'margin-left', $attributes['mobileContainerMargin'][3] . ( isset( $attributes['containerMarginType'] ) && ! empty( $attributes['containerMarginType'] ) ? $attributes['containerMarginType'] : 'px' ) );
-			}
-			$css->set_media_state( 'desktop' );
-		}
 		if ( isset( $attributes['style'] ) && is_array( $attributes['style'] ) && isset( $attributes['style'][0] ) && is_array( $attributes['style'][0] ) ) {
 			$style = $attributes['style'][0];
 			if ( isset( $style['rowGap'] ) && is_numeric( $style['rowGap'] ) ) {
@@ -640,7 +593,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) ) {
 			$submit_font = $attributes['submitFont'][0];
-			$css->add_property( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
+			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
 			if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $submit_font['size'][0] . ( ! isset( $submit_font['sizeType'] ) ? 'px' : $submit_font['sizeType'] ) );
 			}
@@ -817,11 +770,13 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$recaptcha_site_key = 'missingkey';
 		}
 
-		wp_register_script( 'kadence-blocks-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
+		$recaptcha_lang = !empty( get_option('kadence_blocks_recaptcha_language') ) ? '&hl=' . get_option('kadence_blocks_recaptcha_language') : '';
+
+		wp_register_script( 'kadence-blocks-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ) . $recaptcha_lang, array(), KADENCE_BLOCKS_VERSION, true );
 		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v3', $recaptcha_script, 'after' );
-		wp_register_script( 'kadence-blocks-google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',});});}";
+		wp_register_script( 'kadence-blocks-google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback' . $recaptcha_lang, array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "'});});}";
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v2', $recaptcha_v2_script, 'before' );
 
 		wp_localize_script(

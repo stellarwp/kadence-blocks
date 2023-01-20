@@ -63,7 +63,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		$title_font = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) ? $attributes['titleFont'][0] : array() );
 		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
 		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][0] ) && ! empty( $title_font['size'][0] ) ) {
-			$css->add_property( 'font-size', $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][0], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
 		}
 		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][0] ) && ! empty( $title_font['lineHeight'][0] ) ) {
 			$css->add_property( 'line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
@@ -95,7 +95,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'tablet' );
 		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
 		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][1] ) ) {
-			$css->add_property( 'font-size', $title_font['size'][1] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][1], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
 		}
 		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][1] ) ) {
 			$css->add_property( 'line-height', $title_font['lineHeight'][1] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
@@ -108,7 +108,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'mobile' );
 		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
 		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][2] ) && ! empty( $title_font['size'][2] ) ) {
-			$css->add_property( 'font-size', $title_font['size'][2] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+			$css->add_property( 'font-size', $css->get_font_size( $title_font['size'][2], ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) ) );
 		}
 		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][2] ) && ! empty( $title_font['lineHeight'][2] ) ) {
 			$css->add_property( 'line-height', $title_font['lineHeight'][2] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
@@ -120,9 +120,17 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
-
-	public function build_html( $attributes, $unique_id, $content ) {
-
+	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		if ( ! is_array( $attributes ) ) {
 			return;

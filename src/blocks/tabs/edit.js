@@ -29,17 +29,23 @@ import memoize from 'memize';
 import { times, filter, map } from 'lodash';
 import {
 	KadenceColorOutput,
-	showSettings
+	showSettings,
+	getSpacingOptionOutput,
+	getPreviewSize,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 import {
 	PopColorControl,
 	TypographyControls,
 	WebfontLoader,
-	IconControl,
+	KadenceIconPicker,
 	IconRender,
 	KadencePanelBody,
 	MeasurementControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	InspectorControlTabs,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -113,13 +119,13 @@ const kttabsUniqueIDs = [];
 /**
  * Build the row edit
  */
-function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab } ) {
+function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
 
-	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
-
+	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, tabletInnerPadding, mobileInnerPadding, innerPaddingType, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
 
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'linked' );
+	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
@@ -141,13 +147,25 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			} );
 			kttabsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kttabsUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );			kttabsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
+				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
+				kttabsUniqueIDs.push('_' + clientId.substr(2, 9));
+			}
 		} else {
 			kttabsUniqueIDs.push( uniqueID );
 		}
 	}, [] );
+
+	const previewInnerPaddingTop = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[0] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 0 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 0 ] : '' ) );
+	const previewInnerPaddingRight = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[1] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 1 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 1 ] : '' ) );
+	const previewInnerPaddingBottom = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[2] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 2 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 2 ] : '' ) );
+	const previewInnerPaddingLeft = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[3] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 3 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 3 ] : '' ) );
+
+	const previewSubFontSize = getPreviewSize( previewDevice, ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 0 ] ? subtitleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 1 ] ? subtitleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== subtitleFont[ 0 ].size && undefined !== subtitleFont[ 0 ].size[ 2 ] ? subtitleFont[ 0 ].size[ 2 ] : '' ) );
+	const previewSubLineHeight = getPreviewSize( previewDevice, ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 0 ] ? subtitleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 1 ] ? subtitleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== subtitleFont[ 0 ].lineHeight && undefined !== subtitleFont[ 0 ].lineHeight[ 2 ] ? subtitleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
+	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== size ? size : '' ), ( undefined !== tabSize ? tabSize : '' ), ( undefined !== mobileSize ? mobileSize : '' ) );
+	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
 
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
@@ -392,6 +410,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 
+		const nonTransAttrs = ['currentTab', 'tabCount'];
+
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
@@ -553,8 +573,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: KadenceColorOutput( titleBg ),
 							color: KadenceColorOutput( titleColor ),
-							fontSize: size + sizeType,
-							lineHeight: lineHeight + lineType,
+							fontSize: previewFontSize ? getFontSizeOptionOutput( previewFontSize, sizeType ) : undefined,
+							lineHeight: previewLineHeight ? previewLineHeight + lineType : undefined,
 							fontWeight: fontWeight,
 							fontStyle: fontStyle,
 							letterSpacing: letterSpacing + 'px',
@@ -618,8 +638,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										style={ {
 											fontWeight: subFont[ 0 ].weight,
 											fontStyle: subFont[ 0 ].style,
-											fontSize: subFont[ 0 ].size[ 0 ] + subFont[ 0 ].sizeType,
-											lineHeight: ( subFont[ 0 ].lineHeight && subFont[ 0 ].lineHeight[ 0 ] ? subFont[ 0 ].lineHeight[ 0 ] + subFont[ 0 ].lineType : undefined ),
+											fontSize: previewSubFontSize ? getFontSizeOptionOutput( previewSubFontSize, subFont[ 0 ].sizeType ) : undefined,
+											lineHeight: previewSubLineHeight ? previewSubLineHeight + subFont[ 0 ].lineType : undefined,
 											textTransform: ( subFont[ 0 ].textTransform ? subFont[ 0 ].textTransform : undefined ),
 											letterSpacing: subFont[ 0 ].letterSpacing + 'px',
 											fontFamily: ( subFont[ 0 ].family ? subFont[ 0 ].family : '' ),
@@ -714,8 +734,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					initialOpen={ false }
 					panelName={ 'kb-tab-icon-' + index }
 				>
-					<IconControl
+					<KadenceIconPicker
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
+						allowClear={ true }
 						onChange={ value => {
 							saveArrayUpdate( { icon: value }, index );
 						} }
@@ -1001,7 +1022,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					color: ${ KadenceColorOutput( titleColorActive ) } !important;
 					border-color: ${ KadenceColorOutput( titleBorderActive ) } !important;
 					background-color: ${ KadenceColorOutput( titleBgActive ) } !important;
-				}` }
+				}
+				.kt-tabs-id${ uniqueID } > .kt-tabs-wrap > .kt-tabs-content-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-tab="${ currentTab }"] {
+					display: block;
+				}
+				` }
 			</style>
 		);
 
@@ -1026,531 +1051,595 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							setAttributes( { tabAlignment: nextAlign } );
 						} }
 					/>
+					<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ nonTransAttrs } 
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+					/>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/tabs' ) && (
 					<InspectorControls>
-						{ showSettings( 'tabLayout', 'kadence/tabs' ) && (
-							tabControls
-						) }
-						{ ! showSettings( 'tabLayout', 'kadence/tabs' ) && (
-							<KadencePanelBody panelName={ 'kb-tab-layout' }>
-								<h2>{ __( 'Set Initial Open Tab', 'kadence-blocks' ) }</h2>
-								<ButtonGroup aria-label={ __( 'Initial Open Tab', 'kadence-blocks' ) }>
-									{ times( tabCount, n => (
-										<Button
-											key={ n + 1 }
-											className="kt-init-open-tab"
-											isSmall
-											isPrimary={ startTab === n + 1 }
-											aria-pressed={ startTab === n + 1 }
-											onClick={ () => setAttributes( { startTab: n + 1 } ) }
-										>
-											{ __( 'Tab' ) + ' ' + ( n + 1 ) }
-										</Button>
-									) ) }
-								</ButtonGroup>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'tabContent', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Content Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-content-settings' }
-							>
-								<PopColorControl
-									label={ __( 'Content Background', 'kadence-blocks' ) }
-									value={ ( contentBgColor ? contentBgColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
-								/>
-								<MeasurementControls
-									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
-									measurement={ innerPadding }
-									control={ innerPaddingControl }
-									onChange={ ( value ) => setAttributes( { innerPadding: value } ) }
-									onControl={ ( value ) => setAttributes( { innerPaddingControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<PopColorControl
-									label={ __( 'Border Color', 'kadence-blocks' ) }
-									value={ ( contentBorderColor ? contentBorderColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
-								/>
-								<MeasurementControls
-									label={ __( 'Content Border Width (px)', 'kadence-blocks' ) }
-									measurement={ contentBorder }
-									control={ contentBorderControl }
-									onChange={ ( value ) => setAttributes( { contentBorder: value } ) }
-									onControl={ ( value ) => setAttributes( { contentBorderControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Content Border Radius (px)', 'kadence-blocks' ) }
-									measurement={ contentBorderRadius }
-									control={ contentBorderRadiusControl }
-									onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
-									onControl={ ( value ) => setContentBorderRadiusControl( value ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-									] }
-									firstIcon={ topLeftIcon }
-									secondIcon={ topRightIcon }
-									thirdIcon={ bottomRightIcon }
-									fourthIcon={ bottomLeftIcon }
-								/>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'titleColor', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Title Color Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-title-color' }
-							>
-								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-										{
-											name: 'active',
-											title: __( 'Active' ),
-											className: 'kt-active-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = hoverSettings;
-												} else if ( 'active' === tab.name ) {
-													tabout = activeSettings;
-												} else {
-													tabout = normalSettings;
-												}
-											}
-											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'titleSpacing', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Title Width/Spacing/Border', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-title-spacing' }
-							>
-								{ 'tabs' === layout && (
-									<Fragment>
-										<h2>{ __( 'Tab Title Width', 'kadence-blocks' ) }</h2>
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											initialTabName={ widthType }
-											onSelect={ value => setAttributes( { widthType: value } ) }
-											tabs={ [
+
+						<InspectorControlTabs
+							panelName={ 'tabs' }
+							setActiveTab={( value ) => setActiveTab( value )}
+							activeTab={ activeTab }
+						/>
+
+						{activeTab === 'general' && (
+							<>
+								{showSettings('tabLayout', 'kadence/tabs') && (
+									tabControls
+								)}
+								{!showSettings('tabLayout', 'kadence/tabs') && (
+									<KadencePanelBody panelName={'kb-tab-layout'}>
+										<h2>{__('Set Initial Open Tab', 'kadence-blocks')}</h2>
+										<ButtonGroup aria-label={__('Initial Open Tab', 'kadence-blocks')}>
+											{times(tabCount, n => (
+												<Button
+													key={n + 1}
+													className="kt-init-open-tab"
+													isSmall
+													isPrimary={startTab === n + 1}
+													aria-pressed={startTab === n + 1}
+													onClick={() => setAttributes({startTab: n + 1})}
+												>
+													{__('Tab') + ' ' + (n + 1)}
+												</Button>
+											))}
+										</ButtonGroup>
+									</KadencePanelBody>
+								)}
+								{showSettings('tabContent', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Content Settings', 'kadence-blocks')}
+										panelName={'kb-tab-content-settings'}
+									>
+										<PopColorControl
+											label={__('Content Background', 'kadence-blocks')}
+											value={(contentBgColor ? contentBgColor : '')}
+											default={''}
+											onChange={(value) => setAttributes({contentBgColor: value})}
+										/>
+
+										<PopColorControl
+											label={__('Border Color', 'kadence-blocks')}
+											value={(contentBorderColor ? contentBorderColor : '')}
+											default={''}
+											onChange={(value) => setAttributes({contentBorderColor: value})}
+										/>
+										<MeasurementControls
+											label={__('Content Border Width (px)', 'kadence-blocks')}
+											measurement={contentBorder}
+											control={contentBorderControl}
+											onChange={(value) => setAttributes({contentBorder: value})}
+											onControl={(value) => setAttributes({contentBorderControl: value})}
+											min={0}
+											max={100}
+											step={1}
+										/>
+										<MeasurementControls
+											label={__('Content Border Radius (px)', 'kadence-blocks')}
+											measurement={contentBorderRadius}
+											control={contentBorderRadiusControl}
+											onChange={(value) => setAttributes({contentBorderRadius: value})}
+											onControl={(value) => setContentBorderRadiusControl(value)}
+											min={0}
+											max={100}
+											step={1}
+											controlTypes={[
 												{
-													name: 'normal',
-													title: __( 'Normal' ),
-													className: 'kt-normal-tab',
+													key: 'linked',
+													name: __('Linked', 'kadence-blocks'),
+													icon: radiusLinkedIcon
 												},
 												{
-													name: 'percent',
-													title: __( '% Width' ),
-													className: 'kt-hover-tab',
+													key: 'individual',
+													name: __('Individual', 'kadence-blocks'),
+													icon: radiusIndividualIcon
 												},
-											] }>
+											]}
+											firstIcon={topLeftIcon}
+											secondIcon={topRightIcon}
+											thirdIcon={bottomRightIcon}
+											fourthIcon={bottomLeftIcon}
+										/>
+									</KadencePanelBody>
+								)}
+
+							</>
+						)}
+
+						{ activeTab === 'style' && (
+							<>
+								{showSettings('titleColor', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Title Color Settings', 'kadence-blocks')}
+										panelName={'kb-tab-title-color'}
+									>
+										<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+												  activeClass="active-tab"
+												  tabs={[
+													  {
+														  name: 'normal',
+														  title: __('Normal'),
+														  className: 'kt-normal-tab',
+													  },
+													  {
+														  name: 'hover',
+														  title: __('Hover'),
+														  className: 'kt-hover-tab',
+													  },
+													  {
+														  name: 'active',
+														  title: __('Active'),
+														  className: 'kt-active-tab',
+													  },
+												  ]}>
 											{
-												( tab ) => {
+												(tab) => {
 													let tabout;
-													if ( tab.name ) {
-														if ( 'percent' === tab.name ) {
-															tabout = (
-																<Fragment>
-																	<TabPanel className="kt-size-tabs kb-device-choice"
-																		activeClass="active-tab"
-																		tabs={ [
-																			{
-																				name: 'desk',
-																				title: <Dashicon icon="desktop" />,
-																				className: 'kt-desk-tab',
-																			},
-																			{
-																				name: 'tablet',
-																				title: <Dashicon icon="tablet" />,
-																				className: 'kt-tablet-tab',
-																			},
-																			{
-																				name: 'mobile',
-																				title: <Dashicon icon="smartphone" />,
-																				className: 'kt-mobile-tab',
-																			},
-																		] }>
-																		{
-																			( innerTab ) => {
-																				let tabContentOut;
-																				if ( innerTab.name ) {
-																					if ( 'mobile' === innerTab.name ) {
-																						tabContentOut = (
-																							<Fragment>
-																								<RangeControl
-																									label={ __( 'Mobile Columns', 'kadence-blocks' ) }
-																									value={ ( tabWidth && undefined !== tabWidth[ 2 ] ? tabWidth[ 2 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { tabWidth: [ tabWidth[ 0 ], tabWidth[ 1 ], value ] } ) }
-																									min={ 1 }
-																									max={ 8 }
-																									step={ 1 }
-																								/>
-																								<RangeControl
-																									label={ __( 'Mobile Gutter', 'kadence-blocks' ) }
-																									value={ ( gutter && undefined !== gutter[ 2 ] ? gutter[ 2 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { gutter: [ gutter[ 0 ], gutter[ 1 ], value ] } ) }
-																									min={ 0 }
-																									max={ 50 }
-																									step={ 1 }
-																								/>
-																							</Fragment>
-																						);
-																					} else if ( 'tablet' === innerTab.name ) {
-																						tabContentOut = (
-																							<Fragment>
-																								<RangeControl
-																									label={ __( 'Tablet Columns', 'kadence-blocks' ) }
-																									value={ ( tabWidth && undefined !== tabWidth[ 1 ] ? tabWidth[ 1 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { tabWidth: [ tabWidth[ 0 ], value, tabWidth[ 2 ] ] } ) }
-																									min={ 1 }
-																									max={ 8 }
-																									step={ 1 }
-																								/>
-																								<RangeControl
-																									label={ __( 'Tablet Gutter', 'kadence-blocks' ) }
-																									value={ ( gutter && undefined !== gutter[ 1 ] ? gutter[ 1 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { gutter: [ gutter[ 0 ], value, gutter[ 2 ] ] } ) }
-																									min={ 0 }
-																									max={ 50 }
-																									step={ 1 }
-																								/>
-																							</Fragment>
-																						);
-																					} else {
-																						tabContentOut = (
-																							<Fragment>
-																								<RangeControl
-																									label={ __( 'Columns', 'kadence-blocks' ) }
-																									value={ ( tabWidth && undefined !== tabWidth[ 0 ] ? tabWidth[ 0 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { tabWidth: [ value, tabWidth[ 1 ], tabWidth[ 2 ] ] } ) }
-																									min={ 1 }
-																									max={ 8 }
-																									step={ 1 }
-																								/>
-																								<RangeControl
-																									label={ __( 'Gutter', 'kadence-blocks' ) }
-																									value={ ( gutter && undefined !== gutter[ 0 ] ? gutter[ 0 ] : '' ) }
-																									onChange={ ( value ) => setAttributes( { gutter: [ value, gutter[ 1 ], gutter[ 2 ] ] } ) }
-																									min={ 0 }
-																									max={ 50 }
-																									step={ 1 }
-																								/>
-																							</Fragment>
-																						);
-																					}
-																				}
-																				return <div>{ tabContentOut }</div>;
-																			}
-																		}
-																	</TabPanel>
-																	<MeasurementControls
-																		label={ __( 'Title Padding (px)', 'kadence-blocks' ) }
-																		measurement={ titlePadding }
-																		control={ titlePaddingControl }
-																		onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
-																		onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
-																		min={ 0 }
-																		max={ 50 }
-																		step={ 1 }
-																	/>
-																	<RangeControl
-																		label={ __( 'Top Margin (px)', 'kadence-blocks' ) }
-																		value={ ( titleMargin && undefined !== titleMargin[ 0 ] ? titleMargin[ 0 ] : '' ) }
-																		onChange={ ( value ) => setAttributes( { titleMargin: [ value, titleMargin[ 1 ], titleMargin[ 2 ], titleMargin[ 3 ] ] } ) }
-																		min={ -25 }
-																		max={ 25 }
-																		step={ 1 }
-																	/>
-																	<RangeControl
-																		label={ __( 'Bottom Margin (px)', 'kadence-blocks' ) }
-																		value={ ( titleMargin && undefined !== titleMargin[ 2 ] ? titleMargin[ 2 ] : '' ) }
-																		onChange={ ( value ) => setAttributes( { titleMargin: [ titleMargin[ 0 ], titleMargin[ 1 ], value, titleMargin[ 3 ] ] } ) }
-																		min={ -25 }
-																		max={ 25 }
-																		step={ 1 }
-																	/>
-																</Fragment>
-															);
+													if (tab.name) {
+														if ('hover' === tab.name) {
+															tabout = hoverSettings;
+														} else if ('active' === tab.name) {
+															tabout = activeSettings;
 														} else {
-															tabout = (
-																<Fragment>
-																	<MeasurementControls
-																		label={ __( 'Title Padding (px)', 'kadence-blocks' ) }
-																		measurement={ titlePadding }
-																		control={ titlePaddingControl }
-																		onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
-																		onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
-																		min={ 0 }
-																		max={ 50 }
-																		step={ 1 }
-																	/>
-																	<MeasurementControls
-																		label={ __( 'Title Margin (px)', 'kadence-blocks' ) }
-																		measurement={ titleMargin }
-																		control={ titleMarginControl }
-																		onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
-																		onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
-																		min={ -25 }
-																		max={ 25 }
-																		step={ 1 }
-																	/>
-																</Fragment>
-															);
+															tabout = normalSettings;
 														}
 													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+													return <div className={tab.className}
+																key={tab.className}>{tabout}</div>;
 												}
 											}
 										</TabPanel>
-									</Fragment>
-								) }
-								{ 'tabs' !== layout && (
-									<Fragment>
+									</KadencePanelBody>
+								)}
+								{showSettings('titleSpacing', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Title Width/Spacing/Border', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-tab-title-spacing'}
+									>
+										{'tabs' === layout && (
+											<Fragment>
+												<h2>{__('Tab Title Width', 'kadence-blocks')}</h2>
+												<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+														  activeClass="active-tab"
+														  initialTabName={widthType}
+														  onSelect={value => setAttributes({widthType: value})}
+														  tabs={[
+															  {
+																  name: 'normal',
+																  title: __('Normal'),
+																  className: 'kt-normal-tab',
+															  },
+															  {
+																  name: 'percent',
+																  title: __('% Width'),
+																  className: 'kt-hover-tab',
+															  },
+														  ]}>
+													{
+														(tab) => {
+															let tabout;
+															if (tab.name) {
+																if ('percent' === tab.name) {
+																	tabout = (
+																		<Fragment>
+																			<TabPanel
+																				className="kt-size-tabs kb-device-choice"
+																				activeClass="active-tab"
+																				tabs={[
+																					{
+																						name: 'desk',
+																						title: <Dashicon
+																							icon="desktop"/>,
+																						className: 'kt-desk-tab',
+																					},
+																					{
+																						name: 'tablet',
+																						title: <Dashicon
+																							icon="tablet"/>,
+																						className: 'kt-tablet-tab',
+																					},
+																					{
+																						name: 'mobile',
+																						title: <Dashicon
+																							icon="smartphone"/>,
+																						className: 'kt-mobile-tab',
+																					},
+																				]}>
+																				{
+																					(innerTab) => {
+																						let tabContentOut;
+																						if (innerTab.name) {
+																							if ('mobile' === innerTab.name) {
+																								tabContentOut = (
+																									<Fragment>
+																										<RangeControl
+																											label={__('Mobile Columns', 'kadence-blocks')}
+																											value={(tabWidth && undefined !== tabWidth[2] ? tabWidth[2] : '')}
+																											onChange={(value) => setAttributes({tabWidth: [tabWidth[0], tabWidth[1], value]})}
+																											min={1}
+																											max={8}
+																											step={1}
+																										/>
+																										<RangeControl
+																											label={__('Mobile Gutter', 'kadence-blocks')}
+																											value={(gutter && undefined !== gutter[2] ? gutter[2] : '')}
+																											onChange={(value) => setAttributes({gutter: [gutter[0], gutter[1], value]})}
+																											min={0}
+																											max={50}
+																											step={1}
+																										/>
+																									</Fragment>
+																								);
+																							} else if ('tablet' === innerTab.name) {
+																								tabContentOut = (
+																									<Fragment>
+																										<RangeControl
+																											label={__('Tablet Columns', 'kadence-blocks')}
+																											value={(tabWidth && undefined !== tabWidth[1] ? tabWidth[1] : '')}
+																											onChange={(value) => setAttributes({tabWidth: [tabWidth[0], value, tabWidth[2]]})}
+																											min={1}
+																											max={8}
+																											step={1}
+																										/>
+																										<RangeControl
+																											label={__('Tablet Gutter', 'kadence-blocks')}
+																											value={(gutter && undefined !== gutter[1] ? gutter[1] : '')}
+																											onChange={(value) => setAttributes({gutter: [gutter[0], value, gutter[2]]})}
+																											min={0}
+																											max={50}
+																											step={1}
+																										/>
+																									</Fragment>
+																								);
+																							} else {
+																								tabContentOut = (
+																									<Fragment>
+																										<RangeControl
+																											label={__('Columns', 'kadence-blocks')}
+																											value={(tabWidth && undefined !== tabWidth[0] ? tabWidth[0] : '')}
+																											onChange={(value) => setAttributes({tabWidth: [value, tabWidth[1], tabWidth[2]]})}
+																											min={1}
+																											max={8}
+																											step={1}
+																										/>
+																										<RangeControl
+																											label={__('Gutter', 'kadence-blocks')}
+																											value={(gutter && undefined !== gutter[0] ? gutter[0] : '')}
+																											onChange={(value) => setAttributes({gutter: [value, gutter[1], gutter[2]]})}
+																											min={0}
+																											max={50}
+																											step={1}
+																										/>
+																									</Fragment>
+																								);
+																							}
+																						}
+																						return <div>{tabContentOut}</div>;
+																					}
+																				}
+																			</TabPanel>
+																			<MeasurementControls
+																				label={__('Title Padding (px)', 'kadence-blocks')}
+																				measurement={titlePadding}
+																				control={titlePaddingControl}
+																				onChange={(value) => setAttributes({titlePadding: value})}
+																				onControl={(value) => setAttributes({titlePaddingControl: value})}
+																				min={0}
+																				max={50}
+																				step={1}
+																			/>
+																			<RangeControl
+																				label={__('Top Margin (px)', 'kadence-blocks')}
+																				value={(titleMargin && undefined !== titleMargin[0] ? titleMargin[0] : '')}
+																				onChange={(value) => setAttributes({titleMargin: [value, titleMargin[1], titleMargin[2], titleMargin[3]]})}
+																				min={-25}
+																				max={25}
+																				step={1}
+																			/>
+																			<RangeControl
+																				label={__('Bottom Margin (px)', 'kadence-blocks')}
+																				value={(titleMargin && undefined !== titleMargin[2] ? titleMargin[2] : '')}
+																				onChange={(value) => setAttributes({titleMargin: [titleMargin[0], titleMargin[1], value, titleMargin[3]]})}
+																				min={-25}
+																				max={25}
+																				step={1}
+																			/>
+																		</Fragment>
+																	);
+																} else {
+																	tabout = (
+																		<Fragment>
+																			<MeasurementControls
+																				label={__('Title Padding (px)', 'kadence-blocks')}
+																				measurement={titlePadding}
+																				control={titlePaddingControl}
+																				onChange={(value) => setAttributes({titlePadding: value})}
+																				onControl={(value) => setAttributes({titlePaddingControl: value})}
+																				min={0}
+																				max={50}
+																				step={1}
+																			/>
+																			<MeasurementControls
+																				label={__('Title Margin (px)', 'kadence-blocks')}
+																				measurement={titleMargin}
+																				control={titleMarginControl}
+																				onChange={(value) => setAttributes({titleMargin: value})}
+																				onControl={(value) => setAttributes({titleMarginControl: value})}
+																				min={-25}
+																				max={25}
+																				step={1}
+																			/>
+																		</Fragment>
+																	);
+																}
+															}
+															return <div className={tab.className}
+																		key={tab.className}>{tabout}</div>;
+														}
+													}
+												</TabPanel>
+											</Fragment>
+										)}
+										{'tabs' !== layout && (
+											<Fragment>
+												<MeasurementControls
+													label={__('Title Padding (px)', 'kadence-blocks')}
+													measurement={titlePadding}
+													control={titlePaddingControl}
+													onChange={(value) => setAttributes({titlePadding: value})}
+													onControl={(value) => setAttributes({titlePaddingControl: value})}
+													min={0}
+													max={50}
+													step={1}
+												/>
+												<MeasurementControls
+													label={__('Title Margin (px)', 'kadence-blocks')}
+													measurement={titleMargin}
+													control={titleMarginControl}
+													onChange={(value) => setAttributes({titleMargin: value})}
+													onControl={(value) => setAttributes({titleMarginControl: value})}
+													min={-25}
+													max={25}
+													step={1}
+												/>
+											</Fragment>
+										)}
 										<MeasurementControls
-											label={ __( 'Title Padding (px)', 'kadence-blocks' ) }
-											measurement={ titlePadding }
-											control={ titlePaddingControl }
-											onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
-											onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
-											min={ 0 }
-											max={ 50 }
-											step={ 1 }
+											label={__('Title Border Width (px)', 'kadence-blocks')}
+											measurement={titleBorderWidth}
+											control={titleBorderControl}
+											onChange={(value) => setAttributes({titleBorderWidth: value})}
+											onControl={(value) => setAttributes({titleBorderControl: value})}
+											min={0}
+											max={20}
+											step={1}
 										/>
 										<MeasurementControls
-											label={ __( 'Title Margin (px)', 'kadence-blocks' ) }
-											measurement={ titleMargin }
-											control={ titleMarginControl }
-											onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
-											onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
-											min={ -25 }
-											max={ 25 }
-											step={ 1 }
+											label={__('Title Border Radius (px)', 'kadence-blocks')}
+											measurement={titleBorderRadius}
+											control={titleBorderRadiusControl}
+											onChange={(value) => setAttributes({titleBorderRadius: value})}
+											onControl={(value) => setAttributes({titleBorderRadiusControl: value})}
+											min={0}
+											max={50}
+											step={1}
+											controlTypes={[
+												{
+													key: 'linked',
+													name: __('Linked', 'kadence-blocks'),
+													icon: radiusLinkedIcon
+												},
+												{
+													key: 'individual',
+													name: __('Individual', 'kadence-blocks'),
+													icon: radiusIndividualIcon
+												},
+											]}
+											firstIcon={topLeftIcon}
+											secondIcon={topRightIcon}
+											thirdIcon={bottomRightIcon}
+											fourthIcon={bottomLeftIcon}
 										/>
-									</Fragment>
-								) }
-								<MeasurementControls
-									label={ __( 'Title Border Width (px)', 'kadence-blocks' ) }
-									measurement={ titleBorderWidth }
-									control={ titleBorderControl }
-									onChange={ ( value ) => setAttributes( { titleBorderWidth: value } ) }
-									onControl={ ( value ) => setAttributes( { titleBorderControl: value } ) }
-									min={ 0 }
-									max={ 20 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Title Border Radius (px)', 'kadence-blocks' ) }
-									measurement={ titleBorderRadius }
-									control={ titleBorderRadiusControl }
-									onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
-									onControl={ ( value ) => setAttributes( { titleBorderRadiusControl: value } ) }
-									min={ 0 }
-									max={ 50 }
-									step={ 1 }
-									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-									] }
-									firstIcon={ topLeftIcon }
-									secondIcon={ topRightIcon }
-									thirdIcon={ bottomRightIcon }
-									fourthIcon={ bottomLeftIcon }
-								/>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'titleFont', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Title Font Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-title-font' }
-							>
-								<TypographyControls
-									fontFamily={ typography }
-									onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
-									googleFont={ googleFont }
-									onFontChange={ ( select ) => {
-										setAttributes( {
-											typography: select.value,
-											googleFont: select.google,
-										} );
-									} }
-									onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
-									loadGoogleFont={ loadGoogleFont }
-									onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
-									fontVariant={ fontVariant }
-									onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
-									fontWeight={ fontWeight }
-									onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
-									fontStyle={ fontStyle }
-									onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
-									fontSubset={ fontSubset }
-									onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
-									textTransform={ textTransform }
-									onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
-								/>
-								<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
-								{ sizeTabControls }
-								<RangeControl
-									label={ __( 'Letter Spacing', 'kadence-blocks' ) }
-									value={ ( letterSpacing ? letterSpacing : '' ) }
-									onChange={ ( value ) => setAttributes( { letterSpacing: value } ) }
-									min={ -5 }
-									max={ 15 }
-									step={ 0.1 }
-								/>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'titleIcon', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Title Icon Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-title-icon' }
-							>
-								<RangeControl
-									label={ __( 'Icon Size', 'kadence-blocks' ) }
-									value={ ( iSize ? iSize : '' ) }
-									onChange={ ( value ) => setAttributes( { iSize: value } ) }
-									min={ 2 }
-									max={ 120 }
-									step={ 1 }
-								/>
-								{ times( tabCount, n => renderTitleSettings( n ) ) }
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'subtitle', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Subtitle Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-subtitle-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Show Subtitles?', 'kadence-blocks' ) }
-									checked={ ( undefined !== enableSubtitle ? enableSubtitle : false ) }
-									onChange={ value => {
-										setAttributes( { enableSubtitle: value } );
-									} }
-								/>
-								{ enableSubtitle && (
-									<TypographyControls
-										fontSize={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].size ? subtitleFont[ 0 ].size : [ '', '', '' ] ) }
-										onFontSize={ ( value ) => saveSubtitleFont( { size: value } ) }
-										fontSizeType={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont[ 0 ].sizeType : 'px' ) }
-										onFontSizeType={ ( value ) => saveSubtitleFont( { sizeType: value } ) }
-										lineHeight={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].lineHeight ? subtitleFont[ 0 ].lineHeight : [ '', '', '' ] ) }
-										onLineHeight={ ( value ) => saveSubtitleFont( { lineHeight: value } ) }
-										lineHeightType={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].lineType ? subtitleFont[ 0 ].lineType : 'px' ) }
-										onLineHeightType={ ( value ) => saveSubtitleFont( { lineType: value } ) }
-										letterSpacing={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].letterSpacing ? subtitleFont[ 0 ].letterSpacing : '' ) }
-										onLetterSpacing={ ( value ) => saveSubtitleFont( { letterSpacing: value } ) }
-										fontFamily={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].family ? subtitleFont[ 0 ].family : '' ) }
-										onFontFamily={ ( value ) => saveSubtitleFont( { family: value } ) }
-										onFontChange={ ( select ) => {
-											saveSubtitleFont( {
-												family: select.value,
-												google: select.google,
-											} );
-										} }
-										onFontArrayChange={ ( values ) => saveSubtitleFont( values ) }
-										googleFont={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].google ? subtitleFont[ 0 ].google : false ) }
-										onGoogleFont={ ( value ) => saveSubtitleFont( { google: value } ) }
-										loadGoogleFont={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].loadGoogle ? subtitleFont[ 0 ].loadGoogle : true ) }
-										onLoadGoogleFont={ ( value ) => saveSubtitleFont( { loadGoogle: value } ) }
-										fontVariant={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].variant ? subtitleFont[ 0 ].variant : '' ) }
-										onFontVariant={ ( value ) => saveSubtitleFont( { variant: value } ) }
-										fontWeight={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].weight ? subtitleFont[ 0 ].weight : '' ) }
-										onFontWeight={ ( value ) => saveSubtitleFont( { weight: value } ) }
-										fontStyle={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].style ? subtitleFont[ 0 ].style : '' ) }
-										onFontStyle={ ( value ) => saveSubtitleFont( { style: value } ) }
-										fontSubset={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].subset ? subtitleFont[ 0 ].subset : '' ) }
-										onFontSubset={ ( value ) => saveSubtitleFont( { subset: value } ) }
-										textTransform={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].textTransform ? subtitleFont[ 0 ].textTransform : '' ) }
-										onTextTransform={ ( value ) => saveSubtitleFont( { textTransform: value } ) }
-										padding={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].padding ? subtitleFont[ 0 ].padding : [ 0, 0, 0, 0 ] ) }
-										onPadding={ ( value ) => saveSubtitleFont( { padding: value } ) }
-										paddingControl={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].paddingControl ? subtitleFont[ 0 ].paddingControl : 'linked' ) }
-										onPaddingControl={ ( value ) => saveSubtitleFont( { paddingControl: value } ) }
-										margin={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].margin ? subtitleFont[ 0 ].margin : [ 0, 0, 0, 0 ] ) }
-										onMargin={ ( value ) => saveSubtitleFont( { margin: value } ) }
-										marginControl={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].marginControl ? subtitleFont[ 0 ].marginControl : 'linked' ) }
-										onMarginControl={ ( value ) => saveSubtitleFont( { marginControl: value } ) }
-									/>
-								) }
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'titleAnchor', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Tab Anchor Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-anchor-settings' }
-							>
-								{ times( tabCount, n => renderAnchorSettings( n ) ) }
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'structure', 'kadence/tabs' ) && (
-							<KadencePanelBody
-								title={ __( 'Structure Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-tab-structure-settings' }
-							>
-								<RangeControl
-									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
-									value={ minHeight }
-									onChange={ ( value ) => {
-										setAttributes( {
-											minHeight: value,
-										} );
-									} }
-									min={ 0 }
-									max={ 1000 }
-								/>
-								<RangeControl
-									label={ __( 'Max Width', 'kadence-blocks' ) }
-									value={ maxWidth }
-									onChange={ ( value ) => {
-										setAttributes( {
-											maxWidth: value,
-										} );
-									} }
-									min={ 0 }
-									max={ 2000 }
-								/>
-							</KadencePanelBody>
-						) }
+									</KadencePanelBody>
+								)}
+								{showSettings('titleFont', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Title Font Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-tab-title-font'}
+									>
+										<TypographyControls
+											fontFamily={typography}
+											onFontFamily={(value) => setAttributes({typography: value})}
+											googleFont={googleFont}
+											onFontChange={(select) => {
+												setAttributes({
+													typography: select.value,
+													googleFont: select.google,
+												});
+											}}
+											onGoogleFont={(value) => setAttributes({googleFont: value})}
+											loadGoogleFont={loadGoogleFont}
+											onLoadGoogleFont={(value) => setAttributes({loadGoogleFont: value})}
+											fontVariant={fontVariant}
+											onFontVariant={(value) => setAttributes({fontVariant: value})}
+											fontWeight={fontWeight}
+											onFontWeight={(value) => setAttributes({fontWeight: value})}
+											fontStyle={fontStyle}
+											onFontStyle={(value) => setAttributes({fontStyle: value})}
+											fontSubset={fontSubset}
+											onFontSubset={(value) => setAttributes({fontSubset: value})}
+											textTransform={textTransform}
+											onTextTransform={(value) => setAttributes({textTransform: value})}
+										/>
+										<h2 className="kt-heading-size-title">{__('Size Controls', 'kadence-blocks')}</h2>
+										{sizeTabControls}
+										<RangeControl
+											label={__('Letter Spacing', 'kadence-blocks')}
+											value={(letterSpacing ? letterSpacing : '')}
+											onChange={(value) => setAttributes({letterSpacing: value})}
+											min={-5}
+											max={15}
+											step={0.1}
+										/>
+									</KadencePanelBody>
+								)}
+								{showSettings('titleIcon', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Title Icon Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-tab-title-icon'}
+									>
+										<RangeControl
+											label={__('Icon Size', 'kadence-blocks')}
+											value={(iSize ? iSize : '')}
+											onChange={(value) => setAttributes({iSize: value})}
+											min={2}
+											max={120}
+											step={1}
+										/>
+										{times(tabCount, n => renderTitleSettings(n))}
+									</KadencePanelBody>
+								)}
+								{showSettings('subtitle', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Subtitle Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-tab-subtitle-settings'}
+									>
+										<ToggleControl
+											label={__('Show Subtitles?', 'kadence-blocks')}
+											checked={(undefined !== enableSubtitle ? enableSubtitle : false)}
+											onChange={value => {
+												setAttributes({enableSubtitle: value});
+											}}
+										/>
+										{enableSubtitle && (
+											<TypographyControls
+												fontSize={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].size ? subtitleFont[0].size : ['', '', ''])}
+												onFontSize={(value) => saveSubtitleFont({size: value})}
+												fontSizeType={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].sizeType ? subtitleFont[0].sizeType : 'px')}
+												onFontSizeType={(value) => saveSubtitleFont({sizeType: value})}
+												lineHeight={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].lineHeight ? subtitleFont[0].lineHeight : ['', '', ''])}
+												onLineHeight={(value) => saveSubtitleFont({lineHeight: value})}
+												lineHeightType={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].lineType ? subtitleFont[0].lineType : 'px')}
+												onLineHeightType={(value) => saveSubtitleFont({lineType: value})}
+												letterSpacing={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].letterSpacing ? subtitleFont[0].letterSpacing : '')}
+												onLetterSpacing={(value) => saveSubtitleFont({letterSpacing: value})}
+												fontFamily={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].family ? subtitleFont[0].family : '')}
+												onFontFamily={(value) => saveSubtitleFont({family: value})}
+												onFontChange={(select) => {
+													saveSubtitleFont({
+														family: select.value,
+														google: select.google,
+													});
+												}}
+												onFontArrayChange={(values) => saveSubtitleFont(values)}
+												googleFont={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].google ? subtitleFont[0].google : false)}
+												onGoogleFont={(value) => saveSubtitleFont({google: value})}
+												loadGoogleFont={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].loadGoogle ? subtitleFont[0].loadGoogle : true)}
+												onLoadGoogleFont={(value) => saveSubtitleFont({loadGoogle: value})}
+												fontVariant={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].variant ? subtitleFont[0].variant : '')}
+												onFontVariant={(value) => saveSubtitleFont({variant: value})}
+												fontWeight={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].weight ? subtitleFont[0].weight : '')}
+												onFontWeight={(value) => saveSubtitleFont({weight: value})}
+												fontStyle={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].style ? subtitleFont[0].style : '')}
+												onFontStyle={(value) => saveSubtitleFont({style: value})}
+												fontSubset={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].subset ? subtitleFont[0].subset : '')}
+												onFontSubset={(value) => saveSubtitleFont({subset: value})}
+												textTransform={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].textTransform ? subtitleFont[0].textTransform : '')}
+												onTextTransform={(value) => saveSubtitleFont({textTransform: value})}
+												padding={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].padding ? subtitleFont[0].padding : [0, 0, 0, 0])}
+												onPadding={(value) => saveSubtitleFont({padding: value})}
+												paddingControl={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].paddingControl ? subtitleFont[0].paddingControl : 'linked')}
+												onPaddingControl={(value) => saveSubtitleFont({paddingControl: value})}
+												margin={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].margin ? subtitleFont[0].margin : [0, 0, 0, 0])}
+												onMargin={(value) => saveSubtitleFont({margin: value})}
+												marginControl={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].marginControl ? subtitleFont[0].marginControl : 'linked')}
+												onMarginControl={(value) => saveSubtitleFont({marginControl: value})}
+											/>
+										)}
+									</KadencePanelBody>
+								)}
+								{showSettings('titleAnchor', 'kadence/tabs') && (
+									<KadencePanelBody
+										title={__('Tab Anchor Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-tab-anchor-settings'}
+									>
+										{times(tabCount, n => renderAnchorSettings(n))}
+									</KadencePanelBody>
+								)}
+							</>
+						)}
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tabs' } excludedAttrs={ [ 'currentTab', 'tabCount' ] } preventMultiple={ [ 'titles' ] } />
+						{ activeTab === 'advanced' && (
+							<>
+								<KadencePanelBody panelName={'kb-tabs-spacing-settings'}>
+									<ResponsiveMeasureRangeControl
+										label={__('Padding', 'kadence-blocks')}
+										value={innerPadding}
+										onChange={(value) => setAttributes({innerPadding: value})}
+										tabletValue={tabletInnerPadding}
+										onChangeTablet={(value) => setAttributes({tabletInnerPadding: value})}
+										mobileValue={mobileInnerPadding}
+										onChangeMobile={(value) => setAttributes({mobileInnerPadding: value})}
+										min={0}
+										max={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 12 : 200)}
+										step={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 0.1 : 1)}
+										unit={innerPaddingType}
+										units={['px', 'em', 'rem']}
+										onUnit={(value) => setAttributes({innerPaddingType: value})}
+									/>
+
+									{showSettings('structure', 'kadence/tabs') && (
+										<>
+											<RangeControl
+												label={__('Content Minimum Height', 'kadence-blocks')}
+												value={minHeight}
+												onChange={(value) => {
+													setAttributes({
+														minHeight: value,
+													});
+												}}
+												min={0}
+												max={1000}
+											/>
+											<RangeControl
+												label={__('Max Width', 'kadence-blocks')}
+												value={maxWidth}
+												onChange={(value) => {
+													setAttributes({
+														maxWidth: value,
+													});
+												}}
+												min={0}
+												max={2000}
+											/>
+										</>
+									)}
+
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+
+								<KadenceBlockDefaults 
+									attributes={attributes} 
+									defaultAttributes={metadata['attributes']}
+									blockSlug={metadata['name']}
+									excludedAttrs={nonTransAttrs}
+									preventMultiple={['titles']}
+								/>
+
+							</>
+						)}
 
 					</InspectorControls>
 				) }
@@ -1618,7 +1707,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								</WebfontLoader>
 							) }
 							<div className="kt-tabs-content-wrap" style={ {
-								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
+								paddingTop: getSpacingOptionOutput( previewInnerPaddingTop, innerPaddingType ),
+								paddingBottom: getSpacingOptionOutput( previewInnerPaddingBottom, innerPaddingType ),
+								paddingLeft: getSpacingOptionOutput( previewInnerPaddingLeft, innerPaddingType ),
+								paddingRight: getSpacingOptionOutput( previewInnerPaddingRight, innerPaddingType ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
 								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
 								minHeight: minHeight + 'px',
@@ -1648,6 +1740,7 @@ export default compose( [
 			tabsBlock: block,
 			realTabsCount: block.innerBlocks.length,
 			tabsInner: getBlockOrder( clientId ),
+			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

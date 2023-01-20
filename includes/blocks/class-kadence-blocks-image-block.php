@@ -61,26 +61,17 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		$key_positions = [ 'top', 'right', 'bottom', 'left' ];
+		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id . ':not(.kb-specificity-added):not(.kb-extra-specificity-added)' );
+		// Margins
+		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', array(
+			'tablet_key'  => 'marginTablet',
+			'mobile_key'  => 'marginMobile',
+			'unit_key' => 'marginUnit'
+		) );
 		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id );
 		if ( ! empty( $attributes['zIndex'] ) ) {
 			$css->add_property( 'position', 'relative' );
 			$css->add_property( 'z-index', $attributes['zIndex'] );
-		}
-
-		// Margins
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( isset( $attributes[ 'margin' . $breakpoint ] ) && is_array( $attributes[ 'margin' . $breakpoint ] ) ) {
-				foreach ( $attributes[ 'margin' . $breakpoint ] as $key => $marginValue ) {
-					if ( is_numeric( $marginValue ) ) {
-						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attributes['marginUnit'] ) ? 'px' : $attributes['marginUnit'] ) );
-
-					}
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
 		}
 		$align = ( ! empty( $attributes['align'] ) ? $attributes['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
@@ -123,23 +114,14 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 			$css->set_media_state( 'desktop' );
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
+		$css->set_selector( '.kb-image' . $unique_id . ':not(.kb-image-is-ratio-size) .kb-img, .kb-image' . $unique_id . '.kb-image-is-ratio-size' );
 		// Padding
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( isset( $attributes[ 'padding' . $breakpoint ] ) && is_array( $attributes[ 'padding' . $breakpoint ] ) ) {
-				foreach ( $attributes[ 'padding' . $breakpoint ] as $key => $paddingValue ) {
-					if ( is_numeric( $paddingValue ) ) {
-						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attributes['paddingUnit'] ) ? 'px' : $attributes['paddingUnit'] ) );
-
-					}
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
-
+		$css->render_measure_output( $attributes, 'paddingDesktop', 'padding', array(
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+			'unit_key' => 'paddingUnit'
+		) );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Border Color
 		if ( isset( $attributes['borderColor'] ) ) {
 			$css->add_property( 'border-style', 'solid' );
@@ -162,22 +144,13 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
-		// Background Color
-		if ( isset( $attributes['backgroundColor'] ) ) {
+		// Background Color.
+		if ( ! empty( $attributes['backgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
 		}
 
-		// Border Radius
-		if ( isset( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
-			$borderRadius     = array();
-			$borderRadiusUnit = isset( $attributes['borderRadiusUnit'] ) ? $attributes['borderRadiusUnit'] : 'px';
-
-			foreach ( $attributes['borderRadius'] as $br ) {
-				$borderRadius[] = ! is_numeric( $br ) ? '0' : $br . $borderRadiusUnit;
-			}
-
-			$css->add_property( 'border-radius', implode( ' ', $borderRadius ) );
-		}
+		// Border Radius.
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 
 		if ( ! empty( $attributes['maskSvg'] ) && 'none' !== $attributes['maskSvg'] ) {
 			if ( 'custom' === $attributes['maskSvg'] ) {
@@ -196,7 +169,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( '-webkit-mask-position', $mask_position );
 				}
 			} else {
-				$mask_base_url = KADENCE_BLOCKS_URL . 'dist/assets/images/masks/';
+				$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 				$css->add_property( 'mask-image', 'url(' . $mask_base_url . $attributes['maskSvg'] . '.svg)' );
 				$css->add_property( 'mask-size', 'auto' );
 				$css->add_property( 'mask-repeat', 'no-repeat' );
@@ -233,10 +206,10 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 			$css->set_selector( '.kb-image' . $unique_id . ' figcaption' );
 			if ( isset( $caption_font['color'] ) && ! empty( $caption_font['color'] ) ) {
-				$css->add_property( 'color', $this->kadence_color_output( $caption_font['color'] ) );
+				$css->add_property( 'color', $css->render_color( $caption_font['color'] ) );
 			}
 			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
-				$css->add_property( 'background', $this->kadence_color_output( $caption_font['background'] ) );
+				$css->add_property( 'background', $css->render_color( $caption_font['background'] ) );
 			}
 			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) && ! empty( $caption_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $caption_font['size'][0] . ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) );

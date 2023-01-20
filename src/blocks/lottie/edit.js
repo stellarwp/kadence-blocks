@@ -8,13 +8,14 @@
 import './editor.scss';
 import metadata from './block.json';
 
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import '@dotlottie/player-component';
+
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
 import { has, get } from 'lodash';
@@ -40,15 +41,20 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
 import classnames from 'classnames';
 import {
 	KadenceSelectPosts,
-	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components'
-import { setBlockDefaults } from '@kadence/helpers';
-
-const ktlottieUniqueIDs = [];
+import {
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getUniqueId,
+} from '@kadence/helpers';
 
 export function Edit( {
 	attributes,
@@ -86,11 +92,24 @@ export function Edit( {
 		marginUnit,
 		label,
 	} = attributes;
-	const previewDevice = useSelect( ( select ) => {
-		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
-	}, [] );
+
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
 	const [ lottieAnimationsCacheKey, setLottieAnimationsCacheKey ] = useState( { key: Math.random() } );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
+
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+	 [ clientId ]
+	);
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -117,9 +136,9 @@ export function Edit( {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const nonTransAttrs = ['fileSrc', 'fileUrl', 'label'];
 
 	const classes = classnames( className );
 	const blockProps = useBlockProps( {
@@ -127,20 +146,11 @@ export function Edit( {
 	} );
 
 	useEffect( () => {
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/lottie', attributes);
+		setBlockDefaults( 'kadence/lottie', attributes);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			ktlottieUniqueIDs.push( uniqueID );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 	const containerClasses = classnames( {
 		'kb-lottie-container': true,
@@ -184,21 +194,22 @@ export function Edit( {
 
 	}
 
-	const getAnimationUrl= (fileSrc, fileUrl, localFile, rest_url) => {
+	const getAnimationUrl= () => {
 		let url = '';
 
 		if( fileSrc === 'url') {
 			url = fileUrl;
 		} else {
-			url = rest_url + 'kb-lottieanimation/v1/animations/' + get(localFile, [0, 'value'], '')
+			url = rest_url + 'kb-lottieanimation/v1/animations/' + get(localFile, [0, 'value'], '') + '.json';
 		}
 
-		if( url === '' || url === rest_url + 'kb-lottieanimation/v1/animations/') {
+		if( url === '' || url === rest_url + 'kb-lottieanimation/v1/animations/.json') {
 			url = 'https://assets10.lottiefiles.com/packages/lf20_rqcjx8hr.json';
 		}
 
 		return url;
 	}
+
 	const UploadModal = () => {
 		const [ isOpen, setOpen ] = useState( false );
 		const [ lottieJsonError, setLottieJsonError ] = useState( false );
@@ -252,12 +263,51 @@ export function Edit( {
 		);
 	};
 
+	let playerProps = {};
+
+	if(loop){
+		playerProps.loop = '';
+	}
+
+	if(playbackSpeed){
+		playerProps.speed = playbackSpeed;
+	}
+
+	if(showControls){
+		playerProps.controls = '';
+	}
+
+	if(autoplay){
+		playerProps.autoplay = '';
+	}
+
+	if(onlyPlayOnHover){
+		playerProps.hover = '';
+	}
+
+	if(bouncePlayback) {
+		playerProps.mode = 'bounce';
+	} else {
+		playerProps.mode = 'normal';
+	}
+
+	if( delay !== 0){
+		playerProps.intermission = 1000 * delay;
+	}
+
 	return (
 		<div { ...blockProps }>
-			<BlockControls group="block">
+			<BlockControls>
 				<BlockAlignmentControl
 					value={ align }
 					onChange={ ( value ) => setAttributes( { align: value } ) }
+				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/lottie' }>
@@ -315,6 +365,8 @@ export function Edit( {
 									/>
 
 									<UploadModal />
+
+									<br/><br/>
 								</>
 							}
 							<TextControl
@@ -441,7 +493,6 @@ export function Edit( {
 								step={ 0.1 }
 								min={ 0 }
 								max={ 60 }
-								help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 							/>
 							<RangeControl
 								label={ __( 'Limit Loops', 'kadence-blocks' ) }
@@ -465,27 +516,26 @@ export function Edit( {
 							panelName={ 'sizeControl' }
 							blockSlug={ 'kadence/lottie' }
 						>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={ __( 'Padding', 'kadence-blocks' ) }
 								value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-								control={ paddingControl }
 								tabletValue={ paddingTablet }
 								mobileValue={ paddingMobile }
 								onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
 								onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
 								onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-								onChangeControl={ ( value ) => setPaddingControl( value ) }
 								min={ 0 }
 								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
 								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
 								unit={ paddingUnit }
 								units={ [ 'px', 'em', 'rem', '%' ] }
 								onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
 							/>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={ __( 'Margin', 'kadence-blocks' ) }
 								value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-								control={ marginControl }
 								tabletValue={ marginTablet }
 								mobileValue={ marginMobile }
 								onChange={ ( value ) => {
@@ -493,15 +543,15 @@ export function Edit( {
 								} }
 								onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
 								onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-								onChangeControl={ ( value ) => setMarginControl( value ) }
 								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
 								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
 								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 								unit={ marginUnit }
 								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
-
 							<RangeControl
 								label={ __( 'Max Width', 'kadence-blocks' ) }
 								value={ width }
@@ -513,41 +563,52 @@ export function Edit( {
 							/>
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/lottie' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				}
 
 			</KadenceInspectorControls>
 			<div className={ containerClasses } style={
 				{
-					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+					paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 				}
 			}>
-				<Player
-					speed={ undefined !== playbackSpeed ? playbackSpeed : 1 }
-					autoplay={ autoplay ? true : false }
-					count={ loopLimit !== 0 ? loopLimit : 0 }
-					hover={ onlyPlayOnHover ? true : false }
-					loop={ loop ? true : false }
-					id={ 'kb-lottie-player' + uniqueID }
-					key={ rerenderKey }
-					src={ getAnimationUrl(fileSrc, fileUrl, localFile, rest_url) }
-					style={ {
+
+				<dotlottie-player
+					{...playerProps}
+					src={getAnimationUrl()}
+					key={rerenderKey}
+					id={'kb-lottie-player' + uniqueID}
+					style={{
 						maxWidth: (width === '0' ? 'auto' : width + 'px'),
-						// height: ( width === "0" ? 'auto' : width + 'px'),
 						margin: '0 auto'
+					}}
+				/>
+
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
 					} }
-				>
-					<Controls visible={ showControls ? true : false } buttons={['play', 'frame']} />
-				</Player>
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				/>
 			</div>
 		</div>
 	);

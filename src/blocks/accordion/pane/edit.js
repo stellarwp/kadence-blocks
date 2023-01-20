@@ -3,8 +3,10 @@
  *
  * Registering a basic block with Gutenberg.
  */
+import classnames from 'classnames';
 
-import { KadencePanelBody, IconControl, IconRender } from '@kadence/components';
+import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
+import { getUniqueId } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
 import {
@@ -65,24 +67,10 @@ function PaneEdit( {
 		updateBlockAttributes( rootID, { paneCount: value } );
 	}
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				setAttributes( {
-					uniqueID: smallID,
-				} );
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+		
 		if ( ! id ) {
 			const newPaneCount = accordionBlock[0].attributes.paneCount + 1;
 			setAttributes( {
@@ -106,9 +94,14 @@ function PaneEdit( {
 			addUniquePane( id, clientId, rootID );
 		}
 	}, [] );
-
+	const blockClasses = classnames( {
+		'kt-accordion-pane'                   : true,
+		[ `kt-accordion-pane-${id}` ]  : id,
+		[ `kt-pane${uniqueID}` ]  : uniqueID,
+		[ `kt-accordion-panel-active` ]         : undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id ),
+	} );
 	const blockProps = useBlockProps( {
-		className: `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }`
+		className: blockClasses
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -126,9 +119,10 @@ function PaneEdit( {
 					initialOpen={ false }
 					panelName={ 'kb-pane-title-icon' }
 				>
-					<IconControl
+					<KadenceIconPicker
 						value={ icon }
 						onChange={ value => setAttributes( { icon: value } ) }
+						allowClear={ true }
 					/>
 					<SelectControl
 						label={ __( 'Icon Side', 'kadence-blocks' ) }
@@ -151,7 +145,7 @@ function PaneEdit( {
 					/>
 				</KadencePanelBody>
 			</InspectorControls>
-			<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
+			<HtmlTagOut className={ `kt-accordion-header-wrap` } >
 				<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 					<div className="kt-blocks-accordion-title-wrap">
 						{ icon && 'left' === iconSide && (

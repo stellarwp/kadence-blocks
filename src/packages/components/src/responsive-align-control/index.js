@@ -13,12 +13,19 @@ import { map } from 'lodash';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 
 import {
+	arrowUp,
+	arrowLeft,
+	arrowRight,
+	arrowDown,
+} from '@wordpress/icons';
+
+import {
 	Dashicon,
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
-import { AlignmentToolbar } from '@wordpress/blockEditor';
-
+import { AlignmentToolbar, JustifyToolbar, BlockVerticalAlignmentToolbar } from '@wordpress/blockEditor';
+import './editor.scss';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -32,6 +39,7 @@ export default function ResponsiveAlignControls( {
 	tabletValue,
 	value,
 	isCollapsed = false,
+	type = 'textAlign',
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
@@ -47,6 +55,36 @@ export default function ResponsiveAlignControls( {
 		setPreviewDeviceType( capitalizeFirstLetter( device ) );
 		setDeviceType( capitalizeFirstLetter( device ) );
 	};
+	let alignmentControls = '';
+	let UIComponent = AlignmentToolbar;
+	if ( type === 'justify' ) {
+		UIComponent = JustifyToolbar;
+	} else if ( type === 'vertical' ) {
+		UIComponent = BlockVerticalAlignmentToolbar;
+	} else if ( type === 'orientation' ) {
+		alignmentControls = [
+			{
+				icon: arrowRight,
+				title: __( 'Horizontal Direction' ),
+				align: 'row',
+			},
+			{
+				icon: arrowDown,
+				title: __( 'Vertical Direction' ),
+				align: 'column',
+			},
+			{
+				icon: arrowLeft,
+				title: __( 'Horizontal Reverse' ),
+				align: 'row-reverse',
+			},
+			{
+				icon: arrowUp,
+				title: __( 'Vertical Reverse' ),
+				align: 'column-reverse',
+			},
+		]
+	}
 	const devices = [
 		{
 			name: 'Desktop',
@@ -67,24 +105,27 @@ export default function ResponsiveAlignControls( {
 	];
 	const output = {};
 	output.Mobile = (
-		<AlignmentToolbar
+		<UIComponent
 			value={ ( mobileValue ? mobileValue : '' ) }
 			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChangeMobile( align ) }
+			alignmentControls={ alignmentControls ? alignmentControls : undefined }
 		/>
 	);
 	output.Tablet = (
-		<AlignmentToolbar
+		<UIComponent
 			value={ ( tabletValue ? tabletValue : '' ) }
 			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChangeTablet( align ) }
+			alignmentControls={ alignmentControls ? alignmentControls : undefined }
 		/>
 	);
 	output.Desktop = (
-		<AlignmentToolbar
+		<UIComponent
 			value={ ( value ? value : '' ) }
 			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChange( align ) }
+			alignmentControls={ alignmentControls ? alignmentControls : undefined }
 		/>
 	);
 	return [

@@ -12,21 +12,27 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n'
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { ToggleControl, RangeControl } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
-	ResponsiveMeasurementControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
 	KadencePanelBody,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
-import { setBlockDefaults } from '@kadence/helpers';
+import {
+	setBlockDefaults,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getUniqueId,
+	getInQueryBlock
+} from '@kadence/helpers';
 
-import { createElement } from '@wordpress/element'
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, useInnerBlocksProps, BlockControls } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
@@ -40,14 +46,11 @@ import { Fragment } from '@wordpress/element';
 */
 import classnames from 'classnames';
 
-const ktShowMoreUniqueIDs = []
-
 export function Edit ({
 	attributes,
 	setAttributes,
 	clientId,
-    context,
-  	previewDevice
+    context
 } ) {
 
 	const {
@@ -73,39 +76,32 @@ export function Edit ({
 		inQueryBlock
 	} = attributes
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect( () => {
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/show-more', attributes);
+		setBlockDefaults( 'kadence/show-more', attributes);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
-		} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
-			setAttributes({
-				uniqueID: '_' + clientId.substr(2, 9),
-			})
-			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
-		} else {
-			ktShowMoreUniqueIDs.push(uniqueID)
-		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 
-		if (context && (context.queryId || Number.isFinite(context.queryId)) && context.postId) {
-			if (!inQueryBlock) {
-				setAttributes({
-					inQueryBlock: true,
-				});
-			}
-		} else if (inQueryBlock) {
-			setAttributes({
-				inQueryBlock: false,
-			});
-		}
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -148,6 +144,47 @@ export function Edit ({
 		className: classes,
 		ref,
 	} );
+	const innerClasses = classnames( {
+		'kb-block-show-more-inner-container': true,
+	} );
+	const innerBlockProps = useInnerBlocksProps(
+		{
+			className: innerClasses,
+		},
+		{
+			templateLock: 'all',
+			renderAppender: false,
+            template: [
+				['kadence/column', {
+					className: 'kb-show-more-content',
+				} ],
+				['kadence/advancedbtn', {
+					lock: { remove: true, move: true },
+					lockBtnCount: true,
+					hAlign: 'left',
+					uniqueID: buttonOneUniqueID,
+					className: 'kb-show-more-buttons',
+				},
+					[
+						['kadence/singlebtn', {
+							lock: { remove: true, move: true },
+							hideLink: true,
+							text: __( 'Show More', 'kadence-blocks' ),
+							sizePreset: 'small',
+							noCustomDefaults: true,
+						}],
+						['kadence/singlebtn', {
+							lock: { remove: true, move: true },
+							hideLink: true,
+							text: __( 'Show Less', 'kadence-blocks' ),
+							sizePreset: 'small',
+							noCustomDefaults: true,
+						}]
+					]
+				]
+			],
+		}
+	);
 
 	const FadeOut = () => {
 
@@ -156,8 +193,8 @@ export function Edit ({
 		return (
 			<div className="Class">
 				<style>{`
-        .kb-block-show-more-container${ uniqueID } .kb-show-more-buttons .btn-area-wrap:last-of-type {
-       	display: ${ showHideMore ? 'inline' : 'none' };
+        .kb-block-show-more-container${ uniqueID } .kb-show-more-buttons .wp-block-kadence-singlebtn:last-of-type {
+       	display: ${ showHideMore ? 'inline-flex' : 'none' };
        	}
 
         .kb-block-show-more-container${ uniqueID } .kb-show-more-content:not(.is-selected, .has-child-selected) {
@@ -173,6 +210,15 @@ export function Edit ({
 
 	return (
 		<Fragment>
+			
+			<BlockControls>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
+			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/show-more' }>
 				<InspectorControlTabs
 					panelName={ 'show-more' }
@@ -235,32 +281,27 @@ export function Edit ({
 
 				{( activeTab === 'advanced' ) &&
 					<>
-						<KadencePanelBody
-							title={__( 'Spacing Settings', 'kadence-blocks' )}
-							panelName={ 'spacingSettings'}
-							blockSlug={ 'kadence/show-more' }
-						>
-							<ResponsiveMeasurementControls
+						<KadencePanelBody panelName={'kb-show-more-settings'}>
+							<ResponsiveMeasureRangeControl
 								label={__( 'Padding', 'kadence-blocks' )}
 								value={[ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ]}
-								control={paddingControl}
 								tabletValue={paddingTablet}
 								mobileValue={paddingMobile}
 								onChange={( value ) => setAttributes( { paddingDesktop: value } )}
 								onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
-								onChangeControl={( value ) => setPaddingControl( value )}
 								min={0}
 								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
 								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 								unit={paddingUnit}
 								units={[ 'px', 'em', 'rem', '%' ]}
 								onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
 							/>
-							<ResponsiveMeasurementControls
+							<ResponsiveMeasureRangeControl
 								label={__( 'Margin', 'kadence-blocks' )}
 								value={[ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ]}
-								control={marginControl}
 								tabletValue={marginTablet}
 								mobileValue={marginMobile}
 								onChange={( value ) => {
@@ -268,15 +309,19 @@ export function Edit ({
 								}}
 								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-								onChangeControl={( value ) => setMarginControl( value )}
 								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
 								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
 								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 								unit={marginUnit}
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 								onUnit={( value ) => setAttributes( { marginUnit: value } )}
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadencePanelBody
 							title={__( 'Expand Settings', 'kadence-blocks' )}
 							panelName={ 'expandSettings'}
@@ -300,288 +345,44 @@ export function Edit ({
 							/>
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/show-more' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 					</>
 				}
 			</KadenceInspectorControls>
 			<FadeOut/>
 			<div {...blockProps}
 				style={ {
-				marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-				marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-				marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-				marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+				marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-				paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-				paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-				paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-				paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+				paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+				paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+				paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 			} }>
-				{ createElement( InnerBlocks, {
-					templateLock: "all",
-					renderAppender: false,
-					template: [
-						['kadence/column', {
-							className: 'kb-show-more-content',
-						} ],
-						['kadence/advancedbtn', {
-							lock: { remove: true, move: true },
-							lockBtnCount: true,
-							hideLink: true,
-							hAlign: 'left',
-							thAlign: "",
-							mhAlign: "",
-							btnCount: 2,
-							uniqueID: buttonOneUniqueID,
-							className: 'kb-show-more-buttons',
-							btns: [
-								{
-									'text': __( 'Show More', 'kadence-blocks' ),
-									'link': '',
-									'target': '_self',
-									'size': '',
-									'paddingBT': '',
-									'paddingLR': '',
-									'color': '',
-									'background': '',
-									'border': '',
-									'backgroundOpacity': 1,
-									'borderOpacity': 1,
-									'borderRadius': '',
-									'borderWidth': '',
-									'colorHover': '',
-									'backgroundHover': '',
-									'borderHover': '',
-									'backgroundHoverOpacity': 1,
-									'borderHoverOpacity': 1,
-									'icon': '',
-									'iconSide': 'right',
-									'iconHover': false,
-									'cssClass': '',
-									'noFollow': false,
-									'gap': 5,
-									'responsiveSize': [
-										'',
-										''
-									],
-									'gradient': [
-										'#999999',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'gradientHover': [
-										'#777777',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'btnStyle': 'basic',
-									'btnSize': 'small',
-									'backgroundType': 'solid',
-									'backgroundHoverType': 'solid',
-									'width': [
-										'',
-										'',
-										''
-									],
-									'responsivePaddingBT': [
-										'',
-										''
-									],
-									'responsivePaddingLR': [
-										'',
-										''
-									],
-									'boxShadow': [
-										false,
-										'#000000',
-										0.2,
-										1,
-										1,
-										2,
-										0,
-										false
-									],
-									'boxShadowHover': [
-										false,
-										'#000000',
-										0.4,
-										2,
-										2,
-										3,
-										0,
-										false
-									],
-									'inheritStyles': 'inherit',
-									'borderStyle': '',
-									'onlyIcon': [
-										false,
-										'',
-										''
-									]
-								},
-								{
-									'text': __( 'Show Less', 'kadence-blocks' ),
-									'link': '',
-									'target': '_self',
-									'size': '',
-									'paddingBT': '',
-									'paddingLR': '',
-									'color': '',
-									'background': '',
-									'border': '',
-									'backgroundOpacity': 1,
-									'borderOpacity': 1,
-									'borderRadius': '',
-									'borderWidth': '',
-									'colorHover': '',
-									'backgroundHover': '',
-									'borderHover': '',
-									'backgroundHoverOpacity': 1,
-									'borderHoverOpacity': 1,
-									'icon': '',
-									'iconSide': 'right',
-									'iconHover': false,
-									'cssClass': '',
-									'noFollow': false,
-									'gap': 5,
-									'responsiveSize': [
-										'',
-										''
-									],
-									'gradient': [
-										'#999999',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'gradientHover': [
-										'#777777',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'btnStyle': 'basic',
-									'btnSize': 'small',
-									'backgroundType': 'solid',
-									'backgroundHoverType': 'solid',
-									'width': [
-										'',
-										'',
-										''
-									],
-									'responsivePaddingBT': [
-										'',
-										''
-									],
-									'responsivePaddingLR': [
-										'',
-										''
-									],
-									'boxShadow': [
-										false,
-										'#000000',
-										0.2,
-										1,
-										1,
-										2,
-										0,
-										false
-									],
-									'boxShadowHover': [
-										false,
-										'#000000',
-										0.4,
-										2,
-										2,
-										3,
-										0,
-										false
-									],
-									'inheritStyles': 'inherit',
-									'borderStyle': '',
-									'onlyIcon': [
-										false,
-										'',
-										''
-									]
-								}
-							],
-							"typography": "",
-							"googleFont": false,
-							"loadGoogleFont": true,
-							"fontSubset": "",
-							"fontVariant": "",
-							"fontWeight": "regular",
-							"fontStyle": "normal",
-							"textTransform": "",
-							"widthType": "auto",
-							"widthUnit": "px",
-							"forceFullwidth": false,
-							"collapseFullwidth": false,
-							"margin": [
-								{
-									"desk": [
-										"",
-										"",
-										"",
-										""
-									],
-									"tablet": [
-										"",
-										"",
-										"",
-										""
-									],
-									"mobile": [
-										"",
-										"",
-										"",
-										""
-									]
-								}
-							],
-							"marginUnit": "px",
-							"inQueryBlock": false,
-							"kadenceAOSOptions": [
-								{
-									"duration": "",
-									"offset": "",
-									"easing": "",
-									"once": "",
-									"delay": "",
-									"delayOffset": ""
-								}
-							]
-						}],
-					],
-				}) }
+				<div {...innerBlockProps }></div>
+				<SpacingVisualizer
+					style={ {
+						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					} }
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				/>
 			</div>
 		</Fragment>
 	)
 
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( Edit );
+export default ( Edit );

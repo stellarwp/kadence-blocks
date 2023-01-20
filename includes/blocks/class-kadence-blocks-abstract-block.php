@@ -88,10 +88,10 @@ class Kadence_Blocks_Abstract_Block {
 	public function should_render_inline_stylesheet( $name ) {
 		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) ) {
 			if ( function_exists( 'wp_is_block_theme' ) ) {
-				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() ) {
+				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() && 1 === did_action( 'wp_head' ) ) {
 					wp_print_styles( $name );
 				}
-			} elseif ( ! doing_filter( 'the_content' ) ) {
+			} elseif ( ! doing_filter( 'the_content' ) && 1 === did_action( 'wp_head' ) ) {
 				wp_print_styles( $name );
 			}
 		}
@@ -117,20 +117,12 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $block the block data.
 	 */
 	public function output_head_data( $block ) {
-		// Check and enqueue styles if needed.
-		if ( $this->has_style ) {
-			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
-			}
-		}
-		if ( $this->has_script ) {
-			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-				$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
-			}
-		}
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
 			if ( isset( $attributes['uniqueID'] ) ) {
+				// Check and enqueue stylesheets and scripts if needed.
+				$this->render_scripts( $attributes, false );
+
 				$unique_id = $attributes['uniqueID'];
 				$css_class = Kadence_Blocks_CSS::get_instance();
 				if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_head_css', true, $this->block_name, $attributes ) ) {
@@ -141,17 +133,19 @@ class Kadence_Blocks_Abstract_Block {
 			}
 		}
 	}
-
 	/**
-	 * Render Block CSS
+	 * Render for block scripts block.
 	 *
-	 * @param array $attributes the blocks attribtues.
-	 * @param string $content the blocks content.
+	 * @param array   $attributes the blocks attributes.
+	 * @param boolean $inline true or false based on when called.
 	 */
-	public function render_css( $attributes, $content ) {
+	public function render_scripts( $attributes, $inline = false ) {
 		if ( $this->has_style ) {
 			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
 				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+				if ( $inline ) {
+					$this->should_render_inline_stylesheet( 'kadence-blocks-' . $this->block_name );
+				}
 			}
 		}
 		if ( $this->has_script ) {
@@ -159,15 +153,27 @@ class Kadence_Blocks_Abstract_Block {
 				$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
 			}
 		}
+	}
+	/**
+	 * Render Block CSS
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 */
+	public function render_css( $attributes, $content, $block_instance ) {
+		$this->render_scripts( $attributes, true );
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$css_class = Kadence_Blocks_CSS::get_instance();
-			$content   = $this->build_html( $attributes, $unique_id, $content );
+
+			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
+
+			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
 				$css        = $this->build_css( $attributes, $css_class, $unique_id );
-				if ( ! empty( $css ) ) {
+				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
 					$content = '<style>' . $css . '</style>' . $content;
 				}
 			}
@@ -193,10 +199,11 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param $attributes
 	 * @param $unique_id
 	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
-	public function build_html( $attributes, $unique_id, $content ) {
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return $content;
 	}
 
@@ -237,4 +244,5 @@ class Kadence_Blocks_Abstract_Block {
 		}
 		wp_enqueue_style( $handle );
 	}
+
 }

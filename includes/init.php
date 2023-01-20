@@ -59,13 +59,11 @@ function kadence_gutenberg_editor_assets() {
 
 	wp_set_script_translations( 'kadence-blocks-vendor', 'kadence-blocks' );
 
-
 	$blocks = array(
 		'accordion',
 		'advancedbtn',
 		'advancedgallery',
-		'advanced-heading',
-		'advanced-form',
+		'advancedheading',
 		'column',
 		'countup',
 		'countdown',
@@ -81,15 +79,18 @@ function kadence_gutenberg_editor_assets() {
 		'row-layout',
 		'show-more',
 		'spacer',
-		'table-of-contents',
+		'tableofcontents',
 		'tabs',
 		'testimonials',
 	);
+	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
+		$blocks[] = 'advanced-form';
+	}
 	foreach ( $blocks as $block ) {
 		$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
 		$handle = sprintf( 'kadence-blocks-%s', $block );
 
-		$item = wp_register_script( $handle, sprintf( '%sdist/blocks-%s.js', KADENCE_BLOCKS_URL, $block ), array_merge( $meta['dependencies'], array( 'wp-api', 'kadence-blocks-js', 'kadence-extension-stores' ) ), $meta['version'], true );
+		$item = wp_register_script( $handle, sprintf( '%sdist/blocks-%s.js', KADENCE_BLOCKS_URL, $block ), array_merge( $meta['dependencies'], array( 'wp-api', 'kadence-blocks-js', 'kadence-extension-stores', 'kadence-extension-block-css' ) ), $meta['version'], true );
 		wp_register_style( $handle, sprintf( '%sdist/blocks-%s.css', KADENCE_BLOCKS_URL, $block ), array( 'wp-edit-blocks', 'kadence-components' ), $meta['version'] );
 		wp_set_script_translations( $handle, 'kadence-blocks' );
 	}
@@ -243,6 +244,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			'rest_url' => get_rest_url(),
+			'wp_version' => get_bloginfo( 'version' ),
 			'rcp_levels' => $level_ids,
 			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
@@ -571,17 +573,112 @@ function kadence_blocks_post_block_get_excerpt_length() {
 	return $kadence_blocks_post_block_get_excerpt_length;
 }
 /**
+ * Add global styles into the frontend.
+ */
+function kadence_blocks_add_global_gutenberg_styles_frontend() {
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
+	$css = ':root {';
+	foreach( $font_sizes as $key => $value ) {
+		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
+	}
+	$css .= '}';
+	wp_register_style( 'kadence-blocks-global-variables', false );
+	wp_enqueue_style( 'kadence-blocks-global-variables' );
+	wp_add_inline_style( 'kadence-blocks-global-variables', $css );
+}
+add_action( 'wp_enqueue_scripts', 'kadence_blocks_add_global_gutenberg_styles_frontend', 90 );
+/**
+ * Add global styles into the editor.
+ */
+function kadence_blocks_add_global_gutenberg_styles() {
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
+	$css = ':root {';
+	foreach( $font_sizes as $key => $value ) {
+		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
+	}
+	$css .= '}';
+	wp_add_inline_style( 'wp-edit-blocks', $css );
+}
+add_action( 'enqueue_block_editor_assets', 'kadence_blocks_add_global_gutenberg_styles', 90 );
+/**
  * Add inline css editor width
  */
 function kadence_blocks_admin_theme_content_width() {
 	global $content_width;
 	if ( isset( $content_width ) ) {
 		echo '<style id="kt-block-content-width">';
-		echo '.wp-block-kadence-rowlayout > .innerblocks-wrap.kb-theme-content-width {
+		echo '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 			max-width:' . esc_attr( $content_width ) . 'px;
 		}';
 		echo '</style>';
 	}
+	echo '<style id="kb-global-styles">';
+	echo ':root {
+		--global-kb-spacing-xxs: 0.5rem;
+		--global-kb-spacing-xs: 1rem;
+		--global-kb-spacing-sm: 1.5rem;
+		--global-kb-spacing-md: 2rem;
+		--global-kb-spacing-lg: 3rem;
+		--global-kb-spacing-xl: 4rem;
+		--global-kb-spacing-xxl: 5rem;
+		--global-kb-spacing-3xl: 6.5rem;
+		--global-kb-spacing-4xl: 8rem;
+		--global-kb-spacing-5xl: 10rem;
+		--global-row-edge-sm: 15px;
+		--global-row-edge-theme: var(--global-content-edge-padding);
+		--global-kb-gutter-sm: 1rem;
+		--global-kb-gutter-md: 2rem;
+		--global-kb-gutter-lg: 3rem;
+		--global-kb-gutter-xl: 5rem;
+	}';
+	// {
+	// 	value: 'lg',
+	// 	output: 'var(--global-kb-font-size-lg, 2rem)',
+	// 	size: 32,
+	// 	label:  __( 'LG', 'kadence-blocks' ),
+	// 	name:  __( 'Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: 'xl',
+	// 	output: 'var(--global-kb-font-size-xl, 3rem)',
+	// 	size: 40,
+	// 	label:  __( 'XL', 'kadence-blocks' ),
+	// 	name:  __( 'X Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: 'xxl',
+	// 	output: 'var(--global-kb-font-size-xxl, 4rem)',
+	// 	size: 64,
+	// 	label:  __( 'XXL', 'kadence-blocks' ),
+	// 	name:  __( '2X Large', 'kadence-blocks' ),
+	// },
+	// {
+	// 	value: '3xl',
+	// 	output: 'var(--global-kb-font-size-xxxl, 5rem)',
+	// 	size: 80,
+	// 	label:  __( '3XL', 'kadence-blocks' ),
+	// 	name:  __( '3X Large', 'kadence-blocks' ),
+	// },
+	echo ':root .post-content-style-boxed {
+		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
+	}';
+	echo '</style>';
 	if ( ! class_exists( 'Kadence\Theme' ) ) {
 		echo '<style id="kt-block-global-colors">';
 		echo ':root {
@@ -917,7 +1014,10 @@ function kadence_blocks_get_pro_license_data() {
 	return $data;
 }
 
-function register_lottie_custom_post_type() {
+/**
+ * Register the lotte post type.
+ */
+function kadence_blocks_register_lottie_custom_post_type() {
 	register_post_type(
 		'kadence_lottie',
 		array(
@@ -947,4 +1047,4 @@ function register_lottie_custom_post_type() {
 	);
 }
 
-add_action( 'init', 'register_lottie_custom_post_type' );
+add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );

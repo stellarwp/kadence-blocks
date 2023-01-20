@@ -3,7 +3,7 @@
  *
  * CSS for Sections
  */
- .wp-block-kadence-column > .kt-inside-inner-col > .wp-block-kadence-column {
+.wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .wp-block-kadence-column {
     flex: 1;
 }
 .wp-block-kadence-column {
@@ -15,7 +15,7 @@
 }
 .kt-inside-inner-col {
 	border: 0 solid transparent;
-    -ms-flex-negative: 0;
+	position: relative;
 	transition: all 0.3s ease;
 }
 

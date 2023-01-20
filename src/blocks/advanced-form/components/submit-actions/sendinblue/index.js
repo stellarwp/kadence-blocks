@@ -51,15 +51,15 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
 
 	useEffect( () => {
-		wp.api.loadPromise.then( () => {
-			const modelsSettings = new wp.api.models.Settings();
-			modelsSettings.fetch().then( response => {
-				setApi( response.kadence_blocks_send_in_blue_api );
-				if ( '' !== response.kadence_blocks_send_in_blue_api ) {
-					setIsSavedAPI( true );
-				}
-			} );
-		} );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setApi( response.kadence_blocks_send_in_blue_api );
+			if ( '' !== response.kadence_blocks_send_in_blue_api ) {
+				setIsSavedAPI( true );
+			}
+		});
 	}, [] );
 
 	const getSendInBlueList = () => {

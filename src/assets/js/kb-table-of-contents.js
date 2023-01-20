@@ -89,17 +89,13 @@
 		scrollToElement( element, offset, history = true ) {
 			var originalTop = Math.floor( element.getBoundingClientRect().top ) - offset;
 			window.scrollBy( { top: originalTop, left: 0, behavior: 'smooth' } );
-			var checkIfDone = setInterval( function() {
-				var atBottom = window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 2;
-				if ( ( originalTop >= 0 && ( ( Math.floor( element.getBoundingClientRect().top ) - offset ) <= 0 ) ) || ( originalTop < 0 && ( ( Math.floor( element.getBoundingClientRect().top ) - offset ) >= 0 ) ) || atBottom ) {
-					element.tabIndex = '-1';
-					element.focus();
-					if ( history ) {
-						window.history.pushState('', '', '#' + element.id );
-					}
-					clearInterval( checkIfDone );
-				}
-			}, 100 );
+			element.tabIndex = '-1';
+			element.focus({
+				preventScroll: true
+			});
+			if ( history ) {
+				window.history.pushState('', '', '#' + element.id );
+			}
 		},
 		/**
 		 * Instigate toggle.

@@ -1,8 +1,5 @@
-if ( ktgooglefonts === undefined ) {
-	var ktgooglefonts = [];
-}
 import { useEffect, useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import WebFont from "webfontloader";
 const statuses = {
 	inactive: 'inactive',
@@ -17,29 +14,25 @@ export default function KadenceWebfontLoader( {
 	children
 } ) {
    const [ status, setStatus ] = useState( undefined );
-	const [ mounted, setMounted ] = useState( false );
-	const { previewDevice } = useSelect(
+	const { addWebFont } = useDispatch( 'kadenceblocks/data' );
+	const [ device, setDevice ] = useState( 'desktop' );
+	const { previewDevice, isUniqueFont } = useSelect(
 		( select ) => {
 			return {
+				isUniqueFont: ( value, frame ) => select( 'kadenceblocks/data' ).isUniqueFont( value, frame ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
-		[ clientId ]
+		[]
 	);
-	const [ device, setDevice ] = useState( 'desktop' );
 	const nConfig = {
 		google: {
-			families: [ typography[ 0 ].family + ( typography[ 0 ].variant ? ':' + typography[ 0 ].variant : '' ) ],
+			families: [ typography[ 0 ].family + ( typography?.[ 0 ]?.variant ? ':' + typography[ 0 ].variant : '' ) ],
 		},
 	};
-	const addFont = ( font ) => {
-		if ( ! ktgooglefonts.includes( font ) ) {
-			ktgooglefonts.push( font );
-		}
-	}
 	const loadFonts = () => {
-		if ( mounted ) {
-			if ( ! ktgooglefonts.includes( nConfig.google.families[ 0 ] ) ) {
+		setTimeout( () => {
+			if ( undefined !== nConfig?.google?.families?.[ 0 ] && isUniqueFont( nConfig?.google?.families?.[ 0 ], ( frames['editor-canvas'] ? 'Desktop' : 'iframe' ) ) ) {
 				WebFont.load( {
 					...nConfig,
 					loading: handleLoading,
@@ -47,17 +40,15 @@ export default function KadenceWebfontLoader( {
 					inactive: handleInactive,
 					context: frames['editor-canvas'],
 				} );
-				addFont( nConfig.google.families[ 0 ] );
+				addWebFont( nConfig?.google?.families?.[ 0 ], ( frames['editor-canvas'] ? 'Desktop' : 'iframe' ) );
 			}
-		}
+		}, 50 );
 	}
    	useEffect( () => {
 		setDevice( previewDevice );
-		setMounted( true );
 	}, [] );
 	useEffect( () => {
 		if ( device !== previewDevice ) {
-			ktgooglefonts = [];
 			setDevice( previewDevice );
 			loadFonts();
 		}

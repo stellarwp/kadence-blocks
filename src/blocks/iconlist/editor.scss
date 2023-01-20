@@ -4,9 +4,6 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kt-btn-size-settings-container .components-button-group .components-button.is-primary svg {
-    fill: white;
-}
  .kt-svg-icon-list-item-wrap {
 	display: flex;
 	align-items: center;
@@ -39,12 +36,28 @@
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
     border: 0px solid transparent;
 }
-.kt-svg-icon-list-columns-2 {
+.kb-icon-list-style-stacked .kt-svg-icon-list-single {
+    border: 0px solid transparent;
+}
+/* Remove padding from innerblocks */
+.kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.wp-block[data-align="center"] .kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.kt-svg-icon-list-columns-2 .block-editor-block-list__layout {
     grid-template-columns: 50% auto;
     grid-template-rows: auto;
     display: grid;
 }
-.kt-svg-icon-list-columns-3 {
+.kt-svg-icon-list-columns-3 .block-editor-block-list__layout {
     grid-template-columns: 33% 33% auto;
     grid-template-rows: auto;
     display: grid;
@@ -62,30 +75,30 @@
 
 /* add all responsive styles here */
 @media (max-width: 1024px) {
-	.kt-tablet-svg-icon-list-columns-1 {
+	.kt-tablet-svg-icon-list-columns-1 .block-editor-block-list__layout {
 		display: block;
 	}
-	.kt-tablet-svg-icon-list-columns-2 {
+	.kt-tablet-svg-icon-list-columns-2 .block-editor-block-list__layout {
 		grid-template-columns: 50% auto;
 		grid-template-rows: auto;
 		display: grid;
 	}
-	.kt-tablet-svg-icon-list-columns-3 {
+	.kt-tablet-svg-icon-list-columns-3 .block-editor-block-list__layout {
 		grid-template-columns: 33% 33% auto;
 		grid-template-rows: auto;
 		display: grid;
 	}
 }
 @media (max-width: 767px) {
-	.kt-mobile-svg-icon-list-columns-1 {
+	.kt-mobile-svg-icon-list-columns-1 .block-editor-block-list__layout {
 		display: block;
 	}
-	.kt-mobile-svg-icon-list-columns-2 {
+	.kt-mobile-svg-icon-list-columns-2 .block-editor-block-list__layout {
 		grid-template-columns: 50% auto;
 		grid-template-rows: auto;
 		display: grid;
 	}
-	.kt-mobile-svg-icon-list-columns-3 {
+	.kt-mobile-svg-icon-list-columns-3 .block-editor-block-list__layout {
 		grid-template-columns: 33% 33% auto;
 		grid-template-rows: auto;
 		display: grid;
@@ -118,4 +131,12 @@
 
 .kt-svg-icon-list-level-5 {
 	padding-left: 10rem;
+}
+
+.wp-block[data-align="center"] .wp-block-kadence-iconlist {
+	clear: both;
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	//display: table;
 }

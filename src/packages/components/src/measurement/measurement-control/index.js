@@ -24,6 +24,7 @@ import { useState, Fragment } from '@wordpress/element';
 import {
 	Button,
 	DropdownMenu,
+	ButtonGroup,
 	Tooltip,
 } from '@wordpress/components';
 
@@ -48,14 +49,7 @@ import {
 	radiusIndividualIcon
 } from '@kadence/icons';
 
-let icons = {
-	px: pxIcon,
-	em: emIcon,
-	rem: remIcon,
-	vh: vhIcon,
-	vw: vwIcon,
-	percent: percentIcon,
-};
+import { settings, link, linkOff } from '@wordpress/icons';
 
 /**
  * Build the Measure controls
@@ -74,8 +68,8 @@ export default function MeasurementControls( {
 	secondIcon = outlineRightIcon,
 	thirdIcon = outlineBottomIcon,
 	fourthIcon = outlineLeftIcon,
-	linkIcon = linkedIcon,
-	unlinkIcon = individualIcon,
+	linkIcon = link,
+	unlinkIcon = linkOff,
 	isBorderRadius = false,
 	unit = '',
 	onUnit,
@@ -97,25 +91,8 @@ export default function MeasurementControls( {
 	}
 	const zero = ( allowEmpty ? '' : 0 );
 	const [ localControl, setLocalControl ] = useState( control );
-
-	/**
-	 * Build Toolbar Items.
-	 *
-	 * @param {string} mappedUnit the unit.
-	 * @returns {array} the unit array.
-	 */
-	const createLevelControlToolbar = ( mappedUnit ) => {
-		return [ {
-			icon: ( mappedUnit === '%' ? icons.percent : icons[ mappedUnit ] ),
-			isActive: unit === mappedUnit,
-			onClick: () => {
-				onUnit( mappedUnit );
-			},
-		} ];
-	};
-	const POPOVER_PROPS = {
-		className: 'kadence-units-popover',
-	};
+	const realControl = onControl ? control : localControl;
+	const realSetOnControl = onControl ? onControl : setLocalControl;
 	const onReset = () => {
 		if ( typeof reset === 'function' ){
 			reset();
@@ -128,21 +105,39 @@ export default function MeasurementControls( {
 			{ onChange && (
 				<div key={ key } className={ `components-base-control kb-measure-control ${ measureIcons.first !== outlineTopIcon ? 'kb-measure-corners-control' : 'kb-measure-sides-control' }${ '' !== className ? ' ' + className : '' }` }>
 					{ label && (
-						<div className="kadence-title-bar">
-							{ reset && (
-								<Button
-									className="is-reset is-single"
-									isSmall
-									disabled={ ( ( isEqual( [ '', '', '', '' ], measurement ) || isEqual( [ '', 'auto', '', 'auto' ], measurement ) ) ? true : false ) }
-									icon={ undo }
-									onClick={ () => onReset() }
-								></Button>
+						<div className="kadence-component__header kadence-title-bar">
+							{ label && (
+								<div className="kadence-component__header__title kadence-measure-control__title">
+									<label className="components-base-control__label">{ label }</label>
+									{ reset && (
+										<div className='title-reset-wrap'>
+											<Button
+												className="is-reset is-single"
+												label='reset'
+												isSmall
+												disabled={ ( ( isEqual( [ '', '', '', '' ], liveValue ) || isEqual( [ '', 'auto', '', 'auto' ], liveValue ) ) ? true : false ) }
+												icon={ undo }
+												onClick={ () => onReset() }
+											/>
+										</div>
+									) }
+								</div>
 							) }
-							<span className="kadence-control-title">{ label }</span>
+							{ realSetOnControl && (
+								<Button
+									isSmall={ true }
+									className={'kadence-radio-item kadence-control-toggle radio-custom is-single only-icon'}
+									label={ realControl !== 'individual' ? __( 'Individual', 'kadence-blocks' ) : __( 'Linked', 'kadence-blocks' )  }
+									icon={ realControl !== 'individual' ? linkIcon : unlinkIcon }
+									onClick={ () => realSetOnControl( realControl !== 'individual' ? 'individual' : 'linked' ) }
+									isPressed={ realControl !== 'individual' ? true : false }
+									isTertiary={ realControl !== 'individual' ? false : true }
+								/>
+							) }
 						</div>
 					) }
 					<div className="kadence-controls-content">
-						{ localControl !== 'individual' && (
+						{ realControl !== 'individual' && (
 							<RangeControl
 								value={ ( measurement ? measurement[ 0 ] : '' ) }
 								onChange={ ( value ) => onChange( [ value, value, value, value ] ) }
@@ -151,7 +146,7 @@ export default function MeasurementControls( {
 								step={ step }
 							/>
 						) }
-						{ localControl === 'individual' && (
+						{ realControl === 'individual' && (
 							<Fragment>
 								<MeasurementSingleControl
 									placement="top"
@@ -208,47 +203,22 @@ export default function MeasurementControls( {
 							</Fragment>
 						) }
 						{ ( onUnit || showUnit ) && (
-							<div className="kadence-units">
-								{ units.length === 1 ? (
-									<Button
-										className="is-active is-single"
-										isSmall
-										disabled
-									>{ ( '%' === unit ? icons.percent : icons[ unit ] ) }</Button>
-								) : (
-									<DropdownMenu
-										icon={ ( '%' === unit ? icons.percent : icons[ unit ] ) }
-										label={ __( 'Select a Unit', 'kadence-blocks' ) }
-										controls={ units.map( ( singleUnit ) => createLevelControlToolbar( singleUnit ) ) }
-										className={ 'kadence-units-group' }
-										popoverProps={ POPOVER_PROPS }
-									/>
-								) }
-							</div>
-						) }
-						{ localControl && (
-							<div className="kadence-units kadence-locked">
-								{ localControl !== 'individual' ? (
-									<Tooltip text={ __( 'Individual', 'kadence-blocks' ) }>
-										<Button
-											className="is-single"
-											isSmall
-											onClick={ () => setLocalControl( 'individual' ) }
-										>
-											{ measureIcons.link }
-										</Button>
-									</Tooltip>
-								) : (
-									<Tooltip text={ __( 'Linked', 'kadence-blocks' ) }>
-										<Button
-											className="is-single"
-											isSmall
-											onClick={ () => setLocalControl( 'linked' ) }
-										>
-											{ measureIcons.unlink }
-										</Button>
-									</Tooltip>
-								) }
+							<div className={ 'kadence-measure-control-select-wrapper' }>
+								<select
+									className={ 'kadence-measure-control-select components-unit-control__select' }
+									onChange={ ( event ) => {
+										if ( onUnit ) {
+											onUnit( event.target.value );
+										}
+									} }
+									value={ unit }
+								>
+									{ units.map( ( option ) => (
+										<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
+											{ option }
+										</option>
+									) ) }
+								</select>
 							</div>
 						) }
 					</div>

@@ -33,6 +33,7 @@ import {
 	closeSmall,
 	plusCircleFilled,
 } from '@wordpress/icons';
+import BackgroundSizeControl from '../background-size-control';
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * Basic Background Control.
@@ -62,7 +63,9 @@ class BackgroundControl extends Component {
 			imageAttachmentParallax = false,
 			inlineImage,
 			onSaveInlineImage,
-			dynamicAttribute = '' } = this.props;
+			dynamicAttribute = '',
+			attributes
+		} = this.props;
 		let attachmentOptions = [
 			{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
 			{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
@@ -100,9 +103,9 @@ class BackgroundControl extends Component {
 						{ label && (
 							<div class="components-kadence-image-background__label">{ label }</div>
 						) }
-						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic[ dynamicAttribute ] && this.props.attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
+						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && attributes.kadenceDynamic && attributes.kadenceDynamic[ dynamicAttribute ] && attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
 							<div className="kb-dynamic-background-sidebar-top">
-								<DynamicBackgroundControl startOpen={ this.props.attributes.kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
+								<DynamicBackgroundControl startOpen={ attributes.kadenceDynamic[ dynamicAttribute ].field ? false : true } { ...this.props }/>
 							</div>
 						) : (
 							<Fragment>
@@ -136,7 +139,7 @@ class BackgroundControl extends Component {
 							value={ ( imagePosition ? imagePosition : 'center center' ) }
 							onChange={ value => onSavePosition( value ) }
 						/>
-						<KadenceRadioButtons
+						<BackgroundSizeControl
 							label={ __( 'Background Image Size', 'kadence-blocks' ) }
 							value={ ( imageSize ? imageSize : 'cover' ) }
 							options={ [

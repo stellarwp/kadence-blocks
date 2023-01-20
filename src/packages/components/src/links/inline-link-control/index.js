@@ -156,6 +156,7 @@ class URLInputInline extends Component {
 		const linkEditorValue = urlInput !== null ? urlInput : url;
 		return (
 			<Popover
+				className='kb-popover-link-popover'
 				position="bottom center"
 			>
 				<div className={ `components-base-control kb-popover-link-control kb-side-link-control${ dynamicAttribute && kadence_blocks_params.dynamic_enabled ? ' has-dynamic-support' : '' }` }>

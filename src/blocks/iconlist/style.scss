@@ -16,6 +16,10 @@
     list-style: none;
 	margin: 0 0 10px 0;
 	text-align: left;
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 	.kt-svg-icon-list-item-wrap {
 		display: flex;
 		align-items: center;
@@ -24,7 +28,9 @@
 		.kt-svg-icon-list-single {
 			margin-right: 10px;
 			padding: 4px 0;
-			display:inline-block;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
 		}
 		.kt-svg-icon-link {
 			display: flex;
@@ -80,13 +86,13 @@
     border: 0px solid transparent;
 }
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-    grid-template-columns: 50% auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
 	display: grid;
 	gap: 5px 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-    grid-template-columns: 33% 33% auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: auto;
 	display: grid;
 	gap: 5px 1em;
@@ -102,12 +108,12 @@
 		display: block;
 	}
 	.kt-tablet-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-		grid-template-columns: 50% auto;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
 	.kt-tablet-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-		grid-template-columns: 33% 33% auto;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
@@ -117,12 +123,12 @@
 		display: block;
 	}
 	.kt-mobile-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-		grid-template-columns: 50% auto;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
 	.kt-mobile-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-		grid-template-columns: 33% 33% auto;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}

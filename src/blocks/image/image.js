@@ -42,7 +42,7 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import { KadenceColorOutput } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
 /**
@@ -63,7 +63,11 @@ import {
 	DropShadowControl,
 	ImageSizeControl as KadenceImageSizeControl,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
+	ResponsiveBorderControl,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import {
 	bottomLeftIcon,
@@ -88,6 +92,8 @@ export default function Image( {
 	context,
 	clientId,
 	previewDevice,
+	marginMouseOver,
+	paddingMouseOver
 } ) {
 	const {
 		url = '',
@@ -140,21 +146,13 @@ export default function Image( {
 		linkDestination,
 		linkTitle,
 		zIndex,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle,
 	} = attributes;
-	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
-		}
-		return desktopSize;
-	};
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
@@ -165,10 +163,15 @@ export default function Image( {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const previewBorderTop = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[0] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 0 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 0 ] : '' ) );
-	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[1] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 1 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 1 ] : '' ) );
-	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[2] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 2 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 2 ] : '' ) );
-	const previewBorderLeft = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[3] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 3 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 3 ] : '' ) );
+	// Border.
+	const previewBorderTopStyle = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderRightStyle = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderLeftStyle = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+	const previewRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== imgMaxWidth ? imgMaxWidth : '' ), ( undefined !== imgMaxWidthTablet ? imgMaxWidthTablet : '' ), ( undefined !== imgMaxWidthMobile ? imgMaxWidthMobile : '' ) );
 
@@ -181,7 +184,6 @@ export default function Image( {
 	const captionRef = useRef();
 	const prevUrl = usePrevious( url );
 	const { allowResize = true } = context;
-
 	function saveDropShadow( value ) {
 		const newItems = dropShadow.map( ( item, thisIndex ) => {
 			if ( 0 === thisIndex ) {
@@ -237,10 +239,6 @@ export default function Image( {
 	const isWideAligned = includes( [ 'wide', 'full' ], align );
 	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
 	const [ isEditingImage, setIsEditingImage ] = useState( false );
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ borderControl, setBorderControl ] = useState( 'individual');
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual');
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const [ externalBlob, setExternalBlob ] = useState();
@@ -423,6 +421,7 @@ export default function Image( {
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
+	const nonTransAttrs = [ 'url', 'id', 'caption', 'alt' ];
 	const controls = (
 		<>
 			<BlockControls group="block">
@@ -470,6 +469,13 @@ export default function Image( {
 						label={ __( 'Upload external image', 'kadence-blocks' ) }
 					/>
 				) }
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
 			{ ! isEditingImage && ! isDynamic && (
 				<BlockControls group="other">
@@ -486,7 +492,7 @@ export default function Image( {
 			) }
 			<InspectorControls>
 				<InspectorControlTabs
-						panelName={ 'kb-image' }
+						panelName={ 'image' }
 						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 					/>
@@ -960,50 +966,6 @@ export default function Image( {
 				{ ( activeTab === 'style' ) &&
 					<>
 						<KadencePanelBody
-							title={ __( 'Spacing Settings', 'kadence-blocks' ) }
-							panelName={ 'kb-image-spacing' }
-						>
-							<ResponsiveMeasurementControls
-								label={ __( 'Padding', 'kadence-blocks' ) }
-								value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-								control={ paddingControl }
-								tabletValue={ paddingTablet }
-								mobileValue={ paddingMobile }
-								onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
-								onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-								onChangeControl={ ( value ) => setPaddingControl( value ) }
-								min={ 0 }
-								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ paddingUnit }
-								units={ [ 'px', 'em', 'rem', '%' ] }
-								onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-							/>
-							<ResponsiveMeasurementControls
-								label={ __( 'Margin', 'kadence-blocks' ) }
-								value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-								control={ marginControl }
-								tabletValue={ marginTablet }
-								mobileValue={ marginMobile }
-								onChange={ ( value ) => {
-									setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-								} }
-								onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-								onChangeControl={ ( value ) => setMarginControl( value ) }
-								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ marginUnit }
-								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-							/>
-						</KadencePanelBody>
-
-						<KadencePanelBody
-							title={ __('Border Settings', 'kadence-blocks') }
-							initialOpen={ false }
 							panelName={ 'kb-image-border-settings' }
 						>
 							<PopColorControl
@@ -1014,57 +976,32 @@ export default function Image( {
 									setAttributes( { backgroundColor: value } );
 								} }
 							/>
-							<PopColorControl
-								label={ __( 'Border Color', 'kadence-blocks' ) }
-								value={ ( borderColor ? borderColor : '' ) }
-								default={ '' }
-								onChange={ value => {
-									setAttributes( { borderColor: value } );
-								} }
+							<ResponsiveBorderControl
+								label={__( 'Border', 'kadence-blocks' )}
+								value={borderStyle}
+								tabletValue={tabletBorderStyle}
+								mobileValue={mobileBorderStyle}
+								onChange={( value ) => setAttributes( { borderStyle: value } )}
+								onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+								onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
 							/>
 							<ResponsiveMeasurementControls
-								label={ __( 'Border Width', 'kadence-blocks' ) }
-								value={ [ previewBorderTop, previewBorderRight, previewBorderBottom, previewBorderLeft ] }
-								control={ borderControl }
-								tabletValue={ borderWidthTablet }
-								mobileValue={ borderWidthMobile }
-								onChange={ ( value ) => {
-									setAttributes( { borderWidthDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-								} }
-								onChangeTablet={ ( value ) => setAttributes( { borderWidthTablet: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { borderWidthMobile: value } ) }
-								onChangeControl={ ( value ) => setBorderControl( value ) }
-								min={ 0 }
-								max={ ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 24 : 200 ) }
-								step={ ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ borderWidthUnit }
-								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-								onUnit={ ( value ) => setAttributes( { borderWidthUnit: value } ) }
-							/>
-							<MeasurementControls
 								label={ __( 'Border Radius', 'kadence-blocks' ) }
-								measurement={ borderRadius }
-								control={ borderRadiusControl }
+								value={ borderRadius }
+								tabletValue={ tabletBorderRadius }
+								mobileValue={ mobileBorderRadius }
 								onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-								onControl={ ( value ) => setBorderRadiusControl( value ) }
+								onChangeTablet={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
+								onChangeMobile={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
 								min={ 0 }
-								max={ 200 }
-								step={ 1 }
-								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-								] }
-								firstIcon={ topLeftIcon }
-								secondIcon={ topRightIcon }
-								thirdIcon={ bottomRightIcon }
-								fourthIcon={ bottomLeftIcon }
+								max={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 200 ) }
+								step={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ borderRadiusUnit }
+								units={ [ 'px', 'em', 'rem', '%' ] }
+								onUnit={ ( value ) => setAttributes( { borderRadiusUnit: value } ) }
+								isBorderRadius={ true }
+								allowEmpty={true}
 							/>
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={ __('Shadow Settings', 'kadence-blocks') }
-							initialOpen={ false }
-							panelTitle={ 'kb-image-shadow-settings' }
-						>
 							<BoxShadowControl
 								label={ __( 'Box Shadow', 'kadence-blocks' ) }
 								enable={ ( undefined !== displayBoxShadow ? displayBoxShadow : false ) }
@@ -1148,7 +1085,48 @@ export default function Image( {
 
 				{ ( activeTab === 'advanced' ) && (
 					<>
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/image' } excludedAttrs={ [ 'url', 'id', 'caption', 'alt' ] } />
+						<KadencePanelBody
+								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
+								panelName={ 'kb-image-spacing' }
+							>
+							<ResponsiveMeasureRangeControl
+								label={ __( 'Padding', 'kadence-blocks' ) }
+								value={ paddingDesktop }
+								tabletValue={ paddingTablet }
+								mobileValue={ paddingMobile }
+								onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
+								onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
+								onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
+								min={ 0 }
+								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ paddingUnit }
+								units={ [ 'px', 'em', 'rem', '%' ] }
+								onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+								onMouseOver={ paddingMouseOver.onMouseOver }
+								onMouseOut={ paddingMouseOver.onMouseOut }
+							/>
+							<ResponsiveMeasureRangeControl
+								label={ __( 'Margin', 'kadence-blocks' ) }
+								value={ marginDesktop }
+								tabletValue={ marginTablet }
+								mobileValue={ marginMobile }
+								onChange={ ( value ) => {
+									setAttributes( { marginDesktop: value } );
+								} }
+								onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
+								onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
+								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ marginUnit }
+								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
+							/>
+						</KadencePanelBody>
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
 
@@ -1214,7 +1192,7 @@ export default function Image( {
 			// Disable reason: Image itself is not meant to be interactive, but
 			// should direct focus to block.
 			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
-		<>
+		<div>
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
@@ -1229,23 +1207,19 @@ export default function Image( {
 					maskSize: ( hasMask ? theMaskSize : undefined ),
 					maskPosition: ( hasMask ? theMaskPosition : undefined ),
 
-					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					paddingTop: ( ! useRatio && '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight: ( ! useRatio && '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( ! useRatio && '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft: ( ! useRatio && '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
-
-					borderColor: ( '' !== borderColor ? KadenceColorOutput( borderColor ) : undefined ),
-					borderStyle: 'solid',
-					borderTopWidth: ( '' !== previewBorderTop ? previewBorderTop + borderWidthUnit : 'inherit' ),
-					borderRightWidth: ( '' !== previewBorderRight ? previewBorderRight + borderWidthUnit : 'inherit' ),
-					borderBottomWidth: ( '' !== previewBorderBottom ? previewBorderBottom + borderWidthUnit : 'inherit' ),
-					borderLeftWidth: ( '' !== previewBorderLeft ? previewBorderLeft + borderWidthUnit : 'inherit' ),
-					borderRadius:  ( '' !== borderRadius[0] ? borderRadius[0] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[1] ? borderRadius[1] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[2] ? borderRadius[2] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[3] ? borderRadius[3] + borderRadiusUnit : '0' ),
+					borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
+					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
+					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
+					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
+					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
+					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
+					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
+					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
 
 					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor ) : undefined ),
 
@@ -1264,7 +1238,14 @@ export default function Image( {
 				} }
 			/>
 			{ temporaryURL && <Spinner /> }
-		</>
+			{ ! useRatio && (
+				<SpacingVisualizer
+					type="inside"
+					forceShow={ paddingMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+				/>
+			) }
+		</div>
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
 	if ( useRatio ){
@@ -1294,7 +1275,13 @@ export default function Image( {
 			/>
 		);
 	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
-		img = <div style={ { maxWidth: previewMaxWidth || width } }>{ img }</div>;
+		img = <div
+			className={ `kb-image-wrap` }
+			style={ {
+				maxWidth: previewMaxWidth || width,
+				width: ( previewMaxWidth ? '100%' : undefined ),
+			} }
+			>{ img }</div>;
 	} else {
 		const backupWidth = useRatio ? '100%' : 'auto';
 		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
@@ -1430,8 +1417,8 @@ export default function Image( {
 				<RichText
 					ref={ captionRef }
 					tagName="figcaption"
-					aria-label={ __( 'Image caption text' ) }
-					placeholder={ __( 'Add caption' ) }
+					aria-label={ __( 'Image caption text', 'kadence-blocks' ) }
+					placeholder={ __( 'Add caption', 'kadence-blocks' ) }
 					value={ caption }
 					onChange={ ( value ) =>
 						setAttributes( { caption: value } )

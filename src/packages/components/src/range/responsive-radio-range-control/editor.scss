@@ -13,3 +13,14 @@
 .kadence-radio-range-control .kadence-radio-container-control.components-button-group .components-button {
 	height: 32px;
 }
+.kadence-range-control-range .components-range-control__number .components-input-control__backdrop {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid var(--kb-border-color, #859CB6 );
+}
+.kadence-range-control-range .components-range-control__root > span:nth-child(3) {
+    margin: 0;
+}
+.kadence-range-control .kadence-measure-control-select-wrapper .kadence-measure-control-select {
+    border-left: 0;
+}

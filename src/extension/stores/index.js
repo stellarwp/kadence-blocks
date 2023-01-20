@@ -5,6 +5,7 @@ const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
 	uniqueIDs: {},
 	uniquePanes: {},
+	webFonts: {},
 };
 
 const actions = {
@@ -47,6 +48,13 @@ const actions = {
 			uniqueID,
 			clientID,
 			rootID
+		};
+	},
+	addWebFont( font, frame ) {
+		return {
+			type: 'ADD_WEBFONT',
+			font,
+			frame
 		};
 	}
 };
@@ -140,6 +148,18 @@ const store = createReduxStore( 'kadenceblocks/data', {
 					...state,
 					uniquePanes: uniquePanes,
 				};
+			case 'ADD_WEBFONT':
+				const updatedFonts = state.webFonts;
+				if ( updatedFonts.hasOwnProperty( action.frame ) ) {
+					Object.assign( updatedFonts[action.frame], { [action.font.toString()]: 'loaded' } );
+				} else {
+					updatedFonts[action.frame] = {};
+					Object.assign( updatedFonts[action.frame], { [action.font.toString()]: 'loaded' } );
+				}
+				return {
+					...state,
+					webFonts:updatedFonts,
+				};
 			default:
 				return state;
 		}
@@ -193,6 +213,16 @@ const store = createReduxStore( 'kadenceblocks/data', {
 				}
 			}
 			return isUniquePaneBlock;
+		},
+		isUniqueFont( state, font, frame ) {
+			const { webFonts } = state;
+			let isUniqueFont = true;
+			if ( webFonts.hasOwnProperty( frame ) ) {
+				if ( webFonts[frame].hasOwnProperty( font.toString() ) ) {
+					isUniqueFont = false;
+				}
+			}
+			return isUniqueFont;
 		},
 		isEditorPanelOpened( state, panelName, defaultValue ) {
 			const panels = get( state, ['editorPanels'], {} );

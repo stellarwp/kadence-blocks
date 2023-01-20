@@ -66,11 +66,12 @@ class Kadence_Blocks_Svg_Render {
 				$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
 				$args = array( 'title' => '' );
 				foreach ( $options as $key => $value ) {
+					$value = trim($value);
 					if ( empty( $value ) ) {
 						continue;
 					}
 					$data_split = explode( '=', $value, 2 );
-					if ( $data_split[0] === 'title' ) {
+					if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
 						$data_split[1] = str_replace( '_', ' ', $data_split[1] );
 					}
 					$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
@@ -115,7 +116,7 @@ class Kadence_Blocks_Svg_Render {
 			if ( isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
 				$preserve = 'preserveAspectRatio="xMinYMin meet"';
 			}
-			$svg .= '<svg viewBox="' . $vb . '" fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
+			$svg .= '<svg viewBox="' . $vb . '" fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';
 			}

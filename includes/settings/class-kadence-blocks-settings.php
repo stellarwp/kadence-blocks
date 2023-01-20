@@ -330,7 +330,7 @@ class Kadence_Blocks_Settings {
 			}
 		}
 		if ( $options ) {
-			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
+			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'includes/assets/js/admin-blocks-deregister.min.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
 			wp_localize_script(
 				'kadence-blocks-deregister-js',
 				'kt_deregister_params',
@@ -444,8 +444,8 @@ class Kadence_Blocks_Settings {
 				),
 			),
 		);
-		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . '/dist/settings/dashboard.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
-		wp_enqueue_script( 'kadence-blocks-admin-js', KADENCE_BLOCKS_URL . '/dist/settings/scripts.min.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, true );
+		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/assets/css/admin-dashboard.min.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
+		wp_enqueue_script( 'kadence-blocks-admin-js', KADENCE_BLOCKS_URL . 'includes/assets/js/admin-scripts.min.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-admin-js',
 			'kt_blocks_params',
@@ -524,6 +524,17 @@ class Kadence_Blocks_Settings {
 			array(
 				'type'              => 'string',
 				'description'       => __( 'Google reCaptcha Secret Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_recaptcha_language',
+			'kadence_blocks_recaptcha_language',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Google reCaptcha Language', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',

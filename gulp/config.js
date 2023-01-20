@@ -18,6 +18,7 @@ module.exports = {
 		builtIns: false,
 		mangle: {
 			keepClassName: true,
+            exclude: ['kadenceBlocksGLight'],
 		}
 	}
 };

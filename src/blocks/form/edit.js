@@ -12,7 +12,6 @@ import { times, filter, map } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
-	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	ResponsiveRangeControls,
 	URLInputControl,
@@ -20,11 +19,22 @@ import {
 	BoxShadowControl,
 	MeasurementControls,
 	InspectorControlTabs,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	KadenceInspectorControls,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import {
+	getPreviewSize,
+	KadenceColorOutput,
+	mouseOverVisualizer,
+	getSpacingOptionOutput,
+	getUniqueId,
+	setBlockDefaults,
+} from '@kadence/helpers';
 
 /**
  * Import Css
@@ -39,6 +49,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getWidgetIdFromBlock } from '@wordpress/widgets';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	RichText,
 	AlignmentToolbar,
@@ -57,8 +68,7 @@ import {
 	CheckboxControl,
 	SelectControl,
 	TabPanel,
-	ExternalLink,
-	IconButton
+	ExternalLink
 } from '@wordpress/components';
 
 import {
@@ -68,6 +78,7 @@ import { DELETE } from '@wordpress/keycodes';
 
 const RETRIEVE_KEY_URL = 'https://www.google.com/recaptcha/admin';
 const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
+const LANGUAGE_URL = 'https://developers.google.com/recaptcha/docs/language';
 
 const actionOptionsList = [
 	{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
@@ -162,32 +173,11 @@ function KadenceForm( props ) {
 	);
 
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/form' ] !== undefined && typeof blockConfigObject[ 'kadence/form' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/form' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/form' ][ attribute ];
-					} );
-				}
-			}
-			if ( ! isUniqueID( uniqueID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
-		} else {
-			addUniqueID( uniqueID, clientId );
-		}
+		setBlockDefaults( 'kadence/form', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
@@ -250,19 +240,19 @@ function KadenceForm( props ) {
 		/**
 		 * Get settings
 		 */
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setSiteKey( response.kadence_blocks_recaptcha_site_key );
+			setSecretKey( response.kadence_blocks_recaptcha_secret_key );
+			setRecaptchaLanguage( response.kadence_blocks_recaptcha_language );
 
-				setSiteKey( response.kadence_blocks_recaptcha_site_key );
-				setSecretKey( response.kadence_blocks_recaptcha_secret_key );
+			if ( '' !== siteKey && '' !== secretKey ) {
+				setIsSavedKey( true );
+			}
+		});
 
-				if ( '' !== siteKey && '' !== secretKey ) {
-					setIsSavedKey( true );
-				}
-			} );
-		} );
 	}, [] );
 
 	const [ actionOptions, setActionOptions ] = useState( null );
@@ -285,18 +275,16 @@ function KadenceForm( props ) {
 	const [ mobileMarginControl, setMobileMarginControl ] = useState( 'individual' );
 	const [ siteKey, setSiteKey ] = useState( '' );
 	const [ secretKey, setSecretKey ] = useState( '' );
+	const [ recaptchaLanguage, setRecaptchaLanguage ] = useState( '' );
 
 	const [ isSavedKey, setIsSavedKey ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
-	const fudnctionNfame = ( prevProps ) => {
-		// Deselect field when deselecting the block
-		if ( !isSelected && prevProps.isSelected ) {
-			setSelectedField( null );
-		}
-	};
+	const marginMouseOver = mouseOverVisualizer();
+
+	const nonTransAttrs = [ 'postID' ];
 
 	const deselectField = () => {
 		setSelectedField( null );
@@ -309,12 +297,12 @@ function KadenceForm( props ) {
 	};
 
 	const onMove = ( oldIndex, newIndex ) => {
-		const fields = [ ...fields ];
-		fields.splice( newIndex, 1, fields[ oldIndex ] );
-		fields.splice( oldIndex, 1, fields[ newIndex ] );
+		const tempFields = [ ...fields ];
+		tempFields.splice( newIndex, 1, fields[ oldIndex ] );
+		tempFields.splice( oldIndex, 1, fields[ newIndex ] );
 		setSelectedField( newIndex );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 
@@ -335,27 +323,28 @@ function KadenceForm( props ) {
 	};
 
 	const onRemoveField = ( index ) => {
-		const fields = filter( fields, ( item, i ) => index !== i );
+		const tempFields = filter( fields, ( item, i ) => index !== i );
 		setSelectedField( null );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 	const onKeyRemoveField = ( index ) => {
-		const fields = filter( fields, ( item, i ) => index !== i );
+		const tempFields = filter( fields, ( item, i ) => index !== i );
 		setSelectedField( null );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
 	};
 	const onDuplicateField = ( index ) => {
-		const duplicate = fields[ index ];
-		fields.splice( index + 1, 0, duplicate );
+		const tempFields = fields;
+		const duplicate = tempFields[ index ];
+		tempFields.splice( index + 1, 0, duplicate );
 		setSelectedField( index + 1 );
 		setAttributes( {
-			fields: fields,
+			fields: tempFields,
 		} );
-		saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );
+		//saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );
 	};
 	const saveFields = ( value, index ) => {
 
@@ -628,6 +617,7 @@ function KadenceForm( props ) {
 			const settingModel = new wp.api.models.Settings( {
 				kadence_blocks_recaptcha_site_key  : '',
 				kadence_blocks_recaptcha_secret_key: '',
+				kadence_blocks_recaptcha_language: ''
 			} );
 			settingModel.save().then( () => {
 				setIsSavedKey( false );
@@ -641,7 +631,9 @@ function KadenceForm( props ) {
 		const settingModel = new wp.api.models.Settings( {
 			kadence_blocks_recaptcha_site_key  : siteKey,
 			kadence_blocks_recaptcha_secret_key: secretKey,
+			kadence_blocks_recaptcha_language: recaptchaLanguage,
 		} );
+
 		settingModel.save().then( response => {
 			setIsSaving( false );
 			setIsSavedKey( true );
@@ -946,23 +938,23 @@ function KadenceForm( props ) {
 										onChange={( text ) => saveFieldsOptions( { label: text, value: text }, index, n )}
 									/>
 									<div className="kadence-blocks-list-item__control-menu">
-										<IconButton
+										<Button
 											icon="arrow-up"
-											onClick={n === 0 ? undefined : onOptionMoveUp( n, index )}
+											onClick={() => n === 0 ? undefined : onOptionMoveUp( n, index )}
 											className="kadence-blocks-list-item__move-up"
 											label={__( 'Move Item Up' )}
 											aria-disabled={n === 0}
 											disabled={n === 0}
 										/>
-										<IconButton
+										<Button
 											icon="arrow-down"
-											onClick={( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
+											onClick={() => ( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
 											className="kadence-blocks-list-item__move-down"
 											label={__( 'Move Item Down' )}
 											aria-disabled={( n + 1 ) === fields[ index ].options.length}
 											disabled={( n + 1 ) === fields[ index ].options.length}
 										/>
-										<IconButton
+										<Button
 											icon="no-alt"
 											onClick={() => removeOptionItem( n, index )}
 											className="kadence-blocks-list-item__remove"
@@ -1268,8 +1260,8 @@ function KadenceForm( props ) {
 				tabIndex="0"
 				aria-label={ariaLabel}
 				role="button"
-				onClick={( index ) => onSelectField( index )}
-				onFocus={( index ) => onSelectField( index )}
+				onClick={() => onSelectField( index )}
+				onFocus={() => onSelectField( index )}
 				onKeyDown={( event ) => {
 					const { keyCode } = event;
 					if ( keyCode === DELETE ) {
@@ -1487,17 +1479,17 @@ function KadenceForm( props ) {
 				{isFieldSelected && (
 					<>
 						<div className="kadence-blocks-field-item-controls kadence-blocks-field-item__move-menu">
-							<IconButton
+							<Button
 								icon="arrow-up"
-								onClick={index === 0 ? undefined : onMoveBackward( index )}
+								onClick={() => index === 0 ? undefined : onMoveBackward( index )}
 								className="kadence-blocks-field-item__move-backward"
 								label={__( 'Move Field Up', 'kadence-blocks' )}
 								aria-disabled={index === 0}
 								disabled={!isFieldSelected || index === 0}
 							/>
-							<IconButton
+							<Button
 								icon="arrow-down"
-								onClick={( index + 1 ) === fields.length ? undefined : onMoveForward( index )}
+								onClick={() => ( index + 1 ) === fields.length ? undefined : onMoveForward( index )}
 								className="kadence-blocks-field-item__move-forward"
 								label={__( 'Move Field Down', 'kadence-blocks' )}
 								aria-disabled={( index + 1 ) === fields.length}
@@ -1505,14 +1497,14 @@ function KadenceForm( props ) {
 							/>
 						</div>
 						<div className="kadence-blocks-field-item-controls kadence-blocks-field-item__inline-menu">
-							<IconButton
+							<Button
 								icon="admin-page"
 								onClick={() => onDuplicateField( index )}
 								className="kadence-blocks-field-item__duplicate"
 								label={__( 'Duplicate Field', 'kadence-blocks' )}
 								disabled={!isFieldSelected}
 							/>
-							<IconButton
+							<Button
 								icon="no-alt"
 								onClick={() => onRemoveField( index )}
 								className="kadence-blocks-field-item__remove"
@@ -1640,8 +1632,15 @@ function KadenceForm( props ) {
 					value={hAlign}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/form' }>
 
 				<InspectorControlTabs
 					panelName={'form'}
@@ -1807,13 +1806,20 @@ function KadenceForm( props ) {
 											) )}
 										</ButtonGroup>
 									</div>
+
 									<p>
-										<>
 											<ExternalLink href={RETRIEVE_KEY_URL}>{__( 'Get keys', 'kadence-blocks' )}</ExternalLink>
 											|&nbsp;
 											<ExternalLink href={HELP_URL}>{__( 'Get help', 'kadence-blocks' )}</ExternalLink>
-										</>
+											<br/>
+											<ExternalLink href={LANGUAGE_URL}>{__( 'Language Codes', 'kadence-blocks' )}</ExternalLink>
 									</p>
+
+									<TextControl
+										label={__( 'Force Specific Language', 'kadence-blocks' )}
+										value={recaptchaLanguage}
+										onChange={ ( value ) => setRecaptchaLanguage( value )}
+									/>
 									<TextControl
 										label={__( 'Site Key', 'kadence-blocks' )}
 										value={siteKey}
@@ -1827,7 +1833,7 @@ function KadenceForm( props ) {
 									<div className="components-base-control">
 										<Button
 											isPrimary
-											onClick={() => saveKeys}
+											onClick={() => saveKeys()}
 											disabled={'' === siteKey || '' === secretKey}
 										>
 											{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
@@ -1837,7 +1843,7 @@ function KadenceForm( props ) {
 												&nbsp;
 												<Button
 													isSecondary
-													onClick={() => removeKeys}
+													onClick={() => removeKeys()}
 												>
 													{__( 'Remove', 'kadence-blocks' )}
 												</Button>
@@ -3518,34 +3524,31 @@ function KadenceForm( props ) {
 							initialOpen={false}
 							panelName={'kb-form-container-settings'}
 						>
-							<ResponsiveMeasurementControls
-								label={__( 'Container Margin', 'kadence-blocks' )}
-								control={deskMarginControl}
-								tabletControl={tabletMarginControl}
-								mobileControl={mobileMarginControl}
-								value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
-								tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
-								mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
-								onChange={( value ) => {
-									setAttributes( { containerMargin: value } );
-								}}
-								onChangeTablet={( value ) => {
-									setAttributes( { tabletContainerMargin: value } );
-								}}
-								onChangeMobile={( value ) => {
-									setAttributes( { mobileContainerMargin: value } );
-								}}
-								onChangeControl={( value ) => setDeskMarginControl( value )}
-								onChangeTabletControl={( value ) => setTabletMarginControl( value )}
-								onChangeMobileControl={( value ) => setMobileMarginControl( value )}
-								allowEmpty={true}
-								min={containerMarginMin}
-								max={containerMarginMax}
-								step={containerMarginStep}
-								unit={containerMarginType}
-								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setAttributes( { containerMarginType: value } )}
-							/>
+						<ResponsiveMeasureRangeControl
+							label={__( 'Container Margin', 'kadence-blocks' )}
+							tabletControl={tabletMarginControl}
+							mobileControl={mobileMarginControl}
+							value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
+							tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
+							mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
+							onChange={( value ) => {
+								setAttributes( { containerMargin: value } );
+							}}
+							onChangeTablet={( value ) => {
+								setAttributes( { tabletContainerMargin: value } );
+							}}
+							onChangeMobile={( value ) => {
+								setAttributes( { mobileContainerMargin: value } );
+							}}
+							min={containerMarginMin}
+							max={containerMarginMax}
+							step={containerMarginStep}
+							unit={containerMarginType}
+							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+							onUnit={( value ) => setAttributes( { containerMarginType: value } )}
+							onMouseOver={ marginMouseOver.onMouseOver }
+							onMouseOut={ marginMouseOver.onMouseOut }
+						/>
 						</KadencePanelBody>
 						{actions.includes( 'mailerlite' ) && (
 							<MailerLiteControls
@@ -3568,18 +3571,23 @@ function KadenceForm( props ) {
 
 				{ (activeTab === 'advanced') && (
 					<>
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/form' } excludedAttrs={ [ 'postID' ] } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{
-				marginLeft  : ( undefined !== previewContainerMarginLeft ? previewContainerMarginLeft + previewContainerMarginType : undefined ),
-				marginRight : ( undefined !== previewContainerMarginRight ? previewContainerMarginRight + previewContainerMarginType : undefined ),
-				marginTop   : ( undefined !== previewContainerMarginTop ? previewContainerMarginTop + previewContainerMarginType : undefined ),
-				marginBottom: ( undefined !== previewContainerMarginBottom ? previewContainerMarginBottom + previewContainerMarginType : undefined ),
+				marginLeft  : ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),
+				marginRight : ( undefined !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ) : undefined ),
+				marginTop   : ( undefined !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ) : undefined ),
+				marginBottom: ( undefined !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ) : undefined ),
 			}}>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={ marginMouseOver.isMouseOver }
+					spacing={ [ getSpacingOptionOutput( previewContainerMarginTop, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginRight, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginBottom, previewContainerMarginType ), getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) ] }
+				/>
 				<div id={`kb-form-${uniqueID}`} className={'kb-form'} style={{
 					marginRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 					marginLeft : ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),

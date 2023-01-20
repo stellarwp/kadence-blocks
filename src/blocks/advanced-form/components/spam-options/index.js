@@ -8,6 +8,7 @@ import {
 	TextControl
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recaptchaVersion} ) {
 
@@ -54,18 +55,16 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 	}
 
 	useEffect( () => {
-		let settings;
-		wp.api.loadPromise.then( () => {
-			settings = new wp.api.models.Settings();
-			settings.fetch().then( response => {
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} ).then( ( response ) => {
+			setSiteKey( response.kadence_blocks_recaptcha_site_key );
+			setSiteSecret( response.kadence_blocks_recaptcha_secret_key );
 
-				setSiteKey( response.kadence_blocks_recaptcha_site_key );
-				setSiteSecret( response.kadence_blocks_recaptcha_secret_key );
-
-				if ( '' !== response.kadence_blocks_recaptcha_site_key && '' !== response.kadence_blocks_recaptcha_secret_key ) {
-					setIsSavedKey( true );
-				}
-			} );
+			if ( '' !== response.kadence_blocks_recaptcha_site_key && '' !== response.kadence_blocks_recaptcha_secret_key ) {
+				setIsSavedKey( true );
+			}
 		} );
 	}, [ recaptcha ] );
 

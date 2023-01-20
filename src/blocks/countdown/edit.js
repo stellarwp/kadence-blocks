@@ -34,13 +34,20 @@ import {
 	WebfontLoader,
 	InspectorControlTabs,
 	MeasurementControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	SpacingVisualizer,
+	CopyPasteAttributes
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
-	setBlockDefaults
+	setBlockDefaults,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	getFontSizeOptionOutput,
+	getUniqueId,
 } from '@kadence/helpers';
 
 /**
@@ -55,6 +62,8 @@ import { __ } from '@wordpress/i18n';
 import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
 
 import { applyFilters } from '@wordpress/hooks';
+
+import { useSelect, useDispatch } from '@wordpress/data';
 
 import {
 	Component,
@@ -85,7 +94,6 @@ import {
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
-const ktcountdownUniqueIDs = [];
 const COUNTDOWN_TEMPLATE = [
 	[ 'kadence/countdown-timer', {} ],
 ];
@@ -182,22 +190,24 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		evergreenStrict,
 	} = attributes;
 
-	useEffect( () => {
-		if ( !uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/countdown', attributes);
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
 
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktcountdownUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktcountdownUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktcountdownUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			ktcountdownUniqueIDs.push( uniqueID );
-		}
+	useEffect( () => {
+		setBlockDefaults( 'kadence/countdown', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+
 		if ( borderRadius && borderRadius[ 0 ] === borderRadius[ 1 ] && borderRadius[ 0 ] === borderRadius[ 2 ] && borderRadius[ 0 ] === borderRadius[ 3 ] ) {
 			setBorderRadiusControl( 'linked' );
 		} else {
@@ -226,6 +236,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
 	const [ previewExpired, setPreviewExpired ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const paddingMouseOver = mouseOverVisualizer();
+	const marginMouseOver = mouseOverVisualizer();
 
 	let dateSettings = {};
 
@@ -486,6 +499,8 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		}
 	}
 
+	const nonTransAttrs = [ 'date', 'timestamp' ];
+
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
@@ -502,14 +517,14 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			borderTopRightRadius   : ( borderRadius && borderRadius[ 1 ] ? borderRadius[ 1 ] + 'px' : undefined ),
 			borderBottomRightRadius: ( borderRadius && borderRadius[ 2 ] ? borderRadius[ 2 ] + 'px' : undefined ),
 			borderBottomLeftRadius : ( borderRadius && borderRadius[ 3 ] ? borderRadius[ 3 ] + 'px' : undefined ),
-			paddingTop             : ( '' !== previewPaddingTop ? previewPaddingTop + previewPaddingType : undefined ),
-			paddingRight           : ( '' !== previewPaddingRight ? previewPaddingRight + previewPaddingType : undefined ),
-			paddingBottom          : ( '' !== previewPaddingBottom ? previewPaddingBottom + previewPaddingType : undefined ),
-			paddingLeft            : ( '' !== previewPaddingLeft ? previewPaddingLeft + previewPaddingType : undefined ),
-			marginTop              : ( previewMarginTop ? previewMarginTop + previewMarginType : undefined ),
-			marginRight            : ( previewMarginRight ? previewMarginRight + previewMarginType : undefined ),
-			marginBottom           : ( previewMarginBottom ? previewMarginBottom + previewMarginType : undefined ),
-			marginLeft             : ( previewMarginLeft ? previewMarginLeft + previewMarginType : undefined ),
+			paddingTop             : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingType ) : undefined ),
+			paddingRight           : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingType ) : undefined ),
+			paddingBottom          : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ) : undefined ),
+			paddingLeft            : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) : undefined ),
+			marginTop              : ( previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
+			marginRight            : ( previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
+			marginBottom           : ( previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
+			marginLeft             : ( previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
 		}}>
 			<style>
 				{`.kb-countdown-container #kb-timer-${uniqueID} .kb-countdown-date-item .kb-countdown-number {`}
@@ -518,12 +533,12 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].textTransform ? `text-transform: ${numberFont[ 0 ].textTransform};` : '' )}
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].weight ? `font-weight: ${numberFont[ 0 ].weight};` : '' )}
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].style ? `font-style: ${numberFont[ 0 ].style};` : '' )}
-				{( previewNumberFontSize ? `font-size: ${previewNumberFontSize + previewNumberSizeType};` : '' )}
+				{( previewNumberFontSize ? `font-size: ${ getFontSizeOptionOutput( previewNumberFontSize, previewNumberSizeType )};` : '' )}
 				{( previewNumberLineSize ? `line-height: ${previewNumberLineSize + previewNumberLineType};` : '' )}
 				{( previewNumberLetterSize ? `letter-spacing: ${previewNumberLetterSize + previewNumberLetterType};` : '' )}
 				{'}'}
 				{`.kb-countdown-container #kb-timer-${uniqueID} .kb-countdown-date-item  {`}
-				{( previewNumberFontSize ? `font-size: ${previewNumberFontSize + previewNumberSizeType};` : '' )}
+				{( previewNumberFontSize ? `font-size: ${ getFontSizeOptionOutput( previewNumberFontSize, previewNumberSizeType ) };` : '' )}
 				{'}'}
 				{`#kb-timer-${uniqueID} .kb-countdown-date-item .kb-countdown-label {`}
 				{( labelColor ? `color: ${KadenceColorOutput( labelColor )};` : '' )}
@@ -531,7 +546,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].textTransform ? `text-transform: ${labelFont[ 0 ].textTransform};` : '' )}
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].weight ? `font-weight: ${labelFont[ 0 ].weight};` : '' )}
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].style ? `font-style: ${labelFont[ 0 ].style};` : '' )}
-				{( previewLabelFontSize ? `font-size: ${previewLabelFontSize + previewLabelSizeType};` : '' )}
+				{( previewLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewLabelFontSize, previewLabelSizeType ) };` : '' )}
 				{( previewLabelLineSize ? `line-height: ${previewLabelLineSize + previewLabelLineType};` : '' )}
 				{( previewLabelLetterSize ? `letter-spacing: ${previewLabelLetterSize + previewLabelLetterType};` : '' )}
 				{'}'}
@@ -543,7 +558,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].textTransform ? `text-transform: ${preLabelFont[ 0 ].textTransform};` : '' )}
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].weight ? `font-weight: ${preLabelFont[ 0 ].weight};` : '' )}
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].style ? `font-style: ${preLabelFont[ 0 ].style};` : '' )}
-						{( previewPreLabelFontSize ? `font-size: ${previewPreLabelFontSize + previewPreLabelSizeType};` : '' )}
+						{( previewPreLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewPreLabelFontSize, previewPreLabelSizeType ) };` : '' )}
 						{( previewPreLabelLineSize ? `line-height: ${previewPreLabelLineSize + previewPreLabelLineType};` : '' )}
 						{( previewPreLabelLetterSize ? `letter-spacing: ${previewPreLabelLetterSize + previewPreLabelLetterType};` : '' )}
 						{'}'}
@@ -557,7 +572,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].textTransform ? `text-transform: ${postLabelFont[ 0 ].textTransform};` : '' )}
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].weight ? `font-weight: ${postLabelFont[ 0 ].weight};` : '' )}
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].style ? `font-style: ${postLabelFont[ 0 ].style};` : '' )}
-						{( previewPostLabelFontSize ? `font-size: ${previewPostLabelFontSize + previewPostLabelSizeType};` : '' )}
+						{( previewPostLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewPostLabelFontSize, previewPostLabelSizeType ) };` : '' )}
 						{( previewPostLabelLineSize ? `line-height: ${previewPostLabelLineSize + previewPostLabelLineType};` : '' )}
 						{( previewPostLabelLetterSize ? `letter-spacing: ${previewPostLabelLetterSize + previewPostLabelLetterType};` : '' )}
 						{'}'}
@@ -615,6 +630,13 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 								</ToolbarGroup>
 							</>
 						)}
+						<CopyPasteAttributes
+							attributes={ attributes }
+							excludedAttrs={ nonTransAttrs } 
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
 					</BlockControls>
 					<InspectorControls>
 
@@ -1135,6 +1157,45 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 
 						{( activeTab === 'advanced' ) &&
 							<>
+								<KadencePanelBody panelName={'kb-countdown-spacing-settings'}>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Container Padding', 'kadence-blocks' )}
+										value={containerPadding}
+										tabletValue={containerTabletPadding}
+										mobileValue={containerMobilePadding}
+										onChange={( value ) => setAttributes( { containerPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
+										min={paddingMin}
+										max={paddingMax}
+										step={paddingStep}
+										unit={paddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { paddingType: value } )}
+										onMouseOver={ paddingMouseOver.onMouseOver }
+										onMouseOut={ paddingMouseOver.onMouseOut }
+									/>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Container Margin', 'kadence-blocks' )}
+										value={containerMargin}
+										tabletValue={containerTabletMargin}
+										mobileValue={containerMobileMargin}
+										onChange={( value ) => setAttributes( { containerMargin: value } )}
+										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
+										min={marginMin}
+										max={marginMax}
+										step={marginStep}
+										unit={marginType}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { marginType: value } )}
+										onMouseOver={ marginMouseOver.onMouseOver }
+										onMouseOut={ marginMouseOver.onMouseOut }
+									/>
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+
 								<KadencePanelBody
 									title={__( 'Container Settings', 'kadence-blocks' )}
 									panelName={'containerSettings'}
@@ -1188,40 +1249,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 										thirdIcon={bottomRightIcon}
 										fourthIcon={bottomLeftIcon}
 									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Container Padding', 'kadence-blocks' )}
-										value={containerPadding}
-										control={paddingControl}
-										tabletValue={containerTabletPadding}
-										mobileValue={containerMobilePadding}
-										onChange={( value ) => setAttributes( { containerPadding: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
-										onChangeControl={( value ) => setPaddingControl( value )}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={paddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { paddingType: value } )}
-									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Container Margin', 'kadence-blocks' )}
-										value={containerMargin}
-										control={marginControl}
-										tabletValue={containerTabletMargin}
-										mobileValue={containerMobileMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-										onChangeControl={( value ) => setMarginControl( value )}
-										min={marginMin}
-										max={marginMax}
-										step={marginStep}
-										unit={marginType}
-										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-										onUnit={( value ) => setAttributes( { marginType: value } )}
-									/>
 								</KadencePanelBody>
 
 								<KadencePanelBody
@@ -1247,7 +1274,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ [ 'date', 'timestamp' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 
 							</>
 						}
@@ -1274,6 +1301,22 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			<InnerBlocks
 				templateLock="all"
 				template={!enableTimer ? templateNoTimer : templateWithTimer}
+			/>
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ marginMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginType ), getSpacingOptionOutput( previewMarginRight, previewMarginType ), getSpacingOptionOutput( previewMarginBottom, previewMarginType ), getSpacingOptionOutput( previewMarginLeft, previewMarginType ) ] }
+			/>
+			<SpacingVisualizer
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, previewPaddingType ), getSpacingOptionOutput( previewPaddingRight, previewPaddingType ), getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ), getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) ] }
 			/>
 		</div>
 	);

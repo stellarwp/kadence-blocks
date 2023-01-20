@@ -58,26 +58,183 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id ) {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
-
-		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
-			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
-				if ( is_array( $btnvalue ) ) {
-					if ( isset( $btnvalue['target'] ) && ! empty( $btnvalue['target'] ) && 'video' == $btnvalue['target'] ) {
-						$this->enqueue_style( 'kadence-blocks-magnific-css' );
-						$this->enqueue_script( 'kadence-blocks-magnific-js' );
-					}
-				}
+		$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .wp-block-kadence-advancedbtn.kb-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
+		if ( isset( $attributes['margin'][0] ) ) {
+			$css->render_measure_output(
+				$attributes['margin'][0],
+				'margin',
+				'margin',
+				array(
+					'desktop_key' => 'desk',
+					'tablet_key'  => 'tablet',
+					'mobile_key'  => 'mobile',
+					'unit_key'    => 'marginUnit',
+				)
+			);
+		}
+		$css->set_selector( '.wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
+		$css->render_measure_output( $attributes, 'padding', 'padding' );
+		$css->render_gap( $attributes );
+		$h_property = 'justify-content';
+		$v_property = 'align-items';
+		if ( ! empty( $attributes['orientation'][0] ) ) {
+			$css->add_property( 'flex-direction', $attributes['orientation'][0] );
+			if ( $attributes['orientation'][0] === 'column' || $attributes['orientation'][0] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
 			}
 		}
-
-		if ( isset( $attributes['googleFont'] ) && $attributes['googleFont'] && ( ! isset( $attributes['loadGoogleFont'] ) || true == $attributes['loadGoogleFont'] ) && isset( $attributes['typography'] ) ) {
-			// Add Button font.
-			$font_variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : '';
-			$font_subset  = isset( $attributes['fontSubset'] ) ? $attributes['fontSubset'] : '';
-
-			$css->maybe_add_google_font( $attributes['typography'], $font_variant, $font_subset );
+		if ( ! empty( $attributes['hAlign'] ) ) {
+			switch ( $attributes['hAlign'] ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
 		}
-
+		if ( ! empty( $attributes['vAlign'] ) ) {
+			switch ( $attributes['vAlign'] ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		// Tablet.
+		$css->set_media_state( 'tablet' );
+		$update_align = false;
+		if ( ! empty( $attributes['orientation'][1] ) ) {
+			$update_align = true;
+			$css->add_property( 'flex-direction', $attributes['orientation'][1] );
+			if ( $attributes['orientation'][1] === 'column' || $attributes['orientation'][1] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
+			} else if ( $attributes['orientation'][1] === 'row' || $attributes['orientation'][1] === 'row-reverse' ) {
+				$h_property = 'justify-content';
+				$v_property = 'align-items';
+			}
+		}
+		if ( ! empty( $attributes['thAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['thAlign'] ) ? $attributes['thAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['hAlign'] ) ? $attributes['hAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
+		}
+		if ( ! empty( $attributes['tvAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['tvAlign'] ) ? $attributes['tvAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['vAlign'] ) ? $attributes['vAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		// Mobile.
+		$css->set_media_state( 'mobile' );
+		$update_align = false;
+		if ( ! empty( $attributes['orientation'][2] ) ) {
+			$update_align = true;
+			$css->add_property( 'flex-direction', $attributes['orientation'][2] );
+			if ( $attributes['orientation'][2] === 'column' || $attributes['orientation'][2] === 'column-reverse' ) {
+				$h_property = 'align-items';
+				$v_property = 'justify-content';
+			} else if ( $attributes['orientation'][2] === 'row' || $attributes['orientation'][2] === 'row-reverse' ) {
+				$h_property = 'justify-content';
+				$v_property = 'align-items';
+			}
+		}
+		if ( ! empty( $attributes['mhAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['mhAlign'] ) ? $attributes['mhAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['thAlign'] ) ? $attributes['thAlign'] : '';
+			}
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['hAlign'] ) ? $attributes['hAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'left':
+					$css->add_property( $h_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $h_property, 'center' );
+					break;
+				case 'right':
+					$css->add_property( $h_property, 'flex-end' );
+					break;
+				case 'space-between':
+					if ( 'align-items' === $h_property ) {
+						$css->add_property( $h_property, 'center' );
+					} else {
+						$css->add_property( $h_property, 'space-between' );
+					}
+					break;
+			}
+		}
+		if ( ! empty( $attributes['mvAlign'] ) || $update_align ) {
+			$align = ! empty( $attributes['mvAlign'] ) ? $attributes['mvAlign'] : '';
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['tvAlign'] ) ? $attributes['tvAlign'] : '';
+			}
+			if ( empty( $align ) ) {
+				$align = ! empty( $attributes['vAlign'] ) ? $attributes['vAlign'] : 'center';
+			}
+			switch ( $align ) {
+				case 'top':
+					$css->add_property( $v_property, 'flex-start' );
+					break;
+				case 'center':
+					$css->add_property( $v_property, 'center' );
+					break;
+				case 'bottom':
+					$css->add_property( $v_property, 'flex-end' );
+					break;
+			}
+		}
+		$css->set_media_state( 'desktop' );
+		// Old CSS for backwards support.
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
@@ -103,62 +260,11 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'text-transform', $attributes['textTransform'] );
 			}
 		}
-		if ( isset( $attributes['margin'] ) && is_array( $attributes['margin'] ) && is_array( $attributes['margin'][0] ) ) {
-			$margin = $attributes['margin'][0];
-			$unit   = ( isset( $attributes['marginUnit'] ) && ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
-			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) ) {
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['desk'][0] ) && is_numeric( $margin['desk'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['desk'][0] . $unit );
-				}
-				if ( isset( $margin['desk'][1] ) && is_numeric( $margin['desk'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['desk'][1] . $unit );
-				}
-				if ( isset( $margin['desk'][2] ) && is_numeric( $margin['desk'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['desk'][2] . $unit );
-				}
-				if ( isset( $margin['desk'][3] ) && is_numeric( $margin['desk'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['desk'][3] . $unit );
-				}
-			}
-			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) ) {
-				$css->set_media_state( 'tablet' );
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['tablet'][0] ) && is_numeric( $margin['tablet'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['tablet'][0] . $unit );
-				}
-				if ( isset( $margin['tablet'][1] ) && is_numeric( $margin['tablet'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['tablet'][1] . $unit );
-				}
-				if ( isset( $margin['tablet'][2] ) && is_numeric( $margin['tablet'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['tablet'][2] . $unit );
-				}
-				if ( isset( $margin['tablet'][3] ) && is_numeric( $margin['tablet'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['tablet'][3] . $unit );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) ) {
-				$css->set_media_state( 'mobile' );
-				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
-				if ( isset( $margin['mobile'][0] ) && is_numeric( $margin['mobile'][0] ) ) {
-					$css->add_property( 'margin-top', $margin['mobile'][0] . $unit );
-				}
-				if ( isset( $margin['mobile'][1] ) && is_numeric( $margin['mobile'][1] ) ) {
-					$css->add_property( 'margin-right', $margin['mobile'][1] . $unit );
-				}
-				if ( isset( $margin['mobile'][2] ) && is_numeric( $margin['mobile'][2] ) ) {
-					$css->add_property( 'margin-bottom', $margin['mobile'][2] . $unit );
-				}
-				if ( isset( $margin['mobile'][3] ) && is_numeric( $margin['mobile'][3] ) ) {
-					$css->add_property( 'margin-left', $margin['mobile'][3] . $unit );
-				}
-				$css->set_media_state( 'desktop' );
-			}
-		}
+
 		if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
 			foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
+					$this->enqueue_style( 'kb-button-deprecated-styles' );
 					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
 						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
 						$css->add_property( 'margin-right', $btnvalue['gap'] . 'px' );
@@ -192,7 +298,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'color', $css->render_color( $btnvalue['color'] ) );
 					}
 					if ( isset( $btnvalue['size'] ) && ! empty( $btnvalue['size'] ) ) {
-						$css->add_property( 'font-size', $btnvalue['size'] . ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) );
+						$css->add_property( 'font-size', $css->get_font_size( $btnvalue['size'], ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) ) );
 					}
 					if ( isset( $btnvalue['backgroundType'] ) && 'gradient' === $btnvalue['backgroundType'] ) {
 						$bg1 = ( ! isset( $btnvalue['background'] ) || 'transparent' === $btnvalue['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $btnvalue['background'], ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 ) ) );
@@ -214,22 +320,16 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					if ( ! empty( $btnvalue['borderStyle'] ) ) {
 						$css->add_property( 'border-style', $btnvalue['borderStyle'] );
+					} elseif ( ! empty( $btnvalue['borderWidth'] ) ) {
+						$css->add_property( 'border-style', 'solid' );
 					}
 					if ( isset( $btnvalue['boxShadow'] ) && is_array( $btnvalue['boxShadow'] ) && isset( $btnvalue['boxShadow'][0] ) && true === $btnvalue['boxShadow'][0] ) {
 						$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadow'][7] ) && true === $btnvalue['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadow'][3] ) && is_numeric( $btnvalue['boxShadow'][3] ) ? $btnvalue['boxShadow'][3] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][4] ) && is_numeric( $btnvalue['boxShadow'][4] ) ? $btnvalue['boxShadow'][4] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][5] ) && is_numeric( $btnvalue['boxShadow'][5] ) ? $btnvalue['boxShadow'][5] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadow'][6] ) && is_numeric( $btnvalue['boxShadow'][6] ) ? $btnvalue['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadow'][1] ) && ! empty( $btnvalue['boxShadow'][1] ) ? $btnvalue['boxShadow'][1] : '#000000' ), ( isset( $btnvalue['boxShadow'][2] ) && is_numeric( $btnvalue['boxShadow'][2] ) ? $btnvalue['boxShadow'][2] : 0.2 ) ) );
 					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][0] ) && is_numeric( $btnvalue['margin'][0] ) ) {
-						$css->add_property( 'margin-top', $btnvalue['margin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][1] ) && is_numeric( $btnvalue['margin'][1] ) ) {
-						$css->add_property( 'margin-right', $btnvalue['margin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][2] ) && is_numeric( $btnvalue['margin'][2] ) ) {
-						$css->add_property( 'margin-bottom', $btnvalue['margin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
-					if ( isset( $btnvalue['margin'] ) && is_array( $btnvalue['margin'] ) && isset( $btnvalue['margin'][3] ) && is_numeric( $btnvalue['margin'][3] ) ) {
-						$css->add_property( 'margin-left', $btnvalue['margin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-					}
+
+					$css->render_measure_output( $btnvalue, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
+
+
 					$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus' );
 					if ( isset( $btnvalue['colorHover'] ) && ! empty( $btnvalue['colorHover'] ) ) {
 						$css->add_property( 'color', $css->render_color( $btnvalue['colorHover'] ) );
@@ -287,14 +387,14 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						$css->set_media_state( 'tablet' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) {
-							$css->add_property( 'font-size', $btnvalue['responsiveSize'][0] . ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) );
+							$css->add_property( 'font-size', $css->get_font_size( $btnvalue['responsiveSize'][0], ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) ) );
 						}
 						if ( isset( $attributes['widthType'] ) && 'fixed' === $attributes['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) {
 							$css->add_property( 'width', $btnvalue['width'][1] . 'px' );
 						}
 						$css->set_media_state( 'desktop' );
 					}
-					if ( ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][0] ) && ( is_numeric( $btnvalue['tabletMargin'][0] ) || is_numeric( $btnvalue['tabletMargin'][1] ) || is_numeric( $btnvalue['tabletMargin'][2] ) || is_numeric( $btnvalue['tabletMargin'][3] ) ) ) || ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) ) {
+					if ( ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) ) {
 						$css->set_media_state( 'tablet' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) {
@@ -305,18 +405,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][0] . 'px' );
 							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][0] . 'px' );
 						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][0] ) && is_numeric( $btnvalue['tabletMargin'][0] ) ) {
-							$css->add_property( 'margin-top', $btnvalue['tabletMargin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][1] ) && is_numeric( $btnvalue['tabletMargin'][1] ) ) {
-							$css->add_property( 'margin-right', $btnvalue['tabletMargin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][2] ) && is_numeric( $btnvalue['tabletMargin'][2] ) ) {
-							$css->add_property( 'margin-bottom', $btnvalue['tabletMargin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['tabletMargin'] ) && is_array( $btnvalue['tabletMargin'] ) && isset( $btnvalue['tabletMargin'][3] ) && is_numeric( $btnvalue['tabletMargin'][3] ) ) {
-							$css->add_property( 'margin-left', $btnvalue['tabletMargin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
+
 						$css->set_media_state( 'desktop' );
 					}
 					// Mobile CSS.
@@ -330,14 +419,14 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 						$css->set_media_state( 'mobile' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) {
-							$css->add_property( 'font-size', $btnvalue['responsiveSize'][1] . ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) );
+							$css->add_property( 'font-size', $css->get_font_size( $btnvalue['responsiveSize'][1], ( isset( $btnvalue['sizeType'] ) && ! empty( $btnvalue['sizeType'] ) ? $btnvalue['sizeType'] : 'px' ) ) );
 						}
 						if ( isset( $attributes['widthType'] ) && 'fixed' === $attributes['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) {
 							$css->add_property( 'width', $btnvalue['width'][2] . 'px' );
 						}
 						$css->set_media_state( 'desktop' );
 					}
-					if ( ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][0] ) && ( is_numeric( $btnvalue['mobileMargin'][0] ) || is_numeric( $btnvalue['mobileMargin'][1] ) || is_numeric( $btnvalue['mobileMargin'][2] ) || is_numeric( $btnvalue['mobileMargin'][3] ) ) ) || ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) ) {
+					if ( ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) ) {
 						$css->set_media_state( 'mobile' );
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) {
@@ -348,18 +437,6 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][1] . 'px' );
 							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][1] . 'px' );
 						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][0] ) && is_numeric( $btnvalue['mobileMargin'][0] ) ) {
-							$css->add_property( 'margin-top', $btnvalue['mobileMargin'][0] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][1] ) && is_numeric( $btnvalue['mobileMargin'][1] ) ) {
-							$css->add_property( 'margin-right', $btnvalue['mobileMargin'][1] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][2] ) && is_numeric( $btnvalue['mobileMargin'][2] ) ) {
-							$css->add_property( 'margin-bottom', $btnvalue['mobileMargin'][2] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
-						if ( isset( $btnvalue['mobileMargin'] ) && is_array( $btnvalue['mobileMargin'] ) && isset( $btnvalue['mobileMargin'][3] ) && is_numeric( $btnvalue['mobileMargin'][3] ) ) {
-							$css->add_property( 'margin-left', $btnvalue['mobileMargin'][3] . ( ! empty( $btnvalue['marginUnit'] ) ? $btnvalue['marginUnit'] : 'px' ) );
-						}
 						$css->set_media_state( 'desktop' );
 					}
 					// Icons CSS.
@@ -369,7 +446,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->add_property( 'color', $css->render_color( $btnvalue['iconColor'] ) );
 						}
 						if ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][0] ) && is_numeric( $btnvalue['iconSize'][0] ) ) {
-							$css->add_property( 'font-size', $btnvalue['iconSize'][0] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
+							$css->add_property( 'font-size', $css->get_font_size( $btnvalue['iconSize'][0], ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) ) );
 						}
 						if ( isset( $btnvalue['iconColorHover'] ) && ! empty( $btnvalue['iconColorHover'] ) ) {
 							$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
@@ -396,7 +473,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->set_media_state( 'tablet' );
 							if ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][1] ) && is_numeric( $btnvalue['iconSize'][1] ) ) {
 								$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
-								$css->add_property( 'font-size', $btnvalue['iconSize'][1] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
+								$css->add_property( 'font-size', $css->get_font_size( $btnvalue['iconSize'][1], ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) ) );
 							}
 							if ( isset( $btnvalue['iconTabletPadding'] ) && is_array( $btnvalue['iconTabletPadding'] ) ) {
 								$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
@@ -419,7 +496,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 							$css->set_media_state( 'mobile' );
 							if ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][2] ) && is_numeric( $btnvalue['iconSize'][2] ) ) {
 								$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
-								$css->add_property( 'font-size', $btnvalue['iconSize'][2] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
+								$css->add_property( 'font-size', $css->get_font_size( $btnvalue['iconSize'][2], ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) ) );
 							}
 							if ( isset( $btnvalue['iconMobilePadding'] ) && is_array( $btnvalue['iconMobilePadding'] ) ) {
 								$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
@@ -458,14 +535,11 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
+		wp_register_style( 'kb-button-deprecated-styles', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-button-deprecated-style.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
-		if ( $this->has_script ) {
-			wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
-			wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-video-popup.min.js', array(
-				'jquery',
-				'magnific-popup'
-			), KADENCE_BLOCKS_VERSION, true );
-		}
+		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

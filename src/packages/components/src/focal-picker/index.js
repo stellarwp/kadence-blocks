@@ -59,7 +59,7 @@ class KadenceFocalPicker extends Component {
 	onPositionChange( position ) {
 		this.setState( { position: position } );
 		let focalPoint;
-		if ( position && position.x ) {
+		if ( position && undefined !== position.x && '' !== position.x ) {
 			focalPoint = ( position.x * 100 ) + '% ' + ( position.y * 100 ) + '%';
 		}
 		this.props.onChange( focalPoint );

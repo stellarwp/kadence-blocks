@@ -10,10 +10,113 @@
  */
 import { times } from 'lodash';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { IconRender } from '@kadence/components';
+import { IconRender, IconSpanTag } from '@kadence/components';
+import { migrateToInnerblocks } from './utils';
+import classnames from 'classnames';
+import { useBlockProps } from '@wordpress/block-editor';
 
  export default [
-	{
+	 {
+		 attributes: {
+			 icons: {
+				 type: 'array',
+				 default: [
+					 {
+						 icon: 'fe_aperture',
+						 link: '',
+						 target: '_self',
+						 size: 50,
+						 width: 2,
+						 title: '',
+						 color: 'palette4',
+						 background: 'transparent',
+						 border: 'palette4',
+						 borderRadius: 0,
+						 borderWidth: 2,
+						 padding: [ 20, 20, 20, 20 ],
+						 paddingUnit : 'px',
+						 style: 'default',
+						 margin: [ '', '', '', '' ],
+						 marginUnit : 'px',
+						 hColor: '',
+						 hBackground: '',
+						 hBorder: '',
+						 linkTitle: '',
+						 tabletSize: '',
+						 mobileSize: '',
+						 tabletMargin: [ '', '', '', '' ],
+						 mobileMargin: [ '', '', '', '' ],
+						 tabletPadding: [ '', '', '', '' ],
+						 mobilePadding: [ '', '', '', '' ]
+					 }
+				 ]
+			 },
+			 iconCount: {
+				 type: 'number',
+				 default: 1
+			 },
+			 uniqueID: {
+				 type: 'string',
+				 default: ''
+			 },
+			 blockAlignment: {
+				 type: 'string',
+				 default: ''
+			 },
+			 textAlignment: {
+				 type: 'string',
+				 default: 'center'
+			 },
+			 tabletTextAlignment: {
+				 type: 'string'
+			 },
+			 mobileTextAlignment: {
+				 type: 'string'
+			 },
+			 verticalAlignment: {
+				 type: 'string'
+			 },
+			 inQueryBlock: {
+				 type: 'boolean',
+				 default: false
+			 }
+		 },
+		 save( { attributes, className } ) {
+			 const {  icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
+			 const renderSaveIcons = ( index ) => {
+				 return (
+					 <div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
+						 { icons[ index ].icon && icons[ index ].link && (
+							 <a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === icons[ index ].target ? icons[ index ].target : undefined ) } rel={ '_blank' === icons[ index ].target ? 'noopener noreferrer' : undefined } aria-label={ ( undefined !== icons[ index ].linkTitle && '' !== icons[ index ].linkTitle ? icons[ index ].linkTitle : undefined ) }>
+								 <IconSpanTag name={ icons[ index ].icon } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } />
+							 </a>
+						 ) }
+						 { icons[ index ].icon && ! icons[ index ].link && (
+							 <IconSpanTag name={ icons[ index ].icon } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } />
+						 ) }
+					 </div>
+				 );
+			 };
+			 const classes = classnames( {
+				 'kt-svg-icons': true,
+				 [ `kt-svg-icons${ uniqueID }` ]: uniqueID,
+				 [ `align${ ( blockAlignment ? blockAlignment : 'none' ) }` ]: true,
+				 [ `kb-icon-valign-${ verticalAlignment }` ]: verticalAlignment,
+			 } );
+
+			 const blockProps = useBlockProps.save( {
+				 className: classes,
+			 } );
+
+			 return (
+				 <div { ...blockProps }>
+					 { times( iconCount, n => renderSaveIcons( n ) ) }
+				 </div>
+			 );
+		 },
+		 migrate: migrateToInnerblocks,
+	 },
+	 {
 		attributes: {
 			icons: {
 				type: 'array',
@@ -80,7 +183,7 @@ import { IconRender } from '@kadence/components';
 			}
 		},
 		migrate( attributes ) {
-			const newAttributes = attributes;
+			let newAttributes = attributes;
 			for ( let i = 0; i < attributes.icons.length; i++) {
 				if ( attributes.icons[i].padding ) {
 					const tempPadding = parseInt( attributes.icons[i].padding, 10 );
@@ -97,7 +200,8 @@ import { IconRender } from '@kadence/components';
 				
 				newAttributes.icons[i].margin = [ tempMarginTop, tempMarginRight, tempMarginBottom, tempMarginLeft ];
 			}
-		   return newAttributes;
+			
+		   return migrateToInnerblocks( newAttributes );
 	   },
 	   save: ( { attributes } ) => {
 			const { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
@@ -245,7 +349,8 @@ import { IconRender } from '@kadence/components';
 					 { times( iconCount, n => renderSaveIcons( n ) ) }
 				 </div>
 			 );
-		 }
+		 },
+		 migrate: migrateToInnerblocks,
 	 },
 	 {
 		 attributes: {

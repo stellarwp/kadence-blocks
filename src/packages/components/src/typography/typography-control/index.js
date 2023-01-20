@@ -9,14 +9,18 @@
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-
+import './editor.scss';
 /**
  * Import External
  */
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import RangeControl from '../../range/range-control';
-import ResponsiveRangeControls from '../../range/responsive-range-control';
+import ResponsiveFontSizeControl from '../../font-size/responsive';
+import KadenceRadioButtons from '../../common/radio-buttons';
 import MeasurementControls from '../../measurement/measurement-control';
+import ResponsiveUnitControl from '../../unit/responsive';
+import TwoColumn from '../../panels/two-column';
+import TagSelect from '../../tag-select';
 
 import Select from 'react-select';
 import { range } from 'lodash';
@@ -24,7 +28,7 @@ import HeadingLevelIcon from '../../heading-level-icon';
 
 import { applyFilters } from '@wordpress/hooks';
 
-import { Fragment, Component } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import {
 	ToolbarGroup,
 	ToggleControl,
@@ -194,7 +198,7 @@ class TypographyControls extends Component {
 			tagLowLevel = 1,
 			tagHighLevel = 7,
 			lineHeight,
-			lineHeightType = 'px',
+			lineHeightType = '',
 			fontSize,
 			fontSizeType = 'px',
 			googleFont,
@@ -437,27 +441,33 @@ class TypographyControls extends Component {
 			} ];
 		};
 		const textTransformOptions = [
-			{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-			{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
-			{ value: 'capitalize', label: __( 'Capitalize', 'kadence-blocks' ) },
-			{ value: 'uppercase', label: __( 'Uppercase', 'kadence-blocks' ) },
-			{ value: 'lowercase', label: __( 'Lowercase', 'kadence-blocks' ) },
+			{ value: 'none', label: __( '-', 'kadence-blocks' ), tooltip: __( 'None', 'kadence-blocks' ) },
+			{ value: 'uppercase', label: __( 'AB', 'kadence-blocks' ), tooltip: __( 'Uppercase', 'kadence-blocks' ) },
+			{ value: 'lowercase', label: __( 'ab', 'kadence-blocks' ), tooltip: __( 'Lowercase', 'kadence-blocks' ) },
+			{ value: 'capitalize', label: __( 'Ab', 'kadence-blocks' ), tooltip: __( 'Capitalize', 'kadence-blocks' ) },
 		];
-
-
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType !== 'px' ? 12 : 200 );
-		const fontStep = ( fontSizeType !== 'px' ? 0.1 : 1 );
+		const fontMax = ( fontSizeType !== 'px' ? 12 : 300 );
+		const fontStep = ( fontSizeType !== 'px' ? 0.01 : 1 );
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
-		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
+		const lineStep = ( lineHeightType !== 'px' ? 0.01 : 1 );
 		const usingReg = typographyWeights.some(function(el) {
 			return el.value === 'regular';
 		});
 
 		return (
-			<Fragment>
+			<>
 				<div className={ 'components-base-control kb-typography-control' }>
+					{ label && (
+						<div className='kadence-title-bar kadence-component__header'>
+							<label
+								className="kadence-heading-fontfamily-title components-typography-control__label kadence-component__header__title"
+							>
+								{ label }
+							</label>
+						</div>
+					) }
 					<div className="kadence-title-bar">
 						{ label && (
 							<h2 className="kt-heading-fontfamily-title">{ label }</h2>
@@ -474,31 +484,36 @@ class TypographyControls extends Component {
 						) }
 					</div>
 					{ onTagLevel && (
-						<Fragment>
+						<>
 							{ onTagLevelHTML && (
-								<div className="kb-tag-level-control components-base-control">
-									<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
-									<ToolbarGroup
-										isCollapsed={ false }
-										label={ __( 'Change Heading Tag', 'kadence-blocks' ) }
-										controls={ headingOptions }
-									/>
-								</div>
+								<TagSelect
+									label={__( 'HTML Tag', 'kadence-blocks' )}
+									value={ 'heading' === htmlTag ? level : htmlTag }
+									onChange={ (value) => {
+										if ( 'div' === value || 'p' === value || 'span' === value ) {
+											onTagLevelHTML( 2, value );
+										} else {
+											onTagLevelHTML( value, 'heading' );
+										}
+									} }
+								/>
 							) }
 							{ ! onTagLevelHTML && (
-								<div className="kb-tag-level-control">
-									<p>{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
-									<ToolbarGroup
-										isCollapsed={ false }
-										label={ __( 'Change Heading Tag', 'kadence-blocks' ) }
-										controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) }
-									/>
-								</div>
+								<TagSelect
+									label={__( 'HTML Tag', 'kadence-blocks' )}
+									value={ tagLevel }
+									headingOnly={ true }
+									tagHighLevel={ tagHighLevel }
+									tagLowLevel={ tagLowLevel }
+									onChange={ (value) => {
+										onTagLevel( value);
+									} }
+								/>
 							) }
-						</Fragment>
+						</>
 					) }
 					{ onFontSize && onFontSizeType && (
-						<ResponsiveRangeControls
+						<ResponsiveFontSizeControl
 							label={ __( 'Font Size', 'kadence-blocks' ) }
 							value={ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ) }
 							onChange={ value => onFontSize( [ value, ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ), ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
@@ -506,16 +521,16 @@ class TypographyControls extends Component {
 							onChangeTablet={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), value, ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
 							mobileValue={ ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) }
 							onChangeMobile={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ), value ] ) }
-							min={ fontMin }
+							min={ 0 }
 							max={ fontMax }
 							step={ fontStep }
 							unit={ ( fontSizeType ? fontSizeType : 'px' ) }
 							onUnit={ ( value ) => onFontSizeType( value ) }
-							units={ [ 'px', 'em', 'rem' ] }
+							units={[ 'px', 'em', 'rem', 'vw' ]}
 						/>
 					) }
-					{ onLineHeight && onLineHeightType && (
-						<ResponsiveRangeControls
+					{ ! onTextTransform && onLineHeight && onLineHeightType && (
+						<ResponsiveUnitControl
 							label={ __( 'Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ) }
 							onChange={ value => onLineHeight( [ value, ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ), ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) ] ) }
@@ -526,63 +541,77 @@ class TypographyControls extends Component {
 							min={ lineMin }
 							max={ lineMax }
 							step={ lineStep }
-							unit={ ( lineHeightType ? lineHeightType : 'px' ) }
+							unit={ ( lineHeightType ? lineHeightType : '-' ) }
 							onUnit={ ( value ) => onLineHeightType( value ) }
-							units={ [ 'px', 'em', 'rem' ] }
+							units={ [ '-', 'px', 'em', 'rem' ] }
 						/>
-					) }
-					{ onLetterSpacing && ! reLetterSpacing && (
-						<RangeControl
-							label={ __( 'Letter Spacing', 'kadence-blocks' ) }
-							value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
-							onChange={ ( value ) => onLetterSpacing( value ) }
-							min={ -5 }
-							max={ 15 }
-							step={ 0.1 }
-						/>
-					) }
-					{ onLetterSpacing && reLetterSpacing && (
-						<ResponsiveRangeControls
-							label={ __( 'Letter Spacing', 'kadence-blocks' ) }
-							value={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ) }
-							onChange={ value => onLetterSpacing( [ value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
-							tabletValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ) }
-							onChangeTablet={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
-							mobileValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) }
-							onChangeMobile={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), value ] ) }
-							min={ -5 }
-							max={ 15 }
-							step={ 0.1 }
-							unit={ ( onLetterSpacingType ? letterSpacingType : 'px' ) }
-							onUnit={ ( value ) => onLetterSpacingType( value ) }
-							units={ ( onLetterSpacingType ? [ 'px', 'em', 'rem' ] : [ 'px' ] ) }
-						/>
-					) }
-					{ onTextTransform && (
-						<SelectControl
-							label={ __( 'Text Transform', 'kadence-blocks' ) }
-							value={ textTransform }
+					)}
+					{ onTextTransform && onLineHeight && onLineHeightType && (
+						<TwoColumn className="kb-font-settings">
+							<ResponsiveUnitControl
+								label={ __( 'Line Height', 'kadence-blocks' ) }
+								value={ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ) }
+								onChange={ value => onLineHeight( [ value, ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ), ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) ] ) }
+								tabletValue={ ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ) }
+								onChangeTablet={ ( value ) => onLineHeight( [ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ), value, ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) ] ) }
+								mobileValue={ ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) }
+								onChangeMobile={ ( value ) => onLineHeight( [ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ), ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ), value ] ) }
+								min={ lineMin }
+								max={ lineMax }
+								step={ lineStep }
+								unit={ ( lineHeightType ? lineHeightType : '-' ) }
+								onUnit={ ( value ) => onLineHeightType( value ) }
+								units={ [  '-', 'px', 'em', 'rem' ] }
+								compressedDevice={ true }
+							/>
+							<KadenceRadioButtons
+								label={__( 'Letter Case', 'kadence-blocks' )}
+								value={textTransform}
+								options={ textTransformOptions }
+								className={ 'kb-letter-case' }
+								allowClear={ true }
+								onChange={ ( value ) => onTextTransform( value ) }
+							/>
+						</TwoColumn>
+					)}
+					{ onTextTransform && ( ! onLineHeight || ! onLineHeightType ) && (
+						<KadenceRadioButtons
+							label={__( 'Letter Case', 'kadence-blocks' )}
+							value={textTransform}
 							options={ textTransformOptions }
+							className={ 'kb-letter-case' }
+							allowClear={ true }
 							onChange={ ( value ) => onTextTransform( value ) }
 						/>
-					) }
+					)}
 					{ onFontFamily && onTypoFontClear && (
-						<Fragment>
-							<div className="kadence-title-bar">
-								{ label && (
-									<span className="kadence-control-title">{ __( 'Font Family', 'kadence-blocks' ) }</span>
-								) }
-							</div>
-							<div className="typography-family-select-form-row">
-								<Select
-									options={ typographyOptions }
-									value={ fontFamilyValue }
-									isMulti={ false }
-									maxMenuHeight={ 300 }
-									isClearable={ true }
-									placeholder={ __( 'Select a font family', 'kadence-blocks' ) }
-									onChange={ onTypoFontChange }
-								/>
+						<>
+							<div className="components-base-control">
+								<div className="kadence-component__header kadence-title-bar">
+									<label className="kadence-control-title kadence-component__header__title">{ __( 'Font Family', 'kadence-blocks' ) }</label>
+								</div>
+								<div className="typography-family-select-form-row">
+									<Select
+										options={ typographyOptions }
+										value={ fontFamilyValue }
+										classNamePrefix="kb-react-select"
+										isMulti={ false }
+										maxMenuHeight={ 300 }
+										isClearable={ true }
+										placeholder={ __( 'Select a font family', 'kadence-blocks' ) }
+										onChange={ onTypoFontChange }
+										styles={{
+											control: (baseStyles, state) => ({
+											...baseStyles,
+											borderColor: 'rgb(30, 30, 30)',
+											borderRadius:'2px',
+											':hover': {
+												borderColor: 'rgb(30, 30, 30)',
+											  },
+											}),
+										}}
+									/>
+								</div>
 							</div>
 							{ onFontWeight && (
 								<SelectControl
@@ -590,6 +619,7 @@ class TypographyControls extends Component {
 									value={ ( '400' === fontWeight && usingReg ? 'regular' : fontWeight ) }
 									options={ typographyWeights }
 									onChange={ onTypoFontWeightChange }
+									className={ 'kb-select-style' }
 								/>
 							) }
 							{ fontFamily && onFontStyle && (
@@ -598,16 +628,9 @@ class TypographyControls extends Component {
 									value={ fontStyle }
 									options={ typographyStyles }
 									onChange={ onTypoFontStyleChange }
+									className={ 'kb-select-style' }
 								/>
 							) }
-							{/* { fontFamily && googleFont && onFontSubset && (
-								<SelectControl
-									label={ __( 'Font Subset', 'kadence-blocks' ) }
-									value={ fontSubset }
-									options={ typographySubsets }
-									onChange={ ( value ) => onFontSubset( value ) }
-								/>
-							) } */}
 							{ fontFamily && googleFont && onLoadGoogleFont && (
 								<ToggleControl
 									label={ __( 'Load Google Font on Frontend', 'kadence-blocks' ) }
@@ -622,10 +645,37 @@ class TypographyControls extends Component {
 									onChange={ onLoadItalic }
 								/>
 							) }
-						</Fragment>
+							{ onLetterSpacing && reLetterSpacing && (
+								<ResponsiveUnitControl
+									label={ __( 'Letter Spacing', 'kadence-blocks' ) }
+									value={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ) }
+									onChange={ value => onLetterSpacing( [ value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
+									tabletValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ) }
+									onChangeTablet={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
+									mobileValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) }
+									onChangeMobile={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), value ] ) }
+									min={ -5 }
+									max={ 25 }
+									step={ ( onLetterSpacingType && onLetterSpacingType === 'px' ? 0.1 : 0.01 ) }
+									unit={ ( onLetterSpacingType ? letterSpacingType : 'px' ) }
+									onUnit={ ( value ) => onLetterSpacingType( value ) }
+									units={ ( onLetterSpacingType ? [ 'px', 'em', 'rem' ] : [ 'px' ] ) }
+								/>
+							) }
+							{ onLetterSpacing && ! reLetterSpacing && (
+								<RangeControl
+									label={ __( 'Letter Spacing', 'kadence-blocks' ) }
+									value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
+									onChange={ ( value ) => onLetterSpacing( value ) }
+									min={ -5 }
+									max={ 25 }
+									step={ 0.1 }
+								/>
+							) }
+						</>
 					) }
 					{ onPadding && onPaddingControl && (
-						<Fragment>
+						<>
 							<MeasurementControls
 								label={ __( 'Padding (px)', 'kadence-blocks' ) }
 								measurement={ ( padding ? padding : '' ) }
@@ -637,10 +687,10 @@ class TypographyControls extends Component {
 								step={ 1 }
 								allowEmpty={ false }
 							/>
-						</Fragment>
+						</>
 					) }
 					{ onMargin && onMarginControl && (
-						<Fragment>
+						<>
 							<MeasurementControls
 								label={ __( 'Margin (px)', 'kadence-blocks' ) }
 								measurement={ ( margin ? margin : '' ) }
@@ -652,10 +702,10 @@ class TypographyControls extends Component {
 								step={ 1 }
 								allowEmpty={ false }
 							/>
-						</Fragment>
+						</>
 					) }
 				</div>
-			</Fragment>
+			</>
 		);
 	}
 }
