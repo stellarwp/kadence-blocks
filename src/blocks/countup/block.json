@@ -153,18 +153,18 @@
 	  "default": [ "", "", "" ]
 	},
 	"start": {
-	  "type": "number"
+	  "type": "number",
+	  "default": 0
 	},
 	"end": {
-	  "type": "number"
+	  "type": "number",
+	  "default": 100
 	},
 	"startDecimal": {
-	 "type": "string",
-	 "default": "0"
+	 "type": "string"
 	},
 	"endDecimal": {
-	 "type": "string",
-	 "default": "100"
+	 "type": "string"
 	},
 	"prefix": {
 	  "type": "string",
