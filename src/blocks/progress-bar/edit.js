@@ -101,6 +101,7 @@ export function Edit( {
 		containerMaxWidthUnits,
 		displayLabel,
 		labelFont,
+		labelHighlightFont,
 		labelMinHeight,
 		label,
 		labelAlign,
@@ -169,6 +170,10 @@ export function Edit( {
 
 	const previewLabelFont = getPreviewSize( previewDevice, ( undefined !== labelFont.size && undefined !== labelFont.size[ 0 ] && '' !== labelFont.size[ 0 ] ? labelFont.size[ 0 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 1 ] && '' !== labelFont.size[ 1 ] ? labelFont.size[ 1 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 2 ] && '' !== labelFont.size[ 2 ] ? labelFont.size[ 2 ] : '' ) );
 	const previewLabelLineHeight = getPreviewSize( previewDevice, ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 0 ] && '' !== labelFont.lineHeight[ 0 ] ? labelFont.lineHeight[ 0 ] : '' ), ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 1 ] && '' !== labelFont.lineHeight[ 1 ] ? labelFont.lineHeight[ 1 ] : '' ), ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 2 ] && '' !== labelFont.lineHeight[ 2 ] ? labelFont.lineHeight[ 2 ] : '' ) );
+
+	const previewLabelHighlightFont = getPreviewSize( previewDevice, ( undefined !== labelHighlightFont.size && undefined !== labelHighlightFont.size[ 0 ] && '' !== labelHighlightFont.size[ 0 ] ? labelHighlightFont.size[ 0 ] : '' ), ( undefined !== labelHighlightFont.size && undefined !== labelHighlightFont.size[ 1 ] && '' !== labelHighlightFont.size[ 1 ] ? labelHighlightFont.size[ 1 ] : '' ), ( undefined !== labelHighlightFont.size && undefined !== labelHighlightFont.size[ 2 ] && '' !== labelHighlightFont.size[ 2 ] ? labelHighlightFont.size[ 2 ] : '' ) );
+	const previewLabelHighlightLineHeight = getPreviewSize( previewDevice, ( undefined !== labelHighlightFont.lineHeight && undefined !== labelHighlightFont.lineHeight[ 0 ] && '' !== labelHighlightFont.lineHeight[ 0 ] ? labelHighlightFont.lineHeight[ 0 ] : '' ), ( undefined !== labelHighlightFont.lineHeight && undefined !== labelHighlightFont.lineHeight[ 1 ] && '' !== labelHighlightFont.lineHeight[ 1 ] ? labelHighlightFont.lineHeight[ 1 ] : '' ), ( undefined !== labelHighlightFont.lineHeight && undefined !== labelHighlightFont.lineHeight[ 2 ] && '' !== labelHighlightFont.lineHeight[ 2 ] ? labelHighlightFont.lineHeight[ 2 ] : '' ) );
+	
 	const previewLabelMinHeight = getPreviewSize( previewDevice, ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) );
 	const previewLabelAlign = getPreviewSize( previewDevice, ( undefined !== labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), ( undefined !== labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), ( undefined !== labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) );
 
@@ -195,6 +200,12 @@ export function Edit( {
 		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
 
 	];
+	const labelFontConfigObj = {
+		google: {
+			families: [ labelFont.family + ( labelFont.variant ? ':' + labelFont.variant : '' ) ],
+		},
+	};
+	const labelFontConfig = ( labelFont.google ? labelFontConfigObj : '' );
 
 	const progressLabelStyles = {
 		textAlign    : previewLabelAlign,
@@ -293,6 +304,11 @@ export function Edit( {
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
 			labelFont: { ...labelFont, ...value },
+		} );
+	};
+	const saveLabelHighlightFont = ( value ) => {
+		setAttributes( {
+			labelHighlightFont: { ...labelHighlightFont, ...value },
 		} );
 	};
 	const [ labelPaddingControl, setLabelPaddingControl ] = useState( 'linked' );
@@ -476,108 +492,167 @@ export function Edit( {
 
 				{( activeTab === 'style' ) && (
 
-					<KadencePanelBody
-						title={__( 'Label Settings', 'kadence-blocks' )}
-						initialOpen={true}
-						panelName={'kb-testimonials-title-settings'}
-					>
-						<ToggleControl
-							label={__( 'Show Label', 'kadence-blocks' )}
-							checked={displayLabel}
-							onChange={( value ) => setAttributes( { displayLabel: value } )}
-						/>
+					<Fragment>
+						<KadencePanelBody
+							title={__( 'Label Settings', 'kadence-blocks' )}
+							initialOpen={true}
+							panelName={'kb-testimonials-title-settings'}
+						>
+							<ToggleControl
+								label={__( 'Show Label', 'kadence-blocks' )}
+								checked={displayLabel}
+								onChange={( value ) => setAttributes( { displayLabel: value } )}
+							/>
 
-						{displayLabel && (
-							<Fragment>
-								<SelectControl
-									label={__( 'Label Position', 'kadence-blocks' )}
-									options={
-										[ { value: 'above', label: __( 'Above', 'kadence-blocks' ) },
-										  { value: 'below', label: __( 'Below', 'kadence-blocks' ) } ]
-									}
-									value={labelPosition}
-									onChange={( value ) => setAttributes( { labelPosition: value } )}
-								/>
+							{displayLabel && (
+								<Fragment>
+									<SelectControl
+										label={__( 'Label Position', 'kadence-blocks' )}
+										options={
+											[ { value: 'above', label: __( 'Above', 'kadence-blocks' ) },
+											{ value: 'below', label: __( 'Below', 'kadence-blocks' ) } ]
+										}
+										value={labelPosition}
+										onChange={( value ) => setAttributes( { labelPosition: value } )}
+									/>
+									<PopColorControl
+										label={__( 'Color Settings', 'kadence-blocks' )}
+										value={( labelFont.color ? labelFont.color : '' )}
+										default={''}
+										onChange={value => saveLabelFont( { color: value } )}
+									/>
+									<ResponsiveAlignControls
+										label={__( 'Text Alignment', 'kadence-blocks' )}
+										value={( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' )}
+										mobileValue={( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' )}
+										tabletValue={( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' )}
+										onChange={( nextAlign ) => setAttributes( { labelAlign: [ nextAlign, ( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), ( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) ] } )}
+										onChangeTablet={( nextAlign ) => setAttributes( { labelAlign: [ ( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), nextAlign, ( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) ] } )}
+										onChangeMobile={( nextAlign ) => setAttributes( { labelAlign: [ ( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), ( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), nextAlign ] } )}
+									/>
+									<TypographyControls
+										fontGroup={'heading'}
+										tagLevel={labelFont.level}
+										tagLowLevel={1}
+										onTagLevel={( value ) => saveLabelFont( { level: value } )}
+										fontSize={labelFont.size}
+										onFontSize={( value ) => saveLabelFont( { size: value } )}
+										fontSizeType={labelFont.sizeType}
+										onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
+										lineHeight={labelFont.lineHeight}
+										onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
+										lineHeightType={labelFont.lineType}
+										onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
+										letterSpacing={labelFont.letterSpacing}
+										onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
+										textTransform={labelFont.textTransform}
+										onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
+										fontFamily={labelFont.family}
+										onFontFamily={( value ) => saveLabelFont( { family: value } )}
+										onFontChange={( select ) => {
+											saveLabelFont( {
+												family: select.value,
+												google: select.google,
+											} );
+										}}
+										onFontArrayChange={( values ) => saveLabelFont( values )}
+										googleFont={labelFont.google}
+										onGoogleFont={( value ) => saveLabelFont( { google: value } )}
+										loadGoogleFont={labelFont.loadGoogle}
+										onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
+										fontVariant={labelFont.variant}
+										onFontVariant={( value ) => saveLabelFont( { variant: value } )}
+										fontWeight={labelFont.weight}
+										onFontWeight={( value ) => saveLabelFont( { weight: value } )}
+										fontStyle={labelFont.style}
+										onFontStyle={( value ) => saveLabelFont( { style: value } )}
+										fontSubset={labelFont.subset}
+										onFontSubset={( value ) => saveLabelFont( { subset: value } )}
+										padding={labelFont.padding}
+										onPadding={( value ) => saveLabelFont( { padding: value } )}
+										paddingControl={labelPaddingControl}
+										onPaddingControl={( value ) => setLabelPaddingControl( value )}
+										margin={labelFont.margin}
+										onMargin={( value ) => saveLabelFont( { margin: value } )}
+										marginControl={labelMarginControl}
+										onMarginControl={( value ) => setLabelMarginControl( value )}
+									/>
+									<ResponsiveRangeControls
+										label={__( 'Label Min Height', 'kadence-blocks' )}
+										value={( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' )}
+										onChange={value => setAttributes( { labelMinHeight: [ value, ( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), ( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) ] } )}
+										tabletValue={( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' )}
+										onChangeTablet={( value ) => setAttributes( { labelMinHeight: [ ( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), value, ( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) ] } )}
+										mobileValue={( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' )}
+										onChangeMobile={( value ) => setAttributes( { labelMinHeight: [ ( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), ( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), value ] } )}
+										min={0}
+										max={200}
+										step={1}
+										unit={'px'}
+										showUnit={true}
+										units={[ 'px' ]}
+									/>
+									</Fragment>
+							)}
+						</KadencePanelBody>
+						
+						<KadencePanelBody
+							title={__( 'Highlight Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-panel-highlight-progress-bar'}
+						>
 								<PopColorControl
-									label={__( 'Color Settings', 'kadence-blocks' )}
-									value={( labelFont.color ? labelFont.color : '' )}
-									default={''}
-									onChange={value => saveLabelFont( { color: value } )}
-								/>
-								<ResponsiveAlignControls
-									label={__( 'Text Alignment', 'kadence-blocks' )}
-									value={( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' )}
-									mobileValue={( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' )}
-									tabletValue={( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' )}
-									onChange={( nextAlign ) => setAttributes( { labelAlign: [ nextAlign, ( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), ( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) ] } )}
-									onChangeTablet={( nextAlign ) => setAttributes( { labelAlign: [ ( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), nextAlign, ( labelAlign && labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) ] } )}
-									onChangeMobile={( nextAlign ) => setAttributes( { labelAlign: [ ( labelAlign && labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), ( labelAlign && labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), nextAlign ] } )}
-								/>
+										label={__( 'Color Settings', 'kadence-blocks' )}
+										value={( labelFont.color ? labelFont.color : '' )}
+										default={''}
+										onChange={value => saveLabelHighlightFont( { color: value } )}
+									/>
 								<TypographyControls
-									fontGroup={'heading'}
-									tagLevel={labelFont.level}
-									tagLowLevel={1}
-									onTagLevel={( value ) => saveLabelFont( { level: value } )}
-									fontSize={labelFont.size}
-									onFontSize={( value ) => saveLabelFont( { size: value } )}
-									fontSizeType={labelFont.sizeType}
-									onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
-									lineHeight={labelFont.lineHeight}
-									onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
-									lineHeightType={labelFont.lineType}
-									onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
-									letterSpacing={labelFont.letterSpacing}
-									onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
-									textTransform={labelFont.textTransform}
-									onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
-									fontFamily={labelFont.family}
-									onFontFamily={( value ) => saveLabelFont( { family: value } )}
-									onFontChange={( select ) => {
-										saveLabelFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									}}
-									onFontArrayChange={( values ) => saveLabelFont( values )}
-									googleFont={labelFont.google}
-									onGoogleFont={( value ) => saveLabelFont( { google: value } )}
-									loadGoogleFont={labelFont.loadGoogle}
-									onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
-									fontVariant={labelFont.variant}
-									onFontVariant={( value ) => saveLabelFont( { variant: value } )}
-									fontWeight={labelFont.weight}
-									onFontWeight={( value ) => saveLabelFont( { weight: value } )}
-									fontStyle={labelFont.style}
-									onFontStyle={( value ) => saveLabelFont( { style: value } )}
-									fontSubset={labelFont.subset}
-									onFontSubset={( value ) => saveLabelFont( { subset: value } )}
-									padding={labelFont.padding}
-									onPadding={( value ) => saveLabelFont( { padding: value } )}
-									paddingControl={labelPaddingControl}
-									onPaddingControl={( value ) => setLabelPaddingControl( value )}
-									margin={labelFont.margin}
-									onMargin={( value ) => saveLabelFont( { margin: value } )}
-									marginControl={labelMarginControl}
-									onMarginControl={( value ) => setLabelMarginControl( value )}
-								/>
-								<ResponsiveRangeControls
-									label={__( 'Label Min Height', 'kadence-blocks' )}
-									value={( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' )}
-									onChange={value => setAttributes( { labelMinHeight: [ value, ( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), ( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) ] } )}
-									tabletValue={( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' )}
-									onChangeTablet={( value ) => setAttributes( { labelMinHeight: [ ( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), value, ( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) ] } )}
-									mobileValue={( labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' )}
-									onChangeMobile={( value ) => setAttributes( { labelMinHeight: [ ( labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), ( labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), value ] } )}
-									min={0}
-									max={200}
-									step={1}
-									unit={'px'}
-									showUnit={true}
-									units={[ 'px' ]}
-								/>
-							</Fragment>
-						)}
-					</KadencePanelBody>
+										fontGroup={'heading'}
+										tagLevel={labelFont.level}
+										tagLowLevel={1}
+										onTagLevel={( value ) => saveLabelHighlightFont( { level: value } )}
+										fontSize={labelFont.size}
+										onFontSize={( value ) => saveLabelHighlightFont( { size: value } )}
+										fontSizeType={labelFont.sizeType}
+										onFontSizeType={( value ) => saveLabelHighlightFont( { sizeType: value } )}
+										lineHeight={labelFont.lineHeight}
+										onLineHeight={( value ) => saveLabelHighlightFont( { lineHeight: value } )}
+										lineHeightType={labelFont.lineType}
+										onLineHeightType={( value ) => saveLabelHighlightFont( { lineType: value } )}
+										letterSpacing={labelFont.letterSpacing}
+										onLetterSpacing={( value ) => saveLabelHighlightFont( { letterSpacing: value } )}
+										textTransform={labelFont.textTransform}
+										onTextTransform={( value ) => saveLabelHighlightFont( { textTransform: value } )}
+										fontFamily={labelFont.family}
+										onFontFamily={( value ) => saveLabelHighlightFont( { family: value } )}
+										onFontChange={( select ) => {
+											saveLabelHighlightFont( {
+												family: select.value,
+												google: select.google,
+											} );
+										}}
+										onFontArrayChange={( values ) => saveLabelHighlightFont( values )}
+										googleFont={labelFont.google}
+										onGoogleFont={( value ) => saveLabelHighlightFont( { google: value } )}
+										loadGoogleFont={labelFont.loadGoogle}
+										onLoadGoogleFont={( value ) => saveLabelHighlightFont( { loadGoogle: value } )}
+										fontVariant={labelFont.variant}
+										onFontVariant={( value ) => saveLabelHighlightFont( { variant: value } )}
+										fontWeight={labelFont.weight}
+										onFontWeight={( value ) => saveLabelHighlightFont( { weight: value } )}
+										fontStyle={labelFont.style}
+										onFontStyle={( value ) => saveLabelHighlightFont( { style: value } )}
+										fontSubset={labelFont.subset}
+										onFontSubset={( value ) => saveLabelHighlightFont( { subset: value } )}
+										padding={labelFont.padding}
+										onPadding={( value ) => saveLabelHighlightFont( { padding: value } )}
+										margin={labelFont.margin}
+										onMargin={( value ) => saveLabelHighlightFont( { margin: value } )}
+										
+									/>
+						</KadencePanelBody>
+					</Fragment>
 
 				)}
 
@@ -647,11 +722,7 @@ export function Edit( {
 			</div>
 
 			{labelFont.google && (
-				<WebfontLoader config={ {
-					google: {
-						families: [ labelFont.family + ( labelFont.variant ? ':' + labelFont.variant : '' ) ],
-					},
-				} }>
+				<WebfontLoader config={ labelFontConfig }>
 				</WebfontLoader>
 			)}
 		</div>

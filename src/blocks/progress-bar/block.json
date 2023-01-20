@@ -158,7 +158,11 @@
 			  ""
 			],
 			"linetype": "px",
-			"letterSpacing": "",
+			"letterSpacing":[
+			  "",
+			  "",
+			  ""
+			],
 			"textTransform": "",
 			"family": "",
 			"google": false,
@@ -181,6 +185,51 @@
 			]
 		  }
 	  },
+		"labelHighlightFont": {
+			"type": "object",
+			"default":
+				{
+				"color": "",
+				"level": 6,
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"lineHeight": [
+					"",
+					"",
+					""
+				],
+				"linetype": "px",
+				"letterSpacing":[
+					"",
+					"",
+					""
+				],
+				"textTransform": "",
+				"family": "",
+				"google": false,
+				"style": "",
+				"weight": "",
+				"variant": "",
+				"subset": "",
+				"loadGoogle": true,
+				"padding": [
+					0,
+					0,
+					0,
+					0
+				],
+				"margin": [
+					0,
+					0,
+					15,
+					0
+				]
+				}
+			},
 	  "labelAlign": {
 		"type": "array",
 		"default": [ "", "", "" ]

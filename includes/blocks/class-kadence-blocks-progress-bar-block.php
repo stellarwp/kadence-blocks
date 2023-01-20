@@ -77,9 +77,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		// die();
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label ' );
-		if ( ! empty( $attributes['labelFont']['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $attributes['labelFont']['textTransform'] );
-		}
+		$css->render_typography($attributes , 'labelFont');
 
 		if ( ! empty( $attributes['labelAlign'] ) ) {
 			$css->add_property( 'text-align', $attributes['labelAlign'][0] );
@@ -96,6 +94,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktop' );
 			}
 		}
+
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label mark' );
+		$css->render_typography($attributes , 'labelHighlightFont');
 
 		return $css->css_output();
 	}
