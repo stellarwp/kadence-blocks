@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Block Template
+ * BLOCK: Kadence Progress Bar
  */
 
 /**
@@ -12,22 +12,25 @@ import {
 	PopColorControl,
 	WebfontLoader,
 	ResponsiveRangeControls,
-	ResponsiveMeasurementControls,
-	ResponsiveAlignControls
+	ResponsiveMeasureRangeControl,
+	ResponsiveAlignControls,
+	InspectorControlTabs,
+	KadencePanelBody
 } from '@kadence/components';
 
 import {
 	KadenceColorOutput,
-	getPreviewSize
+	getPreviewSize,
+	getSpacingOptionOutput,
 } from '@kadence/helpers';
 
 import {
 	progressIcon,
 	lineBar,
 	circleBar,
-	semiCircleBar
-} from '@kadence/icons'
- /**
+	semiCircleBar,
+} from '@kadence/icons';
+/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
@@ -37,7 +40,7 @@ import {
 	useEffect,
 	useCallback,
 	useMemo,
-	Fragment
+	Fragment,
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { map } from 'lodash';
@@ -54,25 +57,26 @@ import {
 	ButtonGroup,
 	Button,
 	ToggleControl,
-	RangeControl
+	RangeControl,
 } from '@wordpress/components';
 import {
 	Circle,
 	SemiCircle,
-	Line
-} from 'progressbar.js'
+	Line,
+} from 'progressbar.js';
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
+
 const ktUniqueIDs = [];
 
 export function Edit( {
-	attributes,
-	setAttributes,
-	className,
-	clientId,
-} ) {
+						  attributes,
+						  setAttributes,
+						  className,
+						  clientId,
+					  } ) {
 
 	/*These are all the variables we have defined in block.json*/
 	const {
@@ -99,7 +103,7 @@ export function Edit( {
 		labelFont,
 		labelMinHeight,
 		label,
-		labelAlign, 
+		labelAlign,
 		labelPosition,
 		progressAmount,
 		duration,
@@ -109,7 +113,6 @@ export function Edit( {
 		progressWidthType,
 		progressBorderRadius,
 		easing,
-		
 
 	} = attributes;
 
@@ -138,28 +141,29 @@ export function Edit( {
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueID   : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
-		[ clientId ]
+		[ clientId ],
 	);
 
-	/*These const are for the responsive settings, so that we give the correct rpview based on the display type*/
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
+	/*These const are for the responsive settings, so that we give the correct rpview based on the display type*/
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 0 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 1 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 2 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 3 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 0 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 1 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 2 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 3 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
 	const previewProgressWidth = getPreviewSize( previewDevice, ( undefined !== progressWidth ? progressWidth : '' ), ( undefined !== progressWidthTablet ? progressWidthTablet : '' ), ( undefined !== progressWidthMobile ? progressWidthMobile : '' ) );
 	const previewProgressBorderRadius = getPreviewSize( previewDevice, ( undefined !== progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( undefined !== progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( undefined !== progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) );
-
 
 	const previewContainerMaxWidth = getPreviewSize( previewDevice, ( undefined !== containerMaxWidth ? containerMaxWidth : '' ), ( undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '' ), ( undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '' ) );
 
@@ -168,18 +172,17 @@ export function Edit( {
 	const previewLabelMinHeight = getPreviewSize( previewDevice, ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 0 ] ? labelMinHeight[ 0 ] : '' ), ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 1 ] ? labelMinHeight[ 1 ] : '' ), ( undefined !== labelMinHeight && undefined !== labelMinHeight[ 2 ] ? labelMinHeight[ 2 ] : '' ) );
 	const previewLabelAlign = getPreviewSize( previewDevice, ( undefined !== labelAlign[ 0 ] ? labelAlign[ 0 ] : '' ), ( undefined !== labelAlign[ 1 ] ? labelAlign[ 1 ] : '' ), ( undefined !== labelAlign[ 2 ] ? labelAlign[ 2 ] : '' ) );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ borderControl, setBorderControl ] = useState( 'individual');
-
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
+	const [ borderControl, setBorderControl ] = useState( 'individual' );
 
 	const classes = classnames( className, {
-		[ `kt-block-template${ uniqueID }` ]: uniqueID,
+		[ `kt-block-template${uniqueID}` ]: uniqueID,
 	} );
 
 	const containerClasses = classnames( {
-		'kb-block-progress-container': true,
-		[ `kb-block-progress-container${ uniqueID }` ] : true,
+		'kb-block-progress-container'               : true,
+		[ `kb-block-progress-container${uniqueID}` ]: true,
 	} );
 
 	const blockProps = useBlockProps( {
@@ -189,12 +192,12 @@ export function Edit( {
 	const layoutPresetOptions = [
 		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: lineBar },
 		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: circleBar },
-		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar }
+		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
 
 	];
 
 	const progressLabelStyles = {
-		textAlign	 : previewLabelAlign,
+		textAlign    : previewLabelAlign,
 		fontWeight   : labelFont.weight,
 		fontStyle    : labelFont.style,
 		color        : KadenceColorOutput( labelFont.color ),
@@ -207,22 +210,22 @@ export function Edit( {
 		margin       : ( labelFont.margin ? labelFont.margin[ 0 ] + 'px ' + labelFont.margin[ 1 ] + 'px ' + labelFont.margin[ 2 ] + 'px ' + labelFont.margin[ 3 ] + 'px' : '' ),
 	};
 
-	const [animate,setAnimate] = useState(0.0)
-	const container = document.createElement('div');
-	const ProgressLine = ({animate}) => { 
-		const line = useMemo(()=>
-		new Line(container,{
-			color: KadenceColorOutput( progressColor , progressOpacity ),
-			strokeWidth: previewProgressWidth,
-			duration: duration * 1000,
-			easing: easing,
-			trailWidth: previewProgressWidth,
-			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-			svgStyle: {
-				borderRadius: previewProgressBorderRadius + "px",
-			}
+	const [ animate, setAnimate ] = useState( 0.0 );
+	const container = document.createElement( 'div' );
+	const ProgressLine = ( { animate } ) => {
+		const line = useMemo( () =>
+			new Line( container, {
+				color      : KadenceColorOutput( progressColor, progressOpacity ),
+				strokeWidth: previewProgressWidth,
+				duration   : duration * 1000,
+				easing     : easing,
+				trailWidth : previewProgressWidth,
+				trailColor : KadenceColorOutput( barBackground, barBackgroundOpacity ),
+				svgStyle   : {
+					borderRadius: previewProgressBorderRadius + 'px',
+				},
 
-		}),[]);
+			} ), [] );
 		const node = useCallback( node => {
 			if ( node ) {
 				node.appendChild( container );
@@ -233,21 +236,21 @@ export function Edit( {
 			line.animate( animate );
 		}, [ animate, line ] );
 
-		return <div ref={node} />;
+		return <div ref={node}/>;
 	};
-	const ProgressCircle = ({animate}) => { 
-		const circle = useMemo(()=>
-		new Circle(container,{
-			color: KadenceColorOutput( progressColor , progressOpacity ),
-			strokeWidth: previewProgressWidth,
-			duration: duration * 1000,
-			easing: easing,
-			trailWidth: previewProgressWidth,
-			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-			svgStyle: {
-				borderRadius: previewProgressBorderRadius + "px",
-			}
-		}),[]);
+	const ProgressCircle = ( { animate } ) => {
+		const circle = useMemo( () =>
+			new Circle( container, {
+				color      : KadenceColorOutput( progressColor, progressOpacity ),
+				strokeWidth: previewProgressWidth,
+				duration   : duration * 1000,
+				easing     : easing,
+				trailWidth : previewProgressWidth,
+				trailColor : KadenceColorOutput( barBackground, barBackgroundOpacity ),
+				svgStyle   : {
+					borderRadius: previewProgressBorderRadius + 'px',
+				},
+			} ), [] );
 		const node = useCallback( node => {
 			if ( node ) {
 				node.appendChild( container );
@@ -258,22 +261,22 @@ export function Edit( {
 			circle.animate( animate );
 		}, [ animate, circle ] );
 
-		return <div ref={node} />;
+		return <div ref={node}/>;
 	};
 
-	const ProgressSemicircle = ({animate}) => {
-		const semicircle = useMemo(()=>
-		new SemiCircle(container,{
-			color: KadenceColorOutput( progressColor , progressOpacity ),
-			strokeWidth: previewProgressWidth,
-			duration: 1200,
-			easing: easing,
-			trailWidth: previewProgressWidth,
-			trailColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-			svgStyle: {
-				borderRadius: previewProgressBorderRadius + "px",
-			}
-		}),[]);
+	const ProgressSemicircle = ( { animate } ) => {
+		const semicircle = useMemo( () =>
+			new SemiCircle( container, {
+				color      : KadenceColorOutput( progressColor, progressOpacity ),
+				strokeWidth: previewProgressWidth,
+				duration   : 1200,
+				easing     : easing,
+				trailWidth : previewProgressWidth,
+				trailColor : KadenceColorOutput( barBackground, barBackgroundOpacity ),
+				svgStyle   : {
+					borderRadius: previewProgressBorderRadius + 'px',
+				},
+			} ), [] );
 		const node = useCallback( node => {
 			if ( node ) {
 				node.appendChild( container );
@@ -284,7 +287,7 @@ export function Edit( {
 			semicircle.animate( animate );
 		}, [ animate, semicircle ] );
 
-		return <div ref={node} />;
+		return <div ref={node}/>;
 	};
 
 	const saveLabelFont = ( value ) => {
@@ -296,171 +299,186 @@ export function Edit( {
 	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
 
 	return (
-		<div { ...blockProps }>
+		<div {...blockProps}>
 			<BlockControls group="block">
 				<BlockAlignmentControl
-					value={ align }
-					onChange={ ( value ) => setAttributes( { align: value } ) }
+					value={align}
+					onChange={( value ) => setAttributes( { align: value } )}
 				/>
 			</BlockControls>
 			<InspectorControls>
 
-				<Fragment>
-					<h2>{__( 'Progress Bar Layout', 'kadence-blocks' )}</h2>
-					<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
-						{map( layoutPresetOptions, ( { name, key, icon } ) => (
-							<Button
-								key={key}
-								className="kt-style-btn"
-								isSmall
-								isPrimary={false}
-								aria-pressed={false}
-								onClick={
-									() => setAttributes( { barType: key } )
+				<InspectorControlTabs
+					panelName={'progress-bar'}
+					setActiveTab={setActiveTab}
+					activeTab={activeTab}
+				/>
+
+				{( activeTab === 'general' ) && (
+					<>
+						<PanelBody>
+							<h2>{__( 'Progress Bar Layout', 'kadence-blocks' )}</h2>
+							<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
+								{map( layoutPresetOptions, ( { name, key, icon } ) => (
+									<Button
+										key={key}
+										className="kt-style-btn"
+										isSmall
+										isPrimary={false}
+										aria-pressed={false}
+										onClick={
+											() => setAttributes( { barType: key } )
+										}
+									>
+										{icon}
+									</Button>
+								) )}
+							</ButtonGroup>
+						</PanelBody>
+
+						<KadencePanelBody
+							title={__( 'Size Controls', 'kadence-blocks' )}
+							initialOpen={false}
+						>
+							<ResponsiveRangeControls
+								label={__( 'Max Width', 'kadence-blocks' )}
+								value={containerMaxWidth}
+								onChange={value => setAttributes( { containerMaxWidth: value } )}
+								tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
+								onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
+								mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
+								onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
+								min={0}
+								max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
+								step={1}
+								unit={containerMaxWidthUnits}
+								onUnit={( value ) => setAttributes( { containerMaxWidthUnits: value } )}
+								reset={() => setAttributes( { containerMaxWidth: 200, tabletContainerMaxWidth: '', mobileContainerMaxWidth: '' } )}
+								units={[ 'px', 'vh', '%' ]}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__( 'Margin', 'kadence-blocks' )}
+								value={[ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ]}
+								tabletValue={marginTablet}
+								mobileValue={marginMobile}
+								onChange={( value ) => {
+									setAttributes( { marginDesktop: value } );
+								}}
+								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
+								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
+								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
+								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
+								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
+								unit={marginUnit}
+								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+								onUnit={( value ) => setAttributes( { marginUnit: value } )}
+								// onMouseOver={ marginMouseOver.onMouseOver }
+								// onMouseOut={ marginMouseOver.onMouseOut }
+							/>
+
+
+						</KadencePanelBody>
+
+						{/* These are the wordpress and Kadence components mostly that are imported at the top */}
+						<KadencePanelBody
+							title={__( 'Progress Bar Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-testimonials-bar-settings'}
+						>
+
+							<PopColorControl
+								label={__( 'Progress Background', 'kadence-blocks' )}
+								colorValue={( barBackground ? barBackground : '#4A5568' )}
+								colorDefault={'#4A5568'}
+								opacityValue={barBackgroundOpacity}
+								onColorChange={value => setAttributes( { barBackground: value } )}
+								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
+							/>
+							<PopColorControl
+								label={__( 'Progress Color', 'kadence-blocks' )}
+								colorValue={( progressColor ? progressColor : '#4A5568' )}
+								colorDefault={'#4A5568'}
+								opacityValue={progressOpacity}
+								onColorChange={value => setAttributes( { progressColor: value } )}
+								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
+							/>
+							<ResponsiveRangeControls
+								label={__( 'Progress Thickness', 'kadence-blocks' )}
+								value={progressWidth}
+								tabletValue={progressWidthTablet}
+								mobileValue={progressWidthMobile}
+								onChange={( value ) => {
+									setAttributes( { progressWidth: value } );
+								}}
+								onChangeTablet={( value ) => {
+									setAttributes( { progressWidthTablet: value } );
+								}}
+								onChangeMobile={( value ) => {
+									setAttributes( { progressWidthMobile: value } );
+								}}
+
+								allowEmpty={true}
+								min={0}
+								max={50}
+								step={1}
+
+							/>
+							<ResponsiveRangeControls
+								label={__( 'Border Radius', 'kadence-blocks' )}
+								value={progressBorderRadius[ 0 ]}
+								tabletValue={progressBorderRadius[ 1 ]}
+								mobileValue={progressBorderRadius[ 2 ]}
+								onChange={( value ) => setAttributes( { progressBorderRadius: [ value, ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
+								onChangeTablet={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), value, ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
+								onChangeMobile={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), value ] } )}
+
+
+								allowEmpty={true}
+								min={0}
+								max={50}
+								step={1}
+								unit={'px'}
+							/>
+							<RangeControl
+								label={__( 'Progress Range', 'kadence-blocks' )}
+								value={progressAmount}
+								onChange={( value ) => setAttributes( { progressAmount: value } )}
+								min={1}
+								max={100}
+								step={1}
+							/>
+							<RangeControl
+								label={__( 'Animation Duration', 'kadence-blocks' )}
+								value={duration}
+								onChange={( value ) => setAttributes( { duration: value } )}
+								min={0.1}
+								max={25}
+								step={0.1}
+							/>
+							<SelectControl
+								label={__( 'Animation Type', 'kadence-blocks' )}
+								options={
+									[ { value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
+									  { value: 'easeIn', label: __( 'Ease In', 'kadence-blocks' ) },
+									  { value: 'easeOut', label: __( 'Ease Out', 'kadence-blocks' ) },
+									  { value: 'easeInOut', label: __( 'Ease In Out', 'kadence-blocks' ) } ]
 								}
-							>
-								{icon}
-							</Button>
-						) )}
-					</ButtonGroup>
-				</Fragment>
+								value={easing}
+								onChange={( value ) => setAttributes( { easing: value } )}
+							/>
 
-				<PanelBody
-					title={ __( 'Size Controls', 'kadence-blocks' ) }
-					initialOpen={ false }
-				>
-					<ResponsiveRangeControls
-						label={__( 'Width', 'kadence-blocks' )}
-						value={containerMaxWidth}
-						onChange={value => setAttributes( { containerMaxWidth: value } )}
-						tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
-						onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
-						mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
-						onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
-						min={0}
-						max={( containerMaxWidthUnits == 'px' ? 3000 : 100 )}
-						step={1}
-						unit={containerMaxWidthUnits}
-						onUnit={ ( value ) => setAttributes( { containerMaxWidthUnits: value } )}
-						reset={ () => setAttributes( { containerMaxWidth: 200 , tabletContainerMaxWidth: '' , mobileContainerMaxWidth: '' })}
-						units={[ 'px', 'vh' , '%' ]}
-					/>
-					<ResponsiveMeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-						control={ marginControl }
-						tabletValue={ marginTablet }
-						mobileValue={ marginMobile }
-						onChange={ ( value ) => {
-							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-						} }
-						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-						onChangeControl={ ( value ) => setMarginControl( value ) }
-						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ marginUnit }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-					/>
+						</KadencePanelBody>
 
-					
-				</PanelBody>
+					</>
 
-			 {/* These are the wordpress and Kadence components mostly that are imported at the top */}
-				<PanelBody
-					title={ __( 'Progress Bar Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={'kb-testimonials-bar-settings'}
-				>
+				)}
 
-					<PopColorControl
-						label={ __( 'Progress Background', 'kadence-blocks' ) }
-						colorValue={ ( barBackground ? barBackground : '#4A5568' ) }
-						colorDefault={ '#4A5568' }
-						opacityValue={ barBackgroundOpacity }
-						onColorChange={ value => setAttributes( { barBackground: value } ) }
-						onOpacityChange={ value => setAttributes( { barBackgroundOpacity: value } ) }
-					/>
-					<PopColorControl
-						label={ __( 'Progress Color', 'kadence-blocks' ) }
-						colorValue={ ( progressColor ? progressColor : '#4A5568' ) }
-						colorDefault={ '#4A5568' }
-						opacityValue={ progressOpacity }
-						onColorChange={ value => setAttributes( { progressColor: value } ) }
-						onOpacityChange={ value => setAttributes( { progressOpacity: value } ) }
-					/>
-					<ResponsiveRangeControls
-						label={ __( 'Progress Thickness', 'kadence-blocks' ) }
-						value={ progressWidth }
-						tabletValue={ progressWidthTablet }
-						mobileValue={ progressWidthMobile }
-						onChange={ ( value ) => {
-							setAttributes( { progressWidth: value } );
-						} }
-						onChangeTablet={ ( value ) => {
-							setAttributes( { progressWidthTablet: value } );
-						} }
-						onChangeMobile={ ( value ) => {
-							setAttributes( { progressWidthMobile: value } );
-						} }
-						
-						allowEmpty={ true }
-						min={ 0 }
-						max={ 50 }
-						step={ 1 }
-						
-					/>
-					<ResponsiveRangeControls
-						label={ __( 'Border Radius', 'kadence-blocks' ) }
-						value={ progressBorderRadius[0] }
-						tabletValue={ progressBorderRadius[1] }
-						mobileValue={ progressBorderRadius[2] }
-						onChange={( value ) => setAttributes( { progressBorderRadius: [ value, ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
-						onChangeTablet={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), value, ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
-						onChangeMobile={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), value ] } )}
 
-						
-						allowEmpty={ true }
-						min={ 0 }
-						max={ 50 }
-						step={ 1 }
-						unit={ "px" }
-					/>
-					<RangeControl
-						label={__( 'Progress Range', 'kadence-blocks' )}
-						value={progressAmount}
-						onChange={( value ) => setAttributes( { progressAmount: value } )}
-						min={1}
-						max={100}
-						step={1}
-					/>
-					<RangeControl
-						label={__( 'Animation Duration', 'kadence-blocks' )}
-						value={duration}
-						onChange={( value ) => setAttributes( { duration: value } )}
-						min={0.1}
-						max={25}
-						step={0.1}
-					/>
-					<SelectControl
-						label={__( 'Animation Type', 'kadence-blocks' )}
-						options={
-							[{ value: 'linear', label: __( 'Linear', 'kadence-blocks' )},
-							{ value: 'easeIn', label: __( 'Ease In', 'kadence-blocks' )},
-							{ value: 'easeOut', label: __( 'Ease Out', 'kadence-blocks' )},
-							{ value: 'easeInOut', label: __( 'Ease In Out', 'kadence-blocks' )},]
-						}
-						value={easing}
-						onChange={( value ) => setAttributes( { easing: value } )}
-					/>
+				{( activeTab === 'style' ) && (
 
-				</PanelBody>
-
-				<PanelBody
+					<KadencePanelBody
 						title={__( 'Label Settings', 'kadence-blocks' )}
-						initialOpen={false}
+						initialOpen={true}
 						panelName={'kb-testimonials-title-settings'}
 					>
 						<ToggleControl
@@ -474,8 +492,8 @@ export function Edit( {
 								<SelectControl
 									label={__( 'Label Position', 'kadence-blocks' )}
 									options={
-										[{ value: 'above', label: __( 'Above', 'kadence-blocks' )},
-										{ value: 'below', label: __( 'Below', 'kadence-blocks' )},]
+										[ { value: 'above', label: __( 'Above', 'kadence-blocks' ) },
+										  { value: 'below', label: __( 'Below', 'kadence-blocks' ) } ]
 									}
 									value={labelPosition}
 									onChange={( value ) => setAttributes( { labelPosition: value } )}
@@ -498,7 +516,7 @@ export function Edit( {
 								<TypographyControls
 									fontGroup={'heading'}
 									tagLevel={labelFont.level}
-									tagLowLevel={2}
+									tagLowLevel={1}
 									onTagLevel={( value ) => saveLabelFont( { level: value } )}
 									fontSize={labelFont.size}
 									onFontSize={( value ) => saveLabelFont( { size: value } )}
@@ -559,16 +577,19 @@ export function Edit( {
 								/>
 							</Fragment>
 						)}
-				</PanelBody>
-			</InspectorControls>
-			<div className={ containerClasses } style={
-				{
-					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+					</KadencePanelBody>
 
-					maxWidth: ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' )
+				)}
+
+			</InspectorControls>
+			<div className={containerClasses} style={
+				{
+					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+
+					maxWidth: ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' ),
 
 				}
 			}>
@@ -579,53 +600,61 @@ export function Edit( {
 					}}>
 						<RichText
 							tagName={'h' + labelFont.level}
-							value={ label }
-							onChange={ ( value ) => {
+							value={label}
+							onChange={( value ) => {
 								setAttributes( { label: value } );
-							} }
+							}}
 							placeholder={__( 'Progress', 'kadence-blocks' )}
-							style={ progressLabelStyles }
+							style={progressLabelStyles}
 							className={'kt-progress-label'}
 						/>
 					</div>
 				)}
 
-					{(barType === "line") &&
-						<div class="line-bars">
-							<ProgressLine animate={progressAmount / 100} />
-						</div>
-					}
+				{( barType === 'line' ) &&
+					<div class="line-bars">
+						<ProgressLine animate={progressAmount / 100}/>
+					</div>
+				}
 
-					{(barType === "circle") &&
-						<div class="circle-bars">
-							<ProgressCircle animate={progressAmount / 100}/>
-						</div>
-					}
+				{( barType === 'circle' ) &&
+					<div class="circle-bars">
+						<ProgressCircle animate={progressAmount / 100}/>
+					</div>
+				}
 
-					{(barType === "semicircle") &&
-						<div class="semicircle-bars">
-							<ProgressSemicircle animate={progressAmount / 100} />
-						</div>
-					}
+				{( barType === 'semicircle' ) &&
+					<div class="semicircle-bars">
+						<ProgressSemicircle animate={progressAmount / 100}/>
+					</div>
+				}
 				{displayLabel && labelPosition === 'below' && (
 					<div className="kt-progress-label-wrap" style={{
 						minHeight: ( previewLabelMinHeight ? previewLabelMinHeight + 'px' : undefined ),
 					}}>
 						<RichText
 							tagName={'h' + labelFont.level}
-							value={ label }
-							onChange={ ( value ) => {
+							value={label}
+							onChange={( value ) => {
 								setAttributes( { label: value } );
-							} }
+							}}
 							placeholder={__( 'Progress', 'kadence-blocks' )}
-							style={ progressLabelStyles }
+							style={progressLabelStyles}
 							className={'kt-progress-label'}
 						/>
 					</div>
 				)}
-				</div>
-
 			</div>
+
+			{labelFont.google && (
+				<WebfontLoader config={ {
+					google: {
+						families: [ labelFont.family + ( labelFont.variant ? ':' + labelFont.variant : '' ) ],
+					},
+				} }>
+				</WebfontLoader>
+			)}
+		</div>
 	);
 }
 

@@ -111,7 +111,7 @@
 	},
 	"progressColor": {
 		"type": "string",
-		"default": "#4A5568"
+		"default": "#2B6CB0"
 	},
 	"progressOpacity": {
 		"type": "number",
@@ -142,7 +142,7 @@
 	},
 	"labelFont": {
 		"type": "object",
-		"default": 
+		"default":
 		  {
 			"color": "",
 			"level": 6,
@@ -223,9 +223,9 @@
 			""
 		  ]
 	}
-	
+
 
   },
-  
+
   "editorScript": "file:editor.js"
 }

@@ -62,89 +62,123 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		$css->set_selector( '.kb-progress-bar-container' . $unique_id  );
-		$css->render_responsive_size($attributes, array('containerMaxWidth','tabletContainerMaxWidth','mobileContainerMaxWidth'), 'max-width', 'containerMaxWidthUnits');
-		
-		$margin_args= array(
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id );
+		$css->render_responsive_size( $attributes, array( 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ), 'max-width', 'containerMaxWidthUnits' );
+
+		$margin_args = array(
 			'desktop_key' => 'marginDesktop',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		);
-		$css->render_measure_output($attributes, 'marginDestop', 'margin', $margin_args);
+		$css->render_measure_output( $attributes, 'marginDestop', 'margin', $margin_args );
 
 		// echo '<pre>';
 		// print_r($attributes['labelFont']['textTransform']);
 		// die();
 
-		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label '  );
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label ' );
 		if ( ! empty( $attributes['labelFont']['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['labelFont']['textTransform'] );
 		}
 
+		if ( ! empty( $attributes['labelAlign'] ) ) {
+			$css->add_property( 'text-align', $attributes['labelAlign'][0] );
 
-		// Add title font
-		// if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) && isset( $attributes['titleFont'][0]['family'] ) ) {
-		// 	$title_font = $attributes['titleFont'][0];
+			if ( ! empty( $attributes['labelAlign'][1] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'text-align', $attributes['labelAlign'][1] );
+				$css->set_media_state( 'desktop' );
+			}
 
-		// 	$font_variant = ( ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : '' );
-		// 	$font_subset  = ( ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : '' );
-
-		// 	$css->maybe_add_google_font( $title_font['family'], $font_variant, $font_subset );
-		// }
-
+			if ( ! empty( $attributes['labelAlign'][2] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'text-align', $attributes['labelAlign'][2] );
+				$css->set_media_state( 'desktop' );
+			}
+		}
 
 		return $css->css_output();
 	}
 
-	public function build_html( $attributes, $unique_id, $content ) {
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		$css = new Kadence_Blocks_CSS();
 
 		$simple_id = str_replace( '-', '', esc_attr( $unique_id ) );
 
 		$bar_types = array(
-			'line' => 'Line',
-			'circle' => 'Circle',
+			'line'       => 'Line',
+			'circle'     => 'Circle',
 			'semicircle' => 'SemiCircle'
 		);
 
-		$progress_color = $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity']);
-		$bar_background = $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity']);
 
-		// if ($attributes['labelPosition'] === 'above') {
-		// 	$content .= $this->render_label($attributes);
-		// } 
-		// $content = '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar-container' . $unique_id . '"></div>';
-		// if ($attributes['labelPosition'] === 'below') {
-		// 	$content .= $this->render_label($attributes);
-		// } 
+		$content = '<div class="kb-progress-bar-container kb-progress-bar-container' . $unique_id . '">';
+
+		if ( $attributes['labelPosition'] === 'above' ) {
+			$content .= $this->render_label( $attributes );
+		}
+
+		$content .= '<div id="kb-progress-bar' . $unique_id . '"></div>';
+
+		if ( $attributes['labelPosition'] === 'below' ) {
+			$content .= $this->render_label( $attributes );
+		}
+
+		$content .= '</div>';
+
+
+		$progress_color = $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] );
+		$bar_background = $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] );
+
+
 		$content .= '<script>
-		
+
 			var waitForProgressBar' . $simple_id . ' = setInterval(function () {
+
 				if (typeof ProgressBar !== "undefined") {
 					clearInterval(waitForProgressBar' . $simple_id . ');
 
-					var progressBar'. $simple_id .' = new ProgressBar.'. $bar_types[ $attributes['barType']  ] .'("#kb-progress-bar' . $unique_id . '", {
-						color: "'. $progress_color .'",
-						trailColor: "'. $bar_background . '",
-						duration: "' .( $attributes['duration'] * 1000) . '",
+					var progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
+						color: "' . $progress_color . '",
+						trailColor: "' . $bar_background . '",
+						duration: "' . ( $attributes['duration'] * 1000 ) . '",
 						easing: "' . $attributes['easing'] . '",
-						strokeWidth:  "'. $attributes['progressWidth'] .'",
+						strokeWidth:  "' . $attributes['progressWidth'] . '",
 					});
-				
-					progressBar'. $simple_id .'.animate(' . $attributes['progressAmount'] /100 . ' , {} , function(){ console.log("animation complete")});
 
+					progressBar' . $simple_id . '.animate(
+													' . $attributes['progressAmount'] / 100 . ' ,
+										 			{
+														 duration: ' . ( $attributes['duration'] * 1000 ) . ',
+										 			} ,
+										 			function(){ console.log("Progress animation complete")}
+										 		);
 				}
 			}, 125);
 
 
 		</script>';
-	
+
 		return $content;
 
 	}
 
-	
+	private function render_label( $attributes ) {
+
+		if ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== true ) {
+			return '';
+		}
+
+		$tag = 'h3';
+		if ( !empty( $attributes['labelFont']['level'] ) ) {
+			$tag = 'h' . $attributes['labelFont']['level'];
+		}
+
+		return '<' . $tag . ' class="kt-blocks-progress-label">' . $attributes['label'] . '</' . $tag . '>';
+
+	}
+
 
 	/**
 	 * Registers scripts and styles.
