@@ -87,6 +87,9 @@ Release Date: January 19th, 2023
 * Fix: Form button styling issue.
 * Fix: Possible issue with border styling.
 * Fix: Issue with editor row spacing.
+* Fix: Hover Text colors in section.
+* Fix: Editor Map styles issue.
+* Fix: Editor border radius issues with accordion.
 
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023
