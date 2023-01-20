@@ -153,12 +153,10 @@
 	  "default": [ "", "", "" ]
 	},
 	"start": {
-	  "type": "number",
-	  "default": 0
+	  "type": "number"
 	},
 	"end": {
-	  "type": "number",
-	  "default": 100
+	  "type": "number"
 	},
 	"startDecimal": {
 	 "type": "string",

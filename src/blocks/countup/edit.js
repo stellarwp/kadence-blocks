@@ -117,9 +117,9 @@ function KadenceCounterUp( props ) {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
-
-		if( start !== 0 || end !== 0 ) {
-			setAttributes( { startDecimal: start, endDecimal: end, start: 0, end: 0 } );
+		// Backward Compatibility.
+		if ( start !== '' || end !== '' ) {
+			setAttributes( { startDecimal: start || 0, endDecimal: end, start: '', end: '' } );
 		}
 
 	}, [] );
