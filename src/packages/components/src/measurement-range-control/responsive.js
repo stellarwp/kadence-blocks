@@ -170,14 +170,17 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange={ ( size ) => onChangeMobile( size ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }
+			setCustomControl={ realSetIsCustom }
+			customControl={ realIsCustomControl }
 			options={ options }
+			defaultValue={ mobileDefault }
 			min={ min }
 			max={ max }
 			step={ step }
 			unit={ unit }
+			onUnit={ ( onUnit ? onUnit : undefined ) }
 			showUnit={ true }
 			units={ [ unit ] }
-			defaultValue={ mobileDefault }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -199,12 +202,15 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange={ ( size ) => onChangeTablet( size ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }
+			setCustomControl={ realSetIsCustom }
+			customControl={ realIsCustomControl }
 			options={ options }
+			defaultValue={ tabletDefault }
 			min={ min }
 			max={ max }
 			step={ step }
 			unit={ unit }
-			defaultValue={ tabletDefault }
+			onUnit={ ( onUnit ? onUnit : undefined ) }
 			showUnit={ true }
 			units={ [ unit ] }
 			isBorderRadius={ isBorderRadius }
