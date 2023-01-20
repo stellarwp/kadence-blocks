@@ -46,6 +46,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	InspectorControlTabs,
 	CopyPasteAttributes,
+	SmallResponsiveControl,
 } from '@kadence/components';
 
 /**
@@ -422,31 +423,27 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 		const mobileControls = (
-			<div>
-				<KadencePanelBody panelName={ 'kb-tabs-mobile-controls' } >
-					<p className="components-base-control__label">{ __( 'Mobile Layout' ) }</p>
-					<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
-						{ map( mLayoutOptions, ( { name, key, icon } ) => (
-							<Tooltip text={ name }>
-								<Button
-									key={ key }
-									className="kt-layout-btn kt-tablayout"
-									isSmall
-									isPrimary={ mobileLayout === key }
-									aria-pressed={ mobileLayout === key }
-									onClick={ () => setAttributes( { mobileLayout: key } ) }
-								>
-									{ icon }
-								</Button>
-							</Tooltip>
-						) ) }
-					</ButtonGroup>
-				</KadencePanelBody>
-			</div>
+			<Fragment>
+				<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
+					{ map( mLayoutOptions, ( { name, key, icon } ) => (
+						<Tooltip text={ name }>
+							<Button
+								key={ key }
+								className="kt-layout-btn kt-tablayout"
+								isSmall
+								isPrimary={ mobileLayout === key }
+								aria-pressed={ mobileLayout === key }
+								onClick={ () => setAttributes( { mobileLayout: key } ) }
+							>
+								{ icon }
+							</Button>
+						</Tooltip>
+					) ) }
+				</ButtonGroup>
+			</Fragment>
 		);
 		const tabletControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-tablet-controls' }>
-				<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
+			<Fragment>
 				<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
 					{ map( mLayoutOptions, ( { name, key, icon } ) => (
 						<Tooltip text={ name }>
@@ -463,88 +460,47 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						</Tooltip>
 					) ) }
 				</ButtonGroup>
-			</KadencePanelBody>
-		);
-
-		const deskControls = (
-			<Fragment>
-				<KadencePanelBody panelName={ 'kb-tabs-desktop-controls' }>
-					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
-					<ButtonGroup aria-label={ __( 'Layout' ) }>
-						{ map( layoutOptions, ( { name, key, icon } ) => (
-							<Tooltip text={ name }>
-								<Button
-									key={ key }
-									className="kt-layout-btn kt-tablayout"
-									isSmall
-									isPrimary={ layout === key }
-									aria-pressed={ layout === key }
-									onClick={ () => {
-										setAttributes( {
-											layout: key,
-										} );
-									} }
-								>
-									{ icon }
-								</Button>
-							</Tooltip>
-						) ) }
-					</ButtonGroup>
-					<h2>{ __( 'Set initial Open Tab' ) }</h2>
-					<ButtonGroup aria-label={ __( 'initial Open Tab' ) }>
-						{ times( tabCount, n => (
-							<Button
-								key={ n + 1 }
-								className="kt-init-open-tab"
-								isSmall
-								isPrimary={ startTab === n + 1 }
-								aria-pressed={ startTab === n + 1 }
-								onClick={ () => setAttributes( { startTab: n + 1 } ) }
-							>
-								{ __( 'Tab' ) + ' ' + ( n + 1 ) }
-							</Button>
-						) ) }
-					</ButtonGroup>
-				</KadencePanelBody>
 			</Fragment>
 		);
-		const tabControls = (
-			<TabPanel className="kt-inspect-tabs"
-				activeClass="active-tab"
-				tabs={ [
-					{
-						name: 'desk',
-						title: <Dashicon icon="desktop" />,
-						className: 'kt-desk-tab',
-					},
-					{
-						name: 'tablet',
-						title: <Dashicon icon="tablet" />,
-						className: 'kt-tablet-tab',
-					},
-					{
-						name: 'mobile',
-						title: <Dashicon icon="smartphone" />,
-						className: 'kt-mobile-tab',
-					},
-				] }>
-				{
-					( tab ) => {
-						let tabout;
-						if ( tab.name ) {
-							if ( 'mobile' === tab.name ) {
-								tabout = mobileControls;
-							} else if ( 'tablet' === tab.name ) {
-								tabout = tabletControls;
-							} else {
-								tabout = deskControls;
-							}
-						}
-						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-					}
-				}
-			</TabPanel>
+		const deskControls = (
+			<Fragment>
+				<ButtonGroup aria-label={ __( 'Layout' ) }>
+					{ map( layoutOptions, ( { name, key, icon } ) => (
+						<Tooltip text={ name }>
+							<Button
+								key={ key }
+								className="kt-layout-btn kt-tablayout"
+								isSmall
+								isPrimary={ layout === key }
+								aria-pressed={ layout === key }
+								onClick={ () => {
+									setAttributes( {
+										layout: key,
+									} );
+								} }
+							>
+								{ icon }
+							</Button>
+						</Tooltip>
+					) ) }
+				</ButtonGroup>
+				<p class="kadence-control-title" style={{marginTop: "5px"}}>{ __( 'Set initial Open Tab') }</p>
+				<ButtonGroup aria-label={ __( 'initial Open Tab' ) }>
+					{ times( tabCount, n => (
+						<Button
+							key={ n + 1 }
+							variant={ startTab === n + 1 ? 'primary' : 'secondary' }
+							isSmall
+							aria-pressed={ startTab === n + 1 }
+							onClick={ () => setAttributes( { startTab: n + 1 } ) }
+						>
+							{ __( 'Tab' ) + ' ' + ( n + 1 ) }
+						</Button>
+					) ) }
+				</ButtonGroup>
+			</Fragment>
 		);
+
 		const renderTitles = ( index ) => {
 			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
 				size: [ '', '', '' ],
@@ -973,44 +929,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</KadencePanelBody>
 		);
-		const sizeTabControls = (
-			<TabPanel className="kt-size-tabs"
-				activeClass="active-tab"
-				tabs={ [
-					{
-						name: 'desk',
-						title: <Dashicon icon="desktop" />,
-						className: 'kt-desk-tab',
-					},
-					{
-						name: 'tablet',
-						title: <Dashicon icon="tablet" />,
-						className: 'kt-tablet-tab',
-					},
-					{
-						name: 'mobile',
-						title: <Dashicon icon="smartphone" />,
-						className: 'kt-mobile-tab',
-					},
-				] }>
-				{
-					( tab ) => {
-						let tabout;
-						if ( tab.name ) {
-							// check which size tab to show.
-							if ( 'mobile' === tab.name ) {
-								tabout = sizeMobileControls;
-							} else if ( 'tablet' === tab.name ) {
-								tabout = sizeTabletControls;
-							} else {
-								tabout = sizeDeskControls;
-							}
-						}
-						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-					}
-				}
-			</TabPanel>
-		);
 		const renderCSS = (
 			<style>
 				{ `.kt-tabs-id${ uniqueID } .kt-title-item:hover .kt-tab-title {
@@ -1071,7 +989,15 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						{activeTab === 'general' && (
 							<>
 								{showSettings('tabLayout', 'kadence/tabs') && (
-									tabControls
+									<KadencePanelBody panelName={'kb-tab-layout-select'}>
+										<SmallResponsiveControl
+											label={__('Layout', 'kadence-blocks')}
+											desktopChildren={ deskControls }
+											tabletChildren={ tabletControls }
+											mobileChildren={ mobileControls }
+										>
+										</SmallResponsiveControl>
+									</KadencePanelBody>
 								)}
 								{!showSettings('tabLayout', 'kadence/tabs') && (
 									<KadencePanelBody panelName={'kb-tab-layout'}>
@@ -1479,8 +1405,15 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											textTransform={textTransform}
 											onTextTransform={(value) => setAttributes({textTransform: value})}
 										/>
-										<h2 className="kt-heading-size-title">{__('Size Controls', 'kadence-blocks')}</h2>
-										{sizeTabControls}
+
+										<SmallResponsiveControl
+											label={__('Size Controls', 'kadence-blocks')}
+											desktopChildren={ sizeDeskControls }
+											tabletChildren={ sizeTabletControls }
+											mobileChildren={ sizeMobileControls }
+										>
+										</SmallResponsiveControl>
+
 										<RangeControl
 											label={__('Letter Spacing', 'kadence-blocks')}
 											value={(letterSpacing ? letterSpacing : '')}
