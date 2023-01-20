@@ -90,29 +90,22 @@ export default function RangeControl( {
 					</div>
 					{ ( onUnit || showUnit ) && (
 						<div className={ 'kadence-units kadence-measure-control-select-wrapper' }>
-							{ units.length === 1 ? (
-								<Button
-									className="is-active is-single"
-									isSmall
-									disabled
-								>{ ( '%' === unit ? icons.percent : icons[ unit ] ) }</Button>
-							) : (
-								<select
-									className={ 'kadence-measure-control-select components-unit-control__select' }
-									onChange={ ( event ) => {
-										if ( onUnit ) {
-											onUnit( event.target.value );
-										}
-									} }
-									value={ unit }
-								>
-									{ units.map( ( option ) => (
-										<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
-											{ option }
-										</option>
-									) ) }
-								</select>
-							) }
+							<select
+								className={ 'kadence-measure-control-select components-unit-control__select' }
+								onChange={ ( event ) => {
+									if ( onUnit ) {
+										onUnit( event.target.value );
+									}
+								} }
+								value={ unit }
+								disabled={ units.length === 1 }
+							>
+								{ units.map( ( option ) => (
+									<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
+										{ option }
+									</option>
+								) ) }
+							</select>
 						</div>
 					) }
 				</div>
