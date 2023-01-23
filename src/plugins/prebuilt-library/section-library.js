@@ -49,6 +49,12 @@ import {
 	chevronDown,
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
+import PatternList from './pattern-list';
+import {
+    BlockEditorProvider,
+	__experimentalBlockPatternsList as BlockPatternsList,
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -389,80 +395,87 @@ class PrebuiltSections extends Component {
 						) }
 					</Fragment>
 				) : (
-					<Masonry
-						breakpointCols={breakpointColumnsObj}
-						className={ `kb-css-masonry kb-core-section-library` }
-  						columnClassName="kb-css-masonry_column"
-						// elementType={ 'div' }
-						// options={ {
-						// 	transitionDuration: 0,
-						// } }
-						// disableImagesLoaded={ false }
-						// enableResizableChildren={ true }
-						// updateOnEachImageLoad={ false }
-					>
-						{ Object.keys( this.state.items ).map( function( key, index ) {
-							const name = libraryItems[key].name;
-							const slug = libraryItems[key].slug;
-							const content = libraryItems[key].content;
-							const image = libraryItems[key].image;
-							const imageWidth = libraryItems[key].imageW;
-							const imageHeight = libraryItems[key].imageH;
-							const categories = libraryItems[key].categories;
-							const keywords = libraryItems[key].keywords;
-							const description = control.state.items[key].description;
-							const pro = libraryItems[key].pro;
-							const locked = libraryItems[key].locked;
-							const descriptionId = `${ slug }_kb_cloud__item-description`;
-							if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
-								return (
-									<div className="kb-css-masonry-inner">
-										<Button
-											key={ key }
-											className="kb-css-masonry-btn"
-											isSmall
-											aria-label={
-												sprintf(
-													/* translators: %s is Prebuilt Name */
-													__( 'Add %s', 'kadence-blocks' ),
-													name
-												)
-											}
-											aria-describedby={ description ? descriptionId : undefined }
-											isDisabled={ locked }
-											onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
-										>
-											<div
-												className="kb-css-masonry-btn-inner"
-												style={ {
-													paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
-												} }
-											>
-												<img src={ image } loading={ "lazy" } alt={ name } />
-												<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
-											</div>
-										</Button>
-										{ !! description && (
-											<VisuallyHidden id={ descriptionId }>
-												{ description }
-											</VisuallyHidden>
-										) }
-										{ undefined !== pro && pro && (
-											<Fragment>
-												<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
-												{ locked && (
-													<div className="kb-popover-pro-notice">
-														<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
-														<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-													</div>
-												) }
-											</Fragment>
-										) }
-									</div>
-								);
-							}
-						} ) }
-					</Masonry>
+					<PatternList
+						patterns={ this.state.items }
+						filterValue={ '' }
+						selectedCategory={''}
+						patternCategories={ catOptions }
+					/>
+					// <Masonry
+					// 	breakpointCols={breakpointColumnsObj}
+					// 	className={ `kb-css-masonry kb-core-section-library` }
+  					// 	columnClassName="kb-css-masonry_column"
+					// 	// elementType={ 'div' }
+					// 	// options={ {
+					// 	// 	transitionDuration: 0,
+					// 	// } }
+					// 	// disableImagesLoaded={ false }
+					// 	// enableResizableChildren={ true }
+					// 	// updateOnEachImageLoad={ false }
+					// >
+					// 	{ Object.keys( this.state.items ).map( function( key, index ) {
+					// 		const name = libraryItems[key].name;
+					// 		const slug = libraryItems[key].slug;
+					// 		const content = libraryItems[key].content;
+					// 		const image = libraryItems[key].image;
+					// 		const imageWidth = libraryItems[key].imageW;
+					// 		const imageHeight = libraryItems[key].imageH;
+					// 		const categories = libraryItems[key].categories;
+					// 		const keywords = libraryItems[key].keywords;
+					// 		const description = control.state.items[key].description;
+					// 		const pro = libraryItems[key].pro;
+					// 		const locked = libraryItems[key].locked;
+					// 		const descriptionId = `${ slug }_kb_cloud__item-description`;
+					// 		if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
+					// 			return (
+					// 				<div className="kb-css-masonry-inner">
+					// 					<Button
+					// 						key={ key }
+					// 						className="kb-css-masonry-btn"
+					// 						isSmall
+					// 						aria-label={
+					// 							sprintf(
+					// 								/* translators: %s is Prebuilt Name */
+					// 								__( 'Add %s', 'kadence-blocks' ),
+					// 								name
+					// 							)
+					// 						}
+					// 						aria-describedby={ description ? descriptionId : undefined }
+					// 						isDisabled={ locked }
+					// 						onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
+					// 					>
+					// 						<PreviewItem blocks={ content } />
+					// 						<div
+					// 							className="kb-css-masonry-btn-inner"
+					// 							style={ {
+					// 								paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
+					// 							} }
+					// 						>
+					// 							<img src={ image } loading={ "lazy" } alt={ name } />
+					// 							<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
+					// 						</div>
+					// 					</Button>
+					// 					{ !! description && (
+					// 						<VisuallyHidden id={ descriptionId }>
+					// 							{ description }
+					// 						</VisuallyHidden>
+					// 					) }
+					// 					{ undefined !== pro && pro && (
+					// 						<Fragment>
+					// 							<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
+					// 							{ locked && (
+					// 								<div className="kb-popover-pro-notice">
+					// 									<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
+					// 									<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+					// 								</div>
+					// 							) }
+					// 						</Fragment>
+					// 					) }
+					// 				</div>
+					// 			);
+					// 		}
+					// 	} ) }
+					// </Masonry>
 				) }
 			</div>
 		);

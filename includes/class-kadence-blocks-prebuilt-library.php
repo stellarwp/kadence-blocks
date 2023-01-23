@@ -110,7 +110,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_url = 'https://cloud.kadenceblocks.com/wp-json/kadence-cloud/v1/get/';
+	protected $remote_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/get/';
 
 	/**
 	 * The remote URL.
