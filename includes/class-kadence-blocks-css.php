@@ -2105,6 +2105,10 @@ class Kadence_Blocks_CSS {
 	 * @param string $subset the font subset.
 	 */
 	public function maybe_add_google_font( $font_name, $font_variant = null, $subset = null ) {
+		// Prevent empty array in google fonts.
+		if ( empty( $font_name ) ) {
+			return;
+		}
 		// Check if the font has been added yet.
 		if ( ! array_key_exists( $font_name, self::$google_fonts ) ) {
 			$add_font = array(
