@@ -60,7 +60,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -395,9 +395,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	}
 	const widthString = `${ firstColumnWidth || colLayout }`;
 	const secondWidthString = `${ secondColumnWidth || colLayout }`;
-	let thirdWidthNumber;
 	let widthNumber;
 	let secondWidthNumber;
+	let thirdWidthNumber;
 	if ( 3 === columns ) {
 		if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
 			widthNumber = widthString;
@@ -470,6 +470,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			secondWidthNumber = 50;
 		}
 	}
+
 	const previewColumnGutter = getPreviewSize( previewDevice, columnGutter, tabletGutter, mobileGutter );
 	const columnGap = getPreviewGutterSize( previewDevice, previewColumnGutter, customGutter, gutterType );
 	const previewRowGutter = getPreviewSize( previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter );
