@@ -841,6 +841,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( $inner_selector );
 			}
 			$css->add_property( 'z-index', $attributes['zIndex'] );
+			$css->add_property( 'position', 'relative' );
 		}
 		// Text Color.
 		if ( ! empty( $attributes['textColor'] ) ) {
