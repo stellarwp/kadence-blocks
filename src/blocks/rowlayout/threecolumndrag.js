@@ -102,11 +102,6 @@ export default function ThreeColumnDrag( {
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = tempSecondW + '%';
 		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( ( tempSecondW + tempFirstW ) - 100 ) * 10 ) / 10 ) + '%';
 
-		//if we're in rtl, the resizers should actually apply to different columns, flipped.
-		if(isRTL){
-			[tempFirstW, tempSecondW, tempThird] = [tempFirstW, tempSecondW, tempThird].reverse();
-		}
-
 		//set the temp resized styles on underlying columns
 		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondW }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
 	};
@@ -150,11 +145,6 @@ export default function ThreeColumnDrag( {
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempSecondWidth ) + '%';
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempSecondWidth ) + '%';
 		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( parseFloat( tempSecondWidth ) + parseFloat( tempFirstW ) - 100 ) * 10 ) / 10 ) + '%';
-
-		//if we're in rtl, the resizers should actually apply to different columns, flipped.
-		if(isRTL){
-			[tempFirstW, tempSecondW, tempThird] = [tempFirstW, tempSecondW, tempThird].reverse();
-		}
 
 		//set the temp resized styles on underlying columns
 		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ tempFirstW }% - (${ currentGutterTotal } / 3 ) ) ) minmax(0, calc( ${ tempSecondWidth }% - (${ currentGutterTotal } / 3 ) ) )  minmax(0, calc( ${ tempThird }% - (${ currentGutterTotal } / 3 ) ) ) !important;}` );
@@ -208,14 +198,17 @@ export default function ThreeColumnDrag( {
 								minWidth="10%"
 								maxWidth={ ( ( realThirdsFirstWidth + realThirdsSecondWidth ) - 10 ) + '%' }
 								enable={ {
-									right: true,
+									right: isRTL ? false : true,
+									left: isRTL ? true : false,
 								} }
 								handleClasses={ {
 									right: 'components-resizable-box__handle components-resizable-box__handle-right',
+									left: 'components-resizable-box__handle components-resizable-box__handle-left',
 								} }
 								handleWrapperClass="editor-row-controls-container"
 								handleWrapperStyle={{
-									right: gutterAdjuster,
+									right: isRTL ? undefined : gutterAdjuster,
+									left: isRTL ? gutterAdjuster : undefined,
 								}}
 								grid={ ( columnsUnlocked ? [ width / 1000, 1 ] : [ width / 20, 1 ] ) }
 								onResize={ onResizeThirds }
@@ -223,7 +216,8 @@ export default function ThreeColumnDrag( {
 								axis="x"
 							>
 								<span className="editor-row-controls-container kadence-resize-extra-controls" style={{
-									right: gutterAdjuster,
+									right: isRTL ? undefined : gutterAdjuster,
+									left: isRTL ? gutterAdjuster : undefined,
 								}}>
 									{ columnsUnlocked && (
 										<Tooltip text={ __( 'Switch to 5% step resizing', 'kadence-blocks' ) }>
@@ -273,14 +267,17 @@ export default function ThreeColumnDrag( {
 								minWidth={ ( ( Math.round( ( ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth ) ) / 5 ) * 5 ) + 10 ) + '%' }
 								maxWidth="90%"
 								enable={ {
-									right: true,
+									right: isRTL ? false : true,
+									left: isRTL ? true : false,
 								} }
 								handleClasses={ {
 									right: 'components-resizable-box__handle components-resizable-box__handle-right',
+									left: 'components-resizable-box__handle components-resizable-box__handle-left',
 								} }
 								handleWrapperClass="editor-row-controls-container"
 								handleWrapperStyle={{
-									right: secondGutterAdjuster,
+									right: isRTL ? undefined : secondGutterAdjuster,
+									left: isRTL ? secondGutterAdjuster : undefined,
 								}}
 								grid={ ( columnsUnlocked ? [ width / 1000, 1 ] : [ width / 20, 1 ] ) }
 								onResize={ onResizeSecond }
@@ -288,7 +285,8 @@ export default function ThreeColumnDrag( {
 								axis="x"
 							>
 								<span className="editor-row-controls-container kadence-resize-extra-controls" style={{
-									right: secondGutterAdjuster,
+									right: isRTL ? undefined : secondGutterAdjuster,
+									left: isRTL ? secondGutterAdjuster : undefined,
 								}}>
 									{ columnsUnlocked && (
 										<Tooltip text={ __( 'Switch to 5% step resizing', 'kadence-blocks' ) }>

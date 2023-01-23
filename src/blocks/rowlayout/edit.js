@@ -471,16 +471,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	}
 
-	//if we're in rtl, the resizers should actually apply to different columns, flipped.
-	if ( isRTL ) {
-		//if only two columns, the thrid column value is not used, so should not be flipped
-		if ( columns && columns === 2 ) {
-			[widthNumber, secondWidthNumber] = [widthNumber, secondWidthNumber].reverse();
-		} else {
-			[widthNumber, secondWidthNumber, thirdWidthNumber] = [widthNumber, secondWidthNumber, thirdWidthNumber].reverse();
-		}
-	}
-
 	const previewColumnGutter = getPreviewSize( previewDevice, columnGutter, tabletGutter, mobileGutter );
 	const columnGap = getPreviewGutterSize( previewDevice, previewColumnGutter, customGutter, gutterType );
 	const previewRowGutter = getPreviewSize( previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter );

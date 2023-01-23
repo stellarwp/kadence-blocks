@@ -194,3 +194,38 @@
 	}
 }
 
+.rtl {
+	.editor-row-first-column__resizer {
+		left: auto;
+		right: 0;
+	}
+	.kt-resizeable-column-container .components-button.kt-fluid-grid-btn {
+		left: -12px;
+		right: auto;
+	}
+	.editor-row-first-column__resizer .components-resizable-box__handle:after {
+		left:50;
+		right: auto;
+	}
+	.editor-row-controls-container {
+		.editor-row-controls-container {
+			right: auto;
+		}
+		.column-width-size-handle.left-column-width-size {
+			right: auto;
+			left:0;
+			padding-right: 0;
+			padding-left: 2px;
+			margin-left: auto;
+			margin-right: 0;
+		}
+		.column-width-size-handle.right-column-width-size {
+			right: 100%;
+			left: auto;
+			padding-left: 0;
+			padding-right:2px;
+			margin-left: auto;
+			margin-right: 0;
+		}
+	}
+}

@@ -82,30 +82,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param int    $column3 the third column width.
 	 */
 	public function get_template_columns( $css, $columns, $layout, $inner_selector, $column1 = null, $column2 = null, $column3 = null ) {
-		// if rtl, then the column values should be flipped.
-		if ( is_rtl() ) {
-			if ( $columns == 2 ) {
-				if ( ! $column2 && $column1 ) {
-					$column2 = 100 - $column1;
-				}
-				$temp_column1 = $column1;
-				$temp_column2 = $column2;
-				$column1 = $temp_column2;
-				$column2 = $temp_column1;
-
-			} else {
-				if ( ! $column3 && $column1 && $column2 ) {
-					$column3 = 100 - ( $column1 + $column2 );
-				}
-				$temp_column1 = $column1;
-				$temp_column2 = $column2;
-				$temp_column3 = $column3;
-				$column1 = $temp_column3;
-				$column2 = $temp_column2;
-				$column3 = $temp_column1;
-			}
-		}
-
 		$grid_layout = 'minmax(0, 1fr)';
 		switch ( $columns ) {
 			case 1:
