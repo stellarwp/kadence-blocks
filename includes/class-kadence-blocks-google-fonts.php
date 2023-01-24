@@ -55,7 +55,7 @@ class Kadence_Blocks_Google_Fonts {
 		}
 		if ( class_exists( 'Kadence_Blocks_Frontend' ) ) {
 			$ktblocks_instance = Kadence_Blocks_Frontend::get_instance();
-			foreach (  self::$gfonts as $key => $font ) {
+			foreach ( self::$gfonts as $key => $font ) {
 				if ( ! array_key_exists( $key, $ktblocks_instance::$gfonts ) ) {
 					$add_font = array(
 						'fontfamily'   => $font['fontfamily'],

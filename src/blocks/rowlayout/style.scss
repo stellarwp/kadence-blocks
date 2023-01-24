@@ -10,6 +10,11 @@
 	position: relative;
 	border: 0 solid transparent;
 }
+.kb-row-layout-wrap:before {
+    clear: both;
+    display: table;
+    content: '';
+}
 .kt-row-column-wrap {
 	display: grid;
     grid-template-columns: minmax(0, 1fr);

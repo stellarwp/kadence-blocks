@@ -34,6 +34,7 @@ import {
 	getSpacingOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -1284,7 +1285,7 @@ function KadenceForm( props ) {
 							fontWeight   : labelFont[ 0 ].weight,
 							fontStyle    : labelFont[ 0 ].style,
 							color        : KadenceColorOutput( labelFont[ 0 ].color ),
-							fontSize     : previewLabelFontSize + previewLabelFontSizeType,
+							fontSize     : getFontSizeOptionOutput( previewLabelFontSize, previewLabelFontSizeType ),
 							lineHeight   : previewLabelLineHeight + previewLabelLineHeightType,
 							letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 							textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform : undefined ),
@@ -1308,7 +1309,7 @@ function KadenceForm( props ) {
 								fontWeight   : labelFont[ 0 ].weight,
 								fontStyle    : labelFont[ 0 ].style,
 								color        : KadenceColorOutput( labelFont[ 0 ].color ),
-								fontSize     : previewLabelFontSize + previewLabelFontSizeType,
+								fontSize     : getFontSizeOptionOutput( previewLabelFontSize, previewLabelFontSizeType ),
 								lineHeight   : previewLabelLineHeight + previewLabelLineHeightType,
 								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 								textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform : undefined ),
@@ -1334,7 +1335,7 @@ function KadenceForm( props ) {
 								paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 								background       : ( undefined !== inputBG ? inputBG : undefined ),
 								color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-								fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+								fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 								lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 								borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 								borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1351,7 +1352,7 @@ function KadenceForm( props ) {
 									data-required={( fields[ index ].required ? 'yes' : undefined )} style={{
 								background       : ( undefined !== inputBG ? inputBG : undefined ),
 								color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-								fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+								fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 								lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 								borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 								borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1428,7 +1429,7 @@ function KadenceForm( props ) {
 									paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background       : ( undefined !== inputBG ? inputBG : undefined ),
 									color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+									fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 									lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1459,7 +1460,7 @@ function KadenceForm( props ) {
 									paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background       : ( undefined !== inputBG ? inputBG : undefined ),
 									color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+									fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 									lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -3619,7 +3620,7 @@ function KadenceForm( props ) {
 							style={{
 								background: ( undefined !== btnBG ? btnBG : undefined ),
 									color: ( undefined !== submit[ 0 ].color ? KadenceColorOutput( submit[ 0 ].color ) : undefined ),
-									fontSize: previewSubmitFontSize + previewSubmitFontSizeType,
+									fontSize: getFontSizeOptionOutput( previewSubmitFontSize, previewSubmitFontSizeType ),
 									lineHeight: previewSubmitLineHeight + previewSubmitLineHeightType,
 									fontWeight: submitFont[ 0 ].weight,
 									fontStyle: submitFont[ 0 ].style,

@@ -452,7 +452,7 @@ function GalleryEdit( props ) {
 		return;
 	};
 	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
-	const theImages = imagesDynamic;
+	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
 		let columnArray = [];
