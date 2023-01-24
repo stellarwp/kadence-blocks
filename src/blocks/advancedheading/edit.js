@@ -225,6 +225,12 @@ function KadenceAdvancedHeading( props ) {
 		if ( ( lineHeight || tabLineHeight || mobileLineHeight ) ) {
 			setAttributes( { fontHeight: [ lineHeight, tabLineHeight, mobileLineHeight ], fontHeightType: lineType, lineHeight:'', tabLineHeight:'', mobileLineHeight:'' } );
 		}
+
+		// Update "regular" to Normal font weight
+		if ( 'regular' === fontWeight ) {
+			setAttributes( { fontWeight: 'normal' } );
+		}
+
 		// Update from old border settings.
 		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.markBorderStyles ? attributes.markBorderStyles : [{ 
 			top: [ '', '', '' ],
