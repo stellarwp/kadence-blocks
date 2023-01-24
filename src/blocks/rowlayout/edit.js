@@ -147,6 +147,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	clientId,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock } = attributes;
+	
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -1066,13 +1067,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ colLayout && (
 					<>
-						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 2 === columns && 'grid-layout' !== colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 2 === columns && 'grid-layout' !== colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<TwoColumnResizer
 								attributes={ attributes }
 								setAttributes={ setAttributes }
 							/>
 						) }
-						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && 'grid-layout' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && 'grid-layout' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<ThreeColumnDrag
 								attributes={ attributes }
 								setAttributes={ setAttributes }
@@ -1207,7 +1208,18 @@ const RowLayoutEditContainerWrapper = withDispatch(
 	} )
 )( RowLayoutEditContainer );
 const KadenceRowLayout = ( props ) => {
-	const { clientId } = props;
+	const { clientId, attributes } = props;
+	const { isPrebuiltModal } = attributes;
+	// Cut everything short if we are just accessing the modal.
+	if ( isPrebuiltModal ) {
+		return (
+			<PrebuiltModal
+				clientId={ clientId }
+				open={ isPrebuiltModal ? true : false }
+				onlyModal={ isPrebuiltModal ? true : false }
+			/>
+		);
+	}
 	const { rowBlock, realColumnCount } = useSelect(
 		( select ) => {
 			const {

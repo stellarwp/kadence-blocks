@@ -632,3 +632,13 @@ position: relative;
     color: #D8000C;
     background-color: #FFBABA;
 }
+
+// Iframe.
+.kt-prebuilt-content .block-editor-block-patterns-explorer__list {
+    margin: 0;
+	.block-editor-block-patterns-list {
+		display: grid;
+		grid-gap: 20px;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}

@@ -22,7 +22,7 @@ import {
 	withSelect,
 	withDispatch,
 } from '@wordpress/data';
-import { rawHandler } from '@wordpress/blocks';
+import { rawHandler, parse } from '@wordpress/blocks';
 import {
 	Button,
 	TextControl,
@@ -49,7 +49,7 @@ import {
 	__experimentalBlockPatternsList as BlockPatternsList,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-const INITIAL_INSERTER_RESULTS = 2;
+const INITIAL_INSERTER_RESULTS = 4;
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
 		return null;
@@ -76,30 +76,19 @@ function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 
 
 function PatternList( { patterns, filterValue, selectedCategory, patternCategories } ) {
-	const { testCategories, testPatterns } = useSelect(
-		( select ) => {
-			const { __experimentalGetAllowedPatterns, getSettings } =
-				select( blockEditorStore );
-			return {
-				testPatterns: __experimentalGetAllowedPatterns(),
-				testCategories:
-					getSettings().__experimentalBlockPatternCategories,
-			};
-		},
-		[]
-	);
-	console.log( testPatterns );
-	const allPatterns = [];
-	Object.keys( patterns ).map( function( key, index ) {
-		const temp = [];
-		temp['title'] = patterns[key].name;
-		temp['name'] = patterns[key].name;
-		temp['blocks'] = patterns[key].content;
-		temp['content'] = patterns[key].content;
-		temp['categories'] = patterns[key].categories;
-		temp['viewportWidth'] = 1400;
-		allPatterns.push( temp );
-	});
+	// const { testCategories, testPatterns } = useSelect(
+	// 	( select ) => {
+	// 		const { __experimentalGetAllowedPatterns, getSettings } =
+	// 			select( blockEditorStore );
+	// 		return {
+	// 			testPatterns: __experimentalGetAllowedPatterns(),
+	// 			testCategories:
+	// 				getSettings().__experimentalBlockPatternCategories,
+	// 		};
+	// 	},
+	// 	[]
+	// );
+	// console.log( testPatterns );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		console.log(info );
@@ -113,6 +102,19 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	);
 
 	const filteredBlockPatterns = useMemo( () => {
+		const allPatterns = [];
+		Object.keys( patterns ).map( function( key, index ) {
+			const temp = [];
+			temp['title'] = patterns[key].name;
+			temp['name'] = patterns[key].name;
+			temp['blocks'] = parse( patterns[key].content, {
+				__unstableSkipMigrationLogs: true
+			  });
+			temp['content'] = patterns[key].content;
+			temp['categories'] = patterns[key].categories;
+			temp['viewportWidth'] = 1200;
+			allPatterns.push( temp );
+		});
 		// if ( ! filterValue ) {
 		// 	return allPatterns.filter( ( pattern ) =>
 		// 		selectedCategory === 'uncategorized'
@@ -127,7 +129,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		// 	);
 		// }
 		return allPatterns;
-	}, [ filterValue, selectedCategory, allPatterns ] );
+	}, [ filterValue, selectedCategory, patterns ] );
 
 	// Announce search results on change.
 	useEffect( () => {
@@ -143,27 +145,30 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		debouncedSpeak( resultsFoundMessage );
 	}, [ filterValue, debouncedSpeak ] );
 
-	// const currentShownPatterns = useAsyncList( filteredBlockPatterns, {
-	// 	step: INITIAL_INSERTER_RESULTS,
-	// } );
-	// console.log( currentShownPatterns );
+	const currentShownPatterns = useAsyncList( filteredBlockPatterns, {
+		step: INITIAL_INSERTER_RESULTS,
+	} );
+	//console.log( filteredBlockPatterns );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
-		<div className="block-editor-block-patterns-explorer__list">
-			{ hasItems && (
-				<PatternsListHeader
-					filterValue={ filterValue }
-					filteredBlockPatternsLength={ filteredBlockPatterns.length }
-				/>
-			) }
-			{ hasItems && (
-				<BlockPatternsList
-					//shownPatterns={ currentShownPatterns }
-					blockPatterns={ testPatterns }
-					onClickPattern={ onSelectBlockPattern }
-					isDraggable={ false }
-				/>
-			) }
+		<div className="block-editor-block-patterns-explorer__wrap">
+			<div className="block-editor-block-patterns-explorer__list">
+				{ hasItems && (
+					<PatternsListHeader
+						filterValue={ filterValue }
+						filteredBlockPatternsLength={ filteredBlockPatterns.length }
+					/>
+				) }
+				{ hasItems && (
+					<BlockPatternsList
+						shownPatterns={ currentShownPatterns }
+						blockPatterns={ filteredBlockPatterns }
+						onClickPattern={ onSelectBlockPattern }
+						isDraggable={ false }
+						showTitlesAsTooltip={ true }
+					/>
+				) }
+			</div>
 		</div>
 	);
 }
