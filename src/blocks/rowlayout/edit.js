@@ -943,9 +943,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				</>
 			) }
 			<style>
-				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p, .kb-row-id-${ uniqueID } h1, .kb-row-id-${ uniqueID } h2, .kb-row-id-${ uniqueID } h3, .kb-row-id-${ uniqueID } h4, .kb-row-id-${ uniqueID } h5, .kb-row-id-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-				{ ( linkColor ? `.kb-row-id-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				<>
 					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
 				</>
