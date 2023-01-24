@@ -47,6 +47,7 @@ import {
 	InspectorControlTabs,
 	CopyPasteAttributes,
 	SmallResponsiveControl,
+	HoverToggleControl,
 } from '@kadence/components';
 
 /**
@@ -931,6 +932,66 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</KadencePanelBody>
 		);
+		const percentDesktopContent = (
+			<Fragment>
+				<RangeControl
+					label={__('Columns', 'kadence-blocks')}
+					value={(tabWidth && undefined !== tabWidth[0] ? tabWidth[0] : '')}
+					onChange={(value) => setAttributes({tabWidth: [value, tabWidth[1], tabWidth[2]]})}
+					min={1}
+					max={8}
+					step={1}
+				/>
+				<RangeControl
+					label={__('Gutter', 'kadence-blocks')}
+					value={(gutter && undefined !== gutter[0] ? gutter[0] : '')}
+					onChange={(value) => setAttributes({gutter: [value, gutter[1], gutter[2]]})}
+					min={0}
+					max={50}
+					step={1}
+				/>
+			</Fragment>
+		);
+		const percentTabletContent = (
+			<Fragment>
+				<RangeControl
+					label={__('Tablet Columns', 'kadence-blocks')}
+					value={(tabWidth && undefined !== tabWidth[1] ? tabWidth[1] : '')}
+					onChange={(value) => setAttributes({tabWidth: [tabWidth[0], value, tabWidth[2]]})}
+					min={1}
+					max={8}
+					step={1}
+				/>
+				<RangeControl
+					label={__('Tablet Gutter', 'kadence-blocks')}
+					value={(gutter && undefined !== gutter[1] ? gutter[1] : '')}
+					onChange={(value) => setAttributes({gutter: [gutter[0], value, gutter[2]]})}
+					min={0}
+					max={50}
+					step={1}
+				/>
+			</Fragment>
+		);
+		const percentMobileContent = (
+			<Fragment>
+				<RangeControl
+					label={__('Mobile Columns', 'kadence-blocks')}
+					value={(tabWidth && undefined !== tabWidth[2] ? tabWidth[2] : '')}
+					onChange={(value) => setAttributes({tabWidth: [tabWidth[0], tabWidth[1], value]})}
+					min={1}
+					max={8}
+					step={1}
+				/>
+				<RangeControl
+					label={__('Mobile Gutter', 'kadence-blocks')}
+					value={(gutter && undefined !== gutter[2] ? gutter[2] : '')}
+					onChange={(value) => setAttributes({gutter: [gutter[0], gutter[1], value]})}
+					min={0}
+					max={50}
+					step={1}
+				/>
+			</Fragment>
+		);
 
 		//generate accordion ordering for tab title and content elements
 		let accordionOrderStyle = '';
@@ -1103,45 +1164,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							<>
 								{showSettings('titleColor', 'kadence/tabs') && (
 									<KadencePanelBody
-										title={__('Tab Title Color Settings', 'kadence-blocks')}
+										title={__('Tab Title Color', 'kadence-blocks')}
 										panelName={'kb-tab-title-color'}
 									>
-										<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-												  activeClass="active-tab"
-												  tabs={[
-													  {
-														  name: 'normal',
-														  title: __('Normal'),
-														  className: 'kt-normal-tab',
-													  },
-													  {
-														  name: 'hover',
-														  title: __('Hover'),
-														  className: 'kt-hover-tab',
-													  },
-													  {
-														  name: 'active',
-														  title: __('Active'),
-														  className: 'kt-active-tab',
-													  },
-												  ]}>
-											{
-												(tab) => {
-													let tabout;
-													if (tab.name) {
-														if ('hover' === tab.name) {
-															tabout = hoverSettings;
-														} else if ('active' === tab.name) {
-															tabout = activeSettings;
-														} else {
-															tabout = normalSettings;
-														}
-													}
-													return <div className={tab.className}
-																key={tab.className}>{tabout}</div>;
-												}
-											}
-										</TabPanel>
+										<HoverToggleControl
+											hover={hoverSettings}
+											active={activeSettings}
+											normal={normalSettings}
+										/>
 									</KadencePanelBody>
 								)}
 								{showSettings('titleSpacing', 'kadence/tabs') && (
@@ -1176,102 +1206,13 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 																if ('percent' === tab.name) {
 																	tabout = (
 																		<Fragment>
-																			<TabPanel
-																				className="kt-size-tabs kb-device-choice"
-																				activeClass="active-tab"
-																				tabs={[
-																					{
-																						name: 'desk',
-																						title: <Dashicon
-																							icon="desktop"/>,
-																						className: 'kt-desk-tab',
-																					},
-																					{
-																						name: 'tablet',
-																						title: <Dashicon
-																							icon="tablet"/>,
-																						className: 'kt-tablet-tab',
-																					},
-																					{
-																						name: 'mobile',
-																						title: <Dashicon
-																							icon="smartphone"/>,
-																						className: 'kt-mobile-tab',
-																					},
-																				]}>
-																				{
-																					(innerTab) => {
-																						let tabContentOut;
-																						if (innerTab.name) {
-																							if ('mobile' === innerTab.name) {
-																								tabContentOut = (
-																									<Fragment>
-																										<RangeControl
-																											label={__('Mobile Columns', 'kadence-blocks')}
-																											value={(tabWidth && undefined !== tabWidth[2] ? tabWidth[2] : '')}
-																											onChange={(value) => setAttributes({tabWidth: [tabWidth[0], tabWidth[1], value]})}
-																											min={1}
-																											max={8}
-																											step={1}
-																										/>
-																										<RangeControl
-																											label={__('Mobile Gutter', 'kadence-blocks')}
-																											value={(gutter && undefined !== gutter[2] ? gutter[2] : '')}
-																											onChange={(value) => setAttributes({gutter: [gutter[0], gutter[1], value]})}
-																											min={0}
-																											max={50}
-																											step={1}
-																										/>
-																									</Fragment>
-																								);
-																							} else if ('tablet' === innerTab.name) {
-																								tabContentOut = (
-																									<Fragment>
-																										<RangeControl
-																											label={__('Tablet Columns', 'kadence-blocks')}
-																											value={(tabWidth && undefined !== tabWidth[1] ? tabWidth[1] : '')}
-																											onChange={(value) => setAttributes({tabWidth: [tabWidth[0], value, tabWidth[2]]})}
-																											min={1}
-																											max={8}
-																											step={1}
-																										/>
-																										<RangeControl
-																											label={__('Tablet Gutter', 'kadence-blocks')}
-																											value={(gutter && undefined !== gutter[1] ? gutter[1] : '')}
-																											onChange={(value) => setAttributes({gutter: [gutter[0], value, gutter[2]]})}
-																											min={0}
-																											max={50}
-																											step={1}
-																										/>
-																									</Fragment>
-																								);
-																							} else {
-																								tabContentOut = (
-																									<Fragment>
-																										<RangeControl
-																											label={__('Columns', 'kadence-blocks')}
-																											value={(tabWidth && undefined !== tabWidth[0] ? tabWidth[0] : '')}
-																											onChange={(value) => setAttributes({tabWidth: [value, tabWidth[1], tabWidth[2]]})}
-																											min={1}
-																											max={8}
-																											step={1}
-																										/>
-																										<RangeControl
-																											label={__('Gutter', 'kadence-blocks')}
-																											value={(gutter && undefined !== gutter[0] ? gutter[0] : '')}
-																											onChange={(value) => setAttributes({gutter: [value, gutter[1], gutter[2]]})}
-																											min={0}
-																											max={50}
-																											step={1}
-																										/>
-																									</Fragment>
-																								);
-																							}
-																						}
-																						return <div>{tabContentOut}</div>;
-																					}
-																				}
-																			</TabPanel>
+																			<SmallResponsiveControl
+																				desktopChildren={ percentDesktopContent }
+																				tabletChildren={ percentTabletContent }
+																				mobileChildren={ percentMobileContent }
+																			>
+																			</SmallResponsiveControl>
+
 																			<MeasurementControls
 																				label={__('Title Padding (px)', 'kadence-blocks')}
 																				measurement={titlePadding}

@@ -183,7 +183,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 	margin:0;
 	list-style: none;
 }
-.kt-tabs-title-list {
+.wp-block-kadence-tabs .kt-tabs-title-list {
 	margin:0;
 	padding: 0;
 	display: flex;
@@ -206,6 +206,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 			transition: all .2s ease-in-out;
 			box-shadow: none !important;
 			outline: 0 !important;
+			height: 100%;
 		}
 		&.kt-tab-title-active {
 			z-index: 4;
