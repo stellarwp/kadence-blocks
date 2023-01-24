@@ -413,6 +413,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		const nonTransAttrs = ['currentTab', 'tabCount'];
 
+		const isAccordionPreview = ( ( previewDevice == 'Tablet' && tabletLayout == 'accordion' ) || ( previewDevice == 'Mobile' && mobileLayout == 'accordion' ) );
+
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
@@ -929,6 +931,23 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</KadencePanelBody>
 		);
+
+		//generate accordion ordering for tab title and content elements
+		let accordionOrderStyle = '';
+		if( isAccordionPreview ) {
+			times( tabCount, n => {
+				let output = `
+					.kt-title-item-${n} {
+						order: ${2*n}
+					}
+					.kt-inner-tab-${n+1} {
+						order: ${(2*n)+1}
+					}
+				`;
+				accordionOrderStyle += output;
+			})
+		}
+
 		const renderCSS = (
 			<style>
 				{ `.kt-tabs-id${ uniqueID } .kt-title-item:hover .kt-tab-title {
@@ -944,7 +963,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				.kt-tabs-id${ uniqueID } > .kt-tabs-wrap > .kt-tabs-content-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-tab="${ currentTab }"] {
 					display: block;
 				}
+				${ accordionOrderStyle }
 				` }
+				
 			</style>
 		);
 
