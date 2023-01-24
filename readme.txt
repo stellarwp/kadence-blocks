@@ -78,7 +78,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.4 Beta Version 1 =
 Release Date: TBD
-
+* Fix: Heading color issue in row.
+* Fix: Possible google font issue.
+* Fix: Issue with some testimonial blocks not updating.
+* Fix: zIndex issue in rows.
+* Fix: Issue with icon list fonts.
+* Fix: Issue with heading block backward compatibility. 
 
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023

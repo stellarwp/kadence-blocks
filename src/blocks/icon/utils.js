@@ -8,14 +8,16 @@ export function migrateToInnerblocks( attributes ) {
 
     const { icons, iconCount } = attributes;
     let iconInnerBlocks = [];
-    times( iconCount, n => {
-		let icon = icons[n];
-		let newAttrs = { ...icon };
+    if ( icons?.length ) {
+        times( iconCount, n => {
+            let icon = icons[n];
+            let newAttrs = { ...icon };
 
-        iconInnerBlocks.push( createBlock( 'kadence/single-icon', newAttrs ) );
-    });
+            iconInnerBlocks.push( createBlock( 'kadence/single-icon', newAttrs ) );
+        });
+    }
 
-    let iconParentAttributes = { ...attributes, icons: [] }
+    let iconParentAttributes = { ...attributes, icons: [], iconCount: 1 }
 
     return [ iconParentAttributes, iconInnerBlocks ];
 }

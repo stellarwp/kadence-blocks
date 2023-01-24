@@ -8,14 +8,16 @@ export function migrateToInnerblocks( attributes ) {
     const { items, listCount } = attributes;
 
     let listInnerBlocks = [];
-    times( listCount, n => {
-		let item = items[n];
-		let newAttrs = { ...item };
+    if ( items?.length ) {
+        times( listCount, n => {
+            let item = items[n];
+            let newAttrs = { ...item };
 
-        listInnerBlocks.push( createBlock( 'kadence/listitem', newAttrs ) );
-    });
+            listInnerBlocks.push( createBlock( 'kadence/listitem', newAttrs ) );
+        });
+    }
 
-    let listParentAttributes = { ...attributes, items: [] }
+    let listParentAttributes = { ...attributes, items: [], listCount:1 }
 
     return [ listParentAttributes, listInnerBlocks ];
 }

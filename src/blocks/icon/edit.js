@@ -4,29 +4,15 @@
 /**
  * Import externals
  */
-import { times, map } from 'lodash';
 import {
-	PopColorControl,
-	StepControls,
-	IconRender,
 	KadencePanelBody,
-	URLInputControl,
 	VerticalAlignmentIcon,
-	ResponsiveRangeControls,
 	InspectorControlTabs,
-	RangeControl,
-	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
-	KadenceBlockDefaults,
-	KadenceIconPicker,
-	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
 } from '@kadence/components';
 import {
-	KadenceColorOutput,
 	getPreviewSize,
-	getSpacingOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
@@ -61,12 +47,7 @@ import {
 	plusCircle
 } from '@wordpress/icons';
 import {
-	TextControl,
-	SelectControl,
-	Button,
-	Dashicon,
 	ToolbarButton,
-	TabPanel,
 	ToolbarGroup,
 } from '@wordpress/components';
 
@@ -96,18 +77,6 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
-	const saveArrayUpdate = ( value, index ) => {
-		const newItems = icons.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		} );
-		setAttributes( {
-			icons: newItems,
-		} );
-	};
 
 	const blockProps = useBlockProps( {
 		className: className,
@@ -138,14 +107,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 			},
 		],
 	];
-
-	function selfOrChildSelected( isSelected, clientId ) {
-		const childSelected = useSelect( ( select ) =>
-			select( 'core/block-editor' ).hasSelectedInnerBlock( clientId, true )
-		);
-		return isSelected || childSelected;
-	}
-
+	
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
 	return (
 		<div {...blockProps}>

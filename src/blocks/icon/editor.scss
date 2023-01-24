@@ -84,3 +84,7 @@
     margin-bottom: 0;
     margin-top: 0;
 }
+html :where(.wp-block):has(.kt-svg-icons) {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
