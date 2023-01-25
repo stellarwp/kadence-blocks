@@ -183,7 +183,6 @@ export function ImageEdit( {
 			unit: 'px'
 		  }] ) );
 		let updateBorderStyle = false;
-		console.log(border);
 		if ( ( 'undefined' !== typeof border && '' !== border ) ) {
 			tempBorderStyle[0].top[0] = border;
 			tempBorderStyle[0].right[0] = border;
@@ -201,7 +200,6 @@ export function ImageEdit( {
 			setAttributes( { borderWidthDesktop:[ '', '', '', '' ] } );
 		}
 		if ( updateBorderStyle ) {
-			console.log('check it');
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
 		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
