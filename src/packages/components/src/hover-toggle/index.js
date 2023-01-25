@@ -23,6 +23,7 @@ import {
  */
 import {
 	hoverToggle,
+	click
 } from '@kadence/icons';
 /**
  * Build the Measure controls
@@ -37,7 +38,7 @@ export default function HoverToggleControl( {
 	normal,
 	className = '',
 	icon = hoverToggle,
-	activeIcon = hoverToggle,
+	activeIcon = click,
 } ) {
 	const [ isHover, setIsHover ] = useState( initial === 'hover' ? true : false );
 	const [ isActive, setIsActive ] = useState( initial === 'active' ? true : false );
