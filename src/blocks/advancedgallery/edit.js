@@ -1093,8 +1093,8 @@ function GalleryEdit( props ) {
 															value: 'outlinelight',
 														},
 														{
-															label: __( 'Saturation', 'kadence-blocks' ),
-															value: 'saturation',
+															label: __( 'None', 'kadence-blocks' ),
+															value: 'none',
 														},
 													]}
 													value={dotStyle}
