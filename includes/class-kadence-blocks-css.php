@@ -762,7 +762,7 @@ class Kadence_Blocks_CSS {
 			if ( isset( $font['letterSpacing'][0] ) && is_numeric( $font['letterSpacing'][0] ) ) {
 				$this->add_property( 'letter-spacing', $font['letterSpacing'][0] . $letter_type );
 			}
-		} elseif ( is_numeric( $font['letterSpacing'] ) ) {
+		} elseif ( isset( $font['letterSpacing'] ) && is_numeric( $font['letterSpacing'] ) ) {
 			$this->add_property( 'letter-spacing', $font['letterSpacing'] . $letter_type );
 		}
 		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
