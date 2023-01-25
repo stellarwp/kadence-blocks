@@ -251,7 +251,6 @@
 		position: relative;
 		padding:0;
 		margin:0;
-		flex:1;
 		.kadence-blocks-gallery-item-inner {
 			position: relative;
 			margin-bottom: 0;
@@ -358,13 +357,13 @@
 	// 	width: 100%;
 	// }
 
-	// Beyond mobile viewports, we allow up to 8 columns.
-	@media (min-width: 600px) {
-		@for $i from 2 through 8 {
-			&[data-columns-xxl="#{ $i }"] .kadence-blocks-gallery-item {
-				width: calc(100%/#{ $i });
-			}
+	@for $i from 2 through 8 {
+		&.kb-gallery-preview-columns-#{ $i } .kadence-blocks-gallery-item {
+			width: calc(100%/#{ $i });
 		}
+	}
+	&.kb-gallery-preview-columns-1 .kadence-blocks-gallery-item {
+		width: 100%;
 	}
 }
 .kb-gallery-caption-style-below .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption.kadence-blocks-gallery-item__caption {

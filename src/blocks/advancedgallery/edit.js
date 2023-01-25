@@ -1621,6 +1621,7 @@ function GalleryEdit( props ) {
 			[ `kb-gallery-id-${uniqueID}` ]               : uniqueID,
 			[ `kb-gallery-caption-style-${captionStyle}` ]: captionStyle,
 			[ `kb-gallery-filter-${imageFilter}` ]        : imageFilter,
+			[ `kb-gallery-preview-columns-${previewColumns}` ]        : ( type === 'grid' || type === 'carousel' ) && previewColumns,
 		},
 	);
 	const renderGalleryImages = ( img, index, thumbnail = false ) => {

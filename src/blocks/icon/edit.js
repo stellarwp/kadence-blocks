@@ -80,6 +80,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 
 	const blockProps = useBlockProps( {
 		className: className,
+		['data-align']: ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) ? blockAlignment : undefined
 	} );
 	const verticalAlignOptions = [
 		[
@@ -114,7 +115,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 			<BlockControls>
 				<BlockAlignmentToolbar
 					value={blockAlignment}
-					controls={[ 'center', 'left', 'right' ]}
+					controls={[ 'left', 'right' ]}
 					onChange={value => setAttributes( { blockAlignment: value } )}
 				/>
 				<ToolbarGroup
