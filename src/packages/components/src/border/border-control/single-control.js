@@ -188,6 +188,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 								onChange={ ( event ) => {
 									onUnit( event.target.value );
 								} }
+								disabled={ units.length === 1 }
 							>
 								{ units.map( ( option ) => (
 									<option value={ option } selected={ unit === option ? true : undefined } key={ option }>

@@ -60,14 +60,14 @@
 			right: ['','',''],
 			bottom: ['','',''],
 			left: ['','',''],
-			unit: 'px',
+			unit: '',
 		},
 		mobileDefault = {
 			top: ['','',''],
 			right: ['','',''],
 			bottom: ['','',''],
 			left: ['','',''],
-			unit: 'px',
+			unit: '',
 		},
 		reset = true,
 		defaultLinked = true,
@@ -107,6 +107,19 @@
 				}
 			}
  		}
+
+		//if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.
+			console.log(1)
+		if ( isEqual( value?.[0]?.unit, mobileValue?.[0]?.unit ) ) {
+			console.log(2)
+			mobileValue[0].unit = '';
+			onChangeMobile( mobileValue );
+		}
+		if ( isEqual( value?.[0]?.unit, tabletValue?.[0]?.unit ) ) {
+			console.log(3)
+			tabletValue[0].unit = '';
+			onChangeTablet( tabletValue );
+		}
 	}, [] );
 	 const {
 		 setPreviewDeviceType,
@@ -149,6 +162,9 @@
 		 }
 	 }
 	 const output = {};
+	 const mobileUnit = mobileValue?.[0]?.unit ? mobileValue[0].unit : value?.[0]?.unit ? value[0].unit : 'px';
+	 const tabletUnit = tabletValue?.[0]?.unit ? tabletValue[0].unit : value?.[0]?.unit ? value[0].unit : 'px';
+
 	 output.Mobile = (
 		 <BorderControl
 			 value={ ( mobileValue ? mobileValue : undefined ) }
@@ -157,7 +173,7 @@
 			 onControl={ ( value ) => realSetOnControl( value ) }
 			 defaultValue={ mobileDefault }
 			 styles={ styles }
-			 units={ units }
+			 units={ [ mobileUnit ] }
 			 firstIcon={ firstIcon }
 			 secondIcon={ secondIcon }
 			 thirdIcon={ thirdIcon }
@@ -174,7 +190,7 @@
 			onControl={ ( value ) => realSetOnControl( value ) }
 			defaultValue={ tabletDefault }
 			styles={ styles }
-			units={ units }
+			units={ [ tabletUnit ] }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
 			thirdIcon={ thirdIcon }
