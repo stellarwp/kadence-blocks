@@ -1635,9 +1635,9 @@ function KadenceForm( props ) {
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -3520,37 +3520,6 @@ function KadenceForm( props ) {
 								onChange={( value ) => setAttributes( { submitLabel: value } )}
 							/>
 						</KadencePanelBody>
-						<KadencePanelBody
-							title={__( 'Container Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-form-container-settings'}
-						>
-						<ResponsiveMeasureRangeControl
-							label={__( 'Container Margin', 'kadence-blocks' )}
-							tabletControl={tabletMarginControl}
-							mobileControl={mobileMarginControl}
-							value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
-							tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
-							mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
-							onChange={( value ) => {
-								setAttributes( { containerMargin: value } );
-							}}
-							onChangeTablet={( value ) => {
-								setAttributes( { tabletContainerMargin: value } );
-							}}
-							onChangeMobile={( value ) => {
-								setAttributes( { mobileContainerMargin: value } );
-							}}
-							min={containerMarginMin}
-							max={containerMarginMax}
-							step={containerMarginStep}
-							unit={containerMarginType}
-							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-							onUnit={( value ) => setAttributes( { containerMarginType: value } )}
-							onMouseOver={ marginMouseOver.onMouseOver }
-							onMouseOut={ marginMouseOver.onMouseOut }
-						/>
-						</KadencePanelBody>
 						{actions.includes( 'mailerlite' ) && (
 							<MailerLiteControls
 								fields={fields}
@@ -3572,6 +3541,36 @@ function KadenceForm( props ) {
 
 				{ (activeTab === 'advanced') && (
 					<>
+						<KadencePanelBody panelName={'kb-row-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__( 'Container Margin', 'kadence-blocks' )}
+								tabletControl={tabletMarginControl}
+								mobileControl={mobileMarginControl}
+								value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
+								tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
+								mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
+								onChange={( value ) => {
+									setAttributes( { containerMargin: value } );
+								}}
+								onChangeTablet={( value ) => {
+									setAttributes( { tabletContainerMargin: value } );
+								}}
+								onChangeMobile={( value ) => {
+									setAttributes( { mobileContainerMargin: value } );
+								}}
+								min={containerMarginMin}
+								max={containerMarginMax}
+								step={containerMarginStep}
+								unit={containerMarginType}
+								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+								onUnit={( value ) => setAttributes( { containerMarginType: value } )}
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
+							/>
+						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
