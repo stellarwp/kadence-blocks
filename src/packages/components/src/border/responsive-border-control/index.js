@@ -109,14 +109,11 @@
  		}
 
 		//if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.
-			console.log(1)
 		if ( isEqual( value?.[0]?.unit, mobileValue?.[0]?.unit ) ) {
-			console.log(2)
 			mobileValue[0].unit = '';
 			onChangeMobile( mobileValue );
 		}
 		if ( isEqual( value?.[0]?.unit, tabletValue?.[0]?.unit ) ) {
-			console.log(3)
 			tabletValue[0].unit = '';
 			onChangeTablet( tabletValue );
 		}
