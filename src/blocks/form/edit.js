@@ -3543,7 +3543,7 @@ function KadenceForm( props ) {
 					<>
 						<KadencePanelBody panelName={'kb-row-padding'}>
 							<ResponsiveMeasureRangeControl
-								label={__( 'Container Margin', 'kadence-blocks' )}
+								label={__( 'Margin', 'kadence-blocks' )}
 								tabletControl={tabletMarginControl}
 								mobileControl={mobileMarginControl}
 								value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
