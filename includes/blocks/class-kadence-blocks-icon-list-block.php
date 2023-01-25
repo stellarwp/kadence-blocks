@@ -124,6 +124,16 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_typography( $attributes, 'listStyles' );
 		}
 
+		// Support SVG sizes for icon lists made pre-3.0 that have not been updated
+		if( ! empty( $attributes['items'] ) && is_array( $attributes['items'] ) ) {
+			foreach( $attributes['items'] as $level => $item ) {
+				if( isset( $item['size'] ) && is_numeric( $item['size'] ) ) {
+					$css->set_selector( '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-level-' . $level . ' .kt-svg-icon-list-single svg' );
+					$css->add_property( 'font-size', $item['size'] . 'px' );
+				}
+			}
+		}
+
 		/* Stacked display style */
 		if( isset( $attributes['style'] ) && $attributes['style'] === 'stacked' ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-single' );
