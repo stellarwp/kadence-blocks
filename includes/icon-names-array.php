@@ -575,7 +575,7 @@ return array(
 		'fa_ethereum',
 		'fa_etsy',
 		'fa_expeditedssl',
-		'fa_facebook',
+		'fa_facebook-n',
 		'fa_facebook-f',
 		'fa_facebook-messenger',
 		'fa_facebook-square',

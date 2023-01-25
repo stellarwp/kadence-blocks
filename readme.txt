@@ -84,6 +84,8 @@ Release Date: TBD
 * Fix: zIndex issue in rows.
 * Fix: Issue with icon list fonts.
 * Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with gallery carousel missing option to set pagination to none.
+* Fix: Issue with facebook icon backward compatibility.
 
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023
