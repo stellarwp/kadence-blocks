@@ -30,6 +30,9 @@
 		align-items: center;
 	}
 }
+.is-content-locked .kt-row-padding.kb-static-row-padding {
+	opacity: 0 !important;
+}
  /* Row Layout Initial Buttons */
 .kadence-row-layout-radio-btns .kadence-radio-container-control.components-button-group .components-button {
     color: #9EAAB5;
