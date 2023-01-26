@@ -9,6 +9,7 @@
 .kt-row-layout-inner, .kb-row-layout-wrap {
 	position: relative;
 	border: 0 solid transparent;
+	z-index: 1;
 }
 .kb-row-layout-wrap:before {
     clear: both;
@@ -21,8 +22,6 @@
 	/* autoprefixer: ignore next */
 	grid-auto-rows: minmax(min-content, max-content);
     gap: var(--global-row-gutter-md, 2rem) var(--global-row-gutter-md, 2rem);
-	z-index: 10;
-	position: relative;
 }
 .wp-block-kadence-rowlayout .kt-row-column-wrap.kb-theme-content-width {
 	margin-left: auto;
