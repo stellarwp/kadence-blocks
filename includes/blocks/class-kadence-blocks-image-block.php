@@ -62,6 +62,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		$key_positions = [ 'top', 'right', 'bottom', 'left' ];
 		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id . ':not(.kb-specificity-added):not(.kb-extra-specificity-added)' );
+
 		// Margins
 		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', array(
 			'tablet_key'  => 'marginTablet',
@@ -94,6 +95,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'width', '100%' );
 			}
 		}
+
 		// Tablet and Mobile Max Width.
 		foreach ( [ 'Tablet', 'Mobile' ] as $breakpoint ) {
 			$css->set_media_state( strtolower( $breakpoint ) );
@@ -115,6 +117,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 		$css->set_selector( '.kb-image' . $unique_id . ':not(.kb-image-is-ratio-size) .kb-img, .kb-image' . $unique_id . '.kb-image-is-ratio-size' );
+
 		// Padding
 		$css->render_measure_output( $attributes, 'paddingDesktop', 'padding', array(
 			'tablet_key'  => 'paddingTablet',
@@ -122,27 +125,9 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			'unit_key' => 'paddingUnit'
 		) );
 		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
-		// Border Color
-		if ( isset( $attributes['borderColor'] ) ) {
-			$css->add_property( 'border-style', 'solid' );
-			$css->add_property( 'border-color', $css->render_color( $attributes['borderColor'] ) );
-		}
 
-		// Border widths
-		foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
-			$css->set_media_state( strtolower( $breakpoint ) );
-
-			if ( isset( $attributes[ 'borderWidth' . $breakpoint ] ) && is_array( $attributes[ 'borderWidth' . $breakpoint ] ) ) {
-
-				foreach ( $attributes[ 'borderWidth' . $breakpoint ] as $key => $bDesktop ) {
-					if ( is_numeric( $bDesktop ) ) {
-						$css->add_property( 'border-' . $key_positions[ $key ] . '-width', $bDesktop . ( ! isset( $attributes['borderWidthUnit'] ) ? 'px' : $attributes['borderWidthUnit'] ) );
-					}
-				}
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
+		// Border styles
+		$css->render_border_styles( $attributes, 'borderStyle', true );
 
 		// Background Color.
 		if ( ! empty( $attributes['backgroundColor'] ) ) {

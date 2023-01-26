@@ -62,12 +62,11 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( isset( $attributes['listStyles'] ) && is_array( $attributes['listStyles'] ) && isset( $attributes['listStyles'][0] ) && is_array( $attributes['listStyles'][0] ) && isset( $attributes['listStyles'][0]['google'] ) && $attributes['listStyles'][0]['google'] && ( ! isset( $attributes['listStyles'][0]['loadGoogle'] ) || true === $attributes['listStyles'][0]['loadGoogle'] ) && isset( $attributes['listStyles'][0]['family'] ) ) {
 			$list_font    = $attributes['listStyles'][0];
-			$font_variant = ( isset( $list_font['variant'] ) && ! empty( $list_font['variant'] ) ? array( $list_font['variant'] ) : array() );
-			$subset       = ( isset( $list_font['subset'] ) && ! empty( $list_font['subset'] ) ? array( $list_font['subset'] ) : array() );
+			$font_variant = ( isset( $list_font['variant'] ) && ! empty( $list_font['variant'] ) ? $list_font['variant'] : null );
+			$subset       = ( isset( $list_font['subset'] ) && ! empty( $list_font['subset'] ) ? $list_font['subset'] : null );
 
 			$css->maybe_add_google_font( $list_font['family'], $font_variant, $subset );
 		}
-
 
 		if ( isset( $attributes['listMargin'] ) && is_array( $attributes['listMargin'] ) && isset( $attributes['listMargin'][0] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues)' );
@@ -123,6 +122,16 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->sanitize_color( $list_styles['color'] ) );
 			}
 			$css->render_typography( $attributes, 'listStyles' );
+		}
+
+		// Support SVG sizes for icon lists made pre-3.0 that have not been updated
+		if( ! empty( $attributes['items'] ) && is_array( $attributes['items'] ) ) {
+			foreach( $attributes['items'] as $level => $item ) {
+				if( isset( $item['size'] ) && is_numeric( $item['size'] ) ) {
+					$css->set_selector( '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-level-' . $level . ' .kt-svg-icon-list-single svg' );
+					$css->add_property( 'font-size', $item['size'] . 'px' );
+				}
+			}
 		}
 
 		/* Stacked display style */

@@ -69,25 +69,54 @@ function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobile
 function getBorderWidth( device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
 		if ( '' !== mobileStyle?.[0]?.[side]?.[2] ) {
-			return mobileStyle?.[0]?.[side]?.[2] + ( mobileStyle?.[0]?.['unit'] ? mobileStyle?.[0]?.['unit'] : 'px' );
+			return mobileStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 		} else if ( '' !== tabletStyle?.[0]?.[side]?.[2] ) {
-			return tabletStyle?.[0]?.[side]?.[2] + ( tabletStyle?.[0]?.['unit'] ? tabletStyle?.[0]?.['unit'] : 'px' );
+			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 		} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
 		if ( '' !== tabletStyle?.[0]?.[side]?.[2] ) {
-			return tabletStyle?.[0]?.[side]?.[2] + ( tabletStyle?.[0]?.['unit'] ? tabletStyle?.[0]?.['unit'] : 'px' );
+			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 		} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	}
 	if ( '' !== desktopStyle?.[0]?.[side]?.[2] ) {
-		return desktopStyle?.[0]?.[side]?.[2] + ( desktopStyle?.[0]?.['unit'] ? desktopStyle?.[0]?.['unit'] : 'px' );
+		return desktopStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 	} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 		return getInheritBorderWidth( device, side, inheritBorder );
 	}
 	return '';
+};
+function getInheritBorderUnit( device, inheritBorder ) {
+   const desktopStyle = ( undefined !== inheritBorder?.[0] ? inheritBorder?.[0] : [] );
+   const tabletStyle = ( undefined !== inheritBorder?.[1] ? inheritBorder?.[1] : [] );
+   const mobileStyle = ( undefined !== inheritBorder?.[2] ? inheritBorder?.[2] : [] );
+   return getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle );
+};
+function getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
+	if ( device === 'Mobile' ) {
+		if ( '' !== mobileStyle?.[0]?.['unit'] ) {
+			return mobileStyle[0]['unit'];
+		} else if ( '' !== tabletStyle?.[0]?.['unit'] ) {
+			return tabletStyle[0]['unit'];
+		} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
+			return getInheritBorderUnit( device, inheritBorder );
+		}
+	} else if ( device === 'Tablet' ) {
+		if ( '' !== tabletStyle?.[0]?.['unit'] ) {
+			return tabletStyle[0]['unit'];
+		} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
+			return getInheritBorderUnit( device, inheritBorder );
+		}
+	}
+	if ( '' !== desktopStyle?.[0]?.['unit'] ) {
+		return desktopStyle[0]['unit'];
+	} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
+		return getInheritBorderUnit( device, inheritBorder );
+	}
+	return 'px';
 };
 
 /**

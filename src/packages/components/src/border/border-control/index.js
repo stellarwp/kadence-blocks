@@ -69,7 +69,7 @@ import SingleBorderControl from './single-control';
 			style: 'solid',
 			width: '',
 		},
-		unit: 'px',
+		unit: '',
 	},
 	control = 'individual',
 	units = [ 'px', 'em', 'rem' ],
@@ -95,7 +95,7 @@ import SingleBorderControl from './single-control';
 	}
 	const currentObject = value?.[0] || defaultValue;
 	const step = currentObject.unit !== 'px' ? 0.1 : 1;
-	const max = currentObject.unit !== 'px' ? 12 : 200;
+	const max = currentObject.unit !== 'px' && currentObject.unit !== '' ? 12 : 200;
 	const min = 0;
 	const onChangeAll = ( newBorder ) => {
 		currentObject.top = newBorder;
@@ -169,7 +169,7 @@ import SingleBorderControl from './single-control';
 								step={ step }
 								help={ help }
 								styles={ styles }
-								unit={ currentObject?.unit }
+								unit={ currentObject?.unit || 'px' }
 								units={ units }
 								onUnit={ ( unit ) => onChangeUnit( unit ) }
 								defaultValue={ defaultValue.top }
@@ -201,7 +201,7 @@ import SingleBorderControl from './single-control';
 								step={ step }
 								help={ help }
 								styles={ styles }
-								unit={ currentObject?.unit }
+								unit={ currentObject?.unit || 'px' }
 								units={ units }
 								onUnit={ ( unit ) => onChangeUnit( unit ) }
 								defaultValue={ defaultValue.top }
@@ -215,7 +215,7 @@ import SingleBorderControl from './single-control';
 								step={ step }
 								help={ help }
 								styles={ styles }
-								unit={ currentObject?.unit }
+								unit={ currentObject?.unit || 'px' }
 								units={ units }
 								onUnit={ ( unit ) => onChangeUnit( unit ) }
 								defaultValue={ defaultValue.left }
@@ -229,7 +229,7 @@ import SingleBorderControl from './single-control';
 								step={ step }
 								help={ help }
 								styles={ styles }
-								unit={ currentObject?.unit }
+								unit={ currentObject?.unit || 'px' }
 								units={ units }
 								onUnit={ ( unit ) => onChangeUnit( unit ) }
 								defaultValue={ defaultValue.right }
@@ -243,7 +243,7 @@ import SingleBorderControl from './single-control';
 								step={ step }
 								help={ help }
 								styles={ styles }
-								unit={ currentObject?.unit }
+								unit={ currentObject?.unit || 'px' }
 								units={ units }
 								onUnit={ ( unit ) => onChangeUnit( unit ) }
 								defaultValue={ defaultValue.bottom }

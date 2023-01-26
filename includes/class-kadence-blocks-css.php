@@ -199,6 +199,9 @@ class Kadence_Blocks_CSS {
 	protected $gap_sizes = array(
 		'none' => 'var(--global-kb-gap-none, 0 )',
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
+		'narrow' => '20px',
+		'wide' => '40px',
+		'widest' => '80px',
 		'default' => 'var(--global-kb-gap-md, 2rem)',
 		'wider' => 'var(--global-kb-gap-lg, 4rem)',
 		'xs' => 'var(--global-kb-gap-xs, 0.5rem )',
@@ -762,7 +765,7 @@ class Kadence_Blocks_CSS {
 			if ( isset( $font['letterSpacing'][0] ) && is_numeric( $font['letterSpacing'][0] ) ) {
 				$this->add_property( 'letter-spacing', $font['letterSpacing'][0] . $letter_type );
 			}
-		} elseif ( is_numeric( $font['letterSpacing'] ) ) {
+		} elseif ( isset( $font['letterSpacing'] ) && is_numeric( $font['letterSpacing'] ) ) {
 			$this->add_property( 'letter-spacing', $font['letterSpacing'] . $letter_type );
 		}
 		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
@@ -1678,9 +1681,10 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the border styles output.
 	 *
-	 * @param array  $attributes an array of attributes.
-	 * @param string $name an string of the attribute name.
-	 * @param array  $args an array of settings.
+	 * @param array   $attributes an array of attributes.
+	 * @param string  $name an string of the attribute name.
+	 * @param boolean $single_styles if property values should be calculated to be output alone.
+	 * @param array   $args an array of settings.
 	 * @return string
 	 */
 	public function render_border_styles( $attributes, $name = 'borderStyle', $single_styles = false, $args = array() ) {
@@ -1782,33 +1786,36 @@ class Kadence_Blocks_CSS {
 			'desktop' => '',
 		);
 		$sized_units = array(
-			'mobile' => 'px',
-			'tablet' => 'px',
-			'desktop' => 'px',
+			'mobile' => '',
+			'tablet' => '',
+			'desktop' => '',
 		);
 
 		// get the value for the given side for each size, load into array.
 		foreach ($size_keys as $size => $size_key) {
 			if ( isset( $attributes[ $args[$size_key] ][0] ) && is_array( $attributes[ $args[$size_key] ][0] ) ) {
 				$border_values = $attributes[ $args[$size_key] ][0];
-				$border_unit = ( ! empty( $border_values['unit'] ) ? $border_values['unit'] : 'px' );
+				$border_unit = ( ! empty( $border_values[$args['unit_key']] ) ? $border_values[$args['unit_key']] : '' );
 				$border_value = ( $border_values[$given_side][$value_positions[$given_value]] ?? '' );
 				$sized_units[$size] = $border_unit;
 				$sized_values[$size] = $border_value;
 			}
 		}
 
-		// return the value for this size or a size above it.
+		// return the value/unit for this size or a size above it.
 		// if none is found return a default value.
 		switch ( $given_size ) {
 			case 'desktop':
 				$return_value = $sized_values[$given_size];
+				$return_unit= $sized_units[$given_size];
 				break;
 			case 'tablet':
 				$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				$return_unit = $sized_units[$given_size] ?: $sized_units['desktop'];
 				break;
 			default:
 				$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				$return_unit = $sized_units[$given_size] ?: $sized_units['tablet'] ?: $sized_units['desktop'];
 				break;
 		}
 
@@ -1818,13 +1825,14 @@ class Kadence_Blocks_CSS {
 		}
 
 		$return_value = $return_value ? $return_value : $value_defaults[ $given_value ];
+		$return_unit = $return_unit ? $return_unit : 'px';
 
 		// extra processing for specific values.
 		if( $given_value == 'color') {
 			$return_value = $this->sanitize_color($return_value);
 		}
 		if( $given_value == 'width') {
-			$return_value = $this->is_number($return_value) ? $return_value . $sized_units[$given_size] : '';
+			$return_value = $this->is_number($return_value) ? $return_value . $return_unit : '';
 		}
 
 		return $return_value;
@@ -2105,6 +2113,10 @@ class Kadence_Blocks_CSS {
 	 * @param string $subset the font subset.
 	 */
 	public function maybe_add_google_font( $font_name, $font_variant = null, $subset = null ) {
+		// Prevent empty array in google fonts.
+		if ( empty( $font_name ) ) {
+			return;
+		}
 		// Check if the font has been added yet.
 		if ( ! array_key_exists( $font_name, self::$google_fonts ) ) {
 			$add_font = array(

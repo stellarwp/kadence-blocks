@@ -106,6 +106,7 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'desktop_key' => 'marginDesktop',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
+			'unit_key'    => 'marginUnit',
 		);
 		$css->render_measure_output( $attributes, 'margin', 'margin', $margin_args );
 
@@ -116,6 +117,7 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'desktop_key' => 'paddingDesktop',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
+			'unit_key'    => 'paddingUnit',
 		);
 		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
 
