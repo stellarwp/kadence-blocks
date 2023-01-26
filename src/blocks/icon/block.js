@@ -51,11 +51,6 @@ registerBlockType( 'kadence/icon', {
 	icon: {
 		src: iconIcon,
 	},
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
-			return { 'data-align': blockAlignment };
-		}
-	},
 	edit,
 	save,
 	deprecated,

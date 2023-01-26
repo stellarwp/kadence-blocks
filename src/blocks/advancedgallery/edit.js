@@ -452,7 +452,7 @@ function GalleryEdit( props ) {
 		return;
 	};
 	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
-	const theImages = imagesDynamic;
+	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
 		let columnArray = [];
@@ -1093,8 +1093,8 @@ function GalleryEdit( props ) {
 															value: 'outlinelight',
 														},
 														{
-															label: __( 'Saturation', 'kadence-blocks' ),
-															value: 'saturation',
+															label: __( 'None', 'kadence-blocks' ),
+															value: 'none',
 														},
 													]}
 													value={dotStyle}
@@ -1621,6 +1621,7 @@ function GalleryEdit( props ) {
 			[ `kb-gallery-id-${uniqueID}` ]               : uniqueID,
 			[ `kb-gallery-caption-style-${captionStyle}` ]: captionStyle,
 			[ `kb-gallery-filter-${imageFilter}` ]        : imageFilter,
+			[ `kb-gallery-preview-columns-${previewColumns}` ]        : ( type === 'grid' || type === 'carousel' ) && previewColumns,
 		},
 	);
 	const renderGalleryImages = ( img, index, thumbnail = false ) => {

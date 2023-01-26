@@ -60,7 +60,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		// Issue with span tag.
 		if ( isset( $attributes['htmlTag'] ) && 'span' === $attributes['htmlTag'] ) {
 			$css->add_property( 'display', 'block' );
@@ -112,7 +112,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google = isset( $attributes['googleFont'] ) && $attributes['googleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
-			$variant = !empty( $attributes['variant'] ) ? $attributes['variant'] : null;
+			$variant = ! empty( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
@@ -120,6 +120,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+		}
+		if ( isset( $attributes['tabletLetterSpacing'] ) && is_numeric( $attributes['tabletLetterSpacing'] ) ) {
+			$css->set_media_state('tablet');
+			$css->add_property( 'letter-spacing', $attributes['tabletLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->set_media_state('desktop');
+		}
+		if ( isset( $attributes['mobileLetterSpacing'] ) && is_numeric( $attributes['mobileLetterSpacing'] ) ) {
+			$css->set_media_state('mobile');
+			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->set_media_state('desktop');
 		}
 		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
@@ -182,7 +192,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 
 		// Highlight.
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
 		}
@@ -195,7 +205,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markTypography'] ) ) {
 			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
-			$variant = !empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$variant = ! empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['markFontWeight'] ) ) {
@@ -256,10 +266,9 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		// Tablet.
 		$css->set_media_state( 'tablet' );
-		$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( ! empty( $attributes['markSize'][1] ) ) {
 			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 		}

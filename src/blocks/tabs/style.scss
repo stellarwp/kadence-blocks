@@ -27,6 +27,7 @@
 				border-top-right-radius: 4px;
 				text-decoration: none;
 				transition: all .2s ease-in-out;
+                height: 100%;
 				&:focus {
 					text-decoration: none;
 				}
@@ -59,6 +60,30 @@
 .kt-tabs-icon-side-top .kt-tab-title {
     flex-direction: column;
 }
+
+.kt-tabs-icon-side- {
+    &top {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-bottom: 5px;
+        }
+    }
+    &bottom {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-top: 5px;
+        }
+    }
+    &left {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-right: 5px;
+        }
+    }
+    &right {
+        .kb-svg-icon-wrap, .kt-tab-svg-icon {
+            padding-left: 5px;
+        }
+    }
+}
+
 .kt-tabs-accordion-title.kt-tabs-icon-side-top .kt-tab-title {
     align-items: flex-start;
 }

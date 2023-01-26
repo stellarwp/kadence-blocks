@@ -49,13 +49,11 @@ function Inspector( {
 						titleMarginMouseOver
 					} ) {
 
-	const [ numberPaddingControl, setNumberPaddingControl ] = useState( 'individual' );
-	const [ numberMarginControl, setNumberMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const {
-		startDecimal,
-		endDecimal,
+		end,
+		start,
 		prefix,
 		suffix,
 		duration,
@@ -114,7 +112,38 @@ function Inspector( {
 	};
 	let theSeparator = ( separator === true ? ',' : separator );
 	theSeparator = ( theSeparator === false ? '' : theSeparator );
-
+	let step = 1; 
+	if ( decimal && decimalSpaces ) {
+		switch (decimalSpaces) {
+			case 1:
+				step = 0.1
+				break;
+			case 2:
+				step = 0.01
+				break;
+			case 3:
+				step = 0.001
+				break;
+			case 4:
+				step = 0.0001
+				break;
+			case 5:
+			step = 0.00001
+				break;
+			case 6:
+			step = 0.000001
+				break;
+			case 7:
+			step = 0.0000001
+				break;
+			case 8:
+			step = 0.00000001
+				break;
+			default:
+				step = 1
+				break;
+		}
+	}
 	return (
 		<KadenceInspectorControls blockSlug={ 'kadence/countup' }>
 
@@ -137,10 +166,10 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Starting Number', 'kadence-blocks' )}
-									value={startDecimal}
-									onChange={( value ) => setAttributes( { startDecimal: value } )}
+									value={start}
+									onChange={( value ) => setAttributes( { start: parseFloat( value ) } )}
 									min={0}
-									step={0.01}
+									step={step}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>
@@ -149,10 +178,12 @@ function Inspector( {
 							<div style={{ marginBottom: '15px' }}>
 								<NumberControl
 									label={__( 'Ending Number', 'kadence-blocks' )}
-									value={endDecimal}
-									onChange={( value ) => setAttributes( { endDecimal: value } )}
+									value={end}
+									onChange={( value ) => {
+										setAttributes( { end: parseFloat( value ) } )
+									}}
 									min={0}
-									step={0.01}
+									step={step}
 									isShiftStepEnabled={true}
 									shiftStep={10}
 								/>
@@ -205,7 +236,7 @@ function Inspector( {
 									value={decimalSpaces}
 									onChange={( value ) => setAttributes( { decimalSpaces: value } )}
 									min={1}
-									max={25}
+									max={8}
 									step={1}
 								/>
 							)}

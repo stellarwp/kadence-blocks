@@ -9,6 +9,12 @@
 .kt-row-layout-inner, .kb-row-layout-wrap {
 	position: relative;
 	border: 0 solid transparent;
+	z-index: 1;
+}
+.kb-row-layout-wrap:before {
+    clear: both;
+    display: table;
+    content: '';
 }
 .kt-row-column-wrap {
 	display: grid;

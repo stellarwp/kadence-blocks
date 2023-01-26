@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,17 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.4 Beta Version 1 =
+Release Date: TBD
+* Fix: Heading color issue in row.
+* Fix: Possible google font issue.
+* Fix: Issue with some testimonial blocks not updating.
+* Fix: zIndex issue in rows.
+* Fix: Issue with icon list fonts.
+* Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with gallery carousel missing option to set pagination to none.
+* Fix: Issue with facebook icon backward compatibility.
+
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023
 * Fix: Removing bottom divider on Row Layout
@@ -87,6 +98,9 @@ Release Date: January 19th, 2023
 * Fix: Form button styling issue.
 * Fix: Possible issue with border styling.
 * Fix: Issue with editor row spacing.
+* Fix: Hover Text colors in section.
+* Fix: Editor Map styles issue.
+* Fix: Editor border radius issues with accordion.
 
 = 3.0.2 Alpha Version 3 =
 Release Date: January 13th, 2023

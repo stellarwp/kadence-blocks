@@ -215,6 +215,9 @@
 			outline: transparent solid 2px;
 			z-index: 1;
 		}
+		&:disabled {
+			background-image: none;
+		}
 	}
 }
 .kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-single-unit-control {

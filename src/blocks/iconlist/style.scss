@@ -86,15 +86,15 @@
     border: 0px solid transparent;
 }
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-    grid-template-columns: 50% auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
-	display: grid;
+	display: grid !important;
 	gap: 5px 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-    grid-template-columns: 33% 33% auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: auto;
-	display: grid;
+	display: grid !important;
 	gap: 5px 1em;
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
@@ -108,12 +108,12 @@
 		display: block;
 	}
 	.kt-tablet-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-		grid-template-columns: 50% auto;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
 	.kt-tablet-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-		grid-template-columns: 33% 33% auto;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
@@ -123,12 +123,12 @@
 		display: block;
 	}
 	.kt-mobile-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-		grid-template-columns: 50% auto;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}
 	.kt-mobile-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-		grid-template-columns: 33% 33% auto;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto;
 		display: grid;
 	}

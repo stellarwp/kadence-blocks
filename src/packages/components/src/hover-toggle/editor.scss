@@ -2,21 +2,30 @@
     position: relative;
     min-height: 1px;
 }
-.kb-hover-toggle-control-toggle .components-button.kb-hover-toggle-btn{
-    position: absolute;
-    min-width: 32px;
-    padding: 6px;
-    height: 32px;
-    top: -44px;
-    font-size: 18px;
-    right: 32px;
+.kb-hover-toggle-control-toggle .components-button {
+    &.kb-hover-toggle-btn, &.kb-active-toggle-btn {
+        position: absolute;
+        min-width: 32px;
+        padding: 6px;
+        height: 32px;
+        top: -44px;
+        font-size: 18px;
+        right: 32px;
+
+        svg {
+            width: 1em;
+            height: 1em;
+        }
+    }
+    &.kb-active-toggle-btn {
+        right: 64px;
+    }
 }
-.kb-hover-control-wrap {
+.kb-hover-control-wrap, .kb-active-control-wrap {
     padding: 5px 16px 6px;
     margin: -5px -16px 0;
     box-shadow: inset 0 0 0 5px #EDF2F7;
 }
-.kb-hover-toggle-control-toggle .components-button.kb-hover-toggle-btn svg {
-    width: 1em;
-    height: 1em;
+.kb-active-control-wrap {
+    box-shadow: inset 0 0 0 5px #b7d7f7;
 }

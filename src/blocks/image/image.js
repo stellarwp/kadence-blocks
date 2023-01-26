@@ -332,24 +332,6 @@ export default function Image( {
 		setAttributes( { alt: newAlt } );
 	}
 
-	function updateImage( newSizeSlug ) {
-		const newUrl = get( image, [
-			'media_details',
-			'sizes',
-			newSizeSlug,
-			'source_url',
-		] );
-		if ( ! newUrl ) {
-			return null;
-		}
-
-		setAttributes( {
-			url: newUrl,
-			width: undefined,
-			height: undefined,
-			sizeSlug: newSizeSlug,
-		} );
-	}
 	function onUpdateSelectImage( image ) {
 		setAttributes( {
 			url: image.url,
@@ -471,9 +453,9 @@ export default function Image( {
 				) }
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -1389,6 +1371,9 @@ export default function Image( {
 					setAttributes( {
 						imgMaxWidth: parseInt( currentWidth + delta.width, 10 ),
 					} );
+				} }
+				style={ {
+					margin: align === 'center' ? '0 auto' : undefined,
 				} }
 			>
 				{ img }

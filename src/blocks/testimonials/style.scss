@@ -59,7 +59,22 @@
 }
 
 //largest size / fallbacks
-@media (min-width: 1200px) {
+.kt-t-xxl-col-1 .kt-testimonial-grid-wrap {
+	grid-template-columns: minmax(0, 1fr);
+}
+.kt-t-xxl-col-2 .kt-testimonial-grid-wrap {
+	grid-template-columns: repeat(2, minmax(0, 1fr) );
+}
+.kt-t-xxl-col-3 .kt-testimonial-grid-wrap {
+	grid-template-columns: repeat(3, minmax(0, 1fr) );
+}
+.kt-t-xxl-col-4 .kt-testimonial-grid-wrap {
+	grid-template-columns: repeat(4, minmax(0, 1fr) );
+}
+.kt-t-xxl-col-5 .kt-testimonial-grid-wrap {
+	grid-template-columns: repeat(5, minmax(0, 1fr) );
+}
+@media (min-width: 1200px) and (max-width: 1499px) {
 	.kt-t-xl-col-1 .kt-testimonial-grid-wrap {
 		grid-template-columns: minmax(0, 1fr);
 	}

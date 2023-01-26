@@ -406,9 +406,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$tcolumns_xs  = ( ! empty( $attributes['thumbnailColumns'][4] ) ? $attributes['thumbnailColumns'][4] : '4' );
 			$tcolumns_ss  = ( ! empty( $attributes['thumbnailColumns'][5] ) ? $attributes['thumbnailColumns'][5] : '4' );
 			$car_align    = ( isset( $attributes['carouselAlign'] ) && false === $attributes['carouselAlign'] ? false : true );
-			$gap          = ( ! empty( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : '10' );
-			$tablet_gap   = ( ! empty( $attributes['gutter'][1] ) ? $attributes['gutter'][1] : $gap );
-			$mobile_gap   = ( ! empty( $attributes['gutter'][2] ) ? $attributes['gutter'][2] : $tablet_gap );
+			$gap          = ( isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : '10' );
+			$tablet_gap   = (  isset( $attributes['gutter'][1] ) && is_numeric( $attributes['gutter'][1] ) ? $attributes['gutter'][1] : $gap );
+			$mobile_gap   = (  isset( $attributes['gutter'][2] ) && is_numeric( $attributes['gutter'][2] ) ? $attributes['gutter'][2] : $tablet_gap );
 			$gap_unit     = ( ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px' );
 			// Gallery Class.
 			$gallery_classes = array( 'kb-gallery-ul' );
