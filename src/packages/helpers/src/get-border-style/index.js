@@ -10,7 +10,7 @@ import {
 };
 function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
-		if ( '' !== mobileStyle?.[0]?.[side]?.[0] ) {
+		if ( undefined !== mobileStyle?.[0]?.[side]?.[0] && '' !== mobileStyle?.[0]?.[side]?.[0] ) {
 			return KadenceColorOutput( mobileStyle?.[0]?.[side]?.[0] );
 		} else if ( '' !== tabletStyle?.[0]?.[side]?.[0] ) {
 			return KadenceColorOutput( tabletStyle?.[0]?.[side]?.[0] );
@@ -18,13 +18,13 @@ function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobile
 			return getInheritBorderColor( device, side, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
-		if ( '' !== tabletStyle?.[0]?.[side]?.[0] ) {
+		if ( undefined !== tabletStyle?.[0]?.[side]?.[0] && '' !== tabletStyle?.[0]?.[side]?.[0] ) {
 			return KadenceColorOutput( tabletStyle?.[0]?.[side]?.[0] );
 		} else if ( inheritBorder && getInheritBorderColor( device, side, inheritBorder ) ) {
 			return getInheritBorderColor( device, side, inheritBorder );
 		}
 	}
-	if ( '' !== desktopStyle?.[0]?.[side]?.[0] ) {
+	if ( undefined !== desktopStyle?.[0]?.[side]?.[0] && '' !== desktopStyle?.[0]?.[side]?.[0] ) {
 		return KadenceColorOutput( desktopStyle?.[0]?.[side]?.[0] );
 	} else if ( inheritBorder && getInheritBorderColor( device, side, inheritBorder ) ) {
 		return getInheritBorderColor( device, side, inheritBorder );
@@ -39,7 +39,7 @@ function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobile
 };
  function getBorderFormat( device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
-		if ( '' !== mobileStyle?.[0]?.[side]?.[1] ) {
+		if ( undefined !== mobileStyle?.[0]?.[side]?.[1] && '' !== mobileStyle?.[0]?.[side]?.[1] ) {
 			return mobileStyle?.[0]?.[side]?.[1];
 		} else if ( '' !== tabletStyle?.[0]?.[side]?.[1] ) {
 			return tabletStyle?.[0]?.[side]?.[1];
@@ -47,13 +47,13 @@ function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobile
 			return getInheritBorderFormat( device, side, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
-		if ( '' !== tabletStyle?.[0]?.[side]?.[1] ) {
+		if ( undefined !== tabletStyle?.[0]?.[side]?.[1] && '' !== tabletStyle?.[0]?.[side]?.[1] ) {
 			return tabletStyle?.[0]?.[side]?.[1];
 		} else if ( inheritBorder && getInheritBorderFormat( device, side, inheritBorder ) ) {
 			return getInheritBorderFormat( device, side, inheritBorder );
 		}
 	}
-	if ( '' !== desktopStyle?.[0]?.[side]?.[1] ) {
+	if ( undefined !== desktopStyle?.[0]?.[side]?.[1] && '' !== desktopStyle?.[0]?.[side]?.[1] ) {
 		return desktopStyle?.[0]?.[side]?.[1];
 	} else if ( inheritBorder && getInheritBorderFormat( device, side, inheritBorder ) ) {
 		return getInheritBorderFormat( device, side, inheritBorder );
@@ -68,7 +68,7 @@ function getBorderColor( device, side = 'top', desktopStyle, tabletStyle, mobile
 };
 function getBorderWidth( device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
-		if ( '' !== mobileStyle?.[0]?.[side]?.[2] ) {
+		if ( undefined !== mobileStyle?.[0]?.[side]?.[2] && '' !== mobileStyle?.[0]?.[side]?.[2] ) {
 			return mobileStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 		} else if ( '' !== tabletStyle?.[0]?.[side]?.[2] ) {
 			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
@@ -76,13 +76,13 @@ function getBorderWidth( device, side = 'top', desktopStyle, tabletStyle, mobile
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
-		if ( '' !== tabletStyle?.[0]?.[side]?.[2] ) {
+		if ( undefined !== tabletStyle?.[0]?.[side]?.[2] && '' !== tabletStyle?.[0]?.[side]?.[2] ) {
 			return tabletStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 		} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 			return getInheritBorderWidth( device, side, inheritBorder );
 		}
 	}
-	if ( '' !== desktopStyle?.[0]?.[side]?.[2] ) {
+	if ( undefined !== desktopStyle?.[0]?.[side]?.[2] && '' !== desktopStyle?.[0]?.[side]?.[2] ) {
 		return desktopStyle?.[0]?.[side]?.[2] + getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder );
 	} else if ( inheritBorder && getInheritBorderWidth( device, side, inheritBorder ) ) {
 		return getInheritBorderWidth( device, side, inheritBorder );
@@ -97,7 +97,7 @@ function getInheritBorderUnit( device, inheritBorder ) {
 };
 function getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritBorder = false ) {
 	if ( device === 'Mobile' ) {
-		if ( '' !== mobileStyle?.[0]?.['unit'] ) {
+		if ( undefined !== mobileStyle?.[0]?.['unit'] && '' !== mobileStyle?.[0]?.['unit'] ) {
 			return mobileStyle[0]['unit'];
 		} else if ( '' !== tabletStyle?.[0]?.['unit'] ) {
 			return tabletStyle[0]['unit'];
@@ -105,13 +105,13 @@ function getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritB
 			return getInheritBorderUnit( device, inheritBorder );
 		}
 	} else if ( device === 'Tablet' ) {
-		if ( '' !== tabletStyle?.[0]?.['unit'] ) {
+		if ( undefined !== tabletStyle?.[0]?.['unit'] && '' !== tabletStyle?.[0]?.['unit'] ) {
 			return tabletStyle[0]['unit'];
 		} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
 			return getInheritBorderUnit( device, inheritBorder );
 		}
 	}
-	if ( '' !== desktopStyle?.[0]?.['unit'] ) {
+	if ( undefined !== desktopStyle?.[0]?.['unit'] && '' !== desktopStyle?.[0]?.['unit'] ) {
 		return desktopStyle[0]['unit'];
 	} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
 		return getInheritBorderUnit( device, inheritBorder );
