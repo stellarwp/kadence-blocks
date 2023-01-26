@@ -1,6 +1,6 @@
 (function () {
 	"use strict";
-	var kadenceBlocksSplide = {
+	window.kadenceBlocksSplide = {
 		initAll: function () {
 			let advancedSliders = document.querySelectorAll(
 				".wp-block-kadence-advancedgallery .kt-blocks-carousel-init"
@@ -25,7 +25,7 @@
 			for (let i = 0; i < elementList.length; i++) {
 				var thisSlider = elementList[i];
 
-				if (!thisSlider || !thisSlider.children) {
+				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
 					return;
 				}
 
