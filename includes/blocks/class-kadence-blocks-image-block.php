@@ -126,8 +126,30 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		) );
 		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 
-		// Border styles
-		$css->render_border_styles( $attributes, 'borderStyle', true );
+		// Support borders saved pre 3.0
+		if ( !empty( $attributes['borderColor'] ) ) {
+			$css->add_property( 'border-style', 'solid' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['borderColor'] ) );
+
+			// Border widths
+			foreach ( [ 'Desktop', 'Tablet', 'Mobile' ] as $breakpoint ) {
+				$css->set_media_state( strtolower( $breakpoint ) );
+
+				if ( isset( $attributes[ 'borderWidth' . $breakpoint ] ) && is_array( $attributes[ 'borderWidth' . $breakpoint ] ) ) {
+
+					foreach ( $attributes[ 'borderWidth' . $breakpoint ] as $key => $bDesktop ) {
+						if ( is_numeric( $bDesktop ) ) {
+							$css->add_property( 'border-' . $key_positions[ $key ] . '-width', $bDesktop . ( ! isset( $attributes['borderWidthUnit'] ) ? 'px' : $attributes['borderWidthUnit'] ) );
+						}
+					}
+				}
+
+				$css->set_media_state( 'desktop' );
+			}
+		} else {
+			$css->render_border_styles( $attributes, 'borderStyle', true );
+		}
+
 
 		// Background Color.
 		if ( ! empty( $attributes['backgroundColor'] ) ) {
