@@ -199,6 +199,9 @@ class Kadence_Blocks_CSS {
 	protected $gap_sizes = array(
 		'none' => 'var(--global-kb-gap-none, 0 )',
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
+		'narrow' => '20px',
+		'wide' => '40px',
+		'widest' => '80px',
 		'default' => 'var(--global-kb-gap-md, 2rem)',
 		'wider' => 'var(--global-kb-gap-lg, 4rem)',
 		'xs' => 'var(--global-kb-gap-xs, 0.5rem )',
