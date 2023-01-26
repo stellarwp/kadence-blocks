@@ -127,6 +127,7 @@ export function ImageEdit( {
 		kadenceAnimation,
 		kadenceAOSOptions,
 		border,
+		borderColor,
 		borderStyle,
 		borderWidthDesktop,
 		mobileBorderStyle,
@@ -183,13 +184,13 @@ export function ImageEdit( {
 			unit: 'px'
 		  }] ) );
 		let updateBorderStyle = false;
-		if ( ( 'undefined' !== typeof border && '' !== border ) ) {
-			tempBorderStyle[0].top[0] = border;
-			tempBorderStyle[0].right[0] = border;
-			tempBorderStyle[0].bottom[0] = border;
-			tempBorderStyle[0].left[0] = border;
+		if ( ( 'undefined' !== typeof borderColor && '' !== borderColor ) ) {
+			tempBorderStyle[0].top[0] = borderColor;
+			tempBorderStyle[0].right[0] = borderColor;
+			tempBorderStyle[0].bottom[0] = borderColor;
+			tempBorderStyle[0].left[0] = borderColor;
 			updateBorderStyle = true;
-			setAttributes( { border: '' } );
+			setAttributes( { borderColor: '' } );
 		}
 		if ( ( '' !== borderWidthDesktop?.[0] || '' !== borderWidthDesktop?.[1] || '' !== borderWidthDesktop?.[2] || '' !== borderWidthDesktop?.[3] ) ) {
 			tempBorderStyle[0].top[2] = borderWidthDesktop?.[0] || '';
