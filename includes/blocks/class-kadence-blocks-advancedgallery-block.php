@@ -425,6 +425,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( 'media' === $link_to && 'magnific' === $lightbox ) {
 				$gallery_classes[] = 'kb-gallery-magnific-init';
 			}
+
 			$content = '<div class="wp-block-kadence-advancedgallery kb-gallery-wrap-id-' . esc_attr( $unique_id ) . '">';
 			switch ( $type ) {
 				case 'carousel':
