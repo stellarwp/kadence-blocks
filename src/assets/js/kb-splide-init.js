@@ -1,6 +1,6 @@
 (function () {
 	"use strict";
-	window.kadenceBlocksSplide = {
+	var kadenceBlocksSplide = {
 		initAll: function () {
 			let advancedSliders = document.querySelectorAll(
 				".wp-block-kadence-advancedgallery .kt-blocks-carousel-init"
