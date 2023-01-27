@@ -2682,13 +2682,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									<div className={'kadence-info-box-icon-inner-container'}>
 										<IconRender className={`kt-info-svg-icon kt-info-svg-icon-${mediaIcon[ 0 ].icon}`} name={mediaIcon[ 0 ].icon} size={previewMediaIconSize} htmltag="span"
 													strokeWidth={( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined )} style={{
-											display: 'block',
+											display: 'flex',
 											color  : ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
 										}}/>
 										{mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
 											<IconRender className={`kt-info-svg-icon-flip kt-info-svg-icon-${mediaIcon[ 0 ].flipIcon}`} name={mediaIcon[ 0 ].flipIcon} size={previewMediaIconSize}
 														htmltag="span" strokeWidth={( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined )} style={{
-												display: 'block',
+												display: 'flex',
 												color  : ( mediaIcon[ 0 ].hoverColor ? KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) : undefined ),
 											}}/>
 										)}

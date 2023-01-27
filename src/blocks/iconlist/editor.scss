@@ -133,10 +133,15 @@
 	padding-left: 10rem;
 }
 
-.wp-block[data-align="center"] .wp-block-kadence-iconlist {
+.wp-block[data-align="center"]:has(.wp-block-kadence-iconlist) {
 	clear: both;
-	display: block;
 	margin: 0 auto;
 	text-align: center;
-	//display: table;
+	display: grid;
+}
+.wp-block[data-align="center"]:has(.kt-svg-icon-list-columns-1) {
+	clear: both;
+	margin: 0 auto;
+	text-align: center;
+	display: table !important;
 }

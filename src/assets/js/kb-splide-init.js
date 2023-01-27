@@ -62,17 +62,17 @@
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
 					});
-					splideSlider.on( 'overflow', function ( isOverflow ) {
-						// Reset the carousel position
-						splideSlider.go( 0 );
+					// splideSlider.on( 'overflow', function ( isOverflow ) {
+					// 	// Reset the carousel position
+					// 	splideSlider.go( 0 );
 					  
-						splideSlider.options = {
-						  arrows    : splideOptions.arrows ? isOverflow : false,
-						  pagination: splideOptions.pagination ? isOverflow : false,
-						  drag      : splideOptions.drag ? isOverflow : false,
-						  clones    : isOverflow ? undefined : 0, // Toggle clones
-						};
-					} );
+					// 	splideSlider.options = {
+					// 	  arrows    : splideOptions.arrows ? isOverflow : false,
+					// 	  pagination: splideOptions.pagination ? isOverflow : false,
+					// 	  drag      : splideOptions.drag ? isOverflow : false,
+					// 	  clones    : isOverflow ? undefined : 0, // Toggle clones
+					// 	};
+					// } );
 					splideSlider.mount();
 					var resizeTimer;
 					window.addEventListener("resize", function (e) {

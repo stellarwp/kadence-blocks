@@ -107,7 +107,9 @@ class Kadence_Blocks_Svg_Render {
 		}
 
 		$svg = '';
-
+		if ( 'fa_facebook' === $name ) {
+			$name = 'fa_facebook-n';
+		}
 		if ( ! empty( self::$all_icons[ $name ] ) ) {
 			$icon = self::$all_icons[ $name ];
 			$vb = ( ! empty( $icon['vB'] ) ? $icon['vB'] : '0 0 24 24' );
