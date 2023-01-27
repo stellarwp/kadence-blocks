@@ -1300,12 +1300,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										default={''}
 										onChange={( value ) => setAttributes( { contentBgColor: value } )}
 									/>
-									<PopColorControl
-										label={__( 'Border Color', 'kadence-blocks' )}
-										value={( contentBorderColor ? contentBorderColor : '' )}
-										default={''}
-										onChange={( value ) => setAttributes( { contentBorderColor: value } )}
-									/>
 									<ResponsiveBorderControl
 										label={__( 'Border', 'kadence-blocks' )}
 										value={ contentBorderStyle }
