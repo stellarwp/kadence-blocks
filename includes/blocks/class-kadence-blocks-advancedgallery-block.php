@@ -503,7 +503,6 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					break;
 			}
 			$content .= '</div>';
-			$content .= kadence_get_splide_dynamic_activation_script();
 		}
 		return $content;
 	}
