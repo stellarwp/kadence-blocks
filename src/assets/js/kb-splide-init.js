@@ -271,4 +271,8 @@
 		// The DOM has already been loaded.
 		kadenceBlocksSplide.init();
 	}
+
+	window.addEventListener("kadenceInitSliders", function(){
+		kadenceBlocksSplide.init()
+	});
 })();

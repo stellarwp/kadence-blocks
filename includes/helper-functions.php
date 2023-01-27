@@ -116,18 +116,12 @@ function kadence_apply_aos_wrapper_args( $attributes, &$wrapper_args ) {
 
 	return $wrapper_args;
 }
+
 /**
  * Return a script for dynamic initialization of splide sliders
  */
 function kadence_get_splide_dynamic_activation_script() {
 	return '<script>
-		var interval = setTimeout(function() {
-			console.log(typeof kadenceBlocksSplide )
-			if (typeof kadenceBlocksSplide !== "undefined") {
-				kadenceBlocksSplide.init()
-				return;
-			}
-			interval();
-		}, 500);
+		window.dispatchEvent(new Event("kadenceInitSliders"));
 	</script>';
 }
