@@ -77,7 +77,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.4 Beta Version 1 =
-Release Date: TBD
+Release Date: January 30th, 2023
+* Update: Make empty sections easier to select.
 * Fix: Heading color issue in row.
 * Fix: Possible google font issue.
 * Fix: Issue with some testimonial blocks not updating.
@@ -86,6 +87,10 @@ Release Date: TBD
 * Fix: Issue with heading block backward compatibility. 
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
+* Fix: Issue with possible button border showing when it should not.
+* Fix: Issue with advanced text alignment and negative margins not working correctly.
+* Fix: Issue with backward compatibility in table of contents border.
+* Fix: Spacing around center aligned image.
 
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023

@@ -987,12 +987,17 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ zIndex && zIndex > 30 && (
 					<>
-						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
+						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
 					</>
 				) }
 				{ kadenceBlockCSS && (
 					<>
 						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+					</>
+				)}
+				{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+					<>
+					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
 					</>
 				)}
 			</style>

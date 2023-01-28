@@ -1824,7 +1824,7 @@ class Kadence_Blocks_CSS {
 			return '';
 		}
 
-		$return_value = $return_value ? $return_value : $value_defaults[ $given_value ];
+		$return_value = '' !== $return_value ? $return_value : $value_defaults[ $given_value ];
 		$return_unit = $return_unit ? $return_unit : 'px';
 
 		// extra processing for specific values.

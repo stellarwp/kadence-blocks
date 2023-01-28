@@ -93,6 +93,14 @@ export function migrateToInnerblocks( attributes ) {
 			if ( undefined !== textTransform && '' !== textTransform ) {
 				newAttrs.typography[0].textTransform = textTransform;
 			}
+			// 9. Update inheritStyles to new default of fill.
+			if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
+				newAttrs.inheritStyles = 'inherit';
+			} else if ( undefined !== newAttrs?.borderWidth && '' !== newAttrs.borderWidth && 0 === parseInt( newAttrs.borderWidth ) ) {
+				newAttrs.inheritStyles = 'fill';
+			} else {
+				newAttrs.inheritStyles = 'outline';
+			}
 			// 2. Update Border to new format.
 			let tempBorderRadius = [ '', '', '', '' ];
 			if ( undefined !== newAttrs?.borderRadius && '' !== newAttrs.borderRadius ) {
@@ -297,12 +305,6 @@ export function migrateToInnerblocks( attributes ) {
 					newAttrs.kadenceDynamic = {};
 				}
 				newAttrs.kadenceDynamic.text = kadenceDynamic['btns:' + n + ':text' ];
-			}
-			// 9. Update inheritStyles to new default of fill.
-			if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
-				newAttrs.inheritStyles = 'inherit';
-			} else {
-				newAttrs.inheritStyles = 'outline';
 			}
 			// 10. Update Anchor to new anchor.
 			if ( undefined !== newAttrs?.anchor && '' !== newAttrs.anchor ) {
