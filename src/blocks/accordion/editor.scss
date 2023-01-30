@@ -126,12 +126,21 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
 		}
 	}
 }
-.kt-accordion-panel-active .kt-blocks-accordion-header {
-	background-color: var(--global-palette5, #444444 );
-	color: #ffffff;
-	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
-		background-color: currentColor;
+.kt-accordion-panel-active {
+	.kt-blocks-accordion-header {
+		background-color: var(--global-palette5, #444444 );
+		color: #ffffff;
+		.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+			background-color: currentColor;
+		}
 	}
+
+	.kt-accordion-panel {
+		display: block;
+	}
+}
+.kt-accordion-panel {
+	display: none;
 }
 .kt-accordion-panel-inner {
     padding: 20px;
