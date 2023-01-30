@@ -327,8 +327,8 @@ export function migrateToInnerblocks( attributes ) {
 					opacity:( undefined !== newAttrs?.boxShadow?.[2] ? newAttrs.boxShadow[2] : 0.4 ),
 					spread:( undefined !== newAttrs?.boxShadow?.[6] ? newAttrs.boxShadow[6] : 0 ),
 					blur: ( undefined !== newAttrs?.boxShadow?.[5] ? newAttrs.boxShadow[5] : 3 ),
-					hOffset: ( undefined !== newAttrs?.boxShadow?.[4] ? newAttrs.boxShadow[4] : 2 ),
-					vOffset: ( undefined !== newAttrs?.boxShadow?.[3] ? newAttrs.boxShadow[3] : 2 ),
+					hOffset: ( undefined !== newAttrs?.boxShadow?.[4] ? newAttrs.boxShadow[3] : 2 ),
+					vOffset: ( undefined !== newAttrs?.boxShadow?.[3] ? newAttrs.boxShadow[4] : 2 ),
 					inset: ( undefined !== newAttrs?.boxShadow?.[7] ? newAttrs.boxShadow[7] : false )
 				} ];
 			}
@@ -340,8 +340,8 @@ export function migrateToInnerblocks( attributes ) {
 					opacity:( undefined !== newAttrs?.boxShadowHover?.[2] ? newAttrs.boxShadowHover[2] : 0.4 ),
 					spread:( undefined !== newAttrs?.boxShadowHover?.[6] ? newAttrs.boxShadowHover[6] : 0 ),
 					blur: ( undefined !== newAttrs?.boxShadowHover?.[5] ? newAttrs.boxShadowHover[5] : 3 ),
-					hOffset: ( undefined !== newAttrs?.boxShadowHover?.[4] ? newAttrs.boxShadowHover[4] : 2 ),
-					vOffset: ( undefined !== newAttrs?.boxShadowHover?.[3] ? newAttrs.boxShadowHover[3] : 2 ),
+					hOffset: ( undefined !== newAttrs?.boxShadowHover?.[4] ? newAttrs.boxShadowHover[3] : 2 ),
+					vOffset: ( undefined !== newAttrs?.boxShadowHover?.[3] ? newAttrs.boxShadowHover[4] : 2 ),
 					inset: ( undefined !== newAttrs?.boxShadowHover?.[7] ? newAttrs.boxShadowHover[7] : false )
 				} ];
 			}
