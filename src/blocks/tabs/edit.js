@@ -1164,14 +1164,45 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							<>
 								{showSettings('titleColor', 'kadence/tabs') && (
 									<KadencePanelBody
-										title={__('Tab Title Color', 'kadence-blocks')}
+										title={__('Tab Title Color Settings', 'kadence-blocks')}
 										panelName={'kb-tab-title-color'}
 									>
-										<HoverToggleControl
-											hover={hoverSettings}
-											active={activeSettings}
-											normal={normalSettings}
-										/>
+										<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+												  activeClass="active-tab"
+												  tabs={[
+													  {
+														  name: 'normal',
+														  title: __('Normal'),
+														  className: 'kt-normal-tab',
+													  },
+													  {
+														  name: 'hover',
+														  title: __('Hover'),
+														  className: 'kt-hover-tab',
+													  },
+													  {
+														  name: 'active',
+														  title: __('Active'),
+														  className: 'kt-active-tab',
+													  },
+												  ]}>
+											{
+												(tab) => {
+													let tabout;
+													if (tab.name) {
+														if ('hover' === tab.name) {
+															tabout = hoverSettings;
+														} else if ('active' === tab.name) {
+															tabout = activeSettings;
+														} else {
+															tabout = normalSettings;
+														}
+													}
+													return <div className={tab.className}
+																key={tab.className}>{tabout}</div>;
+												}
+											}
+										</TabPanel>
 									</KadencePanelBody>
 								)}
 								{showSettings('titleSpacing', 'kadence/tabs') && (
