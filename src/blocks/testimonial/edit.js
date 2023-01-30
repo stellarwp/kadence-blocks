@@ -277,13 +277,7 @@ function KadenceTestimonials({
                     strokeWidth={('fe' === iconStyles[0].icon.substring(0, 2) ? iconStyles[0].stroke : undefined)}
                     style={{
                         color: (iconStyles[0].color ? KadenceColorOutput(iconStyles[0].color) : undefined),
-                        borderRadius: iconStyles[0].borderRadius + 'px',
-                        borderTopWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[0] ? iconStyles[0].borderWidth[0] + 'px' : undefined),
-                        borderRightWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[1] ? iconStyles[0].borderWidth[1] + 'px' : undefined),
-                        borderBottomWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[2] ? iconStyles[0].borderWidth[2] + 'px' : undefined),
-                        borderLeftWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[3] ? iconStyles[0].borderWidth[3] + 'px' : undefined),
                         background: (iconStyles[0].background ? KadenceColorOutput(iconStyles[0].background, (undefined !== iconStyles[0].backgroundOpacity ? iconStyles[0].backgroundOpacity : 1)) : undefined),
-                        borderColor: (iconStyles[0].border ? KadenceColorOutput(iconStyles[0].border, (undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1)) : undefined),
                         padding: (iconStyles[0].padding ? iconStyles[0].padding[0] + 'px ' + iconStyles[0].padding[1] + 'px ' + iconStyles[0].padding[2] + 'px ' + iconStyles[0].padding[3] + 'px' : ''),
                     }}/>
             </div>
@@ -593,9 +587,9 @@ function KadenceTestimonials({
                         <BlockControls>
                             <CopyPasteAttributes
                                 attributes={ attributes }
-                                excludedAttrs={ nonTransAttrs } 
-                                defaultAttributes={ metadata['attributes'] } 
-                                blockSlug={ metadata['name'] } 
+                                excludedAttrs={ nonTransAttrs }
+                                defaultAttributes={ metadata['attributes'] }
+                                blockSlug={ metadata['name'] }
                                 onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                             />
                         </BlockControls>

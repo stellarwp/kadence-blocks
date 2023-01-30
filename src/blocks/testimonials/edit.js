@@ -35,6 +35,7 @@ import {
     PopColorControl,
     TypographyControls,
     ResponsiveMeasurementControls,
+	ResponsiveBorderControl,
     ResponsiveRangeControls,
     KadencePanelBody,
     WebfontLoader,
@@ -57,7 +58,8 @@ import {
     mouseOverVisualizer,
     getGapSizeOptionOutput,
     getSpacingOptionOutput,
-    getFontSizeOptionOutput
+    getFontSizeOptionOutput,
+	getBorderStyle
 } from '@kadence/helpers';
 
 /**
@@ -166,18 +168,28 @@ function KadenceTestimonials({
         iconBorderRadius,
         tabletIconBorderRadius,
         mobileIconBorderRadius,
-        IconBorderRadiusUnit
+        iconBorderRadiusUnit,
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle,
+		iconBorderStyle,
+		tabletIconBorderStyle,
+		mobileIconBorderStyle,
+		mediaBorderRadius,
+		tabletMediaBorderRadius,
+		mobileMediaBorderRadius,
+		mediaBorderRadiusUnit,
+		mediaBorderStyle,
+		tabletMediaBorderStyle,
+		mobileMediaBorderStyle,
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
-    const [containerBorderControl, setContainerBorderControl] = useState('linked');
-    const [mediaBorderControl, setMediaBorderControl] = useState('linked');
     const [mediaPaddingControl, setMediaPaddingControl] = useState('linked');
     const [mediaMarginControl, setMediaMarginControl] = useState('linked');
     const [titlePaddingControl, setTitlePaddingControl] = useState('linked');
     const [titleMarginControl, setTitleMarginControl] = useState('individual');
     const [ratingMarginControl, setRatingMarginControl] = useState('individual');
-    const [iconBorderControl, setIconBorderControl] = useState('linked');
     const [iconMarginControl, setIconMarginControl] = useState('linked');
     const [iconPaddingControl, setIconPaddingControl] = useState('linked');
     const [showPreset, setShowPreset] = useState(false);
@@ -223,11 +235,6 @@ function KadenceTestimonials({
         if ( columnGap !== '' ) {
             setAttributes( { gap: [ columnGap, '', '' ], columnGap: '' } );
         }
-        if (mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[1] && mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[2] && mediaStyles[0].borderWidth[0] === mediaStyles[0].borderWidth[3]) {
-            setMediaBorderControl('linked');
-        } else {
-            setMediaBorderControl('individual');
-        }
         if (mediaStyles[0].padding[0] === mediaStyles[0].padding[1] && mediaStyles[0].padding[0] === mediaStyles[0].padding[2] && mediaStyles[0].padding[0] === mediaStyles[0].padding[3]) {
             setMediaPaddingControl('linked');
         } else {
@@ -249,20 +256,10 @@ function KadenceTestimonials({
         } else {
             setTitleMarginControl('individual');
         }
-        if (containerBorderWidth[0] === containerBorderWidth[1] && containerBorderWidth[0] === containerBorderWidth[2] && containerBorderWidth[0] === containerBorderWidth[3]) {
-            setContainerBorderControl('linked');
-        } else {
-            setContainerBorderControl('individual');
-        }
         if (ratingStyles[0] && ratingStyles[0].margin && ratingStyles[0].margin[0] === ratingStyles[0].margin[1] && ratingStyles[0].margin[0] === ratingStyles[0].margin[2] && ratingStyles[0].margin[0] === ratingStyles[0].margin[3]) {
             setRatingMarginControl('linked');
         } else {
             setRatingMarginControl('individual');
-        }
-        if (undefined !== iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[0] && iconStyles[0].borderWidth[0] === iconStyles[0].borderWidth[1] && iconStyles[0].borderWidth[0] === iconStyles[0].borderWidth[2] && iconStyles[0].borderWidth[0] === iconStyles[0].borderWidth[3]) {
-            setIconBorderControl('linked');
-        } else {
-            setIconBorderControl('individual');
         }
         if (undefined !== iconStyles[0].padding && undefined !== iconStyles[0].padding[0] && iconStyles[0].padding[0] === iconStyles[0].padding[1] && iconStyles[0].padding[0] === iconStyles[0].padding[2] && iconStyles[0].padding[0] === iconStyles[0].padding[3]) {
             setIconPaddingControl('linked');
@@ -291,7 +288,6 @@ function KadenceTestimonials({
 
         // Update old non-responsive settings.
         if (containerBorderRadius !== '') {
-            console.log('Updating old containerBorderRadius to responsiveContainerBorderRadius');
             setAttributes({
                 responsiveContainerBorderRadius: [containerBorderRadius, containerBorderRadius, containerBorderRadius, containerBorderRadius],
                 containerBorderRadius: '',
@@ -299,7 +295,6 @@ function KadenceTestimonials({
         }
 
         if( iconStyles[0].borderRadius !== '' ) {
-            console.log('Updating old iconBorderRadius to responsiveIconBorderRadius');
             setAttributes({
                 iconBorderRadius: [iconStyles[0].borderRadius, iconStyles[0].borderRadius, iconStyles[0].borderRadius, iconStyles[0].borderRadius],
             });
@@ -314,6 +309,85 @@ function KadenceTestimonials({
                 iconStyles: newUpdate,
             });
         }
+
+		if ( containerBorderWidth[ 0 ] !== '' || containerBorderWidth[ 1 ] !== '' || containerBorderWidth[ 2 ] !== '' || containerBorderWidth[ 3 ] !== '' ) {
+			let tmpBorderColor = KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) );
+
+			setAttributes( {
+				borderStyle: [ {
+					'top'   : [ tmpBorderColor, '', containerBorderWidth[ 0 ] ],
+					'right' : [ tmpBorderColor, '', containerBorderWidth[ 1 ] ],
+					'bottom': [ tmpBorderColor, '', containerBorderWidth[ 2 ] ],
+					'left'  : [ tmpBorderColor, '', containerBorderWidth[ 3 ] ],
+					'unit'  : 'px',
+				} ],
+				containerBorderWidth: [ '', '', '', '' ],
+			} );
+		}
+
+		if( iconStyles[0].borderWidth[0] !== '' || iconStyles[0].borderWidth[1] !== '' || iconStyles[0].borderWidth[2] !== '' || iconStyles[0].borderWidth[3] !== '' ) {
+			let tmpIconBorderColor = KadenceColorOutput( iconStyles[0].border, ( undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1 ) );
+
+			setAttributes( {
+				iconBorderStyle: [ {
+					'top'   : [ tmpIconBorderColor, '', iconStyles[0].borderWidth[ 0 ] ],
+					'right' : [ tmpIconBorderColor, '', iconStyles[0].borderWidth[ 1 ] ],
+					'bottom': [ tmpIconBorderColor, '', iconStyles[0].borderWidth[ 2 ] ],
+					'left'  : [ tmpIconBorderColor, '', iconStyles[0].borderWidth[ 3 ] ],
+					'unit'  : 'px',
+				} ]
+			} );
+
+			const newUpdate = iconStyles.map((item, index) => {
+				if (0 === index) {
+					item = {...item, borderWidth: [ '', '', '', ''] };
+				}
+				return item;
+			});
+			setAttributes({
+				iconStyles: newUpdate,
+			});
+		}
+
+		if( mediaStyles[0].borderWidth[0] !== '' || mediaStyles[0].borderWidth[1] !== '' || mediaStyles[0].borderWidth[2] !== '' || mediaStyles[0].borderWidth[3] !== '' ) {
+			let tmpMediaBorderColor = KadenceColorOutput( mediaStyles[0].border, ( undefined !== mediaStyles[0].borderOpacity ? mediaStyles[0].borderOpacity : 1 ) );
+
+			setAttributes( {
+				mediaBorderStyle: [ {
+					'top'   : [ tmpMediaBorderColor, '', mediaStyles[0].borderWidth[ 0 ] ],
+					'right' : [ tmpMediaBorderColor, '', mediaStyles[0].borderWidth[ 1 ] ],
+					'bottom': [ tmpMediaBorderColor, '', mediaStyles[0].borderWidth[ 2 ] ],
+					'left'  : [ tmpMediaBorderColor, '', mediaStyles[0].borderWidth[ 3 ] ],
+					'unit'  : 'px',
+				} ]
+			} );
+
+			const newUpdate = mediaStyles.map((item, index) => {
+				if (0 === index) {
+					item = {...item, borderWidth: [ '', '', '', ''] };
+				}
+				return item;
+			});
+			setAttributes({
+				mediaStyles: newUpdate,
+			});
+		}
+
+		if( mediaStyles[0].borderRadius !== '' ) {
+			setAttributes({
+				mediaBorderRadius: [mediaStyles[0].borderRadius, mediaStyles[0].borderRadius, mediaStyles[0].borderRadius, mediaStyles[0].borderRadius],
+			});
+
+			const newUpdate = mediaStyles.map((item, index) => {
+				if (0 === index) {
+					item = {...item, borderRadius: ''};
+				}
+				return item;
+			});
+			setAttributes({
+				mediaStyles: newUpdate,
+			});
+		}
     }, []);
 
     const previewWrapperPaddingTop = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[0] ? wrapperPadding[0] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[0] ? wrapperTabletPadding[0] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[0] ? wrapperMobilePadding[0] : ''));
@@ -353,12 +427,31 @@ function KadenceTestimonials({
     const previewContainerRadiusBottom = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius ? responsiveContainerBorderRadius[ 2 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 2 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 2 ] : '' ) );
     const previewContainerRadiusLeft = getPreviewSize( previewDevice, ( undefined !== responsiveContainerBorderRadius ? responsiveContainerBorderRadius[ 3 ] : '' ), ( undefined !== tabletContainerBorderRadius ? tabletContainerBorderRadius[ 3 ] : '' ), ( undefined !== mobileContainerBorderRadius ? mobileContainerBorderRadius[ 3 ] : '' ) );
 
-    const previewIconRadiusTop = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius?.[0] ? iconBorderRadius[ 0 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 0 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 0 ] : '' ) );
-    const previewIconRadiusRight = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 1 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 1 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 1 ] : '' ) );
-    const previewIconRadiusBottom = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 2 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 2 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 2 ] : '' ) );
-    const previewIconRadiusLeft = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 3 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 3 ] : '' ), ( undefined !== mobileIconBorderRadius ? mobileIconBorderRadius[ 3 ] : '' ) );
+	const previewContainerBorderTop = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewContainerBorderRight = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewContainerBorderBottom = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewContainerBorderLeft = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
 
-    const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[0] ? columns[0] : 3 ), ( undefined !== columns[3] ? columns[3] : '' ), ( undefined !== columns[5] ? columns[5] : '' ) );
+	const previewIconBorderRadiusTop = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 0 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 0 ] : '' ), ( undefined !== iconBorderRadiusUnit ? iconBorderRadiusUnit[ 0 ] : '' ) );
+	const previewIconBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 1 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 1 ] : '' ), ( undefined !== iconBorderRadiusUnit ? iconBorderRadiusUnit[ 1 ] : '' ) );
+	const previewIconBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 2 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 2 ] : '' ), ( undefined !== iconBorderRadiusUnit ? iconBorderRadiusUnit[ 2 ] : '' ) );
+	const previewIconBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== iconBorderRadius ? iconBorderRadius[ 3 ] : '' ), ( undefined !== tabletIconBorderRadius ? tabletIconBorderRadius[ 3 ] : '' ), ( undefined !== iconBorderRadiusUnit ? iconBorderRadiusUnit[ 3 ] : '' ) );
+	const previewIconBorderTop = getBorderStyle( previewDevice, 'top', iconBorderStyle, tabletIconBorderStyle, mobileIconBorderStyle );
+	const previewIconBorderRight = getBorderStyle( previewDevice, 'right', iconBorderStyle, tabletIconBorderStyle, mobileIconBorderStyle );
+	const previewIconBorderBottom = getBorderStyle( previewDevice, 'bottom', iconBorderStyle, tabletIconBorderStyle, mobileIconBorderStyle );
+	const previewIconBorderLeft = getBorderStyle( previewDevice, 'left', iconBorderStyle, tabletIconBorderStyle, mobileIconBorderStyle );
+
+	const previewMediaBorderRadiusTop = getPreviewSize( previewDevice, ( undefined !== mediaBorderRadius ? mediaBorderRadius[ 0 ] : '' ), ( undefined !== tabletMediaBorderRadius ? tabletMediaBorderRadius[ 0 ] : '' ), ( undefined !== mobileMediaBorderRadius ? mobileMediaBorderRadius[ 0 ] : '' ) );
+	const previewMediaBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== mediaBorderRadius ? mediaBorderRadius[ 1 ] : '' ), ( undefined !== tabletMediaBorderRadius ? tabletMediaBorderRadius[ 1 ] : '' ), ( undefined !== mobileMediaBorderRadius ? mobileMediaBorderRadius[ 1 ] : '' ) );
+	const previewMediaBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== mediaBorderRadius ? mediaBorderRadius[ 2 ] : '' ), ( undefined !== tabletMediaBorderRadius ? tabletMediaBorderRadius[ 2 ] : '' ), ( undefined !== mobileMediaBorderRadius ? mobileMediaBorderRadius[ 2 ] : '' ) );
+	const previewMediaBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== mediaBorderRadius ? mediaBorderRadius[ 3 ] : '' ), ( undefined !== tabletMediaBorderRadius ? tabletMediaBorderRadius[ 3 ] : '' ), ( undefined !== mobileMediaBorderRadius ? mobileMediaBorderRadius[ 3 ] : '' ) );
+	const previewMediaBorderTop = getBorderStyle( previewDevice, 'top', mediaBorderStyle, tabletMediaBorderStyle, mobileMediaBorderStyle );
+	const previewMediaBorderRight = getBorderStyle( previewDevice, 'right', mediaBorderStyle, tabletMediaBorderStyle, mobileMediaBorderStyle );
+	const previewMediaBorderBottom = getBorderStyle( previewDevice, 'bottom', mediaBorderStyle, tabletMediaBorderStyle, mobileMediaBorderStyle );
+	const previewMediaBorderLeft = getBorderStyle( previewDevice, 'left', mediaBorderStyle, tabletMediaBorderStyle, mobileMediaBorderStyle );
+
+
+	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[0] ? columns[0] : 3 ), ( undefined !== columns[3] ? columns[3] : '' ), ( undefined !== columns[5] ? columns[5] : '' ) );
 
     const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
 
@@ -430,16 +523,15 @@ function KadenceTestimonials({
                     /* Container */
                     .kt-blocks-testimonials-wrap${uniqueID} ${applyTo} {
                         box-shadow: ${(displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined) };
-                        border-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1))) };
                         background: ${(containerBackground ? KadenceColorOutput(containerBackground, (undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1)) : undefined) };
                         ${previewContainerRadiusTop ? 'border-top-left-radius:' + previewContainerRadiusTop + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusRight ? 'border-top-right-radius:' + previewContainerRadiusRight + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusBottom ? 'border-bottom-right-radius:' + previewContainerRadiusBottom + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusLeft ? 'border-bottom-left-radius:' + previewContainerRadiusLeft + containerBorderRadiusUnit + ';' : '' }
-                        border-top-width: ${(containerBorderWidth && undefined !== containerBorderWidth[0] ? containerBorderWidth[0] + 'px' : undefined) };
-                        border-right-width: ${(containerBorderWidth && undefined !== containerBorderWidth[1] ? containerBorderWidth[1] + 'px' : undefined) };
-                        border-bottom-width: ${(containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] + 'px' : undefined) };
-                        border-left-width: ${(containerBorderWidth && undefined !== containerBorderWidth[3] ? containerBorderWidth[3] + 'px' : undefined) };
+                        border-top: ${ previewContainerBorderTop ? previewContainerBorderTop : undefined };
+                        border-right: ${ previewContainerBorderRight ? previewContainerBorderRight : undefined };
+                        border-bottom: ${ previewContainerBorderBottom ? previewContainerBorderBottom : undefined };
+                        border-left: ${ previewContainerBorderLeft ? previewContainerBorderLeft : undefined };
                         padding-top: ${(previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
                         padding-right: ${(previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
                         padding-bottom: ${(previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
@@ -447,7 +539,7 @@ function KadenceTestimonials({
                         max-width: ${('bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px') };
                         min-height: ${('bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px') };
                     }
-                    
+
                     ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
                         .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                             display: flex;
@@ -455,13 +547,13 @@ function KadenceTestimonials({
                             justify-content: ${ containerVAlign === 'bottom' ? 'flex-end' : 'center' };
                         }
                     `}
-                    
+
                     ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                         max-width: ${ containerMaxWidth + 'px' };
                         min-height: ${ (previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined) };
                         padding-top:  ${(iconPadding ? iconPadding : undefined) };
                     }` }
-                    
+
                     /* Title */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap .kt-testimonial-title {
                         font-weight: ${titleFont[0].weight };
@@ -475,11 +567,11 @@ function KadenceTestimonials({
                         padding: ${(titleFont[0].padding ? titleFont[0].padding[0] + 'px ' + titleFont[0].padding[1] + 'px ' + titleFont[0].padding[2] + 'px ' + titleFont[0].padding[3] + 'px' : '') };
                         margin: ${(titleFont[0].margin ? titleFont[0].margin[0] + 'px ' + titleFont[0].margin[1] + 'px ' + titleFont[0].margin[2] + 'px ' + titleFont[0].margin[3] + 'px' : '') };
                     }
-                    
+
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap {
                         min-height: ${previewTitleMinHeight + 'px'};
                     }
-                    
+
                     /* Content */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap .kt-testimonial-content {
                         font-weight: ${contentFont[0].weight };
@@ -491,11 +583,11 @@ function KadenceTestimonials({
                         letter-spacing: ${contentFont[0].letterSpacing + 'px' };
                         font-family: ${(contentFont[0].family ? contentFont[0].family : '') };
                     }
-                    
+
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap {
                         min-height: ${previewContentMinHeight ? previewContentMinHeight + 'px' : undefined };
                     }
-                    
+
                     /* Occupation */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-occupation-wrap .kt-testimonial-occupation {
                         font-weight: ${occupationFont[0].weight };
@@ -507,25 +599,31 @@ function KadenceTestimonials({
                         letter-spacing: ${occupationFont[0].letterSpacing + 'px' };
                         font-family: ${(occupationFont[0].family ? occupationFont[0].family : '') };
                     }
-    
+
                     /* Media */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap {
                         width: ${'card' !== style ? mediaStyles[0].width + 'px' : undefined };
                         border-color: ${KadenceColorOutput(mediaStyles[0].border) };
                         background-color: ${(mediaStyles[0].background ? KadenceColorOutput(mediaStyles[0].background, (undefined !== mediaStyles[0].backgroundOpacity ? mediaStyles[0].backgroundOpacity : 1)) : undefined) };
-                        border-radius: ${mediaStyles[0].borderRadius + 'px' };
-                        border-width: ${(mediaStyles[0].borderWidth ? mediaStyles[0].borderWidth[0] + 'px ' + mediaStyles[0].borderWidth[1] + 'px ' + mediaStyles[0].borderWidth[2] + 'px ' + mediaStyles[0].borderWidth[3] + 'px' : '') };
+						border-top: ${ previewMediaBorderTop ? previewMediaBorderTop : undefined };
+                        border-right: ${ previewMediaBorderRight ? previewMediaBorderRight : undefined };
+                        border-bottom: ${ previewMediaBorderBottom ? previewMediaBorderBottom : undefined };
+                        border-left: ${ previewMediaBorderLeft ? previewMediaBorderLeft : undefined };
+                        border-top-left-radius: ${ previewMediaBorderRadiusTop ? previewMediaBorderRadiusTop + mediaBorderRadiusUnit : undefined };
+                        border-top-right-radius: ${ previewMediaBorderRadiusRight ? previewMediaBorderRadiusRight + mediaBorderRadiusUnit : undefined };
+                        border-bottom-right-radius: ${ previewMediaBorderRadiusBottom ? previewMediaBorderRadiusBottom + mediaBorderRadiusUnit : undefined };
+                        border-bottom-left-radius: ${ previewMediaBorderRadiusLeft ? previewMediaBorderRadiusLeft + mediaBorderRadiusUnit : undefined };
                         padding: ${(mediaStyles[0].padding ? mediaStyles[0].padding[0] + 'px ' + mediaStyles[0].padding[1] + 'px ' + mediaStyles[0].padding[2] + 'px ' + mediaStyles[0].padding[3] + 'px' : '') };
                         margin-top: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[0] ? mediaStyles[0].margin[0] + 'px' : undefined) };
                         margin-right: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[1] ? mediaStyles[0].margin[1] + 'px' : undefined) };
                         margin-bottom: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[2] ? mediaStyles[0].margin[2] + 'px' : undefined) };
                         margin-left: ${(mediaStyles[0].margin && undefined !== mediaStyles[0].margin[3] ? mediaStyles[0].margin[3] + 'px' : undefined) };
                     }
-                    
+
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic {
                         padding-bottom: ${('card' === style && (undefined !== mediaStyles[0].ratio || '' !== mediaStyles[0].ratio) ? mediaStyles[0].ratio + '%' : undefined) };
                     }
-                    
+
                     /* Name */
                     .kt-blocks-testimonials-wrap${uniqueID}  .kt-testimonial-name-wrap .kt-testimonial-name {
                         font-weight: ${ nameFont[0].weight };
@@ -538,6 +636,17 @@ function KadenceTestimonials({
                         font-family: ${(nameFont[0].family ? nameFont[0].family : '') };
                     }
 
+					/* Icon */
+					.kt-blocks-testimonials-wrap${uniqueID} .kt-svg-testimonial-global-icon-wrap .kt-svg-testimonial-global-icon {
+                        border-top: ${ previewIconBorderTop ? previewIconBorderTop : undefined };
+                        border-right: ${ previewIconBorderRight ? previewIconBorderRight : undefined };
+                        border-bottom: ${ previewIconBorderBottom ? previewIconBorderBottom : undefined };
+                        border-left: ${ previewIconBorderLeft ? previewIconBorderLeft : undefined };
+                        border-top-left-radius: ${ previewIconBorderRadiusTop ? previewIconBorderRadiusTop + iconBorderRadiusUnit : undefined };
+                        border-top-right-radius: ${ previewIconBorderRadiusRight ? previewIconBorderRadiusRight + iconBorderRadiusUnit : undefined };
+                        border-bottom-right-radius: ${ previewIconBorderRadiusBottom ? previewIconBorderRadiusBottom + iconBorderRadiusUnit : undefined };
+                        border-bottom-left-radius: ${ previewIconBorderRadiusLeft ? previewIconBorderRadiusLeft + iconBorderRadiusUnit : undefined };
+					}
                 `}
             </style>
         );
@@ -817,9 +926,9 @@ function KadenceTestimonials({
                         />
                         <CopyPasteAttributes
                             attributes={ attributes }
-                            excludedAttrs={ nonTransAttrs } 
-                            defaultAttributes={ metadata['attributes'] } 
-                            blockSlug={ metadata['name'] } 
+                            excludedAttrs={ nonTransAttrs }
+                            defaultAttributes={ metadata['attributes'] }
+                            blockSlug={ metadata['name'] }
                             onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                             preventMultiple={ [ 'testimonials' ] }
                         />
@@ -1012,16 +1121,15 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-container-settings'}
                                     >
                                         <div className="kt-spacer-sidebar-15"></div>
-                                        <MeasurementControls
-                                            label={__('Container Border Width (px)', 'kadence-blocks')}
-                                            measurement={containerBorderWidth}
-                                            control={containerBorderControl}
-                                            onChange={(value) => setAttributes({containerBorderWidth: value})}
-                                            onControl={(value) => setContainerBorderControl(value)}
-                                            min={0}
-                                            max={40}
-                                            step={1}
-                                        />
+										<ResponsiveBorderControl
+											label={__( 'Border', 'kadence-blocks' )}
+											value={borderStyle}
+											tabletValue={tabletBorderStyle}
+											mobileValue={mobileBorderStyle}
+											onChange={( value ) => setAttributes( { borderStyle: value } )}
+											onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+											onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+										/>
                                         <ResponsiveMeasurementControls
                                             label={ __( 'Border Radius', 'kadence-blocks' ) }
                                             value={ responsiveContainerBorderRadius }
@@ -1161,24 +1269,15 @@ function KadenceTestimonials({
                                                     onChange={(value) => saveIconStyles({color: value})}
                                                 />
                                                 <div className="kt-spacer-sidebar-15"></div>
-                                                <MeasurementControls
-                                                    label={__('Icon Border Width (px)', 'kadence-blocks')}
-                                                    measurement={iconStyles[0].borderWidth}
-                                                    control={iconBorderControl}
-                                                    onChange={(value) => saveIconStyles({borderWidth: value})}
-                                                    onControl={(value) => setIconBorderControl(value)}
-                                                    min={0}
-                                                    max={40}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Icon Border Radius (px)', 'kadence-blocks')}
-                                                    value={iconStyles[0].borderRadius}
-                                                    onChange={value => saveIconStyles({borderRadius: value})}
-                                                    step={1}
-                                                    min={0}
-                                                    max={200}
-                                                />
+												<ResponsiveBorderControl
+													label={__( 'Icon Border', 'kadence-blocks' )}
+													value={iconBorderStyle}
+													tabletValue={tabletIconBorderStyle}
+													mobileValue={mobileIconBorderStyle}
+													onChange={( value ) => setAttributes( { iconBorderStyle: value } )}
+													onChangeTablet={( value ) => setAttributes( { tabletIconBorderStyle: value } )}
+													onChangeMobile={( value ) => setAttributes( { mobileIconBorderStyle: value } )}
+												/>
                                                 <ResponsiveMeasurementControls
                                                     label={ __( 'Icon Border Radius', 'kadence-blocks' ) }
                                                     value={ iconBorderRadius }
@@ -1206,18 +1305,6 @@ function KadenceTestimonials({
                                                     onArrayChange={(color, opacity) => saveIconStyles({
                                                         background: color,
                                                         backgroundOpacity: opacity
-                                                    })}
-                                                />
-                                                <PopColorControl
-                                                    label={__('Icon Border Color', 'kadence-blocks')}
-                                                    value={(iconStyles[0].border ? iconStyles[0].border : '')}
-                                                    default={''}
-                                                    onChange={value => saveIconStyles({border: value})}
-                                                    opacityValue={iconStyles[0].borderOpacity}
-                                                    onOpacityChange={value => saveIconStyles({borderOpacity: value})}
-                                                    onArrayChange={(color, opacity) => saveIconStyles({
-                                                        border: color,
-                                                        borderOpacity: opacity
                                                     })}
                                                 />
                                                 <div className="kt-spacer-sidebar-15"></div>
@@ -1468,24 +1555,32 @@ function KadenceTestimonials({
                                                         max={800}
                                                     />
                                                 )}
-                                                <MeasurementControls
-                                                    label={__('Media Border Width (px)', 'kadence-blocks')}
-                                                    measurement={mediaStyles[0].borderWidth}
-                                                    control={mediaBorderControl}
-                                                    onChange={(value) => savemediaStyles({borderWidth: value})}
-                                                    onControl={(value) => setMediaBorderControl(value)}
-                                                    min={0}
-                                                    max={40}
-                                                    step={1}
-                                                />
-                                                <RangeControl
-                                                    label={__('Media Border Radius (px)', 'kadence-blocks')}
-                                                    value={mediaStyles[0].borderRadius}
-                                                    onChange={value => savemediaStyles({borderRadius: value})}
-                                                    step={1}
-                                                    min={0}
-                                                    max={200}
-                                                />
+												<ResponsiveBorderControl
+													label={__( 'Media Border', 'kadence-blocks' )}
+													value={mediaBorderStyle}
+													tabletValue={tabletMediaBorderStyle}
+													mobileValue={mobileMediaBorderStyle}
+													onChange={( value ) => setAttributes( { mediaBorderStyle: value } )}
+													onChangeTablet={( value ) => setAttributes( { tabletMediaBorderStyle: value } )}
+													onChangeMobile={( value ) => setAttributes( { mobileMediaBorderStyle: value } )}
+												/>
+												<ResponsiveMeasurementControls
+													label={ __( 'Media Border Radius', 'kadence-blocks' ) }
+													value={ mediaBorderRadius }
+													tabletValue={ tabletMediaBorderRadius }
+													mobileValue={ mobileMediaBorderRadius }
+													onChange={ ( value ) => setAttributes( { mediaBorderRadius: value } ) }
+													onChangeTablet={ ( value ) => setAttributes( { tabletMediaBorderRadius: value } ) }
+													onChangeMobile={ ( value ) => setAttributes( { mobileMediaBorderRadius: value } ) }
+													min={ 0 }
+													max={ ( mediaBorderRadiusUnit === 'em' || mediaBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+													step={ ( mediaBorderRadiusUnit === 'em' || mediaBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+													unit={ mediaBorderRadiusUnit }
+													units={ [ 'px', 'em', 'rem', '%' ] }
+													onUnit={ ( value ) => setAttributes( { mediaBorderRadiusUnit: value } ) }
+													isBorderRadius={ true }
+													allowEmpty={true}
+												/>
                                                 <PopColorControl
                                                     label={__('Media Background', 'kadence-blocks')}
                                                     value={(mediaStyles[0].background ? mediaStyles[0].background : '')}
@@ -1498,18 +1593,7 @@ function KadenceTestimonials({
                                                         backgroundOpacity: opacity
                                                     })}
                                                 />
-                                                <PopColorControl
-                                                    label={__('Media Border Color', 'kadence-blocks')}
-                                                    value={(mediaStyles[0].border ? mediaStyles[0].border : '')}
-                                                    default={''}
-                                                    onChange={value => savemediaStyles({border: value})}
-                                                    opacityValue={mediaStyles[0].borderOpacity}
-                                                    onOpacityChange={value => savemediaStyles({borderOpacity: value})}
-                                                    onArrayChange={(color, opacity) => savemediaStyles({
-                                                        border: color,
-                                                        borderOpacity: opacity
-                                                    })}
-                                                />
+
                                                 <div className="kt-spacer-sidebar-15"></div>
                                                 <MeasurementControls
                                                     label={__('Media Padding', 'kadence-blocks')}

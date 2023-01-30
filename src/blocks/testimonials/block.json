@@ -122,6 +122,36 @@
 		""
 	  ]
 	},
+	"borderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"tabletBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"mobileBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
 	"containerBorderRadius": {
 	  "type": "number",
 	  "default": ""
@@ -208,21 +238,51 @@
 		}
 	  ]
 	},
-	"iconBorderRadius": {
+	"mediaBorderRadius": {
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
 	},
-	"tabletIconBorderRadius": {
+	"tabletMediaBorderRadius": {
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
 	},
-	"mobileIconBorderRadius": {
+	"mobileMediaBorderRadius": {
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
 	},
-	"iconBorderRadiusUnit": {
+	"mediaBorderRadiusUnit": {
 	  "type": "string",
 	  "default": "px"
+	},
+	"mediaBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"tabletMediaBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"mobileMediaBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
 	},
 	"itemsCount": {
 	  "type": "number",
@@ -437,6 +497,52 @@
 		  "stroke": 2
 		}
 	  ]
+	},
+	"iconBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"tabletIconBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"mobileIconBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"iconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletIconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileIconBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"iconBorderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"displayShadow": {
 	  "type": "boolean",
