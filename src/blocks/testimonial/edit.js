@@ -267,9 +267,7 @@ function KadenceTestimonials({
 
     const renderTestimonialIcon = () => {
         return (
-            <div className="kt-svg-testimonial-global-icon-wrap" style={{
-                margin: (iconStyles[0].margin ? iconStyles[0].margin[0] + 'px ' + iconStyles[0].margin[1] + 'px ' + iconStyles[0].margin[2] + 'px ' + iconStyles[0].margin[3] + 'px' : ''),
-            }}>
+            <div className="kt-svg-testimonial-global-icon-wrap">
                 <IconRender
                     className={`kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${iconStyles[0].icon}`}
                     name={iconStyles[0].icon} size={iconStyles[0].size}
@@ -278,7 +276,6 @@ function KadenceTestimonials({
                     style={{
                         color: (iconStyles[0].color ? KadenceColorOutput(iconStyles[0].color) : undefined),
                         background: (iconStyles[0].background ? KadenceColorOutput(iconStyles[0].background, (undefined !== iconStyles[0].backgroundOpacity ? iconStyles[0].backgroundOpacity : 1)) : undefined),
-                        padding: (iconStyles[0].padding ? iconStyles[0].padding[0] + 'px ' + iconStyles[0].padding[1] + 'px ' + iconStyles[0].padding[2] + 'px ' + iconStyles[0].padding[3] + 'px' : ''),
                     }}/>
             </div>
         );

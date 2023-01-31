@@ -108,9 +108,18 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_border_styles( $attributes, 'iconBorderStyle', 'border' );
 			}
 
-			$css->render_measure_range( $icon_styles, 'padding', 'padding' );
+			if( array_filter( $icon_styles['padding'] ) ){
+				$css->render_measure_range( $icon_styles, 'padding', 'padding' );
+			} else {
+				$css->render_measure_output( $attributes, 'iconPadding', 'padding' );
+			}
+
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-global-icon-wrap' );
-			$css->render_measure_range( $icon_styles, 'margin', 'margin' );
+			if( array_filter( $icon_styles['margin'] ) ){
+				$css->render_measure_range( $icon_styles, 'margin', 'margin' );
+			} else {
+				$css->render_measure_output( $attributes, 'iconMargin', 'margin' );
+			}
 		}
 		// Testimonial specific Icon.
 		if ( isset( $attributes['testimonials'] ) && is_array( $attributes['testimonials'] ) ) {
@@ -267,29 +276,39 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) && 'regular' !== $title_font['weight'] ) {
 				$css->add_property( 'font-weight', $css->render_font_weight( $title_font['weight'] ) );
 			}
-			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && isset( $title_font['margin'][0] ) && is_numeric( $title_font['margin'][0] ) ) {
-				$css->add_property( 'margin-top', $title_font['margin'][0] . 'px' );
+
+			if( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && array_filter( $title_font['margin'] ) ) {
+				if ( isset( $title_font['margin'][0] ) && is_numeric( $title_font['margin'][0] ) ) {
+					$css->add_property( 'margin-top', $title_font['margin'][0] . 'px' );
+				}
+				if ( isset( $title_font['margin'][1] ) && is_numeric( $title_font['margin'][1] ) ) {
+					$css->add_property( 'margin-right', $title_font['margin'][1] . 'px' );
+				}
+				if ( isset( $title_font['margin'][2] ) && is_numeric( $title_font['margin'][2] ) ) {
+					$css->add_property( 'margin-bottom', $title_font['margin'][2] . 'px' );
+				}
+				if ( isset( $title_font['margin'][3] ) && is_numeric( $title_font['margin'][3] ) ) {
+					$css->add_property( 'margin-left', $title_font['margin'][3] . 'px' );
+				}
+			} else {
+				$css->render_measure_output( $attributes, 'titleMargin', 'margin' );
 			}
-			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && isset( $title_font['margin'][1] ) && is_numeric( $title_font['margin'][1] ) ) {
-				$css->add_property( 'margin-right', $title_font['margin'][1] . 'px' );
-			}
-			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && isset( $title_font['margin'][2] ) && is_numeric( $title_font['margin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $title_font['margin'][2] . 'px' );
-			}
-			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && isset( $title_font['margin'][3] ) && is_numeric( $title_font['margin'][3] ) ) {
-				$css->add_property( 'margin-left', $title_font['margin'][3] . 'px' );
-			}
-			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && isset( $title_font['padding'][0] ) && is_numeric( $title_font['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $title_font['padding'][0] . 'px' );
-			}
-			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && isset( $title_font['padding'][1] ) && is_numeric( $title_font['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $title_font['padding'][1] . 'px' );
-			}
-			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && isset( $title_font['padding'][2] ) && is_numeric( $title_font['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $title_font['padding'][2] . 'px' );
-			}
-			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && isset( $title_font['padding'][3] ) && is_numeric( $title_font['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $title_font['padding'][3] . 'px' );
+
+			if( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && array_filter( $title_font['padding'] ) ) {
+				if ( isset( $title_font['padding'][0] ) && is_numeric( $title_font['padding'][0] ) ) {
+					$css->add_property( 'padding-top', $title_font['padding'][0] . 'px' );
+				}
+				if ( isset( $title_font['padding'][1] ) && is_numeric( $title_font['padding'][1] ) ) {
+					$css->add_property( 'padding-right', $title_font['padding'][1] . 'px' );
+				}
+				if ( isset( $title_font['padding'][2] ) && is_numeric( $title_font['padding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $title_font['padding'][2] . 'px' );
+				}
+				if ( isset( $title_font['padding'][3] ) && is_numeric( $title_font['padding'][3] ) ) {
+					$css->add_property( 'padding-left', $title_font['padding'][3] . 'px' );
+				}
+			}  else {
+				$css->render_measure_output( $attributes, 'titlePadding', 'padding' );
 			}
 			if ( isset( $attributes['titleMinHeight'] ) && is_array( $attributes['titleMinHeight'] ) && isset( $attributes['titleMinHeight'][0] ) && is_numeric( $attributes['titleMinHeight'][0] ) ) {
 				$css->add_property( 'min-height', $attributes['titleMinHeight'][0] . 'px' );
@@ -602,7 +621,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['mediaStyles'][0] ) ) {
 				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
 				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
-				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'border-color', 'backgroundOpacity' );
+				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'background-color', 'backgroundOpacity' );
 			}
 
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );

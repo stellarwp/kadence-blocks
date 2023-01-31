@@ -338,6 +338,38 @@
 		}
 	  ]
 	},
+	"titleMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletTitleMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitleMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titleMarginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"titlePadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletTitlePadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitlePadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titlePaddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"displayContent": {
 	  "type": "boolean",
 	  "default": true
@@ -541,6 +573,38 @@
 	  "default": [ "", "", "", "" ]
 	},
 	"iconBorderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"iconMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletIconMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileIconMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"iconMarginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"iconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletIconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileIconPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"iconPaddingUnit": {
 	  "type": "string",
 	  "default": "px"
 	},
