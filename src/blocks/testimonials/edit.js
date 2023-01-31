@@ -702,22 +702,32 @@ function KadenceTestimonials({
                 {`
                     /* Container */
                     .kt-blocks-testimonials-wrap${uniqueID} ${applyTo} {
-                        box-shadow: ${(displayShadow ? shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) : undefined) };
-                        background: ${(containerBackground ? KadenceColorOutput(containerBackground, (undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1)) : undefined) };
+                        ${ displayShadow ? 'box-shadow: ' + shadow[0].hOffset + 'px ' + shadow[0].vOffset + 'px ' + shadow[0].blur + 'px ' + shadow[0].spread + 'px ' + KadenceColorOutput((undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000'), (shadow[0].opacity ? shadow[0].opacity : 0.2)) + ';' : '' }
+                        ${ containerBackground ? 'background: ' + KadenceColorOutput(containerBackground, (undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1)) + ';' : '' }
                         ${previewContainerRadiusTop ? 'border-top-left-radius:' + previewContainerRadiusTop + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusRight ? 'border-top-right-radius:' + previewContainerRadiusRight + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusBottom ? 'border-bottom-right-radius:' + previewContainerRadiusBottom + containerBorderRadiusUnit + ';' : '' }
                         ${previewContainerRadiusLeft ? 'border-bottom-left-radius:' + previewContainerRadiusLeft + containerBorderRadiusUnit + ';' : '' }
-                        border-top: ${ previewContainerBorderTop ? previewContainerBorderTop : undefined };
-                        border-right: ${ previewContainerBorderRight ? previewContainerBorderRight : undefined };
-                        border-bottom: ${ previewContainerBorderBottom ? previewContainerBorderBottom : undefined };
-                        border-left: ${ previewContainerBorderLeft ? previewContainerBorderLeft : undefined };
-                        padding-top: ${(previewContainerPaddingTop ? getSpacingOptionOutput( previewContainerPaddingTop, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
-                        padding-right: ${(previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
-                        padding-bottom: ${(previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
-                        padding-left: ${(previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) : undefined) };
-                        max-width: ${('bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px') };
-                        min-height: ${('bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px') };
+                        ${ previewContainerBorderTop ? 'border-top: ' + previewContainerBorderTop + ';' : '' }
+                        ${ previewContainerBorderRight ? 'border-right: ' + previewContainerBorderRight + ';' : '' }
+                        ${ previewContainerBorderBottom ? 'border-bottom: ' + previewContainerBorderBottom + ';' : '' }
+                        ${ previewContainerBorderLeft ? 'border-left: ' + previewContainerBorderLeft + ';' : '' }
+                        ${ previewContainerPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewContainerPaddingTop, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
+                        ${ previewContainerPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewContainerPaddingRight, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
+                        ${ previewContainerPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewContainerPaddingBottom, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
+                        ${ previewContainerPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
+                        ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
+                        ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
+						${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : ''
+					}
+					.kt-blocks-testimonials-wrap${uniqueID} {
+						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
+						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
+						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
+						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                     }
 
                     ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
@@ -729,9 +739,9 @@ function KadenceTestimonials({
                     `}
 
                     ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
-                        max-width: ${ containerMaxWidth + 'px' };
-                        min-height: ${ (previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined) };
-                        padding-top:  ${(iconPadding ? iconPadding : undefined) };
+                        ${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
+                        ${ previewContainerMinHeight ? 'min-height: ' + previewContainerMinHeight + 'px;' : '' }
+                        ${ iconPadding ? 'padding-top: ' + iconPadding + ';' : '' }
                     }` }
 
                     /* Title */
@@ -744,20 +754,14 @@ function KadenceTestimonials({
                         letter-spacing: ${titleFont[0].letterSpacing + 'px' };
                         text-transform: ${(titleFont[0].textTransform ? titleFont[0].textTransform : undefined) };
                         font-family: ${(titleFont[0].family ? titleFont[0].family : '') };
-
-                        padding: ${(titleFont[0].padding ? titleFont[0].padding[0] + 'px ' + titleFont[0].padding[1] + 'px ' + titleFont[0].padding[2] + 'px ' + titleFont[0].padding[3] + 'px' : '') };
-                        margin: ${(titleFont[0].margin ? titleFont[0].margin[0] + 'px ' + titleFont[0].margin[1] + 'px ' + titleFont[0].margin[2] + 'px ' + titleFont[0].margin[3] + 'px' : '') };
-
 						padding-top: ${ getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) };
 						padding-right: ${ getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) };
 						padding-bottom: ${ getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) };
 						padding-left: ${ getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingUnit ) };
-
 						margin-top: ${ getSpacingOptionOutput( previewTitleMarginTop, titleMarginUnit ) };
 						margin-right: ${ getSpacingOptionOutput( previewTitleMarginRight, titleMarginUnit ) };
 						margin-bottom: ${ getSpacingOptionOutput( previewTitleMarginBottom, titleMarginUnit ) };
 						margin-left: ${ getSpacingOptionOutput( previewTitleMarginLeft, titleMarginUnit ) };
-
                     }
 
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap {
@@ -794,41 +798,41 @@ function KadenceTestimonials({
 
                     /* Media */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap {
-                        width: ${'card' !== style ? mediaStyles[0].width + 'px' : undefined };
-                        border-color: ${KadenceColorOutput(mediaStyles[0].border) };
-                        background-color: ${(mediaStyles[0].background ? KadenceColorOutput(mediaStyles[0].background, (undefined !== mediaStyles[0].backgroundOpacity ? mediaStyles[0].backgroundOpacity : 1)) : undefined) };
-						border-top: ${ previewMediaBorderTop ? previewMediaBorderTop : undefined };
-                        border-right: ${ previewMediaBorderRight ? previewMediaBorderRight : undefined };
-                        border-bottom: ${ previewMediaBorderBottom ? previewMediaBorderBottom : undefined };
-                        border-left: ${ previewMediaBorderLeft ? previewMediaBorderLeft : undefined };
-                        border-top-left-radius: ${ previewMediaBorderRadiusTop ? previewMediaBorderRadiusTop + mediaBorderRadiusUnit : undefined };
-                        border-top-right-radius: ${ previewMediaBorderRadiusRight ? previewMediaBorderRadiusRight + mediaBorderRadiusUnit : undefined };
-                        border-bottom-right-radius: ${ previewMediaBorderRadiusBottom ? previewMediaBorderRadiusBottom + mediaBorderRadiusUnit : undefined };
-                        border-bottom-left-radius: ${ previewMediaBorderRadiusLeft ? previewMediaBorderRadiusLeft + mediaBorderRadiusUnit : undefined };
-                        margin-top: ${ previewMediaMarginTop ? getSpacingOptionOutput( previewMediaMarginTop, mediaMarginUnit ) : undefined };
-                        margin-right: ${ previewMediaMarginRight ? getSpacingOptionOutput( previewMediaMarginRight, mediaMarginUnit ) : undefined };
-                        margin-bottom: ${ previewMediaMarginBottom ? getSpacingOptionOutput( previewMediaMarginBottom, mediaMarginUnit ) : undefined };
-                        margin-left: ${ previewMediaMarginLeft ? getSpacingOptionOutput( previewMediaMarginLeft, mediaMarginUnit ) : undefined };
-                        padding-top: ${ previewMediaPaddingTop? getSpacingOptionOutput( previewMediaPaddingTop, mediaPaddingUnit ) : undefined };
-                        padding-right: ${ previewMediaPaddingRight ? getSpacingOptionOutput( previewMediaPaddingRight, mediaPaddingUnit ) : undefined };
-                        padding-bottom: ${ previewMediaPaddingBottom ? getSpacingOptionOutput( previewMediaPaddingBottom, mediaPaddingUnit ) : undefined };
-                        padding-left: ${ previewMediaPaddingLeft ? getSpacingOptionOutput( previewMediaPaddingLeft, mediaPaddingUnit ) : undefined };
+                        ${'card' !== style ? 'width: ' + mediaStyles[0].width + 'px;' : '' }
+                        ${ mediaStyles[0].border ? 'border-color: ' + KadenceColorOutput(mediaStyles[0].border) + ';' : '' }
+                        ${ mediaStyles[0].background ? 'background-color: ' + KadenceColorOutput(mediaStyles[0].background, (undefined !== mediaStyles[0].backgroundOpacity ? mediaStyles[0].backgroundOpacity : 1)) + ';' : '' }
+						${ previewMediaBorderTop ? 'border-top: ' + previewMediaBorderTop + ';' : '' }
+						${ previewMediaBorderRight ? 'border-right: ' + previewMediaBorderRight + ';' : '' }
+						${ previewMediaBorderBottom ? 'border-bottom: ' + previewMediaBorderBottom + ';' : '' }
+						${ previewMediaBorderLeft ? 'border-left: ' + previewMediaBorderLeft + ';' : '' }
+						${ previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
+						${ previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
+						${ previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
+						${ previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
+						${ previewMediaMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewMediaMarginTop, mediaMarginUnit ) + ';' : '' }
+						${ previewMediaMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewMediaMarginRight, mediaMarginUnit ) + ';' : '' }
+						${ previewMediaMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewMediaMarginBottom, mediaMarginUnit ) + ';' : '' }
+						${ previewMediaMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewMediaMarginLeft, mediaMarginUnit ) + ';' : '' }
+						${ previewMediaPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewMediaPaddingTop, mediaPaddingUnit ) + ';' : '' }
+						${ previewMediaPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewMediaPaddingRight, mediaPaddingUnit ) + ';' : '' }
+						${ previewMediaPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewMediaPaddingBottom, mediaPaddingUnit ) + ';' : '' }
+						${ previewMediaPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewMediaPaddingLeft, mediaPaddingUnit ) + ';' : '' }
                     }
 
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic {
-                        padding-bottom: ${('card' === style && (undefined !== mediaStyles[0].ratio || '' !== mediaStyles[0].ratio) ? mediaStyles[0].ratio + '%' : undefined) };
+                        ${('card' === style && (undefined !== mediaStyles[0].ratio || '' !== mediaStyles[0].ratio) ? 'padding-bottom: ' + mediaStyles[0].ratio + '%;' : '') }
                     }
 
                     /* Name */
                     .kt-blocks-testimonials-wrap${uniqueID}  .kt-testimonial-name-wrap .kt-testimonial-name {
-                        font-weight: ${ nameFont[0].weight };
-                        font-style: ${ nameFont[0].style };
-                        color: ${KadenceColorOutput(nameFont[0].color) };
-                        font-size: ${( previewNameFont ? getFontSizeOptionOutput( previewNameFont, previewNameFontType ) : undefined ) };
-                        line-height: ${(previewNameLineHeight ? previewNameLineHeight + previewNameLineHeightType : undefined) };
-                        text-transform: ${(nameFont[0].textTransform ? nameFont[0].textTransform : undefined) };
-                        letter-spacing: ${nameFont[0].letterSpacing + 'px' };
-                        font-family: ${(nameFont[0].family ? nameFont[0].family : '') };
+                        ${ nameFont[0].weight ? 'font-weight: ' + nameFont[0].weight + ';' : '' }
+                        ${ nameFont[0].style ? 'font-style: ' + nameFont[0].style + ';' : '' }
+                        ${ nameFont[0].color ? 'color: ' + KadenceColorOutput(nameFont[0].color) + ';' : '' }
+                        ${ previewNameFont ? 'font-size: ' + getFontSizeOptionOutput( previewNameFont, previewNameFontType ) + ';' : '' }
+                        ${ previewNameLineHeight ? 'line-height: ' + previewNameLineHeight + previewNameLineHeightType + ';' : '' }
+                        ${ nameFont[0].textTransform ? 'text-transform: ' + nameFont[0].textTransform + ';' : '' }
+                        ${ nameFont[0].letterSpacing ? 'letter-spacing: ' + nameFont[0].letterSpacing + 'px;' : '' }
+                        ${ nameFont[0].family ? 'font-family: ' + nameFont[0].family + ';' : '' }
                     }
 
 					/* Icon */
@@ -889,17 +893,7 @@ function KadenceTestimonials({
             [`kt-t-md-col-${columns[3]}`]: true,
             [`kt-t-sm-col-${columns[4]}`]: true,
             [`kt-t-xs-col-${columns[5]}`]: true,
-        }),
-        style:{
-            paddingTop: previewWrapperPaddingTop ? previewWrapperPaddingTop + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-            paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-            paddingBottom: previewWrapperPaddingBottom ? previewWrapperPaddingBottom + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-            paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + (wrapperPaddingType ? wrapperPaddingType : 'px') : undefined,
-			marginTop: previewWrapperMarginTop ? previewWrapperMarginTop + (wrapperMarginUnit ? wrapperMarginUnit : 'px') : undefined,
-			marginRight: previewWrapperMarginRight ? previewWrapperMarginRight + (wrapperMarginUnit ? wrapperMarginUnit : 'px') : undefined,
-			marginBottom: previewWrapperMarginBottom ? previewWrapperMarginBottom + (wrapperMarginUnit ? wrapperMarginUnit : 'px') : undefined,
-			marginLeft: previewWrapperMarginLeft ? previewWrapperMarginLeft + (wrapperMarginUnit ? wrapperMarginUnit : 'px') : undefined,
-        }
+        })
     });
 
     const columnControls = (
