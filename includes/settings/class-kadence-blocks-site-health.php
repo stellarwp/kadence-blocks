@@ -16,7 +16,7 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 	 * @since 4.4.1
 	 */
 	class Kadence_Blocks_Site_Health {
-		private const SITE_HEALTH_KEY = 'kadenceblocks';
+		private const SITE_HEALTH_KEY = 'kadence-blocks';
 
 		/**
 		 * Instance of this class.
@@ -178,6 +178,18 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 		 */
 		private function map_general_fields(): array {
 			$last_updated     = array_keys( $this->get_data_settings( 'version_history' ) )[0] ?? 0;
+			$block_defaults = get_option( 'kadence_blocks_config_blocks' );
+			$block_visibility = get_option( 'kadence_blocks_settings_blocks' );
+			$block_colors = get_option( 'kadence_blocks_colors' );
+			$block_recaptcha = get_option( 'kadence_blocks_recaptcha_site_key' );
+			$mailerlite = get_option( 'kadence_blocks_mailerlite_api' );
+			$maps_api = get_option( 'kadence_blocks_google_maps_api' );
+			$cloud_connect = get_option( 'kadence_blocks_cloud' );
+			$unregistered_blocks = get_option( 'kt_blocks_unregistered_blocks', array() );
+			$deactivated_blocks = '';
+			if ( ! empty( $unregistered_blocks ) && is_array( $unregistered_blocks ) ) {
+				$deactivated_blocks = implode( ',', $unregistered_blocks );
+			}
 			return array(
 				'version'           => array(
 					'label' => __( 'Version', 'kadence-blocks' ),
@@ -185,12 +197,48 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 				),
 				'last_updated'      => array(
 					'label' => __( 'Last updated', 'kadence-blocks' ),
-					'value' => $last_updated > 0 ? $this->adjust_date_time_display( $last_updated ) : __( 'Never', 'kadence-blocks' ),
+					'value' => $last_updated > 0 ? $this->adjust_date_time_display( $last_updated ) : __( 'Unknown', 'kadence-blocks' ),
 					'debug' => $last_updated,
 				),
 				'previous_version'  => array(
 					'label' => __( 'Previous version', 'kadence-blocks' ),
 					'value' => $this->get_data_settings( 'prior_version' ),
+				),
+				'pro_active'  => array(
+					'label' => __( 'Has Pro', 'kadence-blocks' ),
+					'value' => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'Yes' : 'No' ),
+				),
+				'deactivated_blocks'  => array(
+					'label' => __( 'Deactivated Blocks', 'kadence-blocks' ),
+					'value' => ( ! empty( $deactivated_blocks ) ? $deactivated_blocks : __( 'None', 'kadence-blocks' ) ),
+				),
+				'block_defaults'  => array(
+					'label' => __( 'Has Block Defaults', 'kadence-blocks' ),
+					'value' => $this->check_for_empty_json( $block_defaults ),
+				),
+				'block_visibility'  => array(
+					'label' => __( 'Using Setting Visibility', 'kadence-blocks' ),
+					'value' => $this->check_for_empty_json( $block_visibility ),
+				),
+				'custom_colors'  => array(
+					'label' => __( 'Has Custom Colors', 'kadence-blocks' ),
+					'value' => ( ! empty( $block_colors ) ? 'Yes' : 'No' ),
+				),
+				'recaptcha_key'  => array(
+					'label' => __( 'Has reCAPTCHA key', 'kadence-blocks' ),
+					'value' => ( ! empty( $block_recaptcha ) ? 'Yes' : 'No' ),
+				),
+				'maps_key'  => array(
+					'label' => __( 'Has a maps API key', 'kadence-blocks' ),
+					'value' => ( ! empty( $maps_api ) ? 'Yes' : 'No' ),
+				),
+				'mailerlite_key'  => array(
+					'label' => __( 'Has MailerLite key', 'kadence-blocks' ),
+					'value' => ( ! empty( $mailerlite ) ? 'Yes' : 'No' ),
+				),
+				'cloud_connect'  => array(
+					'label' => __( 'Has Cloud Library', 'kadence-blocks' ),
+					'value' => ( ! empty( $cloud_connect ) ? 'Yes' : 'No' ),
 				),
 			);
 		}
@@ -248,6 +296,23 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 				$date_time_display = date_i18n( $display_format, strtotime( $date_time_display ) );
 			}
 			return $date_time_display;
+		}
+		/**
+		 * Converts a string value to the "Yes" or "No" string.
+		 *
+		 * @param string $value Value.
+		 *
+		 * @return string
+		 */
+		private function check_for_empty_json( $value ) {
+			if ( ! isset( $value ) ) {
+				return __( 'No', 'kadence-blocks' );
+			} elseif ( empty( $value ) ) {
+				return __( 'No', 'kadence-blocks' );
+			} elseif ( '{}' === $value ) {
+				return __( 'No', 'kadence-blocks' );
+			}
+			return __( 'Yes', 'kadence-blocks' );
 		}
 		/**
 		 * Converts a boolean value to the "On" or "Off" string.

@@ -90,7 +90,7 @@ class Kadence_Blocks_Settings {
 			'intro'                 => sprintf(
 				// translators: placeholder: username.
 				esc_html__(
-					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also share helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
+					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
 				),
 				$default_args['user_name'],
 			),
@@ -815,6 +815,7 @@ class Kadence_Blocks_Settings {
 									echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								} else {
 									$btntitle = __( 'Deactivate', 'kadence-blocks' );
+									// echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								}
 								if ( 'kadence/lottie' === $block['slug'] ) {
 									echo '<a class="button" href="' . admin_url( 'edit.php?post_type=kadence_lottie' ) . '">' . esc_html__( 'Manage Lottie Animations', 'kadence-blocks' ) . '</a>';
