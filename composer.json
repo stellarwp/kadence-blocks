@@ -2,13 +2,16 @@
 	"name": "kadencewp/kadence-blocks",
 	"type": "wordpress-plugin",
 	"homepage": "https://www.kadencewp.com",
+	"config": {
+		"preferred-install": "dist",
+		"platform": {
+			"php": "7.2.34"
+		}
+	},
 	"require": {
 		"lucatume/di52": "^3.0",
 		"stellarwp/telemetry": "dev-main",
 		"stellarwp/container-contract": "^1.0"
-	},
-	"require-dev": {
-		"brianhenryie/strauss": "^0.11.1"
 	},
 	"autoload": {
 		"psr-4": {
