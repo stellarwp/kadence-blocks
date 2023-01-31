@@ -174,9 +174,7 @@ function PaneEdit( {
 							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 						) }
 					</div>
-					<div 
-						className="kt-blocks-accordion-icon-trigger"
-					></div>
+					<div className="kt-blocks-accordion-icon-trigger"></div>
 				</div>
 			</HtmlTagOut>
 			<div className={ 'kt-accordion-panel' } >
