@@ -220,8 +220,8 @@ export function Edit( props ) {
 			default:
 				return 50;
 		}
-	}	
-	
+	}
+
 	const classes = classnames( {
 		[ className ]: className,
 		[ `size-${ sizeSlug }` ]: sizeSlug,
@@ -249,8 +249,8 @@ export function Edit( props ) {
 				<BlockControls>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
 				</BlockControls>
@@ -352,7 +352,7 @@ export function Edit( props ) {
 								{mapFilter !== 'standard' && (
 									<RangeControl
 										label={__('Map Filter Strength ', 'kadence-blocks')}
-										value={mapFilterAmount}
+										value={ parseInt(mapFilterAmount) }
 										onChange={(value) => setAttributes({mapFilterAmount: value})}
 										min={0}
 										max={(mapFilter === 'saturate') ? 250 : 100}
