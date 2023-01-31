@@ -155,48 +155,48 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 
 		// Desktop wrapper padding L/R
-		if ( isset( $attributes['wrapperPadding'][1] ) && is_numeric( $attributes['wrapperPadding'][1] ) ) {
-			$css->add_property( 'padding-right', $attributes['wrapperPadding'][1] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperPadding'][1] ) ) {
+			$css->add_property( 'padding-right', $this->get_usable_value( $css, $attributes['wrapperPadding'][1], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperPadding'][3] ) && is_numeric( $attributes['wrapperPadding'][3] ) ) {
-			$css->add_property( 'padding-left', $attributes['wrapperPadding'][3] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperPadding'][3] ) ) {
+			$css->add_property( 'padding-left', $this->get_usable_value( $css, $attributes['wrapperPadding'][3], $wrapper_padding_type ) );
 		}
 
-		if ( isset( $attributes['wrapperMargin'][1] ) && is_numeric( $attributes['wrapperMargin'][1] ) ) {
-			$css->add_property( 'margin-right', $attributes['wrapperMargin'][1] . $wrapper_margin_type );
+		if ( isset( $attributes['wrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $this->get_usable_value( $css, $attributes['wrapperMargin'][1], $wrapper_margin_type ) );
 		}
-		if ( isset( $attributes['wrapperMargin'][3] ) && is_numeric( $attributes['wrapperMargin'][3] ) ) {
-			$css->add_property( 'margin-left', $attributes['wrapperMargin'][3] . $wrapper_margin_type );
+		if ( isset( $attributes['wrapperMargin'][3] )) {
+			$css->add_property( 'margin-left', $this->get_usable_value( $css, $attributes['wrapperMargin'][3], $wrapper_margin_type ) );
 		}
 
 		// Tablet wrapper padding L/R
 		$css->set_media_state( 'tablet' );
-		if ( isset( $attributes['wrapperTabletPadding'][1] ) && is_numeric( $attributes['wrapperTabletPadding'][1] ) ) {
-			$css->add_property( 'padding-right', $attributes['wrapperTabletPadding'][1] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperTabletPadding'][1] )) {
+			$css->add_property( 'padding-right', $this->get_usable_value( $css, $attributes['wrapperTabletPadding'][1], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperTabletPadding'][3] ) && is_numeric( $attributes['wrapperTabletPadding'][3] ) ) {
-			$css->add_property( 'padding-left', $attributes['wrapperTabletPadding'][3] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperTabletPadding'][3] )) {
+			$css->add_property( 'padding-left', $this->get_usable_value( $css, $attributes['wrapperTabletPadding'][3], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['tabletWrapperMargin'][1] ) && is_numeric( $attributes['tabletWrapperMargin'][1] ) ) {
-			$css->add_property( 'margin-right', $attributes['tabletWrapperMargin'][1] . $wrapper_margin_type );
+		if ( isset( $attributes['tabletWrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $this->get_usable_value( $css, $attributes['tabletWrapperMargin'][1], $wrapper_margin_type ) );
 		}
-		if ( isset( $attributes['tabletWrapperMargin'][3] ) && is_numeric( $attributes['tabletWrapperMargin'][3] ) ) {
-			$css->add_property( 'margin-left', $attributes['tabletWrapperMargin'][3] . $wrapper_margin_type );
+		if ( isset( $attributes['tabletWrapperMargin'][3] ) ) {
+			$css->add_property( 'margin-left', $this->get_usable_value( $css, $attributes['tabletWrapperMargin'][3], $wrapper_margin_type ) );
 		}
 
 		// Mobile wrapper padding L/R
 		$css->set_media_state( 'mobile' );
-		if ( isset( $attributes['wrapperMobilePadding'][1] ) && is_numeric( $attributes['wrapperMobilePadding'][1] ) ) {
-			$css->add_property( 'padding-right', $attributes['wrapperMobilePadding'][1] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperMobilePadding'][1] ) ) {
+			$css->add_property( 'padding-right', $this->get_usable_value( $css, $attributes['wrapperMobilePadding'][1], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperMobilePadding'][3] ) && is_numeric( $attributes['wrapperMobilePadding'][3] ) ) {
-			$css->add_property( 'padding-left', $attributes['wrapperMobilePadding'][3] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperMobilePadding'][3] ) ) {
+			$css->add_property( 'padding-left', $this->get_usable_value( $css, $attributes['wrapperMobilePadding'][3], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['mobileWrapperMargin'][1] ) && is_numeric( $attributes['mobileWrapperMargin'][1] ) ) {
-			$css->add_property( 'margin-right', $attributes['mobileWrapperMargin'][1] . $wrapper_margin_type );
+		if ( isset( $attributes['mobileWrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $this->get_usable_value( $css, $attributes['mobileWrapperMargin'][1], $wrapper_margin_type ) );
 		}
-		if ( isset( $attributes['mobileWrapperMargin'][3] ) && is_numeric( $attributes['mobileWrapperMargin'][3] ) ) {
-			$css->add_property( 'margin-left', $attributes['mobileWrapperMargin'][3] . $wrapper_margin_type );
+		if ( isset( $attributes['mobileWrapperMargin'][3] ) ) {
+			$css->add_property( 'margin-left', $this->get_usable_value( $css, $attributes['mobileWrapperMargin'][3], $wrapper_margin_type ) );
 		}
 
 		$css->set_media_state( 'desktop' );
@@ -208,45 +208,45 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Desktop wrapper padding T/B
-		if ( isset( $attributes['wrapperPadding'][0] ) && is_numeric( $attributes['wrapperPadding'][0] ) ) {
-			$css->add_property( 'padding-top', $attributes['wrapperPadding'][0] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperPadding'][0] ) ) {
+			$css->add_property( 'padding-top', $this->get_usable_value( $css, $attributes['wrapperPadding'][0], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperPadding'][2] ) && is_numeric( $attributes['wrapperPadding'][2] ) ) {
-			$css->add_property( 'padding-bottom', $attributes['wrapperPadding'][2] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperPadding'][2] ) ) {
+			$css->add_property( 'padding-bottom', $this->get_usable_value( $css, $attributes['wrapperPadding'][2], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperMargin'][0] ) && is_numeric( $attributes['wrapperMargin'][0] ) ) {
-			$css->add_property( 'margin-top', $attributes['wrapperMargin'][0] . $wrapper_margin_type );
+		if ( isset( $attributes['wrapperMargin'][0] ) ) {
+			$css->add_property( 'margin-top', $this->get_usable_value( $css, $attributes['wrapperMargin'][0], $wrapper_margin_type ) );
 		}
-		if ( isset( $attributes['wrapperMargin'][2] ) && is_numeric( $attributes['wrapperMargin'][2] ) ) {
-			$css->add_property( 'margin-bottom', $attributes['wrapperMargin'][2] . $wrapper_margin_type );
+		if ( isset( $attributes['wrapperMargin'][2] ) ) {
+			$css->add_property( 'margin-bottom', $this->get_usable_value( $css, $attributes['wrapperMargin'][2], $wrapper_margin_type ) );
 		}
 		// Tablet wrapper padding T/B
 		$css->set_media_state( 'tablet' );
-		if ( isset( $attributes['wrapperTabletPadding'][0] ) && is_numeric( $attributes['wrapperTabletPadding'][0] ) ) {
-			$css->add_property( 'padding-top', $attributes['wrapperTabletPadding'][0] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperTabletPadding'][0] ) ) {
+			$css->add_property( 'padding-top', $this->get_usable_value( $css, $attributes['wrapperTabletPadding'][0], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['wrapperTabletPadding'][2] ) && is_numeric( $attributes['wrapperTabletPadding'][2] ) ) {
-			$css->add_property( 'padding-bottom', $attributes['wrapperTabletPadding'][2] . $wrapper_padding_type );
+		if ( isset( $attributes['wrapperTabletPadding'][2] ) ) {
+			$css->add_property( 'padding-bottom', $this->get_usable_value( $css, $attributes['wrapperTabletPadding'][2], $wrapper_padding_type ) );
 		}
-		if ( isset( $attributes['tabletWrapperMargin'][0] ) && is_numeric( $attributes['tabletWrapperMargin'][0] ) ) {
-			$css->add_property( 'margin-top', $attributes['tabletWrapperMargin'][0] . $wrapper_margin_type );
+		if ( isset( $attributes['tabletWrapperMargin'][0] ) ) {
+			$css->add_property( 'margin-top', $this->get_usable_value( $css, $attributes['tabletWrapperMargin'][0], $wrapper_margin_type ) );
 		}
-		if ( isset( $attributes['tabletWrapperMargin'][2] ) && is_numeric( $attributes['tabletWrapperMargin'][2] ) ) {
-			$css->add_property( 'margin-bottom', $attributes['tabletWrapperMargin'][2] . $wrapper_margin_type );
+		if ( isset( $attributes['tabletWrapperMargin'][2] ) ) {
+			$css->add_property( 'margin-bottom', $this->get_usable_value( $css, $attributes['tabletWrapperMargin'][2], $wrapper_margin_type ) );
 		}
 
 		// Mobile wrapper padding T/B
 		$css->set_media_state( 'mobile' );
-		if ( isset( $attributes['wrapperMobilePadding'][0] ) && is_numeric( $attributes['wrapperMobilePadding'][0] ) ) {
+		if ( isset( $attributes['wrapperMobilePadding'][0] ) ) {
 			$css->add_property( 'padding-top', $attributes['wrapperMobilePadding'][0] . $wrapper_padding_type );
 		}
-		if ( isset( $attributes['wrapperMobilePadding'][2] ) && is_numeric( $attributes['wrapperMobilePadding'][2] ) ) {
+		if ( isset( $attributes['wrapperMobilePadding'][2] ) ) {
 			$css->add_property( 'padding-bottom', $attributes['wrapperMobilePadding'][2] . $wrapper_padding_type );
 		}
-		if ( isset( $attributes['mobileWrapperMargin'][0] ) && is_numeric( $attributes['mobileWrapperMargin'][0] ) ) {
+		if ( isset( $attributes['mobileWrapperMargin'][0] ) ) {
 			$css->add_property( 'margin-top', $attributes['mobileWrapperMargin'][0] . $wrapper_margin_type );
 		}
-		if ( isset( $attributes['mobileWrapperMargin'][2] ) && is_numeric( $attributes['mobileWrapperMargin'][2] ) ) {
+		if ( isset( $attributes['mobileWrapperMargin'][2] ) ) {
 			$css->add_property( 'margin-bottom', $attributes['mobileWrapperMargin'][2] . $wrapper_margin_type );
 		}
 		$css->set_media_state( 'desktop' );
@@ -811,6 +811,18 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$content = str_replace( 'data-columns-ss="' . esc_attr( $columns_ss ) . '"', 'data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $gap . $gap_unit ) . '"', $content );
 		}
 		return $content;
+	}
+
+	public function get_usable_value( $css, $value, $unit = 'px' ) {
+		if ( $css->is_variable_value( $value ) ) {
+			return $css->get_variable_value( $value );
+		}
+
+		if ( is_numeric( $value ) ) {
+			return $value . $unit;
+		}
+
+		return '';
 	}
 
 	/**
