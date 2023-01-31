@@ -273,6 +273,19 @@ function KadenceTestimonials({
 			titleFont: newUpdate,
 		});
 	};
+
+	const saveRatingStyles = (value) => {
+		const newUpdate = ratingStyles.map((item, index) => {
+			if (0 === index) {
+				item = {...item, ...value};
+			}
+			return item;
+		});
+		setAttributes({
+			ratingStyles: newUpdate,
+		});
+	};
+
     useEffect(() => {
 
         let smallID = '_' + clientId.substr(2, 9);
@@ -449,7 +462,7 @@ function KadenceTestimonials({
 
 		if ( titleFont[ 0 ].padding[ 0 ] !== '' || titleFont[ 0 ].padding[ 1 ] !== '' || titleFont[ 0 ].padding[ 2 ] !== '' || titleFont[ 0 ].padding[ 3 ] !== '' ) {
 			setAttributes( {
-				iconPadding: [
+				titleFont: [
 					titleFont[ 0 ].padding[ 0 ],
 					titleFont[ 0 ].padding[ 1 ],
 					titleFont[ 0 ].padding[ 2 ],
@@ -462,7 +475,7 @@ function KadenceTestimonials({
 
 		if ( titleFont[ 0 ].margin[ 0 ] !== '' || titleFont[ 0 ].margin[ 1 ] !== '' || titleFont[ 0 ].margin[ 2 ] !== '' || titleFont[ 0 ].margin[ 3 ] !== '' ) {
 			setAttributes( {
-				iconMargin: [
+				titleFont: [
 					titleFont[ 0 ].margin[ 0 ],
 					titleFont[ 0 ].margin[ 1 ],
 					titleFont[ 0 ].margin[ 2 ],
@@ -472,6 +485,46 @@ function KadenceTestimonials({
 
 			saveTitleFont( { margin: [ '', '', '', '' ] } );
 		}
+
+		if ( mediaStyles[ 0 ].margin[ 0 ] !== '' || mediaStyles[ 0 ].margin[ 1 ] !== '' || mediaStyles[ 0 ].margin[ 2 ] !== '' || mediaStyles[ 0 ].margin[ 3 ] !== '' ) {
+			setAttributes( {
+				mediaMargin: [
+					mediaStyles[ 0 ].margin[ 0 ],
+					mediaStyles[ 0 ].margin[ 1 ],
+					mediaStyles[ 0 ].margin[ 2 ],
+					mediaStyles[ 0 ].margin[ 3 ],
+				],
+			} );
+
+			savemediaStyles( { margin: [ '', '', '', '' ] } );
+		}
+
+		if ( mediaStyles[ 0 ].padding[ 0 ] !== '' || mediaStyles[ 0 ].padding[ 1 ] !== '' || mediaStyles[ 0 ].padding[ 2 ] !== '' || mediaStyles[ 0 ].padding[ 3 ] !== '' ) {
+			setAttributes( {
+				mediaPadding: [
+					mediaStyles[ 0 ].padding[ 0 ],
+					mediaStyles[ 0 ].padding[ 1 ],
+					mediaStyles[ 0 ].padding[ 2 ],
+					mediaStyles[ 0 ].padding[ 3 ],
+				],
+			} );
+
+			savemediaStyles( { padding: [ '', '', '', '' ] } );
+		}
+
+		if ( ratingStyles[ 0 ].margin[ 0 ] !== '' || ratingStyles[ 0 ].margin[ 1 ] !== '' || ratingStyles[ 0 ].margin[ 2 ] !== '' || ratingStyles[ 0 ].margin[ 3 ] !== '' ) {
+			setAttributes( {
+				ratingMargin: [
+					mediaStyles[ 0 ].margin[ 0 ],
+					mediaStyles[ 0 ].margin[ 1 ],
+					mediaStyles[ 0 ].margin[ 2 ],
+					mediaStyles[ 0 ].margin[ 3 ],
+				],
+			} );
+
+			saveRatingStyles( { margin: [ '', '', '', '' ] } );
+		}
+
     }, []);
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
@@ -995,17 +1048,6 @@ function KadenceTestimonials({
         });
         setAttributes({
             shadow: newUpdate,
-        });
-    };
-    const saveRatingStyles = (value) => {
-        const newUpdate = ratingStyles.map((item, index) => {
-            if (0 === index) {
-                item = {...item, ...value};
-            }
-            return item;
-        });
-        setAttributes({
-            ratingStyles: newUpdate,
         });
     };
 

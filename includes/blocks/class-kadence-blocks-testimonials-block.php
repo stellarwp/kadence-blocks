@@ -220,7 +220,6 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['wrapperMargin'][2] ) && is_numeric( $attributes['wrapperMargin'][2] ) ) {
 			$css->add_property( 'margin-bottom', $attributes['wrapperMargin'][2] . $wrapper_margin_type );
 		}
-
 		// Tablet wrapper padding T/B
 		$css->set_media_state( 'tablet' );
 		if ( isset( $attributes['wrapperTabletPadding'][0] ) && is_numeric( $attributes['wrapperTabletPadding'][0] ) ) {
@@ -670,7 +669,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			if( isset( $attributes['mediaStyles'][0] ) && array_filter( $attributes['mediaStyles'][0]['margin'] )  ) {
 				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
 			} else {
-				$css->render_measure_output( $attributes, 'ratingMargin', 'margin' );
+				$css->render_measure_output( $attributes, 'mediaMargin', 'margin' );
 			}
 
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
