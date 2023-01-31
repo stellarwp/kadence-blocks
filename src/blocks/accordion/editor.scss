@@ -156,13 +156,6 @@ button.components-button.kt-accordion-add.is-primary {
     box-shadow: none;
 	padding: 6px 10px;
 	border-radius: 3px;
-	.dashicon {
-		margin-right: 6px;
-		font-size: 16px;
-		margin-left: 0;
-		width: 16px;
-		height: 16px;
-	}
 }
 .kt-accordion-add-selecter button.components-button.kt-accordion-remove {
     border: 0;
@@ -177,9 +170,6 @@ button.components-button.kt-accordion-add.is-primary {
 .kt-accordion-add-selecter button.components-button.kt-accordion-remove:not(:disabled):not([aria-disabled=true]):not(.is-default):hover {
 	background: #eee;
 	box-shadow: none;
-}
-button.components-button.kt-accordion-add.is-primary svg {
-    margin-top: 4px;
 }
 .components-button-group button.components-button.kt-init-open-pane {
     width: 100%;

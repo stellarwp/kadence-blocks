@@ -65,7 +65,6 @@ import {
 import {
 	useEffect,
 	useState,
-	Fragment,
 } from '@wordpress/element';
 import {
 	InspectorControls,
@@ -87,6 +86,8 @@ import {
 import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
+import { plus, reset } from '@wordpress/icons';
+
 /**
  * Internal block libraries
  */
@@ -107,7 +108,7 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane, getPreviewDevice } ) {
+function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane, getPreviewDevice } ) {
 	const {
 		uniqueID,
 		paneCount,
@@ -834,15 +835,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${ ! previewTitleBorderHoverLeft && previewTitleBorderColorHoverLeft ? 'border-left-color:' + previewTitleBorderColorHoverLeft : '' };
 					${titleStyles?.[ 0 ]?.backgroundHover ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].backgroundHover ) : '' };
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
 				.kt-accordion-${uniqueID} .kt-accordion-panel-active .kt-blocks-accordion-header {
@@ -923,7 +924,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						<>
 							<KadencePanelBody panelName={'kb-accordion-all'}>
 								{ showSettings( 'paneControl', 'kadence/accordion' ) && (
-									<Fragment>
+									<>
 										<ToggleControl
 											label={__( 'Panes close when another opens', 'kadence-blocks' )}
 											checked={linkPaneCollapse}
@@ -935,11 +936,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 											onChange={( value ) => setAttributes( { startCollapsed: value } )}
 										/>
 										{!startCollapsed && (
-											<Fragment>
+											<>
 												<h2>{__( 'Initial Open Accordion', 'kadence-blocks' )}</h2>
 												<ButtonGroup aria-label={__( 'Initial Open Accordion', 'kadence-blocks' )}>
 													{accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks && (
-														<Fragment>
+														<>
 															{map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
 																<Button
 																	key={attributes.id - 1}
@@ -952,10 +953,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 																	{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
 																</Button>
 															) )}
-														</Fragment>
+														</>
 													)}
 													{accordionBlock && accordionBlock.innerBlocks && (
-														<Fragment>
+														<>
 															{map( accordionBlock.innerBlocks, ( { attributes } ) => (
 																<Button
 																	key={attributes.id - 1}
@@ -968,12 +969,12 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 																	{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
 																</Button>
 															) )}
-														</Fragment>
+														</>
 													)}
 												</ButtonGroup>
-											</Fragment>
+											</>
 										)}
-									</Fragment>
+									</>
 								)}
 							</KadencePanelBody>
 							{ showSettings( 'titleIcon', 'kadence/accordion' ) && (
@@ -1510,7 +1511,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					</div>
 				)}
 				{ ! showPreset && (
-					<Fragment>
+					<>
 						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
 						<div className="kt-accordion-wrap" style={ {
 							maxWidth: maxWidth + 'px',
@@ -1520,34 +1521,36 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 							) }
 							<div { ...innerBlocksProps } />
 						</div>
-						<div className="kt-accordion-add-selecter">
-							<Button
-								className="kt-accordion-add"
-								isPrimary={ true }
-								icon="plus"
-								iconPosition="left"
-								iconSize={ 16 }
-								onClick={ () => {
-									const newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
-									setAttributes( { paneCount: paneCount + 1 } );
-									insertPane( newBlock );
-								}}
-							>
-								{ __( 'Add Accordion Item', 'kadence-blocks' ) }
-							</Button>
-							{ realPaneCount > 1 && (
+						{ isSelected && (
+							<div className="kt-accordion-add-selecter">
 								<Button
-									className="kt-accordion-remove"
-									label={__( 'Remove Accordion Item', 'kadence-blocks' )}
-									icon="minus"
-									onClick={() => {
-										const removeClientId = ( accordionBlock[ 0 ] ? accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId : accordionBlock.innerBlocks[ realPaneCount - 1 ].clientId );
-										removePane( removeClientId );
+									className="kt-accordion-add"
+									variant="primary"
+									icon={ plus }
+									iconPosition="left"
+									iconSize={ 16 }
+									onClick={ () => {
+										const newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
+										setAttributes( { paneCount: paneCount + 1 } );
+										insertPane( newBlock );
 									}}
-								/>
-							)}
-						</div>
-					</Fragment>
+								>
+									{ __( 'Add Accordion Item', 'kadence-blocks' ) }
+								</Button>
+								{ realPaneCount > 1 && (
+									<Button
+										className="kt-accordion-remove"
+										label={__( 'Remove Accordion Item', 'kadence-blocks' )}
+										icon={ reset }
+										onClick={() => {
+											const removeClientId = ( accordionBlock[ 0 ] ? accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId : accordionBlock.innerBlocks[ realPaneCount - 1 ].clientId );
+											removePane( removeClientId );
+										}}
+									/>
+								)}
+							</div>
+						) }
+					</>
 				)}
 			</div>
 		</div>
