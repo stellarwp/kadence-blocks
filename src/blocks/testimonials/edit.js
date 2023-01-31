@@ -1310,7 +1310,7 @@ function KadenceTestimonials({
                                         {showSettings('shadowSettings', 'kadence/testimonials') && (
                                             <>
 												<BoxShadowControl
-													label={ __( 'Box Shadow', 'kadence-blocks-pro' ) }
+													label={ __( 'Box Shadow', 'kadence-blocks' ) }
 													enable={ ( displayShadow ? displayShadow : false ) }
 													color={ (shadow[0].color ? shadow[0].color : '') }
 													colorDefault={ '#000000' }

@@ -1400,7 +1400,7 @@ function GalleryEdit( props ) {
 															tabout = (
 																<>
 																	<BoxShadowControl
-																		label={ __( 'Box Shadow', 'kadence-blocks-pro' ) }
+																		label={ __( 'Box Shadow', 'kadence-blocks' ) }
 																		enable={ true }
 																		color={ (shadow[0].color ? shadow[0].color : '') }
 																		colorDefault={ '#000000' }
