@@ -68,6 +68,35 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'kadence_blocks_dash_side_panel_pro', array( $this, 'admin_pro_kadence_notice' ), 10 );
+		add_filter( 'stellarwp/telemetry/kadence-blocks/optin_args', array( $this, 'optin_notice_args' ), 10 );
+	}
+	/**
+	 * Filter the optin notice args.
+	 *
+	 * @param array $default_args the optin args.
+	 */
+	public function optin_notice_args( $default_args ) {
+		$args = array(
+			'plugin_logo'           => KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png',
+			'plugin_logo_width'     => 50,
+			'plugin_logo_height'    => 50,
+			'plugin_logo_alt'       => 'KadenceWP Logo',
+			'plugin_name'           => 'Kadence Blocks',
+			'plugin_slug'           => 'kadence-blocks',
+			'permissions_url'       => 'https://www.kadencewp.com/in-app-telemetry/',
+			'tos_url'               => 'https://www.kadencewp.com/terms-and-conditions/',
+			'privacy_url'           => 'https://www.kadencewp.com/privacy-policy/',
+			'heading'               => __( 'Help us make Kadence Blocks even better.', 'kadence-blocks' ),
+			'intro'                 => sprintf(
+				// translators: placeholder: username.
+				esc_html__(
+					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also share helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
+				),
+				$default_args['user_name'],
+			),
+		);
+		$args = wp_parse_args( $args, $default_args );
+		return $args;
 	}
 	/**
 	 * Add inline css editor width
@@ -741,6 +770,7 @@ class Kadence_Blocks_Settings {
 	 * Loads config page
 	 */
 	public function config_page() {
+		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
 		?>
 		<div class="kadence_blocks_dash_head">
 			<div class="kadence_blocks_dash_head_container">

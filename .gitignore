@@ -3,3 +3,8 @@ node_modules
 .DS_Store
 dist/
 zip/
+bin/strauss.phar
+# DevOps #
+#######################
+vendor/*
+!vendor/strauss

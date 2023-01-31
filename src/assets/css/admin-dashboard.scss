@@ -7,6 +7,19 @@ $color-gray-600: #718096;
 $color-gray-700: #4A5568;
 $color-gray-800: #2D3748;
 // Header.
+#optin-modal-kadence-blocks .stellarwp-telemetry-modal__inner {
+    max-width: 800px;
+    .stellarwp-telemetry-links__link {
+        color: #005cb8;
+    }
+    .stellarwp-telemetry-btn-primary{
+        background: #005cb8;
+        &:hover {
+            background: #0073e6;
+        }
+
+    }
+}
 .kadence_blocks_dash_head {
     background: white;
     padding: 0px 20px;
