@@ -746,54 +746,54 @@ function KadenceTestimonials({
 
                     /* Title */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap .kt-testimonial-title {
-                        font-weight: ${titleFont[0].weight };
-                        font-style: ${titleFont[0].style };
-                        color: ${KadenceColorOutput(titleFont[0].color) };
-                        font-size: ${previewTitleFont ? getFontSizeOptionOutput( previewTitleFont, previewTitleFontSizeType ) : undefined };
-                        line-height: ${(previewTitleLineHeight ? previewTitleLineHeight + previewTitleLineHeightLineType : undefined) };
-                        letter-spacing: ${titleFont[0].letterSpacing + 'px' };
-                        text-transform: ${(titleFont[0].textTransform ? titleFont[0].textTransform : undefined) };
-                        font-family: ${(titleFont[0].family ? titleFont[0].family : '') };
-						padding-top: ${ getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) };
-						padding-right: ${ getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) };
-						padding-bottom: ${ getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) };
-						padding-left: ${ getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingUnit ) };
-						margin-top: ${ getSpacingOptionOutput( previewTitleMarginTop, titleMarginUnit ) };
-						margin-right: ${ getSpacingOptionOutput( previewTitleMarginRight, titleMarginUnit ) };
-						margin-bottom: ${ getSpacingOptionOutput( previewTitleMarginBottom, titleMarginUnit ) };
-						margin-left: ${ getSpacingOptionOutput( previewTitleMarginLeft, titleMarginUnit ) };
+						${ titleFont[0].weight ? 'font-weight: ' + titleFont[0].weight + ';' : '' }
+						${ titleFont[0].style ? 'font-style: ' + titleFont[0].style + ';' : '' }
+						${ titleFont[0].color ? 'color: ' + KadenceColorOutput( titleFont[0].color ) + ';' : '' }
+						${ previewTitleFont ? 'font-size: ' + getFontSizeOptionOutput( previewTitleFont, previewTitleFontSizeType ) + ';' : '' }
+						${ previewTitleLineHeight ? 'line-height: ' + previewTitleLineHeight + previewTitleLineHeightLineType + ';' : '' }
+						${ titleFont[0].letterSpacing ? 'letter-spacing: ' + titleFont[0].letterSpacing + 'px;' : '' }
+						${ titleFont[0].textTransform ? 'text-transform: ' + titleFont[0].textTransform + ';' : '' }
+						${ titleFont[0].family ? 'font-family: ' + titleFont[0].family + ';' : '' }
+						${ previewTitlePaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) + ';' : '' }
+						${ previewTitlePaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) + ';' : '' }
+						${ previewTitlePaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) + ';' : '' }
+						${ previewTitlePaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingUnit ) + ';' : '' }
+						${ previewTitleMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewTitleMarginTop, titleMarginUnit ) + ';' : '' }
+						${ previewTitleMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewTitleMarginRight, titleMarginUnit ) + ';' : '' }
+						${ previewTitleMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewTitleMarginBottom, titleMarginUnit ) + ';' : '' }
+						${ previewTitleMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewTitleMarginLeft, titleMarginUnit ) + ';' : '' }
                     }
 
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-title-wrap {
-                        min-height: ${previewTitleMinHeight + 'px'};
+                        ${ previewTitleMinHeight ? 'min-height: ' + previewTitleMinHeight + 'px;' : '' }
                     }
 
                     /* Content */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap .kt-testimonial-content {
-                        font-weight: ${contentFont[0].weight };
-                        font-style: ${contentFont[0].style };
-                        color: ${KadenceColorOutput(contentFont[0].color) };
-                        font-size: ${previewContentFont ? getFontSizeOptionOutput( previewContentFont, previewContentFontSizeType ) : undefined };
-                        line-height: ${(previewContentLineHeight ? previewContentLineHeight + previewContentLineHeightLineType : undefined) };
-                        text-transform: ${(contentFont[0].textTransform ? contentFont[0].textTransform : undefined) };
-                        letter-spacing: ${contentFont[0].letterSpacing + 'px' };
-                        font-family: ${(contentFont[0].family ? contentFont[0].family : '') };
+                        ${ contentFont[0].weight ? 'font-weight: ' + contentFont[0].weight + ';' : '' }
+                        ${ contentFont[0].style ? 'font-style: ' + contentFont[0].style + ';' : '' }
+                        ${ contentFont[0].color ? 'color: ' + KadenceColorOutput( contentFont[0].color ) + ';' : '' }
+                        ${ previewContentFont ? 'font-size: ' + getFontSizeOptionOutput( previewContentFont, previewContentFontSizeType ) + ';' : '' }
+                        ${ previewContentLineHeight ? 'line-height: ' + previewContentLineHeight + previewContentLineHeightLineType + ';' : '' }
+                        ${ contentFont[0].textTransform ? 'text-transform: ' + contentFont[0].textTransform + ';' : '' }
+                        ${ contentFont[0].letterSpacing ? 'letter-spacing: ' + contentFont[0].letterSpacing + 'px;' : '' }
+                        ${ contentFont[0].family ? 'font-family: ' + contentFont[0].family + ';' : '' }
                     }
 
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-content-wrap {
-                        min-height: ${previewContentMinHeight ? previewContentMinHeight + 'px' : undefined };
+                        ${ previewContentMinHeight ? 'min-height: ' + previewContentMinHeight + 'px;' : '' }
                     }
 
                     /* Occupation */
                     .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-occupation-wrap .kt-testimonial-occupation {
-                        font-weight: ${occupationFont[0].weight };
-                        font-style: ${occupationFont[0].style };
-                        color: ${KadenceColorOutput(occupationFont[0].color) };
-                        font-size: ${previewOccupationFont ? getFontSizeOptionOutput( previewOccupationFont, previewOccupationFontSizeType ) : undefined };
-                        line-height: ${(previewOccupationLineHeight ? previewOccupationLineHeight + previewOccupationLineHeightLineType : undefined) };
-                        text-transform: ${(occupationFont[0].textTransform ? occupationFont[0].textTransform : undefined) };
-                        letter-spacing: ${occupationFont[0].letterSpacing + 'px' };
-                        font-family: ${(occupationFont[0].family ? occupationFont[0].family : '') };
+                        ${ occupationFont[0].weight ? 'font-weight: ' + occupationFont[0].weight + ';' : '' }
+                        ${ occupationFont[0].style ? 'font-style: ' + occupationFont[0].style + ';' : '' }
+                        ${ occupationFont[0].color ? 'color: ' + KadenceColorOutput( occupationFont[0].color ) + ';' : '' }
+                        ${ previewOccupationFont ? 'font-size: ' + getFontSizeOptionOutput( previewOccupationFont, previewOccupationFontSizeType ) + ';' : '' }
+                        ${ previewOccupationLineHeight ? 'line-height: ' + previewOccupationLineHeight + previewOccupationLineHeightLineType + ';' : '' }
+                        ${ occupationFont[0].textTransform ? 'text-transform: ' + occupationFont[0].textTransform + ';' : '' }
+                        ${ occupationFont[0].letterSpacing ? 'letter-spacing: ' + occupationFont[0].letterSpacing + 'px;' : '' }
+                        ${ occupationFont[0].family ? 'font-family: ' + occupationFont[0].family + ';' : '' }
                     }
 
                     /* Media */
@@ -837,39 +837,38 @@ function KadenceTestimonials({
 
 					/* Icon */
 					.kt-blocks-testimonials-wrap${uniqueID} .kt-svg-testimonial-global-icon-wrap {
-						margin-top: ${ getSpacingOptionOutput( previewIconMarginTop, iconMarginUnit ) };
-						margin-right: ${ getSpacingOptionOutput( previewIconMarginRight, iconMarginUnit ) };
-						margin-bottom: ${ getSpacingOptionOutput( previewIconMarginBottom, iconMarginUnit ) };
-						margin-left: ${ getSpacingOptionOutput( previewIconMarginLeft, iconMarginUnit ) };
+						${ previewIconMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewIconMarginTop, iconMarginUnit ) + ';' : '' }
+						${ previewIconMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewIconMarginRight, iconMarginUnit ) + ';' : '' }
+						${ previewIconMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewIconMarginBottom, iconMarginUnit ) + ';' : '' }
+						${ previewIconMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewIconMarginLeft, iconMarginUnit ) + ';' : '' }
 					}
 
 
 					.kt-blocks-testimonials-wrap${uniqueID} .kt-svg-testimonial-global-icon-wrap .kt-svg-testimonial-global-icon {
-                        border-top: ${ previewIconBorderTop ? previewIconBorderTop : undefined };
-                        border-right: ${ previewIconBorderRight ? previewIconBorderRight : undefined };
-                        border-bottom: ${ previewIconBorderBottom ? previewIconBorderBottom : undefined };
-                        border-left: ${ previewIconBorderLeft ? previewIconBorderLeft : undefined };
-                        border-top-left-radius: ${ previewIconBorderRadiusTop ? previewIconBorderRadiusTop + iconBorderRadiusUnit : undefined };
-                        border-top-right-radius: ${ previewIconBorderRadiusRight ? previewIconBorderRadiusRight + iconBorderRadiusUnit : undefined };
-                        border-bottom-right-radius: ${ previewIconBorderRadiusBottom ? previewIconBorderRadiusBottom + iconBorderRadiusUnit : undefined };
-                        border-bottom-left-radius: ${ previewIconBorderRadiusLeft ? previewIconBorderRadiusLeft + iconBorderRadiusUnit : undefined };
-
-						padding-top: ${ getSpacingOptionOutput( previewIconPaddingTop, iconPaddingUnit ) };
-						padding-right: ${ getSpacingOptionOutput( previewIconPaddingRight, iconPaddingUnit ) };
-						padding-bottom: ${ getSpacingOptionOutput( previewIconPaddingBottom, iconPaddingUnit ) };
-						padding-left: ${ getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) };
+						${ previewIconBorderTop ? 'border-top: ' + previewIconBorderTop + ';' : '' }
+						${ previewIconBorderRight ? 'border-right: ' + previewIconBorderRight + ';' : '' }
+						${ previewIconBorderBottom ? 'border-bottom: ' + previewIconBorderBottom + ';' : '' }
+						${ previewIconBorderLeft ? 'border-left: ' + previewIconBorderLeft + ';' : '' }
+						${ previewIconBorderRadiusTop ? 'border-top-left-radius: ' + previewIconBorderRadiusTop + iconBorderRadiusUnit + ';' : '' }
+						${ previewIconBorderRadiusRight ? 'border-top-right-radius: ' + previewIconBorderRadiusRight + iconBorderRadiusUnit + ';' : '' }
+						${ previewIconBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewIconBorderRadiusBottom + iconBorderRadiusUnit + ';' : '' }
+						${ previewIconBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewIconBorderRadiusLeft + iconBorderRadiusUnit + ';' : '' }
+						${ previewIconPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewIconPaddingTop, iconPaddingUnit ) + ';' : '' }
+						${ previewIconPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewIconPaddingRight, iconPaddingUnit ) + ';' : '' }
+						${ previewIconPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewIconPaddingBottom, iconPaddingUnit ) + ';' : '' }
+						${ previewIconPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) + ';' : '' }
 					}
 
 					/* Rating */
 					.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-rating-wrap {
-						margin-top: ${ previewRatingMarginTop ? getSpacingOptionOutput( previewRatingMarginTop, ratingMarginUnit ) : undefined };
-						margin-right: ${ previewRatingMarginRight ? getSpacingOptionOutput( previewRatingMarginRight, ratingMarginUnit ) : undefined };
-						margin-bottom: ${ previewRatingMarginBottom ? getSpacingOptionOutput( previewRatingMarginBottom, ratingMarginUnit ) : undefined };
-						margin-left: ${ previewRatingMarginLeft ? getSpacingOptionOutput( previewRatingMarginLeft, ratingMarginUnit ) : undefined };
-						padding-top: ${ previewRatingPaddingTop ? getSpacingOptionOutput( previewRatingPaddingTop, ratingPaddingUnit ) : undefined };
-						padding-right: ${ previewRatingPaddingRight ? getSpacingOptionOutput( previewRatingPaddingRight, ratingPaddingUnit ) : undefined };
-						padding-bottom: ${ previewRatingPaddingBottom ? getSpacingOptionOutput( previewRatingPaddingBottom, ratingPaddingUnit ) : undefined };
-						padding-left: ${ previewRatingPaddingLeft ? getSpacingOptionOutput( previewRatingPaddingLeft, ratingPaddingUnit ) : undefined };
+						${ previewRatingMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewRatingMarginTop, ratingMarginUnit ) + ';' : '' }
+						${ previewRatingMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewRatingMarginRight, ratingMarginUnit ) + ';' : '' }
+						${ previewRatingMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewRatingMarginBottom, ratingMarginUnit ) + ';' : '' }
+						${ previewRatingMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewRatingMarginLeft, ratingMarginUnit ) + ';' : '' }
+						${ previewRatingPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewRatingPaddingTop, ratingPaddingUnit ) + ';' : '' }
+						${ previewRatingPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewRatingPaddingRight, ratingPaddingUnit ) + ';' : '' }
+						${ previewRatingPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewRatingPaddingBottom, ratingPaddingUnit ) + ';' : '' }
+						${ previewRatingPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewRatingPaddingLeft, ratingPaddingUnit ) + ';' : '' }
 					}
                 `}
             </style>
