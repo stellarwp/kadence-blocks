@@ -21,6 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.0.4' );
+
+require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
+use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
+use KadenceWP\KadenceBlocks\Container;
 /**
  * Add a check before redirecting
  */
@@ -83,6 +90,18 @@ function kadence_blocks_init() {
 		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';
 	}
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
+	/**
+	 * Site Health
+	 */
+	require_once KADENCE_BLOCKS_PATH . '/includes/settings/class-kadence-blocks-site-health.php';
+	/**
+	 * Telemetry.
+	 */
+	Config::set_container( new Container() );
+	Config::set_server_url( 'https://telemetry.stellarwp.com/api/v1' );
+	Config::set_hook_prefix( 'kadence-blocks' );
+	Config::set_stellar_slug( 'kadence-blocks' );
+	Telemetry::instance()->init( __FILE__ );
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 
