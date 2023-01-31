@@ -15,7 +15,6 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getPreviewSize,
-	getFontSizeOptionOutput,
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
@@ -29,7 +28,6 @@ import {
 	StepControls,
 	ImageSizeControl,
 	KadenceRadioButtons,
-	ResponsiveRadioRangeControls,
 	DynamicLinkControl,
 	KadenceMediaPlaceholder,
 	DynamicGalleryControl,
@@ -39,7 +37,8 @@ import {
 	ResponsiveRangeControls,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
-	CopyPasteAttributes
+	CopyPasteAttributes,
+	BoxShadowControl
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { applyFilters } from '@wordpress/hooks';
@@ -652,9 +651,9 @@ function GalleryEdit( props ) {
 			)}
 			<CopyPasteAttributes
 				attributes={ attributes }
-				excludedAttrs={ nonTransAttrs } 
-				defaultAttributes={ metadata['attributes'] } 
-				blockSlug={ metadata['name'] } 
+				excludedAttrs={ nonTransAttrs }
+				defaultAttributes={ metadata['attributes'] }
+				blockSlug={ metadata['name'] }
 				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 			/>
 		</BlockControls>
@@ -1366,90 +1365,68 @@ function GalleryEdit( props ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadowHover( { color: value } )}
-																		opacityValue={shadowHover[ 0 ].opacity}
-																		onOpacityChange={value => saveShadowHover( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].blur}
-																		onChange={value => saveShadowHover( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].spread}
-																		onChange={value => saveShadowHover( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].vOffset}
-																		onChange={value => saveShadowHover( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].hOffset}
-																		onChange={value => saveShadowHover( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
+																	<BoxShadowControl
+																		label={ __( 'Hover Box Shadow', 'kadence-blocks-pro' ) }
+																		enable={ true }
+																		color={ (shadowHover[0].color ? shadowHover[0].color : '') }
+																		colorDefault={ '#000000' }
+																		opacity={ shadowHover[0].opacity }
+																		hOffset={ shadowHover[0].hOffset }
+																		vOffset={ shadowHover[0].vOffset }
+																		blur={ shadowHover[0].blur }
+																		spread={ shadowHover[0].spread }
+																		onColorChange={ value => {
+																			saveShadowHover( { color: value } );
+																		} }
+																		onOpacityChange={ value => {
+																			saveShadowHover( { opacity: value } );
+																		} }
+																		onHOffsetChange={ value => {
+																			saveShadowHover( { hOffset: value } );
+																		} }
+																		onVOffsetChange={ value => {
+																			saveShadowHover( { vOffset: value } );
+																		} }
+																		onBlurChange={ value => {
+																			saveShadowHover( { blur: value } );
+																		} }
+																		onSpreadChange={ value => {
+																			saveShadowHover( { spread: value } );
+																		} }
 																	/>
 																</>
 															);
 														} else {
 															tabout = (
 																<>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadow( { color: value } )}
-																		opacityValue={shadow[ 0 ].opacity}
-																		onOpacityChange={value => saveShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadow[ 0 ].blur}
-																		onChange={value => saveShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadow[ 0 ].spread}
-																		onChange={value => saveShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].vOffset}
-																		onChange={value => saveShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].hOffset}
-																		onChange={value => saveShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
+																	<BoxShadowControl
+																		label={ __( 'Box Shadow', 'kadence-blocks-pro' ) }
+																		enable={ true }
+																		color={ (shadow[0].color ? shadow[0].color : '') }
+																		colorDefault={ '#000000' }
+																		opacity={ shadow[0].opacity }
+																		hOffset={ shadow[0].hOffset }
+																		vOffset={ shadow[0].vOffset }
+																		blur={ shadow[0].blur }
+																		spread={ shadow[0].spread }
+																		onColorChange={ value => {
+																			saveShadow( { color: value } );
+																		} }
+																		onOpacityChange={ value => {
+																			saveShadow( { opacity: value } );
+																		} }
+																		onHOffsetChange={ value => {
+																			saveShadow( { hOffset: value } );
+																		} }
+																		onVOffsetChange={ value => {
+																			saveShadow( { vOffset: value } );
+																		} }
+																		onBlurChange={ value => {
+																			saveShadow( { blur: value } );
+																		} }
+																		onSpreadChange={ value => {
+																			saveShadow( { spread: value } );
+																		} }
 																	/>
 																</>
 															);
@@ -1587,7 +1564,7 @@ function GalleryEdit( props ) {
 					.kb-gallery-id-${uniqueID}.kb-gallery-type-thumbslider .kt-blocks-carousel-main {
 						${( previewGutter ? 'margin-bottom:' + previewGutter + previewGutterUnit + ';' : '' )}
 					}
-					
+
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color && '' !== captionStyles[ 0 ].color ? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' )}
