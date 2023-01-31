@@ -53,6 +53,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 		if ( componentsPanel ) {
 			componentsPanel.setAttribute( 'data-kadence-hide-advanced', ( key !== 'advanced' ) );
+			componentsPanel.setAttribute( 'data-kadence-active-tab', key );
 		}
 	};
 
