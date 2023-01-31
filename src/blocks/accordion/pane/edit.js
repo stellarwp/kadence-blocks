@@ -62,9 +62,20 @@ function PaneEdit( {
 		},
 		[ clientId ]
 	);
+	const { hasInnerBlocks } = useSelect(
+		( select ) => {
+			const { getBlock } = select( blockEditorStore );
+			const block = getBlock( clientId );
+			return {
+				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+			};
+		},
+		[ clientId ]
+	);
 	const isStartCollapsed = undefined !== accordionBlock?.[0]?.attributes?.startCollapsed && accordionBlock[0].attributes.startCollapsed;
 	const isOpenPane = !isStartCollapsed && undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id )
-	setAttributes( { isPaneActive: attributes.isPaneActive ?? isOpenPane } );
+	const isNewPane = !uniqueID;
+	setAttributes( { isPaneActive: attributes.isPaneActive ?? isNewPane ? true : isOpenPane } );
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const updatePaneCount = ( value ) => {
 		updateBlockAttributes( rootID, { paneCount: value } );
@@ -112,6 +123,9 @@ function PaneEdit( {
 		},
 		{
 			templateLock: false,
+			renderAppender: hasInnerBlocks
+				? undefined
+				: InnerBlocks.ButtonBlockAppender,
 		}
 	);
 	return (
