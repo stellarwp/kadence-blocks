@@ -4,7 +4,4 @@ node_modules
 dist/
 zip/
 bin/strauss.phar
-# DevOps #
-#######################
-vendor/*
-!vendor/strauss
+vendor/
