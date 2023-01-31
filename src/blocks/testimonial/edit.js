@@ -185,11 +185,6 @@ function KadenceTestimonials({
 
     const previewIconSize = getPreviewSize( previewDevice, ( undefined !== isize ? isize : ''), ( undefined !== tabletIsize ? tabletIsize : ''), ( undefined !== mobileIsize ? mobileIsize : '') );
 
-    const previewRatingMarginTop = undefined !== ratingStyles?.[0]?.margin?.[0] ? ratingStyles[0].margin[0] + 'px' : '';
-    const previewRatingMarginRight = undefined !== ratingStyles?.[0]?.margin?.[1] ? ratingStyles[0].margin[1] + 'px' : '';
-    const previewRatingMarginBottom = undefined !== ratingStyles?.[0]?.margin?.[2] ? ratingStyles[0].margin[2] + 'px' : '';
-    const previewRatingMarginLeft = undefined !== ratingStyles?.[0]?.margin?.[3] ? ratingStyles[0].margin[3] + 'px' : '';
-
     const nonTransAttrs = [ 'url', 'media', 'title', 'content' ];
 
     const blockProps = useBlockProps({});
@@ -473,13 +468,7 @@ function KadenceTestimonials({
                     )}
                     {displayRating && (
                         <div
-                            className={`kt-testimonial-rating-wrap kt-testimonial-rating-${rating}`}
-                            style={{
-                                marginTop: previewRatingMarginTop,
-                                marginRight: previewRatingMarginRight,
-                                marginBottom: previewRatingMarginBottom,
-                                marginLeft: previewRatingMarginLeft,
-                            }}>
+                            className={`kt-testimonial-rating-wrap kt-testimonial-rating-${rating}`}>
                             <IconRender className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1'}
                                 name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
                                 style={{

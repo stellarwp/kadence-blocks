@@ -238,6 +238,38 @@
 		}
 	  ]
 	},
+	"mediaMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletMediaMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileMediaMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mediaMarginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"mediaPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletMediaPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileMediaPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mediaPaddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"mediaBorderRadius": {
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
@@ -491,6 +523,38 @@
 		}
 	  ]
 	},
+	"ratingMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletRatingMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileRatingMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"ratingMarginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"ratingPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletRatingPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileRatingPadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"ratingPaddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"displayIcon": {
 	  "type": "boolean",
 	  "default": false
@@ -687,6 +751,22 @@
 		"",
 		""
 	  ]
+	},
+	"wrapperMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletWrapperMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileWrapperMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"wrapperMarginUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"tabletContainerPadding": {
 	  "type": "array",

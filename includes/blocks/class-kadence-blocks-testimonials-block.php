@@ -150,6 +150,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		 *  Wrapper padding
 		 */
 		$wrapper_padding_type = ! empty( $attributes['wrapperPaddingType'] ) ? $attributes['wrapperPaddingType'] : 'px';
+		$wrapper_margin_type = ! empty( $attributes['wrapperMarginUnit'] ) ? $attributes['wrapperMarginUnit'] : 'px';
 
 		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 
@@ -161,6 +162,13 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'padding-left', $attributes['wrapperPadding'][3] . $wrapper_padding_type );
 		}
 
+		if ( isset( $attributes['wrapperMargin'][1] ) && is_numeric( $attributes['wrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $attributes['wrapperMargin'][1] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['wrapperMargin'][3] ) && is_numeric( $attributes['wrapperMargin'][3] ) ) {
+			$css->add_property( 'margin-left', $attributes['wrapperMargin'][3] . $wrapper_margin_type );
+		}
+
 		// Tablet wrapper padding L/R
 		$css->set_media_state( 'tablet' );
 		if ( isset( $attributes['wrapperTabletPadding'][1] ) && is_numeric( $attributes['wrapperTabletPadding'][1] ) ) {
@@ -168,6 +176,12 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['wrapperTabletPadding'][3] ) && is_numeric( $attributes['wrapperTabletPadding'][3] ) ) {
 			$css->add_property( 'padding-left', $attributes['wrapperTabletPadding'][3] . $wrapper_padding_type );
+		}
+		if ( isset( $attributes['tabletWrapperMargin'][1] ) && is_numeric( $attributes['tabletWrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $attributes['tabletWrapperMargin'][1] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['tabletWrapperMargin'][3] ) && is_numeric( $attributes['tabletWrapperMargin'][3] ) ) {
+			$css->add_property( 'margin-left', $attributes['tabletWrapperMargin'][3] . $wrapper_margin_type );
 		}
 
 		// Mobile wrapper padding L/R
@@ -178,6 +192,13 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['wrapperMobilePadding'][3] ) && is_numeric( $attributes['wrapperMobilePadding'][3] ) ) {
 			$css->add_property( 'padding-left', $attributes['wrapperMobilePadding'][3] . $wrapper_padding_type );
 		}
+		if ( isset( $attributes['mobileWrapperMargin'][1] ) && is_numeric( $attributes['mobileWrapperMargin'][1] ) ) {
+			$css->add_property( 'margin-right', $attributes['mobileWrapperMargin'][1] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['mobileWrapperMargin'][3] ) && is_numeric( $attributes['mobileWrapperMargin'][3] ) ) {
+			$css->add_property( 'margin-left', $attributes['mobileWrapperMargin'][3] . $wrapper_margin_type );
+		}
+
 		$css->set_media_state( 'desktop' );
 		/*
 		 * If the layout style is carousel, we set the top & bottom wrapper padding on the carousel item instead of the wrapper
@@ -193,6 +214,12 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['wrapperPadding'][2] ) && is_numeric( $attributes['wrapperPadding'][2] ) ) {
 			$css->add_property( 'padding-bottom', $attributes['wrapperPadding'][2] . $wrapper_padding_type );
 		}
+		if ( isset( $attributes['wrapperMargin'][0] ) && is_numeric( $attributes['wrapperMargin'][0] ) ) {
+			$css->add_property( 'margin-top', $attributes['wrapperMargin'][0] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['wrapperMargin'][2] ) && is_numeric( $attributes['wrapperMargin'][2] ) ) {
+			$css->add_property( 'margin-bottom', $attributes['wrapperMargin'][2] . $wrapper_margin_type );
+		}
 
 		// Tablet wrapper padding T/B
 		$css->set_media_state( 'tablet' );
@@ -202,6 +229,12 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['wrapperTabletPadding'][2] ) && is_numeric( $attributes['wrapperTabletPadding'][2] ) ) {
 			$css->add_property( 'padding-bottom', $attributes['wrapperTabletPadding'][2] . $wrapper_padding_type );
 		}
+		if ( isset( $attributes['tabletWrapperMargin'][0] ) && is_numeric( $attributes['tabletWrapperMargin'][0] ) ) {
+			$css->add_property( 'margin-top', $attributes['tabletWrapperMargin'][0] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['tabletWrapperMargin'][2] ) && is_numeric( $attributes['tabletWrapperMargin'][2] ) ) {
+			$css->add_property( 'margin-bottom', $attributes['tabletWrapperMargin'][2] . $wrapper_margin_type );
+		}
 
 		// Mobile wrapper padding T/B
 		$css->set_media_state( 'mobile' );
@@ -210,6 +243,12 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['wrapperMobilePadding'][2] ) && is_numeric( $attributes['wrapperMobilePadding'][2] ) ) {
 			$css->add_property( 'padding-bottom', $attributes['wrapperMobilePadding'][2] . $wrapper_padding_type );
+		}
+		if ( isset( $attributes['mobileWrapperMargin'][0] ) && is_numeric( $attributes['mobileWrapperMargin'][0] ) ) {
+			$css->add_property( 'margin-top', $attributes['mobileWrapperMargin'][0] . $wrapper_margin_type );
+		}
+		if ( isset( $attributes['mobileWrapperMargin'][2] ) && is_numeric( $attributes['mobileWrapperMargin'][2] ) ) {
+			$css->add_property( 'margin-bottom', $attributes['mobileWrapperMargin'][2] . $wrapper_margin_type );
 		}
 		$css->set_media_state( 'desktop' );
 
@@ -619,9 +658,19 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			}
 
 			if ( isset( $attributes['mediaStyles'][0] ) ) {
-				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
-				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
 				$css->render_color_output( $attributes['mediaStyles'][0], 'background', 'background-color', 'backgroundOpacity' );
+			}
+
+			if( isset( $attributes['mediaStyles'][0] ) && array_filter( $attributes['mediaStyles'][0]['padding'] )  ) {
+				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
+			} else {
+				$css->render_measure_output( $attributes, 'ratingPadding', 'padding' );
+			}
+
+			if( isset( $attributes['mediaStyles'][0] ) && array_filter( $attributes['mediaStyles'][0]['margin'] )  ) {
+				$css->render_range( $attributes['mediaStyles'][0], 'margin', 'margin' );
+			} else {
+				$css->render_measure_output( $attributes, 'ratingMargin', 'margin' );
 			}
 
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
@@ -634,14 +683,14 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		if( isset( $attributes['displayRating'] ) && $attributes['displayRating'] ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap' );
-			$css->render_range( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array(
-				'margin' => array(
-					10,
-					0,
-					10,
-					0
-				)
-			), 'margin', 'margin' );
+
+			if( isset( $attributes['ratingStyles'][0]['margin'] ) && array_filter( $attributes['ratingStyles'][0]['margin'] ) ){
+				$css->render_range( $attributes['ratingStyles'][0], 'margin', 'margin' );
+			} else {
+				$css->render_measure_output( $attributes, 'ratingMargin', 'margin' );
+			}
+
+			$css->render_measure_output( $attributes, 'ratingPadding', 'padding' );
 
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-rating-wrap .kt-svg-testimonial-rating-icon' );
 			$css->render_color_output( isset( $attributes['ratingStyles'][0] ) ? $attributes['ratingStyles'][0] : array( 'color' => '#ffd700' ), 'color', 'color' );
