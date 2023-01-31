@@ -40,14 +40,11 @@ import {
     KadencePanelBody,
     WebfontLoader,
     KadenceIconPicker,
-    IconRender,
-    KadenceMediaPlaceholder,
-    MeasurementControls,
     InspectorControlTabs,
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
-    ResponsiveGapSizeControl,
     CopyPasteAttributes,
+	BoxShadowControl
 } from '@kadence/components';
 
 import {
@@ -83,17 +80,12 @@ import {useSelect, useDispatch} from '@wordpress/data';
 import {
     Button,
     ButtonGroup,
-    Dashicon,
     RangeControl,
     ToggleControl,
     SelectControl,
     Tooltip,
 } from '@wordpress/components';
 
-import {
-    closeSmall,
-    image,
-} from '@wordpress/icons';
 import classnames from 'classnames';
 
 /**
@@ -1317,59 +1309,38 @@ function KadenceTestimonials({
                                         />
                                         {showSettings('shadowSettings', 'kadence/testimonials') && (
                                             <>
-                                                <ToggleControl
-                                                    label={__('Enable Shadow', 'kadence-blocks')}
-                                                    checked={displayShadow}
-                                                    onChange={value => setAttributes({displayShadow: value})}
-                                                />
-                                                {displayShadow && (
-                                                    <Fragment>
-                                                        <PopColorControl
-                                                            label={__('Shadow Color', 'kadence-blocks')}
-                                                            value={(shadow[0].color ? shadow[0].color : '')}
-                                                            default={''}
-                                                            onChange={value => saveShadow({color: value})}
-                                                            opacityValue={shadow[0].opacity}
-                                                            onOpacityChange={value => saveShadow({opacity: value})}
-                                                            onArrayChange={(color, opacity) => saveShadow({
-                                                                color: color,
-                                                                opacity: opacity
-                                                            })}
-                                                        />
-                                                        <RangeControl
-                                                            label={__('Shadow Blur', 'kadence-blocks')}
-                                                            value={shadow[0].blur}
-                                                            onChange={value => saveShadow({blur: value})}
-                                                            min={0}
-                                                            max={100}
-                                                            step={1}
-                                                        />
-                                                        <RangeControl
-                                                            label={__('Shadow Spread', 'kadence-blocks')}
-                                                            value={shadow[0].spread}
-                                                            onChange={value => saveShadow({spread: value})}
-                                                            min={-100}
-                                                            max={100}
-                                                            step={1}
-                                                        />
-                                                        <RangeControl
-                                                            label={__('Shadow Vertical Offset', 'kadence-blocks')}
-                                                            value={shadow[0].vOffset}
-                                                            onChange={value => saveShadow({vOffset: value})}
-                                                            min={-100}
-                                                            max={100}
-                                                            step={1}
-                                                        />
-                                                        <RangeControl
-                                                            label={__('Shadow Horizontal Offset', 'kadence-blocks')}
-                                                            value={shadow[0].hOffset}
-                                                            onChange={value => saveShadow({hOffset: value})}
-                                                            min={-100}
-                                                            max={100}
-                                                            step={1}
-                                                        />
-                                                    </Fragment>
-                                                )}
+												<BoxShadowControl
+													label={ __( 'Box Shadow', 'kadence-blocks-pro' ) }
+													enable={ ( displayShadow ? displayShadow : false ) }
+													color={ (shadow[0].color ? shadow[0].color : '') }
+													colorDefault={ '#000000' }
+													opacity={ shadow[0].opacity }
+													hOffset={ shadow[0].hOffset }
+													vOffset={ shadow[0].vOffset }
+													blur={ shadow[0].blur }
+													spread={ shadow[0].spread }
+													onEnableChange={ value => {
+														setAttributes( { displayShadow: value } );
+													} }
+													onColorChange={ value => {
+														saveShadow( { color: value } );
+													} }
+													onOpacityChange={ value => {
+														saveShadow( { opacity: value } );
+													} }
+													onHOffsetChange={ value => {
+														saveShadow( { hOffset: value } );
+													} }
+													onVOffsetChange={ value => {
+														saveShadow( { vOffset: value } );
+													} }
+													onBlurChange={ value => {
+														saveShadow( { blur: value } );
+													} }
+													onSpreadChange={ value => {
+														saveShadow( { spread: value } );
+													} }
+												/>
                                             </>
                                         )}
                                     </KadencePanelBody>
