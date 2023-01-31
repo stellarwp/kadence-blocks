@@ -922,7 +922,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 				className={classnames( post.featured_image_src_large && post.featured_image_src_large[ 0 ] && image ? 'has-post-thumbnail' : 'kb-no-thumb' ) + ' entry content-bg entry content-bg loop-entry components-disabled'}
 			>
 				{image && post.featured_image_src_large && post.featured_image_src_large[ 0 ] !== undefined && (
-					<a href={post.link} className={`post-thumbnail kadence-thumbnail-ratio-${imageRatio}`}>
+					<a href={'#'} className={`post-thumbnail kadence-thumbnail-ratio-${imageRatio}`}>
 						<div className="post-thumbnail-inner">
 							<img
 								src={post.featured_image_src_large[ 0 ]}
@@ -965,7 +965,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							}}
 						>
 							<a
-								href={post.link}
+								href={'#'}
 								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __( '(Untitled)' ) }}
 							/>
 						</HtmlTagOut>
@@ -993,7 +993,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 										)}
 										<span className="author vcard">
 												{authorLink ? (
-													<a className="url fn n" href={post.author_info.author_link}>
+													<a className="url fn n" href={'#'}>
 														{post.author_info.display_name}
 													</a>
 												) : (
@@ -1057,7 +1057,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								)}
 								{comments && 0 !== post.comment_info && (
 									<span className="meta-comments">
-											<a className="meta-comments-link anchor-scroll" href={post.link + '#comments'}>
+											<a className="meta-comments-link anchor-scroll" href={'#comments'}>
 												{1 === post.comment_info && (
 													post.comment_info + ' ' + __( 'Comment', 'kadence-blocks' )
 												)}
@@ -1079,7 +1079,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						{readmore && (
 							<div className="entry-actions">
 								<p className="more-link-wrap">
-									<a href={post.link} className="post-more-link">{( readmoreLabel ? readmoreLabel : __( 'Read More', 'kadence-blocks' ) )}</a>
+									<a href={'#'} className="post-more-link">{( readmoreLabel ? readmoreLabel : __( 'Read More', 'kadence-blocks' ) )}</a>
 								</p>
 							</div>
 						)}
