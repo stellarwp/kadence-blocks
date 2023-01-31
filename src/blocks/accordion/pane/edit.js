@@ -153,7 +153,7 @@ function PaneEdit( {
 					className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }
 					onClick={() => {
 						setAttributes( { isPaneActive: !attributes.isPaneActive } );
-					}}
+					}} 
 				>
 					<div className="kt-blocks-accordion-title-wrap">
 						{ icon && 'left' === iconSide && (
@@ -166,12 +166,17 @@ function PaneEdit( {
 							onChange={ value => setAttributes( { title: value } ) }
 							value={ title }
 							keepPlaceholderOnFocus
+							onClick={(e) => {
+								e.stopPropagation();
+							}}
 						/>
 						{ icon && 'right' === iconSide && (
 							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 						) }
 					</div>
-					<div className="kt-blocks-accordion-icon-trigger"></div>
+					<div 
+						className="kt-blocks-accordion-icon-trigger"
+					></div>
 				</div>
 			</HtmlTagOut>
 			<div className={ 'kt-accordion-panel' } >
