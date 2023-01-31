@@ -30,6 +30,7 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 		/**
 		 * Fields.
 		 *
+		 * @var array[]
 		 */
 		private $fields = array();
 
