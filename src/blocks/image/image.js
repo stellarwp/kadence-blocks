@@ -1198,10 +1198,10 @@ export default function Image( {
 					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
 					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
-					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
+					borderTopLeftRadius: ( '' !== previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderTopRightRadius: ( '' !== previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomRightRadius: ( '' !== previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomLeftRadius: ( '' !== previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 
 					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor ) : undefined ),
 

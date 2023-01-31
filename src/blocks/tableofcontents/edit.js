@@ -244,10 +244,16 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			tempBorderStyle[0].bottom[2] = containerBorder?.[2] || '';
 			tempBorderStyle[0].left[2] = containerBorder?.[3] || '';
 			updateBorderStyle = true;
+			if ( '' === tempBorderStyle[0].top[0] ) {
+				tempBorderStyle[0].top[0] = 'currentColor';
+				tempBorderStyle[0].right[0] = 'currentColor';
+				tempBorderStyle[0].bottom[0] = 'currentColor';
+				tempBorderStyle[0].left[0] = 'currentColor';
+			}
 			setAttributes( { containerBorder:[ '', '', '', '' ] } );
 		}
 		if ( updateBorderStyle ) {
-			setAttributes( { borderStyle: tempBorderStyle } );
+			setAttributes( { borderStyle: JSON.parse( JSON.stringify( tempBorderStyle ) ) } );
 		}
 		// Update from old title border settings.
 		let tempTitleBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorderStyle ? attributes.titleBorderStyle : [{ 

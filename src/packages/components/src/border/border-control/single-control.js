@@ -63,7 +63,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 		onChange( newVal );
 	}
 	const currentColor = value?.[0] || '';
-	const currentSize = value?.[2] || '';
+	const currentSize = undefined !== value?.[2] && '' !== value?.[2] ? value[2] : '';
 	const onChangeSize = ( size ) => {
 		const isNumeric = ! isNaN( parseFloat( size ) );
 		const nextValue = isNumeric ? parseFloat( size ) : '';

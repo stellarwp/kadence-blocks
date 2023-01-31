@@ -24,9 +24,8 @@
 
 			for (let i = 0; i < elementList.length; i++) {
 				var thisSlider = elementList[i];
-
-				if (!thisSlider || !thisSlider.children) {
-					return;
+				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
+					continue;
 				}
 
 				this.createSplideElements( thisSlider );
@@ -271,4 +270,7 @@
 		// The DOM has already been loaded.
 		kadenceBlocksSplide.init();
 	}
+	document.addEventListener("kadenceJSInitReload", function(){
+		kadenceBlocksSplide.init();
+	});
 })();

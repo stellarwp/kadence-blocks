@@ -1,5 +1,7 @@
-.wp-block-kadence-image {
+.wp-block-kadence-image:not(:last-child) {
 	margin: 0 0 1em 0;
+}
+.wp-block-kadence-image {
 	.image-is-svg {
 		width: 100%;
 	}

@@ -32,7 +32,7 @@ import { kadenceBlocksIcon } from '@kadence/icons';
 function ToolbarLibrary() {
 	// const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
 	// const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const { getSelectedBlock, getBlockRootClientId, getBlockIndex } = useSelect( blockEditorStore );
+	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect( blockEditorStore );
 	const {
 		replaceBlocks,
 		insertBlocks,
@@ -55,8 +55,13 @@ function ToolbarLibrary() {
 						0,
 					);
 				} else if ( selectedBlock ) {
-					const destinationRootClientId = getBlockRootClientId(selectedBlock.clientId);
-					const destinationIndex = getBlockIndex( destinationRootClientId ) + 1;
+					const destinationRootClientId = getBlockHierarchyRootClientId(selectedBlock.clientId);
+					let destinationIndex = 0;
+					if ( destinationRootClientId ) {
+						destinationIndex = getBlockIndex( destinationRootClientId ) + 1;
+					} else {
+						destinationIndex = getBlockIndex( selectedBlock.clientId ) + 1;
+					}
 					insertBlocks(
 						createBlock( 'kadence/rowlayout', {
 							isPrebuiltModal: true,

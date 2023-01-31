@@ -398,7 +398,7 @@ function KadenceAdvancedHeading( props ) {
 
 	const classes = classnames( {
 		[ `kt-adv-heading${uniqueID}` ]: uniqueID,
-		[ className ]                  : className,
+		[ 'kadence-advancedheading-text' ]                  : true,
 		'kb-content-is-dynamic'        : undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable,
 		[ textColorClass ]             : textColorClass,
 		'has-text-color'               : textColorClass,

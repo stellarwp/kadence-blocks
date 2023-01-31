@@ -77,15 +77,33 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.4 Beta Version 1 =
-Release Date: TBD
+Release Date: January 31st, 2023
+* Add: Basic data to site health.
+* Add: Opt-in usage reporting on settings page.
+* Update: Make empty sections easier to select.
+* Update: Post block to prevent leaving the editor when clicking on a post.
+* Update: Accordion Block so show closed in the editor.
+* Update: Sliders and carousels can be initiated with javascript trigger.
 * Fix: Heading color issue in row.
 * Fix: Possible google font issue.
 * Fix: Issue with some testimonial blocks not updating.
 * Fix: zIndex issue in rows.
 * Fix: Issue with icon list fonts.
+* Fix: Issue with some gutter sizes.
+* Fix: Issue with zindex in rows.
 * Fix: Issue with heading block backward compatibility. 
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
+* Fix: Issue with possible button border showing when it should not.
+* Fix: Issue with advanced text alignment and negative margins not working correctly.
+* Fix: Issue with backward compatibility in table of contents border.
+* Fix: Preview of gallery columns.
+* Fix: Spacing around center aligned image.
+* Fix: Issue with row layout and selecting resizer.
+* Fix: Issue where generated css could show in a feed.
+* Fix: Issue where design library was inputting incorrectly.
+* Fix: Issue with button shadow backward compatibility.
+* Fix: Issue with TOC border backward compatibility.
 
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023

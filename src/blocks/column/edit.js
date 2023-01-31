@@ -500,6 +500,7 @@ function SectionEdit( {
 		'kadence-inner-column-inner': true,
 		'aos-animate': true,
 		'kt-animation-wrap': true,
+		'kb-section-only-appender': ! hasInnerBlocks,
 		[ `kadence-inner-column-direction-${ ( previewDirection ? previewDirection : 'vertical' ) }` ]: true,
 		[ `kadence-inner-column-text-align-${ ( previewAlign ? previewAlign : 'normal' ) }` ]: true,
 		[ `kadence-inner-column-vertical-align-${ ( verticalAlignment ? verticalAlignment : 'inherit' ) }` ]: true,
