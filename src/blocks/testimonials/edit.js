@@ -73,6 +73,7 @@ import {
     useBlockProps,
     InnerBlocks,
     useInnerBlocksProps,
+    ButtonBlockAppender,
 } from '@wordpress/block-editor';
 
 import {useSelect, useDispatch} from '@wordpress/data';
@@ -1094,7 +1095,6 @@ function KadenceTestimonials({
                         />
                     </BlockControls>
                     <InspectorControls>
-
                         <InspectorControlTabs
                             panelName={'testimonials'}
                             setActiveTab={(value) => setActiveTab(value)}
@@ -1102,7 +1102,6 @@ function KadenceTestimonials({
                         />
 
                         {(activeTab === 'general') &&
-
                             <>
                                 <KadencePanelBody
                                     panelName={'kb-testimonials-settings'}
@@ -1273,7 +1272,6 @@ function KadenceTestimonials({
                         }
 
                         {(activeTab === 'style') &&
-
                             <>
                                 {showSettings('containerSettings', 'kadence/testimonials') && (
                                     <KadencePanelBody
@@ -2127,7 +2125,13 @@ function KadenceTestimonials({
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>
+                            {(isSelected &&
+			                    <ButtonBlockAppender rootClientId={ clientId } />
+                            )}
+                            
                         </Splide>
+
+
                     )}
                     {layout && layout === 'grid' && (
                         <div className={'kt-testimonial-grid-wrap'} style={{
