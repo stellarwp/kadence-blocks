@@ -102,6 +102,7 @@ export function Edit( {
 		displayLabel,
 		labelFont,
 		labelHighlightFont,
+		labelHighlightBackgroundColor,
 		labelMinHeight,
 		label,
 		labelAlign,
@@ -182,7 +183,7 @@ export function Edit( {
 	const [ borderControl, setBorderControl ] = useState( 'individual' );
 
 	const classes = classnames( className, {
-		[ `kt-block-template${uniqueID}` ]: uniqueID,
+		[ `kt-progress-bar${uniqueID}` ]: uniqueID,
 	} );
 
 	const containerClasses = classnames( {
@@ -323,7 +324,15 @@ export function Edit( {
 				/>
 			</BlockControls>
 			<InspectorControls>
+			<style>
+				{`
+					.kt-progress-bar${uniqueID} .kt-progress-label-wrap mark {
+						${ labelHighlightFont.color ? 'color: ' + KadenceColorOutput( labelHighlightFont.color ) + ';' : '' }
 
+						${ labelHighlightBackgroundColor ? 'backgroud-color: ' + KadenceColorOutput( labelHighlightBackgroundColor ) + ';' : '' }
+					}
+				`}
+			</style>
 				<InspectorControlTabs
 					panelName={'progress-bar'}
 					setActiveTab={setActiveTab}
@@ -607,11 +616,14 @@ export function Edit( {
 										default={''}
 										onChange={value => saveLabelHighlightFont( { color: value } )}
 									/>
+									<PopColorControl
+										label={__( 'Background Settings', 'kadence-blocks' )}
+										value={( labelHighlightBackgroundColor ? labelHighlightBackgroundColor : '' )}
+										default={''}
+										onChange={value => setAttributes( { labelHighlightBackgroundColor: value } )}
+									/>
 								<TypographyControls
 										fontGroup={'heading'}
-										tagLevel={labelFont.level}
-										tagLowLevel={1}
-										onTagLevel={( value ) => saveLabelHighlightFont( { level: value } )}
 										fontSize={labelFont.size}
 										onFontSize={( value ) => saveLabelHighlightFont( { size: value } )}
 										fontSizeType={labelFont.sizeType}

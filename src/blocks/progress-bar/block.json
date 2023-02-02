@@ -230,6 +230,10 @@
 				]
 				}
 			},
+		"labelHighlightBackgroundColor": {
+			"type":"string",
+			"default":""
+		},
 	  "labelAlign": {
 		"type": "array",
 		"default": [ "", "", "" ]
