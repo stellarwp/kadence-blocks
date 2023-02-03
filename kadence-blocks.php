@@ -6,6 +6,7 @@
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
  * Version: 3.0.4
+ * Requires PHP: 7.2
  * Text Domain: kadence-blocks
  * License: GPL2+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
