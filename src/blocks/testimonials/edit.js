@@ -1049,7 +1049,7 @@ function KadenceTestimonials({
 		interval     : autoSpeed,
 		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
-		gap          : previewGap ? previewGap : '0',
+		gap          : getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ),
 	};
     const innerBlocksProps = useInnerBlocksProps(
 		{
