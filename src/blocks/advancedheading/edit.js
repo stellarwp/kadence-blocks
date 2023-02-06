@@ -51,7 +51,10 @@ import {
 /**
  * Block dependencies
  */
-import './markformat';
+import './formats/markformat';
+import './formats/typed-text';
+
+import Typed from 'typed.js';
 
 /**
  * Import Css
@@ -80,6 +83,7 @@ import {
 	Fragment,
 	useEffect,
 	useState,
+	useRef,
 } from '@wordpress/element';
 
 import {
@@ -102,7 +106,7 @@ const ANCHOR_REGEX = /[\s#]/g;
 
 function KadenceAdvancedHeading( props ) {
 
-	const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId, getPreviewDevice, addUniqueID, isUniqueID, isUniqueBlock, context } = props;
+	const { attributes, className, isSelected, setAttributes, mergeBlocks, onReplace, clientId, getPreviewDevice, addUniqueID, isUniqueID, isUniqueBlock, context } = props;
 	const {
 		inQueryBlock,
 		uniqueID,
@@ -196,8 +200,6 @@ function KadenceAdvancedHeading( props ) {
 		mobileMarkBorderStyles,
 		maxWidthType,
 		maxWidth,
-		beforeIcon,
-		afterIcon,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 
@@ -232,7 +234,7 @@ function KadenceAdvancedHeading( props ) {
 		}
 
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.markBorderStyles ? attributes.markBorderStyles : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.markBorderStyles ? attributes.markBorderStyles : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -436,6 +438,7 @@ function KadenceAdvancedHeading( props ) {
 	);
 	const headingContent = (
 		<RichText
+			id={ 'adv-heading' + uniqueID }
 			tagName={tagName}
 			allowedFormats={( link ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field' ], 'kadence/advancedheading' ) : undefined )}
 			value={content}
@@ -496,6 +499,47 @@ function KadenceAdvancedHeading( props ) {
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
+
+	const typed = useRef(null);
+	useEffect( () => {
+		if ( !isSelected && attributes.content.includes( "kt-typed-text" ) ) {
+			const parser = new DOMParser();
+			const contentHtml = parser.parseFromString( attributes.content, 'text/html' );
+
+			if ( contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ] ) {
+				let typedElement = contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ];
+				let dataStrings = typedElement.getAttribute('data-strings');
+				let strings = dataStrings ? JSON.parse( dataStrings ) : [];
+
+				// Adding the default/existing string twice is required for displaying properly
+				strings.unshift( typedElement.textContent );
+				strings.unshift( typedElement.textContent );
+
+				let options = {
+					strings: strings,
+					cursorChar: typedElement.getAttribute('data-cursor-char') ?? '_',
+					startDelay: typedElement.getAttribute('data-start-delay') ? parseInt( typedElement.getAttribute('data-start-delay') ) : 0,
+					backDelay: typedElement.getAttribute('data-back-delay') ? parseInt( typedElement.getAttribute('data-back-delay') ) : 700,
+					typeSpeed: typedElement.getAttribute('data-type-speed') ? parseInt( typedElement.getAttribute('data-type-speed') ) : 40,
+					backSpeed: typedElement.getAttribute('data-back-speed') ? parseInt( typedElement.getAttribute('data-back-speed') ) : 0,
+					smartBackspace: typedElement.getAttribute( 'data-smart-backspace' ) === 'true',
+					loop: typedElement.getAttribute( 'data-loop' ) !== 'false',
+					loopCount: false,
+					showCursor: typedElement.getAttribute( 'data-cursor-char' ) !== '',
+					shuffle: typedElement.getAttribute( 'data-shuffle' ) === 'true',
+				};
+
+				typed.current = new Typed( '.kt-adv-heading' + uniqueID + ' .kt-typed-text', options );
+			}
+
+			return function cleanup() {
+				// Destroy the typed instance and reset richtext content
+				typed.current.destroy();
+				document.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+			}
+		}
+
+	}, [ isSelected ] );
 
 	return (
 		<div {...blockProps}>
@@ -604,9 +648,9 @@ function KadenceAdvancedHeading( props ) {
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
