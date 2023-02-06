@@ -44,13 +44,17 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 	const tabsMap = tabs ? tabs : defaultTabs;
 	const tabsContainer = createRef();
 
+	let componentsPanel;
+
+	useEffect( () => {
+		componentsPanel = tabsContainer.current.closest( '.components-panel' );
+	} );
+
 	if ( activeTab !== openedTab ) {
 		setActiveTab( openedTab );
 	}
 
 	const setDataAttr = ( key ) => {
-		const componentsPanel = tabsContainer.current.closest( '.components-panel' );
-
 		if ( componentsPanel ) {
 			componentsPanel.setAttribute( 'data-kadence-hide-advanced', ( key !== 'advanced' ) );
 			componentsPanel.setAttribute( 'data-kadence-active-tab', key );
@@ -64,6 +68,21 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 	useEffect( () => {
 		setDataAttr( activeTab );
+		return () => {
+
+			if( componentsPanel ) {
+				const kadenceInspectorTabs = componentsPanel.querySelector(
+					'.kadence-blocks-inspector-tabs'
+				);
+
+				if( ! kadenceInspectorTabs || null === kadenceInspectorTabs ) {
+					componentsPanel.removeAttribute( 'data-kadence-hide-advanced' );
+					componentsPanel.removeAttribute( 'data-kadence-active-tab' );
+				}
+			}
+		};
+
+
 	}, [ activeTab ] );
 
 	return (
