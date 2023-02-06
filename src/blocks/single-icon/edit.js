@@ -170,8 +170,8 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
                 <CopyPasteAttributes
                     attributes={ attributes }
                     excludedAttrs={ nonTransAttrs }
-                    defaultAttributes={ metadata['attributes'] } 
-                    blockSlug={ metadata['name'] } 
+                    defaultAttributes={ metadata['attributes'] }
+                    blockSlug={ metadata['name'] }
                     onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                 />
             </BlockControls>
@@ -233,7 +233,6 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
                                 max={ 300 }
                                 step={1}
                                 unit={'px'}
-                                showUnit={true}
                             />
                             { icon && 'fe' === icon.substring( 0, 2 ) && (
                                 <RangeControl
