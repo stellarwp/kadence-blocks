@@ -20,6 +20,11 @@
 .kadence-font-size-control .kadence-single-unit-control {
     gap: 0;
 }
+.kadence-controls-content.kadence-single-unit-control {
+    > .components-base-control {
+        margin-bottom: 0;
+    }
+}
 .kadence-font-size-control .kadence-single-unit-control .components-unit-control-wrapper .components-input-control__backdrop {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

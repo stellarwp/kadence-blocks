@@ -65,8 +65,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { withSelect, withDispatch } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	createBlock,
 } from '@wordpress/blocks';
@@ -80,7 +79,6 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 import {
-	Fragment,
 	useEffect,
 	useState,
 	useRef,
@@ -106,7 +104,7 @@ const ANCHOR_REGEX = /[\s#]/g;
 
 function KadenceAdvancedHeading( props ) {
 
-	const { attributes, className, isSelected, setAttributes, mergeBlocks, onReplace, clientId, getPreviewDevice, addUniqueID, isUniqueID, isUniqueBlock, context } = props;
+	const { attributes, className, isSelected, setAttributes, mergeBlocks, onReplace, clientId, context } = props;
 	const {
 		inQueryBlock,
 		uniqueID,
@@ -202,6 +200,17 @@ function KadenceAdvancedHeading( props ) {
 		maxWidth,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -294,35 +303,35 @@ function KadenceAdvancedHeading( props ) {
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 	const TagHTML = tagName;
 
-	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
-	const previewPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 0 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
-	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== fontSize?.[0] ? fontSize[0] : '' ), ( undefined !== fontSize?.[1] ? fontSize[1] : '' ), ( undefined !== fontSize?.[2] ? fontSize[2] : '' ) );
-	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== fontHeight?.[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight?.[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight?.[2] ? fontHeight[2] : '' ) );
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 0 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
+	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== fontSize?.[0] ? fontSize[0] : '' ), ( undefined !== fontSize?.[1] ? fontSize[1] : '' ), ( undefined !== fontSize?.[2] ? fontSize[2] : '' ) );
+	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== fontHeight?.[0] ? fontHeight[0] : '' ), ( undefined !== fontHeight?.[1] ? fontHeight[1] : '' ), ( undefined !== fontHeight?.[2] ? fontHeight[2] : '' ) );
 
-	const previewLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
+	const previewLetterSpacing = getPreviewSize( previewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
 
-	const previewAlign = getPreviewSize( getPreviewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
-	const previewMarkPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
-	const previewMarkPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
-	const previewMarkPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 2 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 2 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 2 ] : '' ) );
-	const previewMarkPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== markPadding ? markPadding[ 3 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 3 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 3 ] : '' ) );
-	const previewMarkSize = getPreviewSize( getPreviewDevice, ( undefined !== markSize ? markSize[ 0 ] : '' ), ( undefined !== markSize ? markSize[ 1 ] : '' ), ( undefined !== markSize ? markSize[ 2 ] : '' ) );
-	const previewMarkLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== markLineHeight ? markLineHeight[ 0 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 1 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 2 ] : '' ) );
+	const previewAlign = getPreviewSize( previewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
+	const previewMarkPaddingTop = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
+	const previewMarkPaddingRight = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
+	const previewMarkPaddingBottom = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 2 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 2 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 2 ] : '' ) );
+	const previewMarkPaddingLeft = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 3 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 3 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 3 ] : '' ) );
+	const previewMarkSize = getPreviewSize( previewDevice, ( undefined !== markSize ? markSize[ 0 ] : '' ), ( undefined !== markSize ? markSize[ 1 ] : '' ), ( undefined !== markSize ? markSize[ 2 ] : '' ) );
+	const previewMarkLineHeight = getPreviewSize( previewDevice, ( undefined !== markLineHeight ? markLineHeight[ 0 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 1 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 2 ] : '' ) );
 
-	const previewMarkLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== markLetterSpacing ? markLetterSpacing : '' ), ( undefined !== tabletMarkLetterSpacing ? tabletMarkLetterSpacing : '' ), ( undefined !== mobileMarkLetterSpacing ? mobileMarkLetterSpacing : '' ) );
+	const previewMarkLetterSpacing = getPreviewSize( previewDevice, ( undefined !== markLetterSpacing ? markLetterSpacing : '' ), ( undefined !== tabletMarkLetterSpacing ? tabletMarkLetterSpacing : '' ), ( undefined !== mobileMarkLetterSpacing ? mobileMarkLetterSpacing : '' ) );
 
-	const previewMaxWidth = getPreviewSize( getPreviewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
+	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 
-	const previewMarkBorderTopStyle = getBorderStyle( getPreviewDevice, 'top', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
-	const previewMarkBorderRightStyle = getBorderStyle( getPreviewDevice, 'right', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
-	const previewMarkBorderBottomStyle = getBorderStyle( getPreviewDevice, 'bottom', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
-	const previewMarkBorderLeftStyle = getBorderStyle( getPreviewDevice, 'left', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderTopStyle = getBorderStyle( previewDevice, 'top', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderRightStyle = getBorderStyle( previewDevice, 'right', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+	const previewMarkBorderLeftStyle = getBorderStyle( previewDevice, 'left', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
 	const headingOptions = [
 		[
 			{
@@ -761,8 +770,8 @@ function KadenceAdvancedHeading( props ) {
 
 					{( activeTab === 'style' ) &&
 						<>
-						<KadencePanelBody panelName={'kb-adv-heading-style'}>
-							{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
+							<KadencePanelBody panelName={'kb-adv-heading-style'}>
+								{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
 									<ColorGroup>
 										<PopColorControl
 											label={__( 'Color', 'kadence-blocks' )}
@@ -1095,15 +1104,4 @@ function KadenceAdvancedHeading( props ) {
 
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			isUniqueID      : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-			isUniqueBlock   : ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientId ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientId ),
-	} ) ),
-] )( KadenceAdvancedHeading );
+export default KadenceAdvancedHeading;
