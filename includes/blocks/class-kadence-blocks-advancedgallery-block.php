@@ -564,6 +564,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 						'relcustom'    => ( isset( $blockattr['kadenceDynamic']['link']['relcustom'] ) ? $blockattr['kadenceDynamic']['link']['relcustom'] : '' ),
 					);
 					$href = $this->get_content( $args );
+				} else {
+					$href = ( ! empty( $image['customLink'] ) ? $image['customLink'] : '' );
 				}
 				break;
 			case 'attachment':
