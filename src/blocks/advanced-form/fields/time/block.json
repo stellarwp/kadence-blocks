@@ -3,6 +3,9 @@
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
+	"uniqueID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -40,8 +43,11 @@
 	  "default": ""
 	}
   },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"reusable": false
+  },
+  "ancestor": [ "kadence/advanced-form" ],
+  "parent": [ "kadence/advanced-form", "kadence/column" ]
 }

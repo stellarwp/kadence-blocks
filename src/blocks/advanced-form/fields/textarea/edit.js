@@ -17,6 +17,9 @@ import { __ } from '@wordpress/i18n';
 import {
 	InspectorControls
 } from '@wordpress/block-editor';
+import {
+	useEffect,
+} from '@wordpress/element';
 
 import { ColumnWidth } from '../../components';
 import classNames from 'classnames';
@@ -25,7 +28,7 @@ function FieldText( { attributes, setAttributes, isSelected, name } ) {
 	const { required, label, showLabel, value, helpText, ariaDescription, width, placeholder, rows } = attributes;
 
 	const classes = classNames( {
-		'kb-advanced-form-field': true,
+		'kb-adv-form-field': true,
 		[ `kb-field-desk-width-${width[0]}` ]: true,
 		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
 		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
@@ -103,7 +106,7 @@ function FieldText( { attributes, setAttributes, isSelected, name } ) {
 					onChange={() => false}
 					rows={rows}
 				></textarea>
-				{helpText && <span className="kb-advanced-form-help">{helpText}</span>}
+				{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 			</>
 		</div>
 	);

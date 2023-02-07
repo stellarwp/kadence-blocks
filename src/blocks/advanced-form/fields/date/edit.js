@@ -19,7 +19,7 @@ function FieldDate( props ) {
 	const { required, label, showLabel, value, helpText, width, ariaDescription } = attributes;
 
 	const classes = classNames( {
-		'kb-advanced-form-field': true,
+		'kb-adv-form-field': true,
 		[ `kb-field-desk-width-${width[0]}` ]: true,
 		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
 		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',

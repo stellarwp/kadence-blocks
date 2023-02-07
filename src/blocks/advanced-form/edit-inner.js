@@ -12,8 +12,13 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback } from '@wordpress/element';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
 import { applyFilters } from '@wordpress/hooks';
-import { useSelect } from '@wordpress/data';
+import { rawHandler } from '@wordpress/blocks';
 import { size, get } from 'lodash';
 import {
 	useEntityBlockEditor,
@@ -41,12 +46,19 @@ import {
 	InspectorControls,
 	BlockControls,
 	InnerBlocks,
+	useInnerBlocksProps,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
 	SelectControl,
 	ToggleControl,
+	ToolbarGroup,
+	ToolbarButton,
 } from '@wordpress/components';
+
+import {
+	plusCircle,
+} from '@wordpress/icons';
 
 import {
 	FieldStyles,
@@ -73,6 +85,8 @@ import {
  * Internal dependencies
  */
 import classnames from 'classnames';
+import { useEntityPublish } from './hooks';
+const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
 
 export function EditInner( props ) {
 
@@ -84,14 +98,12 @@ export function EditInner( props ) {
 		clientId,
 		direct,
 		id,
+		insert,
 	} = props;
 
 	const {
 		uniqueID,
 	} = attributes;
-
-	const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer' ];
-
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -203,26 +215,103 @@ export function EditInner( props ) {
 		'kadence_form',
 		id,
 	);
+	const {
+		insertBlocks,
+	} = useDispatch( editorStore );
 
 	let formFields = get( blocks, [ 0, 'innerBlocks' ], [] );
 	let newBlock = get( blocks, [ 0 ], {} );
 
+	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
+	const onAdd = async( title, template ) => {
+		try {
+			const response = await addNew();
+			if ( response.id ) {
+				switch ( template ) {
+					case 'simple':
+						insertBlocks(
+							[ createBlock( 'kadence/advanced-form-text', {} ), createBlock( 'kadence/advanced-form-email', {} ), createBlock( 'kadence/advanced-form-textarea', {} ), createBlock( 'kadence/advanced-form-submit', {} ) ],
+							0,
+							clientId,
+							false
+						);
+					break;
+					default:
+						insertBlocks(
+							[ createBlock( 'kadence/advanced-form-submit', {} ) ],
+							0,
+							clientId,
+							false
+						);
+					break;
+				}
+				setTitle(title);
+			}
+		} catch ( error ) {
+			console.error( error );
+		}
+	};
 	if ( title === '' ) {
 		return (
+			<>
 			<FormTitle
-				setTitle={setTitle}
+				onAdd={ onAdd }
+				isAdding={ isAdding }
 			/>
+			{/* <div className='kb-hide-while-setting-up'>
+				{( direct ) ?
+					<InnerBlocks
+						allowedBlocks={ALLOWED_BLOCKS}
+						renderAppender={(
+							hasChildBlocks ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender/>
+						)}
+					/>
+					:
+					<InnerBlocks
+						value={formFields}
+						onInput={( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b )}
+						onChange={( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b )}
+						allowedBlocks={ALLOWED_BLOCKS}
+						renderAppender={(
+							size( formFields ) ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender/>
+						)}
+					/>
+				}
+			</div> */}
+			</>
 		);
 	}
 
 	return (
-		<div>
-			{/*<BlockControls group="block">*/}
+		<>
+			<BlockControls group="block">
+				<ToolbarGroup>
+					<ToolbarButton
+						className="kb-row-add-section"
+						icon={ plusCircle }
+						onClick={ () => {
+							console.log( clientId );
+							const newBlocks = createBlock( 'kadence/advanced-form-submit', {} );
+							insertBlocks(
+								[ newBlocks ],
+								0,
+								clientId
+							);
+						} }
+						label={  __( 'Add Another Section', 'kadence-blocks' ) }
+						showTooltip={ true }
+					/>
+				</ToolbarGroup>
 			{/*	<BlockAlignmentControl*/}
 			{/*		value={align}*/}
 			{/*		onChange={( value ) => setMetaAttribute( { align: value } )}*/}
 			{/*	/>*/}
-			{/*</BlockControls>*/}
+			</BlockControls>
+			
 			<InspectorControls>
 
 				<InspectorControlTabs
@@ -540,7 +629,7 @@ export function EditInner( props ) {
 					/>
 				}
 
-				<div className={submitClasses}>
+				{/* <div className={submitClasses}>
 					<RichText
 						tagName="div"
 						placeholder={__( 'Submit' )}
@@ -578,7 +667,7 @@ export function EditInner( props ) {
 							marginLeft       : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
 						}}
 					/>
-				</div>
+				</div> */}
 			</div>
 
 			<SpacingVisualizer
@@ -598,10 +687,9 @@ export function EditInner( props ) {
 				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
 			/>
 
-		</div>
+		</>
 	);
 }
-
 export default ( EditInner );
 
 function useFormProp( prop ) {

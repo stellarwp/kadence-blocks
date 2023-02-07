@@ -6,6 +6,10 @@
  * Import Css
  */
 import './editor.scss';
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
 
 /**
  * Internal block libraries
@@ -47,8 +51,13 @@ export function Edit( props ) {
 
 	const { id, uniqueID } = attributes;
 
-	const blockProps = useBlockProps();
-
+	const blockClasses = classnames( {
+		'.wp-block-kadence-advanced-form'             : true,
+		[ `wp-block-kadence-advanced-form-${id}` ]   : id,
+	} );
+	const blockProps = useBlockProps( {
+		className: blockClasses
+	} );
 	const { post, currentPostType } = useSelect(
 		( select ) => ( {
 			post:
@@ -149,7 +158,7 @@ function Chooser( { id, post, commit } ) {
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_form"
-			label={__( 'Kadence Form', 'kadence-blocks' )}
+			label={__( 'Advanced Form', 'kadence-blocks' )}
 			instructions={__(
 				'Select an existing form or create a new one.',
 				'kadence-blocks',

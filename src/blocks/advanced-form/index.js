@@ -16,6 +16,7 @@ import './fields/telephone/index';
 import './fields/text/index';
 import './fields/textarea/index';
 import './fields/time/index';
+import './fields/submit/index';
 
 /**
  * Internal dependencies

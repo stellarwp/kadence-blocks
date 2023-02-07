@@ -3,6 +3,9 @@
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
+	"uniqueID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -19,7 +22,7 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
+	"defaultValue": {
 	  "type": "string",
 	  "default": ""
 	},
@@ -42,10 +45,20 @@
 	"name": {
 	  "type": "string",
 	  "default": ""
+	},
+	"auto": {
+		"type": "string",
+		"default": ""
+	},
+	"anchor": {
+		"type": "string"
 	}
   },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"reusable": false
+  },
+  "ancestor": [ "kadence/advanced-form" ],
+  "parent": [ "kadence/advanced-form", "kadence/column" ]
 }

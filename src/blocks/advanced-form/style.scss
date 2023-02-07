@@ -12,11 +12,12 @@
 		max-width: unset;
 	}
 
-	.required {
+	.kb-adv-form-required {
 		margin-left: 2px;
+		color: #b32d2e;
 	}
 
-	.kb-advanced-form-field {
+	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
 
@@ -100,15 +101,12 @@
 		.kb-forms-submit:hover::before {
 			opacity: 1;
 		}
-
-		.kb-field-help {
+		.kb-adv-form-help {
 			color: var(--global-palette6, #777);
-			margin: 2px 0 5px 0;
+			margin: 2px 0 2px 0;
 			font-size: 80%;
 			font-style: italic;
 			display: block;
-			flex-basis: 100%;
-			width: 0;
 		}
 
 	}
@@ -172,7 +170,7 @@
 	align-items: flex-start;
 }
 
-.kb-advanced-form-field .kb-text-style-field.has-error:not(.missingclass) {
+.kb-adv-form-field .kb-text-style-field.has-error:not(.missingclass) {
 	border-color: #c53030;
 }
 
@@ -184,146 +182,6 @@
 	border: 1px solid #4299e1;
 	color: #2b6cb0;
 	font-weight: bold;
-}
-
-.kb-field-desk-width-20 {
-	width: 20%;
-}
-
-.kb-field-desk-width-25 {
-	width: 25%;
-}
-
-.kb-field-desk-width-33 {
-	width: 33.33%;
-}
-
-.kb-field-desk-width-40 {
-	width: 40%;
-}
-
-.kb-field-desk-width-50 {
-	width: 50%;
-}
-
-.kb-field-desk-width-60 {
-	width: 60%;
-}
-
-.kb-field-desk-width-66 {
-	width: 66.66%;
-}
-
-.kb-field-desk-width-75 {
-	width: 75%;
-}
-
-.kb-field-desk-width-80 {
-	width: 80%;
-}
-
-.kb-field-desk-width-100 {
-	width: 100%;
-}
-
-.kb-field-desk-width-unset {
-	width: auto;
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-	.kb-advanced-form-field {
-		.kb-field-tablet-width-20 {
-			width: 20%;
-		}
-
-		.kb-field-tablet-width-25 {
-			width: 25%;
-		}
-
-		.kb-field-tablet-width-33 {
-			width: 33.33%;
-		}
-
-		.kb-field-tablet-width-40 {
-			width: 40%;
-		}
-
-		.kb-field-tablet-width-50 {
-			width: 50%;
-		}
-
-		.kb-field-tablet-width-60 {
-			width: 60%;
-		}
-
-		.kb-field-tablet-width-66 {
-			width: 66.66%;
-		}
-
-		.kb-field-tablet-width-75 {
-			width: 75%;
-		}
-
-		.kb-field-tablet-width-80 {
-			width: 80%;
-		}
-
-		.kb-field-tablet-width-100 {
-			width: 100%;
-		}
-
-		.kb-field-tablet-width-unset {
-			width: auto;
-		}
-	}
-}
-
-@media (max-width: 767px) {
-	.kb-advanced-form-field {
-		.kb-field-mobile-width-20 {
-			width: 20%;
-		}
-
-		.kb-field-mobile-width-25 {
-			width: 25%;
-		}
-
-		.kb-field-mobile-width-33 {
-			width: 33.33%;
-		}
-
-		.kb-field-mobile-width-40 {
-			width: 40%;
-		}
-
-		.kb-field-mobile-width-50 {
-			width: 50%;
-		}
-
-		.kb-field-mobile-width-60 {
-			width: 60%;
-		}
-
-		.kb-field-mobile-width-66 {
-			width: 66.66%;
-		}
-
-		.kb-field-mobile-width-75 {
-			width: 75%;
-		}
-
-		.kb-field-mobile-width-80 {
-			width: 80%;
-		}
-
-		.kb-field-mobile-width-100 {
-			width: 100%;
-		}
-
-		.kb-field-mobile-width-unset {
-			width: auto;
-		}
-	}
 }
 
 .kb-advanced-form-submit-container {

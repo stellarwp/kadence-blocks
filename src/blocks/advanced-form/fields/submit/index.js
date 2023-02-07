@@ -1,13 +1,12 @@
 /**
  * External dependencies
  */
-import { textInputIcon } from '@kadence/icons';
+import { advancedBtnIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
  */
 import edit from './edit';
-import transforms from './transforms';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -18,18 +17,21 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
 
-registerBlockType('kadence/advanced-form-text', {
+registerBlockType('kadence/advanced-form-submit', {
 	...metadata,
-	title: __( 'Text Field', 'kadence-blocks' ),
-	description: __( 'Kadence Form text input field', 'kadence-blocks' ),
+	title: __( 'Submit Button', 'kadence-blocks' ),
+	description: __( 'Kadence Form Submit Button', 'kadence-blocks' ),
 	keywords: [
-		'kadence',
+		'submit',
+		'button',
+		'send'
 	],
+	ancestor: [ 'kadence/advanced-form' ],
+	parent: [ 'kadence/advanced-form', 'kadence/column' ],
 	icon: {
-		src: textInputIcon,
+		src: advancedBtnIcon,
 	},
 	edit,
-	transforms,
 	save: () => null,
 
 });

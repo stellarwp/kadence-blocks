@@ -96,7 +96,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $form_attributes, 'margin', 'margin', [ 'desktop_key' => 'marginDesktop', 'tablet_key' => 'marginTablet', 'mobile_key' => 'marginMobile' ] );
 
 		// Input Styles
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form-field' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-field' );
 		$css->render_responsive_size( $field_style, array(
 			'rowGap',
 			'tabletRowGap',
@@ -321,14 +321,80 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		static $seen_refs = array();
 
-		$form_fields = $this->get_form_fields( $attributes['id'] );
+		if ( empty( $attributes['id'] ) ) {
+			return '';
+		}
 
-		$form_attributes = json_decode( json_encode( $this->get_form_attributes( $attributes['id'] ) ), true );
+		$form_block = get_post( $attributes['id'] );
+		if ( ! $form_block || 'kadence_form' !== $form_block->post_type ) {
+			return '';
+		}
 
-		$formFrontend = new AdvancedFormFrontend( $form_fields, $form_attributes, $unique_id, $attributes['id'] );
+		if ( isset( $seen_refs[ $attributes['id'] ] ) ) {
+			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
+			// is set in `wp_debug_mode()`.
+			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
 
-		return $formFrontend->render();
+			return $is_debug ?
+				// translators: Visible only in the front end, this warning takes the place of a faulty block.
+				__( '[block rendering halted]' ) :
+				'';
+		}
+
+		if ( 'publish' !== $form_block->post_status || ! empty( $form_block->post_password ) ) {
+			return '';
+		}
+
+		$seen_refs[ $attributes['id'] ] = true;
+
+		// Handle embeds for reusable blocks.
+		global $wp_embed;
+		$content = $wp_embed->run_shortcode( $form_block->post_content );
+		$content = $wp_embed->autoembed( $content );
+
+		$content = do_blocks( $content );
+		unset( $seen_refs[ $attributes['id'] ] );
+
+		// $form_fields = $this->get_form_fields( $attributes['id'] );
+
+		// $form_attributes = json_decode( json_encode( $this->get_form_attributes( $attributes['id'] ) ), true );
+
+		// $formFrontend = new AdvancedFormFrontend( $form_fields, $form_attributes, $unique_id, $attributes['id'] );
+		$outer_classes = array( 'wp-block-kadence-advanced-form', 'wp-block-kadence-advanced-form' . $unique_id );
+		$inner_classes = array( 'kb-advanced-form' );
+		$wrapper_args = array(
+			'class' => implode( ' ', $outer_classes ),
+		);
+		if ( ! empty( $attributes['anchor'] ) ) {
+			$wrapper_args['id'] = $attributes['anchor'];
+		}
+		$inner_args = array(
+			'class' => implode( ' ', $inner_classes ),
+			'method' => 'post',
+		);
+		$inner_wrap_attributes = array();
+		foreach ( $inner_args as $key => $value ) {
+			$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+		}
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+		$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
+		$form_fields = '';
+		if ( isset( $attributes['honeypot'] ) && true === $attributes['honeypot'] ) {
+			$form_fields .= '<div class="kb-honeypot-field">';
+			$form_fields .= '<label for="_kb_verify_email">' . __( 'Email', 'kadence-blocks' ) . '</label>';
+			$form_fields .= '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" placeholder="Email" tabIndex="-1" />';
+			$form_fields .= '</div>';
+		}
+		if ( ! empty( $attributes['id'] ) ) {
+			$form_fields .= '<input type="hidden" name="_kb_form_post_id" value="' . $attributes['id'] . '">';
+		}
+		$form_fields .= '<input type="hidden" name="action" value="kb_process_advanced_form_submit">';
+		$form_fields .= '<input type="hidden" name="_kb_form_id" value="' . $unique_id . '">';
+		$content = sprintf( '<div %1$s><form %2$s>%3$s%4$s</form></div>', $wrapper_attributes, $inner_wrapper_attributes, $content, $form_fields );
+
+		return $content;
 	}
 
 	private function get_form_fields( $post_id ) {

@@ -18,7 +18,7 @@ function FieldTime( props ) {
 	const { required, label, showLabel, value, helpText, placeholder, width, ariaDescription } = attributes;
 
 	const classes = classNames( {
-		'kb-advanced-form-field': true,
+		'kb-adv-form-field': true,
 		[ `kb-field-desk-width-${width[0]}` ]: true,
 		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
 		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
@@ -83,7 +83,7 @@ function FieldTime( props ) {
 					placeholder={placeholder}
 					onChange={( value ) => false}
 				/>
-				{helpText && <span className="kb-advanced-form-help">{helpText}</span>}
+				{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 			</>
 		</div>
 	);

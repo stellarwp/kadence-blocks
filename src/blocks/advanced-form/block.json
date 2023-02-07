@@ -16,6 +16,9 @@
 	"form",
 	"contact"
   ],
+  "providesContext": {
+	"kadence/form-innerBlocks": true
+  },
   "attributes": {
 	"align": {
 	  "type": "string"

@@ -13,7 +13,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-field {
+			.wp-block-kadence-advanced-form_${id} .kb-adv-form-field {
 				margin-bottom: ${( previewRowGap ? previewRowGap : undefined )};
 			}
 
@@ -103,7 +103,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-help {
+			.wp-block-kadence-advanced-form_${id} .kb-adv-form-help {
 				font-size: ${helpStyles.fontSize};
 				line-height: ${helpStyles.lineHeight};
 				font-weight: ${helpStyles.fontWeight};

@@ -81,6 +81,7 @@ function kadence_gutenberg_editor_assets() {
 		'tableofcontents',
 		'tabs',
 		'testimonials',
+		'advanced-form',
 	);
 	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
 		$blocks[] = 'advanced-form';

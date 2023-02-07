@@ -6,75 +6,130 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, ToggleControl } from '@wordpress/components';
+import { TextControl, TextareaControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
 import { InspectorControls, InspectorAdvancedControls } from '@wordpress/block-editor';
-import { withSelect, withDispatch } from '@wordpress/data';
-import { KadencePanelBody } from '@kadence/components';
-
+import { useSelect, useDispatch } from '@wordpress/data';
+import { KadencePanelBody, InspectorControlTabs } from '@kadence/components';
+import {
+	useEffect,
+	useState,
+} from '@wordpress/element';
+import {
+	getUniqueId,
+} from '@kadence/helpers';
 import { ColumnWidth } from '../../components';
 import classNames from 'classnames';
 
-function FieldText( { attributes, setAttributes, isSelected } ) {
-	const { required, label, showLabel, value, helpText, ariaDescription, width, placeholder, name } = attributes;
+function FieldText( { attributes, setAttributes, isSelected, clientId } ) {
+	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, width, placeholder, auto, name } = attributes;
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
 
+	useEffect( () => {
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
+	}, [] );
 	const classes = classNames( {
-		'kb-advanced-form-field': true,
-		[ `kb-field-desk-width-${width[0]}` ]: true,
-		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
-		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+		'kb-adv-form-field': true,
 	});
 
 	return (
 		<div className={ classes }>
 			<InspectorControls>
+				<InspectorControlTabs
+					panelName={'advanced-form-text-general'}
+					setActiveTab={ ( value ) => setActiveTab( value ) }
+					activeTab={ activeTab }
+					allowedTabs={ [ 'general', 'advanced' ] }
+				/>
+				{ ( activeTab === 'general' ) &&
+					<>
+						<KadencePanelBody
+							title={__( 'Field Controls', 'kadence-blocks' )}
+							initialOpen={true}
+							panelName={ 'kb-adv-form-text-controls' }
+						>
+							<ToggleControl
+								label={__( 'Required', 'kadence-blocks' )}
+								checked={required}
+								onChange={( value ) => setAttributes( { required: value } )}
+							/>
+							<TextControl
+								label={__( 'Field Label', 'kadence-blocks' )}
+								value={label}
+								onChange={( value ) => setAttributes( { label: value } )}
+							/>
+							<ToggleControl
+								label={__( 'Show Label', 'kadence-blocks' )}
+								checked={showLabel}
+								onChange={( value ) => setAttributes( { showLabel: value } )}
+							/>
+							<TextareaControl
+								label={__( 'Description', 'kadence-blocks' )}
+								help={ __( 'This will be displayed under the input and can be used to provide direction on how the field should be filled out.', 'kadence-blocks' )}
+								value={helpText}
+								onChange={( value ) => setAttributes( { helpText: value } )}
+							/>
+							<TextControl
+								label={__( 'Field Placeholder', 'kadence-blocks' )}
+								value={placeholder}
+								onChange={( value ) => setAttributes( { placeholder: value } )}
+							/>
+							<TextControl
+								label={__( 'Default Value', 'kadence-blocks' )}
+								value={defaultValue}
+								onChange={( value ) => setAttributes( { defaultValue: value } )}
+							/>
+							<SelectControl
+								label={__( 'Field Auto Fill', 'kadence-blocks' )}
+								value={ auto }
+								options={[
+									{ value: '', label: __( 'Default', 'kadence-blocks' ) },
+									{ value: 'name', label: __( 'Name', 'kadence-blocks' ) },
+									{ value: 'given-name', label: __( 'First Name', 'kadence-blocks' ) },
+									{ value: 'family-name', label: __( 'Last Name', 'kadence-blocks' ) },
+									{ value: 'email', label: __( 'Email', 'kadence-blocks' ) },
+									{ value: 'organization', label: __( 'Organization', 'kadence-blocks' ) },
+									{ value: 'street-address', label: __( 'Street Address', 'kadence-blocks' ) },
+									{ value: 'address-line1', label: __( 'Address Line 1', 'kadence-blocks' ) },
+									{ value: 'address-line2', label: __( 'Address Line 1', 'kadence-blocks' ) },
+									{ value: 'country-name', label: __( 'Country Name', 'kadence-blocks' ) },
+									{ value: 'postal-code', label: __( 'Postal Code', 'kadence-blocks' ) },
+									{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
+									{ value: 'off', label: __( 'Off', 'kadence-blocks' ) },
+								]}
+								onChange={( value ) => setAttributes( { auto: value } )}
+							/>
+							<TextControl
+								label={__( 'Input aria description', 'kadence-blocks' )}
+								value={ariaDescription}
+								onChange={( value ) => setAttributes( { ariaDescription: value } )}
+							/>
+						</KadencePanelBody>
+					</>
+				}
+				{ ( activeTab === 'advanced' ) &&
+					<>
+						<KadencePanelBody
+							title={__( 'Field Width', 'kadence-blocks' )}
+							initialOpen={true}
+							panelName={ 'kb-adv-form-text-width' }
+						>
 
-				<KadencePanelBody
-					title={__( 'Field Controls', 'kadence-blocks' )}
-					initialOpen={true}
-					panelName={ 'kb-adv-form-text-controls' }
-				>
-					<ToggleControl
-						label={__( 'Required', 'kadence-blocks' )}
-						checked={required}
-						onChange={( value ) => setAttributes( { required: value } )}
-					/>
-
-					<ToggleControl
-						label={__( 'Show Label', 'kadence-blocks' )}
-						checked={showLabel}
-						onChange={( value ) => setAttributes( { showLabel: value } )}
-					/>
-
-					<TextControl
-						label={__( 'Field Placeholder', 'kadence-blocks' )}
-						value={placeholder}
-						onChange={( value ) => setAttributes( { placeholder: value } )}
-					/>
-
-					<TextControl
-						label={__( 'Default Value', 'kadence-blocks' )}
-						value={value}
-						onChange={( value ) => setAttributes( { value: value } )}
-					/>
-
-					<TextControl
-						label={__( 'Help Text', 'kadence-blocks' )}
-						value={helpText}
-						onChange={( value ) => setAttributes( { helpText: value } )}
-					/>
-
-					<TextControl
-						label={__( 'Input aria description', 'kadence-blocks' )}
-						value={ariaDescription}
-						onChange={( value ) => setAttributes( { ariaDescription: value } )}
-					/>
-
-					<ColumnWidth saveSubmit={setAttributes} width={width}/>
-
-				</KadencePanelBody>
-
+						</KadencePanelBody>
+					</>
+				}
 			</InspectorControls>
 			<InspectorAdvancedControls>
 				<TextControl
@@ -96,11 +151,11 @@ function FieldText( { attributes, setAttributes, isSelected } ) {
 				<input
 					type={'text'}
 					className={'kb-field'}
-					value={value}
+					value={defaultValue}
 					placeholder={placeholder}
 					onChange={( value ) => false}
 				/>
-				{helpText && <span className="kb-advanced-form-help">{helpText}</span>}
+				{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 			</>
 		</div>
 	);
