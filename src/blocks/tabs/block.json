@@ -58,9 +58,17 @@
 	  "type": "array",
 	  "default": [ 0, 0, 0, 0 ]
     },
-	"contentBorderControl": {
+	"tabletContentBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileContentBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"contentBorderRadiusUnit": {
 	  "type": "string",
-	  "default": "linked"
+	  "default": "px"
 	},
 	"innerPadding": {
 	  "type": "array",
@@ -179,9 +187,17 @@
 	"titleBorderRadius": {
 	  "type": "array"
 	},
-	"titleBorderRadiusControl": {
+	"tabletTitleBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitleBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titleBorderRadiusUnit": {
 	  "type": "string",
-	  "default": "individual"
+	  "default": "px"
 	},
 	"titlePadding": {
 	  "type": "array"

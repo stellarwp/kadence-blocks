@@ -47,7 +47,7 @@ import {
 	InspectorControlTabs,
 	CopyPasteAttributes,
 	SmallResponsiveControl,
-	HoverToggleControl,
+	ResponsiveMeasurementControls,
 } from '@kadence/components';
 
 /**
@@ -123,10 +123,76 @@ const kttabsUniqueIDs = [];
  */
 function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
 
-	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, tabletInnerPadding, mobileInnerPadding, innerPaddingType, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
+	const {
+		uniqueID,
+		showPresets,
+		tabCount,
+		blockAlignment,
+		mobileLayout,
+		currentTab,
+		tabletLayout,
+		layout,
+		innerPadding,
+		tabletInnerPadding,
+		mobileInnerPadding,
+		innerPaddingType,
+		minHeight,
+		maxWidth,
+		titles,
+		titleColor,
+		titleColorHover,
+		titleColorActive,
+		titleBg,
+		titleBgHover,
+		titleBgActive,
+		size,
+		sizeType,
+		lineType,
+		lineHeight,
+		tabLineHeight,
+		tabSize,
+		mobileSize,
+		mobileLineHeight,
+		letterSpacing,
+		titleBorderWidth,
+		titleBorderControl,
+		titleBorder,
+		titleBorderHover,
+		titleBorderActive,
+		typography,
+		fontVariant,
+		fontWeight,
+		fontStyle,
+		fontSubset,
+		googleFont,
+		loadGoogleFont,
+		contentBorder,
+		contentBorderColor,
+		titlePadding,
+		titlePaddingControl,
+		titleMargin,
+		titleMarginControl,
+		contentBgColor,
+		tabAlignment,
+		titleBorderRadius,
+		tabletTitleBorderRadius,
+		mobileTitleBorderRadius,
+		titleBorderRadiusUnit,
+		iSize,
+		startTab,
+		enableSubtitle,
+		subtitleFont,
+		tabWidth,
+		gutter,
+		widthType,
+		textTransform,
+		contentBorderRadius,
+		tabletContentBorderRadius,
+		mobileContentBorderRadius,
+		contentBorderRadiusUnit,
+	} = attributes;
 
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
@@ -168,6 +234,17 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== size ? size : '' ), ( undefined !== tabSize ? tabSize : '' ), ( undefined !== mobileSize ? mobileSize : '' ) );
 	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
+
+	const previewContentRadiusTop = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius?.[0] ? contentBorderRadius[ 0 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 0 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 0 ] : '' ) );
+	const previewContentRadiusRight = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 1 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 1 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 1 ] : '' ) );
+	const previewContentRadiusBottom = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 2 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 2 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 2 ] : '' ) );
+	const previewContentRadiusLeft = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 3 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 3 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 3 ] : '' ) );
+
+
+	const previewTitleRadiusTop = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius?.[0] ? titleBorderRadius[ 0 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 0 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 0 ] : '' ) );
+	const previewTitleRadiusRight = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 1 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 1 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 1 ] : '' ) );
+	const previewTitleRadiusBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 2 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 2 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 2 ] : '' ) );
+	const previewTitleRadiusLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 3 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 3 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 3 ] : '' ) );
 
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
@@ -287,7 +364,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 1, 1, 0, 1 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
 					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, -1, 0 ],
@@ -304,7 +380,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#bcbcbc',
 					contentBorder: [ 1, 1, 1, 1 ],
-					contentBorderControl: 'linked',
 				} );
 			} else if ( 'boldbg' === key ) {
 				setAttributes( {
@@ -317,7 +392,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 0, 0, 0, 0 ],
 					titleBorderControl: 'linked',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
 					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, 0, 0 ],
@@ -334,7 +408,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#0a6689',
 					contentBorder: [ 3, 0, 0, 0 ],
-					contentBorderControl: 'individual',
 				} );
 			} else if ( 'center' === key ) {
 				setAttributes( {
@@ -347,7 +420,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 0, 0, 4, 0 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
 					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, 0, 0 ],
@@ -364,7 +436,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#eeeeee',
 					contentBorder: [ 1, 0, 0, 0 ],
-					contentBorderControl: 'individual',
 				} );
 			} else if ( 'vertical' === key ) {
 				setAttributes( {
@@ -378,7 +449,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 4, 0, 4, 4 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 10, 0, 0, 10 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 12, 8, 12, 20 ],
 					titlePaddingControl: 'individual',
 					titleMargin: [ 0, -4, 10, 0 ],
@@ -395,7 +465,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#eeeeee',
 					contentBorder: [ 4, 4, 4, 4 ],
-					contentBorderControl: 'linked',
 					minHeight: 400,
 				} );
 			}
@@ -539,10 +608,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: ( typography ? typography : '' ),
-							borderTopLeftRadius: borderRadius + 'px',
-							borderTopRightRadius: borderRadius + 'px',
 							borderWidth: ( titleBorderWidth ? titleBorderWidth[ 0 ] + 'px ' + titleBorderWidth[ 1 ] + 'px ' + titleBorderWidth[ 2 ] + 'px ' + titleBorderWidth[ 3 ] + 'px' : '' ),
-							borderRadius: ( titleBorderRadius ? titleBorderRadius[ 0 ] + 'px ' + titleBorderRadius[ 1 ] + 'px ' + titleBorderRadius[ 2 ] + 'px ' + titleBorderRadius[ 3 ] + 'px' : '' ),
+							borderTopLeftRadius: previewTitleRadiusTop + titleBorderRadiusUnit,
+							borderTopRightRadius: previewTitleRadiusRight + titleBorderRadiusUnit,
+							borderBottomRightRadius: previewTitleRadiusBottom + titleBorderRadiusUnit,
+							borderBottomLeftRadius: previewTitleRadiusLeft + titleBorderRadiusUnit,
 							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
 							borderColor: KadenceColorOutput( titleBorder ),
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
@@ -1026,7 +1096,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				}
 				${ accordionOrderStyle }
 				` }
-				
+
 			</style>
 		);
 
@@ -1053,9 +1123,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					/>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						excludedAttrs={ nonTransAttrs } 
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						excludedAttrs={ nonTransAttrs }
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
 				</BlockControls>
@@ -1121,38 +1191,27 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										<MeasurementControls
 											label={__('Content Border Width (px)', 'kadence-blocks')}
 											measurement={contentBorder}
-											control={contentBorderControl}
 											onChange={(value) => setAttributes({contentBorder: value})}
-											onControl={(value) => setAttributes({contentBorderControl: value})}
 											min={0}
 											max={100}
 											step={1}
 										/>
-										<MeasurementControls
-											label={__('Content Border Radius (px)', 'kadence-blocks')}
-											measurement={contentBorderRadius}
-											control={contentBorderRadiusControl}
-											onChange={(value) => setAttributes({contentBorderRadius: value})}
-											onControl={(value) => setContentBorderRadiusControl(value)}
-											min={0}
-											max={100}
-											step={1}
-											controlTypes={[
-												{
-													key: 'linked',
-													name: __('Linked', 'kadence-blocks'),
-													icon: radiusLinkedIcon
-												},
-												{
-													key: 'individual',
-													name: __('Individual', 'kadence-blocks'),
-													icon: radiusIndividualIcon
-												},
-											]}
-											firstIcon={topLeftIcon}
-											secondIcon={topRightIcon}
-											thirdIcon={bottomRightIcon}
-											fourthIcon={bottomLeftIcon}
+										<ResponsiveMeasurementControls
+											label={ __( 'Content Border Radius', 'kadence-blocks' ) }
+											value={ contentBorderRadius }
+											tabletValue={ tabletContentBorderRadius }
+											mobileValue={ mobileContentBorderRadius }
+											onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletContentBorderRadius: value } ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileContentBorderRadius: value } ) }
+											min={ 0 }
+											max={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+											step={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ contentBorderRadiusUnit }
+											units={ [ 'px', 'em', 'rem', '%' ] }
+											onUnit={ ( value ) => setAttributes( { contentBorderRadiusUnit: value } ) }
+											isBorderRadius={ true }
+											allowEmpty={true}
 										/>
 									</KadencePanelBody>
 								)}
@@ -1340,31 +1399,22 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											max={20}
 											step={1}
 										/>
-										<MeasurementControls
-											label={__('Title Border Radius (px)', 'kadence-blocks')}
-											measurement={titleBorderRadius}
-											control={titleBorderRadiusControl}
-											onChange={(value) => setAttributes({titleBorderRadius: value})}
-											onControl={(value) => setAttributes({titleBorderRadiusControl: value})}
-											min={0}
-											max={50}
-											step={1}
-											controlTypes={[
-												{
-													key: 'linked',
-													name: __('Linked', 'kadence-blocks'),
-													icon: radiusLinkedIcon
-												},
-												{
-													key: 'individual',
-													name: __('Individual', 'kadence-blocks'),
-													icon: radiusIndividualIcon
-												},
-											]}
-											firstIcon={topLeftIcon}
-											secondIcon={topRightIcon}
-											thirdIcon={bottomRightIcon}
-											fourthIcon={bottomLeftIcon}
+										<ResponsiveMeasurementControls
+											label={ __( 'Title Border Radius', 'kadence-blocks' ) }
+											value={ titleBorderRadius }
+											tabletValue={ tabletTitleBorderRadius }
+											mobileValue={ mobileTitleBorderRadius }
+											onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletTitleBorderRadius: value } ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileTitleBorderRadius: value } ) }
+											min={ 0 }
+											max={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+											step={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ titleBorderRadiusUnit }
+											units={ [ 'px', 'em', 'rem', '%' ] }
+											onUnit={ ( value ) => setAttributes( { titleBorderRadiusUnit: value } ) }
+											isBorderRadius={ true }
+											allowEmpty={true}
 										/>
 									</KadencePanelBody>
 								)}
@@ -1556,8 +1606,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 								<div className="kt-sidebar-settings-spacer"></div>
 
-								<KadenceBlockDefaults 
-									attributes={attributes} 
+								<KadenceBlockDefaults
+									attributes={attributes}
 									defaultAttributes={metadata['attributes']}
 									blockSlug={metadata['name']}
 									excludedAttrs={nonTransAttrs}
@@ -1638,7 +1688,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								paddingLeft: getSpacingOptionOutput( previewInnerPaddingLeft, innerPaddingType ),
 								paddingRight: getSpacingOptionOutput( previewInnerPaddingRight, innerPaddingType ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
-								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
+								borderTopLeftRadius: previewContentRadiusTop + contentBorderRadiusUnit,
+								borderTopRightRadius: previewContentRadiusRight + contentBorderRadiusUnit,
+								borderBottomRightRadius: previewContentRadiusBottom + contentBorderRadiusUnit,
+								borderBottomLeftRadius: previewContentRadiusLeft + contentBorderRadiusUnit,
 								minHeight: minHeight + 'px',
 								backgroundColor: KadenceColorOutput( contentBgColor ),
 								borderColor: KadenceColorOutput( contentBorderColor ),

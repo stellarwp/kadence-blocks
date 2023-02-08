@@ -93,9 +93,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
 		}
 
-		if ( isset( $attributes['contentBorderRadius'] ) && ! empty( $attributes['contentBorderRadius'] ) && is_array( $attributes['contentBorderRadius'] ) ) {
-			$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius', $border_args );
-		}
+		$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius' );
 
 		$css->render_measure_output( $attributes, 'innerPadding', 'padding' );
 
@@ -194,9 +192,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['titleBorderWidth'] ) && ! empty( $attributes['titleBorderWidth'] ) && is_array( $attributes['titleBorderWidth'] ) ) {
 			$css->add_property( 'border-width', $attributes['titleBorderWidth'][0] . 'px ' . $attributes['titleBorderWidth'][1] . 'px ' . $attributes['titleBorderWidth'][2] . 'px ' . $attributes['titleBorderWidth'][3] . 'px' );
 		}
-		if ( isset( $attributes['titleBorderRadius'] ) && ! empty( $attributes['titleBorderRadius'] ) && is_array( $attributes['titleBorderRadius'] ) ) {
-			$css->add_property( 'border-radius', $attributes['titleBorderRadius'][0] . 'px ' . $attributes['titleBorderRadius'][1] . 'px ' . $attributes['titleBorderRadius'][2] . 'px ' . $attributes['titleBorderRadius'][3] . 'px' );
-		}
+		$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius' );
 		if ( isset( $attributes['titlePadding'] ) && ! empty( $attributes['titlePadding'] ) && is_array( $attributes['titlePadding'] ) ) {
 			$css->add_property( 'padding', $attributes['titlePadding'][0] . 'px ' . $attributes['titlePadding'][1] . 'px ' . $attributes['titlePadding'][2] . 'px ' . $attributes['titlePadding'][3] . 'px' );
 		}
