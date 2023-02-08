@@ -73,6 +73,7 @@ import {
     useBlockProps,
     InnerBlocks,
     useInnerBlocksProps,
+    ButtonBlockAppender,
 } from '@wordpress/block-editor';
 
 import {useSelect, useDispatch} from '@wordpress/data';
@@ -229,6 +230,7 @@ function KadenceTestimonials({
         },
         [clientId],
     );
+	const { removeBlock } = useDispatch( 'core/block-editor' );
 
 	const savemediaStyles = (value) => {
 		const newUpdate = mediaStyles.map((item, index) => {
@@ -518,6 +520,13 @@ function KadenceTestimonials({
 		}
 
     }, []);
+
+	useEffect( () => {
+		// Delete if no inner blocks.
+		if ( uniqueID && ! childBlocks.length ) {
+			removeBlock( clientId, true );
+		}
+	}, [ childBlocks.length ] );
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
@@ -1048,7 +1057,7 @@ function KadenceTestimonials({
 		interval     : autoSpeed,
 		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
-		gap          : previewGap ? previewGap : '0',
+		gap          : getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ),
 	};
     const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -1094,7 +1103,6 @@ function KadenceTestimonials({
                         />
                     </BlockControls>
                     <InspectorControls>
-
                         <InspectorControlTabs
                             panelName={'testimonials'}
                             setActiveTab={(value) => setActiveTab(value)}
@@ -1102,7 +1110,6 @@ function KadenceTestimonials({
                         />
 
                         {(activeTab === 'general') &&
-
                             <>
                                 <KadencePanelBody
                                     panelName={'kb-testimonials-settings'}
@@ -1273,7 +1280,6 @@ function KadenceTestimonials({
                         }
 
                         {(activeTab === 'style') &&
-
                             <>
                                 {showSettings('containerSettings', 'kadence/testimonials') && (
                                     <KadencePanelBody
@@ -2127,7 +2133,13 @@ function KadenceTestimonials({
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>
+                            {(isSelected &&
+			                    <ButtonBlockAppender rootClientId={ clientId } />
+                            )}
+
                         </Splide>
+
+
                     )}
                     {layout && layout === 'grid' && (
                         <div className={'kt-testimonial-grid-wrap'} style={{

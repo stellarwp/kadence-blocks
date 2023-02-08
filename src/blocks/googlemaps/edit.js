@@ -636,7 +636,7 @@ export function Edit( props ) {
 						}}>
 							<EditJsMap zoom={zoom} customSnazzy={customSnazzy} lat={lat} lng={lng}
 									   showMarker={showMarker} mapType={mapType} mapStyle={mapStyle}
-									   googleApiKey={'AIzaSyDzwRtJXFMk604PIwm2H667t8_ex4QqOyI'}/>
+									   googleApiKey={ customGoogleApiKey }/>
 						</div>
 					}
 				</div>

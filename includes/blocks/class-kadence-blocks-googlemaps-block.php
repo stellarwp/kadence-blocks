@@ -168,7 +168,6 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		// Replace API key with default or users set key.
 		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
 
-
 		if ( empty( $user_google_maps_key ) ) {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
 		} else {
@@ -181,10 +180,8 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
 		}
 		if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
-			if ( ! wp_script_is( 'kadence-blocks-google-maps-js', 'enqueued' ) ) {
-				wp_enqueue_script( 'kadence-blocks-google-maps-init-js' );
-				wp_enqueue_script( 'kadence-blocks-google-maps-js' );
-			}
+			$this->enqueue_script( 'kadence-blocks-googlemaps-init-js' );
+			$this->enqueue_script( 'kadence-blocks-googlemaps-js' );
 		}
 
 		$snazzyStyles = [
@@ -196,12 +193,12 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'cobalt'                 => '[{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]}]',
 			'avocado'                => '[{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#aee2e0"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#abce83"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#769E72"}]},{"featureType":"poi","elementType":"labels.text.fill","stylers":[{"color":"#7B8758"}]},{"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"color":"#EBF4A4"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#8dab68"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#5B5B3F"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ABCE83"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#A4C67D"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#9BBF72"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#EBF4A4"}]},{"featureType":"transit","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#87ae79"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#7f2200"},{"visibility":"off"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"visibility":"on"},{"weight":4.1}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#495421"}]},{"featureType":"administrative.neighborhood","elementType":"labels","stylers":[{"visibility":"off"}]}]',
 			'night_mode'             => '[{elementType:"geometry",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.fill",stylers:[{color:"#746855"}]},{featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi.park",elementType:"geometry",stylers:[{color:"#263c3f"}]},{featureType:"poi.park",elementType:"labels.text.fill",stylers:[{color:"#6b9a76"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#38414e"}]},{featureType:"road",elementType:"geometry.stroke",stylers:[{color:"#212a37"}]},{featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#9ca5b3"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#746855"}]},{featureType:"road.highway",elementType:"geometry.stroke",stylers:[{color:"#1f2835"}]},{featureType:"road.highway",elementType:"labels.text.fill",stylers:[{color:"#f3d19c"}]},{featureType:"transit",elementType:"geometry",stylers:[{color:"#2f3948"}]},{featureType:"transit.station",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#17263c"}]},{featureType:"water",elementType:"labels.text.fill",stylers:[{color:"#515c6d"}]},{featureType:"water",elementType:"labels.text.stroke",stylers:[{color:"#17263c"}]}]',
-			'custom'                 => isset( $attr['customSnazzy'] ) ? $attr['customSnazzy'] : '[]'
+			'custom'                 => isset( $attributes['customSnazzy'] ) ? $attributes['customSnazzy'] : '[]'
 		];
 
-		$zoom    = empty( $attr['zoom'] ) ? 11 : $attr['zoom'];
-		$gMapLat = empty( $attr['lat'] ) ? '37.8201' : $attr['lat'];
-		$gMapLng = empty( $attr['lng'] ) ? '-122.4781' : $attr['lng'];
+		$zoom    = empty( $attributes['zoom'] ) ? 11 : $attributes['zoom'];
+		$gMapLat = empty( $attributes['lat'] ) ? '37.8201' : $attributes['lat'];
+		$gMapLng = empty( $attributes['lng'] ) ? '-122.4781' : $attributes['lng'];
 
 		$content .= '<script>';
 		$content .= 'function kb_google_map' . str_replace( '-', '_', $unique_id ) . '() {';
@@ -211,16 +208,16 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 					    zoom: ' . $zoom . ',
 					    center: center,';
 
-		if ( ! empty( $attr['mapStyle'] ) && $attr['mapStyle'] !== 'standard' ) {
-			$content .= 'styles: ' . $snazzyStyles[ $attr['mapStyle'] ] . ',';
+		if ( ! empty( $attributes['mapStyle'] ) && $attributes['mapStyle'] !== 'standard' ) {
+			$content .= 'styles: ' . $snazzyStyles[ $attributes['mapStyle'] ] . ',';
 		}
-		if ( isset( $attr['mapType'] ) && $attr['mapType'] === 'satellite' ) {
+		if ( isset( $attributes['mapType'] ) && $attributes['mapType'] === 'satellite' ) {
 			$content .= 'mapTypeId: "satellite",';
 		}
 
 		$content .= '});';
 
-		if ( ! isset( $attr['showMarker'] ) || ( isset( $attr['showMarker'] ) && $attr['showMarker'] ) ) {
+		if ( ! isset( $attributes['showMarker'] ) || ( isset( $attributes['showMarker'] ) && $attributes['showMarker'] ) ) {
 			$content .= 'let marker = new google.maps.Marker({';
 			$content .= '   position: { lat: ' . $gMapLat . ', lng: ' . $gMapLng . '},';
 			$content .= '    map: map,';
@@ -247,7 +244,7 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api', 'missingkey' );
-		wp_register_script( 'kadence-blocks-googlemaps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-googlemaps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-googlemaps-init-js' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-googlemaps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 

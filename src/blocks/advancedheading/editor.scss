@@ -64,7 +64,7 @@
     }
 }
 
- 
+
  .edit-post-sidebar h2.kt-heading-size-title,  .kt-block-defaults-modal h2.kt-heading-size-title {
     font-size: 14px;
 	margin-bottom: 0;
@@ -350,4 +350,12 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 }
 .kb-advanced-heading-link.hls-hover_underline:hover, .wp-block-kadence-advancedheading.hls-hover_underline a:hover {
     text-decoration: underline;
+}
+.kb-typing-popover .components-popover__content {
+	width: 285px;
+	padding: 0px 0px;
+
+	.components-panel__body-title .components-button {
+		padding: 16px 48px 16px 16px;
+	}
 }

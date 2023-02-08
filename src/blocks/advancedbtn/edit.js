@@ -112,12 +112,14 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { removeBlock } = useDispatch( 'core/block-editor' );
+	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
 			};
 		},
 		[ clientId ]
@@ -132,6 +134,14 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
+
+	useEffect( () => {
+		// Delete if no inner blocks.
+		if ( uniqueID && ! childBlocks.length ) {
+			removeBlock( clientId, true );
+		}
+	}, [ childBlocks.length ] );
+
 	const saveMargin = ( value ) => {
 		const newUpdate = margin.map( ( item, index ) => {
 			if ( 0 === index ) {

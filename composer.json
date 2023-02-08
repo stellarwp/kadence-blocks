@@ -9,6 +9,7 @@
 		}
 	},
 	"require": {
+		"psr/container": "^1.0",
 		"lucatume/di52": "^3.0",
 		"stellarwp/telemetry": "dev-main",
 		"stellarwp/container-contract": "^1.0"
@@ -43,7 +44,8 @@
 			"delete_vendor_files": true,
 			"packages": [
 				"stellarwp/telemetry",
-				"lucatume/di52"
+				"lucatume/di52",
+				"psr/container"
 			],
 			"override_autoload": {
 				"stellarwp/telemetry": {

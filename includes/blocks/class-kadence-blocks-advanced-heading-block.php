@@ -36,7 +36,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance Control
@@ -102,7 +102,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 		} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
 			$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
-		}			
+		}
 		if ( ! empty( $attributes['fontWeight'] ) ) {
 			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
 		}
@@ -287,6 +287,36 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		return $css->css_output();
 	}
 
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+
+		if ( strpos($content, 'kt-typed-text') !== false ) {
+			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
+			$this->enqueue_script( 'kadence-blocks-typed-js' );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+
+		// Skip calling parent because this block does not have a dedicated CSS file.
+		// parent::register_scripts();
+
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array( 'kadence-blocks-' . $this->block_name ), KADENCE_BLOCKS_VERSION, true );
+
+	}
 }
 
 Kadence_Blocks_Advancedheading_Block::get_instance();

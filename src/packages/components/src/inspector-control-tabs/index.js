@@ -77,6 +77,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 				if( ! kadenceInspectorTabs || null === kadenceInspectorTabs ) {
 					componentsPanel.removeAttribute( 'data-kadence-hide-advanced' );
+					componentsPanel.removeAttribute( 'data-kadence-active-tab' );
 				}
 			}
 		};
