@@ -3,43 +3,21 @@
  */
 
 /**
- * Import Icons
- */
-import {alignTopIcon, alignMiddleIcon, alignBottomIcon} from '@kadence/icons';
-
-/**
- * Import Externals
- */
-import {times, filter, map, get} from 'lodash';
-/**
  * Import Kadence Components
  */
 import {
     KadenceColorOutput,
-    showSettings,
-    getPreviewSize,
-    mouseOverVisualizer,
-    getSpacingOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
 } from '@kadence/helpers';
 
 import {
-    WebfontLoader,
     PopColorControl,
-    StepControls,
-    TypographyControls,
     KadenceIconPicker,
-    ResponsiveRangeControls,
     IconRender,
     KadencePanelBody,
     URLInputControl,
-    DynamicTextControl,
-    MeasurementControls,
     InspectorControlTabs,
-    KadenceBlockDefaults,
-    ResponsiveMeasureRangeControl,
-    SpacingVisualizer,
 } from '@kadence/components';
 
 import metadata from './block.json';
@@ -105,10 +83,8 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
     const displayIcon = icon ? icon : context['kadence/listIcon'];
     const displayWidth = width ? width : context['kadence/listIconWidth'];
     const [ activeTab, setActiveTab ] = useState( 'general' );
-    const onMerge = useMerge( clientId, mergeBlocks );
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-    // const useEnterRef = useEnter( { content, clientId } );
-	// const useSpaceRef = useSpace( clientId );
+
     const textRef = useRef( clientId );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -127,12 +103,6 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );
-
-    const iconAlignOptions = [
-        {key: 'top', name: __('Top', 'kadence-blocks'), icon: alignTopIcon},
-        {key: 'middle', name: __('Middle', 'kadence-blocks'), icon: alignMiddleIcon},
-        {key: 'bottom', name: __('Bottom', 'kadence-blocks'), icon: alignBottomIcon},
-    ];
 
     const blockProps = useBlockProps({
         className: className
@@ -362,7 +332,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                     onRemove={onRemove}
                     onReplace={onReplace}
                     className={'kt-svg-icon-list-text'}
-                    data-empty={text ? false : true}
+                    data-empty={ !text }
                 />
             </div>
         </div>
