@@ -52,10 +52,11 @@ import {
 } from '@wordpress/components';
 
 function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, clientId, context } ) {
-	const { iconCount, inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
+	const { inQueryBlock, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+	const { removeBlock } = useDispatch( 'core/block-editor' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -77,6 +78,13 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
+
+	useEffect( () => {
+		// Delete if no inner blocks.
+		if ( uniqueID && ! iconsBlock.innerBlocks.length ) {
+			removeBlock( clientId, true );
+		}
+	}, [ iconsBlock.innerBlocks.length ] );
 
 	const blockProps = useBlockProps( {
 		className: className,
@@ -108,7 +116,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 			},
 		],
 	];
-	
+
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
 	return (
 		<div {...blockProps}>
