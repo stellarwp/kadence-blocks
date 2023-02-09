@@ -562,7 +562,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					onChange={ ( selection ) => { setAttributes( { startTab: selection.value } ) } }
 					options={ initialTabOptions }
 					maxMenuHeight={ 300 }
-					placeholder={ 'Active tab default' }
+					placeholder={ __('Select an initial tab', 'kadence-blocks' ) }
 				/>
 			</Fragment>
 		);
