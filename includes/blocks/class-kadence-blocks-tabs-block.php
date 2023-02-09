@@ -87,10 +87,13 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab' );
 
-		$border_args = array( 'tablet_key' => false, 'mobile_key' => false );
-		$css->render_measure_output( $attributes, 'contentBorder', 'border-width', $border_args );
-		if ( ! empty( $attributes['contentBorderColor'] ) ) {
-			$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+		if( isset( $attributes['contentBorder'] ) && array_filter( $attributes['contentBorder'] )  ) {
+			$css->render_measure_output( $attributes, 'contentBorder', 'border-width', array( 'tablet_key' => false, 'mobile_key' => false ) );
+			if ( ! empty( $attributes['contentBorderColor'] ) ) {
+				$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
+			}
+		} else {
+			$css->render_border_styles( $attributes, 'contentBorderStyles' );
 		}
 
 		$css->render_measure_output( $attributes, 'contentBorderRadius', 'border-radius' );
@@ -98,13 +101,19 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'innerPadding', 'padding' );
 
 		if ( ! empty( $attributes['minHeight'] ) ) {
-			$css->add_property( 'min-height', $attributes['minHeight'] );
+			$minHeight = array(
+				'minHeight' => array(
+					isset( $attributes['minHeight'] ) ? $attributes['minHeight'] : '',
+					isset( $attributes['tabletMinHeight'] ) ? $attributes['tabletMinHeight'] : '',
+					isset( $attributes['mobileMinHeight'] ) ? $attributes['mobileMinHeight'] : '',
+				)
+			);
+			$css->render_responsive_range( $minHeight, 'minHeight', 'min-height', 'px' );
 		}
 
 		if ( ! empty( $attributes['contentBgColor'] ) ) {
 			$css->add_property( 'background', $css->sanitize_color( $attributes['contentBgColor'] ) );
 		}
-
 
 		$widthType = isset( $attributes['widthType'] ) ? $attributes['widthType'] : 'normal';
 		if ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) {
@@ -116,6 +125,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-left', '0px' );
 			}
 		}
+
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
 			if ( isset( $attributes['gutter'] ) && ! empty( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) ) {
@@ -190,9 +200,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['textTransform'] ) && ! empty( $attributes['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
 		}
-		if ( isset( $attributes['titleBorderWidth'] ) && ! empty( $attributes['titleBorderWidth'] ) && is_array( $attributes['titleBorderWidth'] ) ) {
-			$css->add_property( 'border-width', $attributes['titleBorderWidth'][0] . 'px ' . $attributes['titleBorderWidth'][1] . 'px ' . $attributes['titleBorderWidth'][2] . 'px ' . $attributes['titleBorderWidth'][3] . 'px' );
-		}
+		$css->render_measure_output( $attributes, 'titleBorderWidth', 'border-width' );
 		$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius' );
 		$css->render_measure_output( $attributes, 'titlePadding', 'padding' );
 		if ( isset( $attributes['titleBorder'] ) && ! empty( $attributes['titleBorder'] ) ) {
@@ -319,10 +327,28 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
+		$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
+		$maxWidth = array(
+			'maxWidth' => array(
+				isset( $attributes['maxWidth'] ) ? $attributes['maxWidth'] : '',
+				isset( $attributes['tabletMaxWidth'] ) ? $attributes['tabletMaxWidth'] : '',
+				isset( $attributes['mobileMaxWidth'] ) ? $attributes['mobileMaxWidth'] : '',
+			)
+		);
+		$css->render_responsive_range( $maxWidth, 'maxWidth', 'max-width', 'px' );
+
 		/* SVG Icon */
 		if ( isset( $attributes['titles'] ) && array_filter( array_column( $attributes['titles'], 'icon' ) ) ) {
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li svg' );
-			$css->add_property( 'font-size', $attributes['iSize'] . 'px' );
+
+			$iconSizes = array(
+				'size' => array(
+					( isset( $attributes['iSize'] ) ? $attributes['iSize'] : '' ),
+					( isset( $attributes['tabletISize'] ) ? $attributes['tabletISize'] : '14' ),
+					( isset( $attributes['mobileISize'] ) ? $attributes['mobileISize'] : '' ),
+				),
+			);
+			$css->render_responsive_range( $iconSizes,'size', 'font-size' );
 		}
 
 		return $css->css_output();
