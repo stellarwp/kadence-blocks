@@ -6,31 +6,8 @@
 /**
  * Internal block libraries
  */
- import { __ } from '@wordpress/i18n';
 import { RangeControl as CoreRangeControl } from '@wordpress/components';
-import { useInstanceId } from '@wordpress/compose';
-import {
-	Button,
-	DropdownMenu,
-} from '@wordpress/components';
 
-import {
-	pxIcon,
-	emIcon,
-	remIcon,
-	vhIcon,
-	vwIcon,
-	percentIcon,
-} from '@kadence/icons';
-
-let icons = {
-	px: pxIcon,
-	em: emIcon,
-	rem: remIcon,
-	vh: vhIcon,
-	vw: vwIcon,
-	percent: percentIcon,
-};
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
