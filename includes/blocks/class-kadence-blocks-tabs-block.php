@@ -60,7 +60,9 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'tabs';
+		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'tabs';
+		$tablet_layout = ! empty( $attributes['tabletLayout'] ) && 'inherit' !== $attributes['tabletLayout'] ? $attributes['tabletLayout'] : $layout;
+		$mobile_layout = ! empty( $attributes['mobileLayout'] ) && 'inherit' !== $attributes['mobileLayout'] ? $attributes['mobileLayout'] : $tablet_layout;
 
 		// Main font
 		if ( isset( $attributes['googleFont'] ) && $attributes['googleFont'] && ( ! isset( $attributes['loadGoogleFont'] ) || true == $attributes['loadGoogleFont'] ) && isset( $attributes['typography'] ) ) {
@@ -98,7 +100,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'innerPadding', 'padding' );
 
 		if ( ! empty( $attributes['minHeight'] ) ) {
-			$css->add_property( 'min-height', $attributes['minHeight'] );
+			$css->add_property( 'min-height', $attributes['minHeight'] . 'px' );
 		}
 
 		if ( ! empty( $attributes['contentBgColor'] ) ) {
@@ -115,6 +117,44 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-right', '0px' );
 				$css->add_property( 'margin-left', '0px' );
 			}
+		}
+		if ( 'vtabs' === $layout && ! empty( $attributes['verticalTabWidth'][0] ) ) {
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
+			$css->add_property( 'display', 'flex' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', $attributes['verticalTabWidth'][0] . ( ! empty( $attributes['verticalTabWidthUnit'] ) ? $attributes['verticalTabWidthUnit'] : '%' ) );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', 'auto' );
+			$css->add_property( 'flex', '1' );
+		}
+		if ( 'vtabs' === $tablet_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
+			$css->add_property( 'display', 'flex' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', ( ! empty( $attributes['verticalTabWidth'][1] ) ? $attributes['verticalTabWidth'][1] : $attributes['verticalTabWidth'][0] ) . ( ! empty( $attributes['verticalTabWidthUnit'] ) ? $attributes['verticalTabWidthUnit'] : '%' ) );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', 'auto' );
+			$css->add_property( 'flex', '1' );
+			$css->set_media_state( 'desktop' );
+		}
+		if ( 'vtabs' === $mobile_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) || ! empty( $attributes['verticalTabWidth'][2] ) ) ) {
+			$mobile_width = ( ! empty( $attributes['verticalTabWidth'][2] ) ? $attributes['verticalTabWidth'][2] : $attributes['verticalTabWidth'][1] );
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
+			$css->add_property( 'display', 'flex' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', ( ! empty( $mobile_width ) ? $mobile_width : $attributes['verticalTabWidth'][0] ) . ( ! empty( $attributes['verticalTabWidthUnit'] ) ? $attributes['verticalTabWidthUnit'] : '%' ) );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap' );
+			$css->add_property( 'float', 'none' );
+			$css->add_property( 'width', 'auto' );
+			$css->add_property( 'flex', '1' );
+			$css->set_media_state( 'desktop' );
 		}
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {

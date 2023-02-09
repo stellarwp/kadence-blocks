@@ -357,6 +357,18 @@
 		""
 	  ]
 	},
+	"verticalTabWidth": {
+		"type": "array",
+		"default": [
+			"30",
+			"",
+			""
+		]
+	},
+	"verticalTabWidthUnit": {
+		"type": "string",
+		"default": "%"
+	},
 	"gutter": {
 	  "type": "array",
 	  "default": [
