@@ -50,24 +50,7 @@ export default function RangeControl( {
 	showUnit = false,
 	units = [ 'px', 'em', 'rem' ],
 } ) {
-	/**
-	 * Build Toolbar Items.
-	 *
-	 * @param {string} mappedUnit the unit.
-	 * @returns {array} the unit array.
-	 */
-	 const createLevelControlToolbar = ( mappedUnit ) => {
-		return [ {
-			icon: ( mappedUnit === '%' ? icons.percent : icons[ mappedUnit ] ),
-			isActive: unit === mappedUnit,
-			onClick: () => {
-				onUnit( mappedUnit );
-			},
-		} ];
-	};
-	const POPOVER_PROPS = {
-		className: 'kadence-units-popover',
-	};
+
 	return [
 		onChange && (
 			<div className={ `components-base-control kadence-range-control${ className ? ' ' + className : '' }` }>
