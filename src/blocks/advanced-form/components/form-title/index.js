@@ -34,13 +34,13 @@ export default function FormTitle( {
 		>
 			<div className="kb-select-or-create-placeholder__actions">
 				<TextControl
-					label={__( 'Give your div a title', 'kadence-blocks' )}
+					label={__( 'Give your form a title', 'kadence-blocks' )}
 					placeholder={__( 'Contact Us', 'kadence-blocks' )}
 					value={tmpTitle}
 					onChange={setTmpTitle}
 				/>
 				<KadenceRadioButtons
-					value={ tmpTempalte }
+					value={ tmpTempalte  }
 					options={ formTemplates }
 					//wrap={true}
 					//hideLabel={true}

@@ -1,64 +1,77 @@
 {
-  "name": "kadence/advanced-form-text",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-		"type": "string"
+	"apiVersion": 2,
+	"name": "kadence/advanced-form-text",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		},
+		"placeholder": {
+			"type": "string"
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"defaultParameter": {
+			"type": "string"
+		},
+		"ariaDescription": {
+			"type": "string"
+		},
+		"maxWidth": {
+			"type": "array",
+			"default": [
+			"",
+			"",
+			""
+			]
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "%"
+		},
+		"minWidth": {
+			"type": "array",
+			"default": [
+			"",
+			"",
+			""
+			]
+		},
+		"minWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"helpText": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"auto": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		}
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"reusable": false
 	},
-	"placeholder": {
-	  "type": "string",
-	  "default": ""
-	},
-	"showLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"required": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"defaultValue": {
-	  "type": "string",
-	  "default": ""
-	},
-	"ariaDescription": {
-	  "type": "string",
-	  "default": ""
-	},
-	"width": {
-	  "type": "array",
-	  "default": [
-		"100",
-		"",
-		""
-	  ]
-	},
-	"helpText": {
-	  "type": "string",
-	  "default": ""
-	},
-	"name": {
-	  "type": "string",
-	  "default": ""
-	},
-	"auto": {
-		"type": "string",
-		"default": ""
-	},
-	"anchor": {
-		"type": "string"
-	}
-  },
-  "supports": {
-	"anchor": true,
-	"html": false,
-	"reusable": false
-  },
-  "ancestor": [ "kadence/advanced-form" ],
-  "parent": [ "kadence/advanced-form", "kadence/column" ]
+	"ancestor": [ "kadence/advanced-form" ],
+	"parent": [ "kadence/advanced-form", "kadence/column" ]
 }

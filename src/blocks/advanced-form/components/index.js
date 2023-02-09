@@ -10,6 +10,7 @@ export { default as GetHelpStyles } from './get-styles/help-styles';
 export { default as GetInputStyles } from './get-styles/input-styles';
 
 export { default as ColumnWidth } from './column-width';
+export { default as DuplicateField } from './duplicate-field';
 
 export { default as FieldStyles } from './style-options/field';
 export { default as LabelOptions } from './style-options/label';

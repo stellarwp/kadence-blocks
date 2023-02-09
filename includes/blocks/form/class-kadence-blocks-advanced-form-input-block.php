@@ -95,7 +95,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return void
 	 */
 	public function field_name( $attributes ) {
-		return ! empty( $attributes['name'] ) ? $attributes['name'] : 'field-' . $attributes['uniqueID'];
+		return ! empty( $attributes['name'] ) ? $attributes['name'] : 'field' . $attributes['uniqueID'];
 	}
 	/**
 	 * Add the field name to the HTML response.
@@ -105,7 +105,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return void
 	 */
 	public function field_id( $attributes ) {
-		return ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field-' . $attributes['uniqueID'];
+		return ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $attributes['uniqueID'];
 	}
 	/**
 	 * Generate the aria-describedby attribute
@@ -134,15 +134,10 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 		if ( ! empty( $attributes['defaultValue'] ) ) {
 			$default = $attributes['defaultValue'];
 		}
-		if ( ! empty( $attributes['defaultValue'] ) ) {
-			if ( isset( $_GET[ $attributes['defaultValue'] ] ) ) {
-				$default = sanitize_text_field( wc_clean( wp_unslash( $_GET[ $attributes['defaultValue'] ] ) ) );
-			}
-		}
 
-		if ( ! empty( $attributes['defaultQuery'] ) ) {
-			if ( isset( $_GET[ $attributes['defaultQuery'] ] ) ) {
-				$default = sanitize_text_field( wc_clean( wp_unslash( $_GET[ $attributes['defaultQuery'] ] ) ) );
+		if ( ! empty( $attributes['defaultParameter'] ) ) {
+			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
+				$default = sanitize_text_field( wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
 			}
 		}
 

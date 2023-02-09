@@ -8,39 +8,46 @@
  .wp-block-kadence-advanced-form .kadence-inner-column-inner.kb-section-only-appender .block-list-appender.wp-block, .wp-block-kadence-advanced-form .kadence-inner-column-inner.kb-section-only-appender .block-list-appender.wp-block>.block-editor-inserter {
     pointer-events: all !important;
 }
-
+.components-toolbar.kb-add-block .block-editor-button-block-appender.components-button.components-button {
+    box-shadow: none;
+}
 .wp-block-kadence-advanced-form {
-	display: flex;
-	flex-direction: column;
-
-	div[data-type="kadence/advanced-form-textarea"],
-	div[data-type="kadence/advanced-form-text"],
-	div[data-type="kadence/advanced-form-radio"],
-	div[data-type="kadence/advanced-form-file"],
-	div[data-type="kadence/advanced-form-accept"],
-	div[data-type="kadence/advanced-form-email"],
-	div[data-type="kadence/advanced-form-number"],
-	div[data-type="kadence/advanced-form-phone"],
-	div[data-type="kadence/advanced-form-date"],
-	div[data-type="kadence/advanced-form-hidden"],
-	div[data-type="kadence/advanced-form-select"],
-	div[data-type="kadence/advanced-form-checkbox"]{
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 0 3px;
+}
+.wp-block-kadence-advanced-form .kb-advanced-form {
+	.wp-block {
+		margin-left:0;
+		margin-right: 0;
 		margin-top: 0px;
 		margin-bottom: 0px;
 	}
-
+}
+.kb-form-hide-while-setting-up {
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	opacity: 0;
+}
+.kb-advanced-form {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
 	select {
 		max-width: unset;
 	}
-
+	input, select {
+		margin: 0;
+	}
 	.kb-adv-form-required {
 		margin-left: 2px;
 		color: #b32d2e;
 	}
-
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		flex: 0 1 100%;
 
 		.kb-checkbox-style, .kb-radio-style {
 			padding: 0;

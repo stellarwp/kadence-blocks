@@ -1,4 +1,4 @@
-import { advancedFormIcon } from '@kadence/icons';
+import { formBlockIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -31,7 +31,7 @@ import transforms from './transforms';
 registerBlockType('kadence/advanced-form', {
 	...metadata,
 	icon: {
-		src: advancedFormIcon,
+		src: formBlockIcon,
 	},
 	transforms,
 	edit,

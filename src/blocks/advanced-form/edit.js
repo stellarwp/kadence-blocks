@@ -52,7 +52,7 @@ export function Edit( props ) {
 	const { id, uniqueID } = attributes;
 
 	const blockClasses = classnames( {
-		'.wp-block-kadence-advanced-form'             : true,
+		'wp-block-kadence-advanced-form'             : true,
 		[ `wp-block-kadence-advanced-form-${id}` ]   : id,
 	} );
 	const blockProps = useBlockProps( {

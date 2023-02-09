@@ -5,10 +5,7 @@
   "category": "kadence-blocks",
   "description": "Kadence advanced form",
   "supports": {
-	"html": false,
-	"align": [
-	  "wide"
-	]
+	"html": false
   },
   "textdomain": "kadence-blocks",
   "keywords": [
@@ -16,89 +13,77 @@
 	"form",
 	"contact"
   ],
-  "providesContext": {
-	"kadence/form-innerBlocks": true
-  },
   "attributes": {
-	"align": {
-	  "type": "string"
-	},
 	"id": {
 	  "type": "integer",
 	  "default": 0
 	},
-	"width": {
-	  "type": "number",
-	  "default": "0"
-	},
 	"uniqueID": {
 	  "type": "string"
 	},
-	"marginDesktop": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
+	"maxWidth": {
+		"type": "array",
+		"default": [
+		  "",
+		  "",
+		  ""
+		]
+	  },
+	  "maxWidthUnit": {
+		  "type": "string",
+		  "default": "%"
+	  },
+	"vAlign": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
 	},
-	"marginTablet": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
+	"hAlign": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
 	},
-	"marginMobile": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
+	"padding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
 	},
-	"marginUnit": {
-	  "type": "string",
-	  "default": "px"
+	"tablePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
 	},
-	"paddingDesktop": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"paddingTablet": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"paddingMobile": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
+	"mobilePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
 	},
 	"paddingUnit": {
-	  "type": "string",
-	  "default": "px"
+		"type": "string",
+		"default": "px"
+	},
+	"margin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"tabletMargin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"mobileMargin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"marginUnit": {
+		"type": "string",
+		"default": "px"
 	},
 	"actions": {
 	  "type": "array",
-	  "default": []
+	  "default": [ "email" ]
 	},
 	"email": {
 	  "type": "object",
@@ -174,76 +159,6 @@
 	"recaptchaVersion": {
 	  "type": "string",
 	  "default": "v3"
-	},
-	"submit": {
-	  "type": "object",
-	  "default": {
-		"label": "Submit",
-		"width": [ "100", "", "" ],
-		"size": "standard",
-		"widthType": "auto",
-		"fixedWidth": [ "", "", "" ],
-		"align": [ "", "", "" ],
-		"deskPadding": [ "", "", "", "" ],
-		"tabletPadding": [ "", "", "", "" ],
-		"mobilePadding": [ "", "", "", "" ],
-		"color": "",
-		"background": "",
-		"border": "",
-		"backgroundOpacity": 1,
-		"borderOpacity": 1,
-		"borderRadius": "",
-		"borderWidth": [ "", "", "", "" ],
-		"colorHover": "",
-		"backgroundHover": "",
-		"borderHover": "",
-		"backgroundHoverOpacity": 1,
-		"borderHoverOpacity": 1,
-		"icon": "",
-		"iconSide": "right",
-		"iconHover": false,
-		"cssClass": "",
-		"gradient": [ "#999999", 1, 0, 100, "linear", 180, "center center" ],
-		"gradientHover": [ "#777777", 1, 0, 100, "linear", 180, "center center" ],
-		"btnStyle": "basic",
-		"btnSize": "standard",
-		"backgroundType": "solid",
-		"backgroundHoverType": "solid",
-		"boxShadow": [ false, "#000000", 0.2, 1, 1, 2, 0, false ],
-		"boxShadowHover": [ false, "#000000", 0.4, 2, 2, 3, 0, false ]
-	  }
-	},
-	"submitFont": {
-	  "type": "object",
-	  "default": {
-		"size": [ "", "", "" ],
-		"sizeType": "px",
-		"lineHeight": [ "", "", "" ],
-		"lineType": "px",
-		"letterSpacing": "",
-		"textTransform": "",
-		"family": "",
-		"google": "",
-		"style": "",
-		"weight": "",
-		"variant": "",
-		"subset": "",
-		"loadGoogle": true
-	  }
-	},
-	"submitMargin": {
-	  "type": "array",
-	  "default": [ {
-		"desk": [ "", "", "", "" ],
-		"tablet": [ "", "", "", "" ],
-		"mobile": [ "", "", "", "" ],
-		"unit": "px",
-		"control": "linked"
-	  } ]
-	},
-	"submitLabel": {
-	  "type": "string",
-	  "default": ""
 	},
 	"style": {
 	  "type": "object",

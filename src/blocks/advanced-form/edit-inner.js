@@ -11,7 +11,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useEffect } from '@wordpress/element';
 import {
 	useSelect,
 	useDispatch,
@@ -19,7 +19,7 @@ import {
 import { createBlock } from '@wordpress/blocks';
 import { applyFilters } from '@wordpress/hooks';
 import { rawHandler } from '@wordpress/blocks';
-import { size, get } from 'lodash';
+import { size, get, isEqual } from 'lodash';
 import {
 	useEntityBlockEditor,
 	useEntityProp,
@@ -47,6 +47,8 @@ import {
 	BlockControls,
 	InnerBlocks,
 	useInnerBlocksProps,
+	BlockVerticalAlignmentControl,
+	JustifyContentControl,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
@@ -79,6 +81,7 @@ import {
 	DbEntryOptions,
 	BackendStyles,
 	MessageOptions,
+	getFormFields,
 } from './components';
 
 /**
@@ -103,24 +106,23 @@ export function EditInner( props ) {
 
 	const {
 		uniqueID,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingUnit,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginUnit,
+		vAlign,
+		hAlign,
 	} = attributes;
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	const [ marginDesktop, setMarginDesktop ] = useFormMeta( '_kad_form_marginDesktop' );
-	const [ marginTablet, setMarginTablet ] = useFormMeta( '_kad_form_marginTablet' );
-	const [ marginMobile, setMarginMobile ] = useFormMeta( '_kad_form_marginMobile' );
-	const [ marginUnit, setMarginUnit ] = useFormMeta( '_kad_form_marginUnit' );
-
-	const [ paddingDesktop, setPaddingDesktop ] = useFormMeta( '_kad_form_paddingDesktop' );
-	const [ paddingTablet, setPaddingTablet ] = useFormMeta( '_kad_form_paddingTablet' );
-	const [ paddingMobile, setPaddingMobile ] = useFormMeta( '_kad_form_paddingMobile' );
-	const [ paddingUnit, setPaddingUnit ] = useFormMeta( '_kad_form_paddingUnit' );
-
+	const [ fields, setFields ] = useFormMeta( '_kad_form_fields' )
 	const [ email, setEmail ] = useFormMeta( '_kad_form_email' );
 	const [ actions, setActions ] = useFormMeta( '_kad_form_actions' );
 	const [ mailerlite, setMailerlite ] = useFormMeta( '_kad_form_mailerlite' );
@@ -159,54 +161,25 @@ export function EditInner( props ) {
 		setMeta( { ...meta, [keyPrefix + key]: value } );
 	};
 
-	const align = '';
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
 
-	let btnBG;
-	let btnGrad;
-	let btnGrad2;
-	if ( undefined !== submit.backgroundType && 'gradient' === submit.backgroundType ) {
-		btnGrad = ( undefined === submit.background ? 'rgba(255,255,255,0)' : KadenceColorOutput( submit.background, ( submit.backgroundOpacity !== undefined ? submit.backgroundOpacity : 1 ) ) );
-		btnGrad2 = ( undefined !== submit.gradient && undefined !== submit.gradient[ 0 ] && '' !== submit.gradient[ 0 ] ? KadenceColorOutput( submit.gradient[ 0 ], ( undefined !== submit.gradient && submit.gradient[ 1 ] !== undefined ? submit.gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== submit.gradient && submit.gradient[ 1 ] !== undefined ? submit.gradient[ 1 ] : 1 ) ) );
-		if ( undefined !== submit.gradient && 'radial' === submit.gradient[ 4 ] ) {
-			btnBG = `radial-gradient(at ${( undefined === submit.gradient[ 6 ] ? 'center center' : submit.gradient[ 6 ] )}, ${btnGrad} ${( undefined === submit.gradient[ 2 ] ? '0' : submit.gradient[ 2 ] )}%, ${btnGrad2} ${( undefined === submit.gradient[ 3 ] ? '100' : submit.gradient[ 3 ] )}%)`;
-		} else if ( undefined === submit.gradient || 'radial' !== submit.gradient[ 4 ] ) {
-			btnBG = `linear-gradient(${( undefined !== submit.gradient && undefined !== submit.gradient[ 5 ] ? submit.gradient[ 5 ] : '180' )}deg, ${btnGrad} ${( undefined !== submit.gradient && undefined !== submit.gradient[ 2 ] ? submit.gradient[ 2 ] : '0' )}%, ${btnGrad2} ${( undefined !== submit.gradient && undefined !== submit.gradient[ 3 ] ? submit.gradient[ 3 ] : '100' )}%)`;
-		}
-	} else {
-		btnBG = ( undefined === submit.background ? undefined : KadenceColorOutput( submit.background, ( submit.backgroundOpacity !== undefined ? submit.backgroundOpacity : 1 ) ) );
-	}
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 0 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 0 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 1 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 2 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 3 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+	const previewHorizontalAlign = getPreviewSize( previewDevice, ( undefined !== hAlign?.[0] ? hAlign[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign[2] : '' ) );
+	const previewVerticalAlign = getPreviewSize( previewDevice, ( undefined !== vAlign?.[0] ? vAlign[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign[2] : '' ) );
 
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 0 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 1 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 2 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 3 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const previewSubmitFontSize = getPreviewSize( previewDevice, submitFont.size[ 0 ], submitFont.size[ 1 ], submitFont.size[ 2 ] );
-	const previewSubmitFontSizeType = submitFont.sizeType;
-
-	const containerClasses = classnames( {
-		'wp-block-kadence-advanced-form'          : true,
-		[ `wp-block-kadence-advanced-form_${id}` ]: true,
+	const formClasses = classnames( {
+		'kb-advanced-form'          : true,
+		[ `kb-advanced-form-${id}` ]: true,
+		[ `kb-form${uniqueID}` ]: uniqueID,
 	} );
-
-	const submitClasses = classnames( {
-		'kb-advanced-form-submit-container'             : true,
-		[ `kb-field-desk-width-${submit.width[ 0 ]}` ]  : true,
-		[ `kb-field-tablet-width-${submit.width[ 1 ]}` ]: submit.width[ 1 ] !== '',
-		[ `kb-field-mobile-width-${submit.width[ 2 ]}` ]: submit.width[ 2 ] !== '',
-	} );
-
-	const { hasChildBlocks } = useSelect(
-		( select ) => ( {
-			hasChildBlocks: select( editorStore ).getBlockOrder( clientId ).length > 0,
-		} ),
-		[],
-	);
 
 	const [ title, setTitle ] = useFormProp( 'title' );
 
@@ -218,8 +191,14 @@ export function EditInner( props ) {
 	const {
 		insertBlocks,
 	} = useDispatch( editorStore );
-
-	let formFields = get( blocks, [ 0, 'innerBlocks' ], [] );
+	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
+	useEffect( () => {
+		console.log( fields );
+		let currentFields = getFormFields( formInnerBlocks );
+		if ( ! isEqual( fields, currentFields ) ) {
+			setMetaAttribute( currentFields, 'fields' );
+		}
+	}, [formInnerBlocks] );
 	let newBlock = get( blocks, [ 0 ], {} );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
@@ -251,65 +230,77 @@ export function EditInner( props ) {
 			console.error( error );
 		}
 	};
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: formClasses,
+		},
+		{
+			allowedBlocks: ALLOWED_BLOCKS,
+			value: ! direct ? formInnerBlocks : undefined,
+			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
+			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
+			templateLock: false,
+			renderAppender: size( formInnerBlocks )
+				? undefined
+				: InnerBlocks.ButtonBlockAppender,
+			style: {
+					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+
+					paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+					paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+					paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+				},
+		}
+	);
 	if ( title === '' ) {
 		return (
 			<>
-			<FormTitle
-				onAdd={ onAdd }
-				isAdding={ isAdding }
-			/>
-			{/* <div className='kb-hide-while-setting-up'>
-				{( direct ) ?
-					<InnerBlocks
-						allowedBlocks={ALLOWED_BLOCKS}
-						renderAppender={(
-							hasChildBlocks ?
-								undefined :
-								() => <InnerBlocks.ButtonBlockAppender/>
-						)}
-					/>
-					:
-					<InnerBlocks
-						value={formFields}
-						onInput={( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b )}
-						onChange={( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b )}
-						allowedBlocks={ALLOWED_BLOCKS}
-						renderAppender={(
-							size( formFields ) ?
-								undefined :
-								() => <InnerBlocks.ButtonBlockAppender/>
-						)}
-					/>
-				}
-			</div> */}
+				<FormTitle
+					onAdd={ onAdd }
+					isAdding={ isAdding }
+				/>
+				<div className='kb-form-hide-while-setting-up'>
+					<div {...innerBlocksProps} />
+				</div>
 			</>
 		);
 	}
-
 	return (
 		<>
-			<BlockControls group="block">
-				<ToolbarGroup>
-					<ToolbarButton
-						className="kb-row-add-section"
-						icon={ plusCircle }
-						onClick={ () => {
-							console.log( clientId );
-							const newBlocks = createBlock( 'kadence/advanced-form-submit', {} );
-							insertBlocks(
-								[ newBlocks ],
-								0,
-								clientId
-							);
+			<BlockControls>
+				<ToolbarGroup group="align-block">
+					<JustifyContentControl
+						value={ previewHorizontalAlign }
+						onChange={ value => {
+							if ( previewDevice === 'Mobile' ) {
+								setAttributes( { hAlign: [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ] } );
+							} else if ( previewDevice === 'Tablet' ) {
+								setAttributes( { hAlign: [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] } );
+							} else {
+								setAttributes( { hAlign: [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] } );
+							}
 						} }
-						label={  __( 'Add Another Section', 'kadence-blocks' ) }
-						showTooltip={ true }
+					/>
+					<BlockVerticalAlignmentControl
+						value={ previewVerticalAlign }
+						onChange={ value => {
+							if ( previewDevice === 'Mobile' ) {
+								setAttributes( { vAlign: [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ] } );
+							} else if ( previewDevice === 'Tablet' ) {
+								setAttributes( { vAlign: [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] } );
+							} else {
+								setAttributes( { vAlign: [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] } );
+							}
+						}}
 					/>
 				</ToolbarGroup>
-			{/*	<BlockAlignmentControl*/}
-			{/*		value={align}*/}
-			{/*		onChange={( value ) => setMetaAttribute( { align: value } )}*/}
-			{/*	/>*/}
+				<ToolbarGroup group="add-block" className="kb-add-block">
+					<InnerBlocks.ButtonBlockAppender />
+				</ToolbarGroup>
 			</BlockControls>
 			
 			<InspectorControls>
@@ -541,47 +532,47 @@ export function EditInner( props ) {
 						<KadencePanelBody panelName={'kb-row-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={paddingDesktop}
-								tabletValue={paddingTablet}
-								mobileValue={paddingMobile}
+								value={padding}
+								tabletValue={tabletPadding}
+								mobileValue={mobilePadding}
 								onChange={(value) => {
-									setMetaAttribute(value, 'paddingDesktop')
+									setAttributes( { padding: value } );
 								}}
 								onChangeTablet={(value) => {
-									setMetaAttribute(value, 'paddingTablet')
+									setAttributes( { tabletPadding: value } );
 								}}
 								onChangeMobile={(value) => {
-									setMetaAttribute(value, 'paddingMobile')
+									setAttributes( { mobilePadding: value } );
 								}}
 								min={0}
 								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
 								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'paddingUnit')}
+								onUnit={(value) => setAttributes( { paddingUnit: value } )}
 								onMouseOver={paddingMouseOver.onMouseOver}
 								onMouseOut={paddingMouseOver.onMouseOut}
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={marginDesktop}
-								tabletValue={marginTablet}
-								mobileValue={marginMobile}
+								value={margin}
+								tabletValue={tabletMargin}
+								mobileValue={mobileMargin}
 								onChange={(value) => {
-									setMetaAttribute(value, 'marginDesktop');
+									setAttributes( { margin: value } );
 								}}
 								onChangeTablet={(value) => {
-									setMetaAttribute(value, 'marginTablet')
+									setAttributes( { tabletMargin: value } );
 								}}
 								onChangeMobile={(value) => {
-									setMetaAttribute(value, 'marginMobile')
+									setAttributes( { mobileMargin: value } );
 								}}
 								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
 								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
 								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}
-								onUnit={(value) => setMetaAttribute(value, 'marginUnit')}
+								onUnit={(value) => setAttributes( { marginUnit: value } )}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
@@ -593,82 +584,7 @@ export function EditInner( props ) {
 			</InspectorControls>
 			<BackendStyles id={id} previewDevice={previewDevice} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
 
-			<div className={containerClasses} style={
-				{
-					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-
-					paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
-					paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
-					paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
-				}}
-			>
-				{( direct ) ?
-					<InnerBlocks
-						allowedBlocks={ALLOWED_BLOCKS}
-						renderAppender={(
-							hasChildBlocks ?
-								undefined :
-								() => <InnerBlocks.ButtonBlockAppender/>
-						)}
-					/>
-					:
-					<InnerBlocks
-						value={formFields}
-						onInput={( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b )}
-						onChange={( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b )}
-						allowedBlocks={ALLOWED_BLOCKS}
-						renderAppender={(
-							size( formFields ) ?
-								undefined :
-								() => <InnerBlocks.ButtonBlockAppender/>
-						)}
-					/>
-				}
-
-				{/* <div className={submitClasses}>
-					<RichText
-						tagName="div"
-						placeholder={__( 'Submit' )}
-						value={submit.label}
-						onChange={value => {
-							setMetaAttribute( { ...submit, label: value }, 'submit' );
-						}}
-						allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] )}
-						className={`kb-advanced-form-submit kb-button-size-${submit.size} kb-button-width-${submit.widthType}`}
-						style={{
-							background       : ( undefined !== btnBG ? btnBG : undefined ),
-							color            : ( undefined !== submit.color ? KadenceColorOutput( submit.color ) : undefined ),
-							fontSize         : previewSubmitFontSize + previewSubmitFontSizeType,
-							lineHeight       : ( submitFont.lineHeight && submitFont.lineHeight[ 0 ] ? submitFont.lineHeight[ 0 ] + submitFont.lineType : undefined ),
-							fontWeight       : submitFont.weight,
-							fontStyle        : submitFont.style,
-							letterSpacing    : submitFont.letterSpacing + 'px',
-							textTransform    : ( submitFont.textTransform ? submitFont.textTransform : undefined ),
-							fontFamily       : ( submitFont.family ? submitFont.family : '' ),
-							borderRadius     : ( undefined !== submit.borderRadius ? submit.borderRadius + 'px' : undefined ),
-							borderColor      : ( undefined === submit.border ? undefined : KadenceColorOutput( submit.border, ( submit.borderOpacity !== undefined ? submit.borderOpacity : 1 ) ) ),
-							width            : ( undefined !== submit.widthType && 'fixed' === submit.widthType && undefined !== submit.fixedWidth && undefined !== submit.fixedWidth[ 0 ] ? submit.fixedWidth[ 0 ] + 'px' : undefined ),
-							paddingTop       : ( 'custom' === submit.size && '' !== submit.deskPadding[ 0 ] ? submit.deskPadding[ 0 ] + 'px' : undefined ),
-							paddingRight     : ( 'custom' === submit.size && '' !== submit.deskPadding[ 1 ] ? submit.deskPadding[ 1 ] + 'px' : undefined ),
-							paddingBottom    : ( 'custom' === submit.size && '' !== submit.deskPadding[ 2 ] ? submit.deskPadding[ 2 ] + 'px' : undefined ),
-							paddingLeft      : ( 'custom' === submit.size && '' !== submit.deskPadding[ 3 ] ? submit.deskPadding[ 3 ] + 'px' : undefined ),
-							borderTopWidth   : ( submit.borderWidth && '' !== submit.borderWidth[ 0 ] ? submit.borderWidth[ 0 ] + 'px' : undefined ),
-							borderRightWidth : ( submit.borderWidth && '' !== submit.borderWidth[ 1 ] ? submit.borderWidth[ 1 ] + 'px' : undefined ),
-							borderBottomWidth: ( submit.borderWidth && '' !== submit.borderWidth[ 2 ] ? submit.borderWidth[ 2 ] + 'px' : undefined ),
-							borderLeftWidth  : ( submit.borderWidth && '' !== submit.borderWidth[ 3 ] ? submit.borderWidth[ 3 ] + 'px' : undefined ),
-							boxShadow        : ( undefined !== submit.boxShadow && undefined !== submit.boxShadow[ 0 ] && submit.boxShadow[ 0 ] ? ( undefined !== submit.boxShadow[ 7 ] && submit.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit.boxShadow[ 3 ] ? submit.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 4 ] ? submit.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 5 ] ? submit.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit.boxShadow[ 6 ] ? submit.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit.boxShadow[ 1 ] ? submit.boxShadow[ 1 ] : '#000000' ), ( undefined !== submit.boxShadow[ 2 ] ? submit.boxShadow[ 2 ] : 1 ) ) : undefined ),
-							marginTop        : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
-							marginRight      : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
-							marginBottom     : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),
-							marginLeft       : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
-						}}
-					/>
-				</div> */}
-			</div>
+			<div {...innerBlocksProps} />
 
 			<SpacingVisualizer
 				style={ {

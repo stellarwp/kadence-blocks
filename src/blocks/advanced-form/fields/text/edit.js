@@ -8,28 +8,30 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, TextareaControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, InspectorAdvancedControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls } from '@kadence/components';
 import {
 	useEffect,
 	useState,
 } from '@wordpress/element';
 import {
 	getUniqueId,
+	getPreviewSize,
 } from '@kadence/helpers';
-import { ColumnWidth } from '../../components';
 import classNames from 'classnames';
+import { DuplicateField } from '../../components';
 
 function FieldText( { attributes, setAttributes, isSelected, clientId } ) {
-	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, width, placeholder, auto, name } = attributes;
+	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, name } = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
 		[ clientId ]
@@ -40,12 +42,26 @@ function FieldText( { attributes, setAttributes, isSelected, clientId } ) {
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );
+	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
+	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
 	});
-
+	const blockProps = useBlockProps( {
+		className: classes,
+		style:{
+			maxWidth: '' !== previewMaxWidth ? previewMaxWidth + ( maxWidthUnit ? maxWidthUnit : '%' ) : undefined,
+			minWidth: '' !== previewMinWidth ? previewMinWidth + ( minWidthUnit ? minWidthUnit : 'px' ) : undefined,
+		}
+	} );
+	
 	return (
-		<div className={ classes }>
+		<div {...blockProps}>
+			<DuplicateField
+				clientId={ clientId }
+				name={'kadence/advanced-form-text'}
+				attributes={ attributes }
+			/>
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-form-text-general'}
@@ -91,6 +107,74 @@ function FieldText( { attributes, setAttributes, isSelected, clientId } ) {
 								value={defaultValue}
 								onChange={( value ) => setAttributes( { defaultValue: value } )}
 							/>
+						</KadencePanelBody>
+					</>
+				}
+				{ ( activeTab === 'advanced' ) &&
+					<>
+						<KadencePanelBody
+							title={__( 'Field Width', 'kadence-blocks' )}
+							initialOpen={true}
+							panelName={ 'kb-adv-form-text-width' }
+						>
+							<ResponsiveRangeControls
+								label={__( 'Max Width', 'kadence-blocks' )}
+								value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
+								onChange={value => {
+									setAttributes( { maxWidth: [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+								}}
+								tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
+								onChangeTablet={( value ) => {
+									setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+								}}
+								mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
+								onChangeMobile={( value ) => {
+									setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ] } );
+								}}
+								min={0}
+								max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+								step={1}
+								unit={maxWidthUnit ? maxWidthUnit : '%'}
+								onUnit={( value ) => {
+									setAttributes( { maxWidthUnit: value } );
+								}}
+								units={[ 'px', '%', 'vw' ]}
+							/>
+							<ResponsiveRangeControls
+								label={__( 'Min Width', 'kadence-blocks' )}
+								value={( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' )}
+								onChange={value => {
+									setAttributes( { minWidth: [ value, ( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' ) ] } );
+								}}
+								tabletValue={( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' )}
+								onChangeTablet={( value ) => {
+									setAttributes( { minWidth: [ ( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' ), value, ( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' ) ] } );
+								}}
+								mobileValue={( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' )}
+								onChangeMobile={( value ) => {
+									setAttributes( { minWidth: [ ( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' ), value ] } );
+								}}
+								min={0}
+								max={( minWidthUnit === 'px' ? 2000 : 100 )}
+								step={1}
+								unit={minWidthUnit ? minWidthUnit : 'px'}
+								onUnit={( value ) => {
+									setAttributes( { minWidthUnit: value } );
+								}}
+								units={[ 'px', '%', 'vw' ]}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__( 'Extra Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={ 'kb-adv-form-text-extra-settings' }
+						>
+							<TextControl
+								label={__( 'Field Name', 'kadence-blocks' )}
+								help={ __( 'This is the name attribute that is applied to the html input tag. Names must be unique', 'kadence-blocks' ) }
+								value={name}
+								onChange={( value ) => setAttributes( { name: value.replace(/[^a-z0-9-_]/gi, '') } ) }
+							/>
 							<SelectControl
 								label={__( 'Field Auto Fill', 'kadence-blocks' )}
 								value={ auto }
@@ -116,29 +200,16 @@ function FieldText( { attributes, setAttributes, isSelected, clientId } ) {
 								value={ariaDescription}
 								onChange={( value ) => setAttributes( { ariaDescription: value } )}
 							/>
-						</KadencePanelBody>
-					</>
-				}
-				{ ( activeTab === 'advanced' ) &&
-					<>
-						<KadencePanelBody
-							title={__( 'Field Width', 'kadence-blocks' )}
-							initialOpen={true}
-							panelName={ 'kb-adv-form-text-width' }
-						>
-
+							<TextControl
+								label={__( 'Populate with Parameter', 'kadence-blocks' )}
+								help={ __( 'Enter a parameter that can be used in the page url to dynamically populate the field.', 'kadence-blocks' ) }
+								value={defaultParameter}
+								onChange={( value ) => setAttributes( { defaultParameter: value } )}
+							/>
 						</KadencePanelBody>
 					</>
 				}
 			</InspectorControls>
-			<InspectorAdvancedControls>
-				<TextControl
-					label={__( 'Field Name', 'kadence-blocks' )}
-					help={ __( 'This is the name attribute that is applied to the html input tag.', 'kadence-blocks' ) }
-					value={name}
-					onChange={( value ) => setAttributes( { name: value.replace(/[^a-z0-9-_]/gi, '') } ) }
-				/>
-			</InspectorAdvancedControls>
 			<>
 				<FormFieldLabel
 					required={required}
