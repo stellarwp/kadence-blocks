@@ -342,9 +342,6 @@ export default [
 				className: classes
 			} );
 
-			console.log('blockProps');
-			console.log(blockProps);
-
 			return (
 				<div {...blockProps}>
 					<div className={ innerClasses } style={ {
