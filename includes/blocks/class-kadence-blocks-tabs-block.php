@@ -111,7 +111,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li' );
 			$css->render_measure_output( $attributes, 'titleMargin', 'margin' );
 
-			if( ( !isset($attributes['layout'] ) || ( isset( $attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) && $attributes['widthType'] === 'percent' ) {
+			if( ( !isset($attributes['layout'] ) || ( isset( $attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) && ( isset( $attributes['widthType'] ) && $attributes['widthType'] === 'percent' ) ) {
 				$css->add_property( 'margin-right', '0px' );
 				$css->add_property( 'margin-left', '0px' );
 			}
@@ -170,7 +170,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title' );
 		if ( isset( $attributes['size'] ) && ! empty( $attributes['size'] ) ) {
-			$css->add_property( 'font-size', $attributes['size'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+			$css->add_property( 'font-size', $css->get_font_size($attributes['size'], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
 		if ( isset( $attributes['lineHeight'] ) && ! empty( $attributes['lineHeight'] ) ) {
 			$css->add_property( 'line-height', $attributes['lineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
@@ -241,7 +241,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title' );
 			if ( isset( $attributes['tabSize'] ) ) {
-				$css->add_property( 'font-size', $attributes['tabSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size($attributes['tabSize'], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['tabLineHeight'] ) ) {
 				$css->add_property( 'line-height', $attributes['tabLineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
@@ -252,7 +252,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title' );
 			if ( isset( $attributes['mobileSize'] ) ) {
-				$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $attributes['mobileSize'], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 			}
 			if ( isset( $attributes['mobileLineHeight'] ) ) {
 				$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( ! isset( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );

@@ -469,12 +469,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			}
 		};
 		const config = ( googleFont ? gconfig : '' );
-		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
-		const fontMax = ( sizeType === 'em' ? 12 : 200 );
-		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineType === 'px' ? 5 : 0.2 );
-		const lineMax = ( lineType === 'px' ? 200 : 12 );
-		const lineStep = ( lineType === 'px' ? 1 : 0.1 );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 
@@ -572,6 +566,16 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</Fragment>
 		);
+
+		const saveFontAttribute = ( key, value ) => {
+			let ucKey = key.charAt(0).toUpperCase() + key.slice(1);
+
+			setAttributes( {
+				[ key ]: value[0],
+				[ 'tab' + ucKey ]: value[1],
+				[ 'mobile' + ucKey ]: value[2],
+			} );
+		}
 
 		const renderTitles = ( index ) => {
 			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
@@ -863,150 +867,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</Fragment>
 		);
-		const sizeDeskControls = (
-			<KadencePanelBody panelName={ 'kb-tab-size-desktop-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Font Size', 'kadence-blocks' ) }
-					value={ ( size ? size : '' ) }
-					onChange={ ( value ) => setAttributes( { size: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Line Height', 'kadence-blocks' ) }
-					value={ ( lineHeight ? lineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { lineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
-		const sizeTabletControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-tablet-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Tablet Font Size', 'kadence-blocks' ) }
-					value={ ( tabSize ? tabSize : '' ) }
-					onChange={ ( value ) => setAttributes( { tabSize: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Tablet Line Height', 'kadence-blocks' ) }
-					value={ ( tabLineHeight ? tabLineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { tabLineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
-		const sizeMobileControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-mobile-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Mobile Font Size', 'kadence-blocks' ) }
-					value={ ( mobileSize ? mobileSize : '' ) }
-					onChange={ ( value ) => setAttributes( { mobileSize: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Mobile Line Height', 'kadence-blocks' ) }
-					value={ ( mobileLineHeight ? mobileLineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
+
 		const percentDesktopContent = (
 			<Fragment>
 				<RangeControl
@@ -1457,6 +1318,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										panelName={'kb-tab-title-font'}
 									>
 										<TypographyControls
+											fontSize={ [ size, tabSize, mobileSize ] }
+											onFontSize={(value) => saveFontAttribute( 'size', value )}
+											fontSizeType={ sizeType ? sizeType : 'px'}
+											onFontSizeType={(value) => setAttributes({sizeType: value})}
+											lineHeight={ [ lineHeight, tabLineHeight, mobileLineHeight ] }
+											onLineHeight={(value) => saveFontAttribute( 'lineHeight', value )}
+											lineHeightType={ lineType ? lineType : 'px' }
+											onLineHeightType={(value) => setAttributes({lineType: value})}
 											fontFamily={typography}
 											onFontFamily={(value) => setAttributes({typography: value})}
 											googleFont={googleFont}
@@ -1479,23 +1348,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											onFontSubset={(value) => setAttributes({fontSubset: value})}
 											textTransform={textTransform}
 											onTextTransform={(value) => setAttributes({textTransform: value})}
-										/>
-
-										<SmallResponsiveControl
-											label={__('Size Controls', 'kadence-blocks')}
-											desktopChildren={ sizeDeskControls }
-											tabletChildren={ sizeTabletControls }
-											mobileChildren={ sizeMobileControls }
-										>
-										</SmallResponsiveControl>
-
-										<RangeControl
-											label={__('Letter Spacing', 'kadence-blocks')}
-											value={(letterSpacing ? letterSpacing : '')}
-											onChange={(value) => setAttributes({letterSpacing: value})}
-											min={-5}
-											max={15}
-											step={0.1}
+											letterSpacing={(letterSpacing ? letterSpacing : '')}
+											onLetterSpacing={(value) => setAttributes({letterSpacing: value})}
 										/>
 									</KadencePanelBody>
 								)}
