@@ -47,6 +47,7 @@ export { default as brush } from './brush'
 export { default as hoverToggle } from './hover'
 export { default as duplicate } from './duplicate'
 export { default as copy } from './copy'
+export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
 

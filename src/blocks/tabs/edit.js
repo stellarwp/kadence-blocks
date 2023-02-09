@@ -7,17 +7,11 @@
  */
 import {
 	accordionIcon,
-	bottomLeftIcon,
-	bottomRightIcon,
-	radiusIndividualIcon,
-	radiusLinkedIcon,
 	tabsBoldIcon,
 	tabsCenterIcon,
 	tabsIcon,
 	tabsSimpleIcon,
 	tabsVerticalIcon,
-	topLeftIcon,
-	topRightIcon,
 	vTabsIcon
 } from '@kadence/icons';
 
@@ -32,7 +26,9 @@ import {
 	showSettings,
 	getSpacingOptionOutput,
 	getPreviewSize,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	setBlockDefaults,
+	getUniqueId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -47,7 +43,8 @@ import {
 	InspectorControlTabs,
 	CopyPasteAttributes,
 	SmallResponsiveControl,
-	HoverToggleControl,
+	ResponsiveMeasurementControls,
+	ResponsiveRangeControls,
 } from '@kadence/components';
 
 /**
@@ -59,7 +56,7 @@ import metadata from './block.json';
 import {
 	createBlock,
 } from '@wordpress/blocks';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useDispatch, useSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import {
 	useState,
@@ -86,14 +83,20 @@ import {
 	ToggleControl,
 	SelectControl,
 	TextControl,
+	ToolbarButton,
+	ToolbarGroup,
 } from '@wordpress/components';
 import {
 	applyFilters,
 } from '@wordpress/hooks';
+import {
+	plusCircle,
+} from '@wordpress/icons';
 /**
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
+import Select from 'react-select';
 
 const ALLOWED_BLOCKS = [ 'kadence/tab' ];
 
@@ -115,47 +118,111 @@ const getPanesTemplate = memoize( ( panes ) => {
 	return times( panes, n => [ 'kadence/tab', { id: n + 1 } ] );
 } );
 /**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kttabsUniqueIDs = [];
-/**
  * Build the row edit
  */
 function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
 
-	const { uniqueID, showPresets, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, tabletInnerPadding, mobileInnerPadding, innerPaddingType, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType, textTransform, contentBorderRadius } = attributes;
+	const {
+		uniqueID,
+		showPresets,
+		tabCount,
+		blockAlignment,
+		mobileLayout,
+		currentTab,
+		tabletLayout,
+		layout,
+		innerPadding,
+		tabletInnerPadding,
+		mobileInnerPadding,
+		innerPaddingType,
+		minHeight,
+		maxWidth,
+		titles,
+		titleColor,
+		titleColorHover,
+		titleColorActive,
+		titleBg,
+		titleBgHover,
+		titleBgActive,
+		size,
+		sizeType,
+		lineType,
+		lineHeight,
+		tabLineHeight,
+		tabSize,
+		mobileSize,
+		mobileLineHeight,
+		letterSpacing,
+		titleBorderWidth,
+		titleBorderControl,
+		titleBorder,
+		titleBorderHover,
+		titleBorderActive,
+		typography,
+		fontVariant,
+		fontWeight,
+		fontStyle,
+		fontSubset,
+		googleFont,
+		loadGoogleFont,
+		contentBorder,
+		contentBorderColor,
+		titlePadding,
+		tabletTitlePadding,
+		mobileTitlePadding,
+		titlePaddingUnit,
+		titleMargin,
+		tabletTitleMargin,
+		mobileTitleMargin,
+		titleMarginUnit,
+		contentBgColor,
+		tabAlignment,
+		titleBorderRadius,
+		tabletTitleBorderRadius,
+		mobileTitleBorderRadius,
+		titleBorderRadiusUnit,
+		iSize,
+		startTab,
+		enableSubtitle,
+		subtitleFont,
+		tabWidth,
+		gutter,
+		widthType,
+		textTransform,
+		contentBorderRadius,
+		tabletContentBorderRadius,
+		mobileContentBorderRadius,
+		contentBorderRadiusUnit,
+		verticalTabWidth,
+		verticalTabWidthUnit,
+	} = attributes;
 
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ contentBorderRadiusControl, setContentBorderRadiusControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	const { addUniqueID } = useDispatch('kadenceblocks/data');
+	const { isUniqueID, isUniqueBlock } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+			};
+		},
+		[ clientId ]
+	);
 
 	useEffect( () => {
 		if ( ! uniqueID ) {
-			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/tabs' ];
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/tabs' ] !== undefined && typeof blockConfigObject[ 'kadence/tabs' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/tabs' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/tabs' ][ attribute ];
-				} );
-			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
-				Object.keys( oldBlockConfig ).map( ( attribute ) => {
-					attributes[ attribute ] = oldBlockConfig[ attribute ];
-				} );
+				setBlockDefaults( 'kadence/tabs', attributes);
 			} else {
 				setShowPreset( true );
 			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kttabsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kttabsUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes({uniqueID: '_' + clientId.substr(2, 9)});
-				kttabsUniqueIDs.push('_' + clientId.substr(2, 9));
-			}
-		} else {
-			kttabsUniqueIDs.push( uniqueID );
 		}
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		setAttributes( { uniqueID: uniqueId } );
+		addUniqueID( uniqueId, clientId );
 	}, [] );
 
 	const previewInnerPaddingTop = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[0] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 0 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 0 ] : '' ) );
@@ -169,6 +236,27 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const previewFontSize = getPreviewSize( previewDevice, ( undefined !== size ? size : '' ), ( undefined !== tabSize ? tabSize : '' ), ( undefined !== mobileSize ? mobileSize : '' ) );
 	const previewLineHeight = getPreviewSize( previewDevice, ( undefined !== lineHeight ? lineHeight : '' ), ( undefined !== tabLineHeight ? tabLineHeight : '' ), ( undefined !== mobileLineHeight ? mobileLineHeight : '' ) );
 
+	const previewContentRadiusTop = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius?.[0] ? contentBorderRadius[ 0 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 0 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 0 ] : '' ) );
+	const previewContentRadiusRight = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 1 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 1 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 1 ] : '' ) );
+	const previewContentRadiusBottom = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 2 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 2 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 2 ] : '' ) );
+	const previewContentRadiusLeft = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 3 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 3 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 3 ] : '' ) );
+
+
+	const previewTitleRadiusTop = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius?.[0] ? titleBorderRadius[ 0 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 0 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 0 ] : '' ) );
+	const previewTitleRadiusRight = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 1 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 1 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 1 ] : '' ) );
+	const previewTitleRadiusBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 2 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 2 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 2 ] : '' ) );
+	const previewTitleRadiusLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 3 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 3 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 3 ] : '' ) );
+	const previewTitleMarginTop = getPreviewSize(previewDevice, (undefined !== titleMargin[0] ? titleMargin[0] : ''), (undefined !== tabletTitleMargin[0] ? tabletTitleMargin[0] : ''), (undefined !== mobileTitleMargin[0] ? mobileTitleMargin[0] : ''));
+	const previewTitleMarginRight = getPreviewSize(previewDevice, (undefined !== titleMargin[1] ? titleMargin[1] : ''), (undefined !== tabletTitleMargin[1] ? tabletTitleMargin[1] : ''), (undefined !== mobileTitleMargin[1] ? mobileTitleMargin[1] : ''));
+	const previewTitleMarginBottom = getPreviewSize(previewDevice, (undefined !== titleMargin[2] ? titleMargin[2] : ''), (undefined !== tabletTitleMargin[2] ? tabletTitleMargin[2] : ''), (undefined !== mobileTitleMargin[2] ? mobileTitleMargin[2] : ''));
+	const previewTitleMarginLeft = getPreviewSize(previewDevice, (undefined !== titleMargin[3] ? titleMargin[3] : ''), (undefined !== tabletTitleMargin[3] ? tabletTitleMargin[3] : ''), (undefined !== mobileTitleMargin[3] ? mobileTitleMargin[3] : ''));
+	const previewTitlePaddingTop = getPreviewSize(previewDevice, (undefined !== titlePadding[0] ? titlePadding[0] : ''), (undefined !== tabletTitlePadding[0] ? tabletTitlePadding[0] : ''), (undefined !== mobileTitlePadding[0] ? mobileTitlePadding[0] : ''));
+	const previewTitlePaddingRight = getPreviewSize(previewDevice, (undefined !== titlePadding[1] ? titlePadding[1] : ''), (undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : ''), (undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : ''));
+	const previewTitlePaddingBottom = getPreviewSize(previewDevice, (undefined !== titlePadding[2] ? titlePadding[2] : ''), (undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
+	const previewTitlePaddingLeft = getPreviewSize(previewDevice, (undefined !== titlePadding[3] ? titlePadding[3] : ''), (undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
+	const previewLayout = getPreviewSize( previewDevice, ( undefined !== layout ? layout : 'tabs' ), ( undefined !== tabletLayout && '' !== tabletLayout && 'inherit' !== tabletLayout ? tabletLayout : '' ), ( undefined !== mobileLayout && '' !== mobileLayout && 'inherit' !== mobileLayout ? mobileLayout : '' ) );
+	const previewVerticalTabWidth = getPreviewSize( previewDevice, ( verticalTabWidth && verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' ) , ( verticalTabWidth && verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' ), ( verticalTabWidth && verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' ) );
+	const previewVerticalTabWidthUnit = ( verticalTabWidthUnit ? verticalTabWidthUnit : 'px' );
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
@@ -287,11 +375,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 1, 1, 0, 1 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
-					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, -1, 0 ],
-					titleMarginControl: 'individual',
 					titleColor: '#444444',
 					titleColorHover: '#444444',
 					titleColorActive: '#444444',
@@ -304,7 +389,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#bcbcbc',
 					contentBorder: [ 1, 1, 1, 1 ],
-					contentBorderControl: 'linked',
 				} );
 			} else if ( 'boldbg' === key ) {
 				setAttributes( {
@@ -317,11 +401,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 0, 0, 0, 0 ],
 					titleBorderControl: 'linked',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
-					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, 0, 0 ],
-					titleMarginControl: 'individual',
 					titleColor: '#222222',
 					titleColorHover: '#222222',
 					titleColorActive: '#ffffff',
@@ -334,7 +415,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#0a6689',
 					contentBorder: [ 3, 0, 0, 0 ],
-					contentBorderControl: 'individual',
 				} );
 			} else if ( 'center' === key ) {
 				setAttributes( {
@@ -347,11 +427,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 0, 0, 4, 0 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 8, 20, 8, 20 ],
-					titlePaddingControl: 'individual',
 					titleMargin: [ 0, 8, 0, 0 ],
-					titleMarginControl: 'individual',
 					titleColor: '#555555',
 					titleColorHover: '#555555',
 					titleColorActive: '#0a6689',
@@ -364,7 +441,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#eeeeee',
 					contentBorder: [ 1, 0, 0, 0 ],
-					contentBorderControl: 'individual',
 				} );
 			} else if ( 'vertical' === key ) {
 				setAttributes( {
@@ -378,11 +454,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderWidth: [ 4, 0, 4, 4 ],
 					titleBorderControl: 'individual',
 					titleBorderRadius: [ 10, 0, 0, 10 ],
-					titleBorderRadiusControl: 'individual',
 					titlePadding: [ 12, 8, 12, 20 ],
-					titlePaddingControl: 'individual',
 					titleMargin: [ 0, -4, 10, 0 ],
-					titleMarginControl: 'individual',
 					titleColor: '#444444',
 					titleColorHover: '#444444',
 					titleColorActive: '#444444',
@@ -395,18 +468,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					contentBgColor: '#ffffff',
 					contentBorderColor: '#eeeeee',
 					contentBorder: [ 4, 4, 4, 4 ],
-					contentBorderControl: 'linked',
 					minHeight: 400,
 				} );
 			}
 		};
 		const config = ( googleFont ? gconfig : '' );
-		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
-		const fontMax = ( sizeType === 'em' ? 12 : 200 );
-		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineType === 'px' ? 5 : 0.2 );
-		const lineMax = ( lineType === 'px' ? 200 : 12 );
-		const lineStep = ( lineType === 'px' ? 1 : 0.1 );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 
@@ -425,6 +491,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
+
+		const initialTabOptions = times( tabCount, ( n ) => {
+			return { value: ( n + 1), label: titles[n].text };
+		});
+
 		const mobileControls = (
 			<Fragment>
 				<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
@@ -488,21 +559,27 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					) ) }
 				</ButtonGroup>
 				<p class="kadence-control-title" style={{marginTop: "5px"}}>{ __( 'Set initial Open Tab') }</p>
-				<ButtonGroup aria-label={ __( 'initial Open Tab' ) }>
-					{ times( tabCount, n => (
-						<Button
-							key={ n + 1 }
-							variant={ startTab === n + 1 ? 'primary' : 'secondary' }
-							isSmall
-							aria-pressed={ startTab === n + 1 }
-							onClick={ () => setAttributes( { startTab: n + 1 } ) }
-						>
-							{ __( 'Tab' ) + ' ' + ( n + 1 ) }
-						</Button>
-					) ) }
-				</ButtonGroup>
+				<Select
+					value={initialTabOptions.filter(function(option) {
+						return option.value === startTab;
+					})}
+					onChange={ ( selection ) => { setAttributes( { startTab: selection.value } ) } }
+					options={ initialTabOptions }
+					maxMenuHeight={ 300 }
+					placeholder={ __('Select an initial tab', 'kadence-blocks' ) }
+				/>
 			</Fragment>
 		);
+
+		const saveFontAttribute = ( key, value ) => {
+			let ucKey = key.charAt(0).toUpperCase() + key.slice(1);
+
+			setAttributes( {
+				[ key ]: value[0],
+				[ 'tab' + ucKey ]: value[1],
+				[ 'mobile' + ucKey ]: value[2],
+			} );
+		}
 
 		const renderTitles = ( index ) => {
 			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
@@ -527,7 +604,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			return (
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
-						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 1 ] + 'px ' ) + titleMargin[ 2 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 3 ] + 'px ' ) : '' ),
+						marginTop: ( previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, titleMarginUnit ) : '' ),
+						marginRight: ( 'tabs' === layout && widthType === 'percent' ? '0px' : previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, titleMarginUnit ) : '' ),
+						marginBottom: ( previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, titleMarginUnit ) : '' ),
+						marginLeft: ( 'tabs' === layout && widthType === 'percent' ? '0px' : previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, titleMarginUnit ) : '' ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: KadenceColorOutput( titleBg ),
@@ -539,11 +619,15 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: ( typography ? typography : '' ),
-							borderTopLeftRadius: borderRadius + 'px',
-							borderTopRightRadius: borderRadius + 'px',
 							borderWidth: ( titleBorderWidth ? titleBorderWidth[ 0 ] + 'px ' + titleBorderWidth[ 1 ] + 'px ' + titleBorderWidth[ 2 ] + 'px ' + titleBorderWidth[ 3 ] + 'px' : '' ),
-							borderRadius: ( titleBorderRadius ? titleBorderRadius[ 0 ] + 'px ' + titleBorderRadius[ 1 ] + 'px ' + titleBorderRadius[ 2 ] + 'px ' + titleBorderRadius[ 3 ] + 'px' : '' ),
-							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
+							borderTopLeftRadius: previewTitleRadiusTop + titleBorderRadiusUnit,
+							borderTopRightRadius: previewTitleRadiusRight + titleBorderRadiusUnit,
+							borderBottomRightRadius: previewTitleRadiusBottom + titleBorderRadiusUnit,
+							borderBottomLeftRadius: previewTitleRadiusLeft + titleBorderRadiusUnit,
+							paddingTop: ( previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) : '' ),
+							paddingRight: ( previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) : '' ),
+							paddingBottom: ( previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) : '' ),
+							paddingLeft: ( previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingUnit ) : '' ),
 							borderColor: KadenceColorOutput( titleBorder ),
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
@@ -638,7 +722,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								<Button
 									icon="no-alt"
 									onClick={ () => {
-										const removeClientId = tabsBlock.innerBlocks[ index ].clientId;
 										const currentItems = filter( titles, ( item, i ) => index !== i );
 										const newCount = tabCount - 1;
 										let newStartTab;
@@ -788,150 +871,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				/>
 			</Fragment>
 		);
-		const sizeDeskControls = (
-			<KadencePanelBody panelName={ 'kb-tab-size-desktop-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Font Size', 'kadence-blocks' ) }
-					value={ ( size ? size : '' ) }
-					onChange={ ( value ) => setAttributes( { size: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Line Height', 'kadence-blocks' ) }
-					value={ ( lineHeight ? lineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { lineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
-		const sizeTabletControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-tablet-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Tablet Font Size', 'kadence-blocks' ) }
-					value={ ( tabSize ? tabSize : '' ) }
-					onChange={ ( value ) => setAttributes( { tabSize: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Tablet Line Height', 'kadence-blocks' ) }
-					value={ ( tabLineHeight ? tabLineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { tabLineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
-		const sizeMobileControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-mobile-controls' }>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ sizeType === key }
-							aria-pressed={ sizeType === key }
-							onClick={ () => setAttributes( { sizeType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Mobile Font Size', 'kadence-blocks' ) }
-					value={ ( mobileSize ? mobileSize : '' ) }
-					onChange={ ( value ) => setAttributes( { mobileSize: value } ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ lineType === key }
-							aria-pressed={ lineType === key }
-							onClick={ () => setAttributes( { lineType: key } ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<RangeControl
-					label={ __( 'Mobile Line Height', 'kadence-blocks' ) }
-					value={ ( mobileLineHeight ? mobileLineHeight : '' ) }
-					onChange={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
-					min={ lineMin }
-					max={ lineMax }
-					step={ lineStep }
-				/>
-			</KadencePanelBody>
-		);
+
 		const percentDesktopContent = (
 			<Fragment>
 				<RangeControl
@@ -1026,7 +966,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				}
 				${ accordionOrderStyle }
 				` }
-				
+
 			</style>
 		);
 
@@ -1053,11 +993,35 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					/>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						excludedAttrs={ nonTransAttrs } 
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						excludedAttrs={ nonTransAttrs }
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
+					<ToolbarGroup group="add-block">
+						<ToolbarButton
+							className="kb-icons-add-icon"
+							icon={ plusCircle }
+							onClick={ () => {
+								const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
+								setAttributes( { tabCount: tabCount + 1 } );
+								insertTab( newBlock );
+								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
+								const newtabs = titles;
+								newtabs.push( {
+									text: sprintf( __( 'Tab %d', 'kadence-blocks' ), tabCount + 1 ),
+									icon: titles[ 0 ].icon,
+									iconSide: titles[ 0 ].iconSide,
+									onlyIcon: titles[ 0 ].onlyIcon,
+									subText: '',
+								} );
+								setAttributes( { titles: newtabs } );
+								saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
+							} }
+							label={  __( 'Add Tab', 'kadence-blocks' ) }
+							showTooltip={ true }
+						/>
+					</ToolbarGroup>
 				</BlockControls>
 				{ showSettings( 'allSettings', 'kadence/tabs' ) && (
 					<InspectorControls>
@@ -1119,40 +1083,29 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											onChange={(value) => setAttributes({contentBorderColor: value})}
 										/>
 										<MeasurementControls
-											label={__('Content Border Width (px)', 'kadence-blocks')}
+											label={__('Border Width (px)', 'kadence-blocks')}
 											measurement={contentBorder}
-											control={contentBorderControl}
 											onChange={(value) => setAttributes({contentBorder: value})}
-											onControl={(value) => setAttributes({contentBorderControl: value})}
 											min={0}
 											max={100}
 											step={1}
 										/>
-										<MeasurementControls
-											label={__('Content Border Radius (px)', 'kadence-blocks')}
-											measurement={contentBorderRadius}
-											control={contentBorderRadiusControl}
-											onChange={(value) => setAttributes({contentBorderRadius: value})}
-											onControl={(value) => setContentBorderRadiusControl(value)}
-											min={0}
-											max={100}
-											step={1}
-											controlTypes={[
-												{
-													key: 'linked',
-													name: __('Linked', 'kadence-blocks'),
-													icon: radiusLinkedIcon
-												},
-												{
-													key: 'individual',
-													name: __('Individual', 'kadence-blocks'),
-													icon: radiusIndividualIcon
-												},
-											]}
-											firstIcon={topLeftIcon}
-											secondIcon={topRightIcon}
-											thirdIcon={bottomRightIcon}
-											fourthIcon={bottomLeftIcon}
+										<ResponsiveMeasurementControls
+											label={ __( 'Border Radius', 'kadence-blocks' ) }
+											value={ contentBorderRadius }
+											tabletValue={ tabletContentBorderRadius }
+											mobileValue={ mobileContentBorderRadius }
+											onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletContentBorderRadius: value } ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileContentBorderRadius: value } ) }
+											min={ 0 }
+											max={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+											step={ ( contentBorderRadiusUnit === 'em' || contentBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ contentBorderRadiusUnit }
+											units={ [ 'px', 'em', 'rem', '%' ] }
+											onUnit={ ( value ) => setAttributes( { contentBorderRadiusUnit: value } ) }
+											isBorderRadius={ true }
+											allowEmpty={true}
 										/>
 									</KadencePanelBody>
 								)}
@@ -1211,6 +1164,31 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										initialOpen={false}
 										panelName={'kb-tab-title-spacing'}
 									>
+										{ 'vtabs' === previewLayout && (
+											<ResponsiveRangeControls
+												label={__( 'Tab Title Width', 'kadence-blocks' )}
+												value={( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' )}
+												onChange={value => {
+													setAttributes( { verticalTabWidth: [ value, ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' ), ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' ) ] } );
+												}}
+												tabletValue={( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' )}
+												onChangeTablet={( value ) => {
+													setAttributes( { verticalTabWidth: [ ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' ), value, ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' ) ] } );
+												}}
+												mobileValue={( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' )}
+												onChangeMobile={( value ) => {
+													setAttributes( { verticalTabWidth: [ ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' ), ( undefined !== verticalTabWidth && undefined !== verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' ), value ] } );
+												}}
+												min={0}
+												max={( verticalTabWidthUnit === 'px' ? 2000 : 100 )}
+												step={1}
+												unit={verticalTabWidthUnit ? verticalTabWidthUnit : '%'}
+												onUnit={( value ) => {
+													setAttributes( { verticalTabWidthUnit: value } );
+												}}
+												units={[ 'px', '%', 'vw' ]}
+											/>
+										) }
 										{'tabs' === layout && (
 											<Fragment>
 												<h2>{__('Tab Title Width', 'kadence-blocks')}</h2>
@@ -1244,56 +1222,73 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 																			>
 																			</SmallResponsiveControl>
 
-																			<MeasurementControls
-																				label={__('Title Padding (px)', 'kadence-blocks')}
-																				measurement={titlePadding}
-																				control={titlePaddingControl}
-																				onChange={(value) => setAttributes({titlePadding: value})}
-																				onControl={(value) => setAttributes({titlePaddingControl: value})}
-																				min={0}
-																				max={50}
-																				step={1}
+																			<ResponsiveMeasureRangeControl
+																				label={__( 'Title Padding', 'kadence-blocks' )}
+																				value={titlePadding}
+																				onChange={( value ) => setAttributes( { titlePadding: value } )}
+																				tabletValue={tabletTitlePadding}
+																				onChangeTablet={( value ) => setAttributes( { tabletTitlePadding: value } )}
+																				mobileValue={mobileTitlePadding}
+																				onChangeMobile={( value ) => setAttributes( { mobileTitlePadding: value } )}
+																				min={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? -2 : -200 )}
+																				max={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 12 : 200 )}
+																				step={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0.1 : 1 )}
+																				unit={titlePaddingUnit}
+																				units={[ 'px', 'em', 'rem' ]}
+																				onUnit={( value ) => setAttributes( { titlePaddingUnit: value } )}
 																			/>
-																			<RangeControl
-																				label={__('Top Margin (px)', 'kadence-blocks')}
-																				value={(titleMargin && undefined !== titleMargin[0] ? titleMargin[0] : '')}
-																				onChange={(value) => setAttributes({titleMargin: [value, titleMargin[1], titleMargin[2], titleMargin[3]]})}
-																				min={-25}
-																				max={25}
-																				step={1}
+																			<ResponsiveMeasureRangeControl
+																				label={__( 'Title Margin', 'kadence-blocks' )}
+																				value={titleMargin}
+																				onChange={( value ) => setAttributes( { titleMargin: value } )}
+																				tabletValue={tabletTitleMargin}
+																				onChangeTablet={( value ) => setAttributes( { tabletTitleMargin: value } )}
+																				mobileValue={mobileTitleMargin}
+																				onChangeMobile={( value ) => setAttributes( { mobileTitleMargin: value } )}
+																				min={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? -2 : -200 )}
+																				max={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 200 )}
+																				step={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1 )}
+																				unit={titleMarginUnit}
+																				units={[ 'px', 'em', 'rem' ]}
+																				onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
 																			/>
-																			<RangeControl
-																				label={__('Bottom Margin (px)', 'kadence-blocks')}
-																				value={(titleMargin && undefined !== titleMargin[2] ? titleMargin[2] : '')}
-																				onChange={(value) => setAttributes({titleMargin: [titleMargin[0], titleMargin[1], value, titleMargin[3]]})}
-																				min={-25}
-																				max={25}
-																				step={1}
-																			/>
+																			{ __('Left & right title margins are ignored in % width tabs', 'kadence-blocks') }
+
+																			<br/><br/>
 																		</Fragment>
 																	);
 																} else {
 																	tabout = (
 																		<Fragment>
-																			<MeasurementControls
-																				label={__('Title Padding (px)', 'kadence-blocks')}
-																				measurement={titlePadding}
-																				control={titlePaddingControl}
-																				onChange={(value) => setAttributes({titlePadding: value})}
-																				onControl={(value) => setAttributes({titlePaddingControl: value})}
-																				min={0}
-																				max={50}
-																				step={1}
+																			<ResponsiveMeasureRangeControl
+																				label={__( 'Title Padding', 'kadence-blocks' )}
+																				value={titlePadding}
+																				onChange={( value ) => setAttributes( { titlePadding: value } )}
+																				tabletValue={tabletTitlePadding}
+																				onChangeTablet={( value ) => setAttributes( { tabletTitlePadding: value } )}
+																				mobileValue={mobileTitlePadding}
+																				onChangeMobile={( value ) => setAttributes( { mobileTitlePadding: value } )}
+																				min={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? -2 : -200 )}
+																				max={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 12 : 200 )}
+																				step={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0.1 : 1 )}
+																				unit={titlePaddingUnit}
+																				units={[ 'px', 'em', 'rem' ]}
+																				onUnit={( value ) => setAttributes( { titlePaddingUnit: value } )}
 																			/>
-																			<MeasurementControls
-																				label={__('Title Margin (px)', 'kadence-blocks')}
-																				measurement={titleMargin}
-																				control={titleMarginControl}
-																				onChange={(value) => setAttributes({titleMargin: value})}
-																				onControl={(value) => setAttributes({titleMarginControl: value})}
-																				min={-25}
-																				max={25}
-																				step={1}
+																			<ResponsiveMeasureRangeControl
+																				label={__( 'Title Margin', 'kadence-blocks' )}
+																				value={titleMargin}
+																				onChange={( value ) => setAttributes( { titleMargin: value } )}
+																				tabletValue={tabletTitleMargin}
+																				onChangeTablet={( value ) => setAttributes( { tabletTitleMargin: value } )}
+																				mobileValue={mobileTitleMargin}
+																				onChangeMobile={( value ) => setAttributes( { mobileTitleMargin: value } )}
+																				min={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? -2 : -200 )}
+																				max={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 200 )}
+																				step={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1 )}
+																				unit={titleMarginUnit}
+																				units={[ 'px', 'em', 'rem' ]}
+																				onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
 																			/>
 																		</Fragment>
 																	);
@@ -1308,25 +1303,35 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										)}
 										{'tabs' !== layout && (
 											<Fragment>
-												<MeasurementControls
-													label={__('Title Padding (px)', 'kadence-blocks')}
-													measurement={titlePadding}
-													control={titlePaddingControl}
-													onChange={(value) => setAttributes({titlePadding: value})}
-													onControl={(value) => setAttributes({titlePaddingControl: value})}
-													min={0}
-													max={50}
-													step={1}
+												<ResponsiveMeasureRangeControl
+													label={__( 'Title Padding', 'kadence-blocks' )}
+													value={titlePadding}
+													onChange={( value ) => setAttributes( { titlePadding: value } )}
+													tabletValue={tabletTitlePadding}
+													onChangeTablet={( value ) => setAttributes( { tabletTitlePadding: value } )}
+													mobileValue={mobileTitlePadding}
+													onChangeMobile={( value ) => setAttributes( { mobileTitlePadding: value } )}
+													min={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? -2 : -200 )}
+													max={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 12 : 200 )}
+													step={( titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0.1 : 1 )}
+													unit={titlePaddingUnit}
+													units={[ 'px', 'em', 'rem' ]}
+													onUnit={( value ) => setAttributes( { titlePaddingUnit: value } )}
 												/>
-												<MeasurementControls
-													label={__('Title Margin (px)', 'kadence-blocks')}
-													measurement={titleMargin}
-													control={titleMarginControl}
-													onChange={(value) => setAttributes({titleMargin: value})}
-													onControl={(value) => setAttributes({titleMarginControl: value})}
-													min={-25}
-													max={25}
-													step={1}
+												<ResponsiveMeasureRangeControl
+													label={__( 'Title Margin', 'kadence-blocks' )}
+													value={titleMargin}
+													onChange={( value ) => setAttributes( { titleMargin: value } )}
+													tabletValue={tabletTitleMargin}
+													onChangeTablet={( value ) => setAttributes( { tabletTitleMargin: value } )}
+													mobileValue={mobileTitleMargin}
+													onChangeMobile={( value ) => setAttributes( { mobileTitleMargin: value } )}
+													min={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? -2 : -200 )}
+													max={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 200 )}
+													step={( titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1 )}
+													unit={titleMarginUnit}
+													units={[ 'px', 'em', 'rem' ]}
+													onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
 												/>
 											</Fragment>
 										)}
@@ -1340,31 +1345,22 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											max={20}
 											step={1}
 										/>
-										<MeasurementControls
-											label={__('Title Border Radius (px)', 'kadence-blocks')}
-											measurement={titleBorderRadius}
-											control={titleBorderRadiusControl}
-											onChange={(value) => setAttributes({titleBorderRadius: value})}
-											onControl={(value) => setAttributes({titleBorderRadiusControl: value})}
-											min={0}
-											max={50}
-											step={1}
-											controlTypes={[
-												{
-													key: 'linked',
-													name: __('Linked', 'kadence-blocks'),
-													icon: radiusLinkedIcon
-												},
-												{
-													key: 'individual',
-													name: __('Individual', 'kadence-blocks'),
-													icon: radiusIndividualIcon
-												},
-											]}
-											firstIcon={topLeftIcon}
-											secondIcon={topRightIcon}
-											thirdIcon={bottomRightIcon}
-											fourthIcon={bottomLeftIcon}
+										<ResponsiveMeasurementControls
+											label={ __( 'Title Border Radius', 'kadence-blocks' ) }
+											value={ titleBorderRadius }
+											tabletValue={ tabletTitleBorderRadius }
+											mobileValue={ mobileTitleBorderRadius }
+											onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletTitleBorderRadius: value } ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileTitleBorderRadius: value } ) }
+											min={ 0 }
+											max={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 24 : 100 ) }
+											step={ ( titleBorderRadiusUnit === 'em' || titleBorderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ titleBorderRadiusUnit }
+											units={ [ 'px', 'em', 'rem', '%' ] }
+											onUnit={ ( value ) => setAttributes( { titleBorderRadiusUnit: value } ) }
+											isBorderRadius={ true }
+											allowEmpty={true}
 										/>
 									</KadencePanelBody>
 								)}
@@ -1375,6 +1371,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										panelName={'kb-tab-title-font'}
 									>
 										<TypographyControls
+											fontSize={ [ size, tabSize, mobileSize ] }
+											onFontSize={(value) => saveFontAttribute( 'size', value )}
+											fontSizeType={ sizeType ? sizeType : 'px'}
+											onFontSizeType={(value) => setAttributes({sizeType: value})}
+											lineHeight={ [ lineHeight, tabLineHeight, mobileLineHeight ] }
+											onLineHeight={(value) => saveFontAttribute( 'lineHeight', value )}
+											lineHeightType={ lineType ? lineType : 'px' }
+											onLineHeightType={(value) => setAttributes({lineType: value})}
 											fontFamily={typography}
 											onFontFamily={(value) => setAttributes({typography: value})}
 											googleFont={googleFont}
@@ -1397,23 +1401,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											onFontSubset={(value) => setAttributes({fontSubset: value})}
 											textTransform={textTransform}
 											onTextTransform={(value) => setAttributes({textTransform: value})}
-										/>
-
-										<SmallResponsiveControl
-											label={__('Size Controls', 'kadence-blocks')}
-											desktopChildren={ sizeDeskControls }
-											tabletChildren={ sizeTabletControls }
-											mobileChildren={ sizeMobileControls }
-										>
-										</SmallResponsiveControl>
-
-										<RangeControl
-											label={__('Letter Spacing', 'kadence-blocks')}
-											value={(letterSpacing ? letterSpacing : '')}
-											onChange={(value) => setAttributes({letterSpacing: value})}
-											min={-5}
-											max={15}
-											step={0.1}
+											letterSpacing={(letterSpacing ? letterSpacing : '')}
+											onLetterSpacing={(value) => setAttributes({letterSpacing: value})}
 										/>
 									</KadencePanelBody>
 								)}
@@ -1556,8 +1545,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 								<div className="kt-sidebar-settings-spacer"></div>
 
-								<KadenceBlockDefaults 
-									attributes={attributes} 
+								<KadenceBlockDefaults
+									attributes={attributes}
 									defaultAttributes={metadata['attributes']}
 									blockSlug={metadata['name']}
 									excludedAttrs={nonTransAttrs}
@@ -1596,7 +1585,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						<div className="kt-tabs-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
-							<div className="kb-add-new-tab-contain">
+							{/* <div className="kb-add-new-tab-contain">
 								<Button
 									className="kt-tab-add"
 									isPrimary={ true }
@@ -1620,8 +1609,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									<Dashicon icon="plus" />
 									{ __( 'Add Tab', 'kadence-blocks' ) }
 								</Button>
-							</div>
-							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` }>
+							</div> */}
+							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` } style={{
+								width: 'vtabs' === previewLayout ? previewVerticalTabWidth + previewVerticalTabWidthUnit : undefined,
+							}}>
 								{ renderPreviewArray }
 							</ul>
 							{ googleFont && (
@@ -1638,7 +1629,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								paddingLeft: getSpacingOptionOutput( previewInnerPaddingLeft, innerPaddingType ),
 								paddingRight: getSpacingOptionOutput( previewInnerPaddingRight, innerPaddingType ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
-								borderRadius: ( contentBorderRadius ? contentBorderRadius[ 0 ] + 'px ' + contentBorderRadius[ 1 ] + 'px ' + contentBorderRadius[ 2 ] + 'px ' + contentBorderRadius[ 3 ] + 'px' : '' ),
+								borderTopLeftRadius: previewContentRadiusTop + contentBorderRadiusUnit,
+								borderTopRightRadius: previewContentRadiusRight + contentBorderRadiusUnit,
+								borderBottomRightRadius: previewContentRadiusBottom + contentBorderRadiusUnit,
+								borderBottomLeftRadius: previewContentRadiusLeft + contentBorderRadiusUnit,
 								minHeight: minHeight + 'px',
 								backgroundColor: KadenceColorOutput( contentBgColor ),
 								borderColor: KadenceColorOutput( contentBorderColor ),

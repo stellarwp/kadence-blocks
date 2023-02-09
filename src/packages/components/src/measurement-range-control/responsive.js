@@ -22,15 +22,12 @@ import {
 	Button,
 	ButtonGroup,
 	Flex,
-	FlexItem,
 } from '@wordpress/components';
 import {
 	outlineTopIcon,
 	outlineRightIcon,
 	outlineBottomIcon,
 	outlineLeftIcon,
-	individualIcon,
-	linkedIcon,
 } from '@kadence/icons';
 import { OPTIONS_MAP } from './constants';
 import { settings, link, linkOff } from '@wordpress/icons';

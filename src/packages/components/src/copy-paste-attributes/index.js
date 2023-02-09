@@ -20,10 +20,9 @@ import {
  import {
 	copy,
 	paste,
+	copyStyles,
 } from '@kadence/icons';
-import {
-	copy as coreCopy,
-} from '@wordpress/icons';
+
 
 const {
 	localStorage,
@@ -62,7 +61,7 @@ export default function CopyPasteAttributes ( {
 	return (
 		<ToolbarDropdownMenu
 			className="components-toolbar kb-copy-paste-attributes"
-			icon={ coreCopy }
+			icon={ copyStyles }
 			label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
 			popoverProps={ {
 				className: 'kb-copy-paste-attributes__popover',
