@@ -106,14 +106,15 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 
-		/*
-		 * Tablet wrapper padding L
-		 */
 		$widthType = isset( $attributes['widthType'] ) ? $attributes['widthType'] : 'normal';
 		if ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) {
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li' );
-			$margin_args = array( 'tablet_key' => false, 'mobile_key' => false );
-			$css->render_measure_output( $attributes, 'titleMargin', 'margin', $margin_args );
+			$css->render_measure_output( $attributes, 'titleMargin', 'margin' );
+
+			if( ( !isset($attributes['layout'] ) || ( isset( $attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) && $attributes['widthType'] === 'percent' ) {
+				$css->add_property( 'margin-right', '0px' );
+				$css->add_property( 'margin-left', '0px' );
+			}
 		}
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
@@ -193,9 +194,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-width', $attributes['titleBorderWidth'][0] . 'px ' . $attributes['titleBorderWidth'][1] . 'px ' . $attributes['titleBorderWidth'][2] . 'px ' . $attributes['titleBorderWidth'][3] . 'px' );
 		}
 		$css->render_measure_output( $attributes, 'titleBorderRadius', 'border-radius' );
-		if ( isset( $attributes['titlePadding'] ) && ! empty( $attributes['titlePadding'] ) && is_array( $attributes['titlePadding'] ) ) {
-			$css->add_property( 'padding', $attributes['titlePadding'][0] . 'px ' . $attributes['titlePadding'][1] . 'px ' . $attributes['titlePadding'][2] . 'px ' . $attributes['titlePadding'][3] . 'px' );
-		}
+		$css->render_measure_output( $attributes, 'titlePadding', 'padding' );
 		if ( isset( $attributes['titleBorder'] ) && ! empty( $attributes['titleBorder'] ) ) {
 			$css->add_property( 'border-color', $css->sanitize_color( $attributes['titleBorder'] ) );
 		}

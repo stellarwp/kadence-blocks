@@ -200,18 +200,36 @@
 	  "default": "px"
 	},
 	"titlePadding": {
-	  "type": "array"
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
 	},
-	"titlePaddingControl": {
+	"tabletTitlePadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitlePadding": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titlePaddingUnit": {
 	  "type": "string",
-	  "default": "individual"
+	  "default": "px"
 	},
 	"titleMargin": {
-	  "type": "array"
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
 	},
-	"titleMarginControl": {
+	"tabletTitleMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileTitleMargin": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"titleMarginUnit": {
 	  "type": "string",
-	  "default": "individual"
+	  "default": "px"
 	},
 	"size": {
 	  "type": "number"
