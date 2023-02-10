@@ -61,7 +61,7 @@ import {
     ToolbarGroup,
 } from '@wordpress/components';
 
-function KadenceSingleIcon( { attributes, className, setAttributes, clientId, context } ) {
+function KadenceSingleIcon( { attributes, className, setAttributes, clientId, isSelected, name, context } ) {
 
     const index = 0;
 
@@ -335,12 +335,13 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
                                         setAttributes( { target: '_self' } );
                                     }
                                 }}
-                                dynamicAttribute={'icons:' + index + ':link'}
                                 linkTitle={linkTitle}
                                 onChangeTitle={value => {
                                     setAttributes( { linkTitle: value } );
                                 }}
-                                {...attributes}
+                                dynamicAttribute={'link'}
+                                allowClear={true}
+                                {...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
                             />
                             <TextControl
                                 label={__( 'Title for Accessibility', 'kadence-blocks' )}
