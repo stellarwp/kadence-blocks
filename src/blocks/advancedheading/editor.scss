@@ -367,3 +367,15 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 		padding: 16px 48px 16px 16px;
 	}
 }
+.kadence-inner-column-inner > .wp-block[data-type="kadence/advancedheading"]:first-child .kadence-advancedheading-text {
+    margin-top: 0;
+}
+.kadence-inner-column-inner > .wp-block[data-type="kadence/advancedheading"]:last-child .kadence-advancedheading-text {
+    margin-bottom: 0;
+}
+.is-root-container > .wp-block[data-type="kadence/advancedheading"]:last-child .kadence-advancedheading-text {
+    margin-bottom: 0;
+}
+.is-root-container > .wp-block[data-type="kadence/advancedheading"]:first-child .kadence-advancedheading-text {
+    margin-top: 0;
+}

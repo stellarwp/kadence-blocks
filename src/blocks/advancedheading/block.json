@@ -8,7 +8,8 @@
 	"content": {
 		"type": "string",
 		"source": "html",
-		"selector": "h1,h2,h3,h4,h5,h6,p"
+		"selector": "h1,h2,h3,h4,h5,h6,p.wp-block-kadence-advancedheading,span.wp-block-kadence-advancedheading,div.wp-block-kadence-advancedheading",
+	 	 "__experimentalRole": "content"
 	},
 	"level": {
 	  "type": "number",
