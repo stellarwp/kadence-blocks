@@ -69,6 +69,49 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'kadence_blocks_dash_side_panel_pro', array( $this, 'admin_pro_kadence_notice' ), 10 );
 		add_filter( 'stellarwp/telemetry/kadence-blocks/optin_args', array( $this, 'optin_notice_args' ), 10 );
+		add_filter( 'stellarwp/telemetry/kadence-blocks/exit_interview_args', array( $this, 'exit_interview_args' ), 10 );
+	}
+	/**
+	 * Filter the exit_interview notice args.
+	 *
+	 * @param array $default_args the exit_interview args.
+	 */
+	public function exit_interview_args( $default_args ) {
+		$args = array(
+			'plugin_logo'           => KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png',
+			'plugin_logo_width'     => 50,
+			'plugin_logo_height'    => 50,
+			'plugin_logo_alt'       => 'KadenceWP Logo',
+			'uninstall_reasons'=> array(
+				array(
+					'uninstall_reason_id' => 'confusing',
+					'uninstall_reason'    => __( 'I couldn\'t understand how to make it work.', 'kadence-blocks' ),
+					'show_comment'        => false,
+				),
+				array(
+					'uninstall_reason_id' => 'better-plugin',
+					'uninstall_reason'   => __( 'I found a better plugin.', 'kadence-blocks' ),
+					'show_comment' => false,
+				),
+				array(
+					'uninstall_reason_id' => 'no-feature',
+					'uninstall_reason'   => __( 'I need a specific feature kadence blocks doesn\'t provide.', 'kadence-blocks' ),
+					'show_comment' => true,
+				),
+				array(
+					'uninstall_reason_id' => 'broken',
+					'uninstall_reason'   => __( 'Something is broken.', 'kadence-blocks' ),
+					'show_comment' => false,
+				),
+				array(
+					'uninstall_reason_id' => 'other',
+					'uninstall_reason'   => __( 'Other', 'kadence-blocks' ),
+					'show_comment' => true,
+				),
+			),
+		);
+		$args = wp_parse_args( $args, $default_args );
+		return $args;
 	}
 	/**
 	 * Filter the optin notice args.
