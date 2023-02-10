@@ -27,6 +27,7 @@ import {
 	getSpacingOptionOutput,
 	getPreviewSize,
 	getFontSizeOptionOutput,
+	getBorderStyle,
 	setBlockDefaults,
 	getUniqueId
 } from '@kadence/helpers';
@@ -37,14 +38,14 @@ import {
 	KadenceIconPicker,
 	IconRender,
 	KadencePanelBody,
-	MeasurementControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	InspectorControlTabs,
 	CopyPasteAttributes,
 	SmallResponsiveControl,
 	ResponsiveMeasurementControls,
-	ResponsiveRangeControls,
+	ResponsiveBorderControl,
+	ResponsiveRangeControls
 } from '@kadence/components';
 
 /**
@@ -136,7 +137,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		mobileInnerPadding,
 		innerPaddingType,
 		minHeight,
+		tabletMinHeight,
+		mobileMinHeight,
 		maxWidth,
+		tabletMaxWidth,
+		mobileMaxWidth,
 		titles,
 		titleColor,
 		titleColorHover,
@@ -154,6 +159,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		mobileLineHeight,
 		letterSpacing,
 		titleBorderWidth,
+		tabletTitleBorderWidth,
+		mobileTitleBorderWidth,
+		titleBorderWidthUnit,
 		titleBorderControl,
 		titleBorder,
 		titleBorderHover,
@@ -182,6 +190,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		mobileTitleBorderRadius,
 		titleBorderRadiusUnit,
 		iSize,
+		tabletISize,
+		mobileISize,
 		startTab,
 		enableSubtitle,
 		subtitleFont,
@@ -193,6 +203,9 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		tabletContentBorderRadius,
 		mobileContentBorderRadius,
 		contentBorderRadiusUnit,
+		contentBorderStyles,
+		tabletContentBorderStyles,
+		mobileContentBorderStyles,
 		verticalTabWidth,
 		verticalTabWidthUnit,
 	} = attributes;
@@ -220,6 +233,22 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				setShowPreset( true );
 			}
 		}
+
+		if ( contentBorder[ 0 ] !== '' || contentBorder[ 1 ] !== '' || contentBorder[ 2 ] !== '' || contentBorder[ 3 ] !== '' ) {
+			const tmpContentBorderColor = ( contentBorderColor ? contentBorderColor : '' );
+
+			setAttributes( {
+				contentBorderStyles: [ {
+					'top'   : [ tmpContentBorderColor, '', contentBorder[ 0 ] ],
+					'right' : [ tmpContentBorderColor, '', contentBorder[ 1 ] ],
+					'bottom': [ tmpContentBorderColor, '', contentBorder[ 2 ] ],
+					'left'  : [ tmpContentBorderColor, '', contentBorder[ 3 ] ],
+					'unit'  : 'px',
+				} ],
+				contentBorder: [ '', '', '', '' ],
+			} );
+		}
+
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
@@ -241,22 +270,38 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const previewContentRadiusBottom = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 2 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 2 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 2 ] : '' ) );
 	const previewContentRadiusLeft = getPreviewSize( previewDevice, ( undefined !== contentBorderRadius ? contentBorderRadius[ 3 ] : '' ), ( undefined !== tabletContentBorderRadius ? tabletContentBorderRadius[ 3 ] : '' ), ( undefined !== mobileContentBorderRadius ? mobileContentBorderRadius[ 3 ] : '' ) );
 
+	const previewContentBorderTop = getBorderStyle( previewDevice, 'top', contentBorderStyles, tabletContentBorderStyles, mobileContentBorderStyles );
+	const previewContentBorderRight = getBorderStyle( previewDevice, 'right', contentBorderStyles, tabletContentBorderStyles, mobileContentBorderStyles );
+	const previewContentBorderBottom = getBorderStyle( previewDevice, 'bottom', contentBorderStyles, tabletContentBorderStyles, mobileContentBorderStyles );
+	const previewContentBorderLeft = getBorderStyle( previewDevice, 'left', contentBorderStyles, tabletContentBorderStyles, mobileContentBorderStyles );
+
+	const previewIconSize = getPreviewSize( previewDevice, iSize, tabletISize, mobileISize );
 
 	const previewTitleRadiusTop = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius?.[0] ? titleBorderRadius[ 0 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 0 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 0 ] : '' ) );
 	const previewTitleRadiusRight = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 1 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 1 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 1 ] : '' ) );
 	const previewTitleRadiusBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 2 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 2 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 2 ] : '' ) );
 	const previewTitleRadiusLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderRadius ? titleBorderRadius[ 3 ] : '' ), ( undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[ 3 ] : '' ), ( undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[ 3 ] : '' ) );
-	const previewTitleMarginTop = getPreviewSize(previewDevice, (undefined !== titleMargin[0] ? titleMargin[0] : ''), (undefined !== tabletTitleMargin[0] ? tabletTitleMargin[0] : ''), (undefined !== mobileTitleMargin[0] ? mobileTitleMargin[0] : ''));
-	const previewTitleMarginRight = getPreviewSize(previewDevice, (undefined !== titleMargin[1] ? titleMargin[1] : ''), (undefined !== tabletTitleMargin[1] ? tabletTitleMargin[1] : ''), (undefined !== mobileTitleMargin[1] ? mobileTitleMargin[1] : ''));
-	const previewTitleMarginBottom = getPreviewSize(previewDevice, (undefined !== titleMargin[2] ? titleMargin[2] : ''), (undefined !== tabletTitleMargin[2] ? tabletTitleMargin[2] : ''), (undefined !== mobileTitleMargin[2] ? mobileTitleMargin[2] : ''));
-	const previewTitleMarginLeft = getPreviewSize(previewDevice, (undefined !== titleMargin[3] ? titleMargin[3] : ''), (undefined !== tabletTitleMargin[3] ? tabletTitleMargin[3] : ''), (undefined !== mobileTitleMargin[3] ? mobileTitleMargin[3] : ''));
-	const previewTitlePaddingTop = getPreviewSize(previewDevice, (undefined !== titlePadding[0] ? titlePadding[0] : ''), (undefined !== tabletTitlePadding[0] ? tabletTitlePadding[0] : ''), (undefined !== mobileTitlePadding[0] ? mobileTitlePadding[0] : ''));
-	const previewTitlePaddingRight = getPreviewSize(previewDevice, (undefined !== titlePadding[1] ? titlePadding[1] : ''), (undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : ''), (undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : ''));
-	const previewTitlePaddingBottom = getPreviewSize(previewDevice, (undefined !== titlePadding[2] ? titlePadding[2] : ''), (undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
-	const previewTitlePaddingLeft = getPreviewSize(previewDevice, (undefined !== titlePadding[3] ? titlePadding[3] : ''), (undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
+	const previewTitleMarginTop = getPreviewSize(previewDevice, ( titleMargin && undefined !== titleMargin[0] ? titleMargin[0] : ''), ( tabletTitleMargin && undefined !== tabletTitleMargin[0] ? tabletTitleMargin[0] : ''), (mobileTitleMargin && undefined !== mobileTitleMargin[0] ? mobileTitleMargin[0] : ''));
+	const previewTitleMarginRight = getPreviewSize(previewDevice, (titleMargin && undefined !== titleMargin[1] ? titleMargin[1] : ''), (tabletTitleMargin && undefined !== tabletTitleMargin[1] ? tabletTitleMargin[1] : ''), (mobileTitleMargin && undefined !== mobileTitleMargin[1] ? mobileTitleMargin[1] : ''));
+	const previewTitleMarginBottom = getPreviewSize(previewDevice, (titleMargin && undefined !== titleMargin[2] ? titleMargin[2] : ''), (tabletTitleMargin && undefined !== tabletTitleMargin[2] ? tabletTitleMargin[2] : ''), (mobileTitleMargin && undefined !== mobileTitleMargin[2] ? mobileTitleMargin[2] : ''));
+	const previewTitleMarginLeft = getPreviewSize(previewDevice, ( titleMargin && undefined !== titleMargin[3] ? titleMargin[3] : ''), (tabletTitleMargin && undefined !== tabletTitleMargin[3] ? tabletTitleMargin[3] : ''), (mobileTitleMargin && undefined !== mobileTitleMargin[3] ? mobileTitleMargin[3] : ''));
+	const previewTitlePaddingTop = getPreviewSize(previewDevice, (titlePadding && undefined !== titlePadding[0] ? titlePadding[0] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[0] ? tabletTitlePadding[0] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[0] ? mobileTitlePadding[0] : ''));
+	const previewTitlePaddingRight = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[1] ? titlePadding[1] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : ''));
+	const previewTitlePaddingBottom = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[2] ? titlePadding[2] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
+	const previewTitlePaddingLeft = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[3] ? titlePadding[3] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
+
+	const previewTitleBorderWidthTop = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 0 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 0 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 0 ] : '' ) );
+	const previewTitleBorderWidthRight = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 1 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 1 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 1 ] : '' ) );
+	const previewTitleBorderWidthBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 2 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 2 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 2 ] : '' ) );
+	const previewTitleBorderWidthLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 3 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 3 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 3 ] : '' ) );
+
+	const previewMaxWidth = getPreviewSize( previewDevice, maxWidth, tabletMaxWidth, mobileMaxWidth );
+	const previewMinHeight = getPreviewSize( previewDevice, minHeight, tabletMinHeight, mobileMinHeight );
+
 	const previewLayout = getPreviewSize( previewDevice, ( undefined !== layout ? layout : 'tabs' ), ( undefined !== tabletLayout && '' !== tabletLayout && 'inherit' !== tabletLayout ? tabletLayout : '' ), ( undefined !== mobileLayout && '' !== mobileLayout && 'inherit' !== mobileLayout ? mobileLayout : '' ) );
 	const previewVerticalTabWidth = getPreviewSize( previewDevice, ( verticalTabWidth && verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' ) , ( verticalTabWidth && verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' ), ( verticalTabWidth && verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' ) );
 	const previewVerticalTabWidthUnit = ( verticalTabWidthUnit ? verticalTabWidthUnit : 'px' );
+
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = titles.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
@@ -305,10 +350,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	}
 
 		const layoutClass = ( ! layout ? 'tabs' : layout );
-		const sizeTypes = [
-			{ key: 'px', name: __( 'px' ) },
-			{ key: 'em', name: __( 'em' ) },
-		];
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -373,7 +414,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					lineHeight: 1.4,
 					lineType: 'em',
 					titleBorderWidth: [ 1, 1, 0, 1 ],
-					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, -1, 0 ],
@@ -399,7 +439,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					lineHeight: 1.4,
 					lineType: 'em',
 					titleBorderWidth: [ 0, 0, 0, 0 ],
-					titleBorderControl: 'linked',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, 0, 0 ],
@@ -425,7 +464,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					lineHeight: 1.4,
 					lineType: 'em',
 					titleBorderWidth: [ 0, 0, 4, 0 ],
-					titleBorderControl: 'individual',
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, 0, 0 ],
@@ -452,7 +490,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					lineHeight: 1.4,
 					lineType: 'em',
 					titleBorderWidth: [ 4, 0, 4, 4 ],
-					titleBorderControl: 'individual',
 					titleBorderRadius: [ 10, 0, 0, 10 ],
 					titlePadding: [ 12, 8, 12, 20 ],
 					titleMargin: [ 0, -4, 10, 0 ],
@@ -619,7 +656,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: ( typography ? typography : '' ),
-							borderWidth: ( titleBorderWidth ? titleBorderWidth[ 0 ] + 'px ' + titleBorderWidth[ 1 ] + 'px ' + titleBorderWidth[ 2 ] + 'px ' + titleBorderWidth[ 3 ] + 'px' : '' ),
+							borderTopWidth: previewTitleBorderWidthTop + titleBorderWidthUnit,
+							borderRightWidth: previewTitleBorderWidthRight + titleBorderWidthUnit,
+							borderBottomWidth: previewTitleBorderWidthBottom + titleBorderWidthUnit,
+							borderLeftWidth: previewTitleBorderWidthLeft + titleBorderWidthUnit,
 							borderTopLeftRadius: previewTitleRadiusTop + titleBorderRadiusUnit,
 							borderTopRightRadius: previewTitleRadiusRight + titleBorderRadiusUnit,
 							borderBottomRightRadius: previewTitleRadiusBottom + titleBorderRadiusUnit,
@@ -632,7 +672,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
-								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
+								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! previewIconSize ? '14' : previewIconSize ) } htmltag="span" />
 							) }
 							{ ( undefined === enableSubtitle || ! enableSubtitle ) && (
 								<RichText
@@ -694,7 +734,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								</div>
 							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
-								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
+								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! previewIconSize ? '14' : previewIconSize ) } htmltag="span" />
 							) }
 						</div>
 						<div className="kadence-blocks-tab-item__control-menu">
@@ -1076,22 +1116,17 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											onChange={(value) => setAttributes({contentBgColor: value})}
 										/>
 
-										<PopColorControl
-											label={__('Border Color', 'kadence-blocks')}
-											value={(contentBorderColor ? contentBorderColor : '')}
-											default={''}
-											onChange={(value) => setAttributes({contentBorderColor: value})}
-										/>
-										<MeasurementControls
-											label={__('Border Width (px)', 'kadence-blocks')}
-											measurement={contentBorder}
-											onChange={(value) => setAttributes({contentBorder: value})}
-											min={0}
-											max={100}
-											step={1}
+										<ResponsiveBorderControl
+											label={__( 'Border Width', 'kadence-blocks' )}
+											value={contentBorderStyles}
+											tabletValue={tabletContentBorderStyles}
+											mobileValue={mobileContentBorderStyles}
+											onChange={( value ) => setAttributes( { contentBorderStyles: value } )}
+											onChangeTablet={( value ) => setAttributes( { tabletContentBorderStyles: value } )}
+											onChangeMobile={( value ) => setAttributes( { mobileContentBorderStyles: value } )}
 										/>
 										<ResponsiveMeasurementControls
-											label={ __( 'Border Radius', 'kadence-blocks' ) }
+											label={ __( 'Content Border Radius', 'kadence-blocks' ) }
 											value={ contentBorderRadius }
 											tabletValue={ tabletContentBorderRadius }
 											mobileValue={ mobileContentBorderRadius }
@@ -1335,15 +1370,21 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 												/>
 											</Fragment>
 										)}
-										<MeasurementControls
-											label={__('Title Border Width (px)', 'kadence-blocks')}
-											measurement={titleBorderWidth}
-											control={titleBorderControl}
-											onChange={(value) => setAttributes({titleBorderWidth: value})}
-											onControl={(value) => setAttributes({titleBorderControl: value})}
-											min={0}
-											max={20}
-											step={1}
+										<ResponsiveMeasurementControls
+											label={ __( 'Title Border Width', 'kadence-blocks' ) }
+											value={ titleBorderWidth }
+											tabletValue={ tabletTitleBorderWidth }
+											mobileValue={ mobileTitleBorderWidth }
+											onChange={ ( value ) => setAttributes( { titleBorderWidth: value } ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletTitleBorderWidth: value } ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileTitleBorderWidth: value } ) }
+											min={ 0 }
+											max={ ( titleBorderWidthUnit === 'em' || titleBorderWidthUnit === 'rem' ? 24 : 100 ) }
+											step={ ( titleBorderWidthUnit === 'em' || titleBorderWidthUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ titleBorderWidthUnit }
+											units={ [ 'px', 'em', 'rem' ] }
+											onUnit={ ( value ) => setAttributes( { titleBorderWidthUnit: value } ) }
+											allowEmpty={true}
 										/>
 										<ResponsiveMeasurementControls
 											label={ __( 'Title Border Radius', 'kadence-blocks' ) }
@@ -1412,13 +1453,20 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										initialOpen={false}
 										panelName={'kb-tab-title-icon'}
 									>
-										<RangeControl
-											label={__('Icon Size', 'kadence-blocks')}
-											value={(iSize ? iSize : '')}
-											onChange={(value) => setAttributes({iSize: value})}
+										<ResponsiveRangeControls
+											label={__( 'Icon Size', 'kadence-blocks' )}
+											value={( undefined !== iSize ? iSize : '' )}
+											onChange={ value => setAttributes( { iSize: value } ) }
+											tabletValue={( undefined !== tabletISize ? tabletISize : '' )}
+											onChangeTablet={ value => setAttributes( { tabletISize: value } )}
+											mobileValue={( undefined !== mobileISize ? mobileISize : '' )}
+											onChangeMobile={value => setAttributes( { mobileISize: value } )}
 											min={2}
 											max={120}
 											step={1}
+											unit={'px'}
+											showUnit={true}
+											units={[ 'px' ]}
 										/>
 										{times(tabCount, n => renderTitleSettings(n))}
 									</KadencePanelBody>
@@ -1516,27 +1564,35 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 									{showSettings('structure', 'kadence/tabs') && (
 										<>
-											<RangeControl
+											<ResponsiveRangeControls
 												label={__('Content Minimum Height', 'kadence-blocks')}
 												value={minHeight}
-												onChange={(value) => {
-													setAttributes({
-														minHeight: value,
-													});
-												}}
+												onChange={ value => setAttributes( { minHeight: value } ) }
+												tabletValue={ tabletMinHeight }
+												onChangeTablet={ value => setAttributes( { tabletMinHeight: value } )}
+												mobileValue={mobileMinHeight}
+												onChangeMobile={value => setAttributes( { mobileMinHeight: value } )}
 												min={0}
 												max={1000}
+												step={1}
+												unit={'px'}
+												showUnit={true}
+												units={[ 'px' ]}
 											/>
-											<RangeControl
+											<ResponsiveRangeControls
 												label={__('Max Width', 'kadence-blocks')}
 												value={maxWidth}
-												onChange={(value) => {
-													setAttributes({
-														maxWidth: value,
-													});
-												}}
+												onChange={ value => setAttributes( { maxWidth: value } ) }
+												tabletValue={ tabletMaxWidth }
+												onChangeTablet={ value => setAttributes( { tabletMaxWidth: value } )}
+												mobileValue={mobileMaxWidth}
+												onChangeMobile={value => setAttributes( { mobileMaxWidth: value } )}
 												min={0}
 												max={2000}
+												step={1}
+												unit={'px'}
+												showUnit={true}
+												units={[ 'px' ]}
 											/>
 										</>
 									)}
@@ -1583,7 +1639,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					) }
 					{ ! showPreset && (
 						<div className="kt-tabs-wrap" style={ {
-							maxWidth: maxWidth + 'px',
+							maxWidth: previewMaxWidth + 'px',
 						} }>
 							{/* <div className="kb-add-new-tab-contain">
 								<Button
@@ -1628,14 +1684,16 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								paddingBottom: getSpacingOptionOutput( previewInnerPaddingBottom, innerPaddingType ),
 								paddingLeft: getSpacingOptionOutput( previewInnerPaddingLeft, innerPaddingType ),
 								paddingRight: getSpacingOptionOutput( previewInnerPaddingRight, innerPaddingType ),
-								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
 								borderTopLeftRadius: previewContentRadiusTop + contentBorderRadiusUnit,
 								borderTopRightRadius: previewContentRadiusRight + contentBorderRadiusUnit,
 								borderBottomRightRadius: previewContentRadiusBottom + contentBorderRadiusUnit,
 								borderBottomLeftRadius: previewContentRadiusLeft + contentBorderRadiusUnit,
-								minHeight: minHeight + 'px',
+								minHeight: previewMinHeight + 'px',
 								backgroundColor: KadenceColorOutput( contentBgColor ),
-								borderColor: KadenceColorOutput( contentBorderColor ),
+								borderTop: ( previewContentBorderTop ? previewContentBorderTop : undefined ),
+								borderRight: ( previewContentBorderRight ? previewContentBorderRight : undefined ),
+								borderBottom: ( previewContentBorderBottom ? previewContentBorderBottom : undefined ),
+								borderLeft: ( previewContentBorderLeft ? previewContentBorderLeft : undefined ),
 							} }>
 								<InnerBlocks
 									template={ getPanesTemplate( tabCount ) }
