@@ -43,4 +43,9 @@ registerBlockType( 'kadence/singlebtn', {
 	save() {
 		return null;
 	},
+	example: {
+		attributes: {
+			text: __( 'Click Me!', 'kadence-blocks' ),
+		}
+	}
 } );
