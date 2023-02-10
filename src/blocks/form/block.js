@@ -2654,4 +2654,6 @@ registerBlockType( 'kadence/form', {
 			},
 		},
 	],
-} );
+	example: {}
+}
+);

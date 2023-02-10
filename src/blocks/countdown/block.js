@@ -52,4 +52,12 @@ registerBlockType( 'kadence/countdown', {
 	icon: countdownIcon,
 	edit,
 	save,
+	example: {
+		innerBlocks: [
+			{
+				name: 'kadence/countdown-timer',
+				attributes: {}
+			}
+		]
+	}
 } );
