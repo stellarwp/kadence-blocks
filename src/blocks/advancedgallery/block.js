@@ -81,4 +81,5 @@ registerBlockType( 'kadence/advancedgallery', {
 	edit,
 	save,
 	deprecated,
+	example: {}
 } );

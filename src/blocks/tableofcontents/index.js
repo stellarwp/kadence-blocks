@@ -27,4 +27,5 @@ registerBlockType( 'kadence/tableofcontents', {
 	},
 	edit,
 	save() { return null; },
+	example: {}
 } );
