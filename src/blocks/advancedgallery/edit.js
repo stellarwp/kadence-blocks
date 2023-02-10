@@ -15,7 +15,6 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getPreviewSize,
-	getFontSizeOptionOutput,
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
@@ -29,7 +28,6 @@ import {
 	StepControls,
 	ImageSizeControl,
 	KadenceRadioButtons,
-	ResponsiveRadioRangeControls,
 	DynamicLinkControl,
 	KadenceMediaPlaceholder,
 	DynamicGalleryControl,
@@ -38,7 +36,9 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveRangeControls,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
+	BoxShadowControl
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { applyFilters } from '@wordpress/hooks';
@@ -184,6 +184,7 @@ function GalleryEdit( props ) {
 	const mainRef = useRef( null );
 	const thumbsRef = useRef();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
@@ -219,7 +220,7 @@ function GalleryEdit( props ) {
 		}
 
 		if ( ! kbVersion || kbVersion < 2 ) {
-			if ( images ) {
+			if ( images && ! dynamicSource ) {
 				const newImageData = [];
 				forEach( images, ( image ) => {
 					newImageData.push( {
@@ -271,9 +272,6 @@ function GalleryEdit( props ) {
 
 	const [ selectedImage, setSelectedImage ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
-	const [ sliderSlides, setSliderSlides ] = useState( null );
-	const [ sliderThumbs, setSliderThumbs ] = useState( null );
 
 	const setAttribs = ( attribs ) => {
 		let newAttribs = attribs;
@@ -452,10 +450,8 @@ function GalleryEdit( props ) {
 
 		return;
 	};
-
-	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
 	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
-	const theImages = imagesDynamic;
+	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
 		let columnArray = [];
@@ -581,7 +577,7 @@ function GalleryEdit( props ) {
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
 	const fluidCarouselSettings = {
-		type         : 'slide',
+		type         : 'loop',
 		autoplay     : autoPlay,
 		rewind       : true,
 		arrows       : ( arrowStyle === 'none' ? false : true ),
@@ -590,7 +586,6 @@ function GalleryEdit( props ) {
 		interval     : autoSpeed,
 		autoWidth    : true,
 		pagination   : ( dotStyle === 'none' ? false : true ),
-		centerMode   : ( carouselAlign === false ? false : true ),
 		focus        : carouselAlign === false ? 0 : "center",
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
 	};
@@ -632,6 +627,7 @@ function GalleryEdit( props ) {
 		isNavigation : true,
 		arrows       : true,
 	};
+	const nonTransAttrs = ['images', 'imagesDynamic'];
 	const controls = (
 		<BlockControls>
 			{hasImages && !dynamicSource && (
@@ -653,6 +649,13 @@ function GalleryEdit( props ) {
 					/>
 				</ToolbarGroup>
 			)}
+			<CopyPasteAttributes
+				attributes={ attributes }
+				excludedAttrs={ nonTransAttrs }
+				defaultAttributes={ metadata['attributes'] }
+				blockSlug={ metadata['name'] }
+				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+			/>
 		</BlockControls>
 	);
 	const typeLabel = galleryTypes.filter( ( item ) => ( item.value === type ) );
@@ -1089,8 +1092,8 @@ function GalleryEdit( props ) {
 															value: 'outlinelight',
 														},
 														{
-															label: __( 'Saturation', 'kadence-blocks' ),
-															value: 'saturation',
+															label: __( 'None', 'kadence-blocks' ),
+															value: 'none',
 														},
 													]}
 													value={dotStyle}
@@ -1362,90 +1365,68 @@ function GalleryEdit( props ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadowHover( { color: value } )}
-																		opacityValue={shadowHover[ 0 ].opacity}
-																		onOpacityChange={value => saveShadowHover( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].blur}
-																		onChange={value => saveShadowHover( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].spread}
-																		onChange={value => saveShadowHover( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].vOffset}
-																		onChange={value => saveShadowHover( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].hOffset}
-																		onChange={value => saveShadowHover( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
+																	<BoxShadowControl
+																		label={ __( 'Hover Box Shadow', 'kadence-blocks-pro' ) }
+																		enable={ true }
+																		color={ (shadowHover[0].color ? shadowHover[0].color : '') }
+																		colorDefault={ '#000000' }
+																		opacity={ shadowHover[0].opacity }
+																		hOffset={ shadowHover[0].hOffset }
+																		vOffset={ shadowHover[0].vOffset }
+																		blur={ shadowHover[0].blur }
+																		spread={ shadowHover[0].spread }
+																		onColorChange={ value => {
+																			saveShadowHover( { color: value } );
+																		} }
+																		onOpacityChange={ value => {
+																			saveShadowHover( { opacity: value } );
+																		} }
+																		onHOffsetChange={ value => {
+																			saveShadowHover( { hOffset: value } );
+																		} }
+																		onVOffsetChange={ value => {
+																			saveShadowHover( { vOffset: value } );
+																		} }
+																		onBlurChange={ value => {
+																			saveShadowHover( { blur: value } );
+																		} }
+																		onSpreadChange={ value => {
+																			saveShadowHover( { spread: value } );
+																		} }
 																	/>
 																</>
 															);
 														} else {
 															tabout = (
 																<>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadow( { color: value } )}
-																		opacityValue={shadow[ 0 ].opacity}
-																		onOpacityChange={value => saveShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadow[ 0 ].blur}
-																		onChange={value => saveShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadow[ 0 ].spread}
-																		onChange={value => saveShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].vOffset}
-																		onChange={value => saveShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].hOffset}
-																		onChange={value => saveShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
+																	<BoxShadowControl
+																		label={ __( 'Box Shadow', 'kadence-blocks' ) }
+																		enable={ true }
+																		color={ (shadow[0].color ? shadow[0].color : '') }
+																		colorDefault={ '#000000' }
+																		opacity={ shadow[0].opacity }
+																		hOffset={ shadow[0].hOffset }
+																		vOffset={ shadow[0].vOffset }
+																		blur={ shadow[0].blur }
+																		spread={ shadow[0].spread }
+																		onColorChange={ value => {
+																			saveShadow( { color: value } );
+																		} }
+																		onOpacityChange={ value => {
+																			saveShadow( { opacity: value } );
+																		} }
+																		onHOffsetChange={ value => {
+																			saveShadow( { hOffset: value } );
+																		} }
+																		onVOffsetChange={ value => {
+																			saveShadow( { vOffset: value } );
+																		} }
+																		onBlurChange={ value => {
+																			saveShadow( { blur: value } );
+																		} }
+																		onSpreadChange={ value => {
+																			saveShadow( { spread: value } );
+																		} }
 																	/>
 																</>
 															);
@@ -1504,7 +1485,7 @@ function GalleryEdit( props ) {
 								attributes={attributes}
 								defaultAttributes={metadata['attributes']}
 								blockSlug={'kadence/advancedgallery'}
-								excludedAttrs={['images', 'imagesDynamic']}
+								excludedAttrs={nonTransAttrs}
 							/>
 						</>
 					)}
@@ -1583,7 +1564,7 @@ function GalleryEdit( props ) {
 					.kb-gallery-id-${uniqueID}.kb-gallery-type-thumbslider .kt-blocks-carousel-main {
 						${( previewGutter ? 'margin-bottom:' + previewGutter + previewGutterUnit + ';' : '' )}
 					}
-					
+
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' )}
 					${( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color && '' !== captionStyles[ 0 ].color ? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' )}
@@ -1617,6 +1598,7 @@ function GalleryEdit( props ) {
 			[ `kb-gallery-id-${uniqueID}` ]               : uniqueID,
 			[ `kb-gallery-caption-style-${captionStyle}` ]: captionStyle,
 			[ `kb-gallery-filter-${imageFilter}` ]        : imageFilter,
+			[ `kb-gallery-preview-columns-${previewColumns}` ]        : ( type === 'grid' || type === 'carousel' ) && previewColumns,
 		},
 	);
 	const renderGalleryImages = ( img, index, thumbnail = false ) => {

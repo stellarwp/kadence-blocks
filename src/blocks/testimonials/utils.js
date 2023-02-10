@@ -7,14 +7,15 @@ export function migrateToInnerblocks( attributes ) {
     const { testimonials, itemsCount } = attributes;
 
     let testimonialInnerBlocks = [];
-    times( itemsCount, n => {
-		let testimonial = testimonials[n];
-		let newAttrs = { ...testimonial };
+    if ( testimonials?.length ) {
+        times( itemsCount, n => {
+            let testimonial = testimonials[n];
+            let newAttrs = { ...testimonial };
 
-        testimonialInnerBlocks.push( createBlock( 'kadence/testimonial', newAttrs ) );
-    });
-
-    let testimonialParentAttributes = { ...attributes, testimonials: [] }
+            testimonialInnerBlocks.push( createBlock( 'kadence/testimonial', newAttrs ) );
+        });
+    }
+    let testimonialParentAttributes = { ...attributes, testimonials: [], itemsCount: 1 }
 
     return [ testimonialParentAttributes, testimonialInnerBlocks ];
 }

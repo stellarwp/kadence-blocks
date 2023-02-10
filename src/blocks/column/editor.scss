@@ -4,7 +4,16 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-
+ .kadence-inner-column-inner.kb-section-only-appender {
+	padding: 1.2em;
+	.block-list-appender.wp-block {
+		.block-editor-button-block-appender {
+			padding: 6px;
+			outline: 1px dashed #d5dadf;
+			box-shadow: none;
+		}
+	}
+}
 // New horizontal column.
 .wp-block-kadence-column {
 	margin-top: 0px;
@@ -19,7 +28,7 @@
 	justify-content: flex-start;
 	flex-direction: column;
 	margin-bottom: auto;
-    margin-top: auto;
+    margin-top: 0;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;

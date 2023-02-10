@@ -36,7 +36,8 @@ import {
 	MeasurementControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -45,6 +46,7 @@ import {
 	setBlockDefaults,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
+	getFontSizeOptionOutput,
 	getUniqueId,
 } from '@kadence/helpers';
 
@@ -497,6 +499,8 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		}
 	}
 
+	const nonTransAttrs = [ 'date', 'timestamp' ];
+
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
@@ -529,12 +533,12 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].textTransform ? `text-transform: ${numberFont[ 0 ].textTransform};` : '' )}
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].weight ? `font-weight: ${numberFont[ 0 ].weight};` : '' )}
 				{( numberFont && numberFont[ 0 ] && numberFont[ 0 ].style ? `font-style: ${numberFont[ 0 ].style};` : '' )}
-				{( previewNumberFontSize ? `font-size: ${previewNumberFontSize + previewNumberSizeType};` : '' )}
+				{( previewNumberFontSize ? `font-size: ${ getFontSizeOptionOutput( previewNumberFontSize, previewNumberSizeType )};` : '' )}
 				{( previewNumberLineSize ? `line-height: ${previewNumberLineSize + previewNumberLineType};` : '' )}
 				{( previewNumberLetterSize ? `letter-spacing: ${previewNumberLetterSize + previewNumberLetterType};` : '' )}
 				{'}'}
 				{`.kb-countdown-container #kb-timer-${uniqueID} .kb-countdown-date-item  {`}
-				{( previewNumberFontSize ? `font-size: ${previewNumberFontSize + previewNumberSizeType};` : '' )}
+				{( previewNumberFontSize ? `font-size: ${ getFontSizeOptionOutput( previewNumberFontSize, previewNumberSizeType ) };` : '' )}
 				{'}'}
 				{`#kb-timer-${uniqueID} .kb-countdown-date-item .kb-countdown-label {`}
 				{( labelColor ? `color: ${KadenceColorOutput( labelColor )};` : '' )}
@@ -542,7 +546,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].textTransform ? `text-transform: ${labelFont[ 0 ].textTransform};` : '' )}
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].weight ? `font-weight: ${labelFont[ 0 ].weight};` : '' )}
 				{( labelFont && labelFont[ 0 ] && labelFont[ 0 ].style ? `font-style: ${labelFont[ 0 ].style};` : '' )}
-				{( previewLabelFontSize ? `font-size: ${previewLabelFontSize + previewLabelSizeType};` : '' )}
+				{( previewLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewLabelFontSize, previewLabelSizeType ) };` : '' )}
 				{( previewLabelLineSize ? `line-height: ${previewLabelLineSize + previewLabelLineType};` : '' )}
 				{( previewLabelLetterSize ? `letter-spacing: ${previewLabelLetterSize + previewLabelLetterType};` : '' )}
 				{'}'}
@@ -554,7 +558,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].textTransform ? `text-transform: ${preLabelFont[ 0 ].textTransform};` : '' )}
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].weight ? `font-weight: ${preLabelFont[ 0 ].weight};` : '' )}
 						{( preLabelFont && preLabelFont[ 0 ] && preLabelFont[ 0 ].style ? `font-style: ${preLabelFont[ 0 ].style};` : '' )}
-						{( previewPreLabelFontSize ? `font-size: ${previewPreLabelFontSize + previewPreLabelSizeType};` : '' )}
+						{( previewPreLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewPreLabelFontSize, previewPreLabelSizeType ) };` : '' )}
 						{( previewPreLabelLineSize ? `line-height: ${previewPreLabelLineSize + previewPreLabelLineType};` : '' )}
 						{( previewPreLabelLetterSize ? `letter-spacing: ${previewPreLabelLetterSize + previewPreLabelLetterType};` : '' )}
 						{'}'}
@@ -568,7 +572,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].textTransform ? `text-transform: ${postLabelFont[ 0 ].textTransform};` : '' )}
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].weight ? `font-weight: ${postLabelFont[ 0 ].weight};` : '' )}
 						{( postLabelFont && postLabelFont[ 0 ] && postLabelFont[ 0 ].style ? `font-style: ${postLabelFont[ 0 ].style};` : '' )}
-						{( previewPostLabelFontSize ? `font-size: ${previewPostLabelFontSize + previewPostLabelSizeType};` : '' )}
+						{( previewPostLabelFontSize ? `font-size: ${ getFontSizeOptionOutput( previewPostLabelFontSize, previewPostLabelSizeType ) };` : '' )}
 						{( previewPostLabelLineSize ? `line-height: ${previewPostLabelLineSize + previewPostLabelLineType};` : '' )}
 						{( previewPostLabelLetterSize ? `letter-spacing: ${previewPostLabelLetterSize + previewPostLabelLetterType};` : '' )}
 						{'}'}
@@ -626,6 +630,13 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 								</ToolbarGroup>
 							</>
 						)}
+						<CopyPasteAttributes
+							attributes={ attributes }
+							excludedAttrs={ nonTransAttrs } 
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
 					</BlockControls>
 					<InspectorControls>
 
@@ -1263,7 +1274,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/countdown' } excludedAttrs={ [ 'date', 'timestamp' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 
 							</>
 						}

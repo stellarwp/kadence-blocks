@@ -347,7 +347,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $attributes['numberColor'] ) );
 			}
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][0] ) && ! empty( $number_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $number_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][0] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && isset( $number_font['lineHeight'][0] ) && ! empty( $number_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $number_font['lineHeight'][0] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
@@ -371,12 +375,20 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][0] ) && ! empty( $number_font['size'][0] ) ) {
 				$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item' );
-				$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $number_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][0] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}
 			}
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-number' );
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][1] ) && ! empty( $number_font['size'][1] ) ) {
-				$css->add_property( 'font-size', $number_font['size'][1] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $number_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][1] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][1] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && isset( $number_font['lineHeight'][1] ) && ! empty( $number_font['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $number_font['lineHeight'][1] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
@@ -386,13 +398,21 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][1] ) && ! empty( $number_font['size'][1] ) ) {
 				$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item' );
-				$css->add_property( 'font-size', $number_font['size'][1] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $number_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][1] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][1] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}
 			}
 			$css->set_media_state( 'desktop' );
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-number' );
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][2] ) && ! empty( $number_font['size'][2] ) ) {
-				$css->add_property( 'font-size', $number_font['size'][2] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $number_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][2] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][2] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && isset( $number_font['lineHeight'][2] ) && ! empty( $number_font['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $number_font['lineHeight'][2] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
@@ -402,8 +422,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][2] ) && ! empty( $number_font['size'][2] ) ) {
 				$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item' );
-				$css->add_property( 'font-size', $number_font['size'][2] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
-			}
+				if( $css->is_variable_font_size_value( $number_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $number_font['size'][2] ) );
+				} else {
+					$css->add_property( 'font-size', $number_font['size'][2] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
+				}			}
 			$css->set_media_state( 'desktop' );
 		}
 		$label_font = ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) ? $attributes['labelFont'][0] : array() );
@@ -413,7 +436,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
 			}
 			if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && isset( $label_font['size'][0] ) && ! empty( $label_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $label_font['size'][0] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $label_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $label_font['size'][0] ) );
+				} else {
+					$css->add_property( 'font-size', $label_font['size'][0] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && isset( $label_font['lineHeight'][0] ) && ! empty( $label_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $label_font['lineHeight'][0] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
@@ -438,7 +465,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-label' );
 			if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && isset( $label_font['size'][1] ) && ! empty( $label_font['size'][1] ) ) {
-				$css->add_property( 'font-size', $label_font['size'][1] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $label_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $label_font['size'][1] ) );
+				} else {
+					$css->add_property( 'font-size', $label_font['size'][1] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && isset( $label_font['lineHeight'][1] ) && ! empty( $label_font['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $label_font['lineHeight'][1] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
@@ -450,7 +481,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-label' );
 			if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && isset( $label_font['size'][2] ) && ! empty( $label_font['size'][2] ) ) {
-				$css->add_property( 'font-size', $label_font['size'][2] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $label_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $label_font['size'][2] ) );
+				} else {
+					$css->add_property( 'font-size', $label_font['size'][2] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && isset( $label_font['lineHeight'][2] ) && ! empty( $label_font['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $label_font['lineHeight'][2] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
@@ -467,7 +502,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $attributes['preLabelColor'] ) );
 			}
 			if ( isset( $pre_label_font['size'] ) && is_array( $pre_label_font['size'] ) && isset( $pre_label_font['size'][0] ) && ! empty( $pre_label_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $pre_label_font['size'][0] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $pre_label_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $pre_label_font['size'][0] ) );
+				} else {
+					$css->add_property( 'font-size', $pre_label_font['size'][0] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $pre_label_font['lineHeight'] ) && is_array( $pre_label_font['lineHeight'] ) && isset( $pre_label_font['lineHeight'][0] ) && ! empty( $pre_label_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $pre_label_font['lineHeight'][0] . ( ! isset( $pre_label_font['lineType'] ) ? 'px' : $pre_label_font['lineType'] ) );
@@ -492,7 +531,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-pre-timer' );
 			if ( isset( $pre_label_font['size'] ) && is_array( $pre_label_font['size'] ) && isset( $pre_label_font['size'][1] ) && ! empty( $pre_label_font['size'][1] ) ) {
-				$css->add_property( 'font-size', $pre_label_font['size'][1] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $pre_label_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $pre_label_font['size'][1] ) );
+				} else {
+					$css->add_property( 'font-size', $pre_label_font['size'][1] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $pre_label_font['lineHeight'] ) && is_array( $pre_label_font['lineHeight'] ) && isset( $pre_label_font['lineHeight'][1] ) && ! empty( $pre_label_font['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $pre_label_font['lineHeight'][1] . ( ! isset( $pre_label_font['lineType'] ) ? 'px' : $pre_label_font['lineType'] ) );
@@ -504,7 +547,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-pre-timer' );
 			if ( isset( $pre_label_font['size'] ) && is_array( $pre_label_font['size'] ) && isset( $pre_label_font['size'][2] ) && ! empty( $pre_label_font['size'][2] ) ) {
-				$css->add_property( 'font-size', $pre_label_font['size'][2] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $pre_label_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $pre_label_font['size'][2] ) );
+				} else {
+					$css->add_property( 'font-size', $pre_label_font['size'][2] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $pre_label_font['lineHeight'] ) && is_array( $pre_label_font['lineHeight'] ) && isset( $pre_label_font['lineHeight'][2] ) && ! empty( $pre_label_font['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $pre_label_font['lineHeight'][2] . ( ! isset( $pre_label_font['lineType'] ) ? 'px' : $pre_label_font['lineType'] ) );
@@ -521,7 +568,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $attributes['postLabelColor'] ) );
 			}
 			if ( isset( $post_label_font['size'] ) && is_array( $post_label_font['size'] ) && isset( $post_label_font['size'][0] ) && ! empty( $post_label_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $post_label_font['size'][0] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $post_label_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $post_label_font['size'][0] ) );
+				} else {
+					$css->add_property( 'font-size', $post_label_font['size'][0] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $post_label_font['lineHeight'] ) && is_array( $post_label_font['lineHeight'] ) && isset( $post_label_font['lineHeight'][0] ) && ! empty( $post_label_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $post_label_font['lineHeight'][0] . ( ! isset( $post_label_font['lineType'] ) ? 'px' : $post_label_font['lineType'] ) );
@@ -546,7 +597,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-post-timer' );
 			if ( isset( $post_label_font['size'] ) && is_array( $post_label_font['size'] ) && isset( $post_label_font['size'][1] ) && ! empty( $post_label_font['size'][1] ) ) {
-				$css->add_property( 'font-size', $post_label_font['size'][1] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $post_label_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $post_label_font['size'][1] ) );
+				} else {
+					$css->add_property( 'font-size', $post_label_font['size'][1] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $post_label_font['lineHeight'] ) && is_array( $post_label_font['lineHeight'] ) && isset( $post_label_font['lineHeight'][1] ) && ! empty( $post_label_font['lineHeight'][1] ) ) {
 				$css->add_property( 'line-height', $post_label_font['lineHeight'][1] . ( ! isset( $post_label_font['lineType'] ) ? 'px' : $post_label_font['lineType'] ) );
@@ -558,7 +613,11 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-post-timer' );
 			if ( isset( $post_label_font['size'] ) && is_array( $post_label_font['size'] ) && isset( $post_label_font['size'][2] ) && ! empty( $post_label_font['size'][2] ) ) {
-				$css->add_property( 'font-size', $post_label_font['size'][2] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				if( $css->is_variable_font_size_value( $post_label_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_variable_font_size_value( $post_label_font['size'][2] ) );
+				} else {
+					$css->add_property( 'font-size', $post_label_font['size'][2] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
+				}
 			}
 			if ( isset( $post_label_font['lineHeight'] ) && is_array( $post_label_font['lineHeight'] ) && isset( $post_label_font['lineHeight'][2] ) && ! empty( $post_label_font['lineHeight'][2] ) ) {
 				$css->add_property( 'line-height', $post_label_font['lineHeight'][2] . ( ! isset( $post_label_font['lineType'] ) ? 'px' : $post_label_font['lineType'] ) );

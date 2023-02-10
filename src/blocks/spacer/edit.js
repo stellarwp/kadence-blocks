@@ -16,7 +16,8 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveAlignControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -56,9 +57,10 @@ const ktspacerUniqueIDs = [];
 /**
  * Build the spacer edit
  */
-function KadenceSpacerDivider( { attributes, className, clientId, setAttributes, toggleSelection, getPreviewDevice } ) {
+function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSelection, getPreviewDevice } ) {
 
 	const {
+		className,
 		blockAlignment,
 		spacerHeight,
 		tabletSpacerHeight,
@@ -119,7 +121,6 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 
 	const blockProps = useBlockProps( {
 		className: className,
-		style: { color: 'blue' },
 	} );
 
 	let alp;
@@ -153,6 +154,12 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 						<AlignmentToolbar
 							value={hAlign}
 							onChange={value => setAttributes( { hAlign: value } )}
+						/>
+						<CopyPasteAttributes
+							attributes={ attributes }
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
 					<InspectorControls>
@@ -316,7 +323,7 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 								</KadencePanelBody>
 
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']}
-													  blockSlug={'kadence/spacer'}/>
+													  blockSlug={metadata['name']}/>
 							</>
 						}
 					</InspectorControls>

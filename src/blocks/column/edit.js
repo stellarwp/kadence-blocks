@@ -495,10 +495,12 @@ function SectionEdit( {
 			},
 		],
 	];
+	const nonTransAttrs = [ 'images', 'imagesDynamic' ];
 	const innerClasses = classnames( {
 		'kadence-inner-column-inner': true,
 		'aos-animate': true,
 		'kt-animation-wrap': true,
+		'kb-section-only-appender': ! hasInnerBlocks,
 		[ `kadence-inner-column-direction-${ ( previewDirection ? previewDirection : 'vertical' ) }` ]: true,
 		[ `kadence-inner-column-text-align-${ ( previewAlign ? previewAlign : 'normal' ) }` ]: true,
 		[ `kadence-inner-column-vertical-align-${ ( verticalAlignment ? verticalAlignment : 'inherit' ) }` ]: true,
@@ -583,6 +585,8 @@ function SectionEdit( {
 				{ ( previewHoverRadiusRight ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-top-right-radius:${ previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
 				{ ( previewHoverRadiusBottom ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-bottom-right-radius:${ previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
 				{ (  previewHoverRadiusLeft ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-bottom-left-radius:${  previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
+				{ ( collapseOrder && previewDevice === 'Tablet' ? `.kt-row-layout-row > .innerblocks-wrap > .kadence-column-${ uniqueID } { order:${  collapseOrder }; }` : '' ) }
+				{ ( collapseOrder && previewDevice === 'Mobile' ? `.kadence-column-${ uniqueID } { order:${  collapseOrder }; }` : '' ) }
 
 				{ ( displayHoverShadow && undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { box-shadow:${ ( undefined !== shadowHover[ 0 ].inset && shadowHover[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ), ( undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 1 ) ) } !important; }` : '' ) }
 				{ kadenceBlockCSS && (
@@ -610,7 +614,7 @@ function SectionEdit( {
 						/>
 						<CopyPasteAttributes
 							attributes={ attributes }
-							excludedAttrs={ [ 'images', 'imagesDynamic' ] } 
+							excludedAttrs={ nonTransAttrs } 
 							defaultAttributes={ metadata['attributes'] } 
 							blockSlug={ metadata['name'] } 
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
@@ -1020,7 +1024,7 @@ function SectionEdit( {
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/column' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 							</>
 						}

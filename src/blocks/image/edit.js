@@ -127,12 +127,13 @@ export function ImageEdit( {
 		kadenceAnimation,
 		kadenceAOSOptions,
 		border,
+		borderColor,
 		borderStyle,
-		borderWidth,
-		mobileBorderWidth,
+		borderWidthDesktop,
 		mobileBorderStyle,
+		borderWidthMobile,
 		tabletBorderStyle,
-		tabletBorderWidth,
+		borderWidthTablet,
 		marginDesktop,
 		marginTablet,
 		marginMobile,
@@ -183,21 +184,21 @@ export function ImageEdit( {
 			unit: 'px'
 		  }] ) );
 		let updateBorderStyle = false;
-		if ( ( '' !== border ) ) {
-			tempBorderStyle[0].top[0] = border;
-			tempBorderStyle[0].right[0] = border;
-			tempBorderStyle[0].bottom[0] = border;
-			tempBorderStyle[0].left[0] = border;
+		if ( ( 'undefined' !== typeof borderColor && '' !== borderColor ) ) {
+			tempBorderStyle[0].top[0] = borderColor;
+			tempBorderStyle[0].right[0] = borderColor;
+			tempBorderStyle[0].bottom[0] = borderColor;
+			tempBorderStyle[0].left[0] = borderColor;
 			updateBorderStyle = true;
-			setAttributes( { border: '' } );
+			setAttributes( { borderColor: '' } );
 		}
-		if ( ( '' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3] ) ) {
-			tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
-			tempBorderStyle[0].right[2] = borderWidth?.[1] || '';
-			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
-			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
+		if ( ( '' !== borderWidthDesktop?.[0] || '' !== borderWidthDesktop?.[1] || '' !== borderWidthDesktop?.[2] || '' !== borderWidthDesktop?.[3] ) ) {
+			tempBorderStyle[0].top[2] = borderWidthDesktop?.[0] || '';
+			tempBorderStyle[0].right[2] = borderWidthDesktop?.[1] || '';
+			tempBorderStyle[0].bottom[2] = borderWidthDesktop?.[2] || '';
+			tempBorderStyle[0].left[2] = borderWidthDesktop?.[3] || '';
 			updateBorderStyle = true;
-			setAttributes( { borderWidth:[ '', '', '', '' ] } );
+			setAttributes( { borderWidthDesktop:[ '', '', '', '' ] } );
 		}
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
@@ -209,13 +210,13 @@ export function ImageEdit( {
 			left: [ '', '', '' ],
 			unit: 'px'
 		  }] ) );
-		if ( ( '' !== tabletBorderWidth?.[0] || '' !== tabletBorderWidth?.[1] || '' !== tabletBorderWidth?.[2] || '' !== tabletBorderWidth?.[3] ) ) {
-			tempTabBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
-			tempTabBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
-			tempTabBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
-			tempTabBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
+		if ( ( '' !== borderWidthTablet?.[0] || '' !== borderWidthTablet?.[1] || '' !== borderWidthTablet?.[2] || '' !== borderWidthTablet?.[3] ) ) {
+			tempTabBorderStyle[0].top[2] = borderWidthTablet?.[0] || '';
+			tempTabBorderStyle[0].right[2] = borderWidthTablet?.[1] || '';
+			tempTabBorderStyle[0].bottom[2] = borderWidthTablet?.[2] || '';
+			tempTabBorderStyle[0].left[2] = borderWidthTablet?.[3] || '';
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
-			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
+			setAttributes( { tabletBorderStyle: tempTabBorderWidth, borderWidthTablet:[ '', '', '', '' ] } );
 		}
 		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
 			top: [ '', '', '' ],
@@ -224,12 +225,12 @@ export function ImageEdit( {
 			left: [ '', '', '' ],
 			unit: 'px'
 		  }] ) );
-		if ( ( '' !== mobileBorderWidth?.[0] || '' !== mobileBorderWidth?.[1] || '' !== mobileBorderWidth?.[2] || '' !== mobileBorderWidth?.[3] ) ) {
-			tempMobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
-			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
-			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
-			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth:[ '', '', '', '' ] } );
+		if ( ( '' !== borderWidthMobile?.[0] || '' !== borderWidthMobile?.[1] || '' !== borderWidthMobile?.[2] || '' !== borderWidthMobile?.[3] ) ) {
+			tempMobileBorderStyle[0].top[2] = borderWidthMobile?.[0] || '';
+			tempMobileBorderStyle[0].right[2] = borderWidthMobile?.[1] || '';
+			tempMobileBorderStyle[0].bottom[2] = borderWidthMobile?.[2] || '';
+			tempMobileBorderStyle[0].left[2] = borderWidthMobile?.[3] || '';
+			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile:[ '', '', '', '' ] } );
 		}
 		debounce( getDynamic, 200 );
 	}, [] );
@@ -439,9 +440,14 @@ export function ImageEdit( {
 		[ `kadence-image${ uniqueID }` ]: uniqueID
 	} );
 
+	// const blockProps = useBlockProps( {
+	// 	ref,
+	// 	className: classes,
+	// } );
 	const blockProps = useBlockProps( {
 		ref,
 		className: classes,
+		['data-align']: ( 'center' === align ) ? align : undefined
 	} );
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{

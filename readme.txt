@@ -1,10 +1,11 @@
 === Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
-Contributors: britner, oakesjosh
+Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.0.1
+Stable tag: 3.0.5
+Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,22 +77,82 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.0.0.2 Alpha Version 3 =
-Release Date: TBD
-*Fix: Hover background color not showing on sections
-*Fix: Icons not showing in tab titles
-*Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
-*Fix: Icon list block not displaying properly on front end
-*Fix: Warning when using custom font without a font variant selected
-*Fix: Warning with some mobile background settings on row layout
-*Update: Allow icons to be removed from Accordion titles
-*Update: Searches in icon selector are now case insensitive
---------------- PENDING IN PRS ----------------
-*Fix: Issue where padding/margin was limited to 12px in some cases
-*Fix: "Add another section" in row layout now increases column count
-*Update: Accordion block now has responsive border & border radius
+= 3.0.5 RC Version 1 =
+Release Date: February 9th, 2023
+* Add: New Typed Text to Advanced Text Block.
+* Update: Tab setting for vertical width.
+* Update: Set minimum php version.
+* Update: Testimonial block settings.
+* Update: Tab border radius and typography settings.
+* Update: Remove empty parent block for buttons, icons, testimonials and icon list.
+* Update: WPML Config for forms.
+* Fix: Possible psr compatibility issue.
+* Fix: Possible Map issues with filter.
+* Fix: Possible issue with gallery missing stylesheet.
+* Fix: Issue with hidden advanced panel.
+* Fix: Issue with gutenberg plugin.
+* Fix: Issue with testimonial carousel column gap.
 
-= 3.0.0.1 Alpha Version 2 =
+= 3.0.4 Beta Version 1 =
+Release Date: January 31st, 2023
+* Add: Basic data to site health.
+* Add: Opt-in usage reporting on settings page.
+* Update: Make empty sections easier to select.
+* Update: Post block to prevent leaving the editor when clicking on a post.
+* Update: Accordion Block so show closed in the editor.
+* Update: Sliders and carousels can be initiated with javascript trigger.
+* Fix: Heading color issue in row.
+* Fix: Possible google font issue.
+* Fix: Issue with some testimonial blocks not updating.
+* Fix: zIndex issue in rows.
+* Fix: Issue with icon list fonts.
+* Fix: Issue with some gutter sizes.
+* Fix: Issue with zindex in rows.
+* Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with gallery carousel missing option to set pagination to none.
+* Fix: Issue with facebook icon backward compatibility.
+* Fix: Issue with possible button border showing when it should not.
+* Fix: Issue with advanced text alignment and negative margins not working correctly.
+* Fix: Issue with backward compatibility in table of contents border.
+* Fix: Preview of gallery columns.
+* Fix: Spacing around center aligned image.
+* Fix: Issue with row layout and selecting resizer.
+* Fix: Issue where generated css could show in a feed.
+* Fix: Issue where design library was inputting incorrectly.
+* Fix: Issue with button shadow backward compatibility.
+* Fix: Issue with TOC border backward compatibility.
+
+= 3.0.3 Alpha Version 4 =
+Release Date: January 19th, 2023
+* Fix: Removing bottom divider on Row Layout
+* Fix: Variable based font sizes in countdown block
+* Fix: Video background on Row Layout.
+* Fix: Various issues with unit selector.
+* Fix: Issue with default icon alignment.
+* Fix: Issue where section collapse order was applying in tablet when it shouldn't.
+* Fix: Form button styling issue.
+* Fix: Possible issue with border styling.
+* Fix: Issue with editor row spacing.
+* Fix: Hover Text colors in section.
+* Fix: Editor Map styles issue.
+* Fix: Editor border radius issues with accordion.
+
+= 3.0.2 Alpha Version 3 =
+Release Date: January 13th, 2023
+* Update: Searches in icon selector are now case insensitive,
+* Update: Accordion block now has responsive border & border radius.
+* Update: All sliders, carousels using splide.
+* Update: Allow icons to be removed from Accordion titles
+* Fix: Hover background color not showing on sections
+* Fix: Icons not showing in tab titles
+* Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
+* Fix: Icon list block not displaying properly on front end
+* Fix: Warning when using custom font without a font variant selected
+* Fix: Warning with some mobile background settings on row layout
+* Fix: Issue where padding/margin was limited to 12px in some cases
+* Fix: Issue with font size not showing in testimonials.
+
+= 3.0.1 Alpha Version 2 =
 Release Date: January 5th, 2023
 * Update: Duplicate styles component.
 * Fix: Issue with Lightbox on non carousel Gallery.

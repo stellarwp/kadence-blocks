@@ -15,12 +15,7 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 /**
  * Build the count up save
  */
-function KadenceCounterUpSave( props ) {
-
-	const {
-		attributes,
-	} = props;
-
+function KadenceCounterUpSave( { attributes } ) {
 	const {
 		uniqueID,
 		title,
@@ -37,31 +32,24 @@ function KadenceCounterUpSave( props ) {
 		decimal,
 		decimalSpaces,
 	} = attributes;
-
 	const classes = classnames( {
 		[ `kb-count-up-${uniqueID}` ]: uniqueID,
 		'kb-count-up'                : true,
 	} );
-
-	let startValue = startDecimal;
-	let endValue = endDecimal;
-
-	if( start !== 0 || end !== 0 ) {
-		startValue = start;
-		endValue = end;
-	}
-
 	const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
-
+	// Temp beta reversal fix.
+	let endingNumber = end;
+	if ( end === 0 && endDecimal ) {
+		endingNumber = endDecimal;
+	}
 	const blockProps = useBlockProps.save( {
 		className: classes
 	} );
-
 	return (
 		<div
 			{...blockProps}
-			data-start={ startValue }
-			data-end={ endValue }
+			data-start={start}
+			data-end={endingNumber}
 			data-prefix={prefix}
 			data-suffix={suffix}
 			data-duration={duration}

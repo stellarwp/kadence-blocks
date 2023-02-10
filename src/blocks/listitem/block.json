@@ -18,11 +18,13 @@
     },
     "link": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "target": {
       "type": "string",
-      "default": "_self"
+      "default": "_self",
+      "__experimentalRole": "content"
     },
     "size": {
       "type": "number",
@@ -34,7 +36,8 @@
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "color": {
       "type": "string",

@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { times } from 'lodash';
 
 function Save( { attributes, className } ) {
-	const {  blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
+	const {  blockAlignment, uniqueID, verticalAlignment } = attributes;
 
 	const classes = classnames( {
 		'kt-svg-icons': true,

@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import {isRTL} from '@kadence/helpers';
 import {
 	Button,
 	Tooltip,
@@ -43,6 +44,7 @@ export default function TwoColumnResizer( {
 		}
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
+
 		setResizeStyles( `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ firstCol }% - (${ currentGutterTotal } / 2 ) ) ) minmax(0, calc( ${ secondCol }% - (${ currentGutterTotal } / 2 ) ) ) !important;}` );
 	};
 	const onResizeStop = ( event, direction, elt, delta ) => {
@@ -104,14 +106,17 @@ export default function TwoColumnResizer( {
 							snap={ ( columnsUnlocked ? { x: [ width / 2 ] } : undefined ) }
 							snapGap={ ( columnsUnlocked ? 20 : undefined ) }
 							enable={ {
-								right: true,
+								right: isRTL ? false : true,
+								left: isRTL ? true : false,
 							} }
 							handleClasses={ {
 								right: 'components-resizable-box__handle components-resizable-box__handle-right',
+								left: 'components-resizable-box__handle components-resizable-box__handle-left',
 							} }
 							handleWrapperClass="editor-row-controls-container"
 							handleWrapperStyle={{
-								right: gutterAdjuster,
+								right: isRTL ? undefined : gutterAdjuster,
+								left: isRTL ? gutterAdjuster : undefined,
 							}}
 							grid={ ( columnsUnlocked ? [ width / 1000, 1 ] : [ width / 20, 1 ] ) }
 							onResize={ onResize }
@@ -119,7 +124,8 @@ export default function TwoColumnResizer( {
 							axis="x"
 						>
 							<span className="editor-row-controls-container kadence-resize-extra-controls" style={{
-								right: gutterAdjuster,
+								right: isRTL ? undefined : gutterAdjuster,
+								left: isRTL ? gutterAdjuster : undefined,
 							}}>
 								{ columnsUnlocked && (
 									<Tooltip text={ __( 'Switch to 5% step resizing' ) }>

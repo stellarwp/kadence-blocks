@@ -64,9 +64,11 @@
 // Controls
 .kb-form-align-center .kb-form {
     justify-content: center;
+    text-align: center;
 }
 .kb-form-align-right .kb-form {
     justify-content: flex-end;
+    text-align: right;
 }
 .kb-form {
 	display: flex;
@@ -78,6 +80,8 @@
 		padding: 0 5px;
 		margin-bottom: 16px;
 		flex-wrap: wrap;
+		justify-content: inherit;
+		text-align: inherit;
 		align-items: center;
 		display: flex;
 		width: 100%;
@@ -263,6 +267,15 @@
 			width: 0;
 			pointer-events: none;
 		}
+		.kb-field {
+			justify-content: inherit;
+			text-align: inherit;
+
+			.kb-checkbox-item, .kb-radio-item {
+				justify-content: inherit;
+				text-align: inherit;
+			}
+		}
 	}
 	.kadence-blocks-form-field.is-selected {
 		padding-top: 24px;
@@ -328,4 +341,8 @@
 .kb-field-map-item .components-base-control {
 	margin-bottom:0 !important;
 	min-width: 100px;
+}
+.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/form"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/form"] > .wp-block {
+	margin-bottom: 0;
+	margin-top: 0;
 }

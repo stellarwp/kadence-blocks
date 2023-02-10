@@ -41,7 +41,8 @@ import {
 	TypographyControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	CopyPasteAttributes
 } from '@kadence/components';
 import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import {
@@ -49,6 +50,10 @@ import {
 	useEffect,
 	useState,
 } from '@wordpress/element';
+import {
+	useBlockProps,
+	BlockControls,
+} from '@wordpress/block-editor';
 import {
 	TextControl,
 	Placeholder,
@@ -171,6 +176,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		getPosts();
 	}, [ postType, taxType, offsetQuery, postTax, excludeTax, allowSticky, orderBy, order, categories, tags, postsToShow ] );
 
+	const blockProps = useBlockProps();
+
 	const taxonomyList = [];
 	const taxonomyOptions = [];
 	const taxonomyFilterOptions = [];
@@ -240,6 +247,14 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	const settingspanel = (
 		<>
+			<BlockControls>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
+			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/posts' }>
 
 				<InspectorControlTabs
@@ -841,7 +856,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							)}
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/posts' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 					</>
 				}
 			</KadenceInspectorControls>
@@ -849,7 +864,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	);
 	if ( !loaded ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -858,12 +873,12 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 					<Spinner/>
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	if ( !hasPosts ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -874,7 +889,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<Spinner/> :
 						__( 'No posts found.', 'kadence-blocks' )}
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	// Removing posts from display should be instant.
@@ -907,7 +922,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 				className={classnames( post.featured_image_src_large && post.featured_image_src_large[ 0 ] && image ? 'has-post-thumbnail' : 'kb-no-thumb' ) + ' entry content-bg entry content-bg loop-entry components-disabled'}
 			>
 				{image && post.featured_image_src_large && post.featured_image_src_large[ 0 ] !== undefined && (
-					<a href={post.link} className={`post-thumbnail kadence-thumbnail-ratio-${imageRatio}`}>
+					<a href={'#'} className={`post-thumbnail kadence-thumbnail-ratio-${imageRatio}`}>
 						<div className="post-thumbnail-inner">
 							<img
 								src={post.featured_image_src_large[ 0 ]}
@@ -950,7 +965,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							}}
 						>
 							<a
-								href={post.link}
+								href={'#'}
 								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __( '(Untitled)' ) }}
 							/>
 						</HtmlTagOut>
@@ -978,7 +993,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 										)}
 										<span className="author vcard">
 												{authorLink ? (
-													<a className="url fn n" href={post.author_info.author_link}>
+													<a className="url fn n" href={'#'}>
 														{post.author_info.display_name}
 													</a>
 												) : (
@@ -1042,7 +1057,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 								)}
 								{comments && 0 !== post.comment_info && (
 									<span className="meta-comments">
-											<a className="meta-comments-link anchor-scroll" href={post.link + '#comments'}>
+											<a className="meta-comments-link anchor-scroll" href={'#comments'}>
 												{1 === post.comment_info && (
 													post.comment_info + ' ' + __( 'Comment', 'kadence-blocks' )
 												)}
@@ -1064,7 +1079,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						{readmore && (
 							<div className="entry-actions">
 								<p className="more-link-wrap">
-									<a href={post.link} className="post-more-link">{( readmoreLabel ? readmoreLabel : __( 'Read More', 'kadence-blocks' ) )}</a>
+									<a href={'#'} className="post-more-link">{( readmoreLabel ? readmoreLabel : __( 'Read More', 'kadence-blocks' ) )}</a>
 								</p>
 							</div>
 						)}
@@ -1074,7 +1089,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		);
 	};
 	return (
-		<>
+		<div { ...blockProps }>
 			{settingspanel}
 			<div
 				className={`${className} kb-posts kb-posts-id-${uniqueID} ${columnsClass} grid-cols content-wrap kb-posts-style-${loopStyle ? loopStyle : 'boxed'} item-image-style-${columns === 1 ? alignImage : 'above'}`}>
@@ -1082,7 +1097,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					renderPosts( post, i ),
 				)}
 			</div>
-		</>
+		</div>
 	);
 }
 

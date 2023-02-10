@@ -78,9 +78,9 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_color_output( $attributes, 'border', 'border-color' );
 				$css->render_range( $attributes, 'borderWidth', 'border-width' );
 				$css->render_range( $attributes, 'borderRadius', 'border-radius' );
-				$css->render_measure_output( $attributes, 'padding', 'padding' );
+				$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 			}
-			$css->render_measure_output( $attributes, 'margin', 'margin' );
+			$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
 			// Hover.
 			$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'hColor', 'color' );

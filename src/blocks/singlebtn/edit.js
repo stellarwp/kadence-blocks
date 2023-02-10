@@ -442,6 +442,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	} else {
 		btnbg = ( 'transparent' === background || undefined === background ? undefined : KadenceColorOutput( background ) );
 	}
+	const nonTransAttrs = [ 'hideLink', 'link', 'target', 'download', 'text', 'sponsor' ];
 	const btnClassName = classnames( {
 		'kt-button'                   : true,
 		[ `kt-button-${uniqueID}` ]  : true,
@@ -556,7 +557,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				) }
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', 'text', 'sponsor' ] } 
+					excludedAttrs={ nonTransAttrs } 
 					defaultAttributes={ metadata['attributes'] } 
 					blockSlug={ metadata['name'] } 
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
@@ -918,7 +919,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 									<KadencePanelBody
 										title={__( 'Icon Settings', 'kadence-blocks' ) }
 										initialOpen={false}
-										panelName={'kb-adv-single-btn-styles'}
+										panelName={'kb-adv-single-btn-icons'}
 									>
 										<div className="kt-select-icon-container">
 											<KadenceIconPicker
@@ -1142,7 +1143,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 									</>
 								)}
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/singlebtn' } excludedAttrs={ [ 'hideLink', 'link', 'target', 'download', ] } />
+								<KadenceBlockDefaults attributes={ attributes } defaultAttributes={ metadata['attributes'] } blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 							</>
 						)}
 					</InspectorControls>

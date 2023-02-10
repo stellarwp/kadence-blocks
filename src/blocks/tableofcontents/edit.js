@@ -34,6 +34,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -243,10 +244,16 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			tempBorderStyle[0].bottom[2] = containerBorder?.[2] || '';
 			tempBorderStyle[0].left[2] = containerBorder?.[3] || '';
 			updateBorderStyle = true;
+			if ( '' === tempBorderStyle[0].top[0] ) {
+				tempBorderStyle[0].top[0] = 'currentColor';
+				tempBorderStyle[0].right[0] = 'currentColor';
+				tempBorderStyle[0].bottom[0] = 'currentColor';
+				tempBorderStyle[0].left[0] = 'currentColor';
+			}
 			setAttributes( { containerBorder:[ '', '', '', '' ] } );
 		}
 		if ( updateBorderStyle ) {
-			setAttributes( { borderStyle: tempBorderStyle } );
+			setAttributes( { borderStyle: JSON.parse( JSON.stringify( tempBorderStyle ) ) } );
 		}
 		// Update from old title border settings.
 		let tempTitleBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorderStyle ? attributes.titleBorderStyle : [{ 
@@ -522,6 +529,12 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 					controls={listOptions}
 				/>
 			</ToolbarGroup>
+			<CopyPasteAttributes
+				attributes={ attributes }
+				defaultAttributes={ metadata['attributes'] } 
+				blockSlug={ metadata['name'] } 
+				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+			/>
 		</BlockControls>
 	);
 	const inspectorControls = (
@@ -741,7 +754,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 								)}
 							</KadencePanelBody>
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/tableofcontents' } />
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={metadata['name']} />
 						</>
 					}
 

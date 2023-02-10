@@ -9,6 +9,12 @@
 .kt-row-layout-inner, .kb-row-layout-wrap {
 	position: relative;
 	border: 0 solid transparent;
+	z-index: 1;
+}
+.kb-row-layout-wrap:before {
+    clear: both;
+    display: table;
+    content: '';
 }
 .kt-row-column-wrap {
 	display: grid;
@@ -25,7 +31,7 @@
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
-.alignfull > .kt-row-layout-inner > .kt-row-column-wrap, .alignfull.kb-row-layout-wrap > .kt-row-column-wrap {
+.alignfull > .kt-row-layout-inner > .kt-row-column-wrap, .alignfull > .kt-row-column-wrap {
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
@@ -119,21 +125,19 @@
 		padding:0;
 		margin: 0;
 	}
-	.slick-dotted.slick-slider {
-		margin: 0;
-	}
-	.slick-track, .slick-list, .slick-slide, .kb-bg-slide-contain {
+	.splide__track, .splide__list, .splide__slide, .kb-bg-slide-contain {
 		height: 100%;
 	}
-	.slick-list {
+	.splide__list {
 		height: 100% !important;
 	}
+	
 	.kb-bg-slide-contain div.kb-bg-slide {
 		background-position: center;
 		background-size: cover;
 		background-repeat: no-repeat;
 	}
-	.kb-blocks-bg-slider-init:not( .slick-initialized ) .kb-bg-slide-contain {
+	.kb-blocks-bg-slider-init:not( .splide-initialized ) .kb-bg-slide-contain {
 		display:none;
 		&:first-child {
 			display: block;
@@ -143,12 +147,9 @@
 		position: relative;
 		height: 100%;
 	}
-	.slick-dots {
-		bottom: 0;
-		li {
-			z-index: 11;
-		}
-	}
+}
+.kb-blocks-bg-slider-init.splide .splide__pagination {
+    bottom: 10px;
 }
 // background Video
 .kb-blocks-bg-video-container {
@@ -172,9 +173,12 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 	height: auto;
-	width: auto;
+	width: 100%;
 	min-width: 100%;
 	min-height: 100%;
+	&::-webkit-media-controls {
+		display:none !important;
+	}
 }
 .kb-background-video-buttons-wrapper {
 	position: absolute;
@@ -223,7 +227,7 @@
 	}
 }
 // Fix issue with cover block.
-.wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-arrow {
+.wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide-arrow {
 	z-index: 1000;
 }
 .kt-row-layout-grid-layout {

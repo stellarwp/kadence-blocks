@@ -36,7 +36,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance Control
@@ -60,7 +60,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 		// Issue with span tag.
 		if ( isset( $attributes['htmlTag'] ) && 'span' === $attributes['htmlTag'] ) {
 			$css->add_property( 'display', 'block' );
@@ -102,7 +102,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 		} else if ( ! empty( $attributes['fontHeight'][0] ) ) {
 			$css->add_property( 'line-height', $attributes['fontHeight'][0] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
-		}			
+		}
 		if ( ! empty( $attributes['fontWeight'] ) ) {
 			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['fontWeight'] ) );
 		}
@@ -112,7 +112,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google = isset( $attributes['googleFont'] ) && $attributes['googleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
-			$variant = !empty( $attributes['variant'] ) ? $attributes['variant'] : null;
+			$variant = ! empty( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
@@ -120,6 +120,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+		}
+		if ( isset( $attributes['tabletLetterSpacing'] ) && is_numeric( $attributes['tabletLetterSpacing'] ) ) {
+			$css->set_media_state('tablet');
+			$css->add_property( 'letter-spacing', $attributes['tabletLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->set_media_state('desktop');
+		}
+		if ( isset( $attributes['mobileLetterSpacing'] ) && is_numeric( $attributes['mobileLetterSpacing'] ) ) {
+			$css->set_media_state('mobile');
+			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->set_media_state('desktop');
 		}
 		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
@@ -166,14 +176,14 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Old size first.
 		if ( ! empty( $attributes['mobileSize'] ) ) {
 			$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-		} else if ( ! empty( $attributes['fontSize'][1] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][1], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
+		} else if ( ! empty( $attributes['fontSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][2], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
 		// Old line height first.
 		if ( ! empty( $attributes['mobileLineHeight'] ) ) {
 			$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-		} else if ( ! empty( $attributes['fontHeight'][1] ) ) {
-			$css->add_property( 'line-height', $attributes['fontHeight'][1] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][2] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][2] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
 		}
 		if ( ! empty( $attributes['mobileAlign'] ) ) {
 			$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
@@ -182,7 +192,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 
 		// Highlight.
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
 		}
@@ -195,7 +205,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markTypography'] ) ) {
 			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
-			$variant = !empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$variant = ! empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['markFontWeight'] ) ) {
@@ -256,10 +266,9 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		// Tablet.
 		$css->set_media_state( 'tablet' );
-		$css->set_selector( '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark, .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( ! empty( $attributes['markSize'][1] ) ) {
 			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 		}
@@ -278,6 +287,36 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		return $css->css_output();
 	}
 
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+
+		if ( strpos($content, 'kt-typed-text') !== false ) {
+			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
+			$this->enqueue_script( 'kadence-blocks-typed-js' );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+
+		// Skip calling parent because this block does not have a dedicated CSS file.
+		// parent::register_scripts();
+
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array( 'kadence-blocks-' . $this->block_name ), KADENCE_BLOCKS_VERSION, true );
+
+	}
 }
 
 Kadence_Blocks_Advancedheading_Block::get_instance();

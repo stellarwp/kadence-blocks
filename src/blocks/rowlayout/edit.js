@@ -57,9 +57,10 @@ import {
 	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -146,6 +147,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	clientId,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock } = attributes;
+	
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -365,10 +367,10 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const paddingSidesDefault = hasBG ? 'sm' : '';
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[1] && '' !== padding[1] ? padding[1] : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] && '' !== padding[1] ? padding[1] : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( undefined !== minHeight ? minHeight : '' ), ( undefined !== minHeightTablet ? minHeightTablet : '' ), ( undefined !== minHeightMobile ? minHeightMobile : '' ) );
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ) );
@@ -394,9 +396,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	}
 	const widthString = `${ firstColumnWidth || colLayout }`;
 	const secondWidthString = `${ secondColumnWidth || colLayout }`;
-	let thirdWidthNumber;
 	let widthNumber;
 	let secondWidthNumber;
+	let thirdWidthNumber;
 	if ( 3 === columns ) {
 		if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
 			widthNumber = widthString;
@@ -469,6 +471,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			secondWidthNumber = 50;
 		}
 	}
+
 	const previewColumnGutter = getPreviewSize( previewDevice, columnGutter, tabletGutter, mobileGutter );
 	const columnGap = getPreviewGutterSize( previewDevice, previewColumnGutter, customGutter, gutterType );
 	const previewRowGutter = getPreviewSize( previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter );
@@ -556,8 +559,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
 				minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
-				paddingLeft: previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
-				paddingRight: previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
+				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
+				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},
 		},
 		{
@@ -658,6 +661,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 							showTooltip={ true }
 						/>
 					</ToolbarGroup>
+					<CopyPasteAttributes
+						attributes={ attributes }
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+					/>
 				</BlockControls>
 			)}
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
@@ -921,7 +930,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 									</>
 								) }
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/rowlayout' } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 							</>
 						) }
 					</InspectorControls>
@@ -935,9 +944,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				</>
 			) }
 			<style>
-				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p, .kb-row-id-${ uniqueID } h1, .kb-row-id-${ uniqueID } h2, .kb-row-id-${ uniqueID } h3, .kb-row-id-${ uniqueID } h4, .kb-row-id-${ uniqueID } h5, .kb-row-id-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-				{ ( linkColor ? `.kb-row-id-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				<>
 					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
 				</>
@@ -978,12 +987,17 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ zIndex && zIndex > 30 && (
 					<>
-						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
+						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
 					</>
 				) }
 				{ kadenceBlockCSS && (
 					<>
 						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+					</>
+				)}
+				{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+					<>
+					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
 					</>
 				)}
 			</style>
@@ -1058,13 +1072,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ colLayout && (
 					<>
-						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 2 === columns && 'grid-layout' !== colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 2 === columns && 'grid-layout' !== colLayout && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<TwoColumnResizer
 								attributes={ attributes }
 								setAttributes={ setAttributes }
 							/>
 						) }
-						{ colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && 'grid-layout' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && 'first-row' !== colLayout && 'last-row' !== colLayout && 'grid-layout' !== colLayout && columns && 3 === columns && showSettings( 'allSettings', 'kadence/rowlayout' ) && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
 							<ThreeColumnDrag
 								attributes={ attributes }
 								setAttributes={ setAttributes }
@@ -1199,7 +1213,18 @@ const RowLayoutEditContainerWrapper = withDispatch(
 	} )
 )( RowLayoutEditContainer );
 const KadenceRowLayout = ( props ) => {
-	const { clientId } = props;
+	const { clientId, attributes } = props;
+	const { isPrebuiltModal } = attributes;
+	// Cut everything short if we are just accessing the modal.
+	if ( isPrebuiltModal ) {
+		return (
+			<PrebuiltModal
+				clientId={ clientId }
+				open={ isPrebuiltModal ? true : false }
+				onlyModal={ isPrebuiltModal ? true : false }
+			/>
+		);
+	}
 	const { rowBlock, realColumnCount } = useSelect(
 		( select ) => {
 			const {

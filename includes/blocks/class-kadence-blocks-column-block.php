@@ -255,7 +255,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col,.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
 		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius', array( 'unit_key' => 'borderHoverRadiusUnit' ) );
-
 		if ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {
@@ -469,15 +468,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Hover Text colors.
 		if ( isset( $attributes['textColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ', .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover, .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
 			$css->add_property( 'color', $css->render_color( $attributes['textColorHover'] ) );
 		}
 		if ( isset( $attributes['linkColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' a' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover a' );
 			$css->add_property( 'color', $css->render_color( $attributes['linkColorHover'] ) );
 		}
 		if ( isset( $attributes['linkHoverColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ' a:hover' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover a:hover' );
 			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColorHover'] ) );
 		}
 		if ( isset( $attributes['zIndex'] ) ) {
@@ -498,7 +497,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'flex', '1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 		}
 		if ( isset( $attributes['collapseOrder'] ) ) {
-			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id . ', .kadence-column' . $unique_id );
+			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id );
 			$css->add_property( 'order', $attributes['collapseOrder'] );
 		}
 		if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && isset( $attributes['textAlign'][1] ) && ! empty( $attributes['textAlign'][1] ) ) {

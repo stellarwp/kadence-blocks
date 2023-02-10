@@ -36,6 +36,10 @@ svg {
     position: relative;
     width: 100%;
 }
+.kadence-controls-content .kadence-range-control-inner .components-base-control {
+    margin-bottom: 0;
+}
+
 .kadence-range-control-inner .components-range-control.kadence-range-control-range {
     flex-grow: 1;
     margin-bottom: 0;

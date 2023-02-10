@@ -67,6 +67,39 @@
 	--splide-nav-border: 2px solid #fff;
 	--splide-nav-background: transparent;
 }
+
+.kt-blocks-carousel .splide__pagination__page.is-active {
+    background-color: #000;
+}
+.kt-blocks-carousel .splide__pagination__page:hover,
+.kt-blocks-carousel .splide__pagination__page:focus,
+.kt-blocks-carousel .splide__pagination__page:focus-visible {
+    outline: none;
+}
+.kt-blocks-carousel .kt-carousel-dotstyle-light .splide__pagination__page,
+.kt-blocks-carousel .kt-carousel-dotstyle-light .splide__pagination__page.is-active {
+    background-color: #fff;
+}
+ 
+.kt-blocks-carousel .kt-carousel-dotstyle-outlinedark .splide__pagination__page {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px #000;
+    transition: box-shadow 0.3s ease;
+}
+.kt-blocks-carousel .kt-carousel-dotstyle-outlinedark .splide__pagination__page.is-active {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 8px #000;
+}
+
+.kt-blocks-carousel .kt-carousel-dotstyle-outlinelight .splide__pagination__page {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px #fff;
+    transition: box-shadow 0.3s ease;
+}
+.kt-blocks-carousel .kt-carousel-dotstyle-outlinelight .splide__pagination__page.is-active {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 8px #fff;
+}
 .splide.is-initialized,
 .splide.is-rendered {
     visibility: visible;
@@ -131,14 +164,15 @@
 }
 .splide--fade > .splide__slider > .splide__track > .splide__list,
 .splide--fade > .splide__track > .splide__list {
-    display: block;
+    display: flex;
 }
 .splide--fade > .splide__slider > .splide__track > .splide__list > .splide__slide,
 .splide--fade > .splide__track > .splide__list > .splide__slide {
-    left: 0;
-    opacity: 0;
     position: relative;
-    top: 0;
+    left: unset;
+    right: unset;
+    top: unset;
+    opacity: 0;
     z-index: 0;
 }
 .splide--fade > .splide__slider > .splide__track > .splide__list > .splide__slide.is-active,

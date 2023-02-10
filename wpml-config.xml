@@ -47,6 +47,8 @@
 				</key>
 			</key>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/@href</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>

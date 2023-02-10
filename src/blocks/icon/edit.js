@@ -4,29 +4,15 @@
 /**
  * Import externals
  */
-import { times, map } from 'lodash';
 import {
-	PopColorControl,
-	StepControls,
-	IconRender,
 	KadencePanelBody,
-	URLInputControl,
 	VerticalAlignmentIcon,
-	ResponsiveRangeControls,
 	InspectorControlTabs,
-	RangeControl,
-	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
-	KadenceBlockDefaults,
-	KadenceIconPicker,
-	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
 } from '@kadence/components';
 import {
-	KadenceColorOutput,
 	getPreviewSize,
-	getSpacingOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
@@ -61,20 +47,16 @@ import {
 	plusCircle
 } from '@wordpress/icons';
 import {
-	TextControl,
-	SelectControl,
-	Button,
-	Dashicon,
 	ToolbarButton,
-	TabPanel,
 	ToolbarGroup,
 } from '@wordpress/components';
 
 function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, clientId, context } ) {
-	const { iconCount, inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
+	const { inQueryBlock, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+	const { removeBlock } = useDispatch( 'core/block-editor' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -96,21 +78,17 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
-	const saveArrayUpdate = ( value, index ) => {
-		const newItems = icons.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...value };
-			}
 
-			return item;
-		} );
-		setAttributes( {
-			icons: newItems,
-		} );
-	};
+	useEffect( () => {
+		// Delete if no inner blocks.
+		if ( uniqueID && ! iconsBlock.innerBlocks.length ) {
+			removeBlock( clientId, true );
+		}
+	}, [ iconsBlock.innerBlocks.length ] );
 
 	const blockProps = useBlockProps( {
 		className: className,
+		['data-align']: ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) ? blockAlignment : undefined
 	} );
 	const verticalAlignOptions = [
 		[
@@ -139,25 +117,18 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 		],
 	];
 
-	function selfOrChildSelected( isSelected, clientId ) {
-		const childSelected = useSelect( ( select ) =>
-			select( 'core/block-editor' ).hasSelectedInnerBlock( clientId, true )
-		);
-		return isSelected || childSelected;
-	}
-
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
 	return (
 		<div {...blockProps}>
 			<BlockControls>
 				<BlockAlignmentToolbar
 					value={blockAlignment}
-					controls={[ 'center', 'left', 'right' ]}
+					controls={[ 'left', 'right' ]}
 					onChange={value => setAttributes( { blockAlignment: value } )}
 				/>
 				<ToolbarGroup
 					isCollapsed={true}
-					icon={<VerticalAlignmentIcon value={( verticalAlignment ? verticalAlignment : 'bottom' )}/>}
+					icon={<VerticalAlignmentIcon value={( verticalAlignment ? verticalAlignment : 'middle' )}/>}
 					label={__( 'Vertical Align', 'kadence-blocks' )}
 					controls={verticalAlignOptions}
 				/>

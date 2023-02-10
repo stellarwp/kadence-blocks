@@ -96,7 +96,7 @@ export default class extends Component {
 							value={ valueColor }
 							opacityValue={ this.props.opacityValue ? this.props.opacityValue : undefined }
 							opacityUnit={ this.props.opacityUnit ? this.props.opacityUnit : undefined }
-							default={ defaultColor ? defaultColor : '' }
+							defaultValue={ defaultColor ? defaultColor : '' }
 							reload={ this.state.reload }
 							reloaded={ value => this.setState( { reload: false } ) }
 						/>
@@ -110,7 +110,7 @@ export default class extends Component {
 								value={ valueColor2 }
 								opacityValue={ this.props.opacityValue2 ? this.props.opacityValue2 : undefined }
 								opacityUnit={ this.props.opacityUnit2 ? this.props.opacityUnit2 : undefined }
-								default={ defaultColor2 ? defaultColor2 : '' }
+								defaultValue={ defaultColor2 ? defaultColor2 : '' }
 								reload={ this.state.reload }
 								reloaded={ value => this.setState( { reload: false } ) }
 							/>
@@ -125,7 +125,7 @@ export default class extends Component {
 								value={ valueColor3 }
 								opacityValue={ this.props.opacityValue3 ? this.props.opacityValue3 : undefined }
 								opacityUnit={ this.props.opacityUnit3 ? this.props.opacityUnit3 : undefined }
-								default={ defaultColor3 ? defaultColor3 : '' }
+								defaultValue={ defaultColor3 ? defaultColor3 : '' }
 								reload={ this.state.reload }
 								reloaded={ value => this.setState( { reload: false } ) }
 							/>

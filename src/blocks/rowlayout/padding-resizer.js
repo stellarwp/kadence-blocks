@@ -20,7 +20,7 @@ export default function PaddingResizer( {
 	toggleSelection,
 	finishedResizing,
 } ) {
-	const { leftPadding, rightPadding, topPadding, bottomPadding, tabletPadding, topPaddingM, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidthUnit, maxWidth, padding, mobilePadding } = attributes;
+	const { leftPadding, rightPadding, topPadding, bottomPadding, tabletPadding, topPaddingM, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidthUnit, maxWidth, padding, mobilePadding, templateLock } = attributes;
 	const index = ( edge === 'top' ? 0 : 2 );
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const previewPaddingLabel = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionName( padding[ index ], paddingUnit ) : __( 'Unset', 'kadence-blocks' ) ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] && '' !== tabletPadding[ index ] ? getSpacingOptionName( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] && '' !== mobilePadding[ index ] ? getSpacingOptionName( mobilePadding[ index ] ) : '' ) );
@@ -31,7 +31,7 @@ export default function PaddingResizer( {
 	}
 	return (
 		<>
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'normal' === paddingType && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && (
+			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'normal' === paddingType && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && 'contentOnly' !== templateLock && (
 				<ResizableBox
 					size={ {
 						height: previewPadding,
@@ -104,7 +104,7 @@ export default function PaddingResizer( {
 					) }
 				</ResizableBox>
 			) }
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'variable' === paddingType && (
+			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'variable' === paddingType && 'contentOnly' !== templateLock && (
 				<ResizableBox
 					size={ {
 						height: previewPadding,
@@ -186,7 +186,7 @@ export default function PaddingResizer( {
 					) }
 				</ResizableBox>
 			) }
-			{ ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || ( 'normal' === paddingType && paddingUnit && 'px' !== paddingUnit ) ) && (
+			{ ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || ( 'contentOnly' === templateLock ) || ( 'normal' === paddingType && paddingUnit && 'px' !== paddingUnit ) ) && (
 				<>
 					{ uniqueID && (
 						<div className="kt-row-padding kb-static-row-padding" style={ {

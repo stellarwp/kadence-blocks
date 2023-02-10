@@ -4,6 +4,7 @@
 		setupTabs: function() {
 			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
+				thisElem.setAttribute('role', 'tablist');
 				thisElem.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
 					subElem.setAttribute('role', 'tabpanel');
 					subElem.setAttribute('aria-hidden', 'true');
@@ -97,13 +98,16 @@
 					var tabId = thisElem.getAttribute('data-tab');
 					var accTitle = thisElem.parentElement;
 					var tabWrap = thisElem.closest('.kt-tabs-wrap');
+					var tabContent = tabWrap.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
 
 					if ( accTitle.classList.contains( 'kt-tab-title-active' ) ) {
 						tabWrap.classList.remove('kt-active-tab-' + tabId);
 						accTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+						tabContent.style.display = 'none';
 					} else {
 						tabWrap.classList.add('kt-active-tab-' + tabId);
 						accTitle.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+						tabContent.style.display = 'block';
 					}
 
 					var resizeEvent = new Event('resize');

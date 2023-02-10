@@ -22,6 +22,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import {
 	setBlockDefaults,
@@ -31,7 +32,7 @@ import {
 	getInQueryBlock
 } from '@kadence/helpers';
 
-import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
+import { useBlockProps, useInnerBlocksProps, BlockControls } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
@@ -209,6 +210,15 @@ export function Edit ({
 
 	return (
 		<Fragment>
+			
+			<BlockControls>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
+			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/show-more' }>
 				<InspectorControlTabs
 					panelName={ 'show-more' }
@@ -335,7 +345,7 @@ export function Edit ({
 							/>
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/show-more' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 					</>
 				}
 			</KadenceInspectorControls>

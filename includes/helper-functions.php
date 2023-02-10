@@ -45,7 +45,6 @@ function kadence_blocks_is_rest() {
 	return false;
 }
 
-
 /**
  * Hex to RGBA
  *
@@ -72,6 +71,7 @@ function kadence_blocks_hex2rgba( $hex, $alpha ) {
 	$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
 	return $rgba;
 }
+
 /**
  * Check to see if variable contains a number including 0.
  *
@@ -82,4 +82,37 @@ function kadence_blocks_hex2rgba( $hex, $alpha ) {
  */
 function kadence_blocks_is_number( &$value ) {
 	return isset( $value ) && is_numeric( $value );
+}
+
+/**
+ * Adds Animate on Scroll attributes to a wrapper args array, if animation attributes are present
+ *
+ * @param array $attributes The attributes.
+ * @param array $wrapper_args The args array to apply aos data to.
+ */
+function kadence_apply_aos_wrapper_args( $attributes, &$wrapper_args ) {
+	if ( isset( $attributes['kadenceAnimation'] ) && $attributes['kadenceAnimation'] ) {
+		$wrapper_args['data-aos'] = $attributes['kadenceAnimation'];
+		if ( isset( $attributes['kadenceAOSOptions'] ) && $attributes['kadenceAOSOptions'] && isset( $attributes['kadenceAOSOptions'][0] ) ) {
+			$kadence_aos_options = $attributes['kadenceAOSOptions'][0];
+
+			if ( isset( $kadence_aos_options['offset'] ) && $kadence_aos_options['offset'] ) {
+				$wrapper_args['data-aos-offset'] = $kadence_aos_options['offset'];
+			}
+			if ( isset( $kadence_aos_options['duration'] ) && $kadence_aos_options['duration'] ) {
+				$wrapper_args['data-aos-duration'] = $kadence_aos_options['duration'];
+			}
+			if ( isset( $kadence_aos_options['easing'] ) && $kadence_aos_options['easing'] ) {
+				$wrapper_args['data-aos-easing'] = $kadence_aos_options['easing'];
+			}
+			if ( isset( $kadence_aos_options['delay'] ) && $kadence_aos_options['delay'] ) {
+				$wrapper_args['data-aos-delay'] = $kadence_aos_options['delay'];
+			}
+			if ( isset( $kadence_aos_options['once'] ) && '' !== $kadence_aos_options['once'] ) {
+				$wrapper_args['data-aos-once'] = $kadence_aos_options['once'];
+			}
+		}
+	}
+
+	return $wrapper_args;
 }

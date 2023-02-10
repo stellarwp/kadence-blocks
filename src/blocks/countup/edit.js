@@ -16,7 +16,8 @@ import {
 } from '@kadence/helpers';
 import {
 	WebfontLoader,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 /**
@@ -24,6 +25,7 @@ import {
  */
 import CountUp from 'react-countup';
 import classnames from 'classnames';
+import metadata from './block.json';
 
 /**
  * Import Css
@@ -33,7 +35,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import {
  	useEffect,
 	Component,
@@ -115,11 +117,6 @@ function KadenceCounterUp( props ) {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
-
-		if( start !== 0 || end !== 0 ) {
-			setAttributes( { startDecimal: start, endDecimal: end, start: 0, end: 0 } );
-		}
-
 	}, [] );
 
 	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
@@ -175,14 +172,25 @@ function KadenceCounterUp( props ) {
 	return (
 		<div {...blockProps}>
 			{isSelected &&
-				<Inspector
-					setAttributes={setAttributes}
-					attributes={ attributes }
-					numberPaddingMouseOver={numberPaddingMouseOver}
-					numberMarginMouseOver={numberMarginMouseOver}
-					titlePaddingMouseOver={titlePaddingMouseOver}
-					titleMarginMouseOver={titleMarginMouseOver}
-				/>
+				<>
+					<BlockControls>
+						<CopyPasteAttributes
+						attributes={ attributes }
+						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
+						defaultAttributes={ metadata['attributes'] } 
+						blockSlug={ metadata['name'] } 
+						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+						/>
+					</BlockControls>
+					<Inspector
+						setAttributes={setAttributes}
+						attributes={ attributes }
+						numberPaddingMouseOver={numberPaddingMouseOver}
+						numberMarginMouseOver={numberMarginMouseOver}
+						titlePaddingMouseOver={titlePaddingMouseOver}
+						titleMarginMouseOver={titleMarginMouseOver}
+					/>
+				</>
 			}
 
 			{displayTitle && titleFont[ 0 ].google && (
@@ -216,8 +224,8 @@ function KadenceCounterUp( props ) {
 					}}
 				>
 					<CountUp
-						start={ startDecimal }
-						end={ endDecimal }
+						start={ start }
+						end={ end }
 						duration={duration}
 						separator={theSeparator}
 						decimal={decimal ? decimal : undefined}

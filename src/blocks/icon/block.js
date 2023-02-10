@@ -7,7 +7,7 @@ import metadata from './block.json';
 /**
  * Register sub blocks.
  */
-import './single-icon/block.js';
+import '../single-icon/block.js';
 
 /**
  * Import Icon stuff
@@ -50,11 +50,6 @@ registerBlockType( 'kadence/icon', {
 	],
 	icon: {
 		src: iconIcon,
-	},
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
-			return { 'data-align': blockAlignment };
-		}
 	},
 	edit,
 	save,
