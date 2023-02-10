@@ -94,5 +94,6 @@ registerBlockType( 'kadence/pane', {
 			</div>
 		);
 	},
-	deprecated
+	deprecated,
+	example: {}
 } );
