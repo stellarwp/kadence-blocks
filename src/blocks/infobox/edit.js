@@ -302,8 +302,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', contextPost );
 		}
 	};
-
-	const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
 	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
@@ -352,19 +350,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 
 	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
 	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
-
-	const widthTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: '%', name: '%' },
-		{ key: 'vw', name: 'vw' },
-	];
-	const marginTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: 'em', name: 'em' },
-		{ key: '%', name: '%' },
-		{ key: 'vh', name: 'vh' },
-		{ key: 'rem', name: 'rem' },
-	];
 
 	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -12 : -200 );
 	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );

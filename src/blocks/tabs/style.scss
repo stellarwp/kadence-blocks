@@ -18,7 +18,7 @@
             a.kt-tab-title {
                 padding: 8px 16px;
                 display:flex;
-                color: #444;
+                color: var(--global-palette5, #444444);
                 align-items: center;
                 border-style: solid;
                 border-color: transparent;
@@ -140,7 +140,6 @@
 .kt-tabs-wrap .wp-block-kadence-tab[role="tabpanel"] {
 	display: none;
 }
-
 .kb-tab-titles-wrap {
 	display: inline-flex;
     flex-direction: column;

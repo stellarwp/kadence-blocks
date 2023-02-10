@@ -64,19 +64,19 @@
 	"contentBorder": {
 	  "type": "array",
 	  "default": [
-		1,
-		1,
-		1,
-		1
+		"",
+		"",
+		"",
+		""
 	  ]
 	},
 	"contentBorderStyles": {
 	  "type": "array",
 	  "default": [ {
-		"top": [ "", "", "" ],
-		"right": [ "", "", "" ],
-		"bottom": [ "", "", "" ],
-		"left": [ "", "", "" ],
+		"top": [ "#dee2e6", "", 1 ],
+		"right": [ "#dee2e6", "", 1 ],
+		"bottom": [ "#dee2e6", "", 1 ],
+		"left": [ "#dee2e6", "", 1 ],
 		"unit": "px"
 	  } ]
 	},
@@ -119,10 +119,10 @@
 	"innerPadding": {
 	  "type": "array",
 	  "default": [
-		20,
-		20,
-		20,
-		20
+		"sm",
+		"sm",
+		"sm",
+		"sm"
 	  ]
 	},
 	"tabletInnerPadding": {
@@ -220,7 +220,7 @@
 	},
 	"titleBgActive": {
 	  "type": "string",
-	  "default": "#ffffff"
+	  "default": ""
 	},
 	"titleBorder": {
 	  "type": "string"

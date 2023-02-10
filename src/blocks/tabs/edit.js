@@ -290,13 +290,15 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const previewTitlePaddingBottom = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[2] ? titlePadding[2] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
 	const previewTitlePaddingLeft = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[3] ? titlePadding[3] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
 
-	const previewTitleBorderWidthTop = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 0 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 0 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 0 ] : '' ) );
-	const previewTitleBorderWidthRight = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 1 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 1 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 1 ] : '' ) );
-	const previewTitleBorderWidthBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 2 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 2 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 2 ] : '' ) );
-	const previewTitleBorderWidthLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth ? titleBorderWidth[ 3 ] : '' ), ( undefined !== tabletTitleBorderWidth ? tabletTitleBorderWidth[ 3 ] : '' ), ( undefined !== mobileTitleBorderWidth ? mobileTitleBorderWidth[ 3 ] : '' ) );
-
+	const previewTitleBorderWidthTop = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[0] ? titleBorderWidth[ 0 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[0] ? tabletTitleBorderWidth[ 0 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[0] ? mobileTitleBorderWidth[ 0 ] : '' ) );
+	const previewTitleBorderWidthRight = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[1] ? titleBorderWidth[ 1 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[1] ? tabletTitleBorderWidth[ 1 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[1] ? mobileTitleBorderWidth[ 1 ] : '' ) );
+	const previewTitleBorderWidthBottom = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[2] ? titleBorderWidth[ 2 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[2] ? tabletTitleBorderWidth[ 2 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[2] ? mobileTitleBorderWidth[ 2 ] : '' ) );
+	const previewTitleBorderWidthLeft = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[3] ? titleBorderWidth[ 3 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[3] ? tabletTitleBorderWidth[ 3 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[3] ? mobileTitleBorderWidth[ 3 ] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, maxWidth, tabletMaxWidth, mobileMaxWidth );
 	const previewMinHeight = getPreviewSize( previewDevice, minHeight, tabletMinHeight, mobileMinHeight );
+	const previewTitleBorderWidthUnit = titleBorderWidthUnit ? titleBorderWidthUnit : 'px';
+
+	const previewTitleBorderRadiusUnit = titleBorderRadiusUnit ? titleBorderRadiusUnit : 'px';
 
 	const previewLayout = getPreviewSize( previewDevice, ( undefined !== layout ? layout : 'tabs' ), ( undefined !== tabletLayout && '' !== tabletLayout && 'inherit' !== tabletLayout ? tabletLayout : '' ), ( undefined !== mobileLayout && '' !== mobileLayout && 'inherit' !== mobileLayout ? mobileLayout : '' ) );
 	const previewVerticalTabWidth = getPreviewSize( previewDevice, ( verticalTabWidth && verticalTabWidth[ 0 ] ? verticalTabWidth[ 0 ] : '' ) , ( verticalTabWidth && verticalTabWidth[ 1 ] ? verticalTabWidth[ 1 ] : '' ), ( verticalTabWidth && verticalTabWidth[ 2 ] ? verticalTabWidth[ 2 ] : '' ) );
@@ -417,18 +419,23 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, -1, 0 ],
-					titleColor: '#444444',
-					titleColorHover: '#444444',
-					titleColorActive: '#444444',
-					titleBg: '#ffffff',
-					titleBgHover: '#ffffff',
-					titleBgActive: '#ffffff',
-					titleBorder: '#eeeeee',
-					titleBorderHover: '#e2e2e2',
+					titleColor: 'var(--global-palette5, #444444)',
+					titleColorHover: 'var(--global-palette5, #444444)',
+					titleColorActive: 'var(--global-palette5, #444444)',
+					titleBg: 'var(--global-palette9, #ffffff)',
+					titleBgHover: 'var(--global-palette9, #ffffff)',
+					titleBgActive: 'var(--global-palette9, #ffffff)',
+					titleBorder: 'var(--global-palette7, #eeeeee)',
+					titleBorderHover: 'var(--global-palette8, #F7FAFC)',
 					titleBorderActive: '#bcbcbc',
-					contentBgColor: '#ffffff',
-					contentBorderColor: '#bcbcbc',
-					contentBorder: [ 1, 1, 1, 1 ],
+					contentBgColor: 'var(--global-palette9, #ffffff)',
+					contentBorderStyles : [ {
+						top: [ '#bcbcbc', '', 1 ],
+						right: [ '#bcbcbc', '', 1 ],
+						bottom: [ '#bcbcbc', '', 1 ],
+						left: [ '#bcbcbc', '', 1 ],
+						unit: 'px'
+					} ],
 				} );
 			} else if ( 'boldbg' === key ) {
 				setAttributes( {
@@ -442,18 +449,23 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, 0, 0 ],
-					titleColor: '#222222',
-					titleColorHover: '#222222',
+					titleColor: 'var(--global-palette4, #2D3748)',
+					titleColorHover: 'var(--global-palette3, #1A202C)',
 					titleColorActive: '#ffffff',
-					titleBg: '#eeeeee',
-					titleBgHover: '#e2e2e2',
+					titleBg: 'var(--global-palette7, #eeeeee)',
+					titleBgHover: 'var(--global-palette8, #F7FAFC)',
 					titleBgActive: '#0a6689',
-					titleBorder: '#eeeeee',
-					titleBorderHover: '#eeeeee',
-					titleBorderActive: '#eeeeee',
-					contentBgColor: '#ffffff',
-					contentBorderColor: '#0a6689',
-					contentBorder: [ 3, 0, 0, 0 ],
+					titleBorder: 'var(--global-palette7, #eeeeee)',
+					titleBorderHover: 'var(--global-palette7, #eeeeee)',
+					titleBorderActive: 'var(--global-palette7, #eeeeee)',
+					contentBgColor: 'var(--global-palette9, #ffffff)',
+					contentBorderStyles : [ {
+						top: [ '#0a6689', '', 3 ],
+						right: [ '#0a6689', '', 0 ],
+						bottom: [ '#0a6689', '', 0 ],
+						left: [ '#0a6689', '', 0 ],
+						unit: 'px'
+					} ],
 				} );
 			} else if ( 'center' === key ) {
 				setAttributes( {
@@ -467,18 +479,23 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderRadius: [ 4, 4, 0, 0 ],
 					titlePadding: [ 8, 20, 8, 20 ],
 					titleMargin: [ 0, 8, 0, 0 ],
-					titleColor: '#555555',
-					titleColorHover: '#555555',
+					titleColor: 'var(--global-palette5, #444444)',
+					titleColorHover: 'var(--global-palette5, #444444)',
 					titleColorActive: '#0a6689',
-					titleBg: '#ffffff',
-					titleBgHover: '#ffffff',
-					titleBgActive: '#ffffff',
-					titleBorder: '#ffffff',
-					titleBorderHover: '#eeeeee',
+					titleBg: 'var(--global-palette9, #ffffff)',
+					titleBgHover: 'var(--global-palette9, #ffffff)',
+					titleBgActive: 'var(--global-palette9, #ffffff)',
+					titleBorder: 'var(--global-palette9, #ffffff)',
+					titleBorderHover: 'var(--global-palette7, #eeeeee)',
 					titleBorderActive: '#0a6689',
-					contentBgColor: '#ffffff',
-					contentBorderColor: '#eeeeee',
-					contentBorder: [ 1, 0, 0, 0 ],
+					contentBgColor: 'var(--global-palette9, #ffffff)',
+					contentBorderStyles : [ {
+						top: [ 'var(--global-palette7, #eeeeee)', '', 1 ],
+						right: [ 'var(--global-palette7, #eeeeee)', '', 0 ],
+						bottom: [ 'var(--global-palette7, #eeeeee)', '', 0 ],
+						left: [ 'var(--global-palette7, #eeeeee)', '', 0 ],
+						unit: 'px'
+					} ],
 				} );
 			} else if ( 'vertical' === key ) {
 				setAttributes( {
@@ -493,18 +510,23 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					titleBorderRadius: [ 10, 0, 0, 10 ],
 					titlePadding: [ 12, 8, 12, 20 ],
 					titleMargin: [ 0, -4, 10, 0 ],
-					titleColor: '#444444',
-					titleColorHover: '#444444',
-					titleColorActive: '#444444',
-					titleBg: '#eeeeee',
-					titleBgHover: '#e9e9e9',
-					titleBgActive: '#ffffff',
-					titleBorder: '#eeeeee',
-					titleBorderHover: '#e9e9e9',
-					titleBorderActive: '#eeeeee',
-					contentBgColor: '#ffffff',
-					contentBorderColor: '#eeeeee',
-					contentBorder: [ 4, 4, 4, 4 ],
+					titleColor: 'var(--global-palette5, #444444)',
+					titleColorHover: 'var(--global-palette5, #444444)',
+					titleColorActive: 'var(--global-palette5, #444444)',
+					titleBg: 'var(--global-palette7, #eeeeee)',
+					titleBgHover: 'var(--global-palette8, #F7FAFC)',
+					titleBgActive: 'var(--global-palette9, #ffffff)',
+					titleBorder: 'var(--global-palette7, #eeeeee)',
+					titleBorderHover: 'var(--global-palette8, #F7FAFC)',
+					titleBorderActive: 'var(--global-palette7, #eeeeee)',
+					contentBgColor: 'var(--global-palette9, #ffffff)',
+					contentBorderStyles : [ {
+						top: [ 'var(--global-palette7, #eeeeee)', '', 4 ],
+						right: [ 'var(--global-palette7, #eeeeee)', '', 4 ],
+						bottom: [ 'var(--global-palette7, #eeeeee)', '', 4 ],
+						left: [ 'var(--global-palette7, #eeeeee)', '', 4 ],
+						unit: 'px'
+					} ],
 					minHeight: 400,
 				} );
 			}
@@ -656,14 +678,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: ( typography ? typography : '' ),
-							borderTopWidth: previewTitleBorderWidthTop + titleBorderWidthUnit,
-							borderRightWidth: previewTitleBorderWidthRight + titleBorderWidthUnit,
-							borderBottomWidth: previewTitleBorderWidthBottom + titleBorderWidthUnit,
-							borderLeftWidth: previewTitleBorderWidthLeft + titleBorderWidthUnit,
-							borderTopLeftRadius: previewTitleRadiusTop + titleBorderRadiusUnit,
-							borderTopRightRadius: previewTitleRadiusRight + titleBorderRadiusUnit,
-							borderBottomRightRadius: previewTitleRadiusBottom + titleBorderRadiusUnit,
-							borderBottomLeftRadius: previewTitleRadiusLeft + titleBorderRadiusUnit,
+							borderTopWidth: previewTitleBorderWidthTop + previewTitleBorderWidthUnit,
+							borderRightWidth: previewTitleBorderWidthRight + previewTitleBorderWidthUnit,
+							borderBottomWidth: previewTitleBorderWidthBottom + previewTitleBorderWidthUnit,
+							borderLeftWidth: previewTitleBorderWidthLeft + previewTitleBorderWidthUnit,
+							borderTopLeftRadius: previewTitleRadiusTop + previewTitleBorderRadiusUnit,
+							borderTopRightRadius: previewTitleRadiusRight + previewTitleBorderRadiusUnit,
+							borderBottomRightRadius: previewTitleRadiusBottom + previewTitleBorderRadiusUnit,
+							borderBottomLeftRadius: previewTitleRadiusLeft + previewTitleBorderRadiusUnit,
 							paddingTop: ( previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) : '' ),
 							paddingRight: ( previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) : '' ),
 							paddingBottom: ( previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) : '' ),
@@ -850,7 +872,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				<PopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
 					value={ ( titleColor ? titleColor : '' ) }
-					default={ '#444444' }
+					default={ '' }
 					onChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
 				<PopColorControl
@@ -872,19 +894,19 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				<PopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
 					value={ ( titleColorHover ? titleColorHover : '' ) }
-					default={ '#222222' }
+					default={ '' }
 					onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
 				<PopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
 					value={ ( titleBgHover ? titleBgHover : '' ) }
-					default={ '#e2e2e2' }
+					default={ '' }
 					onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
 				<PopColorControl
 					label={ __( 'Hover Border Color', 'kadence-blocks' ) }
 					value={ ( titleBorderHover ? titleBorderHover : '' ) }
-					default={ '#eeeeee' }
+					default={ '' }
 					onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
 				/>
 			</Fragment>
@@ -894,19 +916,19 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 				<PopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
 					value={ ( titleColorActive ? titleColorActive : '' ) }
-					default={ '#222222' }
+					default={ '' }
 					onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
 				<PopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
 					value={ ( titleBgActive ? titleBgActive : '' ) }
-					default={ '#eeeeee' }
+					default={ '#ffffff' }
 					onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
 				<PopColorControl
 					label={ __( 'Active Border Color', 'kadence-blocks' ) }
 					value={ ( titleBorderActive ? titleBorderActive : '' ) }
-					default={ '#eeeeee' }
+					default={ '#dee2e6' }
 					onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
 				/>
 			</Fragment>
@@ -992,14 +1014,14 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		const renderCSS = (
 			<style>
 				{ `.kt-tabs-id${ uniqueID } .kt-title-item:hover .kt-tab-title {
-					color: ${ KadenceColorOutput( titleColorHover ) } !important;
-					border-color: ${ KadenceColorOutput( titleBorderHover ) } !important;
-					background-color: ${ KadenceColorOutput( titleBgHover ) } !important;
+					${ ( titleColorHover ? 'color:' + KadenceColorOutput( titleColorHover ) + '!important;' : '' ) }
+					${ ( titleBorderHover ? 'border-color:' + KadenceColorOutput( titleBorderHover ) + '!important;' : '' ) }
+					${ ( titleBgHover ? 'background-color:' + KadenceColorOutput( titleBgHover ) + '!important;' : '' ) }
 				}
 				.kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active .kt-tab-title, .kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active:hover .kt-tab-title {
-					color: ${ KadenceColorOutput( titleColorActive ) } !important;
-					border-color: ${ KadenceColorOutput( titleBorderActive ) } !important;
-					background-color: ${ KadenceColorOutput( titleBgActive ) } !important;
+					${ ( titleColorActive ? 'color:' + KadenceColorOutput( titleColorActive ) + '!important;' : '' ) }
+					${ ( titleBorderActive ? 'border-color:' + KadenceColorOutput( titleBorderActive ) + '!important;' : '' ) }
+					${ ( titleBgActive ? 'background-color:' + KadenceColorOutput( titleBgActive ) + '!important;' : '' ) }
 				}
 				.kt-tabs-id${ uniqueID } > .kt-tabs-wrap > .kt-tabs-content-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-tab="${ currentTab }"] {
 					display: block;
@@ -1117,7 +1139,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										/>
 
 										<ResponsiveBorderControl
-											label={__( 'Border Width', 'kadence-blocks' )}
+											label={__( 'Border', 'kadence-blocks' )}
 											value={contentBorderStyles}
 											tabletValue={tabletContentBorderStyles}
 											mobileValue={mobileContentBorderStyles}
@@ -1126,7 +1148,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 											onChangeMobile={( value ) => setAttributes( { mobileContentBorderStyles: value } )}
 										/>
 										<ResponsiveMeasurementControls
-											label={ __( 'Content Border Radius', 'kadence-blocks' ) }
+											label={ __( 'Border Radius', 'kadence-blocks' ) }
 											value={ contentBorderRadius }
 											tabletValue={ tabletContentBorderRadius }
 											mobileValue={ mobileContentBorderRadius }
