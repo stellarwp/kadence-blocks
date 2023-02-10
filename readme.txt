@@ -88,10 +88,13 @@ Release Date: February 9th, 2023
 * Update: WPML Config for forms.
 * Fix: Possible psr compatibility issue.
 * Fix: Possible Map issues with filter.
-* Fix: Possible issue with gallery missing stylesheet.
+* Fix: Possible issue with gallery missing style sheet.
 * Fix: Issue with hidden advanced panel.
 * Fix: Issue with gutenberg plugin.
 * Fix: Issue with testimonial carousel column gap.
+* Fix: Issue with multiple submissions when using redirect.
+* Fix: Issue with dynamic links in buttons.
+* Fix: Issue with dynamic links in icon and icon list.
 
 = 3.0.4 Beta Version 1 =
 Release Date: January 31st, 2023
