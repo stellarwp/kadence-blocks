@@ -1223,7 +1223,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
