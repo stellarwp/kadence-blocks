@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment } from '@wordpress/element';
-import { toggleFormat, applyFormat, registerFormatType, useAnchorRef } from '@wordpress/rich-text';
+import { toggleFormat, applyFormat, registerFormatType, useAnchor } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import {
@@ -93,7 +93,7 @@ const kadenceTypedText = {
 		};
 
 		const settings = getCurrentSettings();
-		const anchorRef = useAnchorRef( { ref: contentRef, value } );
+		const anchorRef = useAnchor( { ref: contentRef, value } );
 
 		return (
 			<Fragment>

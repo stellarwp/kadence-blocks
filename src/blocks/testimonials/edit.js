@@ -230,6 +230,7 @@ function KadenceTestimonials({
         },
         [clientId],
     );
+	const { removeBlock } = useDispatch( 'core/block-editor' );
 
 	const savemediaStyles = (value) => {
 		const newUpdate = mediaStyles.map((item, index) => {
@@ -519,6 +520,13 @@ function KadenceTestimonials({
 		}
 
     }, []);
+
+	useEffect( () => {
+		// Delete if no inner blocks.
+		if ( uniqueID && ! childBlocks.length ) {
+			removeBlock( clientId, true );
+		}
+	}, [ childBlocks.length ] );
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
@@ -2128,7 +2136,7 @@ function KadenceTestimonials({
                             {(isSelected &&
 			                    <ButtonBlockAppender rootClientId={ clientId } />
                             )}
-                            
+
                         </Splide>
 
 
