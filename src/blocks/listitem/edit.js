@@ -61,7 +61,7 @@ import {formatIndent, formatOutdent} from "@wordpress/icons";
  */
 import useMerge from './merge';
 
-function KadenceListItem({attributes, className, setAttributes, clientId, onReplace, onRemove, mergeBlocks, context}) {
+function KadenceListItem({attributes, className, setAttributes, clientId, isSelected, name, onReplace, onRemove, mergeBlocks, context}) {
 
     const {
         uniqueID,
@@ -168,7 +168,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, onRepl
                             }}
                             dynamicAttribute={'link'}
                             allowClear={true}
-                            {...attributes}
+                            {...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
                         />
                         <KadenceIconPicker
                             value={icon}
