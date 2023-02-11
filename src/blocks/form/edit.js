@@ -926,7 +926,7 @@ function KadenceForm( props ) {
 				)}
 				{( 'select' === fields[ index ].type || 'radio' === fields[ index ].type || 'checkbox' === fields[ index ].type ) && (
 					<>
-						<>
+						<div className='kb-field-options-wrap'>
 							{times( fields[ index ].options.length, n => (
 								<div className="field-options-wrap">
 
@@ -965,7 +965,7 @@ function KadenceForm( props ) {
 									</div>
 								</div>
 							) )}
-						</>
+						</div>
 						<Button
 							className="kb-add-option"
 							isPrimary={true}
