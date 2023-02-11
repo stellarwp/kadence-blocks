@@ -1597,6 +1597,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1610,6 +1613,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}
@@ -1627,6 +1633,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1641,6 +1650,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}
@@ -1658,6 +1670,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1672,6 +1687,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}

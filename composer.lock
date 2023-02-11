@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e24d460de639d38464fa761681d1caad",
+    "content-hash": "90dc1333231b6d4792369abca476c75b",
     "packages": [
         {
             "name": "lucatume/di52",
@@ -151,7 +151,7 @@
         },
         {
             "name": "stellarwp/telemetry",
-            "version": "1.0.3",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
@@ -201,7 +201,7 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/1.0.3"
+                "source": "https://github.com/stellarwp/telemetry/tree/1.0.4"
             },
             "time": "2023-02-09T21:05:52+00:00"
         }

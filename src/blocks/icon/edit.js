@@ -2,20 +2,25 @@
  * BLOCK: Kadence Icon
  */
 /**
+ * Import Controls
+ */
+import classnames from 'classnames';
+/**
  * Import externals
  */
 import {
 	KadencePanelBody,
-	VerticalAlignmentIcon,
 	InspectorControlTabs,
 	ResponsiveAlignControls,
 	KadenceInspectorControls,
+	ResponsiveGapSizeControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
+	getGapSizeOptionOutput,
 } from '@kadence/helpers';
 import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -32,14 +37,14 @@ import { __ } from '@wordpress/i18n';
 
 import {
 	BlockControls,
-	AlignmentToolbar,
 	BlockAlignmentToolbar,
+	BlockVerticalAlignmentControl,
+	JustifyContentControl,
+	useInnerBlocksProps,
 	useBlockProps,
-	InnerBlocks,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
-	Fragment,
 	useEffect,
 	useState
 } from '@wordpress/element';
@@ -52,7 +57,7 @@ import {
 } from '@wordpress/components';
 
 function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, clientId, context } ) {
-	const { inQueryBlock, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
+	const { inQueryBlock, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -90,34 +95,31 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 		className: className,
 		['data-align']: ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) ? blockAlignment : undefined
 	} );
-	const verticalAlignOptions = [
-		[
-			{
-				icon    : <VerticalAlignmentIcon value={'top'} isPressed={( verticalAlignment === 'top' ? true : false )}/>,
-				title   : __( 'Align Top', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'top' ? true : false ),
-				onClick : () => setAttributes( { verticalAlignment: 'top' } ),
-			},
-		],
-		[
-			{
-				icon    : <VerticalAlignmentIcon value={'middle'} isPressed={( verticalAlignment === 'middle' ? true : false )}/>,
-				title   : __( 'Align Middle', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'middle' ? true : false ),
-				onClick : () => setAttributes( { verticalAlignment: 'middle' } ),
-			},
-		],
-		[
-			{
-				icon    : <VerticalAlignmentIcon value={'bottom'} isPressed={( verticalAlignment === 'bottom' ? true : false )}/>,
-				title   : __( 'Align Bottom', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'bottom' ? true : false ),
-				onClick : () => setAttributes( { verticalAlignment: 'bottom' } ),
-			},
-		],
-	];
-
+	const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
+	const previewVerticalAlignment = verticalAlignment && 'middle' === verticalAlignment ? 'center' : verticalAlignment;
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
+	const innerClasses = classnames( {
+		'kt-svg-icons': true,
+		[ `kt-svg-icons-${ uniqueID }` ]: uniqueID,
+		[ `kb-icon-halign-${ previewTextAlign }` ]: previewTextAlign,
+		[ `kb-icon-valign-${ previewVerticalAlignment }` ]: previewVerticalAlignment,
+	} );
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: innerClasses,
+			style:{
+				gap: ( '' !== previewGap ? getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ) : undefined ),
+			}
+		},
+		{
+			allowedBlocks:  [ 'kadence/single-icon' ],
+			orientation: 'horizontal',
+			templateLock: false,
+			template: [ [ 'kadence/single-icon' ] ],
+			renderAppender: false,
+			templateInsertUpdatesSelection: true
+		}
+	);
 	return (
 		<div {...blockProps}>
 			<BlockControls>
@@ -126,16 +128,24 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 					controls={[ 'left', 'right' ]}
 					onChange={value => setAttributes( { blockAlignment: value } )}
 				/>
-				<ToolbarGroup
-					isCollapsed={true}
-					icon={<VerticalAlignmentIcon value={( verticalAlignment ? verticalAlignment : 'middle' )}/>}
-					label={__( 'Vertical Align', 'kadence-blocks' )}
-					controls={verticalAlignOptions}
-				/>
-				<AlignmentToolbar
-					value={textAlignment}
-					onChange={value => setAttributes( { textAlignment: value } )}
-				/>
+				<ToolbarGroup>
+					<JustifyContentControl
+						value={ previewTextAlign }
+						onChange={ value => {
+							if ( previewDevice === 'Mobile' ) {
+								setAttributes( { mobileTextAlignment: ( value ? value : '' ) } );
+							} else if ( previewDevice === 'Tablet' ) {
+								setAttributes( { tabletTextAlignment: ( value ? value : '' ) } );
+							} else {
+								setAttributes( {textAlignment: ( value ? value : 'center' ) } );
+							}
+						} }
+					/>
+					<BlockVerticalAlignmentControl
+						value={previewVerticalAlignment || 'center' }
+						onChange={value => setAttributes( { verticalAlignment: value } )}
+					/>
+				</ToolbarGroup>
 				<ToolbarGroup>
 					<ToolbarButton
 						className="kb-icons-add-icon"
@@ -164,27 +174,38 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 					<KadencePanelBody panelName={'kb-icon-alignment-settings'}>
 						<ResponsiveAlignControls
 							label={__( 'Icon Alignment', 'kadence-blocks' )}
-							value={( textAlignment ? textAlignment : '' )}
+							value={( textAlignment ? textAlignment : 'center' )}
 							mobileValue={( mobileTextAlignment ? mobileTextAlignment : '' )}
 							tabletValue={( tabletTextAlignment ? tabletTextAlignment : '' )}
-							onChange={( nextAlign ) => setAttributes( { textAlignment: nextAlign } )}
-							onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: nextAlign } )}
-							onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: nextAlign } )}
+							onChange={( nextAlign ) => setAttributes( { textAlignment: ( nextAlign ? nextAlign : 'center' ) } )}
+							onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
+							onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
+							type={ 'justify' }
 						/>
+						{ undefined !==iconsBlock?.innerBlocks?.length &&iconsBlock.innerBlocks.length > 1 && (
+							<ResponsiveGapSizeControl
+								label={__( 'Icons Gap', 'kadence-blocks' )}
+								value={ ( undefined !== gap?.[0] ? gap[0] : '' ) }
+								onChange={ value => setAttributes( { gap: [value,( undefined !== gap[1] ? gap[1] : '' ),( undefined !== gap[2] ? gap[2] : '' )] } )}
+								tabletValue={( undefined !== gap?.[1] ? gap[1] : '' )}
+								onChangeTablet={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),value,( undefined !== gap[2] ? gap[2] : '' )] } )}
+								mobileValue={( undefined !== gap?.[2] ? gap[2] : '' )}
+								onChangeMobile={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),( undefined !== gap[1] ? gap[1] : '' ),value] } )}
+								min={0}
+								max={( gapUnit === 'px' ? 200 : 12 )}
+								step={( gapUnit === 'px' ? 1 : 0.1 )}
+								unit={ gapUnit ? gapUnit : 'px' }
+								onUnit={( value ) => {
+									setAttributes( { gapUnit: value } );
+								}}
+								units={[ 'px', 'em', 'rem' ]}
+							/>
+						) }
 					</KadencePanelBody>
 				}
 
 			</KadenceInspectorControls>
-			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${previewTextAlign ? ' kb-icon-halign-' + previewTextAlign : ''}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`}>
-				<InnerBlocks
-					template={ [ [ 'kadence/single-icon' ] ] }
-					templateLock={ false }
-					orientation="horizontal"
-					templateInsertUpdatesSelection={ true }
-					renderAppender={ false }
-					allowedBlocks={ [ 'kadence/single-icon' ] }
-				/>
-			</div>
+			<div {...innerBlocksProps} />
 		</div>
 	);
 }

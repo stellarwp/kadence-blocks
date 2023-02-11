@@ -4,6 +4,7 @@
 /**
  * Import externals
  */
+import classnames from 'classnames';
 import { times, map } from 'lodash';
 import {
     PopColorControl,

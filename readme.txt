@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.5 RC Version 1 =
-Release Date: February 10th, 2023
+Release Date: February 13th, 2023
 * Add: New Typed Text to Advanced Text Block.
 * Add: New option to add an icon in Advanced text Block.
 * Update: Tab setting for vertical width.
@@ -87,6 +87,7 @@ Release Date: February 10th, 2023
 * Update: Tab border radius and typography settings.
 * Update: Remove empty parent block for buttons, icons, testimonials and icon list.
 * Update: WPML Config for forms.
+* Update: Icon alignment options.
 * Fix: Possible psr compatibility issue.
 * Fix: Possible Map issues with filter.
 * Fix: Possible issue with gallery missing style sheet.
