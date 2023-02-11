@@ -341,7 +341,12 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, is
                                 }}
                                 dynamicAttribute={'link'}
                                 allowClear={true}
-                                {...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+                                isSelected={ isSelected }
+                                attributes={ attributes }
+                                setAttributes={ setAttributes }
+                                name={ name }
+                                clientId={ clientId }
+                                context={ context }
                             />
                             <TextControl
                                 label={__( 'Title for Accessibility', 'kadence-blocks' )}

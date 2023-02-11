@@ -110,7 +110,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId } ) {
+function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId, name } ) {
 
 	const {
 		uniqueID,
@@ -1349,8 +1349,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									}}
 									dynamicAttribute={'link'}
 									allowClear={true}
-									setAttributes={setAttributes}
-									{...attributes}
+									isSelected={ isSelected }
+									attributes={ attributes }
+									setAttributes={ setAttributes }
+									name={ name }
+									clientId={ clientId }
+									context={ context }
 								/>
 								<SelectControl
 									label={__( 'Link Content', 'kadence-blocks' )}
@@ -1596,8 +1600,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												onSaveImage={onSelectImage}
 												disableMediaButtons={( mediaImage[ 0 ].url ? true : false )}
 												dynamicAttribute="mediaImage:0:url"
-												setAttributes={setAttributes}
-												{...attributes}
+												isSelected={ isSelected }
+												attributes={ attributes }
+												setAttributes={ setAttributes }
+												name={ name }
+												clientId={ clientId }
+												context={ context }
 											/>
 											{mediaImage[ 0 ].id && 'svg+xml' !== mediaImage[ 0 ].subtype && (
 												<ImageSizeControl

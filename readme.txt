@@ -78,8 +78,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.5 RC Version 1 =
-Release Date: February 9th, 2023
+Release Date: February 10th, 2023
 * Add: New Typed Text to Advanced Text Block.
+* Add: New option to add an icon in Advanced text Block.
 * Update: Tab setting for vertical width.
 * Update: Set minimum php version.
 * Update: Testimonial block settings.
@@ -95,6 +96,8 @@ Release Date: February 9th, 2023
 * Fix: Issue with multiple submissions when using redirect.
 * Fix: Issue with dynamic links in buttons.
 * Fix: Issue with dynamic links in icon and icon list.
+* Fix: Issue with resetting z index in image block.
+* Fix: Issue with floating images and overlap.
 
 = 3.0.4 Beta Version 1 =
 Release Date: January 31st, 2023

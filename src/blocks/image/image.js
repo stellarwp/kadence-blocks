@@ -482,7 +482,7 @@ export default function Image( {
 					{( activeTab === 'general' ) &&
 						<>
 						<KadencePanelBody
-							title={ __('Image settings Test', 'kadence-blocks') }
+							title={ __('Image settings', 'kadence-blocks') }
 							initialOpen={ true }
 							panelName={ 'kb-image-settings' }
 						>

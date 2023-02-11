@@ -168,7 +168,12 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                             }}
                             dynamicAttribute={'link'}
                             allowClear={true}
-                            {...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+                            isSelected={ isSelected }
+                            attributes={ attributes }
+                            setAttributes={ setAttributes }
+                            name={ name }
+                            clientId={ clientId }
+                            context={ context }
                         />
                         <KadenceIconPicker
                             value={icon}

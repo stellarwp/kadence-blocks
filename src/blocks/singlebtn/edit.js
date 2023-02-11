@@ -589,7 +589,12 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 					}}
 					dynamicAttribute={'link'}
 					allowClear={true}
-					{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+					isSelected={ isSelected }
+					attributes={ attributes }
+					setAttributes={ setAttributes }
+					name={ name }
+					clientId={ clientId }
+					context={ context }
 				/>
 			) }
 			{showSettings( 'allSettings', 'kadence/advancedbtn' ) && (
@@ -635,7 +640,12 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 											}}
 											dynamicAttribute={'link'}
 											allowClear={true}
-											{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+											isSelected={ isSelected }
+											attributes={ attributes }
+											setAttributes={ setAttributes }
+											name={ name }
+											clientId={ clientId }
+											context={ context }
 										/>
 									)}
 									<KadenceRadioButtons
