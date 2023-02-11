@@ -11,7 +11,7 @@
 	"require": {
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.0",
-		"stellarwp/telemetry": "dev-main",
+		"stellarwp/telemetry": "1.0.3",
 		"stellarwp/container-contract": "^1.0"
 	},
 	"autoload": {
