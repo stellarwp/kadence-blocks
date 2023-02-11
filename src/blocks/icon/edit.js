@@ -70,7 +70,7 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 	);
 
 	useEffect( () => {
-		setBlockDefaults( 'kadence/advancedheading', attributes);
+		setBlockDefaults( 'kadence/icon', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );

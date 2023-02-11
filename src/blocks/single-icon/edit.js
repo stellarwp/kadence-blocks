@@ -63,8 +63,6 @@ import {
 
 function KadenceSingleIcon( { attributes, className, setAttributes, clientId, isSelected, name, context } ) {
 
-    const index = 0;
-
     const {
         inQueryBlock,
         icon,
@@ -140,7 +138,7 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, is
     );
 
     useEffect( () => {
-		setBlockDefaults( 'kadence/advancedheading', attributes);
+		setBlockDefaults( 'kadence/single-icon', attributes );
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
@@ -155,8 +153,10 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, is
 
     const renderCSS = (
         <style>
-            {`.kt-svg-icons-${uniqueID} .kt-svg-icons-${uniqueID}:hover .kt-svg-icon {
+            {`.wp-block-kadence-single-icon .kt-svg-item-${uniqueID}:hover .kt-svg-icon {
 					${( undefined !== hColor && hColor ? 'color:' + KadenceColorOutput( hColor ) + '!important;' : '' )}
+            }
+            .wp-block-kadence-single-icon .kt-svg-style-stacked.kt-svg-item-${uniqueID}:hover .kt-svg-icon {
 					${( undefined !== hBackground && hBackground ? 'background:' + KadenceColorOutput( hBackground ) + '!important;' : '' )}
 					${( undefined !== hBorder && hBorder ? 'border-color:' + KadenceColorOutput( hBorder ) + '!important;' : '' )}
             }`}
@@ -186,24 +186,8 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, is
 
                 {( activeTab === 'general' ) &&
                     <>
-                        {/*<KadencePanelBody*/}
-                        {/*    title={__( 'Icon Count', 'kadence-blocks' )}*/}
-                        {/*    initialOpen={true}*/}
-                        {/*    panelName={'kb-icon-count'}*/}
-                        {/*>*/}
-                        {/*    <ResponsiveAlignControls*/}
-                        {/*        label={__( 'Icons Alignment', 'kadence-blocks' )}*/}
-                        {/*        value={( textAlignment ? textAlignment : '' )}*/}
-                        {/*        mobileValue={( mobileTextAlignment ? mobileTextAlignment : '' )}*/}
-                        {/*        tabletValue={( tabletTextAlignment ? tabletTextAlignment : '' )}*/}
-                        {/*        onChange={( nextAlign ) => setAttributes( { textAlignment: nextAlign } )}*/}
-                        {/*        onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: nextAlign } )}*/}
-                        {/*        onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: nextAlign } )}*/}
-                        {/*    />*/}
-                        {/*</KadencePanelBody>*/}
-
                         <KadencePanelBody
-                            title={__( 'Icon', 'kadence-blocks' ) + ' ' + ' ' + __( 'Settings', 'kadence-blocks' )}
+                            title={__( 'Icon Settings', 'kadence-blocks' )}
                             initialOpen={ true }
                             panelName={'kb-icon-settings'}
                         >
