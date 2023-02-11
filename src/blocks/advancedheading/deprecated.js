@@ -13,7 +13,6 @@ import {
 import {
 	RichText,
 	getColorClassName,
-	useBlockProps
 } from '@wordpress/block-editor';
 import {
 	getBlockDefaultClassName,

@@ -360,7 +360,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$reveal_animation = ( ! empty( $attributes['kadenceAnimation'] ) && ( 'reveal-left' === $attributes['kadenceAnimation'] || 'reveal-right' === $attributes['kadenceAnimation'] || 'reveal-up' === $attributes['kadenceAnimation'] || 'reveal-down' === $attributes['kadenceAnimation'] ) ? true : false );
 			$wrapper = $reveal_animation ? true : false;
 			$icon_side = ! empty( $attributes['iconSide'] ) ? $attributes['iconSide'] : 'left';
-			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading' );
+			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading', 'kt-adv-heading-has-icon' );
 			if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
 				$classes[] = 'hls-' . $attributes['linkStyle'];
 			}

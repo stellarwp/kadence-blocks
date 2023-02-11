@@ -82,9 +82,9 @@ function Save( { attributes } ) {
 		</a>
 	);
 	const readyContent = ( link ? linkHTMLItem : htmlItem );
-	// if ( icon && '' !== icon ) {
-	// 	return ( htmlItem );
-	// }
+	if ( icon && '' !== icon ) {
+		return ( htmlItem );
+	}
 	return (
 		<>
 			{ wrapper && (

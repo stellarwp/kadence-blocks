@@ -439,7 +439,7 @@ function KadenceAdvancedHeading( props ) {
 		[ textBackgroundColorClass ]   : textBackgroundColorClass,
 		'has-background'               : textBackgroundColorClass,
 		[ `hls-${linkStyle}` ]         : !link && linkStyle,
-		[ `kt-adv-heading-has-icon` ]  : ( icon && iconSide && ( iconSide === 'left' || iconSide === 'right' ) ),
+		[ `kt-adv-heading-has-icon` ]  : icon,
 	} );
 	const renderIcon = () => {
 
@@ -465,7 +465,7 @@ function KadenceAdvancedHeading( props ) {
 					display: 'flex',
 					alignItems: iconVerticalAlign,
 					justifyContent: previewAlign,
-
+					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
 					fontStyle      : fontStyle,
@@ -486,15 +486,11 @@ function KadenceAdvancedHeading( props ) {
 				}}
 				className={classes}
 			>
-				<div style={{
-					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
-				}}>
 					{iconSide === 'left' && renderIcon()}
 
 					{applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content' )}
 
 					{iconSide === 'right' && renderIcon()}
-				</div>
 		</TagHTML>
 	);
 	const headingContent = (
@@ -615,7 +611,7 @@ function KadenceAdvancedHeading( props ) {
 	}, [ isSelected ] );
 
 	return (
-		<div {...blockProps} style={{}}>
+		<div {...blockProps}>
 			<style>
 				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID}.rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${KadenceColorOutput( markColor )};
@@ -973,7 +969,7 @@ function KadenceAdvancedHeading( props ) {
 									}}
 								/>
 							</KadencePanelBody>
-							{showSettings( 'iconSettings', 'kadence/advancedbtn' ) && (
+							{showSettings( 'iconSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
 									title={__( 'Icon Settings', 'kadence-blocks' ) }
 									initialOpen={false}
@@ -988,53 +984,6 @@ function KadenceAdvancedHeading( props ) {
 											allowClear={ true }
 										/>
 									</div>
-									{/*<SmallResponsiveControl*/}
-									{/*	label={__( 'Icon and Text Display', 'kadence-blocks' )}*/}
-									{/*	desktopChildren={<SelectControl*/}
-									{/*		value={( undefined !== onlyIcon?.[ 0 ] && onlyIcon[ 0 ] ? 'true' : 'false' )}*/}
-									{/*		options={[*/}
-									{/*			{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },*/}
-									{/*			{ value: 'true', label: __( 'Show Only Icon', 'kadence-blocks' ) },*/}
-									{/*		]}*/}
-									{/*		onChange={value => {*/}
-									{/*			setAttributes( { onlyIcon: [ ( value === 'true' ? true : false ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : '' ), ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : '' ) ] } );*/}
-									{/*		}}*/}
-									{/*	/>}*/}
-									{/*	tabletChildren={<SelectControl*/}
-									{/*		value={( undefined !== onlyIcon?.[1] && onlyIcon[1] ? 'true' : ( undefined !== onlyIcon?.[1] && false === onlyIcon[1] ? 'false' : '' ) )}*/}
-									{/*		options={[*/}
-									{/*			{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },*/}
-									{/*			{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },*/}
-									{/*			{ value: 'true', label: __( 'Show Only Icon', 'kadence-blocks' ) },*/}
-									{/*		]}*/}
-									{/*		onChange={value => {*/}
-									{/*			let newValue = value;*/}
-									{/*			if ( value === 'true' ) {*/}
-									{/*				newValue = true;*/}
-									{/*			} else if ( value === 'false' ) {*/}
-									{/*				newValue = false;*/}
-									{/*			}*/}
-									{/*			setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), newValue, ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : '' ) ] } );*/}
-									{/*		}}*/}
-									{/*	/>}*/}
-									{/*	mobileChildren={<SelectControl*/}
-									{/*		value={( undefined !== onlyIcon?.[2] && onlyIcon[2] ? 'true' : ( undefined !== onlyIcon?.[2] && false === onlyIcon[2] ? 'false' : '' ) )}*/}
-									{/*		options={[*/}
-									{/*			{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },*/}
-									{/*			{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },*/}
-									{/*			{ value: 'true', label: __( 'Show Only Icon', 'kadence-blocks' ) },*/}
-									{/*		]}*/}
-									{/*		onChange={value => {*/}
-									{/*			let newValue = value;*/}
-									{/*			if ( value === 'true' ) {*/}
-									{/*				newValue = true;*/}
-									{/*			} else if ( value === 'false' ) {*/}
-									{/*				newValue = false;*/}
-									{/*			}*/}
-									{/*			setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : '' ), newValue ] } );*/}
-									{/*		}}*/}
-									{/*	/>}*/}
-									{/*/>*/}
 									<SelectControl
 										label={__( 'Icon Location', 'kadence-blocks' )}
 										value={iconSide}
