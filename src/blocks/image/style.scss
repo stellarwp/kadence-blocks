@@ -36,6 +36,7 @@
 	.alignleft {
 		/*rtl:ignore*/
 		float: left;
+		position: relative;
 		/*rtl:ignore*/
 		margin-left: 0;
 		margin-right: var( --global-md-spacing, 1em );
@@ -46,6 +47,7 @@
 	.alignright {
 		/*rtl:ignore*/
 		float: right;
+		position: relative;
 		/*rtl:ignore*/
 		margin-right: 0;
 		margin-left: var( --global-md-spacing, 1em );

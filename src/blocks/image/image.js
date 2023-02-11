@@ -1124,6 +1124,7 @@ export default function Image( {
 					} }
 					min={ -200 }
 					max={ 2000 }
+					allowReset={true}
 				/>
 			</InspectorAdvancedControls>
 		</>
