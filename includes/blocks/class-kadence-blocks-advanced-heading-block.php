@@ -83,6 +83,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'margin-left', $attributes['leftMargin'] . ( ! isset( $attributes['marginType'] ) ? 'px' : $attributes['marginType'] ) );
 		}
 		// Spacing.
+		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
+		if ( ! empty( $attributes['maxWidth'][0] ) && ! empty( $attributes['align'] ) && 'center' === $attributes['align'] ) {
+			$css->add_property( 'margin-right', 'auto' );
+			$css->add_property( 'margin-left', 'auto' );
+		}
+		if ( ! empty( $attributes['maxWidth'][0] ) && ! empty( $attributes['align'] ) && 'right' === $attributes['align'] ) {
+			$css->add_property( 'margin-right', '0px' );
+			$css->add_property( 'margin-left', 'auto' );
+		}
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
@@ -191,6 +200,50 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'desktop' );
 
 
+		// SVG.
+		if ( ! empty( $attributes['icon'] ) ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'gap', '0.25em' );
+			if ( isset( $attributes['align'] ) ) {
+				$css->add_property( 'justify-content', $attributes['align'] );
+			}
+
+			if ( ! empty( $attributes['tabletAlign'] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'justify-content', $attributes['tabletAlign'] );
+				$css->set_media_state( 'desktop' );
+			}
+
+			if ( ! empty( $attributes['mobileAlign'] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'justify-content', $attributes['mobileAlign'] );
+				$css->set_media_state( 'desktop' );
+			}
+
+			if ( isset( $attributes['iconVerticalAlign'] ) ) {
+				$css->add_property( 'align-items', $attributes['iconVerticalAlign'] );
+			} else {
+				$css->add_property( 'align-items', 'center' );
+			}
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-heading-icon svg' );
+			$css->add_property( 'width', '1em');
+			$css->add_property( 'height', '1em');
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-heading-icon' );
+			$css->render_color_output( $attributes, 'iconColor', 'color' );
+			$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
+			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit' ) );
+			if ( isset( $attributes['lineHeight'] ) ) {
+				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
+			}
+
+			if ( isset( $attributes['iconHover'] ) && $attributes['iconHover'] ) {
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]:hover .kb-adv-heading-icon' );
+				$css->render_color_output( $attributes, 'iconColorHover', 'color' );
+			}
+
+		}
+
 		// Highlight.
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
@@ -286,12 +339,115 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		return $css->css_output();
 	}
-
+	/**
+	 * This block is conditionally dynamic. It's only rendered dynamically if the heading includes an icon.
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string Returns the block output.
+	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
-		if ( strpos($content, 'kt-typed-text') !== false ) {
+		if ( strpos( $content, 'kt-typed-text') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
 			$this->enqueue_script( 'kadence-blocks-typed-js' );
+		}
+		if ( ! empty( $attributes['icon'] ) ) {
+			$tag_name     = $this->get_tag_name( $attributes );
+			$text_content = $this->get_inner_content( $content, $tag_name );
+			// Start empty.
+			$content = '';
+			$reveal_animation = ( ! empty( $attributes['kadenceAnimation'] ) && ( 'reveal-left' === $attributes['kadenceAnimation'] || 'reveal-right' === $attributes['kadenceAnimation'] || 'reveal-up' === $attributes['kadenceAnimation'] || 'reveal-down' === $attributes['kadenceAnimation'] ) ? true : false );
+			$wrapper = $reveal_animation ? true : false;
+			$icon_side = ! empty( $attributes['iconSide'] ) ? $attributes['iconSide'] : 'left';
+			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading', 'kt-adv-heading-has-icon' );
+			if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
+				$classes[] = 'hls-' . $attributes['linkStyle'];
+			}
+			if ( ! empty( $attributes['className'] ) && ! $wrapper && empty( $attributes['link'] ) ) {
+				$classes[] = $attributes['className'];
+			}
+			if ( ! empty( $attributes['colorClass'] ) ) {
+				$classes[] = 'has-' . $attributes['colorClass'] . '-color';
+				$classes[] = 'has-text-color';
+			}
+			if ( ! empty( $attributes['backgroundColorClass'] ) ) {
+				$classes[] = 'has-' . $attributes['backgroundColorClass'] . '-background-color';
+				$classes[] = 'has-background';
+			}
+			$content_args = array(
+				'class' => implode( ' ', $classes ),
+				'data-kb-block' => 'kb-adv-heading' . $unique_id,
+			);
+			if ( ! empty( $attributes['anchor'] ) ) {
+				$content_args['id'] = $attributes['anchor'];
+			}
+			$content_args = kadence_apply_aos_wrapper_args( $attributes, $content_args );
+			$inner_content_attributes = array();
+			foreach ( $content_args as $key => $value ) {
+				$inner_content_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+			}
+			$inner_content_attributes = implode( ' ', $inner_content_attributes );
+			$icon_left = '';
+			$icon_right = '';
+			if ( 'left' === $icon_side ) {
+				$icon_left = $this->get_icon( $attributes );
+			}
+			if ( 'right' === $icon_side ) {
+				$icon_right = $this->get_icon( $attributes );
+			}
+			$content = sprintf( '<%1$s %2$s>%3$s<span class="kb-adv-text-inner">%4$s</span>%5$s</%1$s>', $tag_name, $inner_content_attributes, $icon_left, $text_content, $icon_right );
+			if ( ! empty( $attributes['link'] ) ) {
+				$link_classes = array( 'kb-advanced-heading-link', 'kt-adv-heading-link' . $unique_id );
+				if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
+					$link_classes[] = 'hls-' . $attributes['linkStyle'];
+				}
+				if ( ! empty( $attributes['class'] ) && ! $wrapper ) {
+					$link_classes[] = $attributes['class'];
+				}
+				$link_args = array(
+					'class' => implode( ' ', $link_classes ),
+				);
+				$link_args['href'] = do_shortcode( $attributes['link'] );
+				$rel_add = '';
+				if ( ! empty( $attributes['target'] ) && $attributes['target'] ) {
+					$link_args['target'] = '_blank';
+					$rel_add = 'noreferrer noopener';
+				}
+				if ( isset( $attributes['noFollow'] ) && $attributes['noFollow'] ) {
+					$rel_add .= ' nofollow';
+				}
+				if ( isset( $attributes['sponsored'] ) && $attributes['sponsored'] ) {
+					$rel_add .= ' sponsored';
+				}
+				if ( ! empty( $rel_add ) ) {
+					$link_args['rel'] = $rel_add;
+				}
+				$link_attributes = array();
+				foreach ( $link_args as $key => $value ) {
+					$link_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+				}
+				$link_attributes = implode( ' ', $link_attributes );
+				$content = sprintf( '<a %1$s>%2$s</a>', $link_attributes, $content );
+			}
+			if ( $wrapper ) {
+				$wrapper_classes = array( 'kb-adv-heading-wrap' . $unique_id, 'kadence-advanced-heading-wrapper' );
+				if ( $reveal_animation ) {
+					$wrapper_classes[] = 'kadence-heading-clip-animation';
+				}
+				if ( ! empty( $attributes['class'] ) && $wrapper ) {
+					$wrapper_classes[] = $attributes['class'];
+				}
+				$wrapper_args = array(
+					'class' => implode( ' ', $wrapper_classes ),
+				);
+				$wrapper_attributes = array();
+				foreach ( $wrapper_args as $key => $value ) {
+					$wrapper_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+				}
+				$wrapper_attributes = implode( ' ', $wrapper_attributes );
+				$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
+			}
 		}
 
 		return $content;
@@ -312,10 +468,63 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-
+		wp_register_style( 'kadence-blocks-' . $this->block_name, false );
+		$heading_css = '.wp-block-kadence-advancedheading mark{color:#f76a0c;background:transparent;border-style:solid;border-width:0}';
+		// Short term fix for an issue with heading wrapping.
+		if ( class_exists( '\Kadence\Theme' ) ) {
+			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
+		}
+		wp_add_inline_style( 'kadence-blocks-' . $this->block_name, $heading_css );
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array( 'kadence-blocks-' . $this->block_name ), KADENCE_BLOCKS_VERSION, true );
+	}
+	/**
+	 * Get the text content.
+	 *
+	 * @param array $attributes the blocks attributes.
+	 */
+	private function get_inner_content( $string, $tagname ) {
+		$pattern = "#<\s*?$tagname\b[^>]*>(.*?)</$tagname\b[^>]*>#s";
+		preg_match( $pattern, $string, $matches );
+		if ( isset( $matches[1] ) ) {
+			return $matches[1];
+		}
+		return '';
+	}
 
+	/**
+	 * Build the Icon.
+	 *
+	 * @param array $attributes the blocks attributes.
+	 */
+	private function get_icon( $attributes ) {
+		$svg_icon   = '';
+		$icon_side = ! empty( $attributes['iconSide'] ) ? $attributes['iconSide'] : 'left';
+		if ( ! empty( $attributes['icon'] ) ) {
+			$type         = substr( $attributes['icon'], 0, 2 );
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$stroke_width = false;
+
+			if ( $line_icon ) {
+				$stroke_width = 2;
+			}
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width );
+		}
+		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '">' . $svg_icon . '</span>';
+	}
+
+	/**
+	 * Get the html tag name.
+	 * 
+	 * @param array $attributes the blocks attributes.
+	 */
+	private function get_tag_name( $attributes ) {
+		if ( $attributes['htmlTag'] === 'heading' ) {
+			return 'h' . $attributes['level'];
+		}
+
+		return $attributes['htmlTag'];
 	}
 }
 

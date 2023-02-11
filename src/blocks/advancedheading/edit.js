@@ -33,6 +33,9 @@ import {
 	TagSelect,
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
+	KadenceIconPicker,
+	SmallResponsiveControl,
+	IconRender
 } from '@kadence/components';
 
 import {
@@ -198,6 +201,20 @@ function KadenceAdvancedHeading( props ) {
 		mobileMarkBorderStyles,
 		maxWidthType,
 		maxWidth,
+		beforeIcon,
+		afterIcon,
+		icon,
+		iconColor,
+		iconColorHover,
+		iconSide,
+		iconVerticalAlign,
+		iconHover,
+		iconPadding,
+		tabletIconPadding,
+		mobileIconPadding,
+		iconSize,
+		iconSizeUnit,
+		iconPaddingUnit
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -324,6 +341,12 @@ function KadenceAdvancedHeading( props ) {
 	const previewMarkSize = getPreviewSize( previewDevice, ( undefined !== markSize ? markSize[ 0 ] : '' ), ( undefined !== markSize ? markSize[ 1 ] : '' ), ( undefined !== markSize ? markSize[ 2 ] : '' ) );
 	const previewMarkLineHeight = getPreviewSize( previewDevice, ( undefined !== markLineHeight ? markLineHeight[ 0 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 1 ] : '' ), ( undefined !== markLineHeight ? markLineHeight[ 2 ] : '' ) );
 
+	const previewIconSize = getPreviewSize( previewDevice, ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), ( undefined !== iconSize?.[1] ? iconSize[1] : '' ), ( undefined !== iconSize?.[2] ? iconSize[2] : '' ) );
+	const previewIconPaddingTop = getPreviewSize( previewDevice, ( undefined !== iconPadding?.[0] ? iconPadding[0] : '' ), ( undefined !== tabletIconPadding?.[0] ? tabletIconPadding[0] : '' ), ( undefined !== mobileIconPadding?.[0] ? mobileIconPadding[0] : '' ) );
+	const previewIconPaddingRight = getPreviewSize( previewDevice, ( undefined !== iconPadding?.[1] ? iconPadding[1] : '' ), ( undefined !== tabletIconPadding?.[1] ? tabletIconPadding[1] : '' ), ( undefined !== mobileIconPadding?.[1] ? mobileIconPadding[1] : '' ) );
+	const previewIconPaddingBottom = getPreviewSize( previewDevice, ( undefined !== iconPadding?.[2] ? iconPadding[2] : '' ), ( undefined !== tabletIconPadding?.[2] ? tabletIconPadding[2] : '' ), ( undefined !== mobileIconPadding?.[2] ? mobileIconPadding[2] : '' ) );
+	const previewIconPaddingLeft = getPreviewSize( previewDevice, ( undefined !== iconPadding?.[ 3 ] ? iconPadding[ 3 ] : '' ), ( undefined !== tabletIconPadding?.[ 3 ] ? tabletIconPadding[ 3 ] : '' ), ( undefined !== mobileIconPadding?.[ 3 ] ? mobileIconPadding[ 3 ] : '' ) );
+
 	const previewMarkLetterSpacing = getPreviewSize( previewDevice, ( undefined !== markLetterSpacing ? markLetterSpacing : '' ), ( undefined !== tabletMarkLetterSpacing ? tabletMarkLetterSpacing : '' ), ( undefined !== mobileMarkLetterSpacing ? mobileMarkLetterSpacing : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
@@ -416,79 +439,116 @@ function KadenceAdvancedHeading( props ) {
 		[ textBackgroundColorClass ]   : textBackgroundColorClass,
 		'has-background'               : textBackgroundColorClass,
 		[ `hls-${linkStyle}` ]         : !link && linkStyle,
+		[ `kt-adv-heading-has-icon` ]  : icon,
 	} );
+	const renderIcon = () => {
+
+		if( !icon ) {
+			return null;
+		}
+
+		return (
+			<IconRender className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`} name={icon} size={'1em'} style={{
+				fontSize     : previewIconSize ? getFontSizeOptionOutput( previewIconSize, ( undefined !== iconSizeUnit ? iconSizeUnit : 'px' ) ) : undefined,
+				color        : ( '' !== iconColor ? KadenceColorOutput( iconColor ) : undefined ),
+				paddingTop   : ( previewIconPaddingTop ? getSpacingOptionOutput( previewIconPaddingTop, iconPaddingUnit ) : undefined ),
+				paddingRight : ( previewIconPaddingRight ? getSpacingOptionOutput( previewIconPaddingRight, iconPaddingUnit ) : undefined ),
+				paddingBottom: ( previewIconPaddingBottom ? getSpacingOptionOutput( previewIconPaddingBottom, iconPaddingUnit ) : undefined ),
+				paddingLeft  : ( previewIconPaddingLeft ? getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) : undefined ),
+			}}/>
+		);
+
+	}
 	const dynamicHeadingContent = (
-		<TagHTML
-			style={{
-				textAlign      : previewAlign,
-				color          : color ? KadenceColorOutput( color ) : undefined,
-				backgroundColor: background ? KadenceColorOutput( background ) : undefined,
-				fontWeight     : fontWeight,
-				fontStyle      : fontStyle,
-				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-				lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
-				letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
-				textTransform  : ( textTransform ? textTransform : undefined ),
-				fontFamily     : ( typography ? renderTypography : '' ),
-				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
-				paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
-				paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
-				paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
-				marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-				marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-				marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-				marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-				textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-			}}
-			className={classes}
-		>
-			{applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content' )}
+			<TagHTML
+				style={{
+					display: 'flex',
+					alignItems: iconVerticalAlign,
+					justifyContent: previewAlign,
+					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
+					color          : color ? KadenceColorOutput( color ) : undefined,
+					fontWeight     : fontWeight,
+					fontStyle      : fontStyle,
+					fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
+					lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
+					letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
+					textTransform  : ( textTransform ? textTransform : undefined ),
+					fontFamily     : ( typography ? renderTypography : '' ),
+					paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
+					paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
+					paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
+					paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
+					marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
+					marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
+					marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
+					marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
+					textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
+				}}
+				className={classes}
+			>
+					{iconSide === 'left' && renderIcon()}
+
+					{applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content' )}
+
+					{iconSide === 'right' && renderIcon()}
 		</TagHTML>
 	);
 	const headingContent = (
-		<RichText
-			id={ 'adv-heading' + uniqueID }
-			tagName={tagName}
-			allowedFormats={( link ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field' ], 'kadence/advancedheading' ) : undefined )}
-			value={content}
-			onChange={( value ) => setAttributes( { content: value } )}
-			onMerge={mergeBlocks}
-			onSplit={( value ) => {
-				if ( !value ) {
-					return createBlock( 'core/paragraph' );
-				}
-				return createBlock( 'kadence/advancedheading', {
-					...attributes,
-					content: value,
-				} );
-			}}
-			onReplace={onReplace}
-			onRemove={() => onReplace( [] )}
-			style={{
-				textAlign      : previewAlign,
-				color          : color ? KadenceColorOutput( color ) : undefined,
-				backgroundColor: background ? KadenceColorOutput( background ) : undefined,
-				fontWeight     : fontWeight,
-				fontStyle      : fontStyle,
-				fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-				lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
-				letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
-				textTransform  : ( textTransform ? textTransform : undefined ),
-				fontFamily     : ( typography ? renderTypography : '' ),
-				paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
-				paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
-				paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
-				paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
-				marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-				marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-				marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-				marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-				textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-			}}
+			<TagHTML
 			className={classes}
-			placeholder={__( 'Write something…', 'kadence-blocks' )}
-		/>
+			style={{
+				display: 'flex',
+				gap:'0.25em',
+				alignItems: iconVerticalAlign,
+				justifyContent: previewAlign,
+				backgroundColor: background ? KadenceColorOutput(background) : undefined,
+				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
+				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
+				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),
+				paddingLeft: ('' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingType) : undefined),
+				marginTop: ('' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined),
+				marginRight: ('' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined),
+				marginBottom: ('' !== previewMarginBottom ? getSpacingOptionOutput(previewMarginBottom, marginType) : undefined),
+				marginLeft: ('' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined),
+				lineHeight: (previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined),
+				color: color ? KadenceColorOutput(color) : undefined,
+				fontSize: (previewFontSize ? getFontSizeOptionOutput(previewFontSize, (sizeType ? sizeType : 'px')) : undefined),
+			}}>
+				{iconSide === 'left' && renderIcon()}
+
+				<RichText
+					id={ 'adv-heading' + uniqueID }
+					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
+					value={content}
+					onChange={(value) => setAttributes({content: value})}
+					onMerge={mergeBlocks}
+					onSplit={(value) => {
+						if (!value) {
+							return createBlock('core/paragraph');
+						}
+						return createBlock('kadence/advancedheading', {
+							...attributes,
+							content: value,
+						});
+					}}
+					onReplace={onReplace}
+					onRemove={() => onReplace([])}
+					style={{
+						fontWeight: fontWeight,
+						fontStyle: fontStyle,
+						letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
+						textTransform: (textTransform ? textTransform : undefined),
+						fontFamily: (typography ? renderTypography : ''),
+						textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
+					}}
+					placeholder={__('Write something…', 'kadence-blocks')}
+				/>
+
+				{iconSide === 'right' && renderIcon()}
+
+			</TagHTML>
 	);
+
 	const headingLinkContent = (
 		<a
 			href={link}
@@ -572,9 +632,9 @@ function KadenceAdvancedHeading( props ) {
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
 					}`}
-				{ ( previewMaxWidth ? `.kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'center' ? `.kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'right' ? `.kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
+				{ ( previewMaxWidth ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
 							color: ${KadenceColorOutput( linkColor )} !important;
@@ -909,6 +969,100 @@ function KadenceAdvancedHeading( props ) {
 									}}
 								/>
 							</KadencePanelBody>
+							{showSettings( 'iconSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Icon Settings', 'kadence-blocks' ) }
+									initialOpen={false}
+									panelName={'kb-adv-heading-icon'}
+								>
+									<div className="kt-select-icon-container">
+										<KadenceIconPicker
+											value={icon}
+											onChange={value => {
+												setAttributes( { icon: value } );
+											}}
+											allowClear={ true }
+										/>
+									</div>
+									<SelectControl
+										label={__( 'Icon Location', 'kadence-blocks' )}
+										value={iconSide}
+										options={[
+											{ value: 'left', label: __( 'Left' ) },
+											{ value: 'right', label: __( 'Right' ) },
+										]}
+										onChange={value => {
+											setAttributes( { iconSide: value } );
+										}}
+									/>
+									<SelectControl
+										label={__( 'Vertical Alignment', 'kadence-blocks' )}
+										value={iconVerticalAlign}
+										options={[
+											{ value: 'unset', label: __( 'Unset' ) },
+											{ value: 'baseline', label: __( 'Baseline' ) },
+											{ value: 'center', label: __( 'Center' ) },
+											{ value: 'end', label: __( 'End' ) },
+											{ value: 'start', label: __( 'Start' ) },
+										]}
+										onChange={value => {
+											setAttributes( { iconVerticalAlign: value } );
+										}}
+									/>
+									<ResponsiveRangeControls
+										label={__( 'Icon Size', 'kadence-blocks' )}
+										value={( undefined !== iconSize?.[0] ? iconSize[0] : '' )}
+										onChange={value => {
+											setAttributes( { iconSize: [ value, ( undefined !==iconSize[1] ? iconSize[1] : '' ), ( undefined !== iconSize?.[2] && iconSize[2] ?iconSize[2] : '' ) ] } );
+										}}
+										tabletValue={( undefined !== iconSize?.[1] ? iconSize[1] : '' )}
+										onChangeTablet={( value ) => {
+											setAttributes( { iconSize: [ ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), value, ( undefined !== iconSize?.[2] ? iconSize[2] : '' ) ] } );
+										}}
+										mobileValue={( undefined !== iconSize?.[2] ? iconSize[2] : '' )}
+										onChangeMobile={( value ) => {
+											setAttributes( { iconSize: [ ( undefined !== iconSize?.[0] ? iconSize[0] : '' ), ( undefined !== iconSize?.[1] ? iconSize[1] : '' ), value ] } );
+										}}
+										min={0}
+										max={( ( iconSizeUnit ? iconSizeUnit : 'px' ) !== 'px' ? 12 : 200 )}
+										step={( ( iconSizeUnit ? iconSizeUnit : 'px' ) !== 'px' ? 0.1 : 1 )}
+										unit={ iconSizeUnit ? iconSizeUnit : 'px'}
+										onUnit={( value ) => {
+											setAttributes( { iconSizeUnit: value });
+										}}
+										units={[ 'px', 'em', 'rem' ]}
+									/>
+									<PopColorControl
+										label={__( 'Icon Color', 'kadence-blocks' )}
+										value={(iconColor ? iconColor : '' )}
+										default={''}
+										onChange={value => {
+											setAttributes( { iconColor: value });
+										}}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={(iconColorHover ?iconColorHover : '' )}
+										default2={''}
+										onChange2={value => {
+											setAttributes( { iconColorHover: value });
+										}}
+									/>
+									<ResponsiveMeasureRangeControl
+										label={__( 'Icon Padding', 'kadence-blocks' )}
+										value={undefined !== iconPadding ? iconPadding : [ '', '', '', '' ]}
+										tabletValue={undefined !== tabletIconPadding ? tabletIconPadding : [ '', '', '', '' ]}
+										mobileValue={undefined !== mobileIconPadding ? mobileIconPadding : [ '', '', '', '' ]}
+										onChange={( value ) => setAttributes( { iconPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletIconPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileIconPadding: value } )}
+										min={( iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? -2 : -200 )}
+										max={( iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 200 )}
+										step={( iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 0.1 : 1 )}
+										unit={iconPaddingUnit}
+										units={[ 'px', 'em', 'rem' ]}
+										onUnit={( value ) => setAttributes( { iconPaddingUnit: value } )}
+									/>
+								</KadencePanelBody>
+							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
 									title={__( 'Highlight Settings', 'kadence-blocks' )}
