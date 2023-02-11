@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79ad3d27add616a4ea755348daed43e7",
+    "content-hash": "e24d460de639d38464fa761681d1caad",
     "packages": [
         {
             "name": "lucatume/di52",
@@ -155,12 +155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "2221570ce15ba95ca6b7c898f81494c4c45d4c0d"
+                "reference": "9433f7f3714a36d00ebc1818fbbac682415a6471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/2221570ce15ba95ca6b7c898f81494c4c45d4c0d",
-                "reference": "2221570ce15ba95ca6b7c898f81494c4c45d4c0d",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/9433f7f3714a36d00ebc1818fbbac682415a6471",
+                "reference": "9433f7f3714a36d00ebc1818fbbac682415a6471",
                 "shasum": ""
             },
             "require": {
@@ -189,7 +189,9 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "StellarWP\\Telemetry\\": "src/Telemetry"
+                    "StellarWP\\Telemetry\\": "src/Telemetry",
+                    "StellarWP\\Telemetry\\Views_Dir\\": "src/views",
+                    "StellarWP\\Telemetry\\Assets_Dir\\": "src/resources"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -199,9 +201,9 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/main"
+                "source": "https://github.com/stellarwp/telemetry/tree/1.0.4"
             },
-            "time": "2023-01-30T19:56:15+00:00"
+            "time": "2023-02-09T21:05:52+00:00"
         }
     ],
     "packages-dev": [],
