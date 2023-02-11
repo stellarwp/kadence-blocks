@@ -748,6 +748,17 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
+	/**
+	 * Add a noscript to the content.
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string Returns the block output.
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$content .= '<noscript><div class="kadence-blocks-form-message kadence-blocks-form-warning">' . __( 'Please enable JavaScript in your browser to submit the form', 'kadence-blocks' ) . '</div><style>.kadence-form-' . $unique_id . ' .kadence-blocks-form-field.kb-submit-field { display: none; }</style></noscript>';
+		return $content;
+	}
 
 	/**
 	 * Registers scripts and styles.
