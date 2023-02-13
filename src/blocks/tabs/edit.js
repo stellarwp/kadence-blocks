@@ -235,7 +235,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 		}
 
 		if ( contentBorder[ 0 ] !== '' || contentBorder[ 1 ] !== '' || contentBorder[ 2 ] !== '' || contentBorder[ 3 ] !== '' ) {
-			const tmpContentBorderColor = ( contentBorderColor ? contentBorderColor : '' );
+			const tmpContentBorderColor = ( contentBorderColor ? contentBorderColor : '#dee2e6' );
 
 			setAttributes( {
 				contentBorderStyles: [ {
@@ -289,6 +289,8 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const previewTitlePaddingRight = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[1] ? titlePadding[1] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : ''));
 	const previewTitlePaddingBottom = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[2] ? titlePadding[2] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
 	const previewTitlePaddingLeft = getPreviewSize(previewDevice, ( titlePadding && undefined !== titlePadding[3] ? titlePadding[3] : ''), (tabletTitlePadding && undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (mobileTitlePadding && undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
+	const previewTitleMarginUnit = titleMarginUnit ? titleMarginUnit : 'px';
+	const previewTitlePaddingUnit = titlePaddingUnit ? titlePaddingUnit : 'px';
 
 	const previewTitleBorderWidthTop = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[0] ? titleBorderWidth[ 0 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[0] ? tabletTitleBorderWidth[ 0 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[0] ? mobileTitleBorderWidth[ 0 ] : '' ) );
 	const previewTitleBorderWidthRight = getPreviewSize( previewDevice, ( undefined !== titleBorderWidth?.[1] ? titleBorderWidth[ 1 ] : '' ), ( undefined !== tabletTitleBorderWidth?.[1] ? tabletTitleBorderWidth[ 1 ] : '' ), ( undefined !== mobileTitleBorderWidth?.[1] ? mobileTitleBorderWidth[ 1 ] : '' ) );
@@ -663,10 +665,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			return (
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
-						marginTop: ( previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, titleMarginUnit ) : '' ),
-						marginRight: ( 'tabs' === layout && widthType === 'percent' ? '0px' : previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, titleMarginUnit ) : '' ),
-						marginBottom: ( previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, titleMarginUnit ) : '' ),
-						marginLeft: ( 'tabs' === layout && widthType === 'percent' ? '0px' : previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, titleMarginUnit ) : '' ),
+						marginTop: ( '' !== previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, previewTitleMarginUnit ) : '' ),
+						marginRight: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, previewTitleMarginUnit ) : '' ) ),
+						marginBottom: ( '' !== previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, previewTitleMarginUnit ) : '' ),
+						marginLeft: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, previewTitleMarginUnit ) : '' ) ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: KadenceColorOutput( titleBg ),
@@ -686,10 +688,10 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							borderTopRightRadius: previewTitleRadiusRight + previewTitleBorderRadiusUnit,
 							borderBottomRightRadius: previewTitleRadiusBottom + previewTitleBorderRadiusUnit,
 							borderBottomLeftRadius: previewTitleRadiusLeft + previewTitleBorderRadiusUnit,
-							paddingTop: ( previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, titlePaddingUnit ) : '' ),
-							paddingRight: ( previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, titlePaddingUnit ) : '' ),
-							paddingBottom: ( previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, titlePaddingUnit ) : '' ),
-							paddingLeft: ( previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, titlePaddingUnit ) : '' ),
+							paddingTop: ( '' !== previewTitlePaddingTop ? getSpacingOptionOutput( previewTitlePaddingTop, previewTitlePaddingUnit ) : undefined ),
+							paddingRight: ( '' !== previewTitlePaddingRight ? getSpacingOptionOutput( previewTitlePaddingRight, previewTitlePaddingUnit ) : undefined ),
+							paddingBottom: ( '' !== previewTitlePaddingBottom ? getSpacingOptionOutput( previewTitlePaddingBottom, previewTitlePaddingUnit ) : undefined ),
+							paddingLeft: ( '' !== previewTitlePaddingLeft ? getSpacingOptionOutput( previewTitlePaddingLeft, previewTitlePaddingUnit ) : undefined ),
 							borderColor: KadenceColorOutput( titleBorder ),
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
