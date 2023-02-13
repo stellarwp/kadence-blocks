@@ -2,7 +2,7 @@
  * BLOCK: Kadence Advanced Heading
  *
  */
-/* global kadence_blocks_params */
+
 /**
  * Internal dependencies
  */
@@ -14,7 +14,6 @@ import {
 	InlineTypographyControls,
 	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
-	BorderControl,
 	KadencePanelBody,
 	URLInputControl,
 	KadenceWebfontLoader,
@@ -34,7 +33,6 @@ import {
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
 	KadenceIconPicker,
-	SmallResponsiveControl,
 	IconRender
 } from '@kadence/components';
 
@@ -46,6 +44,7 @@ import {
 	mouseOverVisualizer,
 	getFontSizeOptionOutput,
 	getBorderStyle,
+	getBorderColor,
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
@@ -214,7 +213,14 @@ function KadenceAdvancedHeading( props ) {
 		mobileIconPadding,
 		iconSize,
 		iconSizeUnit,
-		iconPaddingUnit
+		iconPaddingUnit,
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle,
+		borderRadius,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		borderRadiusUnit,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -355,6 +361,23 @@ function KadenceAdvancedHeading( props ) {
 	const previewMarkBorderRightStyle = getBorderStyle( previewDevice, 'right', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
 	const previewMarkBorderBottomStyle = getBorderStyle( previewDevice, 'bottom', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
 	const previewMarkBorderLeftStyle = getBorderStyle( previewDevice, 'left', markBorderStyles, tabletMarkBorderStyles, mobileMarkBorderStyles );
+
+	const previewBorderTop = getBorderStyle( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderRight = getBorderStyle( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderBottom = getBorderStyle( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	const previewBorderLeft = getBorderStyle( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	// const previewBorderTopColor = getBorderColor( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	// const previewBorderRightColor = getBorderColor( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	// const previewBorderBottomColor = getBorderColor( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle );
+	// const previewBorderLeftColor = getBorderColor( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle );
+
+	const previewBorderRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+	const previewBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+	const previewBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+	const previewBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+
+
+
 	const headingOptions = [
 		[
 			{
@@ -513,6 +536,14 @@ function KadenceAdvancedHeading( props ) {
 				lineHeight: (previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined),
 				color: color ? KadenceColorOutput(color) : undefined,
 				fontSize: (previewFontSize ? getFontSizeOptionOutput(previewFontSize, (sizeType ? sizeType : 'px')) : undefined),
+				borderTopLeftRadius: previewBorderRadiusTop + borderRadiusUnit,
+				borderTopRightRadius: previewBorderRadiusRight + borderRadiusUnit,
+				borderBottomRightRadius: previewBorderRadiusBottom + borderRadiusUnit,
+				borderBottomLeftRadius: previewBorderRadiusLeft + borderRadiusUnit,
+				borderTop: ( previewBorderTop ? previewBorderTop : undefined ),
+				borderRight: ( previewBorderRight ? previewBorderRight : undefined ),
+				borderBottom: ( previewBorderBottom ? previewBorderBottom : undefined ),
+				borderLeft: ( previewBorderLeft ? previewBorderLeft : undefined ),
 			}}>
 				{iconSide === 'left' && renderIcon()}
 
@@ -939,6 +970,38 @@ function KadenceAdvancedHeading( props ) {
 									/>
 								</KadencePanelBody>
 							)}
+							<KadencePanelBody
+								title={__( 'Border Settings', 'kadence-blocks' )}
+								initialOpen={false}
+								panelName={'kb-adv-heading-border'}
+							>
+								<ResponsiveBorderControl
+									label={__( 'Border', 'kadence-blocks' )}
+									value={borderStyle}
+									tabletValue={tabletBorderStyle}
+									mobileValue={mobileBorderStyle}
+									onChange={( value ) => setAttributes( { borderStyle: value } )}
+									onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+									onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+								/>
+								<ResponsiveMeasurementControls
+									label={__( 'Border Radius', 'kadence-blocks' )}
+									value={borderRadius}
+									tabletValue={tabletBorderRadius}
+									mobileValue={mobileBorderRadius}
+									onChange={( value ) => setAttributes( { borderRadius: value } )}
+									onChangeTablet={( value ) => setAttributes( { tabletBorderRadius: value } )}
+									onChangeMobile={( value ) => setAttributes( { mobileBorderRadius: value } )}
+									unit={borderRadiusUnit}
+									units={[ 'px', 'em', 'rem', '%' ]}
+									onUnit={( value ) => setAttributes( { borderRadiusUnit: value } )}
+									max={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500)}
+									step={(borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1)}
+									min={ 0 }
+									isBorderRadius={ true }
+									allowEmpty={true}
+								/>
+							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Text Shadow Settings', 'kadence-blocks' )}
 								initialOpen={false}

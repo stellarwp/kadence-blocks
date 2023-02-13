@@ -200,6 +200,17 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'desktop' );
 
 
+		$css->render_border_styles( $attributes, 'borderStyle');
+		$css->render_border_radius( $attributes, 'borderRadius', ( !empty( $attributes['borderRadiusUnit']) ? $attributes['borderRadiusUnit'] : 'px' ) );
+
+		$css->set_media_state('tablet');
+		$css->render_border_radius( $attributes, 'tabletBorderRadius', ( !empty( $attributes['borderRadiusUnit']) ? $attributes['borderRadiusUnit'] : 'px' ) );
+		$css->set_media_state('desktop');
+
+		$css->set_media_state('mobile');
+		$css->render_border_radius( $attributes, 'mobileBorderRadius', ( !empty( $attributes['borderRadiusUnit']) ? $attributes['borderRadiusUnit'] : 'px' ) );
+		$css->set_media_state('desktop');
+
 		// SVG.
 		if ( ! empty( $attributes['icon'] ) ) {
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -516,7 +527,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 	/**
 	 * Get the html tag name.
-	 * 
+	 *
 	 * @param array $attributes the blocks attributes.
 	 */
 	private function get_tag_name( $attributes ) {
