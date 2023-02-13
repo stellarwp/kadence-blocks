@@ -26,7 +26,7 @@ import {
  * Import External
  */
 import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
-import {map} from 'lodash';
+import {map, isEqual} from 'lodash';
 /**
  * Import Components
  */
@@ -73,10 +73,9 @@ import {
     useBlockProps,
     InnerBlocks,
     useInnerBlocksProps,
-    ButtonBlockAppender,
+    store as blockEditorStore,
 } from '@wordpress/block-editor';
-
-import {useSelect, useDispatch} from '@wordpress/data';
+import {useSelect, useDispatch, withDispatch, withSelect} from '@wordpress/data';
 
 import {
     Button,
@@ -84,10 +83,17 @@ import {
     RangeControl,
     ToggleControl,
     SelectControl,
+    ToolbarButton,
+    ToolbarGroup,
     Tooltip,
 } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
+import { 
+    plusCircle
+} from '@wordpress/icons';
 
 import classnames from 'classnames';
+import { migrateToInnerblocks } from './utils';
 
 /**
  * Build the overlay edit
@@ -99,6 +105,10 @@ function KadenceTestimonials({
     clientId,
     isSelected,
     context,
+    testimonialBlock,
+    insertTestimonial,
+    insertTestimonialItems,
+    onDelete,
 }) {
     const {
         uniqueID,
@@ -219,18 +229,16 @@ function KadenceTestimonials({
     const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
-    const {isUniqueID, isUniqueBlock, previewDevice, childBlocks} = useSelect(
+    const {isUniqueID, isUniqueBlock, previewDevice } = useSelect(
         (select) => {
             return {
                 isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
                 isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-                childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
             };
         },
         [clientId],
     );
-	const { removeBlock } = useDispatch( 'core/block-editor' );
 
 	const savemediaStyles = (value) => {
 		const newUpdate = mediaStyles.map((item, index) => {
@@ -521,12 +529,18 @@ function KadenceTestimonials({
 
     }, []);
 
-	useEffect( () => {
-		// Delete if no inner blocks.
-		if ( uniqueID && ! childBlocks.length ) {
-			removeBlock( clientId, true );
+    useEffect( () => {
+		if ( uniqueID && ! testimonialBlock.innerBlocks.length ) {
+			if ( testimonials?.length && testimonials.length && undefined !== metadata?.attributes?.testimonials?.default && !isEqual( metadata.attributes.testimonials.default, testimonials ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertTestimonialItems( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				onDelete();
+			}
 		}
-	}, [ childBlocks.length ] );
+	}, [ testimonialBlock.innerBlocks.length ] );
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
@@ -1101,6 +1115,18 @@ function KadenceTestimonials({
                             onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                             preventMultiple={ [ 'testimonials' ] }
                         />
+                        <ToolbarGroup>
+                            <ToolbarButton
+                                className="kb-icons-add-icon"
+                                icon={ plusCircle }
+                                onClick={ () => {
+                                    const newBlock = createBlock( 'kadence/testimonial' );
+                                    insertTestimonial( newBlock );
+                                } }
+                                label={  __( 'Add Testimonial', 'kadence-blocks' ) }
+                                showTooltip={ true }
+                            />
+                        </ToolbarGroup>
                     </BlockControls>
                     <InspectorControls>
                         <InspectorControlTabs
@@ -2133,10 +2159,6 @@ function KadenceTestimonials({
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>
-                            {(isSelected &&
-			                    <ButtonBlockAppender rootClientId={ clientId } />
-                            )}
-
                         </Splide>
 
 
@@ -2177,4 +2199,43 @@ function KadenceTestimonials({
     );
 }
 
-export default KadenceTestimonials;
+//export default KadenceTestimonials;
+const KadenceTestimonialsWrapper = withDispatch(
+	( dispatch, ownProps, registry ) => ( {
+		insertTestimonial( newBlock ) {
+			const { clientId } = ownProps;
+			const { insertBlock } = dispatch( blockEditorStore );
+			const { getBlock } = registry.select( blockEditorStore );
+			const block = getBlock( clientId );
+			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertTestimonialItems( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
+		},
+		onDelete() {
+			const { clientId } = ownProps;
+			const { removeBlock } = dispatch( blockEditorStore );
+			removeBlock( clientId, true );
+		},
+	} )
+)( KadenceTestimonials );
+const KadenceTestimonialsEdit = ( props ) => {
+	const { clientId } = props;
+	const { testimonialBlock } = useSelect(
+		( select ) => {
+			const {
+				getBlock,
+			} = select( 'core/block-editor' );
+			const block = getBlock( clientId );
+			return {
+				testimonialBlock: block,
+			};
+		},
+		[ clientId ]
+	);
+	return <KadenceTestimonialsWrapper testimonialBlock={ testimonialBlock } { ...props } />;
+};
+export default KadenceTestimonialsEdit;

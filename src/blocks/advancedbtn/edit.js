@@ -5,7 +5,7 @@
  * Import externals
  */
 import classnames from 'classnames';
-import { times, map } from 'lodash';
+import { times, map, isEqual } from 'lodash';
 import {
 	PopColorControl,
 	StepControls,
@@ -44,6 +44,7 @@ import { createBlock } from '@wordpress/blocks';
  */
 import './editor.scss';
 import metadata from './block.json';
+import { migrateToInnerblocks } from './utils';
 
 /**
  * Internal block libraries
@@ -86,7 +87,7 @@ const DEFAULT_BLOCK = {
 		'widthType',
 	],
 };
-function KadenceButtons( { attributes, className, setAttributes, isSelected, buttonsBlock, insertButton, clientId, context } ) {
+function KadenceButtons( { attributes, className, setAttributes, isSelected, buttonsBlock, insertButton, insertButtons, clientId, context } ) {
 	const {
 		uniqueID,
 		hAlign,
@@ -107,6 +108,7 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 		tabletPadding,
 		mobilePadding,
 		paddingUnit,
+		btns,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -136,9 +138,16 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 	}, [] );
 
 	useEffect( () => {
-		// Delete if no inner blocks.
 		if ( uniqueID && ! childBlocks.length ) {
-			removeBlock( clientId, true );
+			// Check if we are attempting recovery.
+			if ( btns?.length && btns.length && undefined !== metadata?.attributes?.btns?.default && !isEqual( metadata.attributes.btns.default, btns ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertButtons( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				removeBlock( clientId, true );
+			}
 		}
 	}, [ childBlocks.length ] );
 
@@ -409,6 +418,12 @@ const KadenceButtonsWrapper = withDispatch(
 			const { getBlock } = registry.select( blockEditorStore );
 			const block = getBlock( clientId );
 			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertButtons( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
 		},
 	} )
 )( KadenceButtons );

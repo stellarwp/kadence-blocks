@@ -29,7 +29,8 @@ import { createBlock } from '@wordpress/blocks';
  */
 import './editor.scss';
 import metadata from './block.json';
-
+import { isEqual } from 'lodash';
+import { migrateToInnerblocks } from './utils';
 /**
  * Internal block libraries
  */
@@ -56,8 +57,8 @@ import {
 	ToolbarGroup,
 } from '@wordpress/components';
 
-function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, clientId, context } ) {
-	const { inQueryBlock, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
+function KadenceIcons( { attributes, className, setAttributes, isSelected, iconsBlock, insertIcon, insertIcons, clientId, context } ) {
+	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -85,9 +86,15 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 	}, [] );
 
 	useEffect( () => {
-		// Delete if no inner blocks.
 		if ( uniqueID && ! iconsBlock.innerBlocks.length ) {
-			removeBlock( clientId, true );
+			if ( icons?.length && undefined !== metadata?.attributes?.icons?.default && !isEqual( metadata.attributes.icons.default, icons ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertIcons( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				removeBlock( clientId, true );
+			}
 		}
 	}, [ iconsBlock.innerBlocks.length ] );
 
@@ -216,7 +223,15 @@ const KadenceIconsWrapper = withDispatch(
 			const { insertBlock } = dispatch( blockEditorStore );
 			const { getBlock } = registry.select( blockEditorStore );
 			const block = getBlock( clientId );
-			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+			console.log( clientId );
+			console.log( parseInt( block.innerBlocks.length ) );
+			insertBlock( newBlock, ( undefined !== block?.innerBlocks?.length ? parseInt( block.innerBlocks.length ) : 0 ), clientId );
+		},
+		insertIcons( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
 		},
 	} )
 )( KadenceIcons );

@@ -808,6 +808,7 @@
 	"queryId"
   ],
   "supports": {
-	"anchor": true
+	"anchor": true,
+	"html": false
   }
 }

@@ -131,6 +131,7 @@
 	"kadence/testimonials-mediaStyles"
   ],
   "supports": {
-	"anchor": true
+	"anchor": true,
+	"html": false
   }
 }

@@ -10,7 +10,7 @@ import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 /**
  * Import Externals
  */
-import { map, get } from 'lodash';
+import { map, get, isEqual } from 'lodash';
 /**
  * Import Kadence Components
  */
@@ -49,6 +49,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { migrateToInnerblocks } from './utils';
 import {
 	useBlockProps,
 	useInnerBlocksProps,
@@ -84,7 +85,7 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
@@ -104,6 +105,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		setBlockDefaults( 'kadence/iconlist', attributes);
 
 		if ( ! uniqueID ) {
+			// Check for old block defaults before 3.0
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
 				if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
@@ -134,9 +136,16 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 	}, [] );
 
 	useEffect( () => {
-		// Delete if no inner blocks.
 		if ( uniqueID && ! listBlock.innerBlocks.length ) {
-			onDelete();
+			// Check if we are attempting recovery.
+			if ( items?.length && items.length && undefined !== metadata?.attributes?.items?.default && !isEqual( metadata.attributes.items.default, items ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertListItems( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				onDelete();
+			}
 		}
 	}, [ listBlock.innerBlocks.length ] );
 
@@ -733,6 +742,12 @@ const KadenceIconsListWrapper = withDispatch(
 			const { getBlock } = registry.select( blockEditorStore );
 			const block = getBlock( clientId );
 			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertListItems( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
 		},
 		onDelete() {
 			const { clientId } = ownProps;
