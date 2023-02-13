@@ -88,7 +88,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
-	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
@@ -516,8 +515,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listPadding: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListPadding: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListPadding: value } )}
-										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -24 : -200 )}
-										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 24 : 200 )}
+										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -25 : -400 )}
+										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 25 : 400 )}
 										step={( listPaddingType === 'em' || listPaddingType === 'rem' ? 0.1 : 1 )}
 										unit={listPaddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
@@ -533,8 +532,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listMargin: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
-										min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
-										max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+										min={( listMarginType === 'em' || listMarginType === 'rem' ? -25 : -400 )}
+										max={( listMarginType === 'em' || listMarginType === 'rem' ? 25 : 400 )}
 										step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
 										unit={listMarginType}
 										units={[ 'px', 'em', 'rem', '%' ]}

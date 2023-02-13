@@ -1182,8 +1182,8 @@ function KadenceAdvancedHeading( props ) {
 											}}
 											onChangeTablet={(value) => setAttributes({tabletMargin: value})}
 											onChangeMobile={(value) => setAttributes({mobileMargin: value})}
-											min={( marginType === 'em' || marginType === 'rem' ? -10 : -200 )}
-											max={( marginType === 'em' || marginType === 'rem' ? 12 : 200 )}
+											min={( marginType === 'em' || marginType === 'rem' ? -25 : -400 )}
+											max={( marginType === 'em' || marginType === 'rem' ? 25 : 400 )}
 											step={( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 )}
 											unit={marginType}
 											units={['px', 'em', 'rem', '%', 'vh']}

@@ -2065,8 +2065,8 @@ function KadenceTestimonials({
 											onChangeTablet={( value ) => setAttributes( { wrapperTabletPadding: value } )}
 											mobileValue={wrapperMobilePadding}
 											onChangeMobile={( value ) => setAttributes( { wrapperMobilePadding: value } )}
-											min={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? -2 : -200 )}
-											max={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200 )}
+											min={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? -25 : -400 )}
+											max={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 25 : 400 )}
 											step={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1 )}
 											unit={wrapperPaddingType}
 											units={[ 'px', 'em', 'rem' ]}
@@ -2080,8 +2080,8 @@ function KadenceTestimonials({
 											onChangeTablet={( value ) => setAttributes( { tabletWrapperMargin: value } )}
 											mobileValue={mobileWrapperMargin}
 											onChangeMobile={( value ) => setAttributes( { mobileWrapperMargin: value } )}
-											min={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -2 : -200 )}
-											max={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 12 : 200 )}
+											min={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -25 : -400 )}
+											max={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 25 : 400 )}
 											step={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 0.1 : 1 )}
 											unit={wrapperMarginUnit}
 											units={[ 'px', 'em', 'rem' ]}

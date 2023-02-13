@@ -4,30 +4,21 @@
 /**
  * Import externals
  */
-import classnames from 'classnames';
-import { times, map } from 'lodash';
 import {
     PopColorControl,
-    StepControls,
-    IconRender,
     KadencePanelBody,
     URLInputControl,
     ResponsiveRangeControls,
     InspectorControlTabs,
     RangeControl,
     KadenceRadioButtons,
-    ResponsiveAlignControls,
     KadenceInspectorControls,
     KadenceBlockDefaults,
     KadenceIconPicker,
-    ResponsiveMeasureRangeControl,
-    SpacingVisualizer,
     CopyPasteAttributes,
 } from '@kadence/components';
 import {
     KadenceColorOutput,
-    getPreviewSize,
-    getSpacingOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
@@ -49,17 +40,11 @@ import {
     BlockControls,
 } from '@wordpress/block-editor';
 import {
-    Fragment,
     useEffect,
     useState
 } from '@wordpress/element';
 import {
     TextControl,
-    SelectControl,
-    Button,
-    Dashicon,
-    TabPanel,
-    ToolbarGroup,
 } from '@wordpress/components';
 
 function KadenceSingleIcon( { attributes, className, setAttributes, clientId, isSelected, name, context } ) {
