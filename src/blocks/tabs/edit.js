@@ -1577,7 +1577,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 										mobileValue={mobileInnerPadding}
 										onChangeMobile={(value) => setAttributes({mobileInnerPadding: value})}
 										min={0}
-										max={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 12 : 200)}
+										max={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 25 : 400)}
 										step={(innerPaddingType === 'em' || innerPaddingType === 'rem' ? 0.1 : 1)}
 										unit={innerPaddingType}
 										units={['px', 'em', 'rem']}

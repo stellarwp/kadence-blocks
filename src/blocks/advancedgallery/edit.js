@@ -535,8 +535,8 @@ function GalleryEdit( props ) {
 
 	const marginMouseOver = mouseOverVisualizer();
 
-	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
-	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
+	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 );
+	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 );
 	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 
 	const columnControlTypes = [

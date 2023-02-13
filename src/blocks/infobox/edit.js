@@ -304,7 +304,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	};
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
+	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 25 : 400 );
 	const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
 	const previewContainerPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
 	const previewContainerPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
@@ -351,8 +351,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
 	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
-	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -12 : -200 );
-	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );
+	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400 );
+	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400 );
 	const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 
 	const layoutPresetOptions = [

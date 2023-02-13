@@ -14,7 +14,7 @@ import '@dotlottie/player-component';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useRef, useEffect } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
@@ -304,9 +304,9 @@ export function Edit( {
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -525,7 +525,7 @@ export function Edit( {
 								onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
 								onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
 								min={ 0 }
-								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400 ) }
 								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
 								unit={ paddingUnit }
 								units={ [ 'px', 'em', 'rem', '%' ] }
@@ -543,8 +543,8 @@ export function Edit( {
 								} }
 								onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
 								onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 ) }
+								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 ) }
 								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 								unit={ marginUnit }
 								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }

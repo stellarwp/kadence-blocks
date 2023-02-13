@@ -69,11 +69,6 @@ import { addQueryArgs } from '@wordpress/url';
 import { decodeEntities } from '@wordpress/html-entities';
 
 /**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kbpostsUniqueIDs = [];
-
-/**
  * Build Kadence Posts Block.
  */
 function KadencePosts( { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, getPreviewDevice, clientId } ) {
@@ -167,7 +162,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
-		
+
 		getPosts();
 	}, [] );
 
@@ -250,8 +245,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>

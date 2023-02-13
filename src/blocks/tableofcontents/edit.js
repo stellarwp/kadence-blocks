@@ -222,7 +222,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			setShowContent( false );
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -256,7 +256,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			setAttributes( { borderStyle: JSON.parse( JSON.stringify( tempBorderStyle ) ) } );
 		}
 		// Update from old title border settings.
-		let tempTitleBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorderStyle ? attributes.titleBorderStyle : [{ 
+		let tempTitleBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorderStyle ? attributes.titleBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -531,8 +531,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			</ToolbarGroup>
 			<CopyPasteAttributes
 				attributes={ attributes }
-				defaultAttributes={ metadata['attributes'] } 
-				blockSlug={ metadata['name'] } 
+				defaultAttributes={ metadata['attributes'] }
+				blockSlug={ metadata['name'] }
 				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 			/>
 		</BlockControls>
@@ -650,8 +650,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									onChangeTablet={( value ) => setAttributes( { tabletContainerPadding: value } )}
 									mobileValue={mobileContainerPadding}
 									onChangeMobile={( value ) => setAttributes( { mobileContainerPadding: value } )}
-									min={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -2 : -200 )}
-									max={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 12 : 200 )}
+									min={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -25 : -400 )}
+									max={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 25 : 400 )}
 									step={( containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 0.1 : 1 )}
 									unit={containerPaddingUnit}
 									units={[ 'px', 'em', 'rem' ]}
@@ -667,8 +667,8 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
 									mobileValue={containerMobileMargin}
 									onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-									min={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -2 : -200 )}
-									max={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 12 : 200 )}
+									min={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400 )}
+									max={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400 )}
 									step={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 )}
 									unit={containerMarginUnit}
 									units={[ 'px', 'em', 'rem' ]}
