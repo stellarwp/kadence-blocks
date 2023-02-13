@@ -95,4 +95,9 @@ registerBlockType( 'kadence/advancedheading', {
 	edit,
 	save,
 	deprecated: backwardCompatibility,
+	example: {
+		attributes: {
+					content: __( 'Example Heading', 'kadence-blocks' ),
+		}
+	}
 } );

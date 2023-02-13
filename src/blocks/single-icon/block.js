@@ -47,4 +47,5 @@ registerBlockType( 'kadence/single-icon', {
     },
     edit,
     save,
+	example: {}
 } );

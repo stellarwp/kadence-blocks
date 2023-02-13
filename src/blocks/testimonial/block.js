@@ -23,5 +23,6 @@ registerBlockType( 'kadence/testimonial', {
 	icon    : {
 		src: testimonialSingleBlockIcon,
 	},
-	edit
+	edit,
+	example: {}
 } );

@@ -69,4 +69,24 @@ registerBlockType( 'kadence/tabs', {
 	edit,
 	save,
 	deprecated,
+	example: {
+		attributes: {
+			uniqueID: '123456789',
+			titleColor: '#FFFFFF',
+			titleBg: '#2B6CB0'
+		},
+		innerBlocks: [
+			{
+				name: 'kadence/tab',
+				innerBlocks: [
+					{
+						name: 'core/heading',
+						attributes: {
+							content: __( 'Tab 1 Content', 'kadence-blocks' ),
+						}
+					}
+				]
+			}
+		]
+	}
 } );

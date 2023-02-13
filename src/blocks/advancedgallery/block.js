@@ -81,4 +81,24 @@ registerBlockType( 'kadence/advancedgallery', {
 	edit,
 	save,
 	deprecated,
+	example: {
+		attributes: {
+			uniqueID: '123456789',
+			columns: [ 2, 2, 2, 2, 1, 1 ],
+			images: [
+				{
+					id: 1,
+					url: "https://s.w.org/images/core/5.3/Glacial_lakes%2C_Bhutan.jpg",
+					width: 594,
+					height: 350
+				},
+				{
+					id: 1,
+					url: "https://s.w.org/images/core/5.3/Sediment_off_the_Yucatan_Peninsula.jpg",
+					width: 594,
+					height: 350
+				},
+			],
+		}
+	}
 } );

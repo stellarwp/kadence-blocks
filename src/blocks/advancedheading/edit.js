@@ -571,7 +571,7 @@ function KadenceAdvancedHeading( props ) {
 
 	const typed = useRef(null);
 	useEffect( () => {
-		if ( !isSelected && attributes.content.includes( "kt-typed-text" ) ) {
+		if ( !isSelected && undefined !== attributes.content && attributes.content.includes( "kt-typed-text" ) ) {
 			const parser = new DOMParser();
 			const contentHtml = parser.parseFromString( attributes.content, 'text/html' );
 
