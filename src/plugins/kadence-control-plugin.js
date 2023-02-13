@@ -191,6 +191,10 @@ function KadenceConfig() {
 																	   label: __('Enable Advanced Typography Settings', 'kadence-blocks')
 																   },
 																   {
+																	   key: 'iconSettings',
+																	   label: __('Enable Icon Settings', 'kadence-blocks')
+																   },
+																   {
 																	   key: 'highlightSettings',
 																	   label: __('Enable Highlight Settings', 'kadence-blocks')
 																   },

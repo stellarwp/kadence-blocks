@@ -100,11 +100,6 @@ function KadenceTestimonials({
         uniqueID,
         url,
         id,
-        alt,
-        width,
-        height,
-        maxWidth,
-        subtype,
         media,
         icon,
         isize,
@@ -120,7 +115,6 @@ function KadenceTestimonials({
         tabletIsize,
         mobileIsize,
         inQueryBlock,
-        useBlockQuoteTags
     } = attributes;
 
     const displayContent = context['kadence/testimonials-displayContent'];
@@ -190,11 +184,6 @@ function KadenceTestimonials({
     }, []);
 
     const previewIconSize = getPreviewSize( previewDevice, ( undefined !== isize ? isize : ''), ( undefined !== tabletIsize ? tabletIsize : ''), ( undefined !== mobileIsize ? mobileIsize : '') );
-
-    const previewRatingMarginTop = undefined !== ratingStyles?.[0]?.margin?.[0] ? ratingStyles[0].margin[0] + 'px' : '';
-    const previewRatingMarginRight = undefined !== ratingStyles?.[0]?.margin?.[1] ? ratingStyles[0].margin[1] + 'px' : '';
-    const previewRatingMarginBottom = undefined !== ratingStyles?.[0]?.margin?.[2] ? ratingStyles[0].margin[2] + 'px' : '';
-    const previewRatingMarginLeft = undefined !== ratingStyles?.[0]?.margin?.[3] ? ratingStyles[0].margin[3] + 'px' : '';
 
     const nonTransAttrs = [ 'url', 'media', 'title', 'content' ];
 
@@ -273,9 +262,7 @@ function KadenceTestimonials({
 
     const renderTestimonialIcon = () => {
         return (
-            <div className="kt-svg-testimonial-global-icon-wrap" style={{
-                margin: (iconStyles[0].margin ? iconStyles[0].margin[0] + 'px ' + iconStyles[0].margin[1] + 'px ' + iconStyles[0].margin[2] + 'px ' + iconStyles[0].margin[3] + 'px' : ''),
-            }}>
+            <div className="kt-svg-testimonial-global-icon-wrap">
                 <IconRender
                     className={`kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${iconStyles[0].icon}`}
                     name={iconStyles[0].icon} size={iconStyles[0].size}
@@ -283,14 +270,7 @@ function KadenceTestimonials({
                     strokeWidth={('fe' === iconStyles[0].icon.substring(0, 2) ? iconStyles[0].stroke : undefined)}
                     style={{
                         color: (iconStyles[0].color ? KadenceColorOutput(iconStyles[0].color) : undefined),
-                        borderRadius: iconStyles[0].borderRadius + 'px',
-                        borderTopWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[0] ? iconStyles[0].borderWidth[0] + 'px' : undefined),
-                        borderRightWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[1] ? iconStyles[0].borderWidth[1] + 'px' : undefined),
-                        borderBottomWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[2] ? iconStyles[0].borderWidth[2] + 'px' : undefined),
-                        borderLeftWidth: (iconStyles[0].borderWidth && undefined !== iconStyles[0].borderWidth[3] ? iconStyles[0].borderWidth[3] + 'px' : undefined),
                         background: (iconStyles[0].background ? KadenceColorOutput(iconStyles[0].background, (undefined !== iconStyles[0].backgroundOpacity ? iconStyles[0].backgroundOpacity : 1)) : undefined),
-                        borderColor: (iconStyles[0].border ? KadenceColorOutput(iconStyles[0].border, (undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1)) : undefined),
-                        padding: (iconStyles[0].padding ? iconStyles[0].padding[0] + 'px ' + iconStyles[0].padding[1] + 'px ' + iconStyles[0].padding[2] + 'px ' + iconStyles[0].padding[3] + 'px' : ''),
                     }}/>
             </div>
         );
@@ -488,13 +468,7 @@ function KadenceTestimonials({
                     )}
                     {displayRating && (
                         <div
-                            className={`kt-testimonial-rating-wrap kt-testimonial-rating-${rating}`}
-                            style={{
-                                marginTop: previewRatingMarginTop,
-                                marginRight: previewRatingMarginRight,
-                                marginBottom: previewRatingMarginBottom,
-                                marginLeft: previewRatingMarginLeft,
-                            }}>
+                            className={`kt-testimonial-rating-wrap kt-testimonial-rating-${rating}`}>
                             <IconRender className={'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1'}
                                 name={'fas_star'} size={ ( undefined !== ratingStyles?.[0]?.size ? ratingStyles[0].size : '1em' ) }
                                 style={{
@@ -599,9 +573,9 @@ function KadenceTestimonials({
                         <BlockControls>
                             <CopyPasteAttributes
                                 attributes={ attributes }
-                                excludedAttrs={ nonTransAttrs } 
-                                defaultAttributes={ metadata['attributes'] } 
-                                blockSlug={ metadata['name'] } 
+                                excludedAttrs={ nonTransAttrs }
+                                defaultAttributes={ metadata['attributes'] }
+                                blockSlug={ metadata['name'] }
                                 onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                             />
                         </BlockControls>

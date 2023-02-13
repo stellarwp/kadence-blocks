@@ -9,6 +9,14 @@
  .kb-device-choice.kt-size-tabs > .components-tab-panel__tabs{
 	 margin-top:0;
  }
+ .kt-tabs-layout-vtabs .kt-tabs-wrap {
+    align-items: flex-start;
+    justify-content: flex-start;
+    display: flex;
+ }
+ .components-toolbar.kb-add-block .block-editor-button-block-appender.components-button.components-button {
+    box-shadow: none;
+}
  .kb-add-new-tab-contain {
     text-align: right;
 }
@@ -183,7 +191,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 	margin:0;
 	list-style: none;
 }
-.kt-tabs-title-list {
+.wp-block-kadence-tabs .kt-tabs-title-list {
 	margin:0;
 	padding: 0;
 	display: flex;
@@ -196,7 +204,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 		.kt-tab-title {
 			padding: 8px 16px;
 			display:flex;
-			color: #444;
+			color: var(--global-palette5, #444444);
 			align-items: center;
 			border-style: solid;
 			border-color: transparent;
@@ -206,6 +214,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 			transition: all .2s ease-in-out;
 			box-shadow: none !important;
 			outline: 0 !important;
+			height: 100%;
 		}
 		&.kt-tab-title-active {
 			z-index: 4;
@@ -261,7 +270,6 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 }
 .kt-tabs-layout-vtabs {
 	> .kt-tabs-wrap > .kt-tabs-title-list {
-		float: left;
 		width: 30%;
 		flex-direction: column;
 		li {
@@ -274,8 +282,8 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 		}
 	}
 	> .kt-tabs-wrap > .kt-tabs-content-wrap {
-		float: left;
-		width: 70%;
+		width: auto;
+		flex: 1;
 	}
 	&.kt-tab-alignment-left > .kt-tabs-wrap > .kt-tabs-title-list li .kt-tab-title {
 		align-items: center;
@@ -378,4 +386,33 @@ ul.kt-tabs-title-list.kb-tabs-list-columns .kt-tab-title {
 }
 .kt-tabs-svg-show-only .kt-title-text {
     display:none;
+}
+
+@mixin kt-tabs-accordion {
+	//dig out the content sections
+	.block-editor-block-list__layout, .block-editor-inner-blocks, .kt-tabs-content-wrap {
+		display: contents;
+	}
+	//dig out the tab title sections
+	.kt-tabs-title-list {
+		display: contents;
+	}
+
+	//set the new title and tab wrapper to flex so the elements can be ordered
+	.kt-tabs-wrap {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+	}
+}
+
+@media (min-width: 767px) and (max-width: 1025px) {
+	.kt-tabs-tablet-layout-accordion {
+		@include kt-tabs-accordion;
+	}
+}
+@media (max-width: 767px) {
+	.kt-tabs-mobile-layout-accordion {
+		@include kt-tabs-accordion;
+	}
 }

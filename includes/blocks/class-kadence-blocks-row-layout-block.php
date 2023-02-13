@@ -514,7 +514,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
-
 		// Background.
 		$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
 		$css->set_selector( $base_selector );
@@ -841,10 +840,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( $inner_selector );
 			}
 			$css->add_property( 'z-index', $attributes['zIndex'] );
+			$css->add_property( 'position', 'relative' );
 		}
 		// Text Color.
 		if ( ! empty( $attributes['textColor'] ) ) {
-			$css->set_selector( $base_selector, $base_selector . ' h1,' . $base_selector . ' h2,' . $base_selector . ' h3,' . $base_selector . ' h4,' . $base_selector . ' h5,' . $base_selector . ' h6' );
+			$css->set_selector( $base_selector . ' ,' . $base_selector . ' h1,' . $base_selector . ' h2,' . $base_selector . ' h3,' . $base_selector . ' h4,' . $base_selector . ' h5,' . $base_selector . ' h6' );
 			$css->render_color_output( $attributes, 'textColor', 'color' );
 		}
 		if ( ! empty( $attributes['linkColor'] ) ) {

@@ -86,7 +86,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $name the stylesheet name.
 	 */
 	public function should_render_inline_stylesheet( $name ) {
-		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) ) {
+		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
 			if ( function_exists( 'wp_is_block_theme' ) ) {
 				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() && 1 === did_action( 'wp_head' ) ) {
 					wp_print_styles( $name );
@@ -171,7 +171,7 @@ class Kadence_Blocks_Abstract_Block {
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
 
 			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
-			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
+			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css        = $this->build_css( $attributes, $css_class, $unique_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
 					$content = '<style>' . $css . '</style>' . $content;

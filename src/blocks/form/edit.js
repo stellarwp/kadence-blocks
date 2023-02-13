@@ -34,6 +34,7 @@ import {
 	getSpacingOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -700,8 +701,8 @@ function KadenceForm( props ) {
 
 	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
 	const previewGutter = getPreviewSize( previewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
-	const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
-	const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
+	const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -25 : -400 );
+	const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 25 : 400 );
 	const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
 	const saveMailerlite = ( value ) => {
 		const newItems = mailerlite.map( ( item, thisIndex ) => {
@@ -925,7 +926,7 @@ function KadenceForm( props ) {
 				)}
 				{( 'select' === fields[ index ].type || 'radio' === fields[ index ].type || 'checkbox' === fields[ index ].type ) && (
 					<>
-						<>
+						<div className='kb-field-options-wrap'>
 							{times( fields[ index ].options.length, n => (
 								<div className="field-options-wrap">
 
@@ -964,7 +965,7 @@ function KadenceForm( props ) {
 									</div>
 								</div>
 							) )}
-						</>
+						</div>
 						<Button
 							className="kb-add-option"
 							isPrimary={true}
@@ -1284,7 +1285,7 @@ function KadenceForm( props ) {
 							fontWeight   : labelFont[ 0 ].weight,
 							fontStyle    : labelFont[ 0 ].style,
 							color        : KadenceColorOutput( labelFont[ 0 ].color ),
-							fontSize     : previewLabelFontSize + previewLabelFontSizeType,
+							fontSize     : getFontSizeOptionOutput( previewLabelFontSize, previewLabelFontSizeType ),
 							lineHeight   : previewLabelLineHeight + previewLabelLineHeightType,
 							letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 							textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform : undefined ),
@@ -1308,7 +1309,7 @@ function KadenceForm( props ) {
 								fontWeight   : labelFont[ 0 ].weight,
 								fontStyle    : labelFont[ 0 ].style,
 								color        : KadenceColorOutput( labelFont[ 0 ].color ),
-								fontSize     : previewLabelFontSize + previewLabelFontSizeType,
+								fontSize     : getFontSizeOptionOutput( previewLabelFontSize, previewLabelFontSizeType ),
 								lineHeight   : previewLabelLineHeight + previewLabelLineHeightType,
 								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 								textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform : undefined ),
@@ -1334,7 +1335,7 @@ function KadenceForm( props ) {
 								paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 								background       : ( undefined !== inputBG ? inputBG : undefined ),
 								color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-								fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+								fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 								lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 								borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 								borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1351,7 +1352,7 @@ function KadenceForm( props ) {
 									data-required={( fields[ index ].required ? 'yes' : undefined )} style={{
 								background       : ( undefined !== inputBG ? inputBG : undefined ),
 								color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-								fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+								fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 								lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 								borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 								borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1428,7 +1429,7 @@ function KadenceForm( props ) {
 									paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background       : ( undefined !== inputBG ? inputBG : undefined ),
 									color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+									fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 									lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1459,7 +1460,7 @@ function KadenceForm( props ) {
 									paddingLeft      : ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background       : ( undefined !== inputBG ? inputBG : undefined ),
 									color            : ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize         : previewStyleFontSize + previewStyleFontSizeType,
+									fontSize         : getFontSizeOptionOutput( previewStyleFontSize, previewStyleFontSizeType ),
 									lineHeight       : previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius     : ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth   : ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -1634,9 +1635,9 @@ function KadenceForm( props ) {
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -3519,37 +3520,6 @@ function KadenceForm( props ) {
 								onChange={( value ) => setAttributes( { submitLabel: value } )}
 							/>
 						</KadencePanelBody>
-						<KadencePanelBody
-							title={__( 'Container Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-form-container-settings'}
-						>
-						<ResponsiveMeasureRangeControl
-							label={__( 'Container Margin', 'kadence-blocks' )}
-							tabletControl={tabletMarginControl}
-							mobileControl={mobileMarginControl}
-							value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
-							tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
-							mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
-							onChange={( value ) => {
-								setAttributes( { containerMargin: value } );
-							}}
-							onChangeTablet={( value ) => {
-								setAttributes( { tabletContainerMargin: value } );
-							}}
-							onChangeMobile={( value ) => {
-								setAttributes( { mobileContainerMargin: value } );
-							}}
-							min={containerMarginMin}
-							max={containerMarginMax}
-							step={containerMarginStep}
-							unit={containerMarginType}
-							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-							onUnit={( value ) => setAttributes( { containerMarginType: value } )}
-							onMouseOver={ marginMouseOver.onMouseOver }
-							onMouseOut={ marginMouseOver.onMouseOut }
-						/>
-						</KadencePanelBody>
 						{actions.includes( 'mailerlite' ) && (
 							<MailerLiteControls
 								fields={fields}
@@ -3571,6 +3541,36 @@ function KadenceForm( props ) {
 
 				{ (activeTab === 'advanced') && (
 					<>
+						<KadencePanelBody panelName={'kb-row-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__( 'Margin', 'kadence-blocks' )}
+								tabletControl={tabletMarginControl}
+								mobileControl={mobileMarginControl}
+								value={( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] )}
+								tabletValue={( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] )}
+								mobileValue={( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] )}
+								onChange={( value ) => {
+									setAttributes( { containerMargin: value } );
+								}}
+								onChangeTablet={( value ) => {
+									setAttributes( { tabletContainerMargin: value } );
+								}}
+								onChangeMobile={( value ) => {
+									setAttributes( { mobileContainerMargin: value } );
+								}}
+								min={containerMarginMin}
+								max={containerMarginMax}
+								step={containerMarginStep}
+								unit={containerMarginType}
+								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+								onUnit={( value ) => setAttributes( { containerMarginType: value } )}
+								onMouseOver={ marginMouseOver.onMouseOver }
+								onMouseOut={ marginMouseOver.onMouseOut }
+							/>
+						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
@@ -3619,7 +3619,7 @@ function KadenceForm( props ) {
 							style={{
 								background: ( undefined !== btnBG ? btnBG : undefined ),
 									color: ( undefined !== submit[ 0 ].color ? KadenceColorOutput( submit[ 0 ].color ) : undefined ),
-									fontSize: previewSubmitFontSize + previewSubmitFontSizeType,
+									fontSize: getFontSizeOptionOutput( previewSubmitFontSize, previewSubmitFontSizeType ),
 									lineHeight: previewSubmitLineHeight + previewSubmitLineHeightType,
 									fontWeight: submitFont[ 0 ].weight,
 									fontStyle: submitFont[ 0 ].style,

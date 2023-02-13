@@ -168,7 +168,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $style['requiredColor'] ) );
 
 			}
-			if ( ( isset( $style['color'] ) && ! empty( $style['color'] ) ) || ( isset( $style['background'] ) && ! empty( $style['background'] ) ) || ( isset( $style['border'] ) && ! empty( $style['border'] ) ) || ( isset( $style['backgroundType'] ) && 'gradient' === $style['backgroundType'] ) || ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) || ( isset( $style['borderRadius'] ) && is_numeric( $style['borderRadius'] ) ) || ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][0] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][0] ) ) || ( isset( $style['borderWidth'] ) && is_array( $style['borderWidth'] ) && is_numeric( $style['borderWidth'][0] ) ) ) {
+			if ( ( isset( $style['color'] ) && ! empty( $style['color'] ) ) || ( isset( $style['background'] ) && ! empty( $style['background'] ) ) || ( isset( $style['border'] ) && ! empty( $style['border'] ) ) || ( isset( $style['backgroundType'] ) && 'gradient' === $style['backgroundType'] ) || ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) || ( isset( $style['borderRadius'] ) && is_numeric( $style['borderRadius'] ) ) || ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][0] ) ) || ( isset( $style['borderWidth'] ) && is_array( $style['borderWidth'] ) && is_numeric( $style['borderWidth'][0] ) ) ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-select-style-field' );
 				if ( isset( $style['color'] ) && ! empty( $style['color'] ) ) {
 					$css->add_property( 'color', $css->render_color( $style['color'] ) );
@@ -176,8 +176,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				if ( isset( $style['borderRadius'] ) && is_numeric( $style['borderRadius'] ) ) {
 					$css->add_property( 'border-radius', $style['borderRadius'] . 'px' );
 				}
-				if ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][0] ) ) {
-					$css->add_property( 'font-size', $style['fontSize'][0] . ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) );
+				if ( !empty( $style['fontSize'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $style['fontSize'][0], ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) ) );
 				}
 				if ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][0] ) ) {
 					$css->add_property( 'line-height', $style['lineHeight'][0] . ( isset( $style['lineType'] ) && ! empty( $style['lineType'] ) ? $style['lineType'] : 'px' ) );
@@ -235,8 +235,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][1] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][1] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-select-style-field' );
-				if ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][1] ) ) {
-					$css->add_property( 'font-size', $style['fontSize'][1] . ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) );
+				if ( !empty( $style['fontSize'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $style['fontSize'][1], ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) ) );
 				}
 				if ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][1] ) ) {
 					$css->add_property( 'line-height', $style['lineHeight'][1] . ( isset( $style['lineType'] ) && ! empty( $style['lineType'] ) ? $style['lineType'] : 'px' ) );
@@ -246,8 +246,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][2] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][2] ) ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-select-style-field' );
-				if ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][2] ) ) {
-					$css->add_property( 'font-size', $style['fontSize'][2] . ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) );
+				if ( !empty( $style['fontSize'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $style['fontSize'][2], ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) ) );
 				}
 				if ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][2] ) ) {
 					$css->add_property( 'line-height', $style['lineHeight'][2] . ( isset( $style['lineType'] ) && ! empty( $style['lineType'] ) ? $style['lineType'] : 'px' ) );
@@ -311,8 +311,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $label_font['color'] ) && ! empty( $label_font['color'] ) ) {
 				$css->add_property( 'color', $css->render_color( $label_font['color'] ) );
 			}
-			if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $label_font['size'][0] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
+			if ( !empty( $label_font['size'][0] ) ) {
+				$css->add_property( 'font-size', $css->get_font_size( $label_font['size'][0], ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) ) );
 			}
 			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $label_font['lineHeight'][0] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
@@ -357,9 +357,9 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-left', $label_font['margin'][3] . 'px' );
 			}
 
-			if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][0] ) ) {
+			if ( !empty( $label_font['lineHeight'][0] ) ) {
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
-				$css->add_property( 'font-size', $label_font['lineHeight'][0] . ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) );
+				$css->add_property( 'font-size', $css->get_font_size( $label_font['lineHeight'][0], ( ! isset( $label_font['lineType'] ) ? 'px' : $label_font['lineType'] ) ) );
 				$css->add_property( 'height', '1em' );
 				$css->add_property( 'margin-top', '0' );
 
@@ -367,16 +367,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label' );
-				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) {
-					$css->add_property( 'font-size', $label_font['size'][1] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) );
+				if ( !empty( $label_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $label_font['size'][1], ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) ) );
 				}
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) {
 					$css->add_property( 'line-height', $label_font['lineHeight'][1] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
 				}
 
-				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) {
+				if ( !empty( $label_font['lineHeight'][1] ) ) {
 					$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
-					$css->add_property( 'font-size', $label_font['lineHeight'][1] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
+					$css->add_property( 'font-size', $css->get_font_size( $label_font['lineHeight'][1], ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) ) );
 					$css->add_property( 'height', '1em' );
 					$css->add_property( 'margin-top', '0' );
 				}
@@ -385,16 +385,16 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label' );
-				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) {
-					$css->add_property( 'font-size', $label_font['size'][2] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) );
+				if ( !empty( $label_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $label_font['size'][2], ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) ) );
 				}
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) {
 					$css->add_property( 'line-height', $label_font['lineHeight'][2] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
 				}
 
-				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) {
+				if ( !empty( $label_font['lineHeight'][2] ) ) {
 					$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-accept-form-field .kb-checkbox-style' );
-					$css->add_property( 'font-size', $label_font['lineHeight'][2] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) );
+					$css->add_property( 'font-size', $css->get_font_size( $label_font['lineHeight'][2], ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) ) );
 					$css->add_property( 'height', '1em' );
 					$css->add_property( 'margin-top', '0' );
 
@@ -594,8 +594,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) ) {
 			$submit_font = $attributes['submitFont'][0];
 			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
-			if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $submit_font['size'][0] . ( ! isset( $submit_font['sizeType'] ) ? 'px' : $submit_font['sizeType'] ) );
+			if ( !empty( $submit_font['size'][0] ) ) {
+				$css->add_property( 'font-size', $css->get_font_size( $submit_font['size'][0], ( ! isset( $submit_font['sizeType'] ) ? 'px' : $submit_font['sizeType'] ) ) );
 			}
 			if ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $submit_font['lineHeight'][0] . ( ! isset( $submit_font['lineType'] ) ? 'px' : $submit_font['lineType'] ) );
@@ -619,8 +619,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][1] ) ) || ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][1] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
-				if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][1] ) ) {
-					$css->add_property( 'font-size', $submit_font['size'][1] . ( isset( $submit_font['sizeType'] ) && ! empty( $submit_font['sizeType'] ) ? $submit_font['sizeType'] : 'px' ) );
+				if ( !empty( $submit_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $submit_font['size'][1], ( isset( $submit_font['sizeType'] ) && ! empty( $submit_font['sizeType'] ) ? $submit_font['sizeType'] : 'px' ) ) );
 				}
 				if ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][1] ) ) {
 					$css->add_property( 'line-height', $submit_font['lineHeight'][1] . ( isset( $submit_font['lineType'] ) && ! empty( $submit_font['lineType'] ) ? $submit_font['lineType'] : 'px' ) );
@@ -630,8 +630,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][2] ) ) || ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][2] ) ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit' );
-				if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][2] ) ) {
-					$css->add_property( 'font-size', $submit_font['size'][2] . ( isset( $submit_font['sizeType'] ) && ! empty( $submit_font['sizeType'] ) ? $submit_font['sizeType'] : 'px' ) );
+				if ( !empty( $submit_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $submit_font['size'][2], ( isset( $submit_font['sizeType'] ) && ! empty( $submit_font['sizeType'] ) ? $submit_font['sizeType'] : 'px' ) ) );
 				}
 				if ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][2] ) ) {
 					$css->add_property( 'line-height', $submit_font['lineHeight'][2] . ( isset( $submit_font['lineType'] ) && ! empty( $submit_font['lineType'] ) ? $submit_font['lineType'] : 'px' ) );
@@ -676,8 +676,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $message_font['borderWidth'] ) && is_array( $message_font['borderWidth'] ) && is_numeric( $message_font['borderWidth'][0] ) ) {
 				$css->add_property( 'border-width', $message_font['borderWidth'][0] . 'px ' . $message_font['borderWidth'][1] . 'px ' . $message_font['borderWidth'][2] . 'px ' . $message_font['borderWidth'][3] . 'px' );
 			}
-			if ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $message_font['size'][0] . ( ! isset( $message_font['sizeType'] ) ? 'px' : $message_font['sizeType'] ) );
+			if ( !empty( $message_font['size'][0] ) ) {
+				$css->add_property( 'font-size', $css->get_font_size( $message_font['size'][0], ( ! isset( $message_font['sizeType'] ) ? 'px' : $message_font['sizeType'] ) ) );
 			}
 			if ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $message_font['lineHeight'][0] . ( ! isset( $message_font['lineType'] ) ? 'px' : $message_font['lineType'] ) );
@@ -725,8 +725,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][1] ) ) || ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][1] ) ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message' );
-				if ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][1] ) ) {
-					$css->add_property( 'font-size', $message_font['size'][1] . ( isset( $message_font['fontSizeType'] ) && ! empty( $message_font['fontSizeType'] ) ? $message_font['fontSizeType'] : 'px' ) );
+				if ( !empty( $message_font['size'][1] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $message_font['size'][1], ( isset( $message_font['fontSizeType'] ) && ! empty( $message_font['fontSizeType'] ) ? $message_font['fontSizeType'] : 'px' ) ) );
 				}
 				if ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][1] ) ) {
 					$css->add_property( 'line-height', $message_font['lineHeight'][1] . ( isset( $message_font['lineType'] ) && ! empty( $message_font['lineType'] ) ? $message_font['lineType'] : 'px' ) );
@@ -736,8 +736,8 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][2] ) ) || ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][2] ) ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message' );
-				if ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][2] ) ) {
-					$css->add_property( 'font-size', $message_font['size'][2] . ( isset( $message_font['fontSizeType'] ) && ! empty( $message_font['fontSizeType'] ) ? $message_font['fontSizeType'] : 'px' ) );
+				if ( !empty( $message_font['size'][2] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $message_font['size'][2], ( isset( $message_font['fontSizeType'] ) && ! empty( $message_font['fontSizeType'] ) ? $message_font['fontSizeType'] : 'px' ) ) );
 				}
 				if ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][2] ) ) {
 					$css->add_property( 'line-height', $message_font['lineHeight'][2] . ( isset( $message_font['lineType'] ) && ! empty( $message_font['lineType'] ) ? $message_font['lineType'] : 'px' ) );
@@ -747,6 +747,17 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $css->css_output();
+	}
+	/**
+	 * Add a noscript to the content.
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string Returns the block output.
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$content .= '<noscript><div class="kadence-blocks-form-message kadence-blocks-form-warning">' . __( 'Please enable JavaScript in your browser to submit the form', 'kadence-blocks' ) . '</div><style>.kadence-form-' . $unique_id . ' .kadence-blocks-form-field.kb-submit-field { display: none; }</style></noscript>';
+		return $content;
 	}
 
 	/**

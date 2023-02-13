@@ -22,15 +22,12 @@ import {
 	Button,
 	ButtonGroup,
 	Flex,
-	FlexItem,
 } from '@wordpress/components';
 import {
 	outlineTopIcon,
 	outlineRightIcon,
 	outlineBottomIcon,
 	outlineLeftIcon,
-	individualIcon,
-	linkedIcon,
 } from '@kadence/icons';
 import { OPTIONS_MAP } from './constants';
 import { settings, link, linkOff } from '@wordpress/icons';
@@ -85,9 +82,6 @@ export default function ResponsiveMeasureRangeControl( {
 	}
 	const [ isCustom, setIsCustom ] = useState( false );
 	const [ theControl, setTheControl ] = useState( control );
-	useEffect( () => {
-		setIsCustom( isCustomOption( options, value ) );
-	}, [] );
 	const realIsCustomControl = setCustomControl ? customControl : isCustom;
 	const realSetIsCustom = setCustomControl ? setCustomControl : setIsCustom;
 	const onSetIsCustom = () => {
@@ -119,6 +113,16 @@ export default function ResponsiveMeasureRangeControl( {
 	if ( theDevice !== deviceType ) {
 		setDeviceType( theDevice );
 	}
+	useEffect( () => {
+		let valueToCheck = value;
+		if ( theDevice == 'Tablet' ) {
+			valueToCheck = tabletValue;
+		}else if ( theDevice == 'Mobile' ) {
+			valueToCheck = mobileValue;
+		}
+		setIsCustom( isCustomOption( options, valueToCheck ) );
+	}, [theDevice] );
+
 	const {
 		setPreviewDeviceType,
 	} = useDispatch( 'kadenceblocks/data' );
@@ -170,14 +174,17 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange={ ( size ) => onChangeMobile( size ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }
+			setCustomControl={ realSetIsCustom }
+			customControl={ realIsCustomControl }
 			options={ options }
+			defaultValue={ mobileDefault }
 			min={ min }
 			max={ max }
 			step={ step }
 			unit={ unit }
+			onUnit={ ( onUnit ? onUnit : undefined ) }
 			showUnit={ true }
 			units={ [ unit ] }
-			defaultValue={ mobileDefault }
 			isBorderRadius={ isBorderRadius }
 			firstIcon={ firstIcon }
 			secondIcon={ secondIcon }
@@ -199,12 +206,15 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange={ ( size ) => onChangeTablet( size ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }
+			setCustomControl={ realSetIsCustom }
+			customControl={ realIsCustomControl }
 			options={ options }
+			defaultValue={ tabletDefault }
 			min={ min }
 			max={ max }
 			step={ step }
 			unit={ unit }
-			defaultValue={ tabletDefault }
+			onUnit={ ( onUnit ? onUnit : undefined ) }
 			showUnit={ true }
 			units={ [ unit ] }
 			isBorderRadius={ isBorderRadius }

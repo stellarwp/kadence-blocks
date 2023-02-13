@@ -4,7 +4,8 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.3
+Stable tag: 3.0.5
+Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +76,58 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.0.5 RC Version 1 =
+Release Date: February 13th, 2023
+* Add: New Typed Text to Advanced Text Block.
+* Add: New option to add an icon in Advanced text Block.
+* Update: Tab setting for vertical width.
+* Update: Set minimum php version.
+* Update: Testimonial block settings.
+* Update: Tab border radius and typography settings.
+* Update: Remove empty parent block for buttons, icons, testimonials and icon list.
+* Update: WPML Config for forms.
+* Update: Icon alignment options.
+* Fix: Possible psr compatibility issue.
+* Fix: Possible Map issues with filter.
+* Fix: Possible issue with gallery missing style sheet.
+* Fix: Issue with hidden advanced panel.
+* Fix: Issue with gutenberg plugin.
+* Fix: Issue with testimonial carousel column gap.
+* Fix: Issue with multiple submissions when using redirect.
+* Fix: Issue with dynamic links in buttons.
+* Fix: Issue with dynamic links in icon and icon list.
+* Fix: Issue with resetting z index in image block.
+* Fix: Issue with floating images and overlap.
+
+= 3.0.4 Beta Version 1 =
+Release Date: January 31st, 2023
+* Add: Basic data to site health.
+* Add: Opt-in usage reporting on settings page.
+* Update: Make empty sections easier to select.
+* Update: Post block to prevent leaving the editor when clicking on a post.
+* Update: Accordion Block so show closed in the editor.
+* Update: Sliders and carousels can be initiated with javascript trigger.
+* Fix: Heading color issue in row.
+* Fix: Possible google font issue.
+* Fix: Issue with some testimonial blocks not updating.
+* Fix: zIndex issue in rows.
+* Fix: Issue with icon list fonts.
+* Fix: Issue with some gutter sizes.
+* Fix: Issue with zindex in rows.
+* Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with gallery carousel missing option to set pagination to none.
+* Fix: Issue with facebook icon backward compatibility.
+* Fix: Issue with possible button border showing when it should not.
+* Fix: Issue with advanced text alignment and negative margins not working correctly.
+* Fix: Issue with backward compatibility in table of contents border.
+* Fix: Preview of gallery columns.
+* Fix: Spacing around center aligned image.
+* Fix: Issue with row layout and selecting resizer.
+* Fix: Issue where generated css could show in a feed.
+* Fix: Issue where design library was inputting incorrectly.
+* Fix: Issue with button shadow backward compatibility.
+* Fix: Issue with TOC border backward compatibility.
 
 = 3.0.3 Alpha Version 4 =
 Release Date: January 19th, 2023

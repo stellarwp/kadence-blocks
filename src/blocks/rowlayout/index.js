@@ -40,5 +40,44 @@ registerBlockType( 'kadence/rowlayout', {
 		anchor: true,
 		ktdynamic: true,
 		kbcss: true,
+	},
+	example: {
+		attributes: {
+			colLayout: 'equal',
+			columns: 2,
+			customGutter: [ 0, 0, 0 ]
+		},
+		innerBlocks: [
+			{
+				name: 'kadence/column',
+				attributes: {
+					background: '#DADADA',
+					padding: [ 30, 20, 30, 20 ],
+				},
+				innerBlocks: [
+					{
+						name: 'core/paragraph',
+						attributes: {
+							content: __( 'Column 1', 'kadence-blocks' ),
+						}
+					}
+				]
+			},
+			{
+				name: 'kadence/column',
+				attributes: {
+					background: '#f5f5f5',
+					padding: [ 30, 20, 30, 20 ],
+				},
+				innerBlocks: [
+					{
+						name: 'core/paragraph',
+						attributes: {
+							content: __( 'Column 2', 'kadence-blocks' ),
+						}
+					}
+				]
+			}
+		]
 	}
 });

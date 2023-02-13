@@ -40,5 +40,11 @@ registerBlockType( 'kadence/listitem', {
 		...a,
 		text: ( a.text || '' ) + text,
 	} ),
-    deprecated
+    deprecated,
+	example: {
+		attributes: {
+			text: __( 'List Item', 'kadence-blocks' ),
+			icon: 'fe_checkCircle'
+		}
+	}
 } );

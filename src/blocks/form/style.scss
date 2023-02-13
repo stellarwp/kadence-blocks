@@ -94,6 +94,7 @@
 			border-color: var( --global-gray-500, #818a91 );
 			box-shadow: none;
 			width:auto;
+			flex:none;
 			&:before {
 				display:none;
 			}

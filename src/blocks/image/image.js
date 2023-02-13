@@ -52,7 +52,6 @@ import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
 import {
 	PopColorControl,
 	TypographyControls,
-	MeasurementControls,
 	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	URLInputControl,
@@ -69,14 +68,6 @@ import {
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	bottomLeftIcon,
-	bottomRightIcon,
-	radiusIndividualIcon,
-	radiusLinkedIcon,
-	topLeftIcon,
-	topRightIcon
-} from '@kadence/icons';
 
 export default function Image( {
 	temporaryURL,
@@ -332,24 +323,6 @@ export default function Image( {
 		setAttributes( { alt: newAlt } );
 	}
 
-	function updateImage( newSizeSlug ) {
-		const newUrl = get( image, [
-			'media_details',
-			'sizes',
-			newSizeSlug,
-			'source_url',
-		] );
-		if ( ! newUrl ) {
-			return null;
-		}
-
-		setAttributes( {
-			url: newUrl,
-			width: undefined,
-			height: undefined,
-			sizeSlug: newSizeSlug,
-		} );
-	}
 	function onUpdateSelectImage( image ) {
 		setAttributes( {
 			url: image.url,
@@ -471,9 +444,9 @@ export default function Image( {
 				) }
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -500,7 +473,7 @@ export default function Image( {
 					{( activeTab === 'general' ) &&
 						<>
 						<KadencePanelBody
-							title={ __('Image settings Test', 'kadence-blocks') }
+							title={ __('Image settings', 'kadence-blocks') }
 							initialOpen={ true }
 							panelName={ 'kb-image-settings' }
 						>
@@ -1085,10 +1058,7 @@ export default function Image( {
 
 				{ ( activeTab === 'advanced' ) && (
 					<>
-						<KadencePanelBody
-								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
-								panelName={ 'kb-image-spacing' }
-							>
+						<KadencePanelBody>
 							<ResponsiveMeasureRangeControl
 								label={ __( 'Padding', 'kadence-blocks' ) }
 								value={ paddingDesktop }
@@ -1126,6 +1096,9 @@ export default function Image( {
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
@@ -1142,6 +1115,7 @@ export default function Image( {
 					} }
 					min={ -200 }
 					max={ 2000 }
+					allowReset={true}
 				/>
 			</InspectorAdvancedControls>
 		</>
@@ -1216,10 +1190,10 @@ export default function Image( {
 					borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 					borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
 					borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
-					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
-					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : '0' ),
+					borderTopLeftRadius: ( '' !== previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderTopRightRadius: ( '' !== previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomRightRadius: ( '' !== previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+					borderBottomLeftRadius: ( '' !== previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 
 					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor ) : undefined ),
 
@@ -1389,6 +1363,9 @@ export default function Image( {
 					setAttributes( {
 						imgMaxWidth: parseInt( currentWidth + delta.width, 10 ),
 					} );
+				} }
+				style={ {
+					margin: align === 'center' ? '0 auto' : undefined,
 				} }
 			>
 				{ img }

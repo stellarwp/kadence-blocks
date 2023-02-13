@@ -50,4 +50,14 @@ registerBlockType( 'kadence/advancedbtn', {
 	edit,
 	save,
 	deprecated,
+	example: {
+		innerBlocks: [
+			{
+				name: 'kadence/singlebtn',
+				attributes: {
+					text: __( 'Click Me!', 'kadence-blocks' ),
+				}
+			}
+		]
+	}
 } );

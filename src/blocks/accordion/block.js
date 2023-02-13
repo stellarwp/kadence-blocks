@@ -55,11 +55,6 @@ registerBlockType( 'kadence/accordion', {
 		__( 'pane', 'kadence-blocks' ),
 		'KB',
 	],
-	// getEditWrapperProps( { blockAlignment } ) {
-	// 	if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
-	// 		return { 'data-align': blockAlignment };
-	// 	}
-	// },
 	icon: {
 		src: accordionBlockIcon,
 	},
@@ -68,5 +63,45 @@ registerBlockType( 'kadence/accordion', {
 	},
 	edit,
 	save,
-	
+	example: {
+		attributes: {
+			uniqueID: '123456789',
+		},
+		innerBlocks: [
+			{
+				name: 'kadence/pane',
+				attributes: {
+					id: 1,
+					title: [
+						__( 'First Heading', 'kadence-blocks' ),
+					],
+				},
+				innerBlocks: [
+					{
+						name: 'core/paragraph',
+						attributes: {
+							content: __( 'This is an example of an accordion. You can add any block to the accordion pane. You can also add multiple panes to the accordion.', 'kadence-blocks' ),
+						}
+					}
+				]
+			},
+			{
+				name: 'kadence/pane',
+				attributes: {
+					id: 2,
+					title: [
+						__( 'Second Heading', 'kadence-blocks' ),
+					],
+				},
+				innerBlocks: [
+					{
+						name: 'core/paragraph',
+						attributes: {
+							content: __( 'Hello World', 'kadence-blocks' ),
+						}
+					}
+				]
+			}
+		]
+	}
 } );

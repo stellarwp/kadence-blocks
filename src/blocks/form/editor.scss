@@ -55,6 +55,17 @@
 .kb-form .kadence-blocks-form-field .kb-forms-submit.is-selected {
 	min-width: 70px;
 }
+.kb-field-options-wrap {
+	.field-options-wrap {
+		margin-bottom: 12px;
+		> .components-base-control {
+			margin-bottom: 0;
+			> .components-base-control__field {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
 .field-options-wrap {
     position: relative;
 }
@@ -341,4 +352,8 @@
 .kb-field-map-item .components-base-control {
 	margin-bottom:0 !important;
 	min-width: 100px;
+}
+.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/form"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/form"] > .wp-block {
+	margin-bottom: 0;
+	margin-top: 0;
 }

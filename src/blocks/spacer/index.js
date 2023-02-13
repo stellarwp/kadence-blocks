@@ -39,5 +39,11 @@ registerBlockType('kadence/spacer', {
 	transforms,
 	deprecated,
 	edit,
-	save
+	save,
+	example: {
+		attributes: {
+			spacerHeight: 4,
+			dividerColor: '#2B6CB0',
+		}
+	}
 });

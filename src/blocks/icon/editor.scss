@@ -12,8 +12,7 @@
   margin-bottom: 0;
   margin-top: 0;
 }
-
-.kt-svg-icons, .kt-svg-icons .block-editor-inner-blocks .block-editor-block-list__layout {
+.kt-svg-icons {
     display: flex;
     gap: 0.2em;
     align-items:center;
@@ -26,59 +25,31 @@
 	transition: all .3s ease-in-out;
 	padding: 20px;
 }
-.kt-svg-icons.kb-icon-valign-top, .kt-svg-icons.kb-icon-valign-top .block-editor-inner-blocks .block-editor-block-list__layout {
-  align-items: flex-start;
-  display: flex;
-
-  &.kb-icon-align-center {
-    justify-content: center;
+.kt-svg-icons {
+  &.kb-icon-valign-top {
+    align-items: flex-start;
   }
-
-  &.kb-icon-align-right {
-    justify-content: flex-end;
+  &.kb-icon-valign-middle {
+      align-items: center;
   }
-
-  &.kb-icon-align-left {
-    justify-content: flex-start;
-  }
-}
-.kt-svg-icons.kb-icon-valign-middle, .kt-svg-icons.kb-icon-valign-middle .block-editor-inner-blocks .block-editor-block-list__layout {
-    align-items: center;
-    display: flex;
-
-  &.kb-icon-align-center {
-    justify-content: center;
-  }
-
-  &.kb-icon-align-right {
-    justify-content: flex-end;
-  }
-
-  &.kb-icon-align-left {
-    justify-content: flex-start;
-  }
-}
-.kt-svg-icons.kb-icon-valign-bottom, .kt-svg-icons.kb-icon-valign-bottom .block-editor-inner-blocks .block-editor-block-list__layout {
+  &.kb-icon-valign-bottom {
     align-items: flex-end;
-    display: flex;
-	&.kb-icon-align-center {
+  }
+	&.kb-icon-halign-center {
 		justify-content: center;
 	}
-	&.kb-icon-align-right {
+	&.kb-icon-halign-right {
 		justify-content: flex-end;
 	}
-	&.kb-icon-align-left {
+	&.kb-icon-halign-left {
 		justify-content: flex-start;
 	}
+  &.kb-icon-halign-space-between {
+		justify-content: space-between;
+	}
 }
-.kt-svg-icons.kb-icon-halign-left {
-    justify-content: flex-start;
-}
-.kt-svg-icons.kb-icon-halign-center {
-    justify-content: center;
-}
-.kt-svg-icons.kb-icon-halign-right {
-    justify-content: flex-end;
+.wp-block-kadence-icon .kt-svg-icons .wp-block-kadence-single-icon {
+  margin: 0;
 }
 .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"] > .wp-block {
     margin-bottom: 0;

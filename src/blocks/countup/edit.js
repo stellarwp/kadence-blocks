@@ -117,11 +117,6 @@ function KadenceCounterUp( props ) {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
-		// Backward Compatibility.
-		if ( start !== '' || end !== '' ) {
-			setAttributes( { startDecimal: start || 0, endDecimal: end, start: '', end: '' } );
-		}
-
 	}, [] );
 
 	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
@@ -229,8 +224,8 @@ function KadenceCounterUp( props ) {
 					}}
 				>
 					<CountUp
-						start={ startDecimal }
-						end={ endDecimal }
+						start={ start }
+						end={ end }
 						duration={duration}
 						separator={theSeparator}
 						decimal={decimal ? decimal : undefined}

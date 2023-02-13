@@ -51,4 +51,5 @@ registerBlockType( 'kadence/infobox', {
 	deprecated,
 	edit,
 	save,
+	example: {}
 } );

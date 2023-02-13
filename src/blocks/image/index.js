@@ -53,9 +53,12 @@ export const settings = {
 		}
 	},
 	getEditWrapperProps( attributes ) {
-		return {
-			'data-align': attributes.align,
-		};
+		if ( 'wide' === attributes.align || 'full' === attributes.align || 'left' === attributes.align || 'right' === attributes.align ) {
+			return {
+				'data-align': attributes.align,
+			};
+		}
+		return;
 	},
 	transforms,
 	edit,

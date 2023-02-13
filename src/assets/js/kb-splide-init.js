@@ -24,9 +24,8 @@
 
 			for (let i = 0; i < elementList.length; i++) {
 				var thisSlider = elementList[i];
-
-				if (!thisSlider || !thisSlider.children) {
-					return;
+				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
+					continue;
 				}
 
 				this.createSplideElements( thisSlider );
@@ -62,17 +61,17 @@
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
 					});
-					splideSlider.on( 'overflow', function ( isOverflow ) {
-						// Reset the carousel position
-						splideSlider.go( 0 );
+					// splideSlider.on( 'overflow', function ( isOverflow ) {
+					// 	// Reset the carousel position
+					// 	splideSlider.go( 0 );
 					  
-						splideSlider.options = {
-						  arrows    : splideOptions.arrows ? isOverflow : false,
-						  pagination: splideOptions.pagination ? isOverflow : false,
-						  drag      : splideOptions.drag ? isOverflow : false,
-						  clones    : isOverflow ? undefined : 0, // Toggle clones
-						};
-					} );
+					// 	splideSlider.options = {
+					// 	  arrows    : splideOptions.arrows ? isOverflow : false,
+					// 	  pagination: splideOptions.pagination ? isOverflow : false,
+					// 	  drag      : splideOptions.drag ? isOverflow : false,
+					// 	  clones    : isOverflow ? undefined : 0, // Toggle clones
+					// 	};
+					// } );
 					splideSlider.mount();
 					var resizeTimer;
 					window.addEventListener("resize", function (e) {
@@ -271,4 +270,7 @@
 		// The DOM has already been loaded.
 		kadenceBlocksSplide.init();
 	}
+	document.addEventListener("kadenceJSInitReload", function(){
+		kadenceBlocksSplide.init();
+	});
 })();

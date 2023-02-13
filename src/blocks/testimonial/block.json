@@ -15,11 +15,13 @@
 	},
     "url": {
 	  "type": "string",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"id": {
 	  "type": "number",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"alt": {
 	  "type": "string",
@@ -75,19 +77,23 @@
 	},
 	"title": {
 	  "type": "string",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"content": {
 	  "type": "string",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"name": {
 	  "type": "string",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"occupation": {
 	  "type": "string",
-	  "default": ""
+	  "default": "",
+	  "__experimentalRole": "content"
 	},
 	"rating": {
 	  "type": "number",
@@ -125,6 +131,7 @@
 	"kadence/testimonials-mediaStyles"
   ],
   "supports": {
-	"anchor": true
+	"anchor": true,
+	"html": false
   }
 }

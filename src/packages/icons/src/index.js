@@ -46,7 +46,9 @@ export { default as gradient } from './gradient'
 export { default as brush } from './brush'
 export { default as hoverToggle } from './hover'
 export { default as copy } from './copy'
+export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
+export { default as click } from './click'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'

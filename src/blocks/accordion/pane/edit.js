@@ -62,6 +62,20 @@ function PaneEdit( {
 		},
 		[ clientId ]
 	);
+	const { hasInnerBlocks } = useSelect(
+		( select ) => {
+			const { getBlock } = select( blockEditorStore );
+			const block = getBlock( clientId );
+			return {
+				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+			};
+		},
+		[ clientId ]
+	);
+	const isStartCollapsed = undefined !== accordionBlock?.[0]?.attributes?.startCollapsed && accordionBlock[0].attributes.startCollapsed;
+	const isOpenPane = !isStartCollapsed && undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id )
+	const isNewPane = !uniqueID;
+	setAttributes( { isPaneActive: attributes.isPaneActive ?? isNewPane ? true : isOpenPane } );
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const updatePaneCount = ( value ) => {
 		updateBlockAttributes( rootID, { paneCount: value } );
@@ -95,10 +109,10 @@ function PaneEdit( {
 		}
 	}, [] );
 	const blockClasses = classnames( {
-		'kt-accordion-pane'                   : true,
-		[ `kt-accordion-pane-${id}` ]  : id,
-		[ `kt-pane${uniqueID}` ]  : uniqueID,
-		[ `kt-accordion-panel-active` ]         : undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id ),
+		'kt-accordion-pane'             : true,
+		[ `kt-accordion-pane-${id}` ]   : id,
+		[ `kt-pane${uniqueID}` ]        : uniqueID,
+		[ `kt-accordion-panel-active` ] : attributes.isPaneActive,
 	} );
 	const blockProps = useBlockProps( {
 		className: blockClasses
@@ -109,6 +123,9 @@ function PaneEdit( {
 		},
 		{
 			templateLock: false,
+			renderAppender: hasInnerBlocks
+				? undefined
+				: InnerBlocks.ButtonBlockAppender,
 		}
 	);
 	return (
@@ -146,7 +163,12 @@ function PaneEdit( {
 				</KadencePanelBody>
 			</InspectorControls>
 			<HtmlTagOut className={ `kt-accordion-header-wrap` } >
-				<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
+				<div 
+					className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }
+					onClick={() => {
+						setAttributes( { isPaneActive: !attributes.isPaneActive } );
+					}} 
+				>
 					<div className="kt-blocks-accordion-title-wrap">
 						{ icon && 'left' === iconSide && (
 							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
@@ -158,6 +180,9 @@ function PaneEdit( {
 							onChange={ value => setAttributes( { title: value } ) }
 							value={ title }
 							keepPlaceholderOnFocus
+							onClick={(e) => {
+								e.stopPropagation();
+							}}
 						/>
 						{ icon && 'right' === iconSide && (
 							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />

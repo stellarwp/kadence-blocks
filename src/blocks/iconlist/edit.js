@@ -10,7 +10,7 @@ import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 /**
  * Import Externals
  */
-import { times, filter, map, get } from 'lodash';
+import { map, get, isEqual } from 'lodash';
 /**
  * Import Kadence Components
  */
@@ -30,11 +30,7 @@ import {
 	TypographyControls,
 	KadenceIconPicker,
 	ResponsiveRangeControls,
-	IconRender,
 	KadencePanelBody,
-	URLInputControl,
-	DynamicTextControl,
-	MeasurementControls,
 	KadenceWebfontLoader,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
@@ -53,6 +49,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { migrateToInnerblocks } from './utils';
 import {
 	useBlockProps,
 	useInnerBlocksProps,
@@ -88,11 +85,10 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, listBlock, container, clientId, updateBlockAttributes } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
-	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
@@ -109,6 +105,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		setBlockDefaults( 'kadence/iconlist', attributes);
 
 		if ( ! uniqueID ) {
+			// Check for old block defaults before 3.0
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
 				if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
@@ -137,6 +134,20 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );
+
+	useEffect( () => {
+		if ( uniqueID && ! listBlock.innerBlocks.length ) {
+			// Check if we are attempting recovery.
+			if ( items?.length && items.length && undefined !== metadata?.attributes?.items?.default && !isEqual( metadata.attributes.items.default, items ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertListItems( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				onDelete();
+			}
+		}
+	}, [ listBlock.innerBlocks.length ] );
 
 
 	function selfOrChildSelected( isSelected, clientId ) {
@@ -186,11 +197,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 			};
 		}, []);
 
-	const firstInnerAttrs = getBlockAttrs( childBlocks[ 0 ] );
-	const saveAllListItem = ( value ) => {
-		updateBlockAttributes( childBlocks, value );
-	};
-
 	const iconAlignOptions = [
 		{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
 		{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
@@ -235,9 +241,9 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 					</ToolbarGroup>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						excludedAttrs={ nonTransAttrs } 
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						excludedAttrs={ nonTransAttrs }
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
 				</BlockControls>
@@ -518,8 +524,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listPadding: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListPadding: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListPadding: value } )}
-										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -24 : -200 )}
-										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 24 : 200 )}
+										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -25 : -400 )}
+										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 25 : 400 )}
 										step={( listPaddingType === 'em' || listPaddingType === 'rem' ? 0.1 : 1 )}
 										unit={listPaddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
@@ -535,8 +541,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listMargin: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
-										min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
-										max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+										min={( listMarginType === 'em' || listMarginType === 'rem' ? -25 : -400 )}
+										max={( listMarginType === 'em' || listMarginType === 'rem' ? 25 : 400 )}
 										step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
 										unit={listMarginType}
 										units={[ 'px', 'em', 'rem', '%' ]}
@@ -728,19 +734,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 	);
 }
 
-// export default compose( [
-// 	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
-// 		const { removeBlock, updateBlockAttributes } = dispatch( 'core/block-editor' );
-// 		return {
-// 			onDelete: () => {
-// 				removeBlock( clientId, rootClientId );
-// 			},
-// 			updateBlockAttributes( ...args ) {
-// 				updateBlockAttributes( ...args );
-// 			}
-// 		};
-// 	} ),
-// ] )( KadenceIconLists );
 const KadenceIconsListWrapper = withDispatch(
 	( dispatch, ownProps, registry ) => ( {
 		insertListItem( newBlock ) {
@@ -750,9 +743,16 @@ const KadenceIconsListWrapper = withDispatch(
 			const block = getBlock( clientId );
 			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
 		},
-		onDelete( childID, rootClientId  ) {
-			const { removeBlock } = registry.select( blockEditorStore );
-			removeBlock( childID, rootClientId )
+		insertListItems( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
+		},
+		onDelete() {
+			const { clientId } = ownProps;
+			const { removeBlock } = dispatch( blockEditorStore );
+			removeBlock( clientId, true );
 		},
 		updateBlockAttributes( ...args ) {
 			const { updateBlockAttributes } = registry.select( blockEditorStore );

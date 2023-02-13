@@ -5,7 +5,7 @@
  * Import externals
  */
 import classnames from 'classnames';
-import { times, map } from 'lodash';
+import { times, map, isEqual } from 'lodash';
 import {
 	PopColorControl,
 	StepControls,
@@ -44,6 +44,7 @@ import { createBlock } from '@wordpress/blocks';
  */
 import './editor.scss';
 import metadata from './block.json';
+import { migrateToInnerblocks } from './utils';
 
 /**
  * Internal block libraries
@@ -86,7 +87,7 @@ const DEFAULT_BLOCK = {
 		'widthType',
 	],
 };
-function KadenceButtons( { attributes, className, setAttributes, isSelected, buttonsBlock, insertButton, clientId, context } ) {
+function KadenceButtons( { attributes, className, setAttributes, isSelected, buttonsBlock, insertButton, insertButtons, clientId, context } ) {
 	const {
 		uniqueID,
 		hAlign,
@@ -107,17 +108,20 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 		tabletPadding,
 		mobilePadding,
 		paddingUnit,
+		btns,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { removeBlock } = useDispatch( 'core/block-editor' );
+	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
 			};
 		},
 		[ clientId ]
@@ -132,6 +136,21 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
+
+	useEffect( () => {
+		if ( uniqueID && ! childBlocks.length ) {
+			// Check if we are attempting recovery.
+			if ( btns?.length && btns.length && undefined !== metadata?.attributes?.btns?.default && !isEqual( metadata.attributes.btns.default, btns ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertButtons( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				removeBlock( clientId, true );
+			}
+		}
+	}, [ childBlocks.length ] );
+
 	const saveMargin = ( value ) => {
 		const newUpdate = margin.map( ( item, index ) => {
 			if ( 0 === index ) {
@@ -332,8 +351,8 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 										onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
 										mobileValue={mobilePadding}
 										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
-										min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -2 : -200 )}
-										max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 12 : 200 )}
+										min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400 )}
+										max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400 )}
 										step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 										unit={paddingUnit}
 										units={[ 'px', 'em', 'rem' ]}
@@ -355,8 +374,8 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 										onChangeMobile={(value) => {
 											saveMargin({mobile: value})
 										}}
-										min={( marginUnit === 'em' || marginUnit === 'rem' ? -2 : -200 )}
-										max={( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 200 )}
+										min={( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 )}
+										max={( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 )}
 										step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 										unit={marginUnit}
 										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
@@ -399,6 +418,12 @@ const KadenceButtonsWrapper = withDispatch(
 			const { getBlock } = registry.select( blockEditorStore );
 			const block = getBlock( clientId );
 			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertButtons( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
 		},
 	} )
 )( KadenceButtons );

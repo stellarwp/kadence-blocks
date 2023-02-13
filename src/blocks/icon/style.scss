@@ -16,7 +16,7 @@
 	justify-content: center;
 }
 .kt-svg-style-stacked .kb-svg-icon-wrap  {
-	border: 0px solid var(--global-palette5, #444444 );
+	border: 2px solid var(--global-palette5, #444444 );
 	transition: all .3s ease-in-out;
 	padding: 20px;
 }
@@ -35,7 +35,7 @@
 .kb-icon-valign-top {
     align-items: flex-start;
 }
-.kb-icon-valign-middle {
+.kb-icon-valign-middle, .kb-icon-valign-center {
     align-items: center;
 }
 .kb-icon-valign-bottom {

@@ -304,13 +304,14 @@ export default function MeasureRangeControl( {
 								onMouseOut={ onMouseOut }
 							/>
 							{ realIsCustomControl && (
-								<div className={ 'kadence-measure-control-select-wrapper' }>
+								<div className={ 'kadence-units kadence-measure-control-select-wrapper' }>
 									<select
 										className={ 'kadence-measure-control-select components-unit-control__select' }
 										onChange={ ( event ) => {
 											onUnit( event.target.value );
 										} }
 										value={ unit }
+										disabled={ units.length === 1 }
 									>
 										{ units.map( ( option ) => (
 											<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
