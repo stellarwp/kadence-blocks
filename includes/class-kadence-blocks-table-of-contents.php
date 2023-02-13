@@ -55,6 +55,27 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	public static $the_headings = null;
 
+	/**
+	 * The block names to ignore.
+	 *
+	 * @var null
+	 */
+	public static $ignore_list = null;
+
+	/**
+	 * The block names to ignore.
+	 *
+	 * @var null
+	 */
+	public static $inner_ignore_list = null;
+
+	/**
+	 * The heading classes to ignore.
+	 *
+	 * @var null
+	 */
+	public static $ignore_classes = null;
+
 
 	/**
 	 * Instance Control
@@ -264,6 +285,41 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 	}
 	/**
+	 * Get the ignore list of blocks.
+	 *
+	 * @access private
+	 */
+	private function get_ignore_list() {
+		if ( is_null( self::$ignore_list ) ) {
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal' ) );
+		}
+		return self::$ignore_list;
+	}
+
+	/**
+	 * Get the ignore list of blocks.
+	 *
+	 * @access private
+	 */
+	private function get_inner_block_ignore_list() {
+		if ( is_null( self::$inner_ignore_list ) ) {
+			self::$inner_ignore_list = apply_filters( 'kadence_toc_inner_block_ignore_array', array( 'kadence/pane' ) );
+		}
+		return self::$inner_ignore_list;
+	}
+
+	/**
+	 * Get the ignore list of classes.
+	 *
+	 * @access private
+	 */
+	private function get_ignore_classes() {
+		if ( is_null( self::$ignore_classes ) ) {
+			self::$ignore_classes = apply_filters( 'kadence_toc_exclude_classes_array', array( 'kt-testimonial-title', 'image-overlay-title', 'image-overlay-subtitle', 'toc-ignore' ) );
+		}
+		return self::$ignore_classes;
+	}
+	/**
 	 * Renders blocks to allow dynamic blocks that bring in headings to be accounted for.
 	 *
 	 * @access private
@@ -271,17 +327,19 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @param string $block The page content content.
 	 */
 	private function recursively_parse_blocks( $block ) {
-		if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-			// Can't link to inner blocks to ignore.
-			if ( 'kadence/accordion' === $block['blockName'] || 'kadence/tabs' === $block['blockName'] ) {
-				self::$output_content .= render_block( $block );
-			} else {
-				foreach( $block['innerBlocks'] as $inner_block ) {
-					$this->recursively_parse_blocks( $inner_block );
+		if ( ! in_array( $block['blockName'], $this->get_ignore_list() ) ) {
+			if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				// Can't link to inner blocks so ignore everything past.
+				if ( in_array( $block['blockName'], $this->get_inner_block_ignore_list() ) ) {
+					self::$output_content .= $block['innerHTML'];
+				} else {
+					foreach( $block['innerBlocks'] as $inner_block ) {
+						$this->recursively_parse_blocks( $inner_block );
+					}
 				}
+			} else {
+				self::$output_content .= render_block( $block );
 			}
-		} elseif ( 'kadence/tableofcontents' !== $block['blockName'] ) {
-			self::$output_content .= render_block( $block );
 		}
 	}
 	/**
@@ -430,7 +488,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				$heading_classes_string = $temp_heading->attributes->getNamedItem( 'class' );
 				if ( null !== $heading_classes_string ) {
 					$heading_classes = explode( ' ', trim( $heading_classes_string->nodeValue ) );
-					$exclude_classes = array( 'kt-testimonial-title', 'image-overlay-title', 'image-overlay-subtitle', 'toc-ignore' );
+					$exclude_classes = $this->get_ignore_classes();
 					$exclude         = false;
 					foreach ( $exclude_classes as $exclude_class ) {
 						if ( in_array( $exclude_class, $heading_classes ) ) {
