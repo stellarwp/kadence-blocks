@@ -2305,7 +2305,7 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_font_size_value( $value ) {
-		return isset( $this->font_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->font_sizes[ $value ] );
 	}
 	/**
 	 * @param $value
@@ -2325,7 +2325,7 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_value( $value ) {
-		return isset( $this->spacing_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->spacing_sizes[ $value ] );
 	}
 
 	/**
