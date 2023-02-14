@@ -60,59 +60,6 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
-		if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && isset( $attributes['numberFont'][0] ) && is_array( $attributes['numberFont'][0] ) && isset( $attributes['numberFont'][0]['google'] ) && $attributes['numberFont'][0]['google'] && ( ! isset( $attributes['numberFont'][0]['loadGoogle'] ) || true === $attributes['numberFont'][0]['loadGoogle'] ) && isset( $attributes['numberFont'][0]['family'] ) ) {
-			$number_font = $attributes['numberFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont' => ( isset( $number_font['google'] ) ? $number_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $number_font['loadGoogle'] ) ? $number_font['loadGoogle'] : true ),
-//					'typography' => ( isset( $number_font['family'] ) ? $number_font['family'] : '' ),
-//					'fontVariant' => ( isset( $number_font['variant'] ) ? $number_font['variant'] : '' ),
-//					'fontSubset' =>  ( isset( $number_font['subset'] ) ? $number_font['subset'] : '' ),
-//					'loadItalic' =>  false,
-//				)
-//			);
-		}
-		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) && isset( $attributes['labelFont'][0]['google'] ) && $attributes['labelFont'][0]['google'] && ( ! isset( $attributes['labelFont'][0]['loadGoogle'] ) || true === $attributes['labelFont'][0]['loadGoogle'] ) && isset( $attributes['labelFont'][0]['family'] ) ) {
-			$label_font = $attributes['labelFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
-//					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
-//					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
-//					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
-//					'loadItalic' =>  false,
-//				)
-//			);
-		}
-		if ( isset( $attributes['preLabelFont'] ) && is_array( $attributes['preLabelFont'] ) && isset( $attributes['preLabelFont'][0] ) && is_array( $attributes['preLabelFont'][0] ) && isset( $attributes['preLabelFont'][0]['google'] ) && $attributes['preLabelFont'][0]['google'] && ( ! isset( $attributes['preLabelFont'][0]['loadGoogle'] ) || true === $attributes['preLabelFont'][0]['loadGoogle'] ) && isset( $attributes['preLabelFont'][0]['family'] ) ) {
-			$pre_label_font = $attributes['preLabelFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont' => ( isset( $pre_label_font['google'] ) ? $pre_label_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $pre_label_font['loadGoogle'] ) ? $pre_label_font['loadGoogle'] : true ),
-//					'typography' => ( isset( $pre_label_font['family'] ) ? $pre_label_font['family'] : '' ),
-//					'fontVariant' => ( isset( $pre_label_font['variant'] ) ? $pre_label_font['variant'] : '' ),
-//					'fontSubset' =>  ( isset( $pre_label_font['subset'] ) ? $pre_label_font['subset'] : '' ),
-//					'loadItalic' =>  false,
-//				)
-//			);
-		}
-		if ( isset( $attributes['postLabelFont'] ) && is_array( $attributes['postLabelFont'] ) && isset( $attributes['postLabelFont'][0] ) && is_array( $attributes['postLabelFont'][0] ) && isset( $attributes['postLabelFont'][0]['google'] ) && $attributes['postLabelFont'][0]['google'] && ( ! isset( $attributes['postLabelFont'][0]['loadGoogle'] ) || true === $attributes['postLabelFont'][0]['loadGoogle'] ) && isset( $attributes['postLabelFont'][0]['family'] ) ) {
-			$post_label_font = $attributes['postLabelFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont' => ( isset( $post_label_font['google'] ) ? $post_label_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $post_label_font['loadGoogle'] ) ? $post_label_font['loadGoogle'] : true ),
-//					'typography' => ( isset( $post_label_font['family'] ) ? $post_label_font['family'] : '' ),
-//					'fontVariant' => ( isset( $post_label_font['variant'] ) ? $post_label_font['variant'] : '' ),
-//					'fontSubset' =>  ( isset( $post_label_font['subset'] ) ? $post_label_font['subset'] : '' ),
-//					'loadItalic' =>  false,
-//				)
-//			);
-		}
-
 		if ( isset( $attributes['background'] ) || isset( $attributes['border'] ) || ( isset( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) || ( isset( $attributes['borderWidth'] ) && is_array( $attributes['borderWidth'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container-' . $unique_id );
 			if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
