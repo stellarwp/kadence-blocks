@@ -105,7 +105,7 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 		gap,
 		gapUnit,
 		padding,
-		tablePadding,
+		tabletPadding,
 		mobilePadding,
 		paddingUnit,
 		btns,
@@ -169,10 +169,10 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 	const previewVertical = getPreviewSize( previewDevice, ( undefined !== vAlign ? vAlign : '' ), ( undefined !== tvAlign ? tvAlign : '' ), ( undefined !== mvAlign ? mvAlign : '' ) );
 	const previewOrientation = getPreviewSize( previewDevice, ( undefined !== orientation?.[0] ? orientation[0] : '' ), ( undefined !== orientation?.[1] ? orientation[1] : '' ), ( undefined !== orientation?.[2] ? orientation[2] : '' ) );
 
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tablePadding?.[0] ? tablePadding[0] : '' ), ( undefined !== mobilePadding?.[0] ? mobilePadding[0] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] ? padding[1] : '' ), ( undefined !== tablePadding?.[1] ? tablePadding[1] : '' ), ( undefined !== mobilePadding?.[1] ? mobilePadding[1] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tablePadding?.[2] ? tablePadding[2] : '' ), ( undefined !== mobilePadding?.[2] ? mobilePadding[2] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] ? padding[3] : '' ), ( undefined !== tablePadding?.[3] ? tablePadding[3] : '' ), ( undefined !== mobilePadding?.[3] ? mobilePadding[3] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tabletPadding?.[0] ? tabletPadding[0] : '' ), ( undefined !== mobilePadding?.[0] ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] ? padding[1] : '' ), ( undefined !== tabletPadding?.[1] ? tabletPadding[1] : '' ), ( undefined !== mobilePadding?.[1] ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tabletPadding?.[2] ? tabletPadding[2] : '' ), ( undefined !== mobilePadding?.[2] ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] ? padding[3] : '' ), ( undefined !== tabletPadding?.[3] ? tabletPadding[3] : '' ), ( undefined !== mobilePadding?.[3] ? mobilePadding[3] : '' ) );
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 0 ] ? margin[ 0 ].tablet[ 0 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 0 ] ? margin[ 0 ].mobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 1 ] ? margin[ 0 ].desk[ 1 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet && '' !== margin[ 0 ].tablet[ 1 ] ? margin[ 0 ].tablet[ 1 ] : '' ), ( undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile && '' !== margin[ 0 ].mobile[ 1 ] ? margin[ 0 ].mobile[ 1 ] : '' ) );
@@ -347,8 +347,8 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 										label={__( 'Padding', 'kadence-blocks' )}
 										value={padding}
 										onChange={( value ) => setAttributes( { padding: value } )}
-										tabletValue={tablePadding}
-										onChangeTablet={( value ) => setAttributes( { tablePadding: value } )}
+										tabletValue={tabletPadding}
+										onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
 										mobileValue={mobilePadding}
 										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
 										min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400 )}
