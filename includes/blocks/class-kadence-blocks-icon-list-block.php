@@ -88,9 +88,9 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		$list_gap_props = array(
 			'listGap' => array(
-				0 => ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '',
-				1 => ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : '',
-				2 => ! empty( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : '',
+				0 => ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '5',
+				1 => ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : ( ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '' ),
+				2 => ! empty( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : ( ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : ( ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '' ) ),
 			),
 		);
 
