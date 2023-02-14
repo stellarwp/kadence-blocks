@@ -2290,7 +2290,7 @@ class Kadence_Blocks_CSS {
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_gap_value( $value ) {
 		if ( $this->is_variable_gap_value( $value ) ) {
@@ -2310,7 +2310,7 @@ class Kadence_Blocks_CSS {
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_font_size_value( $value ) {
 		if ( $this->is_variable_font_size_value( $value ) ) {
