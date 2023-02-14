@@ -58,6 +58,9 @@ registerBlockType( 'kadence/accordion', {
 	icon: {
 		src: accordionBlockIcon,
 	},
+	icon: {
+		src: accordionBlockIcon,
+	},
 	edit,
 	save,
 	example: {

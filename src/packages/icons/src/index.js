@@ -162,3 +162,9 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
+export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'

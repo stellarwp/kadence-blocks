@@ -1,0 +1,75 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+//  .kb-block-progress-container {
+    
+//   }
+ .progress-bar__container {
+    position: relative;
+    height: 30px;
+    width: 50%;
+    background-color: #1A2C34;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+    will-change: transform;
+    box-shadow: 0 0 5px #416f82;
+    margin: 20px auto;
+}
+[class^="progressbar-"] {
+    position: absolute;
+    width: 0px;
+    height: 20px;
+    border-radius: 15px;
+}
+.progressbar-1 {
+    background-color: aqua;
+    animation: bar-1 4s forwards linear;    
+
+}
+
+// @keyframes bar-1 {
+//     0%{
+//       width: 0%;
+//     }
+//     25%{
+//         width: 50%;
+//     }
+//     50%{
+//         width: 75%;
+//     }
+//     75%{
+//         width: 85%;
+//     }
+//     100%{
+//         width: 100%;
+//     }
+// }
+
+// .progress-bar__text {
+//     font-size: 18px;
+//     display: none;
+// }
+  // [class^="circlebar-"] {
+  //   fill: none;
+  //   stroke-width: 10px;
+  //   stroke-linecap: round;
+  //   transform: rotate(-90deg);
+  //   transform-origin: 50% 50%;
+  // }
+  
+
+  
+//   @keyframes progress-1 {
+//       from {
+//           stroke-dashoffset: 360;
+//       }
+//       to {
+//           stroke-dashoffset: 100;
+//       }
+//   }
+// }
+  

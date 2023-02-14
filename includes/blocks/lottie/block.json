@@ -1,0 +1,149 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "kadence/lottie",
+  "title": "Lottie Animations",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+    "align": {
+      "type": "string"
+    },
+    "fileSrc": {
+      "type": "string",
+      "default": "url"
+    },
+    "fileUrl": {
+      "type": "string",
+      "default": "https://assets10.lottiefiles.com/packages/lf20_rqcjx8hr.json"
+    },
+    "localFile": {
+      "type": "array",
+      "default": []
+    },
+    "showControls": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "loop": {
+      "type": "boolean",
+      "default": true
+    },
+    "onlyPlayOnHover": {
+      "type": "boolean",
+      "default": false
+    },
+    "onlyPlayOnScroll": {
+      "type": "boolean",
+      "default": false
+    },
+    "waitUntilInView": {
+      "type": "boolean",
+      "default": false
+    },
+    "startFrame": {
+      "type": "number",
+      "default": "0"
+    },
+    "endFrame": {
+      "type": "number",
+      "default": "100"
+    },
+    "bouncePlayback": {
+      "type": "boolean",
+      "default": false
+    },
+    "playbackSpeed": {
+      "type": "number",
+      "default": 1
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "loopLimit": {
+      "type": "number",
+      "default": 0
+    },
+    "delay": {
+      "type": "number",
+      "default": 0
+    },
+    "id": {
+      "type": "number"
+    },
+    "width": {
+      "type": "number",
+      "default": "0"
+    },
+    "uniqueID": {
+      "type": "string"
+    },
+    "marginDesktop": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "marginTablet": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "marginMobile": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "marginUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "paddingDesktop": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "paddingTablet": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "paddingMobile": {
+      "type": "array",
+      "default": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "paddingUnit": {
+      "type": "string",
+      "default": "px"
+    }
+  }
+}
