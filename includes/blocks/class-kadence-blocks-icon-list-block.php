@@ -78,20 +78,20 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 				0 => ! empty( $attributes['columnGap'] ) ? $attributes['columnGap'] : '',
 				1 => ! empty( $attributes['tabletColumnGap'] ) ? $attributes['tabletColumnGap'] : '',
 				2 => ! empty( $attributes['mobileColumnGap'] ) ? $attributes['mobileColumnGap'] : '',
-			)
+			),
 		);
 
-		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
-		$css->render_measure_output( $attributes, 'listMargin', 'margin');
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc)' );
+		$css->render_measure_output( $attributes, 'listMargin', 'margin' );
+		$css->render_measure_output( $attributes, 'listPadding', 'padding' );
 		$css->render_responsive_range( $column_gap_props, 'columnGap', 'column-gap' );
-
 
 		$list_gap_props = array(
 			'listGap' => array(
 				0 => ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '',
 				1 => ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : '',
 				2 => ! empty( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : '',
-			)
+			),
 		);
 
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
