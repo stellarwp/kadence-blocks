@@ -68,6 +68,78 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'kadence_blocks_dash_side_panel_pro', array( $this, 'admin_pro_kadence_notice' ), 10 );
+		add_filter( 'stellarwp/telemetry/kadence-blocks/optin_args', array( $this, 'optin_notice_args' ), 10 );
+		add_filter( 'stellarwp/telemetry/kadence-blocks/exit_interview_args', array( $this, 'exit_interview_args' ), 10 );
+	}
+	/**
+	 * Filter the exit_interview notice args.
+	 *
+	 * @param array $default_args the exit_interview args.
+	 */
+	public function exit_interview_args( $default_args ) {
+		$args = array(
+			'plugin_logo'           => KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png',
+			'plugin_logo_width'     => 50,
+			'plugin_logo_height'    => 50,
+			'plugin_logo_alt'       => 'KadenceWP Logo',
+			'uninstall_reasons'=> array(
+				array(
+					'uninstall_reason_id' => 'confusing',
+					'uninstall_reason'    => __( 'I couldn\'t understand how to make it work.', 'kadence-blocks' ),
+					'show_comment'        => false,
+				),
+				array(
+					'uninstall_reason_id' => 'better-plugin',
+					'uninstall_reason'   => __( 'I found a better plugin.', 'kadence-blocks' ),
+					'show_comment' => false,
+				),
+				array(
+					'uninstall_reason_id' => 'no-feature',
+					'uninstall_reason'   => __( 'I need a specific feature kadence blocks doesn\'t provide.', 'kadence-blocks' ),
+					'show_comment' => true,
+				),
+				array(
+					'uninstall_reason_id' => 'broken',
+					'uninstall_reason'   => __( 'Something is broken.', 'kadence-blocks' ),
+					'show_comment' => false,
+				),
+				array(
+					'uninstall_reason_id' => 'other',
+					'uninstall_reason'   => __( 'Other', 'kadence-blocks' ),
+					'show_comment' => true,
+				),
+			),
+		);
+		$args = wp_parse_args( $args, $default_args );
+		return $args;
+	}
+	/**
+	 * Filter the optin notice args.
+	 *
+	 * @param array $default_args the optin args.
+	 */
+	public function optin_notice_args( $default_args ) {
+		$args = array(
+			'plugin_logo'           => KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png',
+			'plugin_logo_width'     => 50,
+			'plugin_logo_height'    => 50,
+			'plugin_logo_alt'       => 'KadenceWP Logo',
+			'plugin_name'           => 'Kadence Blocks',
+			'plugin_slug'           => 'kadence-blocks',
+			'permissions_url'       => 'https://www.kadencewp.com/in-app-telemetry/',
+			'tos_url'               => 'https://www.kadencewp.com/terms-and-conditions/',
+			'privacy_url'           => 'https://www.kadencewp.com/privacy-policy/',
+			'heading'               => __( 'Help us make Kadence Blocks even better.', 'kadence-blocks' ),
+			'intro'                 => sprintf(
+				// translators: placeholder: username.
+				esc_html__(
+					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
+				),
+				$default_args['user_name'],
+			),
+		);
+		$args = wp_parse_args( $args, $default_args );
+		return $args;
 	}
 	/**
 	 * Add inline css editor width
@@ -741,6 +813,7 @@ class Kadence_Blocks_Settings {
 	 * Loads config page
 	 */
 	public function config_page() {
+		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
 		?>
 		<div class="kadence_blocks_dash_head">
 			<div class="kadence_blocks_dash_head_container">
@@ -785,6 +858,7 @@ class Kadence_Blocks_Settings {
 									echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								} else {
 									$btntitle = __( 'Deactivate', 'kadence-blocks' );
+									// echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								}
 								if ( 'kadence/lottie' === $block['slug'] ) {
 									echo '<a class="button" href="' . admin_url( 'edit.php?post_type=kadence_lottie' ) . '">' . esc_html__( 'Manage Lottie Animations', 'kadence-blocks' ) . '</a>';

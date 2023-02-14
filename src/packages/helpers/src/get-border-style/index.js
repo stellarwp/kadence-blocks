@@ -99,7 +99,7 @@ function getBorderUnit( device, desktopStyle, tabletStyle, mobileStyle, inheritB
 	if ( device === 'Mobile' ) {
 		if ( undefined !== mobileStyle?.[0]?.['unit'] && '' !== mobileStyle?.[0]?.['unit'] ) {
 			return mobileStyle[0]['unit'];
-		} else if ( '' !== tabletStyle?.[0]?.['unit'] ) {
+		} else if ( undefined !== tabletStyle?.[0]?.['unit'] && '' !== tabletStyle?.[0]?.['unit'] ) {
 			return tabletStyle[0]['unit'];
 		} else if ( inheritBorder && getInheritBorderUnit( device, inheritBorder ) ) {
 			return getInheritBorderUnit( device, inheritBorder );

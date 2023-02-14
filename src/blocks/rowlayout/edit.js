@@ -147,7 +147,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	clientId,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock } = attributes;
-	
+
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -201,7 +201,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		} else if ( columnGutter == 'widest' ) {
 			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
-		
+
 		// Update from old padding settings.
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
 			setAttributes( { padding: [ ( '' !== topPadding ? topPadding : 25 ), rightPadding, ( '' !== bottomPadding ? bottomPadding : 25 ), leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
@@ -255,7 +255,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			saveMobileOverlay( {  gradient: newMobileGradient, currentOverlayTab: 'gradient' } );
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -283,7 +283,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
 		// Update from old border settings.
-		let tempTabletBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+		let tempTabletBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -311,7 +311,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			setAttributes( { tabletBorderStyle: tempTabletBorderStyle } );
 		}
 		// Update from old border settings.
-		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -663,8 +663,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					</ToolbarGroup>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
 				</BlockControls>
@@ -730,7 +730,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 											onChangeTablet={ ( value ) => setAttributes( { tabletPadding: value } ) }
 											onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
 											min={ 0 }
-											max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+											max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 500 ) }
 											step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
 											deskDefault={ [ 'sm', '', 'sm', '' ] }
 											unit={ paddingUnit }
@@ -754,8 +754,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 											onChangeMobile={ ( value ) => {
 												setAttributes( { mobileMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
 											} }
-											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 ) }
+											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 ) }
 											step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 											unit={ marginUnit }
 											allowEmpty={ true }
@@ -987,12 +987,17 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ zIndex && zIndex > 30 && (
 					<>
-						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
+						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
 					</>
 				) }
 				{ kadenceBlockCSS && (
 					<>
 						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+					</>
+				)}
+				{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+					<>
+					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
 					</>
 				)}
 			</style>
@@ -1115,7 +1120,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					type="inside"
 					forceHide={ resizingVisually }
 					forceShow={ paddingMouseOver.isMouseOver }
-					spacing={ [ getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) ] } 
+					spacing={ [ getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ), getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) ] }
 				/>
 				<SpacingVisualizer
 					type="outside"

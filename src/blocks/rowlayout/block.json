@@ -765,6 +765,7 @@
   "supports": {
 	"anchor": true,
 	"ktdynamic": true,
-	"kbcss": true
+	"kbcss": true,
+	"html": false
   }
 }

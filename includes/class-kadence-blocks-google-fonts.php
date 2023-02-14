@@ -152,7 +152,7 @@ class Kadence_Blocks_Google_Fonts {
 		}
 		if ( is_array( $fonts ) ) {
 			foreach ( $fonts as $key => $font ) {
-				if ( ! array_key_exists( $key, self::$gfonts ) ) {
+				if ( ( ! array_key_exists( $key, self::$gfonts ) && did_action( 'wp_body_open' ) === 0 ) || ( ! array_key_exists( $key, self::$footer_gfonts ) && did_action( 'wp_body_open' ) >= 1) ) {
 					$add_font = array(
 						'fontfamily'   => $font['fontfamily'],
 						'fontvariants' => ( isset( $font['fontvariants'] ) && ! empty( $font['fontvariants'] ) && is_array( $font['fontvariants'] ) ? $font['fontvariants'] : array() ),

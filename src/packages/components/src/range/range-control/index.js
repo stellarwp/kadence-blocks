@@ -6,31 +6,8 @@
 /**
  * Internal block libraries
  */
- import { __ } from '@wordpress/i18n';
 import { RangeControl as CoreRangeControl } from '@wordpress/components';
-import { useInstanceId } from '@wordpress/compose';
-import {
-	Button,
-	DropdownMenu,
-} from '@wordpress/components';
 
-import {
-	pxIcon,
-	emIcon,
-	remIcon,
-	vhIcon,
-	vwIcon,
-	percentIcon,
-} from '@kadence/icons';
-
-let icons = {
-	px: pxIcon,
-	em: emIcon,
-	rem: remIcon,
-	vh: vhIcon,
-	vw: vwIcon,
-	percent: percentIcon,
-};
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -50,24 +27,7 @@ export default function RangeControl( {
 	showUnit = false,
 	units = [ 'px', 'em', 'rem' ],
 } ) {
-	/**
-	 * Build Toolbar Items.
-	 *
-	 * @param {string} mappedUnit the unit.
-	 * @returns {array} the unit array.
-	 */
-	 const createLevelControlToolbar = ( mappedUnit ) => {
-		return [ {
-			icon: ( mappedUnit === '%' ? icons.percent : icons[ mappedUnit ] ),
-			isActive: unit === mappedUnit,
-			onClick: () => {
-				onUnit( mappedUnit );
-			},
-		} ];
-	};
-	const POPOVER_PROPS = {
-		className: 'kadence-units-popover',
-	};
+
 	return [
 		onChange && (
 			<div className={ `components-base-control kadence-range-control${ className ? ' ' + className : '' }` }>

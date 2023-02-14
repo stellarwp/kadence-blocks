@@ -122,7 +122,8 @@
     }
   },
   "supports": {
-    "ktdynamic": true
+    "ktdynamic": true,
+    "html": false
   },
   "usesContext": [
     "postId",

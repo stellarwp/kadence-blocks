@@ -393,11 +393,11 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	const postLabelConfig = ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].family && '' !== postLabelFont[ 0 ].family && postLabelFont[ 0 ].google ? postLabelConfigSettings : '' );
 	const templateWithTimer = ( 'message' === expireAction ? COUNTDOWN_TEMPLATE_WITH_MESSAGE : COUNTDOWN_TEMPLATE );
 	const templateNoTimer = ( 'message' === expireAction ? COUNTDOWN_NO_TIMER_WITH_MESSAGE : COUNTDOWN_NO_TIMER );
-	const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
-	const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
+	const marginMin = ( marginType === 'em' || marginType === 'rem' ? -25 : -400 );
+	const marginMax = ( marginType === 'em' || marginType === 'rem' ? 25 : 400 );
 	const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
 	const paddingMin = ( paddingType === 'em' || paddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( paddingType === 'em' || paddingType === 'rem' ? 12 : 200 );
+	const paddingMax = ( paddingType === 'em' || paddingType === 'rem' ? 25 : 400 );
 	const paddingStep = ( paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1 );
 	const previewPaddingType = ( undefined !== paddingType ? paddingType : 'px' );
 	const itemPaddingMin = ( itemPaddingType === 'em' || itemPaddingType === 'rem' ? 0 : 0 );
@@ -632,9 +632,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						)}
 						<CopyPasteAttributes
 							attributes={ attributes }
-							excludedAttrs={ nonTransAttrs } 
-							defaultAttributes={ metadata['attributes'] } 
-							blockSlug={ metadata['name'] } 
+							excludedAttrs={ nonTransAttrs }
+							defaultAttributes={ metadata['attributes'] }
+							blockSlug={ metadata['name'] }
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>

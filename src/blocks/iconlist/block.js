@@ -17,8 +17,6 @@ import metadata from './block.json';
  */
 import { iconListBlockIcon } from '@kadence/icons';
 import { times } from 'lodash';
-import { KadenceColorOutput } from '@kadence/helpers';
-import { IconRender, IconSpanTag } from '@kadence/components';
 
 
 /**
@@ -62,4 +60,14 @@ registerBlockType( 'kadence/iconlist', {
 	deprecated,
 	edit,
 	save,
+	example: {
+		innerBlocks: times( 3, n => {
+			return {
+				name      : 'kadence/listitem',
+				attributes: {
+					text: __( 'List Item', 'kadence-blocks' ),
+				}
+			}
+		})
+	}
 } );

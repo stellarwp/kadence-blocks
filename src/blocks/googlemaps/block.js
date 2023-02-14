@@ -29,5 +29,6 @@ registerBlockType('kadence/googlemaps', {
 	},
 	transforms,
 	edit,
-	save
+	save,
+	example: {}
 });

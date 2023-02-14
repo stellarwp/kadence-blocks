@@ -79,6 +79,12 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		} elseif ( ! isset( $attributes['type'] ) || ( isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) ) {
 			$this->enqueue_script( 'kadence-blocks-masonry-init' );
 		}
+		if ( isset( $attributes['type'] ) && ( 'tiles' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) ) {
+			if ( wp_style_is( 'kadence-blocks-gallery-pro', 'registered' ) ) {
+				$this->enqueue_style( 'kadence-blocks-gallery-pro' );
+				$this->should_render_inline_stylesheet( 'kadence-blocks-gallery-pro' );
+			}
+		}
 		if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
 			$this->enqueue_style( 'kadence-glightbox' );
 			$this->should_render_inline_stylesheet( 'kadence-glightbox' );
@@ -425,6 +431,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( 'media' === $link_to && 'magnific' === $lightbox ) {
 				$gallery_classes[] = 'kb-gallery-magnific-init';
 			}
+
 			$content = '<div class="wp-block-kadence-advancedgallery kb-gallery-wrap-id-' . esc_attr( $unique_id ) . '">';
 			switch ( $type ) {
 				case 'carousel':
@@ -557,6 +564,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 						'relcustom'    => ( isset( $blockattr['kadenceDynamic']['link']['relcustom'] ) ? $blockattr['kadenceDynamic']['link']['relcustom'] : '' ),
 					);
 					$href = $this->get_content( $args );
+				} else {
+					$href = ( ! empty( $image['customLink'] ) ? $image['customLink'] : '' );
 				}
 				break;
 			case 'attachment':

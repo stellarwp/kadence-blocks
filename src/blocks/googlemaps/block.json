@@ -74,7 +74,6 @@
 	},
 	"mapStyle": {
 	  "type": "string",
-	  "enum": ["standard", "shades_of_grey", "invert", "saturate", "custom"],
 	  "default": "standard"
 	},
 	"showControls": {

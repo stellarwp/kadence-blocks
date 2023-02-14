@@ -93,6 +93,14 @@ export function migrateToInnerblocks( attributes ) {
 			if ( undefined !== textTransform && '' !== textTransform ) {
 				newAttrs.typography[0].textTransform = textTransform;
 			}
+			// 9. Update inheritStyles to new default of fill.
+			if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
+				newAttrs.inheritStyles = 'inherit';
+			} else if ( undefined !== newAttrs?.borderWidth && '' !== newAttrs.borderWidth && 0 === parseInt( newAttrs.borderWidth ) && ( ( undefined !== newAttrs?.background && '' !== newAttrs.background ) || ( undefined !== newAttrs?.backgroundType && 'gradient' === newAttrs.backgroundType ) ) ) {
+				newAttrs.inheritStyles = 'fill';
+			} else {
+				newAttrs.inheritStyles = 'outline';
+			}
 			// 2. Update Border to new format.
 			let tempBorderRadius = [ '', '', '', '' ];
 			if ( undefined !== newAttrs?.borderRadius && '' !== newAttrs.borderRadius ) {
@@ -298,12 +306,6 @@ export function migrateToInnerblocks( attributes ) {
 				}
 				newAttrs.kadenceDynamic.text = kadenceDynamic['btns:' + n + ':text' ];
 			}
-			// 9. Update inheritStyles to new default of fill.
-			if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
-				newAttrs.inheritStyles = 'inherit';
-			} else {
-				newAttrs.inheritStyles = 'outline';
-			}
 			// 10. Update Anchor to new anchor.
 			if ( undefined !== newAttrs?.anchor && '' !== newAttrs.anchor ) {
 				newAttrs.anchor = newAttrs.anchor;
@@ -325,8 +327,8 @@ export function migrateToInnerblocks( attributes ) {
 					opacity:( undefined !== newAttrs?.boxShadow?.[2] ? newAttrs.boxShadow[2] : 0.4 ),
 					spread:( undefined !== newAttrs?.boxShadow?.[6] ? newAttrs.boxShadow[6] : 0 ),
 					blur: ( undefined !== newAttrs?.boxShadow?.[5] ? newAttrs.boxShadow[5] : 3 ),
-					hOffset: ( undefined !== newAttrs?.boxShadow?.[4] ? newAttrs.boxShadow[4] : 2 ),
-					vOffset: ( undefined !== newAttrs?.boxShadow?.[3] ? newAttrs.boxShadow[3] : 2 ),
+					hOffset: ( undefined !== newAttrs?.boxShadow?.[4] ? newAttrs.boxShadow[3] : 2 ),
+					vOffset: ( undefined !== newAttrs?.boxShadow?.[3] ? newAttrs.boxShadow[4] : 2 ),
 					inset: ( undefined !== newAttrs?.boxShadow?.[7] ? newAttrs.boxShadow[7] : false )
 				} ];
 			}
@@ -338,8 +340,8 @@ export function migrateToInnerblocks( attributes ) {
 					opacity:( undefined !== newAttrs?.boxShadowHover?.[2] ? newAttrs.boxShadowHover[2] : 0.4 ),
 					spread:( undefined !== newAttrs?.boxShadowHover?.[6] ? newAttrs.boxShadowHover[6] : 0 ),
 					blur: ( undefined !== newAttrs?.boxShadowHover?.[5] ? newAttrs.boxShadowHover[5] : 3 ),
-					hOffset: ( undefined !== newAttrs?.boxShadowHover?.[4] ? newAttrs.boxShadowHover[4] : 2 ),
-					vOffset: ( undefined !== newAttrs?.boxShadowHover?.[3] ? newAttrs.boxShadowHover[3] : 2 ),
+					hOffset: ( undefined !== newAttrs?.boxShadowHover?.[4] ? newAttrs.boxShadowHover[3] : 2 ),
+					vOffset: ( undefined !== newAttrs?.boxShadowHover?.[3] ? newAttrs.boxShadowHover[4] : 2 ),
 					inset: ( undefined !== newAttrs?.boxShadowHover?.[7] ? newAttrs.boxShadowHover[7] : false )
 				} ];
 			}

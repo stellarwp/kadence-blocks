@@ -1597,6 +1597,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1610,6 +1613,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}
@@ -1627,6 +1633,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1641,6 +1650,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}
@@ -1658,6 +1670,9 @@ class Kadence_Blocks_CSS {
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
 						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
+						break;
 				}
 			}
 		} else if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
@@ -1672,6 +1687,9 @@ class Kadence_Blocks_CSS {
 						break;
 					case 'right':
 						$this->add_property( 'justify-content', 'flex-end' );
+						break;
+					case 'space-between':
+						$this->add_property( 'justify-content', 'space-between' );
 						break;
 				}
 			}
@@ -1824,7 +1842,7 @@ class Kadence_Blocks_CSS {
 			return '';
 		}
 
-		$return_value = $return_value ? $return_value : $value_defaults[ $given_value ];
+		$return_value = '' !== $return_value ? $return_value : $value_defaults[ $given_value ];
 		$return_unit = $return_unit ? $return_unit : 'px';
 
 		// extra processing for specific values.
@@ -2272,7 +2290,7 @@ class Kadence_Blocks_CSS {
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_gap_value( $value ) {
 		if ( $this->is_variable_gap_value( $value ) ) {
@@ -2287,12 +2305,12 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_font_size_value( $value ) {
-		return isset( $this->font_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->font_sizes[ $value ] );
 	}
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_font_size_value( $value ) {
 		if ( $this->is_variable_font_size_value( $value ) ) {
@@ -2307,7 +2325,7 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_value( $value ) {
-		return isset( $this->spacing_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->spacing_sizes[ $value ] );
 	}
 
 	/**

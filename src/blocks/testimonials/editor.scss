@@ -50,7 +50,26 @@
 .components-button-group button.components-button.kt-style-btn:hover {
     border-color: #eeeeee;
 }
- .kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
+
+.wp-block-kadence-testimonials.is-selected .block-editor-button-block-appender.components-button.components-button {
+	position: absolute;
+    list-style: none;
+    padding: 0;
+    z-index: 2;
+    bottom: 0;
+    right: 0;
+	width: initial;
+	padding: 0px;
+
+    flex-direction: row;
+    box-shadow: none;
+    height: 24px;
+    width: 24px;
+    background: #1e1e1e;
+    color: #fff;
+}
+
+.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
@@ -168,6 +187,11 @@
 }
 .kt-testimonial-style-card.kt-testimonial-halign-right .kt-testimonial-media-inner-wrap {
 	margin: 0 0 15px 0;
+}
+.kt-testimonial-text-wrap .kt-testimonial-title-wrap {
+	.kt-testimonial-title {
+		margin: 0 0 0.5em 0;
+	}
 }
 // Bubble
 .kt-testimonial-style-bubble {

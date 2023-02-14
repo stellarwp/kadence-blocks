@@ -440,9 +440,14 @@ export function ImageEdit( {
 		[ `kadence-image${ uniqueID }` ]: uniqueID
 	} );
 
+	// const blockProps = useBlockProps( {
+	// 	ref,
+	// 	className: classes,
+	// } );
 	const blockProps = useBlockProps( {
 		ref,
 		className: classes,
+		['data-align']: ( 'center' === align ) ? align : undefined
 	} );
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{

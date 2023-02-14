@@ -514,7 +514,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
-
 		// Background.
 		$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
 		$css->set_selector( $base_selector );

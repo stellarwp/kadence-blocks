@@ -30,4 +30,5 @@ registerBlockType('kadence/lottie', {
 	edit,
 	deprecated,
 	save: () => null,
+	example: {}
 });

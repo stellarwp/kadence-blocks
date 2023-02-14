@@ -50,4 +50,10 @@ registerBlockType( 'kadence/posts', {
 	save() {
 		return null;
 	},
+	example: {
+		attributes: {
+			columns: 1,
+			postsToShow: 2
+		}
+	}
 } );

@@ -148,7 +148,7 @@
 			if ( required.length ) {
 				for ( var n = 0; n < required.length; n++ ) {
 					var data_type = required[n].getAttribute('data-type'),
-					val = '';
+						val = '';
 					switch( data_type ) {
 						case 'textarea':
 						case 'text':
@@ -231,7 +231,7 @@
 								window.kadenceForm.markError( required[n], error_type, self );
 							}
 							break;
-		
+
 						case 'email':
 							var val = required[n].value.trim();
 
@@ -296,9 +296,9 @@
 		createElementFromHTML( htmlString ) {
 			var div = document.createElement('div');
 			div.innerHTML = htmlString;
-		  
+
 			// Change this to div.childNodes to support multiple top-level nodes
-			return div.firstChild; 
+			return div.firstChild;
 		},
 		submit( e, form ) {
 			e.preventDefault();
@@ -309,6 +309,7 @@
 			var form_data = window.kadenceForm.validateForm( form );
 			if ( form_data ) {
 				var el = document.createElement('div');
+				var waitingForRedirect = false;
 				el.classList.add( 'kb-form-loading' );
 				el.innerHTML = '<div class="kb-form-loading-spin"><div></div><div></div><div></div><div></div></div>';
 				form.append( el );
@@ -329,6 +330,7 @@
 							// Dispatch the event.
 							window.document.body.dispatchEvent(event);
 							if ( response.redirect ) {
+								waitingForRedirect = true;
 								window.location = response.redirect;
 							} else {
 								window.kadenceForm.insertAfter( window.kadenceForm.createElementFromHTML( response.html ), form );
@@ -351,8 +353,11 @@
 					if ( form.querySelector('.g-recaptcha') ) {
 						grecaptcha.reset();
 					}
-					submitButton.removeAttribute( 'disabled' );
-					submitButton.classList.remove( 'button-primary-disabled' );
+					// Prevents double submission while redirect is happening.
+					if ( !waitingForRedirect ) {
+						submitButton.removeAttribute( 'disabled' );
+						submitButton.classList.remove( 'button-primary-disabled' );
+					}
 					form.querySelector( '.kb-form-loading' ).remove();
 				};
 				request.onerror = function() {
@@ -409,4 +414,4 @@
 		window.kadenceForm.init();
 	}
 }() );
-		
+

@@ -220,8 +220,8 @@ export function Edit( props ) {
 			default:
 				return 50;
 		}
-	}	
-	
+	}
+
 	const classes = classnames( {
 		[ className ]: className,
 		[ `size-${ sizeSlug }` ]: sizeSlug,
@@ -249,8 +249,8 @@ export function Edit( props ) {
 				<BlockControls>
 					<CopyPasteAttributes
 						attributes={ attributes }
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 					/>
 				</BlockControls>
@@ -352,7 +352,7 @@ export function Edit( props ) {
 								{mapFilter !== 'standard' && (
 									<RangeControl
 										label={__('Map Filter Strength ', 'kadence-blocks')}
-										value={mapFilterAmount}
+										value={ parseInt(mapFilterAmount) }
 										onChange={(value) => setAttributes({mapFilterAmount: value})}
 										min={0}
 										max={(mapFilter === 'saturate') ? 250 : 100}
@@ -571,7 +571,7 @@ export function Edit( props ) {
 									onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
 									onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
 									min={0}
-									max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
+									max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400 )}
 									step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 									unit={paddingUnit}
 									units={[ 'px', 'em', 'rem', '%' ]}
@@ -587,8 +587,8 @@ export function Edit( props ) {
 									onChange={( value ) => setAttributes( { marginDesktop: value } )}
 									onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
 									onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-									min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
-									max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
+									min={( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 )}
+									max={( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 )}
 									step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 									unit={marginUnit}
 									units={[ 'px', 'em', 'rem', '%', 'vh' ]}
@@ -636,7 +636,7 @@ export function Edit( props ) {
 						}}>
 							<EditJsMap zoom={zoom} customSnazzy={customSnazzy} lat={lat} lng={lng}
 									   showMarker={showMarker} mapType={mapType} mapStyle={mapStyle}
-									   googleApiKey={'AIzaSyDzwRtJXFMk604PIwm2H667t8_ex4QqOyI'}/>
+									   googleApiKey={ customGoogleApiKey }/>
 						</div>
 					}
 				</div>

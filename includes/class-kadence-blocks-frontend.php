@@ -298,18 +298,6 @@ class Kadence_Blocks_Frontend {
 			$this->register_scripts();
 		}
 		wp_enqueue_style( $handle );
-		if ( 'kadence-blocks-icon' === $handle ) {
-			$icon_css = '.kt-svg-style-stacked .kt-svg-icon{border:0px solid #444444;transition:all .3s ease-in-out}.kt-svg-icon-wrap{display:-webkit-inline-flex;display:inline-flex}.kt-svg-icon-wrap a.kt-svg-icon-link{display:block;border:0;text-decoration:none;box-shadow:none}.kt-svg-icon-wrap a.kt-svg-icon-link:hover{box-shadow:none}.kb-icon-valign-top{-webkit-align-items:flex-start;align-items:flex-start;display:-webkit-flex;display:flex}.kb-icon-valign-middle{-webkit-align-items:center;align-items:center;display:-webkit-flex;display:flex}.kb-icon-valign-bottom{-webkit-align-items:flex-end;align-items:flex-end;display:-webkit-flex;display:flex}';
-			wp_add_inline_style( 'kadence-blocks-icon', $icon_css );
-		}
-		if ( 'kadence-blocks-heading' === $handle ) {
-			$heading_css = '.wp-block-kadence-advancedheading mark{color:#f76a0c;background:transparent;border-style:solid;border-width:0}';
-			// Short term fix for an issue with heading wrapping.
-			if ( class_exists( '\Kadence\Theme' ) ) {
-				$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
-			}
-			wp_add_inline_style( 'kadence-blocks-heading', $heading_css );
-		}
 	}
 
 	/**

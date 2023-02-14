@@ -110,7 +110,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId } ) {
+function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId, name } ) {
 
 	const {
 		uniqueID,
@@ -244,7 +244,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		if ( ( '' !== containerBorderRadius ) ) {
 			setAttributes( { borderRadius: [ containerBorderRadius, containerBorderRadius, containerBorderRadius, containerBorderRadius ], containerBorderRadius: '' } );
 		}
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -271,7 +271,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{ 
+		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -302,11 +302,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', contextPost );
 		}
 	};
-
-	const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
+	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 25 : 400 );
 	const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
 	const previewContainerPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
 	const previewContainerPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
@@ -353,21 +351,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
 	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
-	const widthTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: '%', name: '%' },
-		{ key: 'vw', name: 'vw' },
-	];
-	const marginTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: 'em', name: 'em' },
-		{ key: '%', name: '%' },
-		{ key: 'vh', name: 'vh' },
-		{ key: 'rem', name: 'rem' },
-	];
-
-	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -12 : -200 );
-	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );
+	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400 );
+	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400 );
 	const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 
 	const layoutPresetOptions = [
@@ -384,7 +369,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'center',
 				containerBackground     : ( '#ffffff' === containerBackground ? '' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ '', '', '' ],
 					right: [ '', '', '' ],
 					bottom: [ '', '', '' ],
@@ -444,7 +429,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'center',
 				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
@@ -520,7 +505,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'left',
 				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
@@ -596,7 +581,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'left',
 				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
@@ -672,7 +657,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'center',
 				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
@@ -746,7 +731,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				hAlign                  : 'left',
 				containerBackground     : ( '' === containerBackground ? '#ffffff' : containerBackground ),
 				containerHoverBackground: containerHoverBackground,
-				borderStyle             : [ { 
+				borderStyle             : [ {
 					top: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					right: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
 					bottom: [ 'var(--global-palette7, #eeeeee)', '', 5 ],
@@ -1238,7 +1223,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
@@ -1304,8 +1289,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 				<CopyPasteAttributes
 					attributes={ attributes }
 					excludedAttrs={ nonTransAttrs }
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => onPaste( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -1364,8 +1349,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									}}
 									dynamicAttribute={'link'}
 									allowClear={true}
-									setAttributes={setAttributes}
-									{...attributes}
+									isSelected={ isSelected }
+									attributes={ attributes }
+									setAttributes={ setAttributes }
+									name={ name }
+									clientId={ clientId }
+									context={ context }
 								/>
 								<SelectControl
 									label={__( 'Link Content', 'kadence-blocks' )}
@@ -1434,47 +1423,49 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 														isBorderRadius={ true }
 														allowEmpty={true}
 													/>
-													<BoxShadowControl
-														label={__( 'Box Shadow', 'kadence-blocks' )}
-														enable={( undefined !== displayShadow ? displayShadow : false )}
-														color={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' )}
-														colorDefault={'#000000'}
-														onArrayChange={( color, opacity ) => {
-															saveShadowHover( { color: color, opacity: opacity } );
-														}}
-														opacity={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 )}
-														hOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 )}
-														vOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 )}
-														blur={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 )}
-														spread={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 )}
-														inset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false )}
-														onEnableChange={value => {
-															setAttributes( {
-																displayShadow: value,
-															} );
-														}}
-														onColorChange={value => {
-															saveShadowHover( { color: value } );
-														}}
-														onOpacityChange={value => {
-															saveShadowHover( { opacity: value } );
-														}}
-														onHOffsetChange={value => {
-															saveShadowHover( { hOffset: value } );
-														}}
-														onVOffsetChange={value => {
-															saveShadowHover( { vOffset: value } );
-														}}
-														onBlurChange={value => {
-															saveShadowHover( { blur: value } );
-														}}
-														onSpreadChange={value => {
-															saveShadowHover( { spread: value } );
-														}}
-														onInsetChange={value => {
-															saveShadowHover( { inset: value } );
-														}}
-													/>
+													{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
+														<BoxShadowControl
+															label={__( 'Box Shadow', 'kadence-blocks' )}
+															enable={( undefined !== displayShadow ? displayShadow : false )}
+															color={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' )}
+															colorDefault={'#000000'}
+															onArrayChange={( color, opacity ) => {
+																saveHoverShadow( { color: color, opacity: opacity } );
+															}}
+															opacity={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 )}
+															hOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 )}
+															vOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 )}
+															blur={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 )}
+															spread={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 )}
+															inset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false )}
+															onEnableChange={value => {
+																setAttributes( {
+																	displayShadow: value,
+																} );
+															}}
+															onColorChange={value => {
+																saveHoverShadow( { color: value } );
+															}}
+															onOpacityChange={value => {
+																saveHoverShadow( { opacity: value } );
+															}}
+															onHOffsetChange={value => {
+																saveHoverShadow( { hOffset: value } );
+															}}
+															onVOffsetChange={value => {
+																saveHoverShadow( { vOffset: value } );
+															}}
+															onBlurChange={value => {
+																saveHoverShadow( { blur: value } );
+															}}
+															onSpreadChange={value => {
+																saveHoverShadow( { spread: value } );
+															}}
+															onInsetChange={value => {
+																saveHoverShadow( { inset: value } );
+															}}
+														/>
+													)}
 												</>
 											}
 											normal={
@@ -1511,50 +1502,52 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 														isBorderRadius={ true }
 														allowEmpty={true}
 													/>
-													<BoxShadowControl
-														label={__( 'Box Shadow', 'kadence-blocks' )}
-														enable={( undefined !== displayShadow ? displayShadow : false )}
-														color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
-														colorDefault={'#000000'}
-														onArrayChange={( color, opacity ) => {
-															saveShadow( { color: color, opacity: opacity } );
-														}}
-														opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
-														hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
-														vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
-														blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
-														spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
-														inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
-														onEnableChange={value => {
-															setAttributes( {
-																displayShadow: value,
-															} );
-														}}
-														onColorChange={value => {
-															saveShadow( { color: value } );
-														}}
-														onOpacityChange={value => {
-															saveShadow( { opacity: value } );
-														}}
-														onHOffsetChange={value => {
-															saveShadow( { hOffset: value } );
-														}}
-														onVOffsetChange={value => {
-															saveShadow( { vOffset: value } );
-														}}
-														onBlurChange={value => {
-															saveShadow( { blur: value } );
-														}}
-														onSpreadChange={value => {
-															saveShadow( { spread: value } );
-														}}
-														onInsetChange={value => {
-															saveShadow( { inset: value } );
-														}}
-													/>
+													{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
+														<BoxShadowControl
+															label={__( 'Box Shadow', 'kadence-blocks' )}
+															enable={( undefined !== displayShadow ? displayShadow : false )}
+															color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
+															colorDefault={'#000000'}
+															onArrayChange={( color, opacity ) => {
+																saveShadow( { color: color, opacity: opacity } );
+															}}
+															opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
+															hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
+															vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
+															blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
+															spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
+															inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
+															onEnableChange={value => {
+																setAttributes( {
+																	displayShadow: value,
+																} );
+															}}
+															onColorChange={value => {
+																saveShadow( { color: value } );
+															}}
+															onOpacityChange={value => {
+																saveShadow( { opacity: value } );
+															}}
+															onHOffsetChange={value => {
+																saveShadow( { hOffset: value } );
+															}}
+															onVOffsetChange={value => {
+																saveShadow( { vOffset: value } );
+															}}
+															onBlurChange={value => {
+																saveShadow( { blur: value } );
+															}}
+															onSpreadChange={value => {
+																saveShadow( { spread: value } );
+															}}
+															onInsetChange={value => {
+																saveShadow( { inset: value } );
+															}}
+														/>
+													)}
 												</>
 											}
-										/>										
+										/>
 									</KadencePanelBody>
 								</>
 							)}
@@ -1607,8 +1600,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												onSaveImage={onSelectImage}
 												disableMediaButtons={( mediaImage[ 0 ].url ? true : false )}
 												dynamicAttribute="mediaImage:0:url"
-												setAttributes={setAttributes}
-												{...attributes}
+												isSelected={ isSelected }
+												attributes={ attributes }
+												setAttributes={ setAttributes }
+												name={ name }
+												clientId={ clientId }
+												context={ context }
 											/>
 											{mediaImage[ 0 ].id && 'svg+xml' !== mediaImage[ 0 ].subtype && (
 												<ImageSizeControl
@@ -2388,133 +2385,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												onMarginControl={( value ) => saveLearnMoreStyles( { marginControl: value } )}
 											/>
 										</Fragment>
-									)}
-								</KadencePanelBody>
-							)}
-							{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
-								<KadencePanelBody
-									title={__( 'Container Shadow', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-info-container-shadow'}
-								>
-									<ToggleControl
-										label={__( 'Enable Shadow', 'kadence-blocks' )}
-										checked={displayShadow}
-										onChange={value => setAttributes( { displayShadow: value } )}
-									/>
-									{displayShadow && (
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-													activeClass="active-tab"
-													tabs={[
-														{
-															name     : 'normal',
-															title    : __( 'Normal' ),
-															className: 'kt-normal-tab',
-														},
-														{
-															name     : 'hover',
-															title    : __( 'Hover' ),
-															className: 'kt-hover-tab',
-														},
-													]}>
-											{
-												( tab ) => {
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveHoverShadow( { color: value } )}
-																		opacityValue={shadowHover[ 0 ].opacity}
-																		onOpacityChange={value => saveHoverShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].blur}
-																		onChange={value => saveHoverShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].spread}
-																		onChange={value => saveHoverShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].vOffset}
-																		onChange={value => saveHoverShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadowHover[ 0 ].hOffset}
-																		onChange={value => saveHoverShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																</div>
-															);
-														} else {
-															return (
-																<div className={tab.className} key={tab.className}>
-																	<PopColorControl
-																		label={__( 'Shadow Color', 'kadence-blocks' )}
-																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
-																		default={''}
-																		onChange={value => saveShadow( { color: value } )}
-																		opacityValue={shadow[ 0 ].opacity}
-																		onOpacityChange={value => saveShadow( { opacity: value } )}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Blur', 'kadence-blocks' )}
-																		value={shadow[ 0 ].blur}
-																		onChange={value => saveShadow( { blur: value } )}
-																		min={0}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Spread', 'kadence-blocks' )}
-																		value={shadow[ 0 ].spread}
-																		onChange={value => saveShadow( { spread: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].vOffset}
-																		onChange={value => saveShadow( { vOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																	<RangeControl
-																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
-																		value={shadow[ 0 ].hOffset}
-																		onChange={value => saveShadow( { hOffset: value } )}
-																		min={-100}
-																		max={100}
-																		step={1}
-																	/>
-																</div>
-															);
-														}
-													}
-												}
-											}
-										</TabPanel>
 									)}
 								</KadencePanelBody>
 							)}

@@ -255,7 +255,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col,.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
 		$css->render_measure_output( $attributes, 'borderHoverRadius', 'border-radius', array( 'unit_key' => 'borderHoverRadiusUnit' ) );
-
 		if ( isset( $attributes['displayHoverShadow'] ) && true == $attributes['displayHoverShadow'] ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {

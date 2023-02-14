@@ -63,4 +63,9 @@ registerBlockType( 'kadence/countup', {
 	edit,
 	save,
 	deprecated,
+	example: {
+		attributes: {
+			title: __( 'My count up title', 'kadence-blocks' ),
+		}
+	}
 } );

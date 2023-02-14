@@ -210,12 +210,12 @@ export function Edit ({
 
 	return (
 		<Fragment>
-			
+
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -291,7 +291,7 @@ export function Edit ({
 								onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
 								min={0}
-								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
+								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400 )}
 								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 								unit={paddingUnit}
 								units={[ 'px', 'em', 'rem', '%' ]}
@@ -309,8 +309,8 @@ export function Edit ({
 								}}
 								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
 								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
-								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
+								min={( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 )}
+								max={( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 )}
 								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 								unit={marginUnit}
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}

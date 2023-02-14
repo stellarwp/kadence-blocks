@@ -7,27 +7,15 @@ import {__} from "@wordpress/i18n";
 export function AdvancedSettings({ attributes, setAttributes }) {
 
     const {
-        icon,
-        link,
-        target,
-        size,
         margin,
         tabletMargin,
         mobileMargin,
         marginUnit,
-        width,
-        text,
-        color,
-        background,
-        border,
-        borderRadius,
         padding,
         tabletPadding,
         mobilePadding,
         paddingUnit,
-        borderWidth,
         style,
-        level
     } = attributes;
 
     return (
@@ -47,7 +35,7 @@ export function AdvancedSettings({ attributes, setAttributes }) {
                     mobileValue={ ( mobilePadding ? mobilePadding : ['', '', '', ''] ) }
                     onChangeMobile={( value ) => setAttributes( { mobilePadding: value } ) }
                     min={ 0 }
-                    max={ ( ( paddingUnit ? paddingUnit : 'px' ) === 'em' || ( paddingUnit ? paddingUnit : 'px' ) === 'rem' ? 12 : 200 ) }
+                    max={ ( ( paddingUnit ? paddingUnit : 'px' ) === 'em' || ( paddingUnit ? paddingUnit : 'px' ) === 'rem' ? 25 : 400 ) }
                     step={ ( ( paddingUnit ? paddingUnit : 'px' ) === 'em' || ( paddingUnit ? paddingUnit : 'px' ) === 'rem' ? 0.1 : 1 ) }
                     unit={ ( paddingUnit ? paddingUnit : 'px' ) }
                     units={ [ 'px', 'em', 'rem' ] }
@@ -62,8 +50,8 @@ export function AdvancedSettings({ attributes, setAttributes }) {
                 onChangeTablet={( value ) => setAttributes( { tabletMargin: value } ) }
                 mobileValue={ ( mobileMargin ? mobileMargin : ['', '', '', ''] ) }
                 onChangeMobile={( value ) => setAttributes( { mobileMargin: value } ) }
-                min={ ( ( marginUnit ? marginUnit : 'px' ) === 'em' || ( marginUnit ? marginUnit : 'px' ) === 'rem' ? -2 : -200 ) }
-                max={ ( ( marginUnit ? marginUnit : 'px' ) === 'em' || ( marginUnit ? marginUnit : 'px' ) === 'rem' ? 12 : 200 ) }
+                min={ ( ( marginUnit ? marginUnit : 'px' ) === 'em' || ( marginUnit ? marginUnit : 'px' ) === 'rem' ? -25 : -400 ) }
+                max={ ( ( marginUnit ? marginUnit : 'px' ) === 'em' || ( marginUnit ? marginUnit : 'px' ) === 'rem' ? 25 : 400 ) }
                 step={ ( ( marginUnit ? marginUnit : 'px' ) === 'em' || ( marginUnit ? marginUnit : 'px' ) === 'rem' ? 0.1 : 1 ) }
                 unit={ ( marginUnit ? marginUnit : 'px' ) }
                 units={ [ 'px', 'em', 'rem' ] }
