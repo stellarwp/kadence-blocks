@@ -140,7 +140,7 @@ const defaultBtns = {
 	mobileMargin: [ '', '', '', '' ],
 	paddingUnit: 'px',
 	padding: [ '', '', '', '' ],
-	tabletPadding: [ '', '', '', '' ],
+	tablePadding: [ '', '', '', '' ],
 	mobilePadding: [ '', '', '', '' ],
 	borderStyle: [{}],
 };
@@ -212,7 +212,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		noFollow,
 		sizePreset,
 		padding,
-		tabletPadding,
+		tablePadding,
 		mobilePadding,
 		paddingUnit,
 		color,
@@ -383,10 +383,10 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin?.[3] ? margin[3] : '' ), ( undefined !== tabletMargin?.[3] ? tabletMargin[3] : '' ), ( undefined !== mobileMargin?.[3] ? mobileMargin[3] : '' ) );
 	const previewMarginUnit = ( marginUnit ? marginUnit : 'px' );
 
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tabletPadding?.[0] ? tabletPadding[0] : '' ), ( undefined !== mobilePadding?.[0] ? mobilePadding[0] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] ? padding[1] : '' ), ( undefined !== tabletPadding?.[1] ? tabletPadding[1] : '' ), ( undefined !== mobilePadding?.[1] ? mobilePadding[1] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tabletPadding?.[2] ? tabletPadding[2] : '' ), ( undefined !== mobilePadding?.[2] ? mobilePadding[2] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] ? padding[3] : '' ), ( undefined !== tabletPadding?.[3] ? tabletPadding[3] : '' ), ( undefined !== mobilePadding?.[3] ? mobilePadding[3] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tablePadding?.[0] ? tablePadding[0] : '' ), ( undefined !== mobilePadding?.[0] ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] ? padding[1] : '' ), ( undefined !== tablePadding?.[1] ? tablePadding[1] : '' ), ( undefined !== mobilePadding?.[1] ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tablePadding?.[2] ? tablePadding[2] : '' ), ( undefined !== mobilePadding?.[2] ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] ? padding[3] : '' ), ( undefined !== tablePadding?.[3] ? tablePadding[3] : '' ), ( undefined !== mobilePadding?.[3] ? mobilePadding[3] : '' ) );
 
 	const previewRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
 	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
@@ -1111,8 +1111,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 												label={__( 'Padding', 'kadence-blocks' )}
 												value={padding}
 												onChange={( value ) => setAttributes( { padding: value } )}
-												tabletValue={tabletPadding}
-												onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
+												tabletValue={tablePadding}
+												onChangeTablet={( value ) => setAttributes( { tablePadding: value } )}
 												mobileValue={mobilePadding}
 												onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
 												min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400 )}
