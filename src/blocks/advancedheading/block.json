@@ -293,7 +293,7 @@
 	},
 	"markBorderStyles": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -303,7 +303,7 @@
 	},
 	"tabletMarkBorderStyles": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -313,7 +313,7 @@
 	},
 	"mobileMarkBorderStyles": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -482,6 +482,52 @@
 	"iconVerticalAlign": {
 	  "type": "string",
 	  "default": "center"
+	},
+	"borderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"tabletBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"mobileBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		"top": [ "", "", "" ],
+		"right": [ "", "", "" ],
+		"bottom": [ "", "", "" ],
+		"left": [ "", "", "" ],
+		"unit": "px"
+	  } ]
+	},
+	"borderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"tabletBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"mobileBorderRadius": {
+	  "type": "array",
+	  "default": [ "", "", "", "" ]
+	},
+	"borderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
 	}
   },
   "usesContext": [
