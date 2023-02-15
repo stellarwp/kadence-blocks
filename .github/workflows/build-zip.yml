@@ -1,17 +1,17 @@
-name: Build release zip
+name: Build kadence-blocks.zip
 
 on:
   workflow_dispatch
 
 jobs:
   build:
-    name: Build Kadence Blocks zip
+    name: Generate release zip
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build plugin # Remove or modify this step as needed
+      - name: Build plugin
         run: |
           composer install --no-dev
           npm install --legacy-peer-deps
