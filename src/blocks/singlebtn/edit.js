@@ -70,14 +70,14 @@ const defaultBtns = {
 	backgroundHoverType: 'solid',
 	width: [ '', '', '' ],
 	widthType:'auto',
-	borderStyle:[ { 
+	borderStyle:[ {
 		top: [ '', '', '' ],
 		right: [ '', '', '' ],
 		bottom: [ '', '', '' ],
 		left: [ '', '', '' ],
 		unit: 'px'
 	} ],
-	borderHoverStyle:[ { 
+	borderHoverStyle:[ {
 		top: [ '', '', '' ],
 		right: [ '', '', '' ],
 		bottom: [ '', '', '' ],
@@ -376,7 +376,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		{ value: 'outline', label: __( 'Outline', 'kadence-blocks' ) },
 		{ value: 'inherit', label: __( 'Theme', 'kadence-blocks' ) },
 	];
-	
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin?.[0] ? margin[0] : '' ), ( undefined !== tabletMargin?.[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin?.[0] ? mobileMargin[0] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin?.[1] ? margin[1] : '' ), ( undefined !== tabletMargin?.[1] ? tabletMargin[1] : '' ), ( undefined !== mobileMargin?.[1] ? mobileMargin[1] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin?.[2] ? margin[2] : '' ), ( undefined !== tabletMargin?.[2] ? tabletMargin[2] : '' ), ( undefined !== mobileMargin?.[2] ? mobileMargin[2] : '' ) );
@@ -557,9 +557,9 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				) }
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -589,7 +589,12 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 					}}
 					dynamicAttribute={'link'}
 					allowClear={true}
-					{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+					isSelected={ isSelected }
+					attributes={ attributes }
+					setAttributes={ setAttributes }
+					name={ name }
+					clientId={ clientId }
+					context={ context }
 				/>
 			) }
 			{showSettings( 'allSettings', 'kadence/advancedbtn' ) && (
@@ -635,7 +640,12 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 											}}
 											dynamicAttribute={'link'}
 											allowClear={true}
-											{...{ attributes, setAttributes, className, isSelected, context, clientId, name }}
+											isSelected={ isSelected }
+											attributes={ attributes }
+											setAttributes={ setAttributes }
+											name={ name }
+											clientId={ clientId }
+											context={ context }
 										/>
 									)}
 									<KadenceRadioButtons
@@ -1105,8 +1115,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 												onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
 												mobileValue={mobilePadding}
 												onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
-												min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -2 : -200 )}
-												max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 12 : 200 )}
+												min={( paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400 )}
+												max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400 )}
 												step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 												unit={paddingUnit}
 												units={[ 'px', 'em', 'rem' ]}
@@ -1122,8 +1132,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 												onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
 												mobileValue={mobileMargin}
 												onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
-												min={( marginUnit === 'em' || marginUnit === 'rem' ? -2 : -200 )}
-												max={( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 200 )}
+												min={( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 )}
+												max={( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 )}
 												step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 												unit={marginUnit}
 												units={[ 'px', 'em', 'rem' ]}
@@ -1156,7 +1166,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration ? kadenceAOSOptions[0].duration : undefined )}
 				data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )}
 			>
-				<span 
+				<span
 					className={btnClassName}
 					style={{
 						paddingTop	   : ( previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit) : undefined ),

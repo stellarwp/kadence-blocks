@@ -204,7 +204,7 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 		.kt-tab-title {
 			padding: 8px 16px;
 			display:flex;
-			color: #444;
+			color: var(--global-palette5, #444444);
 			align-items: center;
 			border-style: solid;
 			border-color: transparent;

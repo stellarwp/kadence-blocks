@@ -33,4 +33,18 @@ registerBlockType( 'kadence/column', {
 	edit,
 	save,
 	deprecated,
+	example: {
+		attributes: {
+			background: '#DADADA',
+			padding: [ 30, 20, 30, 20 ],
+		},
+		innerBlocks: [
+			{
+				name: 'core/paragraph',
+				attributes: {
+					content: __( 'Section content', 'kadence-blocks' ),
+				}
+			}
+		]
+	}
 });

@@ -52,3 +52,8 @@
 		width: 100%;
 	}
 }
+.kadence-radio-container-control.components-button-group .components-button.kb-disabled-btn {
+    opacity: 0.6;
+    box-shadow: none !important;
+    color: #4A5568 !important;
+}

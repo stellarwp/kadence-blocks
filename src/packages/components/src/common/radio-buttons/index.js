@@ -49,15 +49,19 @@ export default function KadenceRadioButtons( {
 					<Button
 						key={`${option.label}-${option.value}-${index}`}
 						isTertiary={value !== option.value}
-						className={`kadence-radio-item radio-${ option.value}${ ( hideLabel ? ' radio-no-label' : '' ) }` }
+						className={`kadence-radio-item radio-${ option.value}${ ( hideLabel ? ' radio-no-label' : '' ) }${ (  undefined !== option?.isDisabled && option.isDisabled ? ' kb-disabled-btn' : '' ) }` }
 						isPrimary={value === option.value}
 						icon={ undefined !== option.icon ? option.icon : undefined }
 						aria-pressed={value === option.value}
 						onClick={() => {
-							if ( allowClear && option.value === value ) {
-								onChange( '')
+							if ( undefined !== option?.isDisabled && option.isDisabled ) {
+								
 							} else {
-								onChange( option.value );
+								if ( allowClear && option.value === value ) {
+									onChange( '')
+								} else {
+									onChange( option.value );
+								}
 							}
 						} }
 						label={ ( hideLabel ? option.label : option?.tooltip )}

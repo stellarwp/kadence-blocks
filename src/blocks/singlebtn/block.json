@@ -68,7 +68,7 @@
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
-	"tablePadding": {
+	"tabletPadding": {
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
@@ -362,7 +362,8 @@
 	"ktanimate": true,
 	"ktanimateadd": true,
 	"ktanimatepreview": true,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"html": false
   },
   "usesContext": [
 	"postId",

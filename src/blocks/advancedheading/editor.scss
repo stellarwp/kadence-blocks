@@ -7,6 +7,10 @@
  // Controls
  @import './kadence-colors.scss';
 
+.kb-advanced-heading-svg-icon svg {
+    display: block !important;
+}
+
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
     padding: 0;
 }
@@ -358,4 +362,16 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 	.components-panel__body-title .components-button {
 		padding: 16px 48px 16px 16px;
 	}
+}
+.kadence-inner-column-inner > .wp-block[data-type="kadence/advancedheading"]:first-child .kadence-advancedheading-text {
+    margin-top: 0;
+}
+.kadence-inner-column-inner > .wp-block[data-type="kadence/advancedheading"]:last-child .kadence-advancedheading-text {
+    margin-bottom: 0;
+}
+.is-root-container > .wp-block[data-type="kadence/advancedheading"]:last-child .kadence-advancedheading-text {
+    margin-bottom: 0;
+}
+.is-root-container > .wp-block[data-type="kadence/advancedheading"]:first-child .kadence-advancedheading-text {
+    margin-top: 0;
 }

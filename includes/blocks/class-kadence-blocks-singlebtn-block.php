@@ -211,7 +211,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['aria-label'] = $attributes['label'];
 		}
 		if ( ! empty( $attributes['link'] ) ) {
-			$wrapper_args['href'] = $attributes['link'];
+			$wrapper_args['href'] = do_shortcode( $attributes['link'] );
 			$rel_add = '';
 			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
 				$wrapper_args['download'] = '';
@@ -230,7 +230,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['rel'] = $rel_add;
 			}
 		}
-		kadence_apply_aos_wrapper_args( $attributes, $wrapper_args );
+		$wrapper_args = kadence_apply_aos_wrapper_args( $attributes, $wrapper_args );
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 		$text       = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
@@ -249,7 +249,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$icon_left  = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'left' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
 		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
 		$html_tag   = ! empty( $attributes['link'] ) ? 'a' : 'span';
-		$content    = sprintf( '<%1$s %2$s>%3$s %4$s %5$s</%1$s>', $html_tag, $wrapper_attributes, $icon_left, $text, $icon_right );
+		$content    = sprintf( '<%1$s %2$s>%3$s%4$s%5$s</%1$s>', $html_tag, $wrapper_attributes, $icon_left, $text, $icon_right );
 		return $content;
 	}
 

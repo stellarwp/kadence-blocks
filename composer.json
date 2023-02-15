@@ -43,19 +43,11 @@
 			"namespace_prefix": "KadenceWP\\KadenceBlocks",
 			"delete_vendor_files": true,
 			"packages": [
+				"stellarwp/container-contract",
 				"stellarwp/telemetry",
 				"lucatume/di52",
 				"psr/container"
-			],
-			"override_autoload": {
-				"stellarwp/telemetry": {
-					"files": [
-						"src/views",
-						"src/resources",
-						"src/Telemetry"
-					]
-				}
-			}
+			]
 		}
 	}
 }

@@ -24,5 +24,21 @@ registerBlockType('kadence/show-more', {
 	},
 	transforms,
 	edit,
-	save
+	save,
+	example: {
+		attributes: {},
+		innerBlocks: [
+			{
+				name: 'kadence/column',
+				innerBlocks: [
+					{
+						name: 'core/paragraph',
+						attributes: {
+							content: __( 'This content will be partially hidden. Click the button below to reveal more.', 'kadence-blocks' ),
+						}
+					}
+				]
+			},
+		]
+	}
 });

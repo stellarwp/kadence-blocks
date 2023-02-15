@@ -26,7 +26,7 @@ import {
  * Import External
  */
 import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
-import {map} from 'lodash';
+import {map, isEqual} from 'lodash';
 /**
  * Import Components
  */
@@ -73,10 +73,9 @@ import {
     useBlockProps,
     InnerBlocks,
     useInnerBlocksProps,
-    ButtonBlockAppender,
+    store as blockEditorStore,
 } from '@wordpress/block-editor';
-
-import {useSelect, useDispatch} from '@wordpress/data';
+import {useSelect, useDispatch, withDispatch, withSelect} from '@wordpress/data';
 
 import {
     Button,
@@ -84,10 +83,17 @@ import {
     RangeControl,
     ToggleControl,
     SelectControl,
+    ToolbarButton,
+    ToolbarGroup,
     Tooltip,
 } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
+import { 
+    plusCircle
+} from '@wordpress/icons';
 
 import classnames from 'classnames';
+import { migrateToInnerblocks } from './utils';
 
 /**
  * Build the overlay edit
@@ -99,6 +105,10 @@ function KadenceTestimonials({
     clientId,
     isSelected,
     context,
+    testimonialBlock,
+    insertTestimonial,
+    insertTestimonialItems,
+    onDelete,
 }) {
     const {
         uniqueID,
@@ -219,18 +229,16 @@ function KadenceTestimonials({
     const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
-    const {isUniqueID, isUniqueBlock, previewDevice, childBlocks} = useSelect(
+    const {isUniqueID, isUniqueBlock, previewDevice } = useSelect(
         (select) => {
             return {
                 isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
                 isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-                childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
             };
         },
         [clientId],
     );
-	const { removeBlock } = useDispatch( 'core/block-editor' );
 
 	const savemediaStyles = (value) => {
 		const newUpdate = mediaStyles.map((item, index) => {
@@ -521,17 +529,24 @@ function KadenceTestimonials({
 
     }, []);
 
-	useEffect( () => {
-		// Delete if no inner blocks.
-		if ( uniqueID && ! childBlocks.length ) {
-			removeBlock( clientId, true );
+    useEffect( () => {
+		if ( uniqueID && ! testimonialBlock.innerBlocks.length ) {
+			if ( testimonials?.length && testimonials.length && undefined !== metadata?.attributes?.testimonials?.default && !isEqual( metadata.attributes.testimonials.default, testimonials ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertTestimonialItems( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				onDelete();
+			}
 		}
-	}, [ childBlocks.length ] );
+	}, [ testimonialBlock.innerBlocks.length ] );
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
 
     const previewTitleLineHeight = getPreviewSize(previewDevice, (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] && '' !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] && '' !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : ''), (undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] && '' !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''));
+    const previewTitleLineHeightLineType = ( undefined !== titleFont?.[0]?.lineType && '' !== titleFont?.[0]?.lineType ? titleFont?.[0]?.lineType : 'px' );
     const previewTitleMinHeight = getPreviewSize(previewDevice, (undefined !== titleMinHeight && undefined !== titleMinHeight[0] ? titleMinHeight[0] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[1] ? titleMinHeight[1] : ''), (undefined !== titleMinHeight && undefined !== titleMinHeight[2] ? titleMinHeight[2] : ''));
     const previewContentMinHeight = getPreviewSize(previewDevice, (undefined !== contentMinHeight && undefined !== contentMinHeight[0] ? contentMinHeight[0] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[1] ? contentMinHeight[1] : ''), (undefined !== contentMinHeight && undefined !== contentMinHeight[2] ? contentMinHeight[2] : ''));
 
@@ -588,53 +603,53 @@ function KadenceTestimonials({
 
     const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
 
-	const previewIconMarginTop = getPreviewSize(previewDevice, (undefined !== iconMargin[0] ? iconMargin[0] : ''), (undefined !== tabletIconMargin[0] ? tabletIconMargin[0] : ''), (undefined !== mobileIconMargin[0] ? mobileIconMargin[0] : ''));
-	const previewIconMarginRight = getPreviewSize(previewDevice, (undefined !== iconMargin[1] ? iconMargin[1] : ''), (undefined !== tabletIconMargin[1] ? tabletIconMargin[1] : ''), (undefined !== mobileIconMargin[1] ? mobileIconMargin[1] : ''));
-	const previewIconMarginBottom = getPreviewSize(previewDevice, (undefined !== iconMargin[2] ? iconMargin[2] : ''), (undefined !== tabletIconMargin[2] ? tabletIconMargin[2] : ''), (undefined !== mobileIconMargin[2] ? mobileIconMargin[2] : ''));
-	const previewIconMarginLeft = getPreviewSize(previewDevice, (undefined !== iconMargin[3] ? iconMargin[3] : ''), (undefined !== tabletIconMargin[3] ? tabletIconMargin[3] : ''), (undefined !== mobileIconMargin[3] ? mobileIconMargin[3] : ''));
-	const previewIconPaddingTop = getPreviewSize(previewDevice, (undefined !== iconPadding[0] ? iconPadding[0] : ''), (undefined !== tabletIconPadding[0] ? tabletIconPadding[0] : ''), (undefined !== mobileIconPadding[0] ? mobileIconPadding[0] : ''));
-	const previewIconPaddingRight = getPreviewSize(previewDevice, (undefined !== iconPadding[1] ? iconPadding[1] : ''), (undefined !== tabletIconPadding[1] ? tabletIconPadding[1] : ''), (undefined !== mobileIconPadding[1] ? mobileIconPadding[1] : ''));
-	const previewIconPaddingBottom = getPreviewSize(previewDevice, (undefined !== iconPadding[2] ? iconPadding[2] : ''), (undefined !== tabletIconPadding[2] ? tabletIconPadding[2] : ''), (undefined !== mobileIconPadding[2] ? mobileIconPadding[2] : ''));
-	const previewIconPaddingLeft = getPreviewSize(previewDevice, (undefined !== iconPadding[3] ? iconPadding[3] : ''), (undefined !== tabletIconPadding[3] ? tabletIconPadding[3] : ''), (undefined !== mobileIconPadding[3] ? mobileIconPadding[3] : ''));
+	const previewIconMarginTop = getPreviewSize(previewDevice, (undefined !== iconMargin?.[0] ? iconMargin[0] : ''), (undefined !== tabletIconMargin?.[0] ? tabletIconMargin[0] : ''), (undefined !== mobileIconMargin?.[0] ? mobileIconMargin[0] : ''));
+	const previewIconMarginRight = getPreviewSize(previewDevice, (undefined !== iconMargin?.[1] ? iconMargin[1] : ''), (undefined !== tabletIconMargin?.[1] ? tabletIconMargin[1] : ''), (undefined !== mobileIconMargin?.[1] ? mobileIconMargin[1] : ''));
+	const previewIconMarginBottom = getPreviewSize(previewDevice, (undefined !== iconMargin?.[2] ? iconMargin[2] : ''), (undefined !== tabletIconMargin?.[2] ? tabletIconMargin[2] : ''), (undefined !== mobileIconMargin?.[2] ? mobileIconMargin[2] : ''));
+	const previewIconMarginLeft = getPreviewSize(previewDevice, (undefined !== iconMargin?.[3] ? iconMargin[3] : ''), (undefined !== tabletIconMargin?.[3] ? tabletIconMargin[3] : ''), (undefined !== mobileIconMargin?.[3] ? mobileIconMargin[3] : ''));
+	const previewIconPaddingTop = getPreviewSize(previewDevice, (undefined !== iconPadding?.[0] ? iconPadding[0] : ''), (undefined !== tabletIconPadding?.[0] ? tabletIconPadding[0] : ''), (undefined !== mobileIconPadding?.[0] ? mobileIconPadding[0] : ''));
+	const previewIconPaddingRight = getPreviewSize(previewDevice, (undefined !== iconPadding?.[1] ? iconPadding[1] : ''), (undefined !== tabletIconPadding?.[1] ? tabletIconPadding[1] : ''), (undefined !== mobileIconPadding?.[1] ? mobileIconPadding[1] : ''));
+	const previewIconPaddingBottom = getPreviewSize(previewDevice, (undefined !== iconPadding?.[2] ? iconPadding[2] : ''), (undefined !== tabletIconPadding?.[2] ? tabletIconPadding[2] : ''), (undefined !== mobileIconPadding?.[2] ? mobileIconPadding[2] : ''));
+	const previewIconPaddingLeft = getPreviewSize(previewDevice, (undefined !== iconPadding?.[3] ? iconPadding[3] : ''), (undefined !== tabletIconPadding?.[3] ? tabletIconPadding[3] : ''), (undefined !== mobileIconPadding?.[3] ? mobileIconPadding[3] : ''));
 
-	const previewTitleMarginTop = getPreviewSize(previewDevice, (undefined !== titleMargin[0] ? titleMargin[0] : ''), (undefined !== tabletTitleMargin[0] ? tabletTitleMargin[0] : ''), (undefined !== mobileTitleMargin[0] ? mobileTitleMargin[0] : ''));
-	const previewTitleMarginRight = getPreviewSize(previewDevice, (undefined !== titleMargin[1] ? titleMargin[1] : ''), (undefined !== tabletTitleMargin[1] ? tabletTitleMargin[1] : ''), (undefined !== mobileTitleMargin[1] ? mobileTitleMargin[1] : ''));
-	const previewTitleMarginBottom = getPreviewSize(previewDevice, (undefined !== titleMargin[2] ? titleMargin[2] : ''), (undefined !== tabletTitleMargin[2] ? tabletTitleMargin[2] : ''), (undefined !== mobileTitleMargin[2] ? mobileTitleMargin[2] : ''));
-	const previewTitleMarginLeft = getPreviewSize(previewDevice, (undefined !== titleMargin[3] ? titleMargin[3] : ''), (undefined !== tabletTitleMargin[3] ? tabletTitleMargin[3] : ''), (undefined !== mobileTitleMargin[3] ? mobileTitleMargin[3] : ''));
-	const previewTitlePaddingTop = getPreviewSize(previewDevice, (undefined !== titlePadding[0] ? titlePadding[0] : ''), (undefined !== tabletTitlePadding[0] ? tabletTitlePadding[0] : ''), (undefined !== mobileTitlePadding[0] ? mobileTitlePadding[0] : ''));
-	const previewTitlePaddingRight = getPreviewSize(previewDevice, (undefined !== titlePadding[1] ? titlePadding[1] : ''), (undefined !== tabletTitlePadding[1] ? tabletTitlePadding[1] : ''), (undefined !== mobileTitlePadding[1] ? mobileTitlePadding[1] : ''));
-	const previewTitlePaddingBottom = getPreviewSize(previewDevice, (undefined !== titlePadding[2] ? titlePadding[2] : ''), (undefined !== tabletTitlePadding[2] ? tabletTitlePadding[2] : ''), (undefined !== mobileTitlePadding[2] ? mobileTitlePadding[2] : ''));
-	const previewTitlePaddingLeft = getPreviewSize(previewDevice, (undefined !== titlePadding[3] ? titlePadding[3] : ''), (undefined !== tabletTitlePadding[3] ? tabletTitlePadding[3] : ''), (undefined !== mobileTitlePadding[3] ? mobileTitlePadding[3] : ''));
+	const previewTitleMarginTop = getPreviewSize(previewDevice, (undefined !== titleMargin?.[0] ? titleMargin[0] : ''), (undefined !== tabletTitleMargin?.[0] ? tabletTitleMargin[0] : ''), (undefined !== mobileTitleMargin?.[0] ? mobileTitleMargin[0] : ''));
+	const previewTitleMarginRight = getPreviewSize(previewDevice, (undefined !== titleMargin?.[1] ? titleMargin[1] : ''), (undefined !== tabletTitleMargin?.[1] ? tabletTitleMargin[1] : ''), (undefined !== mobileTitleMargin?.[1] ? mobileTitleMargin[1] : ''));
+	const previewTitleMarginBottom = getPreviewSize(previewDevice, (undefined !== titleMargin?.[2] ? titleMargin[2] : ''), (undefined !== tabletTitleMargin?.[2] ? tabletTitleMargin[2] : ''), (undefined !== mobileTitleMargin?.[2] ? mobileTitleMargin[2] : ''));
+	const previewTitleMarginLeft = getPreviewSize(previewDevice, (undefined !== titleMargin?.[3] ? titleMargin[3] : ''), (undefined !== tabletTitleMargin?.[3] ? tabletTitleMargin[3] : ''), (undefined !== mobileTitleMargin?.[3] ? mobileTitleMargin[3] : ''));
+	const previewTitlePaddingTop = getPreviewSize(previewDevice, (undefined !== titlePadding?.[0] ? titlePadding[0] : ''), (undefined !== tabletTitlePadding?.[0] ? tabletTitlePadding[0] : ''), (undefined !== mobileTitlePadding?.[0] ? mobileTitlePadding[0] : ''));
+	const previewTitlePaddingRight = getPreviewSize(previewDevice, (undefined !== titlePadding?.[1] ? titlePadding[1] : ''), (undefined !== tabletTitlePadding?.[1] ? tabletTitlePadding[1] : ''), (undefined !== mobileTitlePadding?.[1] ? mobileTitlePadding[1] : ''));
+	const previewTitlePaddingBottom = getPreviewSize(previewDevice, (undefined !== titlePadding?.[2] ? titlePadding[2] : ''), (undefined !== tabletTitlePadding?.[2] ? tabletTitlePadding[2] : ''), (undefined !== mobileTitlePadding?.[2] ? mobileTitlePadding[2] : ''));
+	const previewTitlePaddingLeft = getPreviewSize(previewDevice, (undefined !== titlePadding?.[3] ? titlePadding[3] : ''), (undefined !== tabletTitlePadding?.[3] ? tabletTitlePadding[3] : ''), (undefined !== mobileTitlePadding?.[3] ? mobileTitlePadding[3] : ''));
 
 	// Rating
-	const previewRatingMarginTop = getPreviewSize(previewDevice, (undefined !== ratingMargin[0] ? ratingMargin[0] : ''), (undefined !== tabletRatingMargin[0] ? tabletRatingMargin[0] : ''), (undefined !== mobileRatingMargin[0] ? mobileRatingMargin[0] : ''));
-	const previewRatingMarginRight = getPreviewSize(previewDevice, (undefined !== ratingMargin[1] ? ratingMargin[1] : ''), (undefined !== tabletRatingMargin[1] ? tabletRatingMargin[1] : ''), (undefined !== mobileRatingMargin[1] ? mobileRatingMargin[1] : ''));
-	const previewRatingMarginBottom = getPreviewSize(previewDevice, (undefined !== ratingMargin[2] ? ratingMargin[2] : ''), (undefined !== tabletRatingMargin[2] ? tabletRatingMargin[2] : ''), (undefined !== mobileRatingMargin[2] ? mobileRatingMargin[2] : ''));
-	const previewRatingMarginLeft = getPreviewSize(previewDevice, (undefined !== ratingMargin[3] ? ratingMargin[3] : ''), (undefined !== tabletRatingMargin[3] ? tabletRatingMargin[3] : ''), (undefined !== mobileRatingMargin[3] ? mobileRatingMargin[3] : ''));
-	const previewRatingPaddingTop = getPreviewSize(previewDevice, (undefined !== ratingPadding[0] ? ratingPadding[0] : ''), (undefined !== tabletRatingPadding[0] ? tabletRatingPadding[0] : ''), (undefined !== mobileRatingPadding[0] ? mobileRatingPadding[0] : ''));
-	const previewRatingPaddingRight = getPreviewSize(previewDevice, (undefined !== ratingPadding[1] ? ratingPadding[1] : ''), (undefined !== tabletRatingPadding[1] ? tabletRatingPadding[1] : ''), (undefined !== mobileRatingPadding[1] ? mobileRatingPadding[1] : ''));
-	const previewRatingPaddingBottom = getPreviewSize(previewDevice, (undefined !== ratingPadding[2] ? ratingPadding[2] : ''), (undefined !== tabletRatingPadding[2] ? tabletRatingPadding[2] : ''), (undefined !== mobileRatingPadding[2] ? mobileRatingPadding[2] : ''));
-	const previewRatingPaddingLeft = getPreviewSize(previewDevice, (undefined !== ratingPadding[3] ? ratingPadding[3] : ''), (undefined !== tabletRatingPadding[3] ? tabletRatingPadding[3] : ''), (undefined !== mobileRatingPadding[3] ? mobileRatingPadding[3] : ''));
+	const previewRatingMarginTop = getPreviewSize(previewDevice, (undefined !== ratingMargin?.[0] ? ratingMargin[0] : ''), (undefined !== tabletRatingMargin?.[0] ? tabletRatingMargin[0] : ''), (undefined !== mobileRatingMargin?.[0] ? mobileRatingMargin[0] : ''));
+	const previewRatingMarginRight = getPreviewSize(previewDevice, (undefined !== ratingMargin?.[1] ? ratingMargin[1] : ''), (undefined !== tabletRatingMargin?.[1] ? tabletRatingMargin[1] : ''), (undefined !== mobileRatingMargin?.[1] ? mobileRatingMargin[1] : ''));
+	const previewRatingMarginBottom = getPreviewSize(previewDevice, (undefined !== ratingMargin?.[2] ? ratingMargin[2] : ''), (undefined !== tabletRatingMargin?.[2] ? tabletRatingMargin[2] : ''), (undefined !== mobileRatingMargin?.[2] ? mobileRatingMargin[2] : ''));
+	const previewRatingMarginLeft = getPreviewSize(previewDevice, (undefined !== ratingMargin?.[3] ? ratingMargin[3] : ''), (undefined !== tabletRatingMargin?.[3] ? tabletRatingMargin[3] : ''), (undefined !== mobileRatingMargin?.[3] ? mobileRatingMargin[3] : ''));
+	const previewRatingPaddingTop = getPreviewSize(previewDevice, (undefined !== ratingPadding?.[0] ? ratingPadding[0] : ''), (undefined !== tabletRatingPadding?.[0] ? tabletRatingPadding[0] : ''), (undefined !== mobileRatingPadding?.[0] ? mobileRatingPadding[0] : ''));
+	const previewRatingPaddingRight = getPreviewSize(previewDevice, (undefined !== ratingPadding?.[1] ? ratingPadding[1] : ''), (undefined !== tabletRatingPadding?.[1] ? tabletRatingPadding[1] : ''), (undefined !== mobileRatingPadding?.[1] ? mobileRatingPadding[1] : ''));
+	const previewRatingPaddingBottom = getPreviewSize(previewDevice, (undefined !== ratingPadding?.[2] ? ratingPadding[2] : ''), (undefined !== tabletRatingPadding?.[2] ? tabletRatingPadding[2] : ''), (undefined !== mobileRatingPadding?.[2] ? mobileRatingPadding[2] : ''));
+	const previewRatingPaddingLeft = getPreviewSize(previewDevice, (undefined !== ratingPadding?.[3] ? ratingPadding[3] : ''), (undefined !== tabletRatingPadding?.[3] ? tabletRatingPadding[3] : ''), (undefined !== mobileRatingPadding?.[3] ? mobileRatingPadding[3] : ''));
 
 	// Media
-	const previewMediaMarginTop = getPreviewSize(previewDevice, (undefined !== mediaMargin[0] ? mediaMargin[0] : ''), (undefined !== tabletMediaMargin[0] ? tabletMediaMargin[0] : ''), (undefined !== mobileMediaMargin[0] ? mobileMediaMargin[0] : ''));
-	const previewMediaMarginRight = getPreviewSize(previewDevice, (undefined !== mediaMargin[1] ? mediaMargin[1] : ''), (undefined !== tabletMediaMargin[1] ? tabletMediaMargin[1] : ''), (undefined !== mobileMediaMargin[1] ? mobileMediaMargin[1] : ''));
-	const previewMediaMarginBottom = getPreviewSize(previewDevice, (undefined !== mediaMargin[2] ? mediaMargin[2] : ''), (undefined !== tabletMediaMargin[2] ? tabletMediaMargin[2] : ''), (undefined !== mobileMediaMargin[2] ? mobileMediaMargin[2] : ''));
-	const previewMediaMarginLeft = getPreviewSize(previewDevice, (undefined !== mediaMargin[3] ? mediaMargin[3] : ''), (undefined !== tabletMediaMargin[3] ? tabletMediaMargin[3] : ''), (undefined !== mobileMediaMargin[3] ? mobileMediaMargin[3] : ''));
-	const previewMediaPaddingTop = getPreviewSize(previewDevice, (undefined !== mediaPadding[0] ? mediaPadding[0] : ''), (undefined !== tabletMediaPadding[0] ? tabletMediaPadding[0] : ''), (undefined !== mobileMediaPadding[0] ? mobileMediaPadding[0] : ''));
-	const previewMediaPaddingRight = getPreviewSize(previewDevice, (undefined !== mediaPadding[1] ? mediaPadding[1] : ''), (undefined !== tabletMediaPadding[1] ? tabletMediaPadding[1] : ''), (undefined !== mobileMediaPadding[1] ? mobileMediaPadding[1] : ''));
-	const previewMediaPaddingBottom = getPreviewSize(previewDevice, (undefined !== mediaPadding[2] ? mediaPadding[2] : ''), (undefined !== tabletMediaPadding[2] ? tabletMediaPadding[2] : ''), (undefined !== mobileMediaPadding[2] ? mobileMediaPadding[2] : ''));
-	const previewMediaPaddingLeft = getPreviewSize(previewDevice, (undefined !== mediaPadding[3] ? mediaPadding[3] : ''), (undefined !== tabletMediaPadding[3] ? tabletMediaPadding[3] : ''), (undefined !== mobileMediaPadding[3] ? mobileMediaPadding[3] : ''));
+	const previewMediaMarginTop = getPreviewSize(previewDevice, (undefined !== mediaMargin?.[0] ? mediaMargin[0] : ''), (undefined !== tabletMediaMargin?.[0] ? tabletMediaMargin[0] : ''), (undefined !== mobileMediaMargin?.[0] ? mobileMediaMargin[0] : ''));
+	const previewMediaMarginRight = getPreviewSize(previewDevice, (undefined !== mediaMargin?.[1] ? mediaMargin[1] : ''), (undefined !== tabletMediaMargin?.[1] ? tabletMediaMargin[1] : ''), (undefined !== mobileMediaMargin?.[1] ? mobileMediaMargin[1] : ''));
+	const previewMediaMarginBottom = getPreviewSize(previewDevice, (undefined !== mediaMargin?.[2] ? mediaMargin[2] : ''), (undefined !== tabletMediaMargin?.[2] ? tabletMediaMargin[2] : ''), (undefined !== mobileMediaMargin?.[2] ? mobileMediaMargin[2] : ''));
+	const previewMediaMarginLeft = getPreviewSize(previewDevice, (undefined !== mediaMargin?.[3] ? mediaMargin[3] : ''), (undefined !== tabletMediaMargin?.[3] ? tabletMediaMargin[3] : ''), (undefined !== mobileMediaMargin?.[3] ? mobileMediaMargin[3] : ''));
+	const previewMediaPaddingTop = getPreviewSize(previewDevice, (undefined !== mediaPadding?.[0] ? mediaPadding[0] : ''), (undefined !== tabletMediaPadding?.[0] ? tabletMediaPadding[0] : ''), (undefined !== mobileMediaPadding?.[0] ? mobileMediaPadding[0] : ''));
+	const previewMediaPaddingRight = getPreviewSize(previewDevice, (undefined !== mediaPadding?.[1] ? mediaPadding[1] : ''), (undefined !== tabletMediaPadding?.[1] ? tabletMediaPadding[1] : ''), (undefined !== mobileMediaPadding?.[1] ? mobileMediaPadding[1] : ''));
+	const previewMediaPaddingBottom = getPreviewSize(previewDevice, (undefined !== mediaPadding?.[2] ? mediaPadding[2] : ''), (undefined !== tabletMediaPadding?.[2] ? tabletMediaPadding[2] : ''), (undefined !== mobileMediaPadding?.[2] ? mobileMediaPadding[2] : ''));
+	const previewMediaPaddingLeft = getPreviewSize(previewDevice, (undefined !== mediaPadding?.[3] ? mediaPadding[3] : ''), (undefined !== tabletMediaPadding?.[3] ? tabletMediaPadding[3] : ''), (undefined !== mobileMediaPadding?.[3] ? mobileMediaPadding[3] : ''));
 
 	// Wrapper
-	const previewWrapperMarginTop = getPreviewSize(previewDevice, (undefined !== wrapperMargin[0] ? wrapperMargin[0] : ''), (undefined !== tabletWrapperMargin[0] ? tabletWrapperMargin[0] : ''), (undefined !== mobileWrapperMargin[0] ? mobileWrapperMargin[0] : ''));
-	const previewWrapperMarginRight = getPreviewSize(previewDevice, (undefined !== wrapperMargin[1] ? wrapperMargin[1] : ''), (undefined !== tabletWrapperMargin[1] ? tabletWrapperMargin[1] : ''), (undefined !== mobileWrapperMargin[1] ? mobileWrapperMargin[1] : ''));
-	const previewWrapperMarginBottom = getPreviewSize(previewDevice, (undefined !== wrapperMargin[2] ? wrapperMargin[2] : ''), (undefined !== tabletWrapperMargin[2] ? tabletWrapperMargin[2] : ''), (undefined !== mobileWrapperMargin[2] ? mobileWrapperMargin[2] : ''));
-	const previewWrapperMarginLeft = getPreviewSize(previewDevice, (undefined !== wrapperMargin[3] ? wrapperMargin[3] : ''), (undefined !== tabletWrapperMargin[3] ? tabletWrapperMargin[3] : ''), (undefined !== mobileWrapperMargin[3] ? mobileWrapperMargin[3] : ''));
-	const previewWrapperPaddingTop = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[0] ? wrapperPadding[0] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[0] ? wrapperTabletPadding[0] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[0] ? wrapperMobilePadding[0] : ''));
-	const previewWrapperPaddingRight = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[1] ? wrapperPadding[1] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[1] ? wrapperTabletPadding[1] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[1] ? wrapperMobilePadding[1] : ''));
-	const previewWrapperPaddingBottom = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[2] ? wrapperPadding[2] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[2] ? wrapperTabletPadding[2] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[2] ? wrapperMobilePadding[2] : ''));
-	const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[3] ? wrapperMobilePadding[3] : ''));
+	const previewWrapperMarginTop = getPreviewSize(previewDevice, (undefined !== wrapperMargin?.[0] ? wrapperMargin[0] : ''), (undefined !== tabletWrapperMargin?.[0] ? tabletWrapperMargin[0] : ''), (undefined !== mobileWrapperMargin?.[0] ? mobileWrapperMargin[0] : ''));
+	const previewWrapperMarginRight = getPreviewSize(previewDevice, (undefined !== wrapperMargin?.[1] ? wrapperMargin[1] : ''), (undefined !== tabletWrapperMargin?.[1] ? tabletWrapperMargin[1] : ''), (undefined !== mobileWrapperMargin?.[1] ? mobileWrapperMargin[1] : ''));
+	const previewWrapperMarginBottom = getPreviewSize(previewDevice, (undefined !== wrapperMargin?.[2] ? wrapperMargin[2] : ''), (undefined !== tabletWrapperMargin?.[2] ? tabletWrapperMargin[2] : ''), (undefined !== mobileWrapperMargin?.[2] ? mobileWrapperMargin[2] : ''));
+	const previewWrapperMarginLeft = getPreviewSize(previewDevice, (undefined !== wrapperMargin?.[3] ? wrapperMargin[3] : ''), (undefined !== tabletWrapperMargin?.[3] ? tabletWrapperMargin[3] : ''), (undefined !== mobileWrapperMargin?.[3] ? mobileWrapperMargin[3] : ''));
+	const previewWrapperPaddingTop = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding?.[0] ? wrapperPadding[0] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding?.[0] ? wrapperTabletPadding[0] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding?.[0] ? wrapperMobilePadding[0] : ''));
+	const previewWrapperPaddingRight = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding?.[1] ? wrapperPadding[1] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding?.[1] ? wrapperTabletPadding[1] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding?.[1] ? wrapperMobilePadding[1] : ''));
+	const previewWrapperPaddingBottom = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding?.[2] ? wrapperPadding[2] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding?.[2] ? wrapperTabletPadding[2] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding?.[2] ? wrapperMobilePadding[2] : ''));
+	const previewWrapperPaddingLeft = getPreviewSize(previewDevice, (undefined !== wrapperPadding && undefined !== wrapperPadding?.[3] ? wrapperPadding[3] : ''), (undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding?.[3] ? wrapperTabletPadding[3] : ''), (undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding?.[3] ? wrapperMobilePadding[3] : ''));
 
 	// let iconPadding = (displayIcon && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] < 0) ? Math.abs(iconStyles[0].margin[0]) + 'px' : undefined);
     // if (iconPadding === undefined && iconStyles[0].icon && iconStyles[0].margin && iconStyles[0].margin[0] && (iconStyles[0].margin[0] >= 0)) {
@@ -722,7 +737,7 @@ function KadenceTestimonials({
 						${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
 						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
 						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : ''
+						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : '' }
 					}
 					.kt-blocks-testimonials-wrap${uniqueID} {
 						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
@@ -742,7 +757,7 @@ function KadenceTestimonials({
                     ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                         ${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
                         ${ previewContainerMinHeight ? 'min-height: ' + previewContainerMinHeight + 'px;' : '' }
-                        ${ iconPadding ? 'padding-top: ' + iconPadding + ';' : '' }
+                        ${ undefined !== iconPadding?.[0] && '' !== iconPadding?.[0] ? 'padding-top: ' + iconPadding[0] + ';' : '' }
                     }` }
 
                     /* Title */
@@ -1101,6 +1116,18 @@ function KadenceTestimonials({
                             onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
                             preventMultiple={ [ 'testimonials' ] }
                         />
+                        <ToolbarGroup>
+                            <ToolbarButton
+                                className="kb-icons-add-icon"
+                                icon={ plusCircle }
+                                onClick={ () => {
+                                    const newBlock = createBlock( 'kadence/testimonial' );
+                                    insertTestimonial( newBlock );
+                                } }
+                                label={  __( 'Add Testimonial', 'kadence-blocks' ) }
+                                showTooltip={ true }
+                            />
+                        </ToolbarGroup>
                     </BlockControls>
                     <InspectorControls>
                         <InspectorControlTabs
@@ -2065,8 +2092,8 @@ function KadenceTestimonials({
 											onChangeTablet={( value ) => setAttributes( { wrapperTabletPadding: value } )}
 											mobileValue={wrapperMobilePadding}
 											onChangeMobile={( value ) => setAttributes( { wrapperMobilePadding: value } )}
-											min={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? -2 : -200 )}
-											max={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200 )}
+											min={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? -25 : -400 )}
+											max={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 25 : 400 )}
 											step={( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1 )}
 											unit={wrapperPaddingType}
 											units={[ 'px', 'em', 'rem' ]}
@@ -2080,8 +2107,8 @@ function KadenceTestimonials({
 											onChangeTablet={( value ) => setAttributes( { tabletWrapperMargin: value } )}
 											mobileValue={mobileWrapperMargin}
 											onChangeMobile={( value ) => setAttributes( { mobileWrapperMargin: value } )}
-											min={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -2 : -200 )}
-											max={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 12 : 200 )}
+											min={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -25 : -400 )}
+											max={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 25 : 400 )}
 											step={( wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 0.1 : 1 )}
 											unit={wrapperMarginUnit}
 											units={[ 'px', 'em', 'rem' ]}
@@ -2133,10 +2160,6 @@ function KadenceTestimonials({
                             >
                             <SplideTrack { ...innerBlocksProps }>
                             </SplideTrack>
-                            {(isSelected &&
-			                    <ButtonBlockAppender rootClientId={ clientId } />
-                            )}
-
                         </Splide>
 
 
@@ -2177,4 +2200,43 @@ function KadenceTestimonials({
     );
 }
 
-export default KadenceTestimonials;
+//export default KadenceTestimonials;
+const KadenceTestimonialsWrapper = withDispatch(
+	( dispatch, ownProps, registry ) => ( {
+		insertTestimonial( newBlock ) {
+			const { clientId } = ownProps;
+			const { insertBlock } = dispatch( blockEditorStore );
+			const { getBlock } = registry.select( blockEditorStore );
+			const block = getBlock( clientId );
+			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertTestimonialItems( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
+		},
+		onDelete() {
+			const { clientId } = ownProps;
+			const { removeBlock } = dispatch( blockEditorStore );
+			removeBlock( clientId, true );
+		},
+	} )
+)( KadenceTestimonials );
+const KadenceTestimonialsEdit = ( props ) => {
+	const { clientId } = props;
+	const { testimonialBlock } = useSelect(
+		( select ) => {
+			const {
+				getBlock,
+			} = select( 'core/block-editor' );
+			const block = getBlock( clientId );
+			return {
+				testimonialBlock: block,
+			};
+		},
+		[ clientId ]
+	);
+	return <KadenceTestimonialsWrapper testimonialBlock={ testimonialBlock } { ...props } />;
+};
+export default KadenceTestimonialsEdit;

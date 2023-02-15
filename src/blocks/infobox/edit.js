@@ -110,7 +110,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId } ) {
+function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId, name } ) {
 
 	const {
 		uniqueID,
@@ -302,11 +302,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', contextPost );
 		}
 	};
-
-	const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
 	const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
-	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
+	const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 25 : 400 );
 	const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
 	const previewContainerPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
 	const previewContainerPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
@@ -353,21 +351,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const previewhAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
 	const previewMediaAlign = getPreviewSize( previewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
-	const widthTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: '%', name: '%' },
-		{ key: 'vw', name: 'vw' },
-	];
-	const marginTypes = [
-		{ key: 'px', name: 'px' },
-		{ key: 'em', name: 'em' },
-		{ key: '%', name: '%' },
-		{ key: 'vh', name: 'vh' },
-		{ key: 'rem', name: 'rem' },
-	];
-
-	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -12 : -200 );
-	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );
+	const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400 );
+	const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400 );
 	const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 
 	const layoutPresetOptions = [
@@ -1238,7 +1223,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
@@ -1364,8 +1349,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 									}}
 									dynamicAttribute={'link'}
 									allowClear={true}
-									setAttributes={setAttributes}
-									{...attributes}
+									isSelected={ isSelected }
+									attributes={ attributes }
+									setAttributes={ setAttributes }
+									name={ name }
+									clientId={ clientId }
+									context={ context }
 								/>
 								<SelectControl
 									label={__( 'Link Content', 'kadence-blocks' )}
@@ -1611,8 +1600,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												onSaveImage={onSelectImage}
 												disableMediaButtons={( mediaImage[ 0 ].url ? true : false )}
 												dynamicAttribute="mediaImage:0:url"
-												setAttributes={setAttributes}
-												{...attributes}
+												isSelected={ isSelected }
+												attributes={ attributes }
+												setAttributes={ setAttributes }
+												name={ name }
+												clientId={ clientId }
+												context={ context }
 											/>
 											{mediaImage[ 0 ].id && 'svg+xml' !== mediaImage[ 0 ].subtype && (
 												<ImageSizeControl

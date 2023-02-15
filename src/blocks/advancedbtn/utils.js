@@ -96,7 +96,7 @@ export function migrateToInnerblocks( attributes ) {
 			// 9. Update inheritStyles to new default of fill.
 			if ( undefined !== newAttrs?.inheritStyles && '' !== newAttrs.inheritStyles && 'inherit' === newAttrs.inheritStyles ) {
 				newAttrs.inheritStyles = 'inherit';
-			} else if ( undefined !== newAttrs?.borderWidth && '' !== newAttrs.borderWidth && 0 === parseInt( newAttrs.borderWidth ) ) {
+			} else if ( undefined !== newAttrs?.borderWidth && '' !== newAttrs.borderWidth && 0 === parseInt( newAttrs.borderWidth ) && ( ( undefined !== newAttrs?.background && '' !== newAttrs.background ) || ( undefined !== newAttrs?.backgroundType && 'gradient' === newAttrs.backgroundType ) ) ) {
 				newAttrs.inheritStyles = 'fill';
 			} else {
 				newAttrs.inheritStyles = 'outline';

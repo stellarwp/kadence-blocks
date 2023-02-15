@@ -10,7 +10,7 @@ import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 /**
  * Import Externals
  */
-import { map, get } from 'lodash';
+import { map, get, isEqual } from 'lodash';
 /**
  * Import Kadence Components
  */
@@ -49,6 +49,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { migrateToInnerblocks } from './utils';
 import {
 	useBlockProps,
 	useInnerBlocksProps,
@@ -84,11 +85,10 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
-	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
@@ -105,6 +105,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		setBlockDefaults( 'kadence/iconlist', attributes);
 
 		if ( ! uniqueID ) {
+			// Check for old block defaults before 3.0
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
 				if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
@@ -135,9 +136,16 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 	}, [] );
 
 	useEffect( () => {
-		// Delete if no inner blocks.
 		if ( uniqueID && ! listBlock.innerBlocks.length ) {
-			onDelete();
+			// Check if we are attempting recovery.
+			if ( items?.length && items.length && undefined !== metadata?.attributes?.items?.default && !isEqual( metadata.attributes.items.default, items ) ) {
+				const migrateUpdate = migrateToInnerblocks( attributes );
+				setAttributes( migrateUpdate[0] );
+				insertListItems( migrateUpdate[1] );
+			} else {
+				// Delete if no inner blocks.
+				onDelete();
+			}
 		}
 	}, [ listBlock.innerBlocks.length ] );
 
@@ -516,8 +524,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listPadding: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListPadding: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListPadding: value } )}
-										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -24 : -200 )}
-										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 24 : 200 )}
+										min={( listPaddingType === 'em' || listPaddingType === 'rem' ? -25 : -400 )}
+										max={( listPaddingType === 'em' || listPaddingType === 'rem' ? 25 : 400 )}
 										step={( listPaddingType === 'em' || listPaddingType === 'rem' ? 0.1 : 1 )}
 										unit={listPaddingType}
 										units={[ 'px', 'em', 'rem', '%' ]}
@@ -533,8 +541,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										onChange={( value ) => setAttributes( { listMargin: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletListMargin: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileListMargin: value } )}
-										min={( listMarginType === 'em' || listMarginType === 'rem' ? -24 : -200 )}
-										max={( listMarginType === 'em' || listMarginType === 'rem' ? 24 : 200 )}
+										min={( listMarginType === 'em' || listMarginType === 'rem' ? -25 : -400 )}
+										max={( listMarginType === 'em' || listMarginType === 'rem' ? 25 : 400 )}
 										step={( listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1 )}
 										unit={listMarginType}
 										units={[ 'px', 'em', 'rem', '%' ]}
@@ -678,8 +686,9 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
 						font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
 						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
-						column-gap: ${ ( previewColumnGap ? previewColumnGap + 'px' : '' ) };
 					}` }
+
+					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) };
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
 					{ ( color ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${ KadenceColorOutput( color ) }; }` : '' ) }
 					{ ( background ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${ KadenceColorOutput( background ) }; }` : '' ) }
@@ -734,6 +743,12 @@ const KadenceIconsListWrapper = withDispatch(
 			const { getBlock } = registry.select( blockEditorStore );
 			const block = getBlock( clientId );
 			insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+		},
+		insertListItems( newBlocks ) {
+			const { clientId } = ownProps;
+			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+
+			replaceInnerBlocks( clientId, newBlocks );
 		},
 		onDelete() {
 			const { clientId } = ownProps;

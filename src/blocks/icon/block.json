@@ -63,6 +63,18 @@
 	"verticalAlignment": {
 	  "type": "string"
 	},
+	"gap": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
+	},
+	"gapUnit": {
+		"type": "string",
+		"default": "px"
+	},
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false

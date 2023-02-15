@@ -52,7 +52,6 @@ import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
 import {
 	PopColorControl,
 	TypographyControls,
-	MeasurementControls,
 	ResponsiveMeasurementControls,
 	KadencePanelBody,
 	URLInputControl,
@@ -69,14 +68,6 @@ import {
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	bottomLeftIcon,
-	bottomRightIcon,
-	radiusIndividualIcon,
-	radiusLinkedIcon,
-	topLeftIcon,
-	topRightIcon
-} from '@kadence/icons';
 
 export default function Image( {
 	temporaryURL,
@@ -482,7 +473,7 @@ export default function Image( {
 					{( activeTab === 'general' ) &&
 						<>
 						<KadencePanelBody
-							title={ __('Image settings Test', 'kadence-blocks') }
+							title={ __('Image settings', 'kadence-blocks') }
 							initialOpen={ true }
 							panelName={ 'kb-image-settings' }
 						>
@@ -1067,10 +1058,7 @@ export default function Image( {
 
 				{ ( activeTab === 'advanced' ) && (
 					<>
-						<KadencePanelBody
-								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
-								panelName={ 'kb-image-spacing' }
-							>
+						<KadencePanelBody>
 							<ResponsiveMeasureRangeControl
 								label={ __( 'Padding', 'kadence-blocks' ) }
 								value={ paddingDesktop }
@@ -1108,6 +1096,9 @@ export default function Image( {
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
@@ -1124,6 +1115,7 @@ export default function Image( {
 					} }
 					min={ -200 }
 					max={ 2000 }
+					allowReset={true}
 				/>
 			</InspectorAdvancedControls>
 		</>

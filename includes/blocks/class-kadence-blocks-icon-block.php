@@ -55,7 +55,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		 * This if is needed for icons blocks that created before blocks 3.0 that
 		 * haven't been updated to use single-icon innerBlocks.
 		 */
-		if ( !empty( $attributes['icons'] ) && is_array( $attributes['icons'] ) ) {
+		if ( ! empty( $attributes['icons'] ) && is_array( $attributes['icons'] ) ) {
 			foreach ( $attributes['icons'] as $icon_key => $icon_value ) {
 				if ( is_array( $icon_value ) ) {
 					$css->set_selector( '.kt-svg-icons' . $unique_id . ' .kt-svg-item-' . $icon_key . ' .kb-svg-icon-wrap' );
@@ -81,22 +81,6 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
-
-		if ( ! empty( $attributes['verticalAlignment'] ) ) {
-			if ( ! isset( $attributes['textAlignment'] ) || ( isset( $attributes['textAlignment'] ) && 'center' === $attributes['textAlignment'] ) ) {
-				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
-				$css->add_property('justify-content', 'center' );
-			}
-			if ( isset( $attributes['textAlignment'] ) && 'right' === $attributes['textAlignment'] ) {
-				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]' );
-				$css->add_property('justify-content', 'flex-end');
-			}
-			if ( isset( $attributes['textAlignment'] ) && 'left' === $attributes['textAlignment'] ) {
-				$css->set_selector('.wp-block-kadence-icon.kt-svg-icons' . $unique_id . '[class*="kb-icon-valign-"]');
-				$css->add_property('justify-content', 'flex-start');
-			}
-		}
-		
 		$css->set_selector( '.wp-block-kadence-icon.kt-svg-icons' . $unique_id );
 		$align_args = array(
 			'desktop_key' => 'textAlignment',
@@ -104,6 +88,7 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'mobileTextAlignment',
 		);
 		$css->render_flex_align( $attributes, 'textAlignment', $align_args );
+		$css->render_gap( $attributes );
 
 		return $css->css_output();
 	}

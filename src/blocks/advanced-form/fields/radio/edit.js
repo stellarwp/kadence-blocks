@@ -127,7 +127,7 @@ function FieldRadio( {
 						onChange={( value ) => setAttributes( { showLabel: value } )}
 					/>
 
-
+					<div className='kb-field-options-wrap'>
 					{times( options.length, n => (
 						<div className="field-options-wrap">
 
@@ -172,7 +172,7 @@ function FieldRadio( {
 							</div>
 						</div>
 					) )}
-
+					</div>
 					<Button
 						className="kb-add-option"
 						isPrimary={true}

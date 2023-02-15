@@ -54,4 +54,5 @@ registerBlockType( 'kadence/icon', {
 	edit,
 	save,
 	deprecated,
+	example: {}
 } );

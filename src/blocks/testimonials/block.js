@@ -33,5 +33,6 @@ registerBlockType( 'kadence/testimonials', {
 	},
 	edit,
 	save,
-	deprecated
+	deprecated,
+	example: {}
 } );

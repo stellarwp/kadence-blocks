@@ -72,15 +72,17 @@
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
 					var tabId = listItem.querySelector('a').getAttribute('data-tab');
 
-					var activeClass = listItem.classList.contains('kt-tab-title-active') ? 'kt-tab-title-active' : 'kt-tab-title-inactive';
-					var iconClass = listItem.classList.contains('kt-tabs-svg-show-only') ? 'kt-tabs-svg-show-only' : 'kt-tabs-svg-show-always';
-					var iconSideClass = listItem.classList.contains('kt-tabs-icon-side-top') ? 'kt-tabs-icon-side-top' : '';
+					var titleClasses = listItem.classList;
+					var accordionTitleClasses = [
+						'kt-tabs-accordion-title',
+						'kt-tabs-accordion-title-' + tabId
+					]
 
 					const closestTabWrap = listItem.closest('.kt-tabs-wrap');
 					const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
 
 					const newElem = window.document.createElement('div');
-					newElem.className = 'kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeClass + ' ' + iconClass + ' ' + iconSideClass;
+					newElem.className = [...titleClasses].concat(accordionTitleClasses).join(' ');
 					newElem.innerHTML = listItem.innerHTML;
 
 					ktContentWrap.insertBefore(newElem, ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId));

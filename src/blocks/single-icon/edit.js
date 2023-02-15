@@ -4,29 +4,21 @@
 /**
  * Import externals
  */
-import { times, map } from 'lodash';
 import {
     PopColorControl,
-    StepControls,
-    IconRender,
     KadencePanelBody,
     URLInputControl,
     ResponsiveRangeControls,
     InspectorControlTabs,
     RangeControl,
     KadenceRadioButtons,
-    ResponsiveAlignControls,
     KadenceInspectorControls,
     KadenceBlockDefaults,
     KadenceIconPicker,
-    ResponsiveMeasureRangeControl,
-    SpacingVisualizer,
     CopyPasteAttributes,
 } from '@kadence/components';
 import {
     KadenceColorOutput,
-    getPreviewSize,
-    getSpacingOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
@@ -48,22 +40,14 @@ import {
     BlockControls,
 } from '@wordpress/block-editor';
 import {
-    Fragment,
     useEffect,
     useState
 } from '@wordpress/element';
 import {
     TextControl,
-    SelectControl,
-    Button,
-    Dashicon,
-    TabPanel,
-    ToolbarGroup,
 } from '@wordpress/components';
 
-function KadenceSingleIcon( { attributes, className, setAttributes, clientId, context } ) {
-
-    const index = 0;
+function KadenceSingleIcon( { attributes, className, setAttributes, clientId, isSelected, name, context } ) {
 
     const {
         inQueryBlock,
@@ -140,7 +124,7 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
     );
 
     useEffect( () => {
-		setBlockDefaults( 'kadence/advancedheading', attributes);
+		setBlockDefaults( 'kadence/single-icon', attributes );
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
@@ -155,8 +139,10 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
 
     const renderCSS = (
         <style>
-            {`.kt-svg-icons-${uniqueID} .kt-svg-icons-${uniqueID}:hover .kt-svg-icon {
+            {`.wp-block-kadence-single-icon .kt-svg-item-${uniqueID}:hover .kt-svg-icon {
 					${( undefined !== hColor && hColor ? 'color:' + KadenceColorOutput( hColor ) + '!important;' : '' )}
+            }
+            .wp-block-kadence-single-icon .kt-svg-style-stacked.kt-svg-item-${uniqueID}:hover .kt-svg-icon {
 					${( undefined !== hBackground && hBackground ? 'background:' + KadenceColorOutput( hBackground ) + '!important;' : '' )}
 					${( undefined !== hBorder && hBorder ? 'border-color:' + KadenceColorOutput( hBorder ) + '!important;' : '' )}
             }`}
@@ -186,24 +172,8 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
 
                 {( activeTab === 'general' ) &&
                     <>
-                        {/*<KadencePanelBody*/}
-                        {/*    title={__( 'Icon Count', 'kadence-blocks' )}*/}
-                        {/*    initialOpen={true}*/}
-                        {/*    panelName={'kb-icon-count'}*/}
-                        {/*>*/}
-                        {/*    <ResponsiveAlignControls*/}
-                        {/*        label={__( 'Icons Alignment', 'kadence-blocks' )}*/}
-                        {/*        value={( textAlignment ? textAlignment : '' )}*/}
-                        {/*        mobileValue={( mobileTextAlignment ? mobileTextAlignment : '' )}*/}
-                        {/*        tabletValue={( tabletTextAlignment ? tabletTextAlignment : '' )}*/}
-                        {/*        onChange={( nextAlign ) => setAttributes( { textAlignment: nextAlign } )}*/}
-                        {/*        onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: nextAlign } )}*/}
-                        {/*        onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: nextAlign } )}*/}
-                        {/*    />*/}
-                        {/*</KadencePanelBody>*/}
-
                         <KadencePanelBody
-                            title={__( 'Icon', 'kadence-blocks' ) + ' ' + ' ' + __( 'Settings', 'kadence-blocks' )}
+                            title={__( 'Icon Settings', 'kadence-blocks' )}
                             initialOpen={ true }
                             panelName={'kb-icon-settings'}
                         >
@@ -335,12 +305,18 @@ function KadenceSingleIcon( { attributes, className, setAttributes, clientId, co
                                         setAttributes( { target: '_self' } );
                                     }
                                 }}
-                                dynamicAttribute={'icons:' + index + ':link'}
                                 linkTitle={linkTitle}
                                 onChangeTitle={value => {
                                     setAttributes( { linkTitle: value } );
                                 }}
-                                {...attributes}
+                                dynamicAttribute={'link'}
+                                allowClear={true}
+                                isSelected={ isSelected }
+                                attributes={ attributes }
+                                setAttributes={ setAttributes }
+                                name={ name }
+                                clientId={ clientId }
+                                context={ context }
                             />
                             <TextControl
                                 label={__( 'Title for Accessibility', 'kadence-blocks' )}
