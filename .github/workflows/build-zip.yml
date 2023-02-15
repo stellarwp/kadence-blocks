@@ -1,0 +1,23 @@
+name: Build release zip
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    name: Build Kadence Blocks zip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build plugin # Remove or modify this step as needed
+        run: |
+          composer install --no-dev
+          npm install
+          npm run build
+
+      - name: Generate zip
+        uses: 10up/action-wordpress-plugin-build-zip@stable
+        with:
+          retention-days: 2 # Optional; defaults to 5
