@@ -1859,8 +1859,8 @@ class Kadence_Blocks_CSS {
 	 * Generates the measure output.
 	 *
 	 * @param array  $attributes an array of attributes.
-	 * @param string $name an string of the attribute name.
-	 * @param string $property an string of the attribute name.
+	 * @param string $name a string of the block attribute name.
+	 * @param string $property a string of the css propery name.
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */

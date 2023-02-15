@@ -190,7 +190,7 @@
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
-	"tablePadding": {
+	"tabletPadding": {
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
