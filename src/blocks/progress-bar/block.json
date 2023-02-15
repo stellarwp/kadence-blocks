@@ -86,199 +86,174 @@
 	  "default": "px"
 	},
 	"barBackground": {
-		"type": "string",
-		"default": "#4A5568"
+	  "type": "string",
+	  "default": "#4A5568"
 	},
 	"barBackgroundOpacity": {
-		"type": "number",
-		"default": 1
+	  "type": "number",
+	  "default": 1
 	},
 	"progressWidth": {
-		"type": "number",
-		"default": "3"
+	  "type": "number",
+	  "default": "20"
 	},
 	"progressWidthTablet": {
-		"type": "number",
-		"default": ""
+	  "type": "number",
+	  "default": ""
 	},
 	"progressWidthMobile": {
-		"type": "number",
-		"default": ""
+	  "type": "number",
+	  "default": ""
 	},
 	"progressWidthType": {
-		"type": "string",
-		"default": "px"
+	  "type": "string",
+	  "default": "px"
 	},
 	"progressColor": {
-		"type": "string",
-		"default": "#2B6CB0"
+	  "type": "string",
+	  "default": "#2B6CB0"
 	},
 	"progressOpacity": {
-		"type": "number",
-		"default": 1
+	  "type": "number",
+	  "default": 1
 	},
 	"barType": {
-		"enum": [ "line", "circle", "semicircle" ],
-		"default": "line",
-		"type": "string"
+	  "enum": [
+		"line",
+		"circle",
+		"semicircle"
+	  ],
+	  "default": "line",
+	  "type": "string"
 	},
 	"containerMaxWidth": {
-		"type": "number",
-		"default": 0
+	  "type": "number",
+	  "default": 0
 	},
 	"tabletContainerMaxWidth": {
-		"type": "number"
+	  "type": "number"
 	},
 	"mobileContainerMaxWidth": {
-		"type": "number"
+	  "type": "number"
 	},
 	"containerMaxWidthUnits": {
-		"type": "string",
-	  	"default": "px"
+	  "type": "string",
+	  "default": "px"
 	},
 	"displayLabel": {
-		"type": "boolean",
-		"default": true
+	  "type": "boolean",
+	  "default": true
 	},
 	"labelFont": {
-		"type": "object",
-		"default":
-		  {
-			"color": "",
-			"level": 6,
-			"size": [
-			  "",
-			  "",
-			  ""
-			],
-			"sizeType": "px",
-			"lineHeight": [
-			  "",
-			  "",
-			  ""
-			],
-			"linetype": "px",
-			"letterSpacing":[
-			  "",
-			  "",
-			  ""
-			],
-			"textTransform": "",
-			"family": "",
-			"google": false,
-			"style": "",
-			"weight": "",
-			"variant": "",
-			"subset": "",
-			"loadGoogle": true,
-			"padding": [
-			  0,
-			  0,
-			  0,
-			  0
-			],
-			"margin": [
-			  0,
-			  0,
-			  15,
-			  0
-			]
-		  }
-	  },
-		"labelHighlightFont": {
-			"type": "object",
-			"default":
-				{
-				"color": "",
-				"level": 6,
-				"size": [
-					"",
-					"",
-					""
-				],
-				"sizeType": "px",
-				"lineHeight": [
-					"",
-					"",
-					""
-				],
-				"linetype": "px",
-				"letterSpacing":[
-					"",
-					"",
-					""
-				],
-				"textTransform": "",
-				"family": "",
-				"google": false,
-				"style": "",
-				"weight": "",
-				"variant": "",
-				"subset": "",
-				"loadGoogle": true,
-				"padding": [
-					0,
-					0,
-					0,
-					0
-				],
-				"margin": [
-					0,
-					0,
-					15,
-					0
-				]
-				}
-			},
-		"labelHighlightBackgroundColor": {
-			"type":"string",
-			"default":""
-		},
-	  "labelAlign": {
-		"type": "array",
-		"default": [ "", "", "" ]
-	  },
-	  "labelMinHeight": {
-		"type": "array",
-		"default": [
+	  "type": "object",
+	  "default": {
+		"color": "",
+		"level": 6,
+		"size": [
 		  "",
 		  "",
 		  ""
+		],
+		"sizeType": "px",
+		"lineHeight": [
+		  "",
+		  "",
+		  ""
+		],
+		"linetype": "px",
+		"letterSpacing": [
+		  "",
+		  "",
+		  ""
+		],
+		"textTransform": "",
+		"family": "",
+		"google": false,
+		"style": "",
+		"weight": "",
+		"variant": "",
+		"subset": "",
+		"loadGoogle": true,
+		"padding": [
+		  0,
+		  0,
+		  0,
+		  0
+		],
+		"margin": [
+		  0,
+		  0,
+		  15,
+		  0
 		]
-	  },
+	  }
+	},
+	"labelAlign": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		""
+	  ]
+	},
+	"labelMinHeight": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		""
+	  ]
+	},
 	"label": {
-		"type": "string",
-		"default": ""
+	  "type": "string",
+	  "default": ""
 	},
 	"labelPosition": {
-		"enum": [  "above", "below" ],
-		"default": "below",
-		"type": "string"
+	  "enum": [
+		"above",
+		"below"
+	  ],
+	  "default": "below",
+	  "type": "string"
 	},
-	"progressAmount":{
-		"type": "integer",
-		"default": 50
+	"progressAmount": {
+	  "type": "integer",
+	  "default": 50
 	},
-	"duration":{
-		"type": "number",
-	  	"default": 2.5
+	"progressMax": {
+	  "type": "integer",
+	  "default": 100
 	},
-	"easing":{
-		"enum": [ "easeIn" , "easeOut", "linear", "easeInOut"],
-		"default": "linear",
-		"type": "string"
+	"showPercent": {
+	  "type": "boolean",
+	  "default": true
 	},
-	"progressBorderRadius":{
-		"type":"array",
-		"default": [
-			"",
-			"",
-			""
-		  ]
+	"duration": {
+	  "type": "number",
+	  "default": 2.5
+	},
+	"startDelay": {
+	  "type": "number",
+	  "default": 0
+	},
+	"easing": {
+	  "enum": [
+		"easeIn",
+		"easeOut",
+		"linear",
+		"easeInOut"
+	  ],
+	  "default": "linear",
+	  "type": "string"
+	},
+	"progressBorderRadius": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		""
+	  ]
 	}
-
-
   },
-
   "editorScript": "file:editor.js"
 }
