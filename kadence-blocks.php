@@ -94,7 +94,7 @@ function kadence_blocks_init() {
 	/**
 	 * Site Health
 	 */
-	require_once KADENCE_BLOCKS_PATH . '/includes/settings/class-kadence-blocks-site-health.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-site-health.php';
 	/**
 	 * Telemetry.
 	 */
