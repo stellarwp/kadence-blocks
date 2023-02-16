@@ -88,7 +88,7 @@ function ToolbarLibrary() {
 		}
 		return document.querySelector(selector);
 	}
-	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
+	const renderButton = () => {
 		checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
 			if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
 				const toolbarButton = document.createElement( 'div' );
@@ -96,8 +96,17 @@ function ToolbarLibrary() {
 
 				selector.appendChild( toolbarButton );
 				render( <LibraryButton />, toolbarButton );
+
+				setTimeout(() => {
+					renderButton()
+				}, 1000)
 			}
 		} );
+		
+	}
+
+	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
+		renderButton()
 	}
 
 	return null;
