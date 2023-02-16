@@ -16,13 +16,10 @@ jobs:
         with:
           composer-options: --no-dev
 
-      - name: "Cache npm dependencies"
-        uses: "actions/cache@v3"
+      - name: Install dependencies
+        uses: chill-viking/npm-ci@latest
         with:
-          path: "/node_modules/"
-          key: ${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ hashFiles('**/package-lock.json') }}
+          working_directory: './node_modules/'
 
       - name: Build plugin
         run: |
