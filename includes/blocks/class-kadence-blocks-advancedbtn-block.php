@@ -70,12 +70,12 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 					'desktop_key' => 'desk',
 					'tablet_key'  => 'tablet',
 					'mobile_key'  => 'mobile',
-					'unit' => $attributes['marginUnit'],
+					'unit' => ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px',
 				)
 			);
 		}
 		$css->set_selector( '.wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
-		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
+		$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
 		$css->render_gap( $attributes );
 		$h_property = 'justify-content';
 		$v_property = 'align-items';
