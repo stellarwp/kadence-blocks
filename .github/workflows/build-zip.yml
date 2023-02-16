@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         uses: chill-viking/npm-ci@latest
         with:
-          working_directory: 'node_modules/'
+          working_directory: '../node_modules/'
 
       - name: Build plugin
         run: |
