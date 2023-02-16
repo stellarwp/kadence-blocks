@@ -16,6 +16,14 @@ jobs:
         with:
           composer-options: --no-dev
 
+      - name: "Cache npm dependencies"
+        uses: "actions/cache@v3"
+        with:
+          path: "/node_modules/"
+          key: ${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ hashFiles('**/package-lock.json') }}
+
       - name: Build plugin
         run: |
           npm install --legacy-peer-deps
