@@ -296,6 +296,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				} else {
 					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
 				}
+			} else {
+				$css->add_property( 'max-width', 'var(--wp--style--global--content-size)' );
 			}
 		} else {
 			if ( $css->is_number( $attributes['maxWidth'] ) ) {

@@ -626,6 +626,12 @@ function kadence_blocks_admin_theme_content_width() {
 			max-width:' . esc_attr( $content_width ) . 'px;
 		}';
 		echo '</style>';
+	} else {
+		echo '<style id="kt-block-content-width">';
+		echo '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+			max-width:var(--wp--style--global--content-size);
+		}';
+		echo '</style>';
 	}
 	echo '<style id="kb-global-styles">';
 	echo ':root {
