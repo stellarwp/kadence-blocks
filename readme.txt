@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.5
+Stable tag: 3.0.6
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,8 +77,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.0.6 =
-Release Date: February 20th, 2023
+= 3.0.6 RC Version 2 =
+Release Date: February 16th, 2023
+* Update: Prevent TOC from rendering in feed.
+* Update: Border radius and border controls in advanced text.
+* Fix: Possible issue with buttons using icons.
+* Fix: Possible issue with buttons margin.
+* Fix: Possible issue with tablet padding in buttons.
+* Fix: Heading styles when applied in accordion.
+* Fix: Issue with gallery options.
+* Fix: Issue with carousel dots missing in gallery in the editor.
+* Fix: Issue with icon list gap.
+* Fix: Deprecated warning in PHP 8.1
 
 = 3.0.5 RC Version 1 =
 Release Date: February 13th, 2023
