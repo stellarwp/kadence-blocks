@@ -30,6 +30,10 @@ import {
 	VisuallyHidden,
 	ExternalLink,
 	Spinner,
+	Tooltip,
+	__unstableComposite as Composite,
+	__unstableUseCompositeState as useCompositeState,
+	__unstableCompositeItem as CompositeItem,
 } from '@wordpress/components';
 import {
 	arrowLeft,
@@ -40,13 +44,14 @@ import {
 	chevronLeft,
 	chevronDown,
 } from '@wordpress/icons';
-import { useMemo, useEffect } from '@wordpress/element';
+import { BlockPreview } from './block-preview';
+import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useDebounce, useAsyncList } from '@wordpress/compose';
+import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { speak } from '@wordpress/a11y';
 import {
-	__experimentalBlockPatternsList as BlockPatternsList,
+	//BlockPreview,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 const INITIAL_INSERTER_RESULTS = 4;
@@ -73,7 +78,111 @@ function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 		</Heading>
 	);
 }
+const WithToolTip = ( { showTooltip, title, children } ) => {
+	if ( showTooltip ) {
+		return <Tooltip text={ title }>{ children }</Tooltip>;
+	}
+	return <>{ children }</>;
+};
+function KadenceBlockPattern( {
+	pattern,
+	onClick,
+	onHover,
+	composite,
+	showTooltip,
+} ) {
+	const { blocks, viewportWidth } = pattern;
+	const instanceId = useInstanceId( KadenceBlockPattern );
+	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
+	return (
+		<div
+			className="block-editor-block-patterns-list__list-item"
+		>
+			<WithToolTip
+				showTooltip={ showTooltip }
+				title={ pattern.title }
+			>
+				<CompositeItem
+					role="option"
+					as="div"
+					{ ...composite }
+					className="block-editor-block-patterns-list__item"
+					onClick={ () => {
+						onClick( pattern, blocks );
+						onHover?.( null );
+					} }
+					onMouseEnter={ () => {
+						onHover?.( pattern );
+					} }
+					onMouseLeave={ () => onHover?.( null ) }
+					aria-label={ pattern.title }
+					aria-describedby={
+						pattern.description ? descriptionId : undefined
+					}
+				>
+					<BlockPreview
+						blocks={ blocks }
+						viewportWidth={ viewportWidth }
+						additionalStyles={ [
+							{ css: `body { --global-palette9:#000 }` }
+						]}
+					/>
+					{ ! showTooltip && (
+						<div className="block-editor-block-patterns-list__item-title">
+							{ pattern.title }
+						</div>
+					) }
+					{ !! pattern.description && (
+						<VisuallyHidden id={ descriptionId }>
+							{ pattern.description }
+						</VisuallyHidden>
+					) }
+				</CompositeItem>
+			</WithToolTip>
+		</div>
+	);
+}
+function BlockPatternPlaceholder() {
+	return (
+		<div className="block-editor-block-patterns-list__item is-placeholder" />
+	);
+}
 
+function KadenceBlockPatternList( {
+	blockPatterns,
+	shownPatterns,
+	onHover,
+	onClickPattern,
+	orientation,
+	label = __( 'Block Patterns', 'kadence-blocks' ),
+	showTitlesAsTooltip,
+} ) {
+	const composite = useCompositeState( { orientation } );
+	return (
+		<Composite
+			{ ...composite }
+			role="listbox"
+			className="block-editor-block-patterns-list"
+			aria-label={ label }
+		>
+			{ blockPatterns.map( ( pattern ) => {
+				const isShown = shownPatterns.includes( pattern );
+				return isShown ? (
+					<KadenceBlockPattern
+						key={ pattern.name }
+						pattern={ pattern }
+						onClick={ onClickPattern }
+						onHover={ onHover }
+						composite={ composite }
+						showTooltip={ showTitlesAsTooltip }
+					/>
+				) : (
+					<BlockPatternPlaceholder key={ pattern.name } />
+				);
+			} ) }
+		</Composite>
+	);
+}
 
 function PatternList( { patterns, filterValue, selectedCategory, patternCategories } ) {
 	// const { testCategories, testPatterns } = useSelect(
@@ -104,6 +213,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	const filteredBlockPatterns = useMemo( () => {
 		const allPatterns = [];
 		Object.keys( patterns ).map( function( key, index ) {
+			if ( index > 1 ) {
+				return;
+			}
 			const temp = [];
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
@@ -148,7 +260,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	const currentShownPatterns = useAsyncList( filteredBlockPatterns, {
 		step: INITIAL_INSERTER_RESULTS,
 	} );
-	//console.log( filteredBlockPatterns );
+	console.log( filteredBlockPatterns );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -160,11 +272,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 					/>
 				) }
 				{ hasItems && (
-					<BlockPatternsList
+					<KadenceBlockPatternList
 						shownPatterns={ currentShownPatterns }
 						blockPatterns={ filteredBlockPatterns }
 						onClickPattern={ onSelectBlockPattern }
-						isDraggable={ false }
 						showTitlesAsTooltip={ true }
 					/>
 				) }
