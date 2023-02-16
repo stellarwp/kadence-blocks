@@ -1,56 +1,58 @@
 {
-	"name": "kadencewp/kadence-blocks",
-	"type": "wordpress-plugin",
-	"homepage": "https://www.kadencewp.com",
-	"config": {
-		"preferred-install": "dist",
-		"platform": {
-			"php": "7.2.34"
-		}
-	},
-	"require": {
-		"psr/container": "^1.0",
-		"lucatume/di52": "^3.0",
-		"stellarwp/telemetry": "dev-main",
-		"stellarwp/container-contract": "^1.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"KadenceWP\\KadenceBlocks\\": "includes/vendor"
-		}
-	},
-	"scripts": {
-		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
-			"@php bin/strauss.phar"
-		],
-		"post-install-cmd": [
-			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
-		],
-		"post-update-cmd": [
-			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
-		]
-	},
-	"extra": {
-		"strauss": {
-			"target_directory": "vendor/vendor-prefixed",
-			"classmap_prefix": "Kadence_Blocks_",
-			"constant_prefix": "KADENCE_BLOCKS_",
-			"namespace_prefix": "KadenceWP\\KadenceBlocks",
-			"delete_vendor_files": true,
-			"packages": [
-				"stellarwp/container-contract",
-				"stellarwp/telemetry",
-				"lucatume/di52",
-				"psr/container"
-			]
-		}
-	},
-	"require-dev": {
-		"codeception/codeception": "^4.2"
-	}
+    "name": "kadencewp/kadence-blocks",
+    "type": "wordpress-plugin",
+    "homepage": "https://www.kadencewp.com",
+    "config": {
+        "preferred-install": "dist",
+        "platform": {
+            "php": "7.2.34"
+        }
+    },
+    "require": {
+        "psr/container": "^1.0",
+        "lucatume/di52": "^3.0",
+        "stellarwp/telemetry": "dev-main",
+        "stellarwp/container-contract": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KadenceWP\\KadenceBlocks\\": "includes/vendor"
+        }
+    },
+    "scripts": {
+        "strauss": [
+            "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
+            "@php bin/strauss.phar"
+        ],
+        "post-install-cmd": [
+            "@strauss",
+            "echo \"<?php\" > vendor/lucatume/di52/aliases.php",
+            "echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+        ],
+        "post-update-cmd": [
+            "@strauss",
+            "echo \"<?php\" > vendor/lucatume/di52/aliases.php",
+            "echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+        ]
+    },
+    "extra": {
+        "strauss": {
+            "target_directory": "vendor/vendor-prefixed",
+            "classmap_prefix": "Kadence_Blocks_",
+            "constant_prefix": "KADENCE_BLOCKS_",
+            "namespace_prefix": "KadenceWP\\KadenceBlocks",
+            "delete_vendor_files": true,
+            "packages": [
+                "stellarwp/container-contract",
+                "stellarwp/telemetry",
+                "lucatume/di52",
+                "psr/container"
+            ]
+        }
+    },
+    "require-dev": {
+        "codeception/codeception": "^4.2",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0"
+    }
 }
