@@ -95,7 +95,7 @@
 	},
 	"progressWidth": {
 	  "type": "number",
-	  "default": "20"
+	  "default": "2"
 	},
 	"progressWidthTablet": {
 	  "type": "number",
@@ -188,32 +188,12 @@
 		]
 	  }
 	},
-	"labelAlign": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		""
-	  ]
-	},
-	"labelMinHeight": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		""
-	  ]
-	},
 	"label": {
 	  "type": "string",
 	  "default": ""
 	},
 	"labelPosition": {
-	  "enum": [
-		"above",
-		"below"
-	  ],
-	  "default": "below",
+	  "default": "top left",
 	  "type": "string"
 	},
 	"progressAmount": {
@@ -224,9 +204,21 @@
 	  "type": "integer",
 	  "default": 100
 	},
-	"showPercent": {
+	"displayPercent": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"percentPosition": {
+	  "default": "top right",
+	  "type": "string"
+	},
+	"numberSuffix": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"numberIsRelative": {
+	  "type": "boolean",
+	  "default": false
 	},
 	"duration": {
 	  "type": "number",
