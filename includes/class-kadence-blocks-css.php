@@ -1914,10 +1914,11 @@ class Kadence_Blocks_CSS {
 			'second_prop' => $prop_args['second_prop'],
 			'third_prop'  => $prop_args['third_prop'],
 			'fourth_prop' => $prop_args['fourth_prop'],
+			'unit'        => ! empty( $attributes[ $name . 'Type' ] ) ? $attributes[ $name . 'Type' ] : 'px',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
-		$unit = ! empty( $attributes[ $args['unit_key'] ] ) ? $attributes[ $args['unit_key'] ] : 'px';
+		$unit = $args['unit'];
 		if ( isset( $attributes[ $args['desktop_key'] ] ) && is_array( $attributes[ $args['desktop_key'] ] ) ) {
 			if ( $this->is_number( $attributes[ $args['desktop_key'] ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] . $unit );
