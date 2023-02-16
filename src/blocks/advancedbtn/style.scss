@@ -86,8 +86,9 @@
 .kb-button.kb-btn-global-outline.kt-btn-size-small {
     border-width: 1px;
 }
-.kt-btn-has-svg-true {
+.kb-button.kt-btn-has-svg-true {
     gap: 0.5em;
+    display: inline-flex;
 }
 .wp-block-kadence-advancedbtn .kb-svg-icon-wrap {
 	display: inline-flex;
