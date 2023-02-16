@@ -153,6 +153,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		tabletContentBorderRadius,
 		mobileContentBorderRadius,
 		contentBorderRadiusUnit,
+		textColor,
+		linkColor, 
+		linkHoverColor
 	} = attributes;
 
 	const [ titleTag, setTitleTag ] = useState( 'div' );
@@ -869,6 +872,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
+				.kt-accordion-${uniqueID} .kadence-accordion-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-accordion-${ uniqueID } p, .kadence-accordion-${ uniqueID } h1, .kadence-accordion-${ uniqueID } h2, .kadence-accordion-${ uniqueID } h3, .kadence-accordion-${ uniqueID } h4, .kadence-accordion-${ uniqueID } h5, .kadence-accordion-${ uniqueID } h6 {
+					${textColor?.[ 0 ]?.textColor ? 'color:' + KadenceColorOutput( textColor[ 0 ].textColor ) : '' };
+				}
+				.kadence-accordion-${ uniqueID } a  {
+					${linkColor?.[ 0 ]?.linkColor ? 'color:' + KadenceColorOutput( linkColor[ 0 ].linkColor ) : '' };
+				}
+				.kadence-accordion-${ uniqueID } a:hover  {
+					${linkHoverColor?.[ 0 ]?.linkHoverColor ? 'color:' + KadenceColorOutput( linkHoverColor[ 0 ].linkHoverColor ) : '' };
+				}
 				`}
 		</style>
 	);
@@ -1304,6 +1316,26 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									initialOpen={false}
 									panelName={'kb-accordion-inner-content-settings'}
 								>
+									<ColorGroup>
+										<PopColorControl
+											label={__( 'Text Color', 'kadence-blocks' )}
+											value={( textColor ? textColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { textColor: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Text Link Color', 'kadence-blocks' )}
+											value={( linkColor ? linkColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { linkColor: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Text Link Hover Color', 'kadence-blocks' )}
+											value={( linkHoverColor ? linkHoverColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { linkHoverColor: value } )}
+										/>
+									</ColorGroup>
 									<PopColorControl
 										label={__( 'Background', 'kadence-blocks' )}
 										value={( contentBgColor ? contentBgColor : '' )}
