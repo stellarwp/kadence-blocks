@@ -131,6 +131,10 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['titleCollapseBorderColor'] ) && ! empty( $attributes['titleCollapseBorderColor'] ) ) {
 			$css->add_property( 'border-color', $css->render_color( $attributes['titleCollapseBorderColor'] ) );
 		}
+		if ( isset( $attributes['titleColor'] ) && ! empty( $attributes['titleColor'] ) ) {
+			$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title-wrap' );
+			$css->add_property( 'color', $css->render_color( $attributes['titleColor'] ) );
+		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
 		if ( isset( $attributes['titleColor'] ) && ! empty( $attributes['titleColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['titleColor'] ) );
