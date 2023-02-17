@@ -3,7 +3,6 @@
 /bin
 /gulp
 /src
-/tests
 /node_modules
 
 .distignore
