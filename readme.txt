@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
-Tested up to: 6.1
+Tested up to: 6.1.1
 Stable tag: 3.0.6
 Requires PHP: 7.2
 License: GPLv2 or later
@@ -130,6 +130,7 @@ Release Date: January 31st, 2023
 * Fix: Issue with some gutter sizes.
 * Fix: Issue with zindex in rows.
 * Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with heading block backward compatibility.
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
 * Fix: Issue with possible button border showing when it should not.
