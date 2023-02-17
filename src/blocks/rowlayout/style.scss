@@ -35,7 +35,7 @@
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
-.kt-row-column-wrap.kt-inner-column-height-full {
+.kt-row-column-wrap.kt-inner-column-height-full:not(.kt-row-layout-row) {
 	/* autoprefixer: ignore next */
 	grid-auto-rows: minmax(0, 1fr);
 }
