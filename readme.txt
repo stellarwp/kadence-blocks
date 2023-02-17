@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.7
+Stable tag: 3.0.8
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.0.8 RC Version 4 =
+Release Date: February 17th, 2023
+* Fix: Possible error in windows server.
+* Fix: Double Margin issue in multi-column icon list block.
+* Fix: Possible Google font error.
 
 = 3.0.7 RC Version 3 =
 Release Date: February 17th, 2023
