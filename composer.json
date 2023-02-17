@@ -49,8 +49,5 @@
 				"psr/container"
 			]
 		}
-	},
-	"require-dev": {
-		"codeception/codeception": "^4.2"
 	}
 }
