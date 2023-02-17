@@ -61,16 +61,16 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .wp-block-kadence-advancedbtn.kb-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
 
 		//the margin attribute on this block is non standard and should be updated
-		if ( isset( $attributes['margin'][0] ) ) {
+		if ( isset( $attributes['margin'][0] ) && is_array( $attributes['margin'][0] ) ) {
+			$margin_unit = ( !empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
 			$css->render_measure_output(
-				$attributes['margin'][0],
+				array_merge( $attributes['margin'][0], array( 'marginType' => $margin_unit) ),
 				'margin',
 				'margin',
 				array(
 					'desktop_key' => 'desk',
 					'tablet_key'  => 'tablet',
 					'mobile_key'  => 'mobile',
-					'unit' => ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px',
 				)
 			);
 		}
