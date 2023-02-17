@@ -11,13 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install PHP Dependencies
-        uses: ramsey/composer-install@v2
-        with:
-          composer-options: --no-dev
-
       - name: Build plugin
         run: |
+          composer install --no-dev
           npm install --legacy-peer-deps
           npm run build
 
