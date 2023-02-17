@@ -16,9 +16,12 @@ jobs:
         with:
           composer-options: --no-dev
 
+      - uses: c-hive/gha-npm-cache@v1
+      - name: Install JS dependencies
+        run: npm install --legacy-peer-deps
+
       - name: Build plugin
         run: |
-          npm install --legacy-peer-deps
           npm run build
 
       - name: Generate zip
