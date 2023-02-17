@@ -759,6 +759,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const renderCSS = (
 		<style>
 			{`
+			.kt-accordion-${uniqueID} .kt-accordion-panel .kt-accordion-panel-inner, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner .kt-svg-icon-list-item-wrap, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner p, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h1, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h2, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h3, .kt-accordion-${ uniqueID } .kt-accordion-panel-inner h4, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h5, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h6 {
+				${ textColor ? `color: ${ KadenceColorOutput( textColor)};` : '' }
+			}
+			.kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner a  {
+				${ linkColor ? 'color:' + KadenceColorOutput( linkColor ) : '' }
+			}
+			.kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner a:hover  {
+				${ linkHoverColor ? 'color:' + KadenceColorOutput( linkHoverColor ) : '' }
+			}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header {
 					${titleStyles?.[ 0 ]?.color ? 'color:' + KadenceColorOutput( titleStyles[ 0 ].color ) : '' };
 					${previewTitleBorderTop ? 'border-top:' + previewTitleBorderTop : '' };
@@ -872,15 +881,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
-				.kt-accordion-${uniqueID} .kadence-accordion-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-accordion-${ uniqueID } p, .kadence-accordion-${ uniqueID } h1, .kadence-accordion-${ uniqueID } h2, .kadence-accordion-${ uniqueID } h3, .kadence-accordion-${ uniqueID } h4, .kadence-accordion-${ uniqueID } h5, .kadence-accordion-${ uniqueID } h6 {
-					${textColor?.[ 0 ]?.textColor ? 'color:' + KadenceColorOutput( textColor[ 0 ].textColor ) : '' };
-				}
-				.kadence-accordion-${ uniqueID } a  {
-					${linkColor?.[ 0 ]?.linkColor ? 'color:' + KadenceColorOutput( linkColor[ 0 ].linkColor ) : '' };
-				}
-				.kadence-accordion-${ uniqueID } a:hover  {
-					${linkHoverColor?.[ 0 ]?.linkHoverColor ? 'color:' + KadenceColorOutput( linkHoverColor[ 0 ].linkHoverColor ) : '' };
-				}
+				
 				`}
 		</style>
 	);
