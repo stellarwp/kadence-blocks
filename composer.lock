@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "lucatume/di52",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/di52.git",
-                "reference": "01d080d95420d5f880ab1b888d51d7060d727a25"
+                "reference": "6d1e3641d02995c78027a565e8d205d9b6e73eca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/di52/zipball/01d080d95420d5f880ab1b888d51d7060d727a25",
-                "reference": "01d080d95420d5f880ab1b888d51d7060d727a25",
+                "url": "https://api.github.com/repos/lucatume/di52/zipball/6d1e3641d02995c78027a565e8d205d9b6e73eca",
+                "reference": "6d1e3641d02995c78027a565e8d205d9b6e73eca",
                 "shasum": ""
             },
             "require": {
@@ -50,9 +50,9 @@
             "description": "A PHP 5.6 compatible dependency injection container.",
             "support": {
                 "issues": "https://github.com/lucatume/di52/issues",
-                "source": "https://github.com/lucatume/di52/tree/3.1.0"
+                "source": "https://github.com/lucatume/di52/tree/3.1.1"
             },
-            "time": "2023-01-28T09:14:45+00:00"
+            "time": "2023-02-16T16:19:29+00:00"
         },
         {
             "name": "psr/container",
@@ -104,16 +104,16 @@
         },
         {
             "name": "stellarwp/container-contract",
-            "version": "1.0.4",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/container-contract.git",
-                "reference": "37becc9edbecb0ff95556048337600dd9cc888f0"
+                "reference": "b1568be99b4d2d38446895d31a1c0f3718bf4d36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/container-contract/zipball/37becc9edbecb0ff95556048337600dd9cc888f0",
-                "reference": "37becc9edbecb0ff95556048337600dd9cc888f0",
+                "url": "https://api.github.com/repos/stellarwp/container-contract/zipball/b1568be99b4d2d38446895d31a1c0f3718bf4d36",
+                "reference": "b1568be99b4d2d38446895d31a1c0f3718bf4d36",
                 "shasum": ""
             },
             "require": {
@@ -145,9 +145,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stellarwp/container-contract/issues",
-                "source": "https://github.com/stellarwp/container-contract/tree/1.0.4"
+                "source": "https://github.com/stellarwp/container-contract/tree/1.1.0"
             },
-            "time": "2022-12-20T21:29:17+00:00"
+            "time": "2023-02-13T21:24:31+00:00"
         },
         {
             "name": "stellarwp/telemetry",
@@ -155,12 +155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "9433f7f3714a36d00ebc1818fbbac682415a6471"
+                "reference": "3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/9433f7f3714a36d00ebc1818fbbac682415a6471",
-                "reference": "9433f7f3714a36d00ebc1818fbbac682415a6471",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4",
+                "reference": "3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4",
                 "shasum": ""
             },
             "require": {
@@ -201,9 +201,9 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/1.0.4"
+                "source": "https://github.com/stellarwp/telemetry/tree/1.0.5"
             },
-            "time": "2023-02-09T21:05:52+00:00"
+            "time": "2023-02-16T17:29:53+00:00"
         }
     ],
     "packages-dev": [],
