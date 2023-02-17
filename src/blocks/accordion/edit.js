@@ -153,6 +153,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		tabletContentBorderRadius,
 		mobileContentBorderRadius,
 		contentBorderRadiusUnit,
+		textColor,
+		linkColor, 
+		linkHoverColor
 	} = attributes;
 
 	const [ titleTag, setTitleTag ] = useState( 'div' );
@@ -756,6 +759,15 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const renderCSS = (
 		<style>
 			{`
+			.kt-accordion-${uniqueID} .kt-accordion-panel .kt-accordion-panel-inner, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner .kt-svg-icon-list-item-wrap, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner p, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h1, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h2, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h3, .kt-accordion-${ uniqueID } .kt-accordion-panel-inner h4, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h5, .kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner h6 {
+				${ textColor ? `color: ${ KadenceColorOutput( textColor)};` : '' }
+			}
+			.kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner a  {
+				${ linkColor ? 'color:' + KadenceColorOutput( linkColor ) : '' }
+			}
+			.kt-accordion-${ uniqueID } .kt-accordion-panel .kt-accordion-panel-inner a:hover  {
+				${ linkHoverColor ? 'color:' + KadenceColorOutput( linkHoverColor ) : '' }
+			}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header {
 					${titleStyles?.[ 0 ]?.color ? 'color:' + KadenceColorOutput( titleStyles[ 0 ].color ) : '' };
 					${previewTitleBorderTop ? 'border-top:' + previewTitleBorderTop : '' };
@@ -869,6 +881,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
+				
 				`}
 		</style>
 	);
@@ -1304,6 +1317,26 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 									initialOpen={false}
 									panelName={'kb-accordion-inner-content-settings'}
 								>
+									<ColorGroup>
+										<PopColorControl
+											label={__( 'Text Color', 'kadence-blocks' )}
+											value={( textColor ? textColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { textColor: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Text Link Color', 'kadence-blocks' )}
+											value={( linkColor ? linkColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { linkColor: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Text Link Hover Color', 'kadence-blocks' )}
+											value={( linkHoverColor ? linkHoverColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { linkHoverColor: value } )}
+										/>
+									</ColorGroup>
 									<PopColorControl
 										label={__( 'Background', 'kadence-blocks' )}
 										value={( contentBgColor ? contentBgColor : '' )}
