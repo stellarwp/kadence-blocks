@@ -5,18 +5,6 @@
  */
 
 /**
- * Import Icons
- */
-import {
-	bottomLeftIcon,
-	bottomRightIcon,
-	radiusIndividualIcon,
-	radiusLinkedIcon,
-	topLeftIcon,
-	topRightIcon
-} from '@kadence/icons';
-
-/**
  * Import Controls
  */
 import classnames from 'classnames';
@@ -53,7 +41,7 @@ import {
 /**
  * Kadence Helpers.
  */
-import { 
+import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
@@ -79,7 +67,6 @@ import {
 	BlockAlignmentToolbar,
 	BlockControls,
 	InnerBlocks,
-	InspectorAdvancedControls,
 	InspectorControls,
 	useBlockProps,
 	useInnerBlocksProps,
@@ -89,9 +76,9 @@ import {
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
-	TabPanel
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
  */
@@ -103,7 +90,7 @@ function SectionEdit( {
 	context,
 	className,
 } ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -157,7 +144,7 @@ function SectionEdit( {
 			setAttributes( { mobileMargin: [ topMarginM, rightMarginM, bottomMarginM, leftMarginM ], topMarginM:'', rightMarginM:'', bottomMarginM:'',leftMarginM:'' } );
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -184,7 +171,7 @@ function SectionEdit( {
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{ 
+		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -211,7 +198,7 @@ function SectionEdit( {
 		if ( updateBorderHoverStyle ) {
 			setAttributes( { borderHoverStyle: tempBorderHoverStyle } );
 		}
-		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -226,7 +213,7 @@ function SectionEdit( {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
 		}
-		let tempTabBorderHoverStyle = JSON.parse( JSON.stringify( attributes.tabletBorderHoverStyle ? attributes.tabletBorderHoverStyle : [{ 
+		let tempTabBorderHoverStyle = JSON.parse( JSON.stringify( attributes.tabletBorderHoverStyle ? attributes.tabletBorderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -241,7 +228,7 @@ function SectionEdit( {
 			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tempTabBorderHoverStyle));
 			setAttributes( { tabletBorderHoverStyle: tempTabBorderHoverWidth, tabletBorderHoverWidth:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -255,7 +242,7 @@ function SectionEdit( {
 			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderHoverStyle = JSON.parse( JSON.stringify( attributes.mobileBorderHoverStyle ? attributes.mobileBorderHoverStyle : [{ 
+		let tempMobileBorderHoverStyle = JSON.parse( JSON.stringify( attributes.mobileBorderHoverStyle ? attributes.mobileBorderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -529,7 +516,8 @@ function SectionEdit( {
 		<div { ...blockProps }>
 			<style>
 			{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { opacity: ${ overlayOpacity } }` : '' ) }
-				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) } }` : '' ) }
+				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) }; }` : '' ) }
+				{ ( overlayBlendMode ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { mix-blend-mode: ${overlayBlendMode}; }` : '' ) }
 				{ ( previewOverlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-image:${ previewOverlay }; }` : '' ) }
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-position:${ overlayImg[ 0 ].bgImgPosition }; }` : '' ) }
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-size:${ overlayImg[ 0 ].bgImgSize }; }` : '' ) }
@@ -542,7 +530,8 @@ function SectionEdit( {
 				{ ( previewRadiusLeft ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-bottom-left-radius:${ previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
 
 				{ ( overlayHoverOpacity !== undefined && overlayHoverOpacity !== '' ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { opacity: ${ overlayHoverOpacity } }` : '' ) }
-				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) } }` : '' ) }
+				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) }; ; }` : '' ) }
+				{ ( hoverOverlayBlendMode ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { mix-blend-mode: ${hoverOverlayBlendMode} !important; }` : '' ) }
 				{ ( previewHoverOverlay ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-image:${ previewHoverOverlay }; }` : '' ) }
 				{ ( ! previewHoverOverlay && overlayHover ? `.kadence-column-${ uniqueID }:hover .kadence-inner-column-inner:before { background-image:none; }` : '' ) }
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-position:${ overlayImgHover[ 0 ].bgImgPosition }; }` : '' ) }
@@ -614,9 +603,9 @@ function SectionEdit( {
 						/>
 						<CopyPasteAttributes
 							attributes={ attributes }
-							excludedAttrs={ nonTransAttrs } 
-							defaultAttributes={ metadata['attributes'] } 
-							blockSlug={ metadata['name'] } 
+							excludedAttrs={ nonTransAttrs }
+							defaultAttributes={ metadata['attributes'] }
+							blockSlug={ metadata['name'] }
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
@@ -1244,6 +1233,13 @@ function SectionEdit( {
 															name={ 'kadence/column' }
 															clientId={ clientId }
 														/>
+														<SelectControl
+															label={ __( 'Hover Blend Mode' ) }
+															value={ ( hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none' ) }
+															options={ BLEND_OPTIONS }
+															onChange={ value => setAttributes( { hoverOverlayBlendMode: value } ) }
+														/>
+														<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 													</>
 												)}
 											</>
@@ -1319,6 +1315,13 @@ function SectionEdit( {
 															name={ 'kadence/column' }
 															clientId={ clientId }
 														/>
+														<SelectControl
+															label={ __( 'Blend Mode' ) }
+															value={ ( overlayBlendMode ? overlayBlendMode : 'none' ) }
+															options={ BLEND_OPTIONS }
+															onChange={ value => setAttributes( { overlayBlendMode: value } ) }
+														/>
+														<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 													</>
 												)}
 											</>

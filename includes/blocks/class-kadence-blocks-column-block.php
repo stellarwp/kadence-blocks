@@ -402,6 +402,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $css->is_number( $attributes['overlayOpacity'] ) ) {
 			$css->add_property( 'opacity', $attributes['overlayOpacity'] );
 		}
+		if ( ! empty( $attributes['overlayBlendMode'] ) ) {
+			$css->add_property( 'mix-blend-mode', $attributes['overlayBlendMode'] );
+		}
 		switch ( $overlay_type ) {
 			case 'normal':
 				if ( ! empty( $attributes['overlay'] ) ) {
@@ -427,6 +430,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
 		if ( $css->is_number( $attributes['overlayHoverOpacity'] ) ) {
 			$css->add_property( 'opacity', $attributes['overlayHoverOpacity'] );
+		}
+		if ( ! empty( $attributes['hoverOverlayBlendMode'] ) ) {
+			$css->add_property( 'mix-blend-mode', $attributes['hoverOverlayBlendMode'] );
 		}
 		switch ( $overlay_hover_type ) {
 			case 'normal':
@@ -668,7 +674,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( '' !== $gutter ) {
 				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
-		}		
+		}
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
 			$css->add_css_string( str_replace( 'selector', '.kadence-column' . $unique_id, $attributes['kadenceBlockCSS'] ) );
