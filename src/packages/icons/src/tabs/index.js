@@ -1,5 +1,78 @@
-export default <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd' clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
-	<path d='M17.294,15.966l-14.588,0l0,-11.932l4.122,0.001l-0.002,3.473l10.468,0.007c0,4.339 0,4.112 0,8.451Zm-13.738,-0.76l12.888,0l0,-6.932l-10.448,0l-0.008,-3.541l-2.432,0.003c0,3.832 0,6.638 0,10.47Z' fill='#555d66' fillRule='nonzero' />
-	<rect x='7.919' y='4.042' width='4.152' height='2.669' fill='#555d66' />
-	<rect x='13.135' y='4.045' width='4.152' height='2.657' fill='#555d66' />
+export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.66">
+<g>
+	<path
+		fill="#fff"
+		stroke="#ebebeb"
+		strokeMiterlimit="10"
+		strokeWidth="6"
+		d="M162.23 69.25V11.17c0-4.51-3.73-8.17-8.33-8.17H11.33C6.73 3 3 6.66 3 11.17v334.81c0 6.45 5.23 11.68 11.68 11.68h484.57c6.45 0 11.68-5.23 11.68-11.68V80.93c0-6.45-5.33-11.68-11.9-11.68h-336.8z"
+	></path>
+	<path
+		fill="#ebebeb"
+		d="M184.54 10.87h139.01c3.86 0 7 3.14 7 7v49.91H177.54V17.87c0-3.86 3.14-7 7-7zM349.73 10.87h139.01c3.86 0 7 3.14 7 7v49.91H342.73V17.87c0-3.86 3.14-7 7-7z"
+	></path>
+	<rect
+		width="372.48"
+		height="16.35"
+		x="64.89"
+		y="155.66"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="372.48"
+		height="16.35"
+		x="64.89"
+		y="190.69"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="372.48"
+		height="16.35"
+		x="64.89"
+		y="225.72"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="290.74"
+		height="16.35"
+		x="64.89"
+		y="260.74"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="107.42"
+		height="16.35"
+		x="26.35"
+		y="35.39"
+		fill="#4c4c4c"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="107.42"
+		height="16.35"
+		x="201.5"
+		y="35.39"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+	<rect
+		width="107.42"
+		height="16.35"
+		x="364.97"
+		y="35.39"
+		fill="#7d7d7d"
+		rx="7"
+		ry="7"
+	></rect>
+</g>
 </svg>;
