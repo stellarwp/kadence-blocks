@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.8
+Stable tag: 3.0.9
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.0.9 =
+Release Date: February 20th, 2023
+* Update: Add blend mode to section overlay settings.
+* Update: Accordion to have inner content colors.
+* Update: Add filter for TOC block render attributes.
+* Fix: Some block settings showing incorrect default.
+* Fix: Issue with the design library button not always rendering in 6.2
 
 = 3.0.8 RC Version 4 =
 Release Date: February 17th, 2023
