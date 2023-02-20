@@ -663,7 +663,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			if( isset( $attributes['mediaStyles'][0] ) && array_filter( $attributes['mediaStyles'][0]['padding'] )  ) {
 				$css->render_range( $attributes['mediaStyles'][0], 'padding', 'padding' );
 			} else {
-				$css->render_measure_output( $attributes, 'ratingPadding', 'padding' );
+				$css->render_measure_output( $attributes, 'mediaPadding', 'padding' );
 			}
 
 			if( isset( $attributes['mediaStyles'][0] ) && array_filter( $attributes['mediaStyles'][0]['margin'] )  ) {
