@@ -37,6 +37,18 @@
 	  "type": "number",
 	  "default": ""
 	},
+	"textColor": {
+		"type": "string",
+		"default": ""
+	},
+	"linkColor": {
+		"type": "string",
+		"default": ""
+	},
+	"linkHoverColor": {
+		"type": "string",
+		"default": ""
+	},
 	"contentBgColor": {
 	  "type": "string",
 	  "default": ""

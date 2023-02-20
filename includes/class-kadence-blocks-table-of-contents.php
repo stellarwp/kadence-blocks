@@ -775,6 +775,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( ! $the_post ) {
 			return '';
 		}
+		$attributes = apply_filters( 'kadence_blocks_toc_block_build_only_attributes', $attributes );
 		$headings = $this->table_of_contents_get_headings(
 			$the_post,
 			$attributes

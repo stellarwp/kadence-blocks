@@ -152,7 +152,7 @@ class Kadence_Blocks_Google_Fonts {
 		}
 		if ( is_array( $fonts ) ) {
 			foreach ( $fonts as $key => $font ) {
-				if ( ! array_key_exists( $key, self::$gfonts ) ) {
+				if ( ( ! array_key_exists( $key, self::$gfonts ) && did_action( 'wp_body_open' ) === 0 ) || ( ! array_key_exists( $key, self::$footer_gfonts ) && did_action( 'wp_body_open' ) >= 1) ) {
 					$add_font = array(
 						'fontfamily'   => $font['fontfamily'],
 						'fontvariants' => ( isset( $font['fontvariants'] ) && ! empty( $font['fontvariants'] ) && is_array( $font['fontvariants'] ) ? $font['fontvariants'] : array() ),
@@ -166,10 +166,12 @@ class Kadence_Blocks_Google_Fonts {
 					}
 				} else {
 					foreach ( $font['fontvariants'] as $variant ) {
-						if ( ! in_array( $variant, self::$gfonts[ $key ]['fontvariants'], true ) ) {
-							if ( did_action( 'wp_body_open' ) >= 1 ) {
+						if ( did_action( 'wp_body_open' ) >= 1 ) {
+							if ( is_array(self::$footer_gfonts[ $key ]['fontvariants']) && ! in_array( $variant, self::$footer_gfonts[ $key ]['fontvariants'], true ) ) {
 								array_push( self::$footer_gfonts[ $key ]['fontvariants'], $variant );
-							} else {
+							}
+						} else {
+							if ( is_array(self::$gfonts[ $key ]['fontvariants']) && ! in_array( $variant, self::$gfonts[ $key ]['fontvariants'], true ) ) {
 								array_push( self::$gfonts[ $key ]['fontvariants'], $variant );
 							}
 						}

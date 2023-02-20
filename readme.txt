@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.5
+Stable tag: 3.0.9
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,6 +77,38 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.9 =
+Release Date: February 20th, 2023
+* Update: Add blend mode to section overlay settings.
+* Update: Accordion to have inner content colors.
+* Update: Add filter for TOC block render attributes.
+* Fix: Some block settings showing incorrect default.
+* Fix: Issue with the design library button not always rendering in 6.2
+
+= 3.0.8 RC Version 4 =
+Release Date: February 17th, 2023
+* Fix: Possible error in windows server.
+* Fix: Double Margin issue in multi-column icon list block.
+* Fix: Possible Google font error.
+
+= 3.0.7 RC Version 3 =
+Release Date: February 17th, 2023
+* Fix: Possible issue custom units.
+* Fix: Possible issue with stacked columns using full height.
+
+= 3.0.6 RC Version 2 =
+Release Date: February 16th, 2023
+* Update: Prevent TOC from rendering in feed.
+* Update: Border radius and border controls in advanced text.
+* Fix: Possible issue with buttons using icons.
+* Fix: Possible issue with buttons margin.
+* Fix: Possible issue with tablet padding in buttons.
+* Fix: Heading styles when applied in accordion.
+* Fix: Issue with gallery options.
+* Fix: Issue with carousel dots missing in gallery in the editor.
+* Fix: Issue with icon list gap.
+* Fix: Deprecated warning in PHP 8.1
+
 = 3.0.5 RC Version 1 =
 Release Date: February 13th, 2023
 * Add: New Typed Text to Advanced Text Block.
@@ -88,6 +120,7 @@ Release Date: February 13th, 2023
 * Update: Remove empty parent block for buttons, icons, testimonials and icon list.
 * Update: WPML Config for forms.
 * Update: Icon alignment options.
+* Update: Block Previews.
 * Fix: Possible psr compatibility issue.
 * Fix: Possible Map issues with filter.
 * Fix: Possible issue with gallery missing style sheet.
@@ -116,6 +149,7 @@ Release Date: January 31st, 2023
 * Fix: Issue with some gutter sizes.
 * Fix: Issue with zindex in rows.
 * Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with heading block backward compatibility.
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
 * Fix: Issue with possible button border showing when it should not.

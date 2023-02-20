@@ -340,6 +340,15 @@ function KadenceAdvancedHeading( props ) {
 	const previewLetterSpacing = getPreviewSize( previewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
 
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
+	let previewJustifyAlign = previewAlign;
+	switch (previewAlign) {
+		case 'left':
+			previewJustifyAlign = 'flex-start';
+			break;
+		case 'right':
+			previewJustifyAlign = 'flex-end';
+			break;
+	}
 	const previewMarkPaddingTop = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
 	const previewMarkPaddingRight = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
 	const previewMarkPaddingBottom = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 2 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 2 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 2 ] : '' ) );
@@ -485,9 +494,11 @@ function KadenceAdvancedHeading( props ) {
 	const dynamicHeadingContent = (
 			<TagHTML
 				style={{
-					display: 'flex',
-					alignItems: iconVerticalAlign,
-					justifyContent: previewAlign,
+					display: icon ? 'flex' : undefined,
+					alignItems: icon ? iconVerticalAlign : undefined,
+					gap: icon ? '0.25em' : undefined,
+					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
+					textAlign: previewAlign ? previewAlign : undefined,
 					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
@@ -520,10 +531,11 @@ function KadenceAdvancedHeading( props ) {
 			<TagHTML
 			className={classes}
 			style={{
-				display: 'flex',
-				gap:'0.25em',
-				alignItems: iconVerticalAlign,
-				justifyContent: previewAlign,
+				display: icon ? 'flex' : undefined,
+				alignItems: icon ? iconVerticalAlign : undefined,
+				gap: icon ? '0.25em' : undefined,
+				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
+				textAlign: previewAlign ? previewAlign : undefined,
 				backgroundColor: background ? KadenceColorOutput(background) : undefined,
 				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
 				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),

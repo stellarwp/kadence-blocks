@@ -1859,8 +1859,8 @@ class Kadence_Blocks_CSS {
 	 * Generates the measure output.
 	 *
 	 * @param array  $attributes an array of attributes.
-	 * @param string $name an string of the attribute name.
-	 * @param string $property an string of the attribute name.
+	 * @param string $name a string of the block attribute name.
+	 * @param string $property a string of the css propery name.
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */
@@ -2290,7 +2290,7 @@ class Kadence_Blocks_CSS {
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_gap_value( $value ) {
 		if ( $this->is_variable_gap_value( $value ) ) {
@@ -2305,12 +2305,12 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_font_size_value( $value ) {
-		return isset( $this->font_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->font_sizes[ $value ] );
 	}
 	/**
 	 * @param $value
 	 *
-	 * @return int|string
+	 * @return bool|string
 	 */
 	public function get_variable_font_size_value( $value ) {
 		if ( $this->is_variable_font_size_value( $value ) ) {
@@ -2325,7 +2325,7 @@ class Kadence_Blocks_CSS {
 	 * @return bool
 	 */
 	public function is_variable_value( $value ) {
-		return isset( $this->spacing_sizes[ $value ] );
+		return is_string( $value ) && isset( $this->spacing_sizes[ $value ] );
 	}
 
 	/**

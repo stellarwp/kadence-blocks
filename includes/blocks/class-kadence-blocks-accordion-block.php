@@ -103,6 +103,20 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				} elseif ( ! empty( $title_styles['color'] ) ) {
 					$css->render_color_output( $title_styles, 'color', 'background' );
 				}
+				// Text Colors.
+				if ( isset( $attributes['textColor'] ) ) {
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner , .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h1, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h2, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h3, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h4, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h5, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h6' );
+					$css->add_property( 'color', $css->render_color( $attributes['textColor'] ) );
+				}
+				if ( isset( $attributes['linkColor'] ) ) {
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner a' );
+					$css->add_property( 'color', $css->render_color( $attributes['linkColor'] ) );
+				}
+				if ( isset( $attributes['linkHoverColor'] ) ) {
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner a:hover' );
+					$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
+				}
+
 				$css->set_selector( '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger' );
 				if ( ! empty( $attributes['iconColor']['standard'] ) ) {
 					$css->render_color_output( $attributes['iconColor'], 'standard', 'background' );
@@ -116,6 +130,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 					$css->render_color_output( $title_styles, 'colorHover', 'color' );
 					$css->render_color_output( $title_styles, 'backgroundHover', 'background' );
 
+					
 					// Support legacy non-responsive broder widths
 					if ( ! empty( $title_styles['borderWidth'] ) && $title_styles['borderWidth'] !== array( '', '', '', '' ) ) {
 						$css->render_border_color( $title_styles, 'borderHover' );

@@ -166,17 +166,19 @@ function KadenceConfig() {
 
 							{/*Advanced Heading*/}
 							<div className="kt-blocks-control-row">
-									<KadenceVisibilitySettings blockName={'Advanced Text'}
+									<KadenceVisibilitySettings blockName={__('Advanced Text', 'kadence-blocks')}
 															   blockSlug={'advancedheading'}
 															   icon={ BlockIcons.advancedHeadingIcon}
 															   options={[
 																   {
 																	   key: 'toolbarTypography',
-																	   label: __('Enable Typography Settings in Toolbar', 'kadence-blocks')
+																	   label: __('Enable Typography Settings in Toolbar', 'kadence-blocks'),
+																	   initial:'none',
 																   },
 																   {
 																	   key: 'toolbarColor',
-																	   label: __('Enable Color Settings in Toolbar', 'kadence-blocks')
+																	   label: __('Enable Color Settings in Toolbar', 'kadence-blocks'),
+																	   initial:'none',
 																   },
 																   {
 																	   key: 'colorSettings',
