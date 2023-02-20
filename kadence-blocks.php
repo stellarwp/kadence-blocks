@@ -113,15 +113,3 @@ function kadence_blocks_lang() {
 	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );
-/**
- * Plugin Updates
- */
-function kadence_blocks_beta_updating() {
-	require_once KADENCE_BLOCKS_PATH . 'includes/kadence-update-checker/kadence-update-checker.php';
-	$Kadence_Blocks_Beta_Update_Checker = Kadence_Update_Checker::buildUpdateChecker(
-		'https://kernl.us/api/v1/updates/639a3259e11b4fa99448e87f/',
-		__FILE__,
-		'kadence-blocks'
-	);
-}
-add_action( 'after_setup_theme', 'kadence_blocks_beta_updating', 1 );
