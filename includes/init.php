@@ -82,9 +82,6 @@ function kadence_gutenberg_editor_assets() {
 		'tabs',
 		'testimonials',
 	);
-	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
-		$blocks[] = 'advanced-form';
-	}
 	foreach ( $blocks as $block ) {
 		$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
 		$handle = sprintf( 'kadence-blocks-%s', $block );
@@ -974,12 +971,6 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_conteoller_get->register_routes();
 	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_conteoller_upload->register_routes();
-
-	$convertkit_controller = new Kadence_ConvertKit_REST_Controller();
-	$convertkit_controller->register_routes();
-
-	$activecampaign_controller = new Kadence_ActiveCampaign_REST_Controller();
-	$activecampaign_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

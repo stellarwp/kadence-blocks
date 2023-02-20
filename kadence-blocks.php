@@ -85,11 +85,6 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/convertkit-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/activecampaign-rest-api.php';
-	if ( apply_filters( 'enable_kadence_advanced_form_block', false ) ) {
-		require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advanced-form-block.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-cpt.php';
-		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';
-	}
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 	/**
 	 * Site Health
