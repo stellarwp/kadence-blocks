@@ -602,12 +602,10 @@
 			"default": ""
 		},
 	   	"overlayBlendMode": {
-		 	"type": "string",
-		 	"default": "none"
+		 	"type": "string"
 	   	},
 	  	"hoverOverlayBlendMode": {
-			"type": "string",
-			"default": "none"
+			"type": "string"
 	  	}
 	},
 	"supports": {
