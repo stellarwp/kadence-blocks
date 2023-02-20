@@ -490,6 +490,9 @@ div.kb-blocks-bg-video {
 		grid-column: 1 / -1;
 	}
 }
+.wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-two-grid > .innerblocks-wrap {
+	grid-template-columns:  repeat(2, minmax(0, 1fr) );
+}
 // Four columns.
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-equal > .innerblocks-wrap {
 	grid-template-columns: repeat(4, minmax(0, 1fr) );

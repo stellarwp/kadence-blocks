@@ -191,6 +191,7 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'center-exwide', label: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
 			{ value: 'first-row', label: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
 			{ value: 'last-row', label: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 		];
 	} else if ( 4 === columns ) {
