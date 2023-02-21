@@ -464,7 +464,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( topSep === 'none' ? '' : topSep ) }
 							onChange={ value => setAttributes( { topSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'top' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'top', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -550,7 +550,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 							onChange={ value => setAttributes( { bottomSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'bottom', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -605,7 +605,7 @@ import { __ } from '@wordpress/i18n';
 						/>
 					</KadencePanelBody>
 				</>
-			) }			
+			) }
 		</Fragment>
 	);
 };
