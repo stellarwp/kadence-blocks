@@ -113,7 +113,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				break;
 			case 3:
 				if ( ! empty( $column1 ) && ! empty( $column2 ) ) {
-					$grid_layout = 'minmax(0, ' . $column1 . '%) minmax(0, ' . $column2 . '%) minmax(0, ' . abs( ( $column1 + $column2 ) - 100 ) . '%)';
+					if ( abs( $column1 ) === 50 && abs( $column2 ) === 25 ) {
+						$grid_layout = 'minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr)';
+					} else if ( abs( $column1 ) === 25 && abs( $column2 ) === 50 ) {
+						$grid_layout = 'minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr)';
+					} else if ( abs( $column1 ) === 25 && abs( $column2 ) === 25 ) {
+						$grid_layout = 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)';
+					} else {
+						$grid_layout = 'minmax(0, ' . $column1 . '%) minmax(0, ' . $column2 . '%) minmax(0, ' . abs( ( $column1 + $column2 ) - 100 ) . '%)';
+					}
 				} else {
 					switch ( $layout ) {
 						case 'left-half':
@@ -225,14 +233,20 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
+			$margin_selector = '.kb-row-layout-wrap.wp-block-kadence-rowlayout.kb-row-layout-id' . $unique_id;
 			$base_selector = '.kb-row-layout-id' . $unique_id;
 			$inner_selector = '.kb-row-layout-id' . $unique_id . ' > .kt-row-column-wrap';
 		} else {
+			$margin_selector = '#kt-layout-id' . $unique_id;
 			$base_selector = '#kt-layout-id' . $unique_id;
 			$inner_selector = '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap';
 		}
 		// Margin, check for old attributes and use if present.
-		$css->set_selector( $base_selector );
+		$css->set_selector( $margin_selector );
+		// Fix to prevent generatepress from breaking things with their css.
+		if ( class_exists( 'GeneratePress_CSS' ) ) {
+			$css->add_property( 'margin-bottom', '0px' );
+		}
 		if ( $css->is_number( $attributes['topMargin'] ) || $css->is_number( $attributes['bottomMargin'] ) || $css->is_number( $attributes['topMarginT'] ) || $css->is_number( $attributes['bottomMarginT'] ) || $css->is_number( $attributes['topMarginM'] ) || $css->is_number( $attributes['bottomMarginM'] ) ) {
 			if ( $css->is_number( $attributes['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attributes['topMargin'] . ( ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' ) );
