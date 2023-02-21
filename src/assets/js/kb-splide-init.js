@@ -168,7 +168,7 @@
 			const slideCount = wrapperElem.children.length;
 			for (let slide of wrapperElem.children) {
 				slide.classList.add("splide__slide");
-				slide.classList.add("slick-slide");
+				//slide.classList.add("slick-slide");
 				if (slide.classList.contains("last")) {
 					slide.classList.remove("last");
 				}
