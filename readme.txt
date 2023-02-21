@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.9 =
-Release Date: February 20th, 2023
+Release Date: February 21st, 2023
 * Update: Add blend mode to section overlay settings.
 * Update: Accordion to have inner content colors.
 * Update: Add filter for TOC block render attributes.
