@@ -197,7 +197,7 @@ class Kadence_Blocks_Settings {
 				esc_html__(
 					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
 				),
-				$default_args['user_name'],
+				$default_args['user_name']
 			),
 		);
 		$args = wp_parse_args( $args, $default_args );
