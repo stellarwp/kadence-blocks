@@ -162,3 +162,6 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+
+//Pro Icons
+export { default as dynamicHTMLIcon } from './block-icons/dynamic-html'
