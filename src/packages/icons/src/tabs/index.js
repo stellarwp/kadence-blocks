@@ -2,13 +2,13 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 <g>
 	<path
 		fill="#fff"
-		stroke="#ebebeb"
+		stroke="#859CB6"
 		strokeMiterlimit="10"
 		strokeWidth="6"
 		d="M162.23 69.25V11.17c0-4.51-3.73-8.17-8.33-8.17H11.33C6.73 3 3 6.66 3 11.17v334.81c0 6.45 5.23 11.68 11.68 11.68h484.57c6.45 0 11.68-5.23 11.68-11.68V80.93c0-6.45-5.33-11.68-11.9-11.68h-336.8z"
 	></path>
 	<path
-		fill="#ebebeb"
+		fill="#EDF2F7"
 		d="M184.54 10.87h139.01c3.86 0 7 3.14 7 7v49.91H177.54V17.87c0-3.86 3.14-7 7-7zM349.73 10.87h139.01c3.86 0 7 3.14 7 7v49.91H342.73V17.87c0-3.86 3.14-7 7-7z"
 	></path>
 	<rect
@@ -16,7 +16,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="64.89"
 		y="155.66"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>
@@ -25,7 +25,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="64.89"
 		y="190.69"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>
@@ -34,7 +34,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="64.89"
 		y="225.72"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>
@@ -43,7 +43,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="64.89"
 		y="260.74"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>
@@ -61,7 +61,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="201.5"
 		y="35.39"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>
@@ -70,7 +70,7 @@ export default <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513.92 360.6
 		height="16.35"
 		x="364.97"
 		y="35.39"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 	></rect>

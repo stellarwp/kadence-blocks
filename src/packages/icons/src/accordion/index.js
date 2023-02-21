@@ -4,7 +4,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		width="434"
 		height="60"
 		x="3"
-		fill="#ebebeb"
+		fill="#EDF2F7"
 		rx="10"
 		ry="10"
 	></rect>
@@ -14,7 +14,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		x="3"
 		y="74"
 		fill="#fff"
-		stroke="#ebebeb"
+		stroke="#859CB6"
 		strokeMiterlimit="10"
 		strokeWidth="6"
 		rx="10"
@@ -25,13 +25,13 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		height="60"
 		x="3"
 		y="290"
-		fill="#ebebeb"
+		fill="#EDF2F7"
 		rx="10"
 		ry="10"
 	></rect>
-	<path fill="#7d7d7d" d="M384.8 24L396.9 36.1 409 24 384.8 24z"></path>
+	<path fill="#4A5568" d="M384.8 24L396.9 36.1 409 24 384.8 24z"></path>
 	<path
-		fill="#7d7d7d"
+		fill="#4A5568"
 		d="M384.8 319L396.9 331.1 409 319 384.8 319z"
 	></path>
 	<path
@@ -40,7 +40,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 	></path>
 	<path
 		fill="none"
-		stroke="#ebebeb"
+		stroke="#859CB6"
 		strokeMiterlimit="10"
 		strokeWidth="6"
 		d="M3 130L437 130"
@@ -50,7 +50,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		height="14"
 		x="28"
 		y="23"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 		transform="rotate(180 152.5 30)"
@@ -70,7 +70,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		height="14"
 		x="28"
 		y="314"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 		transform="rotate(180 152.5 321)"
@@ -80,7 +80,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		height="14"
 		x="28.49"
 		y="171.11"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 		transform="rotate(-180 218.745 178.11)"
@@ -90,7 +90,7 @@ export default  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 350">
 		height="14"
 		x="28.49"
 		y="201.11"
-		fill="#7d7d7d"
+		fill="#4A5568"
 		rx="7"
 		ry="7"
 		transform="rotate(-180 177 208.11)"
