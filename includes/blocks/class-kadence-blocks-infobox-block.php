@@ -47,15 +47,16 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$base_selector = '.kt-info-box' . $unique_id;
 		} else {
 			$base_selector = '#kt-info-box' . $unique_id;
 		}
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
 		// Container Border, check old first.

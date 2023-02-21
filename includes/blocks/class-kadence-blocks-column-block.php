@@ -46,9 +46,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Style.
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
@@ -376,7 +377,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Background Hover.
 		$hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
-		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:hover' );
+		$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 		switch ( $hover_type ) {
 			case 'normal':
 				if ( ! empty( $attributes['backgroundHover'] ) ) {

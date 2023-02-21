@@ -84,6 +84,7 @@ Release Date: February 21st, 2023
 * Fix: Missing Testimonial Background setting.
 * Fix: Border color issues in testimonial.
 * Fix: Icon size in icon list in the editor.
+* Fix: Section hover colors with link.
 
 = 3.0.10 =
 Release Date: February 21st, 2023
@@ -1710,5 +1711,5 @@ You can also set the block defaults.
 
 == Upgrade Notice ==
 
-= 3.0.10 =
+= 3.0.11 =
 Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
