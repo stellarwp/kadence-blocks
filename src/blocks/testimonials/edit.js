@@ -88,7 +88,7 @@ import {
     Tooltip,
 } from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
-import { 
+import {
     plusCircle
 } from '@wordpress/icons';
 
@@ -1314,6 +1314,17 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-container-settings'}
                                     >
                                         <div className="kt-spacer-sidebar-15"></div>
+										<PopColorControl
+											label={__( 'Background', 'kadence-blocks' )}
+											value={( containerBackground ? containerBackground : '' )}
+											default={''}
+											onChange={value => {
+												setAttributes( { containerBackground: value } );
+											}}
+											opacityValue={containerBackgroundOpacity}
+											onOpacityChange={value => setAttributes( { containerBackgroundOpacity: value } )}
+											onArrayChange={( color, opacity ) => setAttributes( { containerBackground: color, containerBackgroundOpacity: opacity } )}
+										/>
 										<ResponsiveBorderControl
 											label={__( 'Border', 'kadence-blocks' )}
 											value={borderStyle}
