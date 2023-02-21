@@ -82,6 +82,7 @@ Release Date: February 20th, 2023
 * Update: Add blend mode to section overlay settings.
 * Update: Accordion to have inner content colors.
 * Update: Add filter for TOC block render attributes.
+* Update: Row Padding visual editor to always override overlaping blocks.
 * Fix: Some block settings showing incorrect default.
 * Fix: Issue with the design library button not always rendering in 6.2
 
@@ -1692,3 +1693,8 @@ You can also set the block defaults.
 
 = 1.0.0 =
 * Initial Release.
+
+== Upgrade Notice ==
+
+= 3.0.9 =
+Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
