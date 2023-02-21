@@ -85,6 +85,8 @@ Release Date: February 21st, 2023
 * Fix: Border color issues in testimonial.
 * Fix: Icon size in icon list in the editor.
 * Fix: Section hover colors with link.
+* Fix: For rebuilding css in a query.
+* Fix: Divider rendering in safari. 
 
 = 3.0.10 =
 Release Date: February 21st, 2023
