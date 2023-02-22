@@ -42,6 +42,11 @@
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks",
 			"delete_vendor_files": true,
+			"exclude_from_prefix": {
+			  "packages": [],
+			  "namespaces": [],
+			  "file_patterns": []
+			},
 			"packages": [
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
