@@ -550,8 +550,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
 		$href = '';
-		$image_src  = ( ! empty( $image['url'] ) ? $image['url'] : '' );
+		$image_src  = ( ! empty( $image['thumbUrl'] ) ? $image['thumbUrl'] : $image['url'] );
 		$image_full = ( ! empty( $image['fullUrl'] ) ? $image['fullUrl'] : $image['url'] );
+		$image_lightbox = ( ! empty( $image['lightUrl'] ) ? $image['lightUrl'] : $image['url'] );
 		$image_alt  = ( ! empty( $image['alt'] ) ? $image['alt'] : '' );
 		if ( ! empty( $image_id ) ) {
 			$image_alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
@@ -561,7 +562,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		switch ( $link_to ) {
 			case 'media':
-				$href = ( ! empty( $image_full ) ? $image_full : '' );
+				if ( 'none' !== $lightbox ) {
+					$href = ( ! empty( $image_lightbox ) ? $image_lightbox : '' );
+				} else {
+					$href = ( ! empty( $image_full ) ? $image_full : '' );
+				}
 				break;
 			case 'custom':
 				if ( ! empty( $image_id ) && isset( $attributes['kadenceDynamic'] ) && is_array( $attributes['kadenceDynamic'] ) && isset( $attributes['kadenceDynamic']['link'] ) && is_array( $attributes['kadenceDynamic']['link'] ) && isset( $attributes['kadenceDynamic']['link']['enable'] ) && $attributes['kadenceDynamic']['link']['enable'] ) {
