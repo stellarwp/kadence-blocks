@@ -128,7 +128,8 @@
 	"kadence/testimonials-displayMedia",
 	"kadence/testimonials-titleFont",
 	"kadence/testimonials-ratingStyles",
-	"kadence/testimonials-mediaStyles"
+	"kadence/testimonials-mediaStyles",
+	"kadence/testimonials-containerVAlign"
   ],
   "supports": {
 	"anchor": true,

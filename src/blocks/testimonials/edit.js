@@ -747,16 +747,16 @@ function KadenceTestimonials({
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                     }
 
-                    ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
+                    ${ containerVAlign !== '' && `
                         .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                             display: flex;
                             flex-direction: column;
-                            justify-content: ${ containerVAlign === 'bottom' ? 'flex-end' : 'center' };
+                            justify-content: ${ containerVAlign === 'middle' ? 'center' : ( containerVAlign === 'top' ? 'flex-start' : 'flex-end') };
                         }
                     `}
 
-                    ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
-                        ${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
+                    ${ `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+						${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
                         ${ previewContainerMinHeight ? 'min-height: ' + previewContainerMinHeight + 'px;' : '' }
                         ${ undefined !== iconPadding?.[0] && '' !== iconPadding?.[0] ? 'padding-top: ' + iconPadding[0] + ';' : '' }
                     }` }
@@ -2079,7 +2079,13 @@ function KadenceTestimonials({
                                                                 isSmall
                                                                 isPrimary={containerVAlign === key}
                                                                 aria-pressed={containerVAlign === key}
-                                                                onClick={() => setAttributes({containerVAlign: key})}
+                                                                onClick={() => {
+																	if( containerVAlign === key ) {
+																		setAttributes({containerVAlign: ''})
+																	} else {
+																		setAttributes({containerVAlign: key})
+																	}
+																} }
                                                             >
                                                                 {icon}
                                                             </Button>
