@@ -2175,7 +2175,7 @@ function KadenceTestimonials({
                             options={ carouselSettings }
                             ref={ carouselRef }
                             aria-label={ __( 'Testimonial Carousel', 'kadence-woo-extras' ) }
-                            className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} rtl`}
+                            className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
                             hasTrack={ false }
                             >
                             <SplideTrack { ...innerBlocksProps }></SplideTrack>
