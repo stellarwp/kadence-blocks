@@ -446,7 +446,7 @@ div.kb-blocks-bg-video {
 		row-gap: var(--global-row-gutter-md, 2rem);
 	}
 }
-@media screen and (min-width: 767px) {
+@media screen and (min-width: 1024px) {
 	.wp-block-kadence-rowlayout.kt-inner-column-height-full:not(.kt-row-layout-row) > .innerblocks-wrap {
 		/* autoprefixer: ignore next */
 		grid-auto-rows: minmax(0, 1fr);
