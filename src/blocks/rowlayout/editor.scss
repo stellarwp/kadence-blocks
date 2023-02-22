@@ -446,9 +446,11 @@ div.kb-blocks-bg-video {
 		row-gap: var(--global-row-gutter-md, 2rem);
 	}
 }
-.wp-block-kadence-rowlayout.kt-inner-column-height-full:not(.kt-row-layout-row) > .innerblocks-wrap {
-	/* autoprefixer: ignore next */
-	grid-auto-rows: minmax(0, 1fr);
+@media screen and (min-width: 767px) {
+	.wp-block-kadence-rowlayout.kt-inner-column-height-full:not(.kt-row-layout-row) > .innerblocks-wrap {
+		/* autoprefixer: ignore next */
+		grid-auto-rows: minmax(0, 1fr);
+	}
 }
 // Three Columns
 .wp-block-kadence-rowlayout.kt-has-2-columns.kt-row-layout-equal > .innerblocks-wrap {
