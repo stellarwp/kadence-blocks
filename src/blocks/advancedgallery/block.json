@@ -361,6 +361,9 @@
 			}
 		]
 	},
+	"anchor": {
+		"type": "string"
+	},
 	"kbVersion": {
 		"type": "number",
 		"default": ""

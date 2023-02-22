@@ -77,6 +77,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.13 =
+Release Date: February 21st, 2023
+* Fix: Issue where custom gutter could be undefined.
+* Fix: Issue with sliders that only have one slide rendering arrows.
+* Fix: Issue with custom classes and anchor not rendering in gallery.
+
 = 3.0.12 =
 Release Date: February 21st, 2023
 * Fix: Possible PHP 7.2 bug.
