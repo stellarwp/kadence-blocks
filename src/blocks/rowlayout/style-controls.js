@@ -253,6 +253,69 @@ import { __ } from '@wordpress/i18n';
 			backgroundVideo: newUpdate,
 		} );
 	};
+	const overMobileControls = (
+		<div>
+			<RangeControl
+				label={ __( 'Overlay Opacity' ) }
+				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
+				onChange={ ( value ) => {
+					saveMobileOverlay( {
+						overlayOpacity: value,
+					} );
+				} }
+				min={ 0 }
+				max={ 100 }
+			/>
+			<PopColorControl
+				label={ __( 'Overlay Color', 'kadence-blocks' ) }
+				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
+				default={ '' }
+				onChange={ value => saveMobileOverlay( { overlay: value } ) }
+			/>
+			<KadenceBackgroundControl
+				label={ __( 'Overlay Image', 'kadence-blocks' ) }
+				hasImage={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? true : false ) }
+				imageURL={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
+				imageID={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgID ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
+				imagePosition={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgPosition ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
+				imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
+				imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
+				imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
+				imageAttachmentParallax={ true }
+				onRemoveImage={ () => {
+					saveMobileOverlay( {
+						overlayBgImgID: '',
+						overlayBgImg: '',
+					} );
+				} }
+				onSaveImage={ ( img ) => {
+					saveMobileOverlay( {
+						overlayBgImgID: img.id,
+						overlayBgImg: img.url,
+					} );
+				} }
+				onSaveURL={ ( newURL ) => {
+					if ( newURL !== ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) ) {
+						saveMobileOverlay( {
+							overlayBgImgID: undefined,
+							overlayBgImg: newURL,
+						} );
+					}
+				} }
+				onSavePosition={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
+				onSaveSize={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
+				onSaveRepeat={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
+				onSaveAttachment={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
+				disableMediaButtons={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
+				dynamicAttribute="mobileOverlay:0:overlayBgImg"
+				isSelected={ isSelected }
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+				name={ 'kadence/rowlayout' }
+				clientId={ clientId }
+			/>
+		</div>
+	);
 	const mobileControls = (
 		<>
 			<ToggleControl
@@ -995,7 +1058,7 @@ const deskOverlayControls = (
 		<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 	</>
 );
-	
+
 	const overTabControls = (
 		<div>
 			<RangeControl
@@ -1051,69 +1114,6 @@ const deskOverlayControls = (
 				onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
 				disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
 				dynamicAttribute="tabletOverlay:0:overlayBgImg"
-				isSelected={ isSelected }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-				name={ 'kadence/rowlayout' }
-				clientId={ clientId }
-			/>
-		</div>
-	);
-	const overMobileControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Overlay Color', 'kadence-blocks' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveMobileOverlay( { overlay: value } ) }
-			/>
-			<KadenceBackgroundControl
-				label={ __( 'Overlay Image', 'kadence-blocks' ) }
-				hasImage={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? true : false ) }
-				imageURL={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
-				imageID={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgID ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
-				imagePosition={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgPosition ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-				imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-				imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-				imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
-				onRemoveImage={ () => {
-					saveMobileOverlay( {
-						overlayBgImgID: '',
-						overlayBgImg: '',
-					} );
-				} }
-				onSaveImage={ ( img ) => {
-					saveMobileOverlay( {
-						overlayBgImgID: img.id,
-						overlayBgImg: img.url,
-					} );
-				} }
-				onSaveURL={ ( newURL ) => {
-					if ( newURL !== ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) ) {
-						saveMobileOverlay( {
-							overlayBgImgID: undefined,
-							overlayBgImg: newURL,
-						} );
-					}
-				} }
-				onSavePosition={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
-				onSaveSize={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
-				onSaveRepeat={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
-				onSaveAttachment={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
-				disableMediaButtons={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
-				dynamicAttribute="mobileOverlay:0:overlayBgImg"
 				isSelected={ isSelected }
 				attributes={ attributes }
 				setAttributes={ setAttributes }
@@ -1178,7 +1178,7 @@ const deskOverlayControls = (
 						tabletChildren={ tabletOverlayControls }
 						mobileChildren={ mobileOverlayControls }
 					/>
-					
+
 				</KadencePanelBody>
 			) }
 			{ showSettings( 'border', 'kadence/rowlayout' ) && (
