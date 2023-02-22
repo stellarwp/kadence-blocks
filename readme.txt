@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.12 =
+Release Date: February 21st, 2023
+* Fix: Possible PHP 7.2 bug.
+* Fix: Issue with multiple types of carousels on a page.
+
 = 3.0.11 =
 Release Date: February 21st, 2023
 * Fix: Possible PHP 7.2 bug.
@@ -1713,5 +1718,5 @@ You can also set the block defaults.
 
 == Upgrade Notice ==
 
-= 3.0.11 =
+= 3.0.12 =
 Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
