@@ -80,9 +80,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.13 =
 Release Date: February 22nd, 2023
 * Fix: Issue where custom gutter could be undefined.
+* Fix: Issue with icon list vertical spacing.
 * Fix: Issue with sliders that only have one slide rendering arrows.
 * Fix: Issue with custom classes and anchor not rendering in gallery.
 * Fix: Issue with inline row background.
+* Fix: Possible issue with video script error.
+* Fix: Issue with PSR conflict.
 
 = 3.0.12 =
 Release Date: February 21st, 2023

@@ -305,6 +305,7 @@ class Kadence_Blocks_CSS {
 	 * @return $this
 	 */
 	public function add_css_string( $string ) {
+		$string = str_replace( PHP_EOL, '', trim( $string ) );
 		$this->_css_string .= $string;
 		return $this;
 	}
