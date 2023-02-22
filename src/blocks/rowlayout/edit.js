@@ -195,11 +195,11 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		debounce( getDynamic, 200 );
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		} else if ( columnGutter == 'narrow' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 20, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 20, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		} else if ( columnGutter == 'widest' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
 
 		// Update from old padding settings.
