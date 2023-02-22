@@ -82,6 +82,7 @@ Release Date: February 22nd, 2023
 * Fix: Issue where custom gutter could be undefined.
 * Fix: Issue with sliders that only have one slide rendering arrows.
 * Fix: Issue with custom classes and anchor not rendering in gallery.
+* Fix: Issue with inline row background.
 
 = 3.0.12 =
 Release Date: February 21st, 2023

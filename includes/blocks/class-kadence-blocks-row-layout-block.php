@@ -1284,16 +1284,16 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args = array(
 				'class' => implode( ' ', $outer_classes ),
 			);
+			$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
+			if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && isset( $attributes['backgroundInline'] ) && $attributes['backgroundInline'] ) {
+				$wrapper_args['style'] = 'background-image: url(' . $attributes['bgImg'] . ');';
+			}
 			if ( ! empty( $attributes['anchor'] ) ) {
 				$wrapper_args['id'] = $attributes['anchor'];
 			}
 			$inner_args = array(
 				'class' => implode( ' ', $inner_classes ),
 			);
-			$background_type = ! empty( $attributes['backgroundSettingTab'] ) ? $attributes['backgroundSettingTab'] : 'normal';
-			if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && isset( $attributes['backgroundInline'] ) && $attributes['backgroundInline'] ) {
-				$inner_args['style'] = 'background-image: url(' . $attributes['bgImg'] . ');';
-			}
 			$inner_wrap_attributes = array();
 			foreach ( $inner_args as $key => $value ) {
 				$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
