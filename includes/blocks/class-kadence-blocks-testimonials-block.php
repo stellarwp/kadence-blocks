@@ -675,6 +675,11 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
 			$css->add_property( 'justify-content', 'center' );
 			$css->add_property( 'align-items', 'center' );
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic' );
+			if ( ( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && $attributes['style'] === 'card' ) ) && ! empty( $attributes['mediaStyles'][0]['ratio'] ) ) {
+				$css->add_property( 'padding-bottom', $attributes['mediaStyles'][0]['ratio'] . '%' );
+			}
 		}
 
 		/*
