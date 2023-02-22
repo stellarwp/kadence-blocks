@@ -18,6 +18,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
+	isRTL
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -575,9 +576,9 @@ function GalleryEdit( props ) {
 		focus        : 0,
 		perPage      : previewColumns,
 		interval     : autoSpeed,
-		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
-		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
+		gap          : previewGutter ? previewGutter + previewGutterUnit : '0',
+		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const fluidCarouselSettings = {
 		type         : 'loop',
@@ -590,7 +591,8 @@ function GalleryEdit( props ) {
 		autoWidth    : true,
 		pagination   : ( dotStyle === 'none' ? false : true ),
 		focus        : carouselAlign === false ? 0 : "center",
-		gap          : previewGutter ? previewGutter + previewGutterUnit : '0'
+		gap          : previewGutter ? previewGutter + previewGutterUnit : '0',
+		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const sliderSettings = {
 		type          : 'fade',
@@ -598,12 +600,12 @@ function GalleryEdit( props ) {
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		rewind       : true,
 		perPage      : 1,
-		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
 		drag     : false,
 		interval      : autoSpeed,
 		autoplay      : autoPlay,
+		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderSettings = {
 		dots          : false,
@@ -617,6 +619,7 @@ function GalleryEdit( props ) {
 		autoplay      : autoPlay,
 		slidesToShow  : 1,
 		slidesToScroll: 1,
+		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderthumbsSettings = {
 		focus        : 0,
@@ -629,6 +632,7 @@ function GalleryEdit( props ) {
 		pagination   : false,
 		isNavigation : true,
 		arrows       : true,
+		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const nonTransAttrs = ['images', 'imagesDynamic'];
 	const controls = (

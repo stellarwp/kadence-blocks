@@ -56,7 +56,8 @@ import {
     getGapSizeOptionOutput,
     getSpacingOptionOutput,
     getFontSizeOptionOutput,
-	getBorderStyle
+	getBorderStyle,
+	isRTL
 } from '@kadence/helpers';
 
 /**
@@ -1074,6 +1075,7 @@ function KadenceTestimonials({
 		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ),
+		direction : ( isRTL ? 'rtl' : 'ltr' ),
 	};
     const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -2173,11 +2175,10 @@ function KadenceTestimonials({
                             options={ carouselSettings }
                             ref={ carouselRef }
                             aria-label={ __( 'Testimonial Carousel', 'kadence-woo-extras' ) }
-                            className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+                            className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} rtl`}
                             hasTrack={ false }
                             >
-                            <SplideTrack { ...innerBlocksProps }>
-                            </SplideTrack>
+                            <SplideTrack { ...innerBlocksProps }></SplideTrack>
                         </Splide>
 
 
