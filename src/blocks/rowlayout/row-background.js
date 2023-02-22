@@ -5,17 +5,11 @@
  import { times } from 'lodash';
  import { Splide, SplideSlide } from '@splidejs/react-splide';
  import { KadenceColorOutput, getPreviewSize, getBorderStyle } from '@kadence/helpers';
- import {
-	PaddingVisualizer,
-} from '@kadence/components';
 import {
 	useBlockProps,
 } from '@wordpress/block-editor';
-import {
-	Dashicon,
-} from '@wordpress/components';
-import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
-import { useEffect, useState, useRef } from '@wordpress/element';
+
+import { getSpacingOptionOutput } from './utils';
 
 /**
  * Build the row edit
@@ -88,7 +82,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	};
 	const blockProps = useBlockProps( {
 		className: backgroundClasses,
-		style: { 
+		style: {
 			marginBottom: getSpacingOptionOutput( previewMarginBottom, ( marginUnit ? marginUnit : 'px' ) ),
 			marginTop: getSpacingOptionOutput( previewMarginTop, ( marginUnit ? marginUnit : 'px' ) ),
 			borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
@@ -120,7 +114,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 					<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` }>
 						{ backgroundSliderCount !== 1 && (
 							<Splide options={ sliderSettings } className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
-								{ times( backgroundSliderCount, n => 
+								{ times( backgroundSliderCount, n =>
 									<SplideSlide className={ 'kadence-blocks-gallery-item' }>
 										{renderSliderImages( n )}
 									</SplideSlide>
