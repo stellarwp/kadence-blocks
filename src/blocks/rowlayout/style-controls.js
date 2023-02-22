@@ -253,6 +253,69 @@ import { __ } from '@wordpress/i18n';
 			backgroundVideo: newUpdate,
 		} );
 	};
+	const overTabControls = (
+		<div>
+			<RangeControl
+				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
+				onChange={ ( value ) => {
+					saveTabletOverlay( {
+						overlayOpacity: value,
+					} );
+				} }
+				min={ 0 }
+				max={ 100 }
+			/>
+			<PopColorControl
+				label={ __( 'Overlay Color', 'kadence-blocks' ) }
+				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
+				default={ '' }
+				onChange={ value => saveTabletOverlay( { overlay: value } ) }
+			/>
+			<KadenceBackgroundControl
+				label={ __( 'Overlay Image', 'kadence-blocks' ) }
+				hasImage={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? true : false ) }
+				imageURL={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
+				imageID={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgID ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
+				imagePosition={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgPosition ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
+				imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
+				imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
+				imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
+				imageAttachmentParallax={ true }
+				onRemoveImage={ () => {
+					saveTabletOverlay( {
+						overlayBgImgID: '',
+						overlayBgImg: '',
+					} );
+				} }
+				onSaveImage={ ( img ) => {
+					saveTabletOverlay( {
+						overlayBgImgID: img.id,
+						overlayBgImg: img.url,
+					} );
+				} }
+				onSaveURL={ ( newURL ) => {
+					if ( newURL !== ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) ) {
+						saveTabletOverlay( {
+							overlayBgImgID: undefined,
+							overlayBgImg: newURL,
+						} );
+					}
+				} }
+				onSavePosition={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
+				onSaveSize={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
+				onSaveRepeat={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
+				onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
+				disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
+				dynamicAttribute="tabletOverlay:0:overlayBgImg"
+				isSelected={ isSelected }
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+				name={ 'kadence/rowlayout' }
+				clientId={ clientId }
+			/>
+		</div>
+	);
 	const overMobileControls = (
 		<div>
 			<RangeControl
@@ -1058,70 +1121,6 @@ const deskOverlayControls = (
 		<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 	</>
 );
-
-	const overTabControls = (
-		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
-			<PopColorControl
-				label={ __( 'Overlay Color', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-				default={ '' }
-				onChange={ value => saveTabletOverlay( { overlay: value } ) }
-			/>
-			<KadenceBackgroundControl
-				label={ __( 'Overlay Image', 'kadence-blocks' ) }
-				hasImage={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? true : false ) }
-				imageURL={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
-				imageID={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgID ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
-				imagePosition={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgPosition ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-				imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-				imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-				imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
-				onRemoveImage={ () => {
-					saveTabletOverlay( {
-						overlayBgImgID: '',
-						overlayBgImg: '',
-					} );
-				} }
-				onSaveImage={ ( img ) => {
-					saveTabletOverlay( {
-						overlayBgImgID: img.id,
-						overlayBgImg: img.url,
-					} );
-				} }
-				onSaveURL={ ( newURL ) => {
-					if ( newURL !== ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) ) {
-						saveTabletOverlay( {
-							overlayBgImgID: undefined,
-							overlayBgImg: newURL,
-						} );
-					}
-				} }
-				onSavePosition={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
-				onSaveSize={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
-				onSaveRepeat={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
-				onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
-				disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
-				dynamicAttribute="tabletOverlay:0:overlayBgImg"
-				isSelected={ isSelected }
-				attributes={ attributes }
-				setAttributes={ setAttributes }
-				name={ 'kadence/rowlayout' }
-				clientId={ clientId }
-			/>
-		</div>
-	);
 	const colorControls = (
 		<KadencePanelBody
 			title={ __( 'Text Color Settings', 'kadence-blocks' ) }

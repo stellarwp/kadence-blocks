@@ -434,6 +434,7 @@ div.kb-blocks-bg-video {
 	display: block;
 	position: relative;
 	border: 0 solid transparent;
+	z-index: 1;
 	> .innerblocks-wrap {
 		z-index: 2;
 		margin: 0 auto;
