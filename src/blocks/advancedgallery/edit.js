@@ -357,13 +357,16 @@ function GalleryEdit( props ) {
 	};
 
 	// async
-	async function changeImageThumbSize( img ) {
-
+	const changeImageThumbSize = async ( img ) => {
 		setAttributes( { thumbSize: img.slug } );
-		const updatingImages = await getRelevantMediaFiles( imagesDynamic, lightSize, img.slug );
-		setAttribs( {
-			imagesDynamic: updatingImages,
-		} );
+		try {
+			const updatingImages = await getRelevantMediaFiles( imagesDynamic, lightSize, img.slug );
+			setAttribs( {
+				imagesDynamic: updatingImages,
+			} );
+		} catch ( error ) {
+			console.error( error );
+		}
 	};
 
 	// async
@@ -987,12 +990,12 @@ function GalleryEdit( props ) {
 								)}
 								{ids && undefined !== ids[ 0 ] && !dynamicSource && (
 									<ImageSizeControl
-										label={__( 'Thumbnail Image Size', 'kadence-blocks' )}
+										label={__( 'Thumbnail Image Sizes', 'kadence-blocks' )}
 										slug={thumbSize}
 										id={ids[ 0 ]}
 										fullSelection={true}
 										selectByValue={false}
-										onChange={() => changeImageThumbSize}
+										onChange={( value ) => changeImageThumbSize( value )}
 									/>
 								)}
 							</KadencePanelBody>
@@ -1127,7 +1130,7 @@ function GalleryEdit( props ) {
 												id={ids[ 0 ]}
 												fullSelection={true}
 												selectByValue={false}
-												onChange={() => changeImageLightSize() }
+												onChange={( value ) => changeImageLightSize( value ) }
 											/>
 										)}
 										{showSettings( 'lightboxSettings', 'kadence/advancedgallery' ) && (
