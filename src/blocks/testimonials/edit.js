@@ -298,6 +298,7 @@ function KadenceTestimonials({
                 uniqueID: smallID,
             });
             addUniqueID(smallID, clientId);
+			setShowPreset(true);
         } else if (!isUniqueID(uniqueID)) {
             // This checks if we are just switching views, client ID the same means we don't need to update.
             if (!isUniqueBlock(uniqueID, clientId)) {
