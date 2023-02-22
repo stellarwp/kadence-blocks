@@ -48,7 +48,7 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 	const previewOverlayGradLocSecond = getPreviewSize( previewDevice, ( undefined !== overlayGradLocSecond ? overlayGradLocSecond : 100 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLocSecond && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLocSecond : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLocSecond && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLocSecond : '' ) );
 	const previewOverlayGradient = getPreviewSize( previewDevice, ( undefined !== overlayGradient ? overlayGradient : '' ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].gradient && tabletOverlay[0].enable ? tabletOverlay[0].gradient : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].gradient && mobileOverlay[0].enable ? mobileOverlay[0].gradient : '' ) );
 	return (
-		<Fragment>
+		<>
 			{ ( ! previewCurrentOverlayTab || ( 'grad' !== previewCurrentOverlayTab && 'gradient' !== previewCurrentOverlayTab ) ) && (
 				<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ previewOverlayImage && previewOverlayAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
 					backgroundColor: ( previewOverlayColor ? previewOverlayColor : undefined ),
@@ -78,7 +78,7 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 				} }>
 				</div>
 			) }
-		</Fragment>
+		</>
 	);
 }
 export default Overlay;
