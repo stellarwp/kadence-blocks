@@ -82,6 +82,7 @@
 							loop: true,
 							openEffect: 'fade',
 							closeEffect: 'fade',
+							moreText: kb_glightbox.moreText,
 						});
 					}
 				}

@@ -787,7 +787,13 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-masonry-init.min.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/glightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-glight-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-glight-init.min.js', array( 'kadence-glightbox' ), KADENCE_BLOCKS_VERSION, true );
-
+		wp_localize_script(
+			'kadence-blocks-glight-init',
+			'kb_glightbox',
+			array(
+				'moreText' => __( 'See more', 'kadence-blocks' ),
+			)
+		);
 	}
 }
 

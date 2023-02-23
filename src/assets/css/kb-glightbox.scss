@@ -443,6 +443,7 @@
 	width: 26px;
 	height: 44px;
 	border: none;
+    padding: 0;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
@@ -458,7 +459,13 @@
 	flex-direction: column;
 	box-shadow: none;
   }
-  
+  .glightbox-container:not(.specificity) {
+	.gprev,
+	.gnext,
+	.gclose {
+		padding: 0;
+	}
+  }
   .gprev svg,
   .gnext svg,
   .gclose svg {
@@ -944,6 +951,16 @@
 	.glightbox-container .gnext {
 	  top: 45%;
 	}
+  }
+  @media (max-width: 768px) {
+	.glightbox-container:not(.specificity) .gprev {
+		top: 45%;
+		opacity: 0.4;
+	  }
+	  .glightbox-container:not(.specificity) .gnext {
+		top: 45%;
+		opacity: 0.4;
+	  }
   }
   
   @media (min-width: 992px) {
