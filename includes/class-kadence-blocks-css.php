@@ -20,6 +20,13 @@ class Kadence_Blocks_CSS {
 	public static $styles = array();
 
 	/**
+	 * CSS to enqueue
+	 *
+	 * @var array
+	 */
+	public static $custom_styles = array();
+
+	/**
 	 * The css group id.
 	 *
 	 * @access protected
@@ -235,10 +242,21 @@ class Kadence_Blocks_CSS {
 			foreach ( self::$styles as $key => $value ) {
 				$output .= $value;
 			}
+			$custom_output = '';
+			if ( ! empty( self::$custom_styles ) && is_array( self::$custom_styles ) ) {
+				foreach ( self::$custom_styles as $c_key => $c_value ) {
+					$custom_output .= $c_value;
+				}
+			}
 			if ( ! empty( $output ) ) {
 				wp_register_style( 'kadence_blocks_css', false );
 				wp_enqueue_style( 'kadence_blocks_css' );
 				wp_add_inline_style( 'kadence_blocks_css', $output );
+			}
+			if ( ! empty( $custom_output ) ) {
+				wp_register_style( 'kadence_blocks_custom_css', false );
+				wp_enqueue_style( 'kadence_blocks_custom_css' );
+				wp_add_inline_style( 'kadence_blocks_custom_css', $custom_output );
 			}
 		}
 	}
@@ -256,7 +274,7 @@ class Kadence_Blocks_CSS {
 			return;
 		}
 		// Render the css in the output string everytime the style_id changes.
-		if ( ! isset( $styles[ $style_id ] ) ) {
+		if ( ! isset( self::$styles[ $style_id ] ) ) {
 			self::$styles[ $style_id ] = '';
 		}
 		$this->_style_id = $style_id;
@@ -2256,16 +2274,20 @@ class Kadence_Blocks_CSS {
 		// Add current selector's rules to output
 		$this->add_selector_rules_to_output();
 
-		$this->_output .= $this->_css_string;
-
 		if ( class_exists( 'Kadence_Blocks_Google_Fonts' ) ) {
 			$fonts_instance = Kadence_Blocks_Google_Fonts::get_instance();
 			$fonts_instance->add_fonts( $this->fonts_output() );
 		}
 		// Output minified css.
 		self::$styles[ $this->_style_id ] = $this->_output;
+		if ( ! empty( $this->_css_string ) ) {
+			if ( ! isset( self::$custom_styles[ $this->_style_id ] ) ) {
+				self::$custom_styles[ $this->_style_id ] = '';
+			}
+			self::$custom_styles[ $this->_style_id ] = $this->_css_string;
+		}
 		$this->clear();
-		return self::$styles[ $this->_style_id ];
+		return self::$styles[ $this->_style_id ] . ( isset( self::$custom_styles[ $this->_style_id ] ) ? self::$custom_styles[ $this->_style_id ] : '' );
 	}
 	/**
 	 * Generates the gap output.
