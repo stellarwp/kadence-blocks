@@ -77,6 +77,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.14 =
+* Fix: Issue with collapsed columns set to full height.
+* Fix: Issue where lightbox shows disable arrows that should be hidden.
+* Fix: Issue with fluentCRM and mailerlite.
+* Fix: Settings page link.
+* 
+
 = 3.0.13 =
 Release Date: February 22nd, 2023
 * Fix: Issue where custom gutter could be undefined.

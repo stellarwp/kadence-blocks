@@ -377,6 +377,7 @@
 	  "left",
 	  "right"
 	],
+	"html": false,
 	"ktdynamic": true
   },
   "usesContext": [
