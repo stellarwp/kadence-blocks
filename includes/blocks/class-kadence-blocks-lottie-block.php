@@ -195,7 +195,12 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$width = $attributes['width'] === '0' ? 'auto' : $attributes['width'] . 'px';
 
-			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . '">';
+			$align = '';
+			if( !empty( $attributes['align'] ) ) {
+				$align = 'align' . $attributes['align'];
+			}
+
+			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . ' '. $align .'">';
 				$content .= '<dotlottie-player ';
 
 					foreach( $playerProps as $key => $value ){
