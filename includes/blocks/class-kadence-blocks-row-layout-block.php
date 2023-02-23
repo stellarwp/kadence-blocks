@@ -1142,14 +1142,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $slide['bgImg'] ) ) {
 				$style_args['background-image'] = 'url(' . $slide['bgImg'] . ')';
-				if ( ! empty( $slide['bgImgSize'] ) ) {
-					$style_args['background-size'] = $slide['bgImgSize'];
+				if ( ! empty( $attributes['bgImgSize'] ) ) {
+					$style_args['background-size'] = $attributes['bgImgSize'];
 				}
-				if ( ! empty( $slide['bgImgPosition'] ) ) {
-					$style_args['background-position'] = $slide['bgImgPosition'];
+				if ( ! empty( $attributes['bgImgPosition'] ) ) {
+					$style_args['background-position'] = $attributes['bgImgPosition'];
 				}
-				if ( ! empty( $slide['bgImgRepeat'] ) ) {
-					$style_args['background-repeat'] = $slide['bgImgRepeat'];
+				if ( ! empty( $attributes['bgImgRepeat'] ) ) {
+					$style_args['background-repeat'] = $attributes['bgImgRepeat'];
 				}
 			}
 			$style_output = array();
