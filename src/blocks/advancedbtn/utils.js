@@ -23,6 +23,7 @@ function convertAlphaColors( hex, alpha ) {
 export function migrateToInnerblocks( attributes ) {
     const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth, kadenceAOSOptions, kadenceAnimation, kadenceDynamic, hideLink, lockBtnCount } = attributes;
 	const newGap = [ 'xs', '', '' ];
+	let newOrientation = [ '', '', '' ];
     let buttonInnerBlocks = [];
 	if ( btns?.length ) {
 		times( btnCount, n => {
@@ -355,7 +356,7 @@ export function migrateToInnerblocks( attributes ) {
 			if ( undefined !== widthType && widthType == 'full' ) {
 				newAttrs.widthType = 'full';
 				if ( collapseFullwidth ) {
-					newAttrs.orientation = [ '', '', 'column' ];
+					newOrientation = [ '', '', 'column' ];
 				}
 			} else if ( undefined !== widthType && widthType == 'fixed' ) {
 				newAttrs.widthType = 'fixed';
@@ -435,7 +436,7 @@ export function migrateToInnerblocks( attributes ) {
 	//// 	  "mobileMargin": [ "", "", "", "" ],
 	//// 	  "anchor": "",
 	//// 	  "borderStyle": ""
-    let buttonParentAttributes = { ...attributes, btns: [], btnCount: 1, typography: '', fontStyle: 'normal', googleFont:false, letterSpacing: '',loadGoogleFont: true, textTransform:'', fontSubset: '',fontWeight:'regular',fontVariant:'', widthType:'auto', widthUnit:'px', forceFullwidth:false, collapseFullwidth: false, gap: newGap, }
+    let buttonParentAttributes = { ...attributes, btns: [], btnCount: 1, typography: '', fontStyle: 'normal', googleFont:false, letterSpacing: '',loadGoogleFont: true, textTransform:'', fontSubset: '',fontWeight:'regular',fontVariant:'', widthType:'auto', widthUnit:'px', orientation:newOrientation, forceFullwidth:false, collapseFullwidth: false, gap: newGap, }
 
     return [ buttonParentAttributes, buttonInnerBlocks ];
 }

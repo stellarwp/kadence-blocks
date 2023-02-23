@@ -17,7 +17,7 @@
 	align-items: center;
 	justify-content: center;
     &.kt-btn-width-type-full {
-        flex: 1;
+        flex: 1 0 fit-content;
         width: 100%;
     }
 }
