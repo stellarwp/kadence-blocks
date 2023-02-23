@@ -443,7 +443,7 @@ function KadenceConfig() {
 
 							{/* Table of Contents */}
 							<div className="kt-blocks-control-row">
-									<KadenceVisibilitySettings blockName={__('Table Of Contents', 'kadence-blocks')}
+									<KadenceVisibilitySettings blockName={__('Table of Contents', 'kadence-blocks')}
 															   blockSlug={'table-of-contents'}
 															   icon={ BlockIcons.tableOfContentsIcon }
 															   options={[

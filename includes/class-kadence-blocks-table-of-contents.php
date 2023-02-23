@@ -768,7 +768,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		return $wrap ? '<' . $list_tag . ' class="kb-table-of-contents-list-sub">' . implode( $child_nodes ) . '</' . $list_tag . '>' : implode( $child_nodes );
 	}
 	/**
-	 * Render Table Of Contents Block
+	 * Render Table of Contents Block
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
@@ -818,7 +818,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			$scroll_offset = ( isset( $attributes['smoothScrollOffset'] ) && is_numeric( $attributes['smoothScrollOffset'] ) ? $attributes['smoothScrollOffset'] : '40' );
 			$class .= ' kb-toc-smooth-scroll';
 		}
-		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . ( isset( $attributes['enableScrollSpy'] ) && true === $attributes['enableScrollSpy'] ? ' data-scroll-spy="true"' : '' ) . '>';
+		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . ( isset( $attributes['enableScrollSpy'] ) && true === $attributes['enableScrollSpy'] ? ' data-scroll-spy="true"' : '' ) . '>';
 		$output .= '<div class="kb-table-of-content-wrap">';
 		if ( ! isset( $attributes['enableTitle'] ) || isset( $attributes['enableTitle'] ) && $attributes['enableTitle'] ) {
 			$output .= '<div class="kb-table-of-contents-title-wrap kb-toggle-icon-style-' . ( $enable_toggle && isset( $attributes['toggleIcon'] ) && $attributes['toggleIcon'] ? $attributes['toggleIcon'] : 'arrow' ) . '">';

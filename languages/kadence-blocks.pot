@@ -392,7 +392,7 @@ msgstr ""
 
 #: includes/class-kadence-blocks-table-of-contents.php:811
 #: dist/plugin-kadence-control.js:3
-msgid "Table Of Contents"
+msgid "Table of Contents"
 msgstr ""
 
 #: includes/class-kadence-blocks-table-of-contents.php:819
