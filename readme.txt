@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.13
+Stable tag: 3.0.14
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,11 +78,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.14 =
+* Update: Prevent custom CSS in row or section from breaking block css.
+* Update: TOC to better handle templates with core post content block.
 * Fix: Issue with collapsed columns set to full height.
+* Fix: Row backgrond slider sizeing not applying.
 * Fix: Issue where lightbox shows disable arrows that should be hidden.
 * Fix: Issue with fluentCRM and mailerlite.
 * Fix: Settings page link.
-* 
 
 = 3.0.13 =
 Release Date: February 22nd, 2023
@@ -1735,5 +1737,5 @@ You can also set the block defaults.
 
 == Upgrade Notice ==
 
-= 3.0.13 =
+= 3.0.14 =
 Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
