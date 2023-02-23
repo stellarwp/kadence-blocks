@@ -826,7 +826,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				$output .= '<button class="kb-table-of-contents-title-btn kb-table-of-contents-toggle" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '">';
 			}
 			$output .= '<span class="kb-table-of-contents-title">';
-			$output .= ( isset( $attributes['title'] ) ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
+			$output .= ( isset( $attributes['title'] ) && $attributes['title'] !== 'Table of Contents' ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
 			$output .= '</span>';
 			if ( $enable_toggle ) {
 				if ( $title_toggle ) {
