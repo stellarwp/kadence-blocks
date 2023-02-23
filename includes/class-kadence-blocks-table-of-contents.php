@@ -207,6 +207,16 @@ class Kadence_Blocks_Table_Of_Contents {
 							if ( self::$output_content ) {
 								$page_content .= do_shortcode( self::$output_content );
 							}
+							$blocks = parse_blocks( $post->post_content );
+							self::$output_content = '';
+							foreach ( $blocks as $block ) {
+								$this->recursively_parse_blocks( $block );
+							}
+							if ( self::$output_content ) {
+								$page_content .= do_shortcode( self::$output_content );
+							} else {
+								$page_content .= do_shortcode( $post->post_content );
+							}
 						} else {
 							$blocks = parse_blocks( $post->post_content );
 							self::$output_content = '';
@@ -291,7 +301,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function get_ignore_list() {
 		if ( is_null( self::$ignore_list ) ) {
-			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal' ) );
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'core/post-content' ) );
 		}
 		return self::$ignore_list;
 	}
