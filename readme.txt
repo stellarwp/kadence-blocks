@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.14
+Stable tag: 3.0.15
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,7 +77,17 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.15 =
+Release Date: February 23rd, 2023
+* Update: Include arrows in lightbox on mobile.
+* Update: Align for lottie render.
+* Fix: Possible gallery gutter issue.
+* Fix: Issue where migrated full width buttons were missing collapse on mobile.
+* Fix: Issue the advanced text and WP 6.0.
+* Fix: Issue where lots of full width buttons were not wrapping correctly.
+
 = 3.0.14 =
+Release Date: February 22nd, 2023
 * Update: Prevent custom CSS in row or section from breaking block css.
 * Update: TOC to better handle templates with core post content block.
 * Fix: Issue with collapsed columns set to full height.
