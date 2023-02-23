@@ -20,7 +20,7 @@
   .glightbox-container.inactive {
 	display: none;
   }
-  
+
   .glightbox-container .gcontainer {
 	position: relative;
 	width: 100%;
@@ -317,9 +317,6 @@
 	display: none;
   }
   
-  .glightbox-button-hidden {
-	display: none;
-  }
   
   
   /*
@@ -497,7 +494,9 @@
 	  .glightbox-closing .gclose {
 	opacity: 0 !important;
   }
-  
+  .glightbox-button-hidden:not(.specificity) {
+	display: none;
+  }
   
   /*Skin Defaut */
   /* color Skins */
