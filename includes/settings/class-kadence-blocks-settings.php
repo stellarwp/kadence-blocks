@@ -1228,7 +1228,7 @@ class Kadence_Blocks_Settings {
 	 * Add settings link
 	 */
 	public function settings_link() {
-		return apply_filters( 'kadence-blocks-settings-url', admin_url( 'options-general.php?page=kadence_blocks' ) );
+		return apply_filters( 'kadence-blocks-settings-url', admin_url( 'admin.php?page=kadence-blocks' ) );
 	}
 	/**
 	 * Add settings link
