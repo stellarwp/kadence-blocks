@@ -1610,11 +1610,9 @@ function KadenceForm( props ) {
 				}`
 		);
 	};
-
 	const blockProps = useBlockProps( {
 		className: className,
 	} );
-
 	return (
 		<div {...blockProps}>
 			<style>
@@ -2025,6 +2023,22 @@ function KadenceForm( props ) {
 								/>
 							</KadencePanelBody>
 						</KadencePanelBody>
+						{actions.includes( 'mailerlite' ) && (
+							<MailerLiteControls
+								fields={fields}
+								settings={mailerlite}
+								save={( value ) => saveMailerlite( value )}
+								saveMap={( value, i ) => saveMailerliteMap( value, i )}
+							/>
+						)}
+						{actions.includes( 'fluentCRM' ) && (
+							<FluentCRMControls
+								fields={fields}
+								settings={fluentcrm}
+								save={( value ) => saveFluentCRM( value )}
+								saveMap={( value, i ) => saveFluentCRMMap( value, i )}
+							/>
+						)}
 					</>
 				}
 
@@ -3520,22 +3534,6 @@ function KadenceForm( props ) {
 								onChange={( value ) => setAttributes( { submitLabel: value } )}
 							/>
 						</KadencePanelBody>
-						{actions.includes( 'mailerlite' ) && (
-							<MailerLiteControls
-								fields={fields}
-								settings={mailerlite}
-								save={( value ) => saveMailerlite( value )}
-								saveMap={( value, i ) => saveMailerliteMap( value, i )}
-							/>
-						)}
-						{actions.includes( 'fluentCRM' ) && (
-							<FluentCRMControls
-								fields={fields}
-								settings={fluentcrm}
-								save={( value ) => saveFluentCRM( value )}
-								saveMap={( value, i ) => saveFluentCRMMap( value, i )}
-							/>
-						)}
 					</>
 				}
 
