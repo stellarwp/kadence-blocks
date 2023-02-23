@@ -177,8 +177,10 @@ function KadenceForm( props ) {
 		setBlockDefaults( 'kadence/form', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 	}, [] );
 	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
