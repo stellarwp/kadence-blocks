@@ -19,9 +19,11 @@
 .kt-row-column-wrap {
 	display: grid;
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--global-row-gutter-md, 2rem) var(--global-row-gutter-md, 2rem);
+}
+.kt-row-column-wrap:not(.kt-inner-column-height-full) {
 	/* autoprefixer: ignore next */
 	grid-auto-rows: minmax(min-content, max-content);
-    gap: var(--global-row-gutter-md, 2rem) var(--global-row-gutter-md, 2rem);
 }
 .wp-block-kadence-rowlayout .kt-row-column-wrap.kb-theme-content-width {
 	margin-left: auto;
