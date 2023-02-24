@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.17 =
+Release Date: TBD
+* Fix: Issue with typed text in editor.
+* Fix: Setting 0 border on tablet/mobile not overriding desktop.
+
 = 3.0.16 =
 Release Date: February 23rd, 2023
 * Fix: Issue with reusable blocks
@@ -204,7 +209,7 @@ Release Date: January 31st, 2023
 * Fix: Issue with icon list fonts.
 * Fix: Issue with some gutter sizes.
 * Fix: Issue with zindex in rows.
-* Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with heading block backward compatibility.
 * Fix: Issue with heading block backward compatibility.
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
@@ -265,7 +270,7 @@ Release Date: January 4th, 2023
 * Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
 * Update: Improved CSS generation for blocks.
-* Update: Kadence Block defaults structure, new controls and management. 
+* Update: Kadence Block defaults structure, new controls and management.
 * Update: Inline SVGs removed from content html, all svgs load through filter.
 * Update: Sections can move freely in and out of rows.
 * Update: Rows can be content locked to preserve inner block settings and simplify updating.
