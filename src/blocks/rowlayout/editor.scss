@@ -46,7 +46,7 @@
 .components-button-group .kt-layout-btn.is-primary svg rect {
     fill: #738495;
 }
- 
+
 // EDITOR COMPONENTS
 .kb-content-width-popover-inner-wrap {
 	min-width: 300px;
@@ -357,7 +357,7 @@ div.kb-blocks-bg-video {
 		flex-grow: 1;
 	}
 }
-.wp-block-kadence-rowlayout.kt-row-valign-middle>.innerblocks-wrap {
+.wp-block-kadence-rowlayout.kt-row-valign-middle {
 	align-content: center;
 	> .wp-block-kadence-column {
 		display: flex;
@@ -365,7 +365,7 @@ div.kb-blocks-bg-video {
 		justify-content: center;
 	}
 }
-.wp-block-kadence-rowlayout.kt-row-valign-top>.innerblocks-wrap {
+.wp-block-kadence-rowlayout.kt-row-valign-top {
 	align-content: start;
 	> .wp-block-kadence-column {
 		display: flex;
@@ -373,7 +373,7 @@ div.kb-blocks-bg-video {
 		justify-content: flex-start;
 	}
 }
-.wp-block-kadence-rowlayout.kt-row-valign-bottom>.innerblocks-wrap {
+.wp-block-kadence-rowlayout.kt-row-valign-bottom {
 	align-content: end;
 	> .wp-block-kadence-column {
 		display: flex;
@@ -431,7 +431,7 @@ div.kb-blocks-bg-video {
 }
 // Main Block.
 .wp-block-kadence-rowlayout {
-	display: block;
+	display: grid;
 	position: relative;
 	border: 0 solid transparent;
 	z-index: 1;
