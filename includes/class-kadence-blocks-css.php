@@ -1847,11 +1847,19 @@ class Kadence_Blocks_CSS {
 				$return_unit= $sized_units[$given_size];
 				break;
 			case 'tablet':
-				$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				if( $given_value === 'width'){
+					$return_value =  $this->is_number( $sized_values[$given_size] ) ? $sized_values[$given_size] : $sized_values['desktop'];
+				} else {
+					$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				}
 				$return_unit = $sized_units[$given_size] ?: $sized_units['desktop'];
 				break;
 			default:
-				$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				if( $given_value === 'width') {
+					$return_value = $this->is_number( $sized_values[ $given_size ] ) ? $sized_values[ $given_size ] : ( $sized_values['tablet'] ?: $sized_values['desktop'] );
+				} else {
+					$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				}
 				$return_unit = $sized_units[$given_size] ?: $sized_units['tablet'] ?: $sized_units['desktop'];
 				break;
 		}
