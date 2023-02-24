@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment } from '@wordpress/element';
-import { toggleFormat, applyFormat, registerFormatType, useAnchorRef, useAnchor } from '@wordpress/rich-text';
+import { toggleFormat, applyFormat, registerFormatType, useAnchorRef } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import {
@@ -94,13 +94,8 @@ const kadenceTypedText = {
 
 		const settings = getCurrentSettings();
 
-		// useAnchorRef was deprecated in 6.1 in favor of useAnchor.
-		// useAnchor is undefined in 6.0, so we need to check for it.
-		if( undefined !== useAnchor ) {
-			let anchorRef = useAnchor( { ref: contentRef, value } );
-		} else {
-			let anchorRef = useAnchorRef( { ref: contentRef, value } );
-		}
+		// useAnchorRef was deprecated in 6.1 in favor of useAnchor, but will remain in WP through 6.3
+		const anchorRef = useAnchorRef( { ref: contentRef, value } );
 
 		return (
 			<Fragment>
