@@ -86,6 +86,7 @@ Release Date: TBD
 * Fix: Testimonial content font size when using variable size
 * Fix: Accordion "space between" when using heading title tags
 * Fix: Spacer block in reusable block.
+* Fix: Setting HTML Tag for Countup block title.
 
 = 3.0.16 =
 Release Date: February 23rd, 2023
