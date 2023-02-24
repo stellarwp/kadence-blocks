@@ -100,8 +100,10 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
 		setBlockDefaults( 'kadence/listitem', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 	}, [] );
 
     const blockProps = useBlockProps({

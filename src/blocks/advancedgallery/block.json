@@ -361,6 +361,9 @@
 			}
 		]
 	},
+	"anchor": {
+		"type": "string"
+	},
 	"kbVersion": {
 		"type": "number",
 		"default": ""
@@ -374,6 +377,7 @@
 	  "left",
 	  "right"
 	],
+	"html": false,
 	"ktdynamic": true
   },
   "usesContext": [

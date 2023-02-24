@@ -56,7 +56,8 @@ import {
     getGapSizeOptionOutput,
     getSpacingOptionOutput,
     getFontSizeOptionOutput,
-	getBorderStyle
+	getBorderStyle,
+	isRTL
 } from '@kadence/helpers';
 
 /**
@@ -88,7 +89,7 @@ import {
     Tooltip,
 } from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
-import { 
+import {
     plusCircle
 } from '@wordpress/icons';
 
@@ -298,6 +299,7 @@ function KadenceTestimonials({
                 uniqueID: smallID,
             });
             addUniqueID(smallID, clientId);
+			setShowPreset(true);
         } else if (!isUniqueID(uniqueID)) {
             // This checks if we are just switching views, client ID the same means we don't need to update.
             if (!isUniqueBlock(uniqueID, clientId)) {
@@ -746,16 +748,16 @@ function KadenceTestimonials({
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                     }
 
-                    ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
+                    ${ containerVAlign !== '' && `
                         .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                             display: flex;
                             flex-direction: column;
-                            justify-content: ${ containerVAlign === 'bottom' ? 'flex-end' : 'center' };
+                            justify-content: ${ containerVAlign === 'middle' ? 'center' : ( containerVAlign === 'top' ? 'flex-start' : 'flex-end') };
                         }
                     `}
 
-                    ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
-                        ${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
+                    ${ `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+						${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
                         ${ previewContainerMinHeight ? 'min-height: ' + previewContainerMinHeight + 'px;' : '' }
                         ${ undefined !== iconPadding?.[0] && '' !== iconPadding?.[0] ? 'padding-top: ' + iconPadding[0] + ';' : '' }
                     }` }
@@ -1073,6 +1075,7 @@ function KadenceTestimonials({
 		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ),
+		direction : ( isRTL ? 'rtl' : 'ltr' ),
 	};
     const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -1314,6 +1317,17 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-container-settings'}
                                     >
                                         <div className="kt-spacer-sidebar-15"></div>
+										<PopColorControl
+											label={__( 'Background', 'kadence-blocks' )}
+											value={( containerBackground ? containerBackground : '' )}
+											default={''}
+											onChange={value => {
+												setAttributes( { containerBackground: value } );
+											}}
+											opacityValue={containerBackgroundOpacity}
+											onOpacityChange={value => setAttributes( { containerBackgroundOpacity: value } )}
+											onArrayChange={( color, opacity ) => setAttributes( { containerBackground: color, containerBackgroundOpacity: opacity } )}
+										/>
 										<ResponsiveBorderControl
 											label={__( 'Border', 'kadence-blocks' )}
 											value={borderStyle}
@@ -2067,7 +2081,13 @@ function KadenceTestimonials({
                                                                 isSmall
                                                                 isPrimary={containerVAlign === key}
                                                                 aria-pressed={containerVAlign === key}
-                                                                onClick={() => setAttributes({containerVAlign: key})}
+                                                                onClick={() => {
+																	if( containerVAlign === key ) {
+																		setAttributes({containerVAlign: ''})
+																	} else {
+																		setAttributes({containerVAlign: key})
+																	}
+																} }
                                                             >
                                                                 {icon}
                                                             </Button>
@@ -2158,8 +2178,7 @@ function KadenceTestimonials({
                             className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
                             hasTrack={ false }
                             >
-                            <SplideTrack { ...innerBlocksProps }>
-                            </SplideTrack>
+                            <SplideTrack { ...innerBlocksProps }></SplideTrack>
                         </Splide>
 
 

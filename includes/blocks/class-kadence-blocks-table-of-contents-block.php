@@ -61,10 +61,11 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Container.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 

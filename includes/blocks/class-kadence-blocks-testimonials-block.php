@@ -55,10 +55,11 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		/* Load any Google fonts that are needed */
 		$attributes_with_fonts = array( 'titleFont', 'contentFont', 'nameFont', 'occupationFont' );
@@ -602,16 +603,15 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		if( !empty( $attributes['containerBorderWidth'][0] ) || !empty( $attributes['containerBorderWidth'][1] ) || !empty( $attributes['containerBorderWidth'][2] ) || !empty( $attributes['containerBorderWidth'][3] ) ) {
 			$css->render_measure_range( $attributes, 'containerBorderWidth', 'border-width' );
+
+			if ( ! isset( $attributes['containerBorder'] )){
+				$attributes['containerBorder'] = '#eeeeee';
+			}
+			$css->render_color_output( $attributes, 'containerBorder', 'border-color', 'containerBorderOpacity' );
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 		}
 
-
-		if ( ! isset( $attributes['containerBorder'] )){
-			$attributes['containerBorder'] = '#eeeeee';
-		}
-
-		$css->render_color_output( $attributes, 'containerBorder', 'border-color', 'containerBorderOpacity' );
 		$css->render_color_output( $attributes, 'containerBackground', 'background', 'containerBackgroundOpacity' );
 
 		if( !empty( $attributes['containerBorderRadius'] ) ){
@@ -675,6 +675,11 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-svg-testimonial-icon' );
 			$css->add_property( 'justify-content', 'center' );
 			$css->add_property( 'align-items', 'center' );
+
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic' );
+			if ( ( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && $attributes['style'] === 'card' ) ) && ! empty( $attributes['mediaStyles'][0]['ratio'] ) ) {
+				$css->add_property( 'padding-bottom', $attributes['mediaStyles'][0]['ratio'] . '%' );
+			}
 		}
 
 		/*

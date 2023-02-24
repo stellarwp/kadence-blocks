@@ -82,8 +82,10 @@ function PaneEdit( {
 	}
 	useEffect( () => {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 		
 		if ( ! id ) {
 			const newPaneCount = accordionBlock[0].attributes.paneCount + 1;

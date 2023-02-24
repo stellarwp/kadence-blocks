@@ -191,6 +191,7 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'center-exwide', label: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
 			{ value: 'first-row', label: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
 			{ value: 'last-row', label: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 		];
 	} else if ( 4 === columns ) {
@@ -463,7 +464,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( topSep === 'none' ? '' : topSep ) }
 							onChange={ value => setAttributes( { topSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'top' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'top', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -549,7 +550,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 							onChange={ value => setAttributes( { bottomSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'bottom', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -604,7 +605,7 @@ import { __ } from '@wordpress/i18n';
 						/>
 					</KadencePanelBody>
 				</>
-			) }			
+			) }
 		</Fragment>
 	);
 };

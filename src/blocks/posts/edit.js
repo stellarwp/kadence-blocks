@@ -160,8 +160,10 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	useEffect( () => {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 
 		getPosts();
 	}, [] );

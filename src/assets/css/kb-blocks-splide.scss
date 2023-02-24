@@ -44,6 +44,9 @@
     .splide__arrow--next {
         right:0px;
     }
+	.splide__arrows--rtl .splide__arrow--next {
+		right: unset;
+	}
 }
 .wp-block-kadence-rowlayout .kt-blocks-carousel {
     // Temp Fix while some older css could be loaded.

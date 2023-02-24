@@ -149,8 +149,10 @@ export function Edit( {
 		setBlockDefaults( 'kadence/lottie', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 	}, [] );
 	const containerClasses = classnames( {
 		'kb-lottie-container': true,

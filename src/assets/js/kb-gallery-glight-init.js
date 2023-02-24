@@ -56,11 +56,21 @@
 					}
 					let galleryClass = foundGalleries[i].classList;
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
+					var showCaption = foundGalleries[ i ].getAttribute( 'data-lightbox-caption' );
 					let foundGalleryClass = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
 						if ( galleryClass[ n ].indexOf( 'kb-gallery-id' ) !== -1 ) {
 							foundGalleryClass = galleryClass[ n ];
 							break;
+						}
+					}
+					if ( 'true' == showCaption && ! foundGalleries[i].classList.contains('kb-gallery-non-static') ) {
+						var foundImages = foundGalleries[ i ].querySelectorAll( 'a.kb-gallery-item-link' );
+						for ( let x = 0; x < foundImages.length; x++ ) {
+							var caption = foundImages[x].querySelector( '.kadence-blocks-gallery-item__caption' );
+							if ( caption ) {
+								foundImages[x].setAttribute( 'data-description', caption.innerText );
+							}
 						}
 					}
 					if ( foundGalleryClass ) {
@@ -72,6 +82,7 @@
 							loop: true,
 							openEffect: 'fade',
 							closeEffect: 'fade',
+							moreText: kb_glightbox.moreText,
 						});
 					}
 				}

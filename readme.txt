@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.9
+Stable tag: 3.0.16
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,11 +77,67 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.16 =
+Release Date: February 23rd, 2023
+* Fix: Issue with reusable blocks
+
+= 3.0.15 =
+Release Date: February 23rd, 2023
+* Update: Include arrows in lightbox on mobile.
+* Update: Align for lottie render.
+* Fix: Possible gallery gutter issue.
+* Fix: Issue where migrated full width buttons were missing collapse on mobile.
+* Fix: Issue the advanced text and WP 6.0.
+* Fix: Issue where lots of full width buttons were not wrapping correctly.
+
+= 3.0.14 =
+Release Date: February 22nd, 2023
+* Update: Prevent custom CSS in row or section from breaking block css.
+* Update: TOC to better handle templates with core post content block.
+* Fix: Issue with collapsed columns set to full height.
+* Fix: Row backgrond slider sizeing not applying.
+* Fix: Issue where lightbox shows disable arrows that should be hidden.
+* Fix: Issue with fluentCRM and mailerlite.
+* Fix: Settings page link.
+
+= 3.0.13 =
+Release Date: February 22nd, 2023
+* Fix: Issue where custom gutter could be undefined.
+* Fix: Issue with icon list vertical spacing.
+* Fix: Issue with sliders that only have one slide rendering arrows.
+* Fix: Issue with custom classes and anchor not rendering in gallery.
+* Fix: Issue with inline row background.
+* Fix: Possible issue with video script error.
+* Fix: Issue with PSR conflict.
+
+= 3.0.12 =
+Release Date: February 21st, 2023
+* Fix: Possible PHP 7.2 bug.
+* Fix: Issue with multiple types of carousels on a page.
+
+= 3.0.11 =
+Release Date: February 21st, 2023
+* Fix: Possible PHP 7.2 bug.
+* Fix: Parallax issue in safari.
+* Fix: Missing Testimonial Background setting.
+* Fix: Border color issues in testimonial.
+* Fix: Icon size in icon list in the editor.
+* Fix: Section hover colors with link.
+* Fix: For rebuilding css in a query.
+* Fix: Divider rendering in safari. 
+
+= 3.0.10 =
+Release Date: February 21st, 2023
+* Fix: Spacing issues when using generatepress
+* Fix: Three column layout issues with gap. 
+* Fix: Min height of rows in editor.
+
 = 3.0.9 =
-Release Date: February 20th, 2023
+Release Date: February 21st, 2023
 * Update: Add blend mode to section overlay settings.
 * Update: Accordion to have inner content colors.
 * Update: Add filter for TOC block render attributes.
+* Update: Row Padding visual editor to always override overlaping blocks.
 * Fix: Some block settings showing incorrect default.
 * Fix: Issue with the design library button not always rendering in 6.2
 
@@ -1692,3 +1748,8 @@ You can also set the block defaults.
 
 = 1.0.0 =
 * Initial Release.
+
+== Upgrade Notice ==
+
+= 3.0.16 =
+Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)

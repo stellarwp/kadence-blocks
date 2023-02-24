@@ -215,8 +215,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		setBlockDefaults( 'kadence/infobox', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		if ( ! kbVersion || kbVersion < 2 ) {

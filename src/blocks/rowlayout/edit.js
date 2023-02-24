@@ -187,19 +187,21 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		setBlockDefaults( 'kadence/rowlayout', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
 		debounce( getDynamic, 200 );
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		} else if ( columnGutter == 'narrow' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 20, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 20, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		} else if ( columnGutter == 'widest' ) {
-			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
+			setAttributes( { columnGutter: 'custom', customGutter: [ 80, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
 		}
 
 		// Update from old padding settings.
@@ -372,7 +374,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
-	const previewMinHeight = getPreviewSize( previewDevice, ( undefined !== minHeight ? minHeight : '' ), ( undefined !== minHeightTablet ? minHeightTablet : '' ), ( undefined !== minHeightMobile ? minHeightMobile : '' ) );
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[2] ? margin[2] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[2] ? tabletMargin[2] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[2] ? mobileMargin[2] : '' ) );
 	const previewTopSepHeight = getPreviewSize( previewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
@@ -558,7 +559,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
 				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},

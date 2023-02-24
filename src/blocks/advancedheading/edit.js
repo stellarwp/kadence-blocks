@@ -242,8 +242,10 @@ function KadenceAdvancedHeading( props ) {
 		setBlockDefaults( 'kadence/advancedheading', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
@@ -656,7 +658,7 @@ function KadenceAdvancedHeading( props ) {
 	return (
 		<div {...blockProps}>
 			<style>
-				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID}.rich-text:focus mark[data-rich-text-format-boundary] {
+				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID} .rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${KadenceColorOutput( markColor )};
 						background: ${( markBG ? markBGString : 'transparent' )};
 						font-weight: ${( markFontWeight ? markFontWeight : 'inherit' )};

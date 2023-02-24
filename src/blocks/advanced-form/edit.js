@@ -76,8 +76,10 @@ export function Edit( props ) {
 
 	useEffect( () => {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		}
 	}, [] );
 
 	{/* Directly editing from via kadence_form post type */}
