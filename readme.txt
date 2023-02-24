@@ -85,6 +85,7 @@ Release Date: TBD
 * Fix: Advanced text letter spacing always using px
 * Fix: Testimonial content font size when using variable size
 * Fix: Accordion "space between" when using heading title tags
+* Fix: Spacer block in reusable block.
 
 = 3.0.16 =
 Release Date: February 23rd, 2023
