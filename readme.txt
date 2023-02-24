@@ -83,6 +83,7 @@ Release Date: TBD
 * Fix: Setting 0 border on tablet/mobile not overriding desktop.
 * Fix: Advanced gallery url field dropdown
 * Fix: Advanced text letter spacing always using px
+* Fix: Testimonial content font size when using variable size
 
 = 3.0.16 =
 Release Date: February 23rd, 2023

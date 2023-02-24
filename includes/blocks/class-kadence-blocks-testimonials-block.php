@@ -391,7 +391,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'color', $css->render_color( $content_font['color'] ) );
 			}
 			if ( isset( $content_font['size'] ) && is_array( $content_font['size'] ) && ! empty( $content_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $content_font['size'][0] . ( ! isset( $content_font['sizeType'] ) ? 'px' : $content_font['sizeType'] ) );
+				$css->add_property( 'font-size', $this->get_usable_value( $css, $content_font['size'][0], ( ! isset( $content_font['sizeType'] ) ? 'px' : $content_font['sizeType'] ) ) );
 			}
 			if ( isset( $content_font['lineHeight'] ) && is_array( $content_font['lineHeight'] ) && ! empty( $content_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $content_font['lineHeight'][0] . ( ! isset( $content_font['lineType'] ) ? 'px' : $content_font['lineType'] ) );
