@@ -129,16 +129,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
 		}
 		if ( isset( $attributes['letterSpacing'] ) && is_numeric( $attributes['letterSpacing'] ) ) {
-			$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->add_property( 'letter-spacing', $attributes['letterSpacing'] . ( ! isset( $attributes['letterSpacingType'] ) ? 'px' : $attributes['letterSpacingType'] ) );
 		}
 		if ( isset( $attributes['tabletLetterSpacing'] ) && is_numeric( $attributes['tabletLetterSpacing'] ) ) {
 			$css->set_media_state('tablet');
-			$css->add_property( 'letter-spacing', $attributes['tabletLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->add_property( 'letter-spacing', $attributes['tabletLetterSpacing'] . ( ! isset( $attributes['letterSpacingType'] ) ? 'px' : $attributes['letterSpacingType'] ) );
 			$css->set_media_state('desktop');
 		}
 		if ( isset( $attributes['mobileLetterSpacing'] ) && is_numeric( $attributes['mobileLetterSpacing'] ) ) {
 			$css->set_media_state('mobile');
-			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterType'] ) ? 'px' : $attributes['letterType'] ) );
+			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterSpacingType'] ) ? 'px' : $attributes['letterSpacingType'] ) );
 			$css->set_media_state('desktop');
 		}
 		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
@@ -259,7 +259,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Highlight.
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
-			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterType'] ) ? 'px' : $attributes['markLetterType'] ) );
+			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterSpacingType'] ) ? 'px' : $attributes['markLetterSpacingType'] ) );
 		}
 		if ( ! empty( $attributes['markSize'][0] ) ) {
 			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][0], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );

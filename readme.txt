@@ -82,6 +82,7 @@ Release Date: TBD
 * Fix: Issue with typed text in editor.
 * Fix: Setting 0 border on tablet/mobile not overriding desktop.
 * Fix: Advanced gallery url field dropdown
+* Fix: Advanced text letter spacing always using px
 
 = 3.0.16 =
 Release Date: February 23rd, 2023
