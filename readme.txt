@@ -81,6 +81,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 Release Date: TBD
 * Fix: Issue with typed text in editor.
 * Fix: Setting 0 border on tablet/mobile not overriding desktop.
+* Fix: Advanced gallery url field dropdown
 
 = 3.0.16 =
 Release Date: February 23rd, 2023
@@ -129,12 +130,12 @@ Release Date: February 21st, 2023
 * Fix: Icon size in icon list in the editor.
 * Fix: Section hover colors with link.
 * Fix: For rebuilding css in a query.
-* Fix: Divider rendering in safari. 
+* Fix: Divider rendering in safari.
 
 = 3.0.10 =
 Release Date: February 21st, 2023
 * Fix: Spacing issues when using generatepress
-* Fix: Three column layout issues with gap. 
+* Fix: Three column layout issues with gap.
 * Fix: Min height of rows in editor.
 
 = 3.0.9 =

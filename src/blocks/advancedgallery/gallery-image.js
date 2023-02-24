@@ -87,12 +87,6 @@ function GalleryImage( props ) {
 			onRemove();
 		}
 	};
-
-	const onSelectCustomLink = () => {
-		if ( ! isSelected ) {
-			onSelect();
-		}
-	}
 	const previewFont = getPreviewSize( previewDevice, ( undefined !== captionStyles?.[ 0 ]?.size?.[ 0 ] ? captionStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 1 ] ? captionStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 2 ] ? captionStyles[ 0 ].size[ 2 ] : '' ) );
 
 	// const componentDidUpdate = ( prevProps ) => {
@@ -300,12 +294,12 @@ function GalleryImage( props ) {
 			</figure>
 			{!thumbnail && linkTo === 'custom' && isSelected && !dynamicSource && (
 				<Fragment>
-					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => onSelectCustomLink()}>
+					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => toggleSettingsVisibility()}>
 						<URLInput
 							aria-label={__( 'URL', 'kadence-blocks' )}
 							placeholder={__( 'Paste or type URL', 'kadence-blocks' )}
-							unstableOnFocus={ () => onSelectCustomLink() }
-							onClick={ () => onSelectCustomLink() }
+							unstableOnFocus={ () => toggleSettingsVisibility() }
+							onClick={ () => toggleSettingsVisibility() }
 							className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
 							value={customLink}
 							onChange={value => setLinkAttributes( { customLink: value } )}
