@@ -97,6 +97,16 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_measure_output( $title_styles, 'padding', 'padding' );
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap' );
 			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
+
+			// Override for Kadence Theme
+			$css->set_selector( '.single-content .wp-block-kadence-pane>h2:first-child,
+			.single-content .wp-block-kadence-pane>h3:first-child,
+			.single-content .wp-block-kadence-pane>h4:first-child,
+			.single-content .wp-block-kadence-pane>h5:first-child,
+			.single-content .wp-block-kadence-pane>h6:first-child');
+			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
+			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header' );
+
 			if ( ! empty( $attributes['iconColor']['standard'] ) || ! empty( $title_styles['color'] ) ) {
 				$css->set_selector( '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:before' );
 				if ( ! empty( $attributes['iconColor']['standard'] ) ) {

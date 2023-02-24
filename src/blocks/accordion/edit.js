@@ -1411,6 +1411,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										onChange={( value ) => saveTitleStyles( { marginTop: value } )}
 										min={ 0 }
 										max={ 120 }
+										units={ [ 'px' ] }
 										unit={ 'px' }
 										showUnit={ true }
 									/>
