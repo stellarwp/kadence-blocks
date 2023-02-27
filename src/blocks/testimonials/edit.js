@@ -25,8 +25,8 @@ import {
 /**
  * Import External
  */
-import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
-import {map, isEqual} from 'lodash';
+import { Splide, SplideTrack } from '@splidejs/react-splide';
+import {map, isEqual, has} from 'lodash';
 /**
  * Import Components
  */
@@ -1096,8 +1096,8 @@ function KadenceTestimonials({
         <div {...blockProps}>
             {containerStyles()}
             <style>
-                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
-                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${  has( borderStyle, [ 0, 'bottom', 2 ] ) ? borderStyle[0].bottom[2] : '1'}${ has( borderStyle, [ 0, 'unit' ] ) ? borderStyle[0].unit : 'px' }; }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${( has( borderStyle, [ 0, 'bottom', 0 ] ) ? KadenceColorOutput( borderStyle[0].bottom[0], (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
                 {(layout === 'grid' ) && (
                     `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
                         gap: ${getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) )};

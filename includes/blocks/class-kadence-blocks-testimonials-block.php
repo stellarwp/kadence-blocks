@@ -263,15 +263,15 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
 			if ( isset( $attributes['containerBorderWidth'] ) && is_array( $attributes['containerBorderWidth'] ) && ! empty( $attributes['containerBorderWidth'][2] ) ) {
 				$css->add_property( 'margin-top', $attributes['containerBorderWidth'][2] . 'px' );
-			} else if ( !empty( $attributes['borderStyle']['bottom'][2] ) ){
-				$css->add_property( 'margin-top', $attributes['borderStyle']['bottom'][2] . 'px' );
+			} else if ( !empty( $attributes['borderStyle'][0]['bottom'][2] ) ){
+				$css->add_property( 'margin-top', $attributes['borderStyle'][0]['bottom'][2] . ( !empty( $attributes['borderStyle'][0]['unit'] ) ? $attributes['borderStyle'][0]['unit'] : 'px' ) );
 			}
 
 			if ( isset( $attributes['containerBorder'] ) && ! empty( $attributes['containerBorder'] ) ) {
 				$alpha = ( isset( $attributes['containerBorderOpacity'] ) && is_numeric( $attributes['containerBorderOpacity'] ) ? $attributes['containerBorderOpacity'] : 1 );
 				$css->add_property( 'border-top-color', $css->render_color( $attributes['containerBorder'], $alpha ) );
-			} else if ( !empty( $attributes['borderStyle']['top'][0] ) ){
-				$css->add_property( 'border-top-color', $css->render_color( $attributes['borderStyle']['top'][0] ) );
+			} else if ( !empty( $attributes['borderStyle'][0]['bottom'][0] ) ){
+				$css->add_property( 'border-top-color', $css->render_color( $attributes['borderStyle'][0]['bottom'][0] ) );
 			}
 		}
 
