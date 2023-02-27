@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.16
+Stable tag: 3.0.17
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,7 +78,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.17 =
-Release Date: TBD
+Release Date: February 27th, 2023
+* Fix: Editor view of vertical align.
+* Fix: Issue with height 100% when using min height.
 * Fix: Issue with typed text in editor.
 * Fix: Setting 0 border on tablet/mobile not overriding desktop.
 * Fix: Advanced gallery url field dropdown
