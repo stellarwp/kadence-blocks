@@ -19,9 +19,12 @@
 .kt-row-column-wrap {
 	display: grid;
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--global-row-gutter-md, 2rem) var(--global-row-gutter-md, 2rem);
+}
+//don't give columns set to full height a limit of max content
+.kt-row-column-wrap:not(.kt-inner-column-height-full)  {
 	/* autoprefixer: ignore next */
 	grid-auto-rows: minmax(min-content, max-content);
-    gap: var(--global-row-gutter-md, 2rem) var(--global-row-gutter-md, 2rem);
 }
 .wp-block-kadence-rowlayout .kt-row-column-wrap.kb-theme-content-width {
 	margin-left: auto;
@@ -38,15 +41,26 @@
 .kt-inner-column-height-full > .wp-block-kadence-column > .kt-inside-inner-col {
 	height: 100%;
 }
+//tablet collapsed columns
 @media screen and (max-width: 1024px) {
-	.kt-inner-column-height-full.kt-tab-layout-inherit:not(.kt-row-layout-row) > .wp-block-kadence-column > .kt-inside-inner-col {
+	.kt-inner-column-height-full.kt-tab-layout-row,
+	.kt-inner-column-height-full.kt-tab-layout-inherit.kt-row-layout-row {
+		/* autoprefixer: ignore next */
+		grid-auto-rows: minmax(min-content, max-content);
+	}
+	.kt-inner-column-height-full.kt-tab-layout-inherit.kt-row-layout-row > .wp-block-kadence-column > .kt-inside-inner-col {
 		height: auto;
 	}
 	.kt-inner-column-height-full.kt-tab-layout-row > .wp-block-kadence-column > .kt-inside-inner-col {
 		height: auto;
 	}
 }
+//mobile collapsed columns
 @media screen and (max-width: 767px) {
+	.kt-inner-column-height-full.kt-mobile-layout-row {
+		/* autoprefixer: ignore next */
+		grid-auto-rows: minmax(min-content, max-content);
+	}
 	.kt-inner-column-height-full.kt-mobile-layout-row > .wp-block-kadence-column > .kt-inside-inner-col {
 		height: auto;
 	}
