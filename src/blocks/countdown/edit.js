@@ -751,7 +751,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 														url={redirectURL}
 														onChangeUrl={value => setAttributes( { redirectURL: value } )}
 														additionalControls={false}
-														{...this.props}
 													/>
 												</>
 											)}
