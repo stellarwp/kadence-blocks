@@ -219,6 +219,10 @@ div.kb-blocks-bg-video {
 .kt-inner-column-height-full>.innerblocks-wrap>.wp-block-kadence-column, .kt-inner-column-height-full>.innerblocks-wrap>.wp-block-kadence-column>.kadence-inner-column-inner {
     height: 100%;
 }
+.wp-block-kadence-rowlayout.kt-inner-column-height-full:not(.kt-row-layout-row) > .innerblocks-wrap {
+	/* autoprefixer: ignore next */
+	grid-auto-rows: minmax(0, 1fr);
+}
 .components-button-group.kt-size-type-options.kt-row-size-type-options {
 	float: right;
 }

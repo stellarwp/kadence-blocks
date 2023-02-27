@@ -343,14 +343,23 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$align = 'center';
 					break;
 			}
-			$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
-			$css->add_property( 'align-self', $align );
-			$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
-			$css->add_property( 'align-self', 'auto' );
-			$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			$css->add_property( 'display', 'flex' );
-			$css->add_property( 'flex-direction', 'column' );
-			$css->add_property( 'justify-content', $align );
+			if ( $desktop_direction === 'horizontal' ) {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'align-items', $align );
+			} else {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'display', 'flex' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->add_property( 'justify-content', $align );
+			}
 		}
 		// Background.
 		$background_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
