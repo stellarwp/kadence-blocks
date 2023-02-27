@@ -120,11 +120,17 @@ function SectionEdit( {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		// Update Old Styles
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
@@ -877,7 +883,7 @@ function SectionEdit( {
 											max={ ( marginType === 'em' || marginType === 'rem' ? 24 : 500 ) }
 											step={ ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 ) }
 											unit={ marginType }
-											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 											onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 											onMouseOver={ marginMouseOver.onMouseOver }
 											onMouseOut={ marginMouseOver.onMouseOut }

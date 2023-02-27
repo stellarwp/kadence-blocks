@@ -79,6 +79,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.17 =
 Release Date: February 27th, 2023
+* Update: Add option to set info box title to p or span tag.
 * Fix: Editor view of vertical align.
 * Fix: Issue with height 100% when using min height.
 * Fix: Issue with typed text in editor.

@@ -185,14 +185,19 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	);
 	useEffect( () => {
 		setBlockDefaults( 'kadence/rowlayout', attributes);
-
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueId, clientId );
 		}
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		debounce( getDynamic, 200 );
 		// Update from old gutter settings.

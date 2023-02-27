@@ -212,7 +212,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
 			addUniqueID( uniqueId, clientId );
 		}
 
