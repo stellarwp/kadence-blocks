@@ -80,6 +80,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.17 =
 Release Date: February 27th, 2023
 * Update: Add option to set info box title to p or span tag.
+* Fix: Issue with duplicated blocks not getting a unique Id.
 * Fix: Editor view of vertical align.
 * Fix: Issue with height 100% when using min height.
 * Fix: Issue with typed text in editor.
@@ -89,6 +90,7 @@ Release Date: February 27th, 2023
 * Fix: Testimonial content font size when using variable size
 * Fix: Accordion "space between" when using heading title tags
 * Fix: Spacer block in reusable block.
+* Fix: Icon alignment issue with some themes.
 * Fix: Setting HTML Tag for Countup block title.
 
 = 3.0.16 =
