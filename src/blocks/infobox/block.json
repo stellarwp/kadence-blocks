@@ -230,6 +230,10 @@
 		""
 	  ]
 	},
+	"titleTagType": {
+	  "type": "string",
+	  "default": "heading"
+	},
 	"titleFont": {
 	  "type": "array",
 	  "default": [
