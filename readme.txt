@@ -91,6 +91,7 @@ Release Date: February 27th, 2023
 * Fix: Accordion "space between" when using heading title tags
 * Fix: Spacer block in reusable block.
 * Fix: Icon alignment issue with some themes.
+* Fix: Issue with row in surecart columns in editor.
 * Fix: Setting HTML Tag for Countup block title.
 
 = 3.0.16 =
@@ -1767,5 +1768,5 @@ You can also set the block defaults.
 
 == Upgrade Notice ==
 
-= 3.0.16 =
+= 3.0.17 =
 Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)

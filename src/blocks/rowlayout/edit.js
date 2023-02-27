@@ -950,69 +950,69 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					</InspectorAdvancedControls>
 				</>
 			) }
-			<style>
-				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-				{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				<>
-					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
-				</>
-				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
-				{ columns && columns === 2 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
-					<>
-						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
-					</>
-				) }
-				{ columns && columns === 3 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
-					<>
-						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
-					</>
-				) }
-				{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
-					<>
-					{ times( columns, n => {
-							const item = n + 1;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( columns - item ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 10 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 20 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns + columns + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 30 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					</>
-				) }
-				{ zIndex && zIndex > 30 && (
-					<>
-						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
-					</>
-				) }
-				{ kadenceBlockCSS && (
-					<>
-						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
-					</>
-				)}
-				{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
-					<>
-					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
-					</>
-				)}
-			</style>
 			<RowBackground
 				backgroundClasses={ classes }
 				attributes={ attributes }
 				previewDevice={ previewDevice }
 			>
+				<style>
+					{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+					{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+					{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+					<>
+						{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
+					</>
+					{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
+					{ columns && columns === 2 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
+						<>
+							{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
+						</>
+					) }
+					{ columns && columns === 3 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
+						<>
+							{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
+						</>
+					) }
+					{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
+						<>
+						{ times( columns, n => {
+								const item = n + 1;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( columns - item ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 10 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 20 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns + columns + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 30 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						</>
+					) }
+					{ zIndex && zIndex > 30 && (
+						<>
+							{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
+						</>
+					) }
+					{ kadenceBlockCSS && (
+						<>
+							{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+						</>
+					)}
+					{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						<>
+						{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
+						</>
+					)}
+				</style>
 				<Overlay
 					attributes={ attributes }
 					previewDevice={ previewDevice }
