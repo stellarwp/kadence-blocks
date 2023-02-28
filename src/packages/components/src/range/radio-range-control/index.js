@@ -37,18 +37,7 @@ let icons = {
 	vw: vwIcon,
 	percent: percentIcon,
 };
-function getSelectOption( optionsArray, value ) {
-	if ( ! value ) {
-		return '';
-	}
-	if ( ! optionsArray ) {
-		return 'custom';
-	}
-	return (
-		optionsArray.find( ( option ) => option.value === value ) ||
-		'custom'
-	);
-}
+
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
