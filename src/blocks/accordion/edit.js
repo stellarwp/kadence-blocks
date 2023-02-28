@@ -806,10 +806,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-blocks-accordion-title {
 					${ previewTitleHeight ? 'line-height:' + previewTitleHeight + titleStyles[ 0 ].lineType : '' };
 				}
-				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-btn-svg-icon svg {
-					width:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
-					height:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
-				}
 				.kt-accordion-${uniqueID} .kt-accordion-panel-inner {
 					${'' !== previewContentPaddingTop ? `padding-top:${ getSpacingOptionOutput(previewContentPaddingTop, previewPaddingType ) };` : ''}
 					${'' !== previewContentPaddingRight ? `padding-right:${ getSpacingOptionOutput(previewContentPaddingRight, previewPaddingType ) };` : ''}
