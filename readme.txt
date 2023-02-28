@@ -82,6 +82,9 @@ Release Date: February 28th, 2023
 * Fix: Issue with gallery custom link target.
 * Fix: Issue with z index in previous row output.
 * Fix: Issue with column block defaults in row layout.
+* Fix: Possible issue with toolset.
+* Fix: Issue with posts block not selecting terms.
+* Fix: Issue with sizing getting cleared when switching to custom units.
 
 = 3.0.18 =
 Release Date: February 27th, 2023

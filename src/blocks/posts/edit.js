@@ -1106,13 +1106,9 @@ export default withSelect( ( select, props ) => {
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
 	let taxonomyOptions = [];
-
 	if ( theType !== 'post' || postTax ) {
 		if ( 'undefined' !== typeof taxonomies[ theType ] ) {
 			if ( taxType ) {
-				if ( taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ] ) {
-					termQueryBase = ( ( taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ][ 'rest_base' ] == false || taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ][ 'rest_base' ] == null ) ? taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ].name : taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ].rest_base );
-				}
 				if ( taxonomies[ theType ].terms && taxonomies[ theType ].terms[ taxType ] ) {
 					taxonomyOptions = taxonomies[ theType ].terms[ taxType ];
 				}
