@@ -19,6 +19,6 @@ export { default as getTransferableAttributes } from './get-transferable-attribu
 export { default as getInQueryBlock } from './get-in-query-block';
 export { default as mouseOverVisualizer } from './mouse-over-visualizer';
 export { SPACING_SIZES_MAP, FONT_SIZES_MAP, GAP_SIZES_MAP, isRTL } from './constants';
-export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './spacing-utilities';
+export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize, objectSameFill, clearNonMatchingValues } from './spacing-utilities';
 export { getFontSizeOptionOutput  } from './font-size-utilities';
 export { getGapSizeOptionOutput } from './gap-size-utilities';
