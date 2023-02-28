@@ -614,7 +614,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$show_caption  = ( ! empty( $attributes['showCaption'] ) && $attributes['showCaption'] ? true : false );
 		$caption_style = ( ! empty( $attributes['captionStyle'] ) ? $attributes['captionStyle'] : 'bottom-hover' );
 		$link_to       = ( ! empty( $attributes['linkTo'] ) ? $attributes['linkTo'] : 'none' );
-		$link_target   = apply_filters( 'kadence_blocks_pro_dynamic_gallery_link_target', '', $image, $attributes );
+		$link_target   = ( ! empty( $image['linkTarget'] ) ? $image['linkTarget'] : '' );
+		$link_target   = apply_filters( 'kadence_blocks_pro_dynamic_gallery_link_target', $link_target, $image, $attributes );
 		$lightbox      = ( ! empty( $attributes['lightbox'] ) ? $attributes['lightbox'] : 'none' );
 		$lightbox_cap = ( ! empty( $attributes['lightboxCaption'] ) && $attributes['lightboxCaption'] ? true : false );
 		$image_id = ( ! empty( $image['ID'] ) ? $image['ID'] : '' );
@@ -627,6 +628,16 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( $caption_source ) {
 				$caption = $caption_source;
 			}
+		}
+		$rel_attr = '';
+		if ( 'custom' === $link_to && '_blank' === $link_target ) {
+			$rel_attr = 'noopener noreferrer';
+		}
+		if ( 'media' === $link_to && 'new_tab' === $lightbox ) {
+			$rel_attr = 'noopener noreferrer';
+		}
+		if ( isset( $image['linkSponsored'] ) && true == $image['linkSponsored'] ) {
+			$rel_attr .= ( ! empty( $rel_attr ) ? ' sponsored' : 'sponsored' );
 		}
 		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
 		$href = '';
@@ -719,7 +730,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';
 		if ( ! empty( $href ) ) {
-			$output .= '<a href="' . esc_url( $href ) . '"' . ( $link_to === 'media' && $lightbox === 'magnific' && $lightbox_cap && ! empty( $caption ) && is_string( $caption ) ? ' data-description="' . esc_attr( $caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'rel="noopener noreferrer"' : '' ) . '>';
+			$output .= '<a href="' . esc_url( $href ) . '"' . ( $link_to === 'media' && $lightbox === 'magnific' && $lightbox_cap && ! empty( $caption ) && is_string( $caption ) ? ' data-description="' . esc_attr( $caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
 		}
 		$output .= '<div class="kb-gal-image-radius" ' . ( ! empty( $padding_bottom ) ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '>';
 		$output .= $img;
