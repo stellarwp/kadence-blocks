@@ -233,6 +233,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$updated_version = ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? true : false;
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$margin_selector = '.kb-row-layout-wrap.wp-block-kadence-rowlayout.kb-row-layout-id' . $unique_id;
 			$base_selector = '.kb-row-layout-id' . $unique_id;
@@ -278,6 +279,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Vertical Alignment.
 		$css->set_selector( $inner_selector );
+		if ( ! $updated_version && ( ( ! empty( $attributes['topSep'] ) && 'none' !== $attributes['topSep'] ) || ( ! empty( $attributes['bottomSep'] ) && 'none' !== $attributes['bottomSep'] ) ) ) {
+			$css->add_property( 'z-index', '10' );
+			$css->add_property( 'position', 'relative' );
+		}
 		if ( ! empty( $attributes['verticalAlignment'] ) ) {
 			switch ( $attributes['verticalAlignment'] ) {
 				case 'middle':
