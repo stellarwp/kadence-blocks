@@ -173,12 +173,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
 			};
 		},
 		[ clientId ]
@@ -349,17 +350,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			setAttributes( { kbVersion: 2 } );
 		}
 	}, [] );
-	const { innerItemCount } = useSelect(
-		( select ) => {
-			return {
-				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
-			};
-		},
-		[ clientId ]
-	);
 	useEffect( () => {
-		if ( innerItemCount < columns ) {
+		if ( innerItemCount < columns && uniqueID ) {
 			updateColumns( innerItemCount, columns );
+		} else if ( innerItemCount < columns && !uniqueID ) {
+			let defaults = setBlockDefaults( 'kadence/rowlayout', attributes);
+			updateColumns( innerItemCount, defaults.columns );
 		}
 	}, [ innerItemCount, columns ] );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
