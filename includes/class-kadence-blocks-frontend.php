@@ -170,12 +170,6 @@ class Kadence_Blocks_Frontend {
 	 * On init startup.
 	 */
 	public function on_init() {
-		if ( defined( 'TOOLSET_VERSION' ) ) {
-			add_filter( 'kadence_blocks_render_head_css', array(
-				$this,
-				'add_toolset_depreciated_filter_compatibility'
-			), 10, 3 );
-		}
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 		add_filter( 'excerpt_allowed_wrapper_blocks', array( $this, 'add_wrapper_blocks_to_excerpt' ), 20 );
 	}
