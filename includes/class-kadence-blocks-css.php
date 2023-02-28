@@ -1771,7 +1771,13 @@ class Kadence_Blocks_CSS {
 						$this->add_property( $args[ $prop_key ] . '-style', $style );
 					}
 				} elseif ( $single_styles && $style ) {
-					$this->add_property( $args[ $prop_key ] . '-style', $style );
+					$desktop_width = $this->get_border_value( $attributes, $args, $side, 'desktop', 'width', $single_styles );
+					$tablet_width = $this->get_border_value( $attributes, $args, $side, 'tablet', 'width', $single_styles );
+
+					// Only need to output *just* the border-style if we're inheriting a width
+					if( ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
+						$this->add_property( $args[ $prop_key ] . '-style', $style );
+					}
 				}
 			}
 		}
