@@ -502,7 +502,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			} else {
 				$css->add_property( 'z-index', $attributes['zIndex'] );
 			}
-			$css->set_selector( 'div:not(.kt-inside-inner-col) > .kadence-column' . $unique_id );
 			$css->add_property( 'position', 'relative' );
 		}
 		$css->set_media_state( 'tablet' );
