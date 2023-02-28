@@ -145,7 +145,7 @@ export default function RadioRangeControl( {
 							<CoreRangeControl
 								className={ 'kadence-range-control-range' }
 								beforeIcon={ beforeIcon }
-								value={ value }
+								value={ sizeValue }
 								onChange={ ( newVal ) => onChange( 'custom', newVal ) }
 								min={ min }
 								max={ max }
