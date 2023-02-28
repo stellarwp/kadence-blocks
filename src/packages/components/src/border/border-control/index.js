@@ -6,7 +6,7 @@
 /**
  * Internal block libraries
  */
- import { useState, useEffect } from '@wordpress/element';
+ import { useState, useRef } from '@wordpress/element';
  import { map, isEqual } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { UnitControl, DropdownMenu, Flex, FlexItem, Button } from '@wordpress/components';
@@ -93,6 +93,7 @@ import SingleBorderControl from './single-control';
 		link:  linkIcon,
 		unlink: unlinkIcon,
 	}
+	const containerRef = useRef();
 	const currentObject = value?.[0] || defaultValue;
 	const step = currentObject.unit !== 'px' ? 0.1 : 1;
 	const max = currentObject.unit !== 'px' && currentObject.unit !== '' ? 12 : 200;
@@ -124,7 +125,7 @@ import SingleBorderControl from './single-control';
 	}
 	return [
 		onChange && (
-			<div className={ `components-base-control kadence-border-control${ className ? ' ' + className : '' }` }>
+			<div ref={ containerRef } className={ `components-base-control kadence-border-control${ className ? ' ' + className : '' }` }>
 				{ label && (
 					<div
 						className={ 'kadence-border-control__header' }

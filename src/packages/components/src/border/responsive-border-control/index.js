@@ -13,7 +13,10 @@
  import BorderControl from '../border-control';
  import { capitalizeFirstLetter } from '@kadence/helpers';
  import { undo } from '@wordpress/icons';
-
+/**
+ * WordPress dependencies
+ */
+import { useInstanceId } from '@wordpress/compose';
  import {
 	 Dashicon,
 	 Button,
@@ -72,7 +75,7 @@
 		reset = true,
 		defaultLinked = true,
 	 } ) {
-	 const ref = useRef();
+	const instanceId = useInstanceId( ResponsiveBorderControl );
 	 const measureIcons = {
 		first: firstIcon,
 		second: secondIcon,
@@ -164,6 +167,7 @@
 
 	 output.Mobile = (
 		 <BorderControl
+			 key={ 'mobile' + instanceId }
 			 value={ ( mobileValue ? mobileValue : undefined ) }
 			 onChange={ ( size ) => onChangeMobile( size ) }
 			 control={ realControl }
@@ -181,6 +185,7 @@
 	 );
 	 output.Tablet = (
 		 <BorderControl
+		 	key={ 'tablet' + instanceId }
 			value={ ( tabletValue ? tabletValue : undefined ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
 			control={ realControl }
@@ -199,6 +204,7 @@
 	 );
 	 output.Desktop = (
 		<BorderControl
+			key={ 'desktop' + instanceId }
 			value={ ( value ? value : undefined ) }
 			onChange={ ( size ) => onChange( size ) }
 			control={ realControl }
@@ -222,7 +228,7 @@
 	 }
 	 return [
 		 onChange && onChangeTablet && onChangeMobile && (
-			 <div ref={ ref } className={ 'components-base-control kb-responsive-border-control kadence-border-box-control' }>
+			 <div className={ `components-base-control kb-responsive-border-control kadence-border-box-control kadence-border-box-control${ instanceId }` }>
 					<div
 						className={ 'kadence-border-control__header kadence-component__header' }
 					>

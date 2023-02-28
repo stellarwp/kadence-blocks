@@ -1348,7 +1348,7 @@ function SectionEdit( {
 													value={borderHoverStyle}
 													tabletValue={tabletBorderHoverStyle}
 													mobileValue={mobileBorderHoverStyle}
-													onChange={( value ) => setAttributes( { borderHoverStyle: value } )}
+													onChange={( value ) => setAttributes( { borderHoverStyle: value } ) }
 													onChangeTablet={( value ) => setAttributes( { tabletBorderHoverStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderHoverStyle: value } )}
 												/>
@@ -1416,10 +1416,10 @@ function SectionEdit( {
 											<>
 												<ResponsiveBorderControl
 													label={__( 'Border', 'kadence-blocks' )}
-													value={borderStyle}
+													value={ borderStyle ? JSON.parse( JSON.stringify( borderStyle ) ) : '' }
 													tabletValue={tabletBorderStyle}
 													mobileValue={mobileBorderStyle}
-													onChange={( value ) => setAttributes( { borderStyle: value } )}
+													onChange={( value ) => setAttributes( { borderStyle:value } )}
 													onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
 												/>
