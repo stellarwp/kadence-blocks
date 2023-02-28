@@ -115,6 +115,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				'unit_key'    => 'marginUnit'
 			] );
 		}
+		$css->render_measure_output(
+			$attributes,
+			'padding',
+			'padding',
+			array(
+				'unit_key' => 'paddingUnit',
+			)
+		);
 
 		if ( isset( $attributes['type'] ) && 'carousel' === $attributes['type'] ) {
 			$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );

@@ -239,7 +239,7 @@
 	margin-top: -9px;
 	margin-left: -9px;
 }
-.wp-block[data-type="kadence/advancedgallery"] .kb-gallery-main-contain {
+.wp-block[data-type="kadence/advancedgallery"] .kb-gallery-main-contain:not(.specificity) {
 	padding:0;
 	box-sizing: border-box;
 }
@@ -247,7 +247,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
-	padding: 0 !important;
+	padding: 0;
 	.kadence-blocks-gallery-item {
 		position: relative;
 		padding:0;
