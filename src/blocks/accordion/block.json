@@ -78,7 +78,7 @@
 			"right": [ "", "", "" ],
 			"bottom": [ "", "", "" ],
 			"left": [ "", "", "" ],
-			"unit": "px"
+			"unit": ""
 		} ]
 	},
 	"mobileContentBorderStyle": {
@@ -88,7 +88,7 @@
 			"right": [ "", "", "" ],
 			"bottom": [ "", "", "" ],
 			"left": [ "", "", "" ],
-			"unit": "px"
+			"unit": ""
 		} ]
 	},
 	"contentBorderRadius": {
@@ -186,7 +186,7 @@
 	    "right": [ "", "", "" ],
 	    "bottom": [ "", "", "" ],
 	    "left": [ "", "", "" ],
-	    "unit": "px"
+	    "unit": ""
 	  } ]
 	},
 	"mobileTitleBorder": {
@@ -196,7 +196,7 @@
 	    "right": [ "", "", "" ],
 	    "bottom": [ "", "", "" ],
 	    "left": [ "", "", "" ],
-	    "unit": "px"
+	    "unit": ""
 	  } ]
 	},
 	"titleBorderHover": {
@@ -216,7 +216,7 @@
 	    "right": [ "", "", "" ],
 	    "bottom": [ "", "", "" ],
 	    "left": [ "", "", "" ],
-	    "unit": "px"
+	    "unit": ""
 	   } ]
 	},
 	"mobileTitleBorderHover": {
@@ -226,7 +226,7 @@
 	    "right": [ "", "", "" ],
 	    "bottom": [ "", "", "" ],
 	    "left": [ "", "", "" ],
-	    "unit": "px"
+	    "unit": ""
 	  } ]
 	},
 	"titleBorderActive": {
@@ -246,7 +246,7 @@
 	    "right": [ "", "", "" ],
 	    "bottom": [ "", "", "" ],
 	    "left": [ "", "", "" ],
-	    "unit": "px"
+	    "unit": ""
 	  } ]
 	},
 	"mobileTitleBorderActive": {
@@ -256,7 +256,7 @@
 	   "right": [ "", "", "" ],
 	   "bottom": [ "", "", "" ],
 	   "left": [ "", "", "" ],
-	   "unit": "px"
+	   "unit": ""
 	 } ]
 	},
 	"titleBorderRadius": {
