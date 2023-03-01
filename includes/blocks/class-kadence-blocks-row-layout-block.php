@@ -1214,6 +1214,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! $prevent_preload ) {
 			$video_args['autoplay'] = '';
 		}
+		if( $video_args['loop'] == 'false' ) {
+			unset( $video_args['loop'] );
+		}
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
 			if ( empty( $value ) ) {
