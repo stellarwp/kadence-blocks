@@ -172,7 +172,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		},
 		[ clientId ]
 	);
-
 	useEffect( () => {
 		setBlockDefaults( 'kadence/accordion', attributes);
 
@@ -216,7 +215,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
 		} else {
-			addUniqueID( uniqueId, clientId );
+			addUniqueID( uniqueID, clientId );
 		}
 
 		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
