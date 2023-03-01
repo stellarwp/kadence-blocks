@@ -312,7 +312,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                     />
                 )}
 
-				{!showIcon && size > 0 && (
+				{!showIcon && size !== 0 && (
 					<div style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }} className={'kt-svg-icon-list-single'}>
 						<svg style={{ display: 'inline-block', verticalAlign: 'middle' }} viewBox={'0 0 24 24'} height={ size ? size : '1em' } width={ size ? size : '1em' } fill={ 'none' }
 							 stroke={ displayWidth }
