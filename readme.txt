@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.20 =
+Release Date: February 29th, 2023
+* Fix: Issue with thumbnail gallery thumbnails align center.
+* Fix: Issue with toolset archive views.
+
 = 3.0.19 =
 Release Date: February 28th, 2023
 * Fix: Issue with gallery custom link target.

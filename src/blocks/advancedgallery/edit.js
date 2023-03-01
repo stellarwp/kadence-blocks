@@ -646,13 +646,12 @@ function GalleryEdit( props ) {
 		focus        : 0,
 		height       : '100%',
 		perPage      : previewThumbColumns,
-		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
 		gap          : '' !== previewGutter ? previewGutter + previewGutterUnit : '4px',
 		rewind       : true,
 		pagination   : false,
 		isNavigation : true,
-		arrows       : true,
+		arrows       : previewThumbColumns > theImages.length ? false : true,
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const nonTransAttrs = ['images', 'imagesDynamic'];

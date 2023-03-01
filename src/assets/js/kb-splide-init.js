@@ -111,6 +111,7 @@
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
 					navSliderOptions.type = 'loop';
+					navSliderOptions.arrows = true;
 					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type = "fade";
