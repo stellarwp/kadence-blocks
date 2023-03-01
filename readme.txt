@@ -79,11 +79,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.20 =
 Release Date: March 1st, 2023
+* Add: Option to not have an icon show on an icon list.
 * Fix: Issue with thumbnail gallery thumbnails align center.
 * Fix: Issue with toolset archive views.
+* Fix: Issue with show more while using infinite scroll.
 * Fix: Issue with sticky not showing when it technically works.
 * Fix: Issue with border radius and infobox border spin.
 * Fix: Issue with svg image align in image block.
+* Fix: Issue with infobox title.
 
 = 3.0.19 =
 Release Date: February 28th, 2023
