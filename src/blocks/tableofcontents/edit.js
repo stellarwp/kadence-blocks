@@ -300,7 +300,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 		if ( !isEqual( headings, latestHeadings ) ) {
 			setHeadings( latestHeadings );
 		}
-	}, [ isTyping, blockOrder ] );
+	}, [ isTyping, blockOrder, allowedHeaders ] );
 
 
 	const saveShadow = ( value ) => {
