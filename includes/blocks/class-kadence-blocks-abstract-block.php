@@ -177,6 +177,12 @@ class Kadence_Blocks_Abstract_Block {
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
 					$content = '<style>' . $css . '</style>' . $content;
 				}
+			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
+				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
+				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
+				if ( ! empty( $css ) ) {
+					$content = '<style>' . $css . '</style>' . $content;
+				}
 			}
 		}
 
