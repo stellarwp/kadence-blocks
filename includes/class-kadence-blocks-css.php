@@ -24,6 +24,13 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @var array
 	 */
+	public static $head_styles = array();
+
+	/**
+	 * CSS to enqueue
+	 *
+	 * @var array
+	 */
 	public static $custom_styles = array();
 
 	/**
@@ -238,6 +245,7 @@ class Kadence_Blocks_CSS {
 	 */
 	public function frontend_block_css() {
 		if ( ! empty( self::$styles ) ) {
+			self::$head_styles = self::$styles;
 			$output = '';
 			foreach ( self::$styles as $key => $value ) {
 				$output .= $value;
@@ -295,6 +303,24 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( isset( self::$styles[ $style_id ] ) ) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Sets a style id to keep a record of rendering.
+	 *
+	 * @access public
+	 * @since  1.0
+	 *
+	 * @param  string $style_id - the css group id.
+	 * @return $this
+	 */
+	public function has_header_styles( $style_id = '' ) {
+		if ( empty( $style_id ) ) {
+			return false;
+		}
+		if ( isset( self::$head_styles[ $style_id ] ) ) {
 			return true;
 		}
 		return false;
