@@ -231,10 +231,11 @@ export default function Image( {
 	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
 	const [ isEditingImage, setIsEditingImage ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
 	const [ externalBlob, setExternalBlob ] = useState();
 	const clientWidth = useClientWidth( containerRef, [ align ] );
-	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
+	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
+	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport ) && ! ( isSVG && ! previewMaxWidth );
+	const showMaxWidth = allowResize && ! isWideAligned;
 	const {
 		imageEditing,
 		imageSizes,
@@ -390,7 +391,6 @@ export default function Image( {
 		}
 	}, [ isSelected ] );
 	const isDynamic = attributes.kadenceDynamic && attributes.kadenceDynamic.url && attributes.kadenceDynamic.url.enable ? true : false;
-	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
@@ -553,7 +553,7 @@ export default function Image( {
 									onChange={ value => setAttributes( { ratio: value } ) }
 								/>
 							) }
-							{ isResizable && (
+							{ showMaxWidth && (
 								<ResponsiveRangeControls
 									label={ __( 'Max Image Width', 'kadence-blocks' ) }
 									value={ ( imgMaxWidth ? imgMaxWidth : '' ) }
@@ -1170,6 +1170,8 @@ export default function Image( {
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
+				width={ undefined !== naturalWidth && naturalWidth && isSVG && ! previewMaxWidth ? naturalWidth : undefined }
+				height={ undefined !== naturalHeight && naturalHeight && isSVG && ! previewMaxWidth ? naturalHeight : undefined }
 				style={ {
 					WebkitMaskImage: ( hasMask ? 'url(' + ( maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg' ) + ')' : undefined ),
 					WebkitMaskRepeat: ( hasMask ? theMaskRepeat : undefined ),

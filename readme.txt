@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.19
+Stable tag: 3.0.20
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,9 +78,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.20 =
-Release Date: February 29th, 2023
+Release Date: March 1st, 2023
 * Fix: Issue with thumbnail gallery thumbnails align center.
 * Fix: Issue with toolset archive views.
+* Fix: Issue with sticky not showing when it technically works.
+* Fix: Issue with border radius and infobox border spin.
+* Fix: Issue with svg image align in image block.
 
 = 3.0.19 =
 Release Date: February 28th, 2023
