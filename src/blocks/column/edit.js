@@ -960,45 +960,43 @@ function SectionEdit( {
 										) }
 									</KadencePanelBody>
 								)}
-								{ inRowBlock && (
-									<KadencePanelBody
-										title={ __( 'Sticky Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-sticky-settings' }
-									>
-										<ToggleControl
-											label={ __( 'Make sticky', 'kadence-blocks' ) }
-											help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
-											checked={ ( undefined !== sticky ? sticky : false ) }
-											onChange={ ( value ) => setAttributes( { sticky: value } ) }
+								<KadencePanelBody
+									title={ __( 'Sticky Settings', 'kadence-blocks' ) }
+									initialOpen={ false }
+									panelName={ 'kb-col-sticky-settings' }
+								>
+									<ToggleControl
+										label={ __( 'Make sticky', 'kadence-blocks' ) }
+										help={ __( 'This will stick the section to viewport for the height of outer container.', 'kadence-blocks' ) }
+										checked={ ( undefined !== sticky ? sticky : false ) }
+										onChange={ ( value ) => setAttributes( { sticky: value } ) }
+									/>
+									{ sticky && (
+										<ResponsiveRangeControls
+											label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
+											value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
+											onChange={ value => {
+												setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
+											} }
+											min={ 0 }
+											max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
+											step={ 1 }
+											unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
+											onUnit={ ( value ) => {
+												setAttributes( { stickyOffsetUnit: value } );
+											} }
+											units={ [ 'px', 'rem', 'vh' ] }
 										/>
-										{ sticky && (
-											<ResponsiveRangeControls
-												label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
-												value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
-												onChange={ value => {
-													setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
-												onChangeTablet={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
-												onChangeMobile={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
-												} }
-												min={ 0 }
-												max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
-												step={ 1 }
-												unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
-												onUnit={ ( value ) => {
-													setAttributes( { stickyOffsetUnit: value } );
-												} }
-												units={ [ 'px', 'rem', 'vh' ] }
-											/>
-										) }
-									</KadencePanelBody>
-								) }
+									) }
+								</KadencePanelBody>
 								<KadencePanelBody
 									title={__( 'Visibility Settings', 'kadence-blocks' )}
 									panelName={'kb-col-visibility-settings'}
