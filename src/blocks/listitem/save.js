@@ -29,7 +29,8 @@ function Save( props ) {
         text,
         style,
         level,
-		showIcon
+		showIcon,
+		size
     } = attributes;
 
     const classes = classnames( {
@@ -49,11 +50,13 @@ function Save( props ) {
 		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
 	);
 
-	const emptyIcon = (
-		<div className="kt-svg-icon-list-single" style="display: inline-flex; justify-content: center; align-items: center;">
-			<svg viewBox="0 0 24 24" height="1em" width="1em" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
-			</svg>
-		</div>
+	const emptyIcon = ( size === 0 ?
+			<></>
+			:
+			<div className="kt-svg-icon-list-single" style="display: inline-flex; justify-content: center; align-items: center;">
+				<svg viewBox="0 0 24 24" height="1em" width="1em" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
+				</svg>
+			</div>
 	);
 
     return (
