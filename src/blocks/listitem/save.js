@@ -28,7 +28,8 @@ function Save( props ) {
         width,
         text,
         style,
-        level
+        level,
+		showIcon
     } = attributes;
 
     const classes = classnames( {
@@ -44,11 +45,22 @@ function Save( props ) {
 
     const iconName = icon ? icon : 'USE_PARENT_DEFAULT_ICON';
 
+	const iconSpan = (
+		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
+	);
+
+	const emptyIcon = (
+		<div className="kt-svg-icon-list-single" style="display: inline-flex; justify-content: center; align-items: center;">
+			<svg viewBox="0 0 24 24" height="1em" width="1em" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
+			</svg>
+		</div>
+	);
+
     return (
         <li {...blockProps}>
             { link && (
                 <a href={ link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === target ? target : undefined ) } rel={ '_blank' === target ? 'noopener noreferrer' : undefined }>
-                    <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
+					{ showIcon ? iconSpan : emptyIcon }
                     <RichText.Content
                         tagName="span"
                         value={ text }
@@ -58,8 +70,8 @@ function Save( props ) {
             ) }
             { ! link && (
                 <>
-                    <IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
-                    <RichText.Content
+					{ showIcon ? iconSpan : emptyIcon }
+					<RichText.Content
                         tagName="span"
                         value={ text }
                         className={ 'kt-svg-icon-list-text' }

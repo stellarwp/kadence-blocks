@@ -16,6 +16,10 @@
       "type": "string",
       "default": ""
     },
+	"showIcon": {
+	  "type": "boolean",
+	  "default": true
+	},
     "link": {
       "type": "string",
       "default": "",
