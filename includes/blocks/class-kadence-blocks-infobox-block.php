@@ -312,7 +312,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'box-shadow', 'inset 0 0 0 ' . $media_style['borderWidth'][0] . 'px ' . ( isset( $media_style['border'] ) && ! empty( $media_style['border'] ) ? $media_style['border'] : '#444444' ) );
 			}
 			if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after' );
+				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, ' . $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after' );
 				$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
 			}
 			if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
