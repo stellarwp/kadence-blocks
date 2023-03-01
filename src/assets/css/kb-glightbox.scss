@@ -195,6 +195,16 @@
   .gslide-video .plyr__poster-enabled.plyr--loading .plyr__poster {
 	display: none;
   }
+
+  .gslide-video .plyr--youtube,
+  .gslide-video .plyr--youtube .plyr__video-wrapper{
+	pointer-events: none;
+  }
+  .gslide-video .plyr--youtube .plyr__video-wrapper > iframe,
+  .gslide-video .plyr--youtube .plyr__control,
+  .gslide-video .plyr--youtube .plyr__controls {
+	pointer-events: all;
+  }
   
   .gslide-video .gvideo-wrapper {
 	width: 100%;
