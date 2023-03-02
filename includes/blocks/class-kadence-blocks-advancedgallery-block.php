@@ -108,12 +108,18 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
 
 		if ( isset( $attributes['margin'][0] ) ) {
-			$css->render_measure_output( $attributes['margin'][0], 'margin', 'margin', [
-				'desktop_key' => 'desk',
-				'tablet_key'  => 'tablet',
-				'mobile_key'  => 'mobile',
-				'unit_key'    => 'marginUnit'
-			] );
+			// Fix for this margin unit being in a non-standard locaiton in array, should be updated.
+			$margin_unit = ( ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
+			$css->render_measure_output(
+				array_merge( $attributes['margin'][0], array( 'marginType' => $margin_unit ) ),
+				'margin',
+				'margin',
+				array(
+					'desktop_key' => 'desk',
+					'tablet_key'  => 'tablet',
+					'mobile_key'  => 'mobile',
+				)
+			);
 		}
 		$css->render_measure_output(
 			$attributes,
