@@ -627,7 +627,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		// $css->render_range( $attributes, 'containerPadding', 'padding' );
 
-		if( !isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && in_array( $attributes['style'], array('inlineimage', 'bubble') ) ) ){
+		if ( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && in_array( $attributes['style'], array( 'card', 'inlineimage', 'bubble') ) ) ) {
 			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] . 'px' : '500px' );
 		}
 

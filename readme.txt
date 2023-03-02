@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.20
+Stable tag: 3.0.21
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.0.21 =
+Release Date: March 2nd, 2023
+* Fix: Issue with max width in testimonial bubble style.
+* Fix: Missing icon.
 
 = 3.0.20 =
 Release Date: March 1st, 2023

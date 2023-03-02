@@ -736,25 +736,27 @@ function KadenceTestimonials({
                         ${ previewContainerPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
                         ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
                         ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
-						${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : '' }
 					}
 					.kt-blocks-testimonials-wrap${uniqueID} {
 						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
+                        ${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : '' }
                     }
 
-                    ${ containerVAlign !== '' && `
-                        .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+                    ${ containerVAlign !== '' ? 
+                        `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                             display: flex;
                             flex-direction: column;
                             justify-content: ${ containerVAlign === 'middle' ? 'center' : ( containerVAlign === 'top' ? 'flex-start' : 'flex-end') };
-                        }
-                    `}
+                        }`
+                        : 
+                        ''
+                    }
 
                     ${ `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
 						${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
@@ -2105,7 +2107,7 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-wrapper-padding'}
                                     >
 										<ResponsiveMeasureRangeControl
-											label={__( 'Wrapper Padding', 'kadence-blocks' )}
+											label={__( 'Padding', 'kadence-blocks' )}
 											value={wrapperPadding}
 											onChange={( value ) => setAttributes( { wrapperPadding: value } )}
 											tabletValue={wrapperTabletPadding}
@@ -2120,7 +2122,7 @@ function KadenceTestimonials({
 											onUnit={( value ) => setAttributes( { wrapperPaddingType: value } )}
 										/>
 										<ResponsiveMeasureRangeControl
-											label={__( 'Media Margin', 'kadence-blocks' )}
+											label={__( 'Margin', 'kadence-blocks' )}
 											value={wrapperMargin}
 											onChange={( value ) => setAttributes( { wrapperMargin: value } )}
 											tabletValue={tabletWrapperMargin}
