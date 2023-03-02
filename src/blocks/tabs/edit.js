@@ -1065,7 +1065,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							icon={ plusCircle }
 							onClick={ () => {
 								const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
-								setAttributes( { tabCount: tabCount + 1 } );
 								insertTab( newBlock );
 								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 								const newtabs = titles;
@@ -1076,7 +1075,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									onlyIcon: titles[ 0 ].onlyIcon,
 									subText: '',
 								} );
-								setAttributes( { titles: newtabs } );
+								setAttributes( { titles: newtabs, tabCount: tabCount + 1 } );
 								saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 							} }
 							label={  __( 'Add Tab', 'kadence-blocks' ) }
