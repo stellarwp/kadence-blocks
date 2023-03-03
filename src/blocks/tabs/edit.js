@@ -616,7 +616,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<p class="kadence-control-title" style={{marginTop: "24px", marginBottom: "5px"}}>{ __( 'Set initial Open Tab') }</p>
+				<p className="kadence-control-title" style={{marginTop: "24px", marginBottom: "5px"}}>{ __( 'Set initial Open Tab') }</p>
 				<Select
 					value={initialTabOptions.filter(function(option) {
 						return option.value === startTab;

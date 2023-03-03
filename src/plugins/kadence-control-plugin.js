@@ -556,8 +556,8 @@ function KadenceConfig() {
 														   },
 													   ]}/>
 
-							{map(controls, ({Control}) => (
-								<Control/>
+							{map(controls, ({Control}, index ) => (
+								<Control key={ index } />
 							))}
 						</div>
 					</PanelBody>
@@ -602,8 +602,8 @@ function KadenceConfig() {
 							<KadenceGlobalTypography />
 						) }
 					</PanelBody> */}
-				{map( extraPanels, ( { Panel } ) => (
-					<Panel/>
+				{map( extraPanels, ( { Panel }, index ) => (
+					<Panel key={ index }/>
 				) )}
 			</PluginSidebar>
 		</Fragment>

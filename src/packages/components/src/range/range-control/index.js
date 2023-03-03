@@ -60,8 +60,8 @@ export default function RangeControl( {
 								value={ unit }
 								disabled={ units.length === 1 }
 							>
-								{ units.map( ( option ) => (
-									<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
+								{ units.map( ( option, index ) => (
+									<option value={ option } key={ index }>
 										{ option }
 									</option>
 								) ) }
