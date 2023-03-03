@@ -109,7 +109,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		} else {
 			// New margin intentially targets outer container, improvement and don't have to worry about issues with row layout.
-			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .kt-inside-inner-col > .kadence-column' . $unique_id . ':not(.specificity)' );
 			$css->render_measure_output(
 				$attributes,
 				'margin',
