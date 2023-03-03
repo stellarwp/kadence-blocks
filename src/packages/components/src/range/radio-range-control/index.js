@@ -60,24 +60,6 @@ export default function RadioRangeControl( {
 	units = [ 'px', 'em', 'rem' ],
 	disableCustomSizes = false,
 } ) {
-	/**
-	 * Build Toolbar Items.
-	 *
-	 * @param {string} mappedUnit the unit.
-	 * @returns {array} the unit array.
-	 */
-	 const createLevelControlToolbar = ( mappedUnit ) => {
-		return [ {
-			icon: ( mappedUnit === '%' ? icons.percent : icons[ mappedUnit ] ),
-			isActive: unit === mappedUnit,
-			onClick: () => {
-				onUnit( mappedUnit );
-			},
-		} ];
-	};
-	const POPOVER_PROPS = {
-		className: 'kadence-units-popover',
-	};
 	const stringValue = ( value.value ? value.value : '' );
 	const sizeValue = ( value.size ? value.size : '' );
 	return [
@@ -144,22 +126,23 @@ export default function RadioRangeControl( {
 							/>
 						</div>
 						{ ( onUnit || showUnit ) && (
-							<div className="kadence-units">
-								{ units.length === 1 ? (
-									<Button
-										className="is-active is-single"
-										isSmall
-										disabled
-									>{ ( '%' === unit ? icons.percent : icons[ unit ] ) }</Button>
-								) : (
-									<DropdownMenu
-										icon={ ( '%' === unit ? icons.percent : icons[ unit ] ) }
-										label={ __( 'Select a Unit', 'kadence-blocks' ) }
-										controls={ units.map( ( singleUnit ) => createLevelControlToolbar( singleUnit ) ) }
-										className={ 'kadence-units-group' }
-										popoverProps={ POPOVER_PROPS }
-									/>
-								) }
+							<div className={ 'kadence-units kadence-measure-control-select-wrapper' }>
+								<select
+									className={ 'kadence-measure-control-select components-unit-control__select' }
+									onChange={ ( event ) => {
+										if ( onUnit ) {
+											onUnit( event.target.value );
+										}
+									} }
+									value={ unit }
+									disabled={ units.length === 1 }
+								>
+									{ units.map( ( option, index ) => (
+										<option value={ option } key={ index }>
+											{ option }
+										</option>
+									) ) }
+								</select>
 							</div>
 						) }
 						{ ! disableCustomSizes && (
