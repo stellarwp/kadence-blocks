@@ -544,7 +544,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 
-		const nonTransAttrs = ['currentTab', 'tabCount'];
+		const nonTransAttrs = ['currentTab', 'tabCount', 'titles'];
 
 		const isAccordionPreview = ( ( previewDevice == 'Tablet' && tabletLayout == 'accordion' ) || ( previewDevice == 'Mobile' && mobileLayout == 'accordion' ) );
 
@@ -558,7 +558,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			{ value: 'vtabs', label: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 
-		const initialTabOptions = times( tabCount, ( n ) => {
+		const initialTabOptions = times( titles.length, ( n ) => {
 			return { value: ( n + 1), label: titles[n].text };
 		});
 
@@ -1626,7 +1626,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									defaultAttributes={metadata['attributes']}
 									blockSlug={metadata['name']}
 									excludedAttrs={nonTransAttrs}
-									preventMultiple={['titles']}
 								/>
 
 							</>
