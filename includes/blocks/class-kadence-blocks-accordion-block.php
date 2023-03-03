@@ -116,7 +116,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				// Text Colors.
 				if ( isset( $attributes['textColor'] ) ) {
-					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner , .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h1, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h2, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h3, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h4, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h5, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h6' );
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h1, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h2, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h3, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h4, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h5, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h6' );
 					$css->add_property( 'color', $css->render_color( $attributes['textColor'] ) );
 				}
 				if ( isset( $attributes['linkColor'] ) ) {

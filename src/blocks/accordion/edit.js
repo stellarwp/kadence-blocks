@@ -242,10 +242,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			setAttributes( { contentBorderColor: '' } );
 		}
 		if ( ( '' !== contentBorder?.[0] || '' !== contentBorder?.[1] || '' !== contentBorder?.[2] || '' !== contentBorder?.[3] ) ) {
-			tempContentBorderStyle[0].top[2] = contentBorder?.[0] || '';
-			tempContentBorderStyle[0].right[2] = contentBorder?.[1] || '';
-			tempContentBorderStyle[0].bottom[2] = contentBorder?.[2] || '';
-			tempContentBorderStyle[0].left[2] = contentBorder?.[3] || '';
+			tempContentBorderStyle[0].top[2] = ('' !== contentBorder?.[0] ? contentBorder[0] : '');
+			tempContentBorderStyle[0].right[2] = ('' !== contentBorder?.[1] ? contentBorder[1] : '');
+			tempContentBorderStyle[0].bottom[2] = ('' !== contentBorder?.[2] ? contentBorder[2] : '');
+			tempContentBorderStyle[0].left[2] = ('' !== contentBorder?.[3] ? contentBorder[3] : '');
 			updateContentBorderStyle = true;
 			setAttributes( { contentBorder:[ '', '', '', '' ] } );
 		}
