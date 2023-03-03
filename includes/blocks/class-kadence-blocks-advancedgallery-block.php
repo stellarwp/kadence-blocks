@@ -612,12 +612,54 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		return $content;
 	}
 	/**
+	 * Get the image srcset.
+	 *
+	 * @param integer $id the image ID.
+	 * @param string  $url the image url.
+	 * @param string  $width the image width.
+	 * @param string  $height the image height.
+	 */
+	public function get_image_srcset( $id = null, $url = null, $width = null, $height = null ) {
+		if ( empty( $id ) || empty( $url ) || empty( $width ) || empty( $height ) ) {
+			return '';
+		}
+		$image_meta = wp_get_attachment_metadata( $id );
+		if ( ! $image_meta ) {
+			return '';
+		}
+		if ( function_exists( 'wp_calculate_image_srcset' ) ) {
+			$output = wp_calculate_image_srcset( array( $width, $height ), $url, $image_meta, $id );
+		} else {
+			$output = '';
+		}
+
+		return $output;
+	}
+	/**
+	 * Get the image srcset output.
+	 *
+	 * @param integer $id the image ID.
+	 * @param string  $url the image url.
+	 * @param string  $width the image width.
+	 * @param string  $height the image height.
+	 */
+	public function get_image_srcset_output( $id = null, $url = null, $width = null, $height = null ) {
+		$img_srcset = $this->get_image_srcset( $id, $url, $width, $height );
+		if ( ! empty( $img_srcset ) ) {
+			$output = 'data-splide-lazy-srcset="' . esc_attr( $img_srcset ) . '" sizes="(max-width: ' . esc_attr( $width ) . 'px) 100vw, ' . esc_attr( $width ) . 'px"';
+		} else {
+			$output = '';
+		}
+		return $output;
+	}
+	/**
 	 * Output Gallery image markeup.
 	 */
 	public function render_gallery_images( $image, $attributes ) {
 		$type          = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );
 		$image_ratio   = ( ! empty( $attributes['imageRatio'] ) ? $attributes['imageRatio'] : 'land32' );
 		$show_caption  = ( ! empty( $attributes['showCaption'] ) && $attributes['showCaption'] ? true : false );
+		$lazy_load     = ( ! empty( $attributes['lazyLoad'] ) && $attributes['lazyLoad'] ? true : false );
 		$caption_style = ( ! empty( $attributes['captionStyle'] ) ? $attributes['captionStyle'] : 'bottom-hover' );
 		$link_to       = ( ! empty( $attributes['linkTo'] ) ? $attributes['linkTo'] : 'none' );
 		$link_target   = ( ! empty( $image['linkTarget'] ) ? $image['linkTarget'] : '' );
@@ -725,13 +767,21 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? $caption : '' ) . '</' . $fig_tag . '>';
+		$image_classes = array( 'wp-image-' . $image_id );
+		if ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) {
+			$image_classes[] = 'skip-lazy';
+		}
 		$padding_bottom = '';
 		if ( ( 'masonry' === $type ) && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
 			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
 		} else if ( ! empty( $image_ratio ) && 'inherit' === $image_ratio && 'grid' === $type && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
 			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
 		}
-		$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="wp-image-' . esc_attr( $image_id ) . '"/></div>';
+		if ( $lazy_load && ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ) {
+			$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%20667'%3E%3C/svg%3E" . '"  data-splide-lazy="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" ' . $this->get_image_srcset_output( $image_id, $image_src, $image['width'], $image['height'] ) . 'data-id="' . esc_attr( $image_id ) . '" class="' . esc_attr( implode( ' ', $image_classes ) ) . '"/></div>';
+		} else {
+			$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="' . esc_attr( implode( ' ', $image_classes ) ) . '"/></div>';
+		}
 		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item">';
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';
@@ -777,7 +827,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$image_contain_classes[] = 'kb-has-image-ratio-' . $image_ratio;
 		}
 		$padding_bottom = '';
-		$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="wp-image-' . esc_attr( $image_id ) . '"/></div>';
+		$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="wp-image-' . esc_attr( $image_id ) . ' skip-lazy"/></div>';
 		$output = '<div class="kadence-blocks-gallery-thumb-item">';
 		$output .= '<div class="kadence-blocks-gallery-thumb-item-inner">';
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';

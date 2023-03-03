@@ -185,6 +185,7 @@ function GalleryEdit( props ) {
 		paddingUnit,
 		kbVersion,
 		gutterUnit,
+		lazyLoad,
 	} = attributes;
 	const mainRef = useRef( null );
 	const thumbsRef = useRef();
@@ -282,9 +283,9 @@ function GalleryEdit( props ) {
 
 	const spacingSettings = {
 		paddingLeft: ( undefined !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingUnit ) : undefined ),
-			paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingUnit ) : undefined ),
-			paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingUnit ) : undefined ),
-			paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingUnit ) : undefined ),
+		paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingUnit ) : undefined ),
+		paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingUnit ) : undefined ),
+		paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingUnit ) : undefined ),
 		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
 		marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
 		marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
@@ -1127,6 +1128,11 @@ function GalleryEdit( props ) {
 													onChange={( value ) => setAttributes( { dotStyle: value } )}
 												/>
 											)}
+											<ToggleControl
+												label={__( 'Enable Image Lazy Load', 'kadence-blocks' )}
+												checked={lazyLoad}
+												onChange={( value ) => setAttributes( { lazyLoad: value } )}
+											/>
 										</KadencePanelBody>
 									)}
 								</>

@@ -342,6 +342,10 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"lazyLoad": {
+		"type": "boolean",
+		"default": false
+	},
 	"imagesData": {
 		"type": "array",
 		"default": [
