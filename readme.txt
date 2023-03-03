@@ -79,8 +79,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.21 =
 Release Date: March 2nd, 2023
-* Fix: Issue with max width in testimonial bubble style.
+* Fix: Issue with max width in testimonial card style.
 * Fix: Missing icon.
+** Fix: Margin specificity in nested sections.
+* Fix: Issue with background type not selected in sections when initially imported from 2.4
+* Fix: Possible issue with svg icon rendering effecting certain blocks.
 
 = 3.0.20 =
 Release Date: March 1st, 2023
