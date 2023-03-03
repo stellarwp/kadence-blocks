@@ -566,6 +566,8 @@ function KadenceAdvancedHeading( props ) {
 
 				<RichText
 					id={ 'adv-heading' + uniqueID }
+					tagName="span"
+					className={'kb-adv-heading-inner'}
 					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
 					value={content}
 					onChange={(value) => setAttributes({content: value})}
