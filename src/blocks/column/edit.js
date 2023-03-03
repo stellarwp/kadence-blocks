@@ -137,7 +137,7 @@ function SectionEdit( {
 			setAttributes( { padding: [ topPadding, rightPadding, bottomPadding, leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
 		if ( ( '' !== topPaddingT || '' !== rightPaddingT || '' !== bottomPaddingT || '' !== leftPaddingT ) ) {
-			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
+			setAttributes( { tabletPadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
 		}
 		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
@@ -1047,7 +1047,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundHoverType && (
+												{ 'gradient' !== backgroundHoverType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1110,7 +1110,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundType && (
+												{ 'gradient' !== backgroundType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1195,7 +1195,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayHoverType && (
+												{ 'gradient' !== overlayHoverType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -1277,7 +1277,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayType && (
+												{ 'gradient' !== overlayType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
