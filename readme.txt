@@ -77,15 +77,21 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.22 =
+Release Date: March 5nd, 2023
+* Fix: Issue with inner child blocks having options to be reusable.
+* Fix: Issue with tabs when using block defaults.
+* Fix: Issue with testimonials and variable font sizes.
+
 = 3.0.21 =
 Release Date: March 2nd, 2023
 * Add: Image Lazy load option for slider and carousel galleries.
-* Fix: Issue were 3rd party lazy load plugins were breaking carousels.
+* Fix: Issue where 3rd party lazy load plugins were breaking carousels.
 * Fix: Issue with max width in testimonial card style.
 * Fix: Missing icon.
 * Fix: Margin specificity in nested sections.
 * Fix: Issue with background type not selected in sections when initially imported from 2.4
-* Fix: Possible issue with svg icon rendering effecting certain blocks.
+* Fix: Possible issue with svg icon rendering affecting certain blocks.
 * Fix: Issue with TOC not updating in the editor when allowed headers changes.
 * Fix: Frontend alignment of new icon in advanced text.
 * Fix: Issue with migrating tablet padding in section.
