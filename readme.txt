@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.21
+Stable tag: 3.0.22
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -82,7 +82,8 @@ Release Date: March 5nd, 2023
 * Fix: Issue with inner child blocks having options to be reusable.
 * Fix: Issue with tabs when using block defaults.
 * Fix: Issue with testimonials and variable font sizes.
-* Fix: Issue with lottie json files when using query parameters
+* Fix: Issue with lottie json files when using query parameters.
+* Fix: Issue with firefox flex area and svgs.
 
 = 3.0.21 =
 Release Date: March 2nd, 2023

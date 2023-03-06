@@ -94,6 +94,8 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kb-image' . $unique_id );
 			if ( isset( $attributes['imgMaxWidth'] ) && is_numeric( $attributes['imgMaxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['imgMaxWidth'] . 'px' );
+				$css->set_selector( '.image-is-svg.kb-image' . $unique_id );
+				$css->add_property( 'flex', '0 1 100%' );
 				$css->set_selector( '.image-is-svg.kb-image' . $unique_id . ' img' );
 				$css->add_property( 'width', '100%' );
 			}
