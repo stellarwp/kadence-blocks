@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.22 =
-Release Date: March 5nd, 2023
+Release Date: March 6th, 2023
 * Fix: Issue with inner child blocks having options to be reusable.
 * Fix: Issue with tabs when using block defaults.
 * Fix: Issue with testimonials and variable font sizes.
