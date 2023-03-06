@@ -82,6 +82,7 @@ Release Date: March 5nd, 2023
 * Fix: Issue with inner child blocks having options to be reusable.
 * Fix: Issue with tabs when using block defaults.
 * Fix: Issue with testimonials and variable font sizes.
+* Fix: Issue with lottie json files when using query parameters
 
 = 3.0.21 =
 Release Date: March 2nd, 2023
