@@ -68,7 +68,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['containerBorderRadius'] ) && ! empty( $attributes['containerBorderRadius'] ) ) {
 				$css->add_property( 'border-radius', $attributes['containerBorderRadius'] . 'px' );
 			}
-			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
+			$css->render_measure_output( $attributes, 'containerBorderWidth', 'border-width' );
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
@@ -713,7 +713,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'][0] ) ) {
 				$shadow_hover = $attributes['shadowHover'][0];
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
-				$css->add_property( 'box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $shadow_hover['color'], $shadow_hover['opacity'] ) );
+				$color = ( !empty( $shadow_hover['color'] ) ? $shadow_hover['color'] : '#000000' );
+				$css->add_property( 'box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $color, $shadow_hover['opacity'] ) );
 			} else {
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
 				$css->add_property( 'box-shadow', '0px 0px 14px 0px rgba(0,0,0,0.2)' );
