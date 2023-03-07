@@ -42,7 +42,7 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, getFontSizeOptionOutput, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
 /**
@@ -167,7 +167,7 @@ export default function Image( {
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== imgMaxWidth ? imgMaxWidth : '' ), ( undefined !== imgMaxWidthTablet ? imgMaxWidthTablet : '' ), ( undefined !== imgMaxWidthMobile ? imgMaxWidthMobile : '' ) );
 
 	const previewCaptionFontSizeUnit = captionStyles[ 0 ].sizeType !== undefined ? captionStyles[ 0 ].sizeType : 'px';
-	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] + previewCaptionFontSizeUnit : 'inherit' ) );
+	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] : 'inherit' ) );
 
 	const previewCaptionLineHeightUnit = captionStyles[ 0 ].lineType !== undefined ? captionStyles[ 0 ].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].lineHeight[0] ? captionStyles[ 0 ].lineHeight[0] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[1] ? captionStyles[ 0 ].lineHeight[ 1 ] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[2] + previewCaptionLineHeightUnit ? captionStyles[ 0 ].lineHeight[ 2 ] : 'normal' ) );
@@ -1411,7 +1411,7 @@ export default function Image( {
 						textTransform: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : undefined ),
 						letterSpacing: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing : undefined ),
 						lineHeight: previewCaptionLineHeight,
-						fontSize: previewCaptionFontSize
+						fontSize: getFontSizeOptionOutput( previewCaptionFontSize, previewCaptionFontSizeUnit )
 					} }
 					inlineToolbar
 					__unstableOnSplitAtEnd={ () =>
