@@ -153,21 +153,6 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
-	 * Adds a filter to the head filter for compatibility with toolset.
-	 *
-	 * @param boolean $render_inline_css
-	 * @param string $block_name
-	 * @param array $attributes
-	 *
-	 * @return boolean
-	 */
-	public function add_toolset_depreciated_filter_compatibility( $render_css, $block_name, $attributes ) {
-		$unique_id = ( ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '' );
-
-		return apply_filters( 'kadence_blocks_render_inline_css', $render_css, $block_name, $unique_id );
-	}
-
-	/**
 	 * On init startup.
 	 */
 	public function on_init() {

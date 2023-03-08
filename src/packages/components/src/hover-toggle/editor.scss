@@ -16,6 +16,11 @@
             width: 1em;
             height: 1em;
         }
+
+		&.is-rtl {
+			right: unset;
+			left: 32px;
+		}
     }
     &.kb-active-toggle-btn {
         right: 64px;
