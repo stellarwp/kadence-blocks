@@ -18,6 +18,7 @@ import './editor.scss';
 import {
 	Button,
 } from '@wordpress/components';
+import {isRTL} from '@kadence/helpers';
 /**
  * Import Icons
  */
@@ -48,7 +49,7 @@ export default function HoverToggleControl( {
 			<div className={ 'kb-hover-toggle-control-toggle' }>
 				{ hover && (
 					<Button
-						className={'kb-hover-toggle-btn'}
+						className={'kb-hover-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isHover}
 						icon={ icon }
 						aria-pressed={isHover}
@@ -62,7 +63,7 @@ export default function HoverToggleControl( {
 				)}
 				{ active && (
 					<Button
-						className={'kb-active-toggle-btn'}
+						className={'kb-active-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isActive}
 						icon={ activeIcon }
 						aria-pressed={isActive}

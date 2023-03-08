@@ -86,6 +86,7 @@ Release Date: March 7th, 2023
 * Fix: Issue with blocks showing broken in the editor in tablet.
 * Fix: Issue with testimonial fonts causing breakage in google font url.
 * Fix: Issue with some custom svg icons not rendering correctly.
+* Fix: Hover styles icon on RTL layouts
 
 = 3.0.22 =
 Release Date: March 6th, 2023
