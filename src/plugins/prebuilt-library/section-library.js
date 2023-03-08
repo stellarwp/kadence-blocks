@@ -85,15 +85,30 @@ class PrebuiltSections extends Component {
 			categories: {
 				'category': __( 'Category', 'kadence-blocks' ),
 				'pro': __( 'Pro', 'kadence-blocks' ),
-				'new': __( 'New', 'kadence-blocks' ),
-				'feature': __( 'Feature', 'kadence-blocks' ),
-				'hero': __( 'Hero', 'kadence-blocks' ),
-				'form': __( 'Form', 'kadence-blocks' ),
-				'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-				'tabs': __( 'Tabs', 'kadence-blocks' ),
 				'accordion': __( 'Accordion', 'kadence-blocks' ),
+				'cards': __( 'Cards', 'kadence-blocks' ),
+				'columns': __( 'Columns', 'kadence-blocks' ),
+				'countdown': __( 'Countdown', 'kadence-blocks' ),
+				'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
+				'featured-blog-posts': __( 'Featured Blog Posts', 'kadence-blocks' ),
+				'footer': __( 'Footer', 'kadence-blocks' ),
+				'form': __( 'Form', 'kadence-blocks' ),
+				'gallery': __( 'Gallery', 'kadence-blocks' ),
+				'hero': __( 'Hero', 'kadence-blocks' ),
+				'image': __( 'Image', 'kadence-blocks' ),
+				'list': __( 'List', 'kadence-blocks' ),
+				'location': __( 'Location', 'kadence-blocks' ),
+				'logo-list': __( 'Logo List', 'kadence-blocks' ),
+				'media-text': __( 'Media and Text', 'kadence-blocks' ),
+				'people': __( 'List', 'kadence-blocks' ),
+				'portfolio': __( 'Location', 'kadence-blocks' ),
+				'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
+				'promotional': __( 'Promotional', 'kadence-blocks' ),
+				'slider': __( 'Slider', 'kadence-blocks' ),
 				'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+				'video': __( 'Video', 'kadence-blocks' ),
 			},
+			style: 'light',
 		};
 		this.debouncedReloadTemplateData = debounce( this.reloadTemplateData.bind( this ), 200 );
 	}
@@ -231,6 +246,11 @@ class PrebuiltSections extends Component {
 		const sideCatOptions = Object.keys( categoryItems ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categoryItems[key] ) }
 		} );
+		const styleOptions = [
+			{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
+			{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
+			{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
+		];
 		let breakpointColumnsObj = {
 			default: 5,
 			1600: 4,
@@ -294,6 +314,22 @@ class PrebuiltSections extends Component {
 									{ category.label }
 								</Button>
 							) }
+						</div>
+						<div className="kb-library-sidebar-fixed-bottom">
+							<h2>{ __( 'Change Colors', 'kadence-blocks' ) }</h2>
+							<div className="kb-library-style-options">
+								{ styleOptions.map( ( style, index ) =>
+									<Button
+										key={ `${ style.value }-${ index }` }
+										label={ style.label }
+										className={ 'kb-style-button kb-style-' + style.value + ( this.state.style === style.value ? ' is-pressed' : '' ) }
+										aria-pressed={ this.state.style === style.value }
+										onClick={ () => this.setState( { style: style.value } ) }
+									>
+										<span></span>
+									</Button>
+								) }
+							</div>
 						</div>
 					</div>
 				) }
@@ -398,8 +434,9 @@ class PrebuiltSections extends Component {
 					<PatternList
 						patterns={ this.state.items }
 						filterValue={ '' }
-						selectedCategory={''}
+						selectedCategory={ this.state.category }
 						patternCategories={ catOptions }
+						selectedStyle={ this.state.style }
 					/>
 					// <Masonry
 					// 	breakpointCols={breakpointColumnsObj}

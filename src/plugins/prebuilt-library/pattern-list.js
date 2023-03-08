@@ -54,7 +54,7 @@ import {
 	//BlockPreview,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-const INITIAL_INSERTER_RESULTS = 4;
+const INITIAL_INSERTER_RESULTS = 2;
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
 		return null;
@@ -90,6 +90,7 @@ function KadenceBlockPattern( {
 	onHover,
 	composite,
 	showTooltip,
+	customStyles,
 } ) {
 	const { blocks, viewportWidth } = pattern;
 	const instanceId = useInstanceId( KadenceBlockPattern );
@@ -123,9 +124,7 @@ function KadenceBlockPattern( {
 					<BlockPreview
 						blocks={ blocks }
 						viewportWidth={ viewportWidth }
-						additionalStyles={ [
-							{ css: `body { --global-palette9:#000 }` }
-						]}
+						additionalStyles={ customStyles }
 					/>
 					{ ! showTooltip && (
 						<div className="block-editor-block-patterns-list__item-title">
@@ -156,6 +155,7 @@ function KadenceBlockPatternList( {
 	orientation,
 	label = __( 'Block Patterns', 'kadence-blocks' ),
 	showTitlesAsTooltip,
+	customStyles,
 } ) {
 	const composite = useCompositeState( { orientation } );
 	return (
@@ -175,6 +175,7 @@ function KadenceBlockPatternList( {
 						onHover={ onHover }
 						composite={ composite }
 						showTooltip={ showTitlesAsTooltip }
+						customStyles={ customStyles }
 					/>
 				) : (
 					<BlockPatternPlaceholder key={ pattern.name } />
@@ -184,7 +185,7 @@ function KadenceBlockPatternList( {
 	);
 }
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light' } ) {
 	// const { testCategories, testPatterns } = useSelect(
 	// 	( select ) => {
 	// 		const { __experimentalGetAllowedPatterns, getSettings } =
@@ -209,13 +210,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			),
 		[ patternCategories ]
 	);
-
 	const filteredBlockPatterns = useMemo( () => {
-		const allPatterns = [];
+		let allPatterns = [];
 		Object.keys( patterns ).map( function( key, index ) {
-			if ( index > 1 ) {
-				return;
-			}
 			const temp = [];
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
@@ -223,23 +220,19 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				__unstableSkipMigrationLogs: true
 			  });
 			temp['content'] = patterns[key].content;
-			temp['categories'] = patterns[key].categories;
+			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
 			temp['viewportWidth'] = 1200;
 			allPatterns.push( temp );
 		});
-		// if ( ! filterValue ) {
-		// 	return allPatterns.filter( ( pattern ) =>
-		// 		selectedCategory === 'uncategorized'
-		// 			? ! pattern.categories?.length ||
-		// 			  pattern.categories.every(
-		// 					( category ) =>
-		// 						! registeredPatternCategories.includes(
-		// 							category
-		// 						)
-		// 			  )
-		// 			: pattern.categories?.includes( selectedCategory )
-		// 	);
-		// }
+		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
+			allPatterns = allPatterns.filter( ( pattern ) =>
+				pattern.categories?.includes( selectedCategory )
+			);
+		}
+		if ( allPatterns.length > 20 ) {
+			console.log( 'here' );
+			allPatterns = allPatterns.slice(0, 20);
+		}
 		return allPatterns;
 	}, [ filterValue, selectedCategory, patterns ] );
 
@@ -257,10 +250,46 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		debouncedSpeak( resultsFoundMessage );
 	}, [ filterValue, debouncedSpeak ] );
 
+	// Define selected style.
+	const customStyles = useMemo( () => {
+		let newStyles = '';
+		if ( ! selectedStyle || 'light' === selectedStyle ) {
+			return newStyles;
+		}
+		if ( 'dark' === selectedStyle ) {
+			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette4']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette5']};`;
+			newStyles = [
+				{ css: `body { ${tempStyles} }` }
+			];
+		} else if ( 'highlight' === selectedStyle ) {
+			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};`;
+			newStyles = [
+				{ css: `body { ${tempStyles} }` }
+			];
+		}
+
+		return newStyles;
+	}, [ selectedStyle ] );
+
 	const currentShownPatterns = useAsyncList( filteredBlockPatterns, {
 		step: INITIAL_INSERTER_RESULTS,
 	} );
-	console.log( filteredBlockPatterns );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -276,7 +305,8 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						shownPatterns={ currentShownPatterns }
 						blockPatterns={ filteredBlockPatterns }
 						onClickPattern={ onSelectBlockPattern }
-						showTitlesAsTooltip={ true }
+						showTitlesAsTooltip={ false }
+						customStyles={ customStyles }
 					/>
 				) }
 			</div>

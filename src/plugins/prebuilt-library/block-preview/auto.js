@@ -11,10 +11,12 @@ import { Disabled } from '@wordpress/components';
  */
 import {
 	BlockList,
-	__unstableIframe as Iframe,
+//	__unstableIframe as Iframe,
 	__unstableEditorStyles as EditorStyles,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+
+import Iframe from '../iframe/index.js';
 
 // This is used to avoid rendering the block list if the sizes change.
 let MemoizedBlockList;
@@ -39,6 +41,9 @@ function ScaledBlockPreview( {
 			styles: settings.styles,
 		};
 	}, [] );
+	// console.log( Iframe );
+	// console.log( assets.styles );
+
 
 	// Avoid scrollbars for pattern previews.
 	const editorStyles = useMemo( () => {

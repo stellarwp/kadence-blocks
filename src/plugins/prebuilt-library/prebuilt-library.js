@@ -52,19 +52,19 @@ import { applyFilters } from '@wordpress/hooks';
 const normal_actions =[
 	{
 		slug: 'section',
-		title: __( 'Sections', 'kadence-blocks' ),
+		title: __( 'Kadence', 'kadence-blocks' ),
 		key: 'kb-sections-tab',
 	},
-	{
-		slug: 'templates',
-		title: __( 'Starter Packs', 'kadence-blocks' ),
-		key: 'kb-templates-tab',
-	},
-	{
-		slug: 'wire',
-		title: 'Wireframe',
-		key: 'kb-wire-tab',
-	},
+	// {
+	// 	slug: 'templates',
+	// 	title: __( 'Starter Packs', 'kadence-blocks' ),
+	// 	key: 'kb-templates-tab',
+	// },
+	// {
+	// 	slug: 'wire',
+	// 	title: 'Wireframe',
+	// 	key: 'kb-wire-tab',
+	// },
 	{
 		slug: 'cloud',
 		title: '',
@@ -74,19 +74,19 @@ const normal_actions =[
 const no_connect_actions = [
 	{
 		slug: 'section',
-		title: __( 'Sections', 'kadence-blocks' ),
+		title: __( 'Kadence', 'kadence-blocks' ),
 		key: 'kb-sections-tab',
 	},
-	{
-		slug: 'templates',
-		title: __( 'Starter Packs', 'kadence-blocks' ),
-		key: 'kb-templates-tab',
-	},
-	{
-		slug: 'wire',
-		title: __( 'Wireframe', 'kadence-blocks' ),
-		key: 'kb-wire-tab',
-	},
+	// {
+	// 	slug: 'templates',
+	// 	title: __( 'Starter Packs', 'kadence-blocks' ),
+	// 	key: 'kb-templates-tab',
+	// },
+	// {
+	// 	slug: 'wire',
+	// 	title: __( 'Wireframe', 'kadence-blocks' ),
+	// 	key: 'kb-wire-tab',
+	// },
 ];
 class PrebuiltModal extends Component {
 	constructor() {

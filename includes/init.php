@@ -188,6 +188,31 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			);
 		}
 	}
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+	} else {
+		$global_colors = array(
+			'--global-palette1' => \Kadence\kadence()->palette_option( 'palette1' ),
+			'--global-palette2' => \Kadence\kadence()->palette_option( 'palette2' ),
+			'--global-palette3' => \Kadence\kadence()->palette_option( 'palette3' ),
+			'--global-palette4' => \Kadence\kadence()->palette_option( 'palette4' ),
+			'--global-palette5' => \Kadence\kadence()->palette_option( 'palette5' ),
+			'--global-palette6' => \Kadence\kadence()->palette_option( 'palette6' ),
+			'--global-palette7' => \Kadence\kadence()->palette_option( 'palette7' ),
+			'--global-palette8' => \Kadence\kadence()->palette_option( 'palette8' ),
+			'--global-palette9' => \Kadence\kadence()->palette_option( 'palette9' ),
+		);
+	}
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -245,7 +270,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
 			'wp_max_upload_size' => wp_max_upload_size(),
-			'get_allowed_mime_types' => get_allowed_mime_types()
+			'get_allowed_mime_types' => get_allowed_mime_types(),
+			'global_colors' => $global_colors,
 		)
 	);
 	wp_localize_script(
@@ -609,9 +635,9 @@ function kadence_blocks_add_global_gutenberg_styles() {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
-	wp_add_inline_style( 'wp-edit-blocks', $css );
+	wp_add_inline_style( 'wp-block-library', $css );
 }
-add_action( 'enqueue_block_editor_assets', 'kadence_blocks_add_global_gutenberg_styles', 90 );
+add_action( 'admin_init', 'kadence_blocks_add_global_gutenberg_styles', 10 );
 /**
  * Add inline css editor width
  */
