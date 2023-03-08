@@ -80,6 +80,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.23 =
 Release Date: March TBD, 2023
 * Fix: Variable font sizes on Advanced Image captions
+* Fix: Infobox borders no displaying on pre 3.0 blocks
+* Fix: Infobox title margin top not applying on front end
 
 = 3.0.22 =
 Release Date: March 6th, 2023
