@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.23 =
-Release Date: March 7th, 2023
+Release Date: March 8th, 2023
 * Update: MailerLite to work with new API.
 * Fix: Variable font sizes on Advanced Image captions.
 * Fix: Infobox borders no displaying on pre 3.0 blocks.
