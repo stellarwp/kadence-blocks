@@ -126,11 +126,11 @@ function KadenceVisibilitySettings( { blockSlug, blockName, options, icon, showB
 
 					<h2>{__( 'Control Individual Settings Groups', 'kadence-blocks' )}</h2>
 
-					{map( options, ( { key, label, requiresPro = false } ) => (
+					{map( options, ( { key, label, requiresPro = false, initial = 'all' } ) => (
 							( !requiresPro || ( requiresPro && kadence_blocks_params.pro === 'true')  ) &&
 							<SelectControl
 								label={label}
-								value={( blockSettings[ key ] ? blockSettings[ key ] : 'all' )}
+								value={( blockSettings[ key ] ? blockSettings[ key ] : ( initial ? initial : 'all' ) )}
 								options={[
 									{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
 									{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },

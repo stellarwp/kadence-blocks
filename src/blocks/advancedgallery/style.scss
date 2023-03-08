@@ -266,6 +266,12 @@
 	display: flex;
 	flex-direction: column;
 }
+.kb-blocks-slider[data-slider-type="thumbnail"]:not(.kt-blocks-carousel-init).splide:not( .is-overflow ) .splide__slide:last-child {
+	margin: 0 !important;
+}
+.kb-blocks-slider[data-slider-type="thumbnail"]:not(.kt-blocks-carousel-init).splide:not( .is-overflow ) .splide__list {
+	justify-content: center;
+}
 .kb-gallery-caption-style-below .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption {
 	padding: 10px;
 	margin-top:0;

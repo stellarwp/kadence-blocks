@@ -5,17 +5,11 @@
  import { times } from 'lodash';
  import { Splide, SplideSlide } from '@splidejs/react-splide';
  import { KadenceColorOutput, getPreviewSize, getBorderStyle } from '@kadence/helpers';
- import {
-	PaddingVisualizer,
-} from '@kadence/components';
 import {
 	useBlockProps,
 } from '@wordpress/block-editor';
-import {
-	Dashicon,
-} from '@wordpress/components';
-import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
-import { useEffect, useState, useRef } from '@wordpress/element';
+
+import { getSpacingOptionOutput } from './utils';
 
 /**
  * Build the row edit
@@ -43,6 +37,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	const previewRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
 	const previewRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
 	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+	const previewMinHeight = getPreviewSize( previewDevice, ( undefined !== minHeight ? minHeight : '' ), ( undefined !== minHeightTablet ? minHeightTablet : '' ), ( undefined !== minHeightMobile ? minHeightMobile : '' ) );
 	// Background Image.
 	let previewBackgroundImage = getPreviewSize( previewDevice, ( bgImg ? `url(${ bgImg })` : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImg && tabletBackground[0].enable ? `url(${ tabletBackground[0].bgImg })` : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImg && mobileBackground[0].enable ? `url(${ mobileBackground[0].bgImg })` : '' ) );
 
@@ -87,7 +82,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 	};
 	const blockProps = useBlockProps( {
 		className: backgroundClasses,
-		style: { 
+		style: {
 			marginBottom: getSpacingOptionOutput( previewMarginBottom, ( marginUnit ? marginUnit : 'px' ) ),
 			marginTop: getSpacingOptionOutput( previewMarginTop, ( marginUnit ? marginUnit : 'px' ) ),
 			borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
@@ -98,7 +93,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 			borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 			borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 			borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-			minHeight: minHeight + minHeightUnit,
+			minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
 			zIndex: ( zIndex ? zIndex : undefined ),
 		 },
 		'data-align': ( 'full' === align || 'wide' === align || 'center' === align ? align : undefined ),
@@ -119,7 +114,7 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 					<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` }>
 						{ backgroundSliderCount !== 1 && (
 							<Splide options={ sliderSettings } className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
-								{ times( backgroundSliderCount, n => 
+								{ times( backgroundSliderCount, n =>
 									<SplideSlide className={ 'kadence-blocks-gallery-item' }>
 										{renderSliderImages( n )}
 									</SplideSlide>

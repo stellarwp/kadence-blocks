@@ -11,7 +11,7 @@
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
 const { apiFetch } = wp;
-import { KadencePanelBody } from '@wordpress/components';
+import { KadencePanelBody } from '@kadence/components';
 /**
  * Internal block libraries
  */
@@ -134,25 +134,25 @@ class FluentCRMControls extends Component {
 				panelName={ 'kb-fluent-crm-settings' }
 			>
 				{ ! isActive && (
-					<Fragment>{ __( 'FluentCRM is not setup/active.', 'kadence-blocks-pro' ) }</Fragment>
+					<>{ __( 'FluentCRM is not setup/active.', 'kadence-blocks-pro' ) }</>
 				) }
 				{ isActive && (
-					<Fragment>
+					<>
 						{ isFetching && (
 							<Spinner />
 						) }
 						{ ! isFetching && ! hasList && (
-							<Fragment>
+							<>
 								<h2 className="kt-heading-size-title">{ __( 'Select List', 'kadence-blocks' ) }</h2>
 								{ ( ! listsLoaded ? this.getLists() : '' ) }
 								{ ! Array.isArray( list ) ?
 									<Spinner /> :
 									__( 'No lists found.', 'kadence-blocks-pro' ) }
-							</Fragment>
+							</>
 
 						) }
 						{ ! isFetching && hasList && (
-							<Fragment>
+							<>
 								<h2 className="kb-heading-fln-list-title">{ __( 'Select List', 'kadence-blocks' ) }</h2>
 								<Select
 									value={ ( undefined !== this.props.settings[ 0 ].lists ? this.props.settings[ 0 ].lists : '' ) }
@@ -169,22 +169,22 @@ class FluentCRMControls extends Component {
 									<div style={ { height: '100px' } }></div>
 								) }
 								{ undefined !== this.props.settings && undefined !== this.props.settings[ 0 ] && this.props.settings[ 0 ].lists && this.props.settings[ 0 ].lists[ 0 ] && (
-									<Fragment>
+									<>
 										{ isFetchingTags && (
 											<Spinner />
 										) }
 										{ ! isFetchingTags && ! hasTags && (
-											<Fragment>
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Select Tags', 'kadence-blocks' ) }</h2>
 												{ ( ! tagsLoaded ? this.getTags() : '' ) }
 												{ ! Array.isArray( listTags ) ?
 													<Spinner /> :
 													__( 'No Tags found.', 'kadence-blocks-pro' ) }
-											</Fragment>
+											</>
 
 										) }
 										{ ! isFetchingTags && hasTags && (
-											<Fragment>
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Select Tags', 'kadence-blocks' ) }</h2>
 												<Select
 													value={ ( undefined !== this.props.settings && undefined !== this.props.settings[ 0 ] && undefined !== this.props.settings[ 0 ].tags ? this.props.settings[ 0 ].tags : '' ) }
@@ -198,23 +198,23 @@ class FluentCRMControls extends Component {
 													maxMenuHeight={ 200 }
 													placeholder={ __( 'Select Tags' ) }
 												/>
-											</Fragment>
+											</>
 										) }
 										{ isFetchingFields && (
 											<Spinner />
 										) }
 										{ ! isFetchingFields && ! hasFields && (
-											<Fragment>
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Map Fields', 'kadence-blocks' ) }</h2>
 												{ ( ! listFieldsLoaded ? this.getFields() : '' ) }
 												{ ! Array.isArray( listFields ) ?
 													<Spinner /> :
 													__( 'No Fields found.', 'kadence-blocks-pro' ) }
-											</Fragment>
+											</>
 
 										) }
 										{ ! isFetchingFields && hasFields && (
-											<Fragment>
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Map Fields', 'kadence-blocks' ) }</h2>
 												{ this.props.fields && (
 													this.props.fields.map( ( item, index ) => {
@@ -236,7 +236,7 @@ class FluentCRMControls extends Component {
 														);
 													} )
 												) }
-											</Fragment>
+											</>
 										) }
 										<div style={ { height: '10px' } }></div>
 										<ToggleControl
@@ -244,11 +244,11 @@ class FluentCRMControls extends Component {
 											checked={ ( undefined !== this.props.settings && undefined !== this.props.settings[ 0 ] && undefined !== this.props.settings[ 0 ].doubleOptin ? this.props.settings[ 0 ].doubleOptin : false ) }
 											onChange={ ( value ) => this.props.save( { doubleOptin: value } ) }
 										/>
-									</Fragment>
+									</>
 								) }
-							</Fragment>
+							</>
 						) }
-					</Fragment>
+					</>
 				) }
 			</KadencePanelBody>
 		);

@@ -9,12 +9,12 @@ figure.wp-block-kadence-image:not(.wp-block) {
 	img {
 		max-width: 100%;
 	}
-	&.image-is-svg {
-		width: 100%;
-		img {
-			width: 100%;
-		}
-	}
+	// &.image-is-svg {
+	// 	width: 100%;
+	// 	img {
+	// 		width: 100%;
+	// 	}
+	// }
 	.is-applying img,
 	&.is-transient img {
 		opacity: 0.3;

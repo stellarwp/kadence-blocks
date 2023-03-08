@@ -52,4 +52,7 @@
         // The DOM has already been loaded.
         window.kadenceShowMore.init();
     }
+    document.addEventListener("kadenceJSInitReload", function(){
+		window.kadenceShowMore.init();
+	});
 }());

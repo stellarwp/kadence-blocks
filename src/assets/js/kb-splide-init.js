@@ -28,7 +28,7 @@
 					continue;
 				}
 
-				this.createSplideElements( thisSlider );
+				const slideCount = this.createSplideElements( thisSlider );
 				let parsedData = this.parseDataset(thisSlider.dataset);
 
 				if (document.querySelector('html[dir="rtl"]')) {
@@ -89,6 +89,13 @@
 					splideOptions.type = "fade";
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
+					splideSlider.on( 'overflow', function ( isOverflow ) {
+						splideSlider.options = {
+						  arrows    : slideCount === 1 ? false : splideOptions.arrows,
+						  pagination: slideCount === 1 ? false : splideOptions.pagination,
+						  drag      : slideCount === 1 ? false : splideOptions.drag,
+						};
+					} );
 					splideSlider.mount();
 				} else if (sliderType && sliderType === "thumbnail") {
 					let navSliderId = parsedData.sliderNav;
@@ -104,6 +111,7 @@
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
 					navSliderOptions.type = 'loop';
+					navSliderOptions.arrows = true;
 					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type = "fade";
@@ -168,7 +176,7 @@
 			const slideCount = wrapperElem.children.length;
 			for (let slide of wrapperElem.children) {
 				slide.classList.add("splide__slide");
-				slide.classList.add("slick-slide");
+				//slide.classList.add("slick-slide");
 				if (slide.classList.contains("last")) {
 					slide.classList.remove("last");
 				}

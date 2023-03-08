@@ -288,7 +288,7 @@
             margin-left: 0;
             margin-right: 0;
             &.kt-btn-width-type-full {
-                flex: 1;
+                flex: 1 0 fit-content;
                 width: 100%;
                 .kt-button {
                     width: 100%;

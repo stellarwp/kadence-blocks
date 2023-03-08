@@ -62,9 +62,10 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
 
 		/*

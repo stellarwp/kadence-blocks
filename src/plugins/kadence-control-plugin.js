@@ -166,17 +166,19 @@ function KadenceConfig() {
 
 							{/*Advanced Heading*/}
 							<div className="kt-blocks-control-row">
-									<KadenceVisibilitySettings blockName={'Advanced Text'}
+									<KadenceVisibilitySettings blockName={__('Advanced Text', 'kadence-blocks')}
 															   blockSlug={'advancedheading'}
 															   icon={ BlockIcons.advancedHeadingIcon}
 															   options={[
 																   {
 																	   key: 'toolbarTypography',
-																	   label: __('Enable Typography Settings in Toolbar', 'kadence-blocks')
+																	   label: __('Enable Typography Settings in Toolbar', 'kadence-blocks'),
+																	   initial:'none',
 																   },
 																   {
 																	   key: 'toolbarColor',
-																	   label: __('Enable Color Settings in Toolbar', 'kadence-blocks')
+																	   label: __('Enable Color Settings in Toolbar', 'kadence-blocks'),
+																	   initial:'none',
 																   },
 																   {
 																	   key: 'colorSettings',
@@ -441,7 +443,7 @@ function KadenceConfig() {
 
 							{/* Table of Contents */}
 							<div className="kt-blocks-control-row">
-									<KadenceVisibilitySettings blockName={__('Table Of Contents', 'kadence-blocks')}
+									<KadenceVisibilitySettings blockName={__('Table of Contents', 'kadence-blocks')}
 															   blockSlug={'table-of-contents'}
 															   icon={ BlockIcons.tableOfContentsIcon }
 															   options={[
@@ -554,8 +556,8 @@ function KadenceConfig() {
 														   },
 													   ]}/>
 
-							{map(controls, ({Control}) => (
-								<Control/>
+							{map(controls, ({Control}, index ) => (
+								<Control key={ index } />
 							))}
 						</div>
 					</PanelBody>
@@ -600,8 +602,8 @@ function KadenceConfig() {
 							<KadenceGlobalTypography />
 						) }
 					</PanelBody> */}
-				{map( extraPanels, ( { Panel } ) => (
-					<Panel/>
+				{map( extraPanels, ( { Panel }, index ) => (
+					<Panel key={ index }/>
 				) )}
 			</PluginSidebar>
 		</Fragment>

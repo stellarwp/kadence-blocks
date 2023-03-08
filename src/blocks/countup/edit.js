@@ -38,14 +38,10 @@ import './editor.scss';
 import { RichText, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import {
  	useEffect,
-	Component,
 	Fragment
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
-import { withSelect, useDispatch, useSelect } from '@wordpress/data';
-
-const kbCountUpUniqueIDs = [];
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Build the count up edit
@@ -56,8 +52,7 @@ function KadenceCounterUp( props ) {
 		attributes,
 		className,
 		isSelected,
-		setAttributes,
-		getPreviewDevice 
+		setAttributes
 	} = props;
 
 	const {
@@ -101,11 +96,12 @@ function KadenceCounterUp( props ) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId )
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
 		[ clientId ]
@@ -115,8 +111,13 @@ function KadenceCounterUp( props ) {
 		setBlockDefaults( 'kadence/countup', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 	}, [] );
 
 	const TitleTagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
@@ -134,26 +135,26 @@ function KadenceCounterUp( props ) {
 	};
 	const nconfig = ( numberFont[ 0 ].google ? ngconfig : '' );
 
-	const previewTitleAlign = getPreviewSize( getPreviewDevice, ( undefined !== titleAlign[ 0 ] ? titleAlign[ 0 ] : '' ), ( undefined !== titleAlign[ 1 ] ? titleAlign[ 1 ] : '' ), ( undefined !== titleAlign[ 2 ] ? titleAlign[ 2 ] : '' ) );
-	const previewNumberAlign = getPreviewSize( getPreviewDevice, ( undefined !== numberAlign[ 0 ] ? numberAlign[ 0 ] : '' ), ( undefined !== numberAlign[ 1 ] ? numberAlign[ 1 ] : '' ), ( undefined !== numberAlign[ 2 ] ? numberAlign[ 2 ] : '' ) );
+	const previewTitleAlign = getPreviewSize( previewDevice, ( undefined !== titleAlign[ 0 ] ? titleAlign[ 0 ] : '' ), ( undefined !== titleAlign[ 1 ] ? titleAlign[ 1 ] : '' ), ( undefined !== titleAlign[ 2 ] ? titleAlign[ 2 ] : '' ) );
+	const previewNumberAlign = getPreviewSize( previewDevice, ( undefined !== numberAlign[ 0 ] ? numberAlign[ 0 ] : '' ), ( undefined !== numberAlign[ 1 ] ? numberAlign[ 1 ] : '' ), ( undefined !== numberAlign[ 2 ] ? numberAlign[ 2 ] : '' ) );
 
-	const previewNumberMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 0 ] ? numberMargin[ 0 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 0 ] ? numberTabletMargin[ 0 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 0 ] ? numberMobileMargin[ 0 ] : '' ) );
-	const previewNumberMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 1 ] ? numberMargin[ 1 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 1 ] ? numberTabletMargin[ 1 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 1 ] ? numberMobileMargin[ 1 ] : '' ) );
-	const previewNumberMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 2 ] ? numberMargin[ 2 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 2 ] ? numberTabletMargin[ 2 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 2 ] ? numberMobileMargin[ 2 ] : '' ) );
-	const previewNumberMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 3 ] ? numberMargin[ 3 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 3 ] ? numberTabletMargin[ 3 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 3 ] ? numberMobileMargin[ 3 ] : '' ) );
-	const previewNumberPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 0 ] ? numberPadding[ 0 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 0 ] ? numberTabletPadding[ 0 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 0 ] ? numberMobilePadding[ 0 ] : '' ) );
-	const previewNumberPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 1 ] ? numberPadding[ 1 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 1 ] ? numberTabletPadding[ 1 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 1 ] ? numberMobilePadding[ 1 ] : '' ) );
-	const previewNumberPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 2 ] ? numberPadding[ 2 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 2 ] ? numberTabletPadding[ 2 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 2 ] ? numberMobilePadding[ 2 ] : '' ) );
-	const previewNumberPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 3 ] ? numberPadding[ 3 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 3 ] ? numberTabletPadding[ 3 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 3 ] ? numberMobilePadding[ 3 ] : '' ) );
+	const previewNumberMarginTop = getPreviewSize( previewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 0 ] ? numberMargin[ 0 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 0 ] ? numberTabletMargin[ 0 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 0 ] ? numberMobileMargin[ 0 ] : '' ) );
+	const previewNumberMarginRight = getPreviewSize( previewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 1 ] ? numberMargin[ 1 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 1 ] ? numberTabletMargin[ 1 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 1 ] ? numberMobileMargin[ 1 ] : '' ) );
+	const previewNumberMarginBottom = getPreviewSize( previewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 2 ] ? numberMargin[ 2 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 2 ] ? numberTabletMargin[ 2 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 2 ] ? numberMobileMargin[ 2 ] : '' ) );
+	const previewNumberMarginLeft = getPreviewSize( previewDevice, ( undefined !== numberMargin && undefined !== numberMargin[ 3 ] ? numberMargin[ 3 ] : '' ), ( undefined !== numberTabletMargin && undefined !== numberTabletMargin[ 3 ] ? numberTabletMargin[ 3 ] : '' ), ( undefined !== numberMobileMargin && undefined !== numberMobileMargin[ 3 ] ? numberMobileMargin[ 3 ] : '' ) );
+	const previewNumberPaddingTop = getPreviewSize( previewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 0 ] ? numberPadding[ 0 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 0 ] ? numberTabletPadding[ 0 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 0 ] ? numberMobilePadding[ 0 ] : '' ) );
+	const previewNumberPaddingRight = getPreviewSize( previewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 1 ] ? numberPadding[ 1 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 1 ] ? numberTabletPadding[ 1 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 1 ] ? numberMobilePadding[ 1 ] : '' ) );
+	const previewNumberPaddingBottom = getPreviewSize( previewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 2 ] ? numberPadding[ 2 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 2 ] ? numberTabletPadding[ 2 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 2 ] ? numberMobilePadding[ 2 ] : '' ) );
+	const previewNumberPaddingLeft = getPreviewSize( previewDevice, ( undefined !== numberPadding && undefined !== numberPadding[ 3 ] ? numberPadding[ 3 ] : '' ), ( undefined !== numberTabletPadding && undefined !== numberTabletPadding[ 3 ] ? numberTabletPadding[ 3 ] : '' ), ( undefined !== numberMobilePadding && undefined !== numberMobilePadding[ 3 ] ? numberMobilePadding[ 3 ] : '' ) );
 
-	const previewTitleMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 0 ] ? titleMargin[ 0 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 0 ] ? titleTabletMargin[ 0 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 0 ] ? titleMobileMargin[ 0 ] : '' ) );
-	const previewTitleMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 1 ] ? titleMargin[ 1 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 1 ] ? titleTabletMargin[ 1 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 1 ] ? titleMobileMargin[ 1 ] : '' ) );
-	const previewTitleMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 2 ] ? titleMargin[ 2 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 2 ] ? titleTabletMargin[ 2 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 2 ] ? titleMobileMargin[ 2 ] : '' ) );
-	const previewTitleMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 3 ] ? titleMargin[ 3 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 3 ] ? titleTabletMargin[ 3 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 3 ] ? titleMobileMargin[ 3 ] : '' ) );
-	const previewTitlePaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 0 ] ? titlePadding[ 0 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 0 ] ? titleTabletPadding[ 0 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 0 ] ? titleMobilePadding[ 0 ] : '' ) );
-	const previewTitlePaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 1 ] ? titlePadding[ 1 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 1 ] ? titleTabletPadding[ 1 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 1 ] ? titleMobilePadding[ 1 ] : '' ) );
-	const previewTitlePaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 2 ] ? titlePadding[ 2 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 2 ] ? titleTabletPadding[ 2 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 2 ] ? titleMobilePadding[ 2 ] : '' ) );
-	const previewTitlePaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 3 ] ? titlePadding[ 3 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 3 ] ? titleTabletPadding[ 3 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 3 ] ? titleMobilePadding[ 3 ] : '' ) );
+	const previewTitleMarginTop = getPreviewSize( previewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 0 ] ? titleMargin[ 0 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 0 ] ? titleTabletMargin[ 0 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 0 ] ? titleMobileMargin[ 0 ] : '' ) );
+	const previewTitleMarginRight = getPreviewSize( previewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 1 ] ? titleMargin[ 1 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 1 ] ? titleTabletMargin[ 1 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 1 ] ? titleMobileMargin[ 1 ] : '' ) );
+	const previewTitleMarginBottom = getPreviewSize( previewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 2 ] ? titleMargin[ 2 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 2 ] ? titleTabletMargin[ 2 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 2 ] ? titleMobileMargin[ 2 ] : '' ) );
+	const previewTitleMarginLeft = getPreviewSize( previewDevice, ( undefined !== titleMargin && undefined !== titleMargin[ 3 ] ? titleMargin[ 3 ] : '' ), ( undefined !== titleTabletMargin && undefined !== titleTabletMargin[ 3 ] ? titleTabletMargin[ 3 ] : '' ), ( undefined !== titleMobileMargin && undefined !== titleMobileMargin[ 3 ] ? titleMobileMargin[ 3 ] : '' ) );
+	const previewTitlePaddingTop = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 0 ] ? titlePadding[ 0 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 0 ] ? titleTabletPadding[ 0 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 0 ] ? titleMobilePadding[ 0 ] : '' ) );
+	const previewTitlePaddingRight = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 1 ] ? titlePadding[ 1 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 1 ] ? titleTabletPadding[ 1 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 1 ] ? titleMobilePadding[ 1 ] : '' ) );
+	const previewTitlePaddingBottom = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 2 ] ? titlePadding[ 2 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 2 ] ? titleTabletPadding[ 2 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 2 ] ? titleMobilePadding[ 2 ] : '' ) );
+	const previewTitlePaddingLeft = getPreviewSize( previewDevice, ( undefined !== titlePadding && undefined !== titlePadding[ 3 ] ? titlePadding[ 3 ] : '' ), ( undefined !== titleTabletPadding && undefined !== titleTabletPadding[ 3 ] ? titleTabletPadding[ 3 ] : '' ), ( undefined !== titleMobilePadding && undefined !== titleMobilePadding[ 3 ] ? titleMobilePadding[ 3 ] : '' ) );
 
 	const numberPaddingMouseOver = mouseOverVisualizer();
 	const numberMarginMouseOver = mouseOverVisualizer();
@@ -177,8 +178,8 @@ function KadenceCounterUp( props ) {
 						<CopyPasteAttributes
 						attributes={ attributes }
 						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
-						defaultAttributes={ metadata['attributes'] } 
-						blockSlug={ metadata['name'] } 
+						defaultAttributes={ metadata['attributes'] }
+						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
@@ -282,7 +283,7 @@ function KadenceCounterUp( props ) {
 								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 								minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
-								textAlign    : previewTitleAlign,								
+								textAlign    : previewTitleAlign,
 							}}
 						/>
 						<SpacingVisualizer
@@ -302,10 +303,4 @@ function KadenceCounterUp( props ) {
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-] )( KadenceCounterUp );
+export default KadenceCounterUp;

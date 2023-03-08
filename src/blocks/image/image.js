@@ -42,7 +42,7 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, getFontSizeOptionOutput, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
 /**
@@ -167,7 +167,7 @@ export default function Image( {
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== imgMaxWidth ? imgMaxWidth : '' ), ( undefined !== imgMaxWidthTablet ? imgMaxWidthTablet : '' ), ( undefined !== imgMaxWidthMobile ? imgMaxWidthMobile : '' ) );
 
 	const previewCaptionFontSizeUnit = captionStyles[ 0 ].sizeType !== undefined ? captionStyles[ 0 ].sizeType : 'px';
-	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] + previewCaptionFontSizeUnit : 'inherit' ) );
+	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] : 'inherit' ) );
 
 	const previewCaptionLineHeightUnit = captionStyles[ 0 ].lineType !== undefined ? captionStyles[ 0 ].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].lineHeight[0] ? captionStyles[ 0 ].lineHeight[0] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[1] ? captionStyles[ 0 ].lineHeight[ 1 ] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[2] + previewCaptionLineHeightUnit ? captionStyles[ 0 ].lineHeight[ 2 ] : 'normal' ) );
@@ -231,10 +231,11 @@ export default function Image( {
 	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
 	const [ isEditingImage, setIsEditingImage ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
 	const [ externalBlob, setExternalBlob ] = useState();
 	const clientWidth = useClientWidth( containerRef, [ align ] );
-	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
+	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
+	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport ) && ! ( isSVG && ! previewMaxWidth );
+	const showMaxWidth = allowResize && ! isWideAligned;
 	const {
 		imageEditing,
 		imageSizes,
@@ -390,7 +391,6 @@ export default function Image( {
 		}
 	}, [ isSelected ] );
 	const isDynamic = attributes.kadenceDynamic && attributes.kadenceDynamic.url && attributes.kadenceDynamic.url.enable ? true : false;
-	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
@@ -553,7 +553,7 @@ export default function Image( {
 									onChange={ value => setAttributes( { ratio: value } ) }
 								/>
 							) }
-							{ isResizable && (
+							{ showMaxWidth && (
 								<ResponsiveRangeControls
 									label={ __( 'Max Image Width', 'kadence-blocks' ) }
 									value={ ( imgMaxWidth ? imgMaxWidth : '' ) }
@@ -1170,6 +1170,8 @@ export default function Image( {
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
+				width={ undefined !== naturalWidth && naturalWidth && isSVG && ! previewMaxWidth ? naturalWidth : undefined }
+				height={ undefined !== naturalHeight && naturalHeight && isSVG && ! previewMaxWidth ? naturalHeight : undefined }
 				style={ {
 					WebkitMaskImage: ( hasMask ? 'url(' + ( maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg' ) + ')' : undefined ),
 					WebkitMaskRepeat: ( hasMask ? theMaskRepeat : undefined ),
@@ -1409,7 +1411,7 @@ export default function Image( {
 						textTransform: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : undefined ),
 						letterSpacing: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing : undefined ),
 						lineHeight: previewCaptionLineHeight,
-						fontSize: previewCaptionFontSize
+						fontSize: getFontSizeOptionOutput( previewCaptionFontSize, previewCaptionFontSizeUnit )
 					} }
 					inlineToolbar
 					__unstableOnSplitAtEnd={ () =>

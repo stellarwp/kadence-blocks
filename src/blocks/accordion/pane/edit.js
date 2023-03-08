@@ -23,7 +23,10 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import {
+	useEffect,
+	useState,
+} from '@wordpress/element';
 
 /**
  * Build the Pane edit.
@@ -38,8 +41,9 @@ function PaneEdit( {
 
 	const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 	const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
+	const [ activePane, setActivePane ] = useState( false );
 	const { addUniqueID, addUniquePane } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, isUniquePane, isUniquePaneBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, isUniquePane, isUniquePaneBlock } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
@@ -72,19 +76,19 @@ function PaneEdit( {
 		},
 		[ clientId ]
 	);
-	const isStartCollapsed = undefined !== accordionBlock?.[0]?.attributes?.startCollapsed && accordionBlock[0].attributes.startCollapsed;
-	const isOpenPane = !isStartCollapsed && undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id )
-	const isNewPane = !uniqueID;
-	setAttributes( { isPaneActive: attributes.isPaneActive ?? isNewPane ? true : isOpenPane } );
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const updatePaneCount = ( value ) => {
 		updateBlockAttributes( rootID, { paneCount: value } );
 	}
 	useEffect( () => {
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
-		
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueId, clientId );
+		}
 		if ( ! id ) {
 			const newPaneCount = accordionBlock[0].attributes.paneCount + 1;
 			setAttributes( {
@@ -107,12 +111,16 @@ function PaneEdit( {
 		} else {
 			addUniquePane( id, clientId, rootID );
 		}
+		const isStartCollapsed = undefined !== accordionBlock?.[0]?.attributes?.startCollapsed && accordionBlock[0].attributes.startCollapsed;
+		const isOpenPane = !isStartCollapsed && undefined !== accordionBlock?.[0]?.attributes?.openPane && ( accordionBlock[0].attributes.openPane + 1 === id )
+		const isNewPane = !uniqueID;
+		setActivePane( activePane ?? isNewPane ? true : isOpenPane );
 	}, [] );
 	const blockClasses = classnames( {
 		'kt-accordion-pane'             : true,
 		[ `kt-accordion-pane-${id}` ]   : id,
 		[ `kt-pane${uniqueID}` ]        : uniqueID,
-		[ `kt-accordion-panel-active` ] : attributes.isPaneActive,
+		[ `kt-accordion-panel-active` ] : activePane,
 	} );
 	const blockProps = useBlockProps( {
 		className: blockClasses
@@ -166,7 +174,7 @@ function PaneEdit( {
 				<div 
 					className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }
 					onClick={() => {
-						setAttributes( { isPaneActive: !attributes.isPaneActive } );
+						setActivePane( !activePane );
 					}} 
 				>
 					<div className="kt-blocks-accordion-title-wrap">

@@ -195,12 +195,12 @@ class PrebuiltModal extends Component {
 									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 								</div>
 								{ this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										<Spinner />
 									</div>
 								) }
 								{ ! this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										{ actions.map( ( action, index ) =>
 											<>
 												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
@@ -241,7 +241,7 @@ class PrebuiltModal extends Component {
 									</div>
 								) }
 								{ 'cloud' !== active_tab && (
-									<div class="kb-prebuilt-library-reload">
+									<div className="kb-prebuilt-library-reload">
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
@@ -250,7 +250,7 @@ class PrebuiltModal extends Component {
 										/>
 									</div>
 								) }
-								<div class="kb-prebuilt-header-close-wrap">
+								<div className="kb-prebuilt-header-close-wrap">
 									<Button
 										className="kb-prebuilt-header-close"
 										icon={ close }

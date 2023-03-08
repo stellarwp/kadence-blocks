@@ -205,8 +205,13 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		setBlockDefaults( 'kadence/countdown', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		if ( borderRadius && borderRadius[ 0 ] === borderRadius[ 1 ] && borderRadius[ 0 ] === borderRadius[ 2 ] && borderRadius[ 0 ] === borderRadius[ 3 ] ) {
 			setBorderRadiusControl( 'linked' );
@@ -749,7 +754,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 														url={redirectURL}
 														onChangeUrl={value => setAttributes( { redirectURL: value } )}
 														additionalControls={false}
-														{...this.props}
 													/>
 												</>
 											)}

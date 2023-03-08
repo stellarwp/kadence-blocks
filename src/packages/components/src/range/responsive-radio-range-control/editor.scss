@@ -24,3 +24,10 @@
 .kadence-range-control .kadence-measure-control-select-wrapper .kadence-measure-control-select {
     border-left: 0;
 }
+.kadence-radio-range-control .kadence-units.kadence-measure-control-select-wrapper {
+    display: block;
+    min-width: 24px;
+}
+.kadence-radio-range-control .kadence-units.kadence-measure-control-select-wrapper select {
+    min-width: 24px;
+}

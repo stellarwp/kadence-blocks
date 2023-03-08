@@ -26,7 +26,6 @@ class IconRender extends Component {
 	updateIcons() {
 		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
 		const filteredIcons = applyFilters( 'kadence.icon_options', icons );
-		this.setState( { iconOptions: filteredIcons } );
 		return filteredIcons;
 	}
 	render() {
@@ -38,9 +37,9 @@ class IconRender extends Component {
 			iconOptions = this.updateIcons();
 		}
 		return (
-			<Fragment>
+			<>
 				<GenIcon name={ name } icon={ iconOptions[ name ] } { ...this.props } />
-			</Fragment>
+			</>
 		);
 	}
 }
