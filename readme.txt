@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.22
+Stable tag: 3.0.23
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,10 +78,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.23 =
-Release Date: March TBD, 2023
-* Fix: Variable font sizes on Advanced Image captions
-* Fix: Infobox borders no displaying on pre 3.0 blocks
-* Fix: Infobox title margin top not applying on front end
+Release Date: March 7th, 2023
+* Update: MailerLite to work with new API.
+* Fix: Variable font sizes on Advanced Image captions.
+* Fix: Infobox borders no displaying on pre 3.0 blocks.
+* Fix: Infobox title margin top not applying on front end.
+* Fix: Issue with blocks showing broken in the editor in tablet.
+* Fix: Issue with testimonial fonts causing breakage in google font url.
+* Fix: Issue with some custom svg icons not rendering correctly.
 
 = 3.0.22 =
 Release Date: March 6th, 2023
