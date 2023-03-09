@@ -14,6 +14,7 @@ const {
  */
  import { debounce } from 'lodash';
 import Masonry from 'react-masonry-css'
+import InfiniteScroll from 'react-infinite-scroller';
 /**
  * WordPress dependencies
  */
@@ -156,49 +157,64 @@ function KadenceBlockPatternList( {
 	label = __( 'Block Patterns', 'kadence-blocks' ),
 	showTitlesAsTooltip,
 	customStyles,
+	breakpointCols,
 } ) {
 	const composite = useCompositeState( { orientation } );
-	return (
-		<Composite
-			{ ...composite }
-			role="listbox"
-			className="block-editor-block-patterns-list"
-			aria-label={ label }
-		>
-			{ blockPatterns.map( ( pattern ) => {
-				const isShown = shownPatterns.includes( pattern );
-				return isShown ? (
+	const showItems = (patterns) => {
+		console.log( records );
+		var items = [];
+		for (var i = 0; i < records; i++) {
+			if ( undefined !== patterns[i]?.name ) {
+				items.push(
 					<KadenceBlockPattern
-						key={ pattern.name }
-						pattern={ pattern }
+						key={ patterns[i]?.name || i }
+						pattern={ patterns[i] }
 						onClick={ onClickPattern }
 						onHover={ onHover }
 						composite={ composite }
 						showTooltip={ showTitlesAsTooltip }
 						customStyles={ customStyles }
 					/>
-				) : (
-					<BlockPatternPlaceholder key={ pattern.name } />
 				);
-			} ) }
-		</Composite>
+			}
+		}
+		return items;
+	};
+	const itemsPerPage = 6;
+	const [hasMore, setHasMore] = useState(true);
+	const [records, setrecords] = useState(itemsPerPage);
+	const loadMore = () => {
+		if ( records >= blockPatterns.length ) {
+			setHasMore(false);
+		} else {
+			setTimeout(() => {
+				setrecords(records + itemsPerPage);
+			}, 1500);
+		}
+	};
+	return ( 
+		<div className="block-editor-block-patterns-list">
+			<InfiniteScroll
+				className="block-editor-block-patterns-list-wrap"
+				pageStart={0}
+				loadMore={loadMore}
+				hasMore={hasMore}
+				loader={<Spinner />}
+				useWindow={false}
+				>
+					<Masonry
+						breakpointCols={breakpointCols}
+						className={ `kb-css-masonry kb-core-section-library` }
+  						columnClassName="kb-css-masonry_column"
+					>
+						{showItems(blockPatterns)}
+					</Masonry>
+			</InfiniteScroll>
+		</div>
 	);
 }
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light' } ) {
-	// const { testCategories, testPatterns } = useSelect(
-	// 	( select ) => {
-	// 		const { __experimentalGetAllowedPatterns, getSettings } =
-	// 			select( blockEditorStore );
-	// 		return {
-	// 			testPatterns: __experimentalGetAllowedPatterns(),
-	// 			testCategories:
-	// 				getSettings().__experimentalBlockPatternCategories,
-	// 		};
-	// 	},
-	// 	[]
-	// );
-	// console.log( testPatterns );
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols  } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		console.log(info );
@@ -229,10 +245,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
-		if ( allPatterns.length > 20 ) {
-			console.log( 'here' );
-			allPatterns = allPatterns.slice(0, 20);
-		}
+		// if ( allPatterns.length > 30 ) {
+		// 	console.log( 'here' );
+		// 	allPatterns = allPatterns.slice(0, 30);
+		// }
 		return allPatterns;
 	}, [ filterValue, selectedCategory, patterns ] );
 
@@ -264,10 +280,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
 			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
 			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
-			--global-palette8:${kadence_blocks_params.global_colors['--global-palette4']};
-			--global-palette9:${kadence_blocks_params.global_colors['--global-palette5']};`;
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }` }
+				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}img[src="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder.png"] {filter: invert(1);}` }
 			];
 		} else if ( 'highlight' === selectedStyle ) {
 			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
@@ -287,9 +303,6 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		return newStyles;
 	}, [ selectedStyle ] );
 
-	const currentShownPatterns = useAsyncList( filteredBlockPatterns, {
-		step: INITIAL_INSERTER_RESULTS,
-	} );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -302,11 +315,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				) }
 				{ hasItems && (
 					<KadenceBlockPatternList
-						shownPatterns={ currentShownPatterns }
 						blockPatterns={ filteredBlockPatterns }
 						onClickPattern={ onSelectBlockPattern }
 						showTitlesAsTooltip={ false }
 						customStyles={ customStyles }
+						breakpointCols={ breakpointCols }
 					/>
 				) }
 			</div>

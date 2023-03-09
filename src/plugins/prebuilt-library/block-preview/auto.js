@@ -4,8 +4,7 @@
 import { useResizeObserver, pure, useRefEffect } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useMemo } from '@wordpress/element';
-import { Disabled } from '@wordpress/components';
-
+import { Disabled, Spinner } from '@wordpress/components';
 /**
  * Internal dependencies
  */
@@ -26,7 +25,7 @@ const MAX_HEIGHT = 2000;
 function ScaledBlockPreview( {
 	viewportWidth,
 	containerWidth,
-	minHeight,
+	minHeight = '200px',
 	additionalStyles = [],
 } ) {
 	if ( ! viewportWidth ) {
@@ -73,9 +72,12 @@ function ScaledBlockPreview( {
 				height: contentHeight * scale,
 				maxHeight:
 					contentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
-				minHeight,
+				minHeight: contentHeight ? undefined : minHeight,
 			} }
 		>
+			{ ! contentHeight && (
+				<div className='kb-preview-iframe-loader'><Spinner /></div>
+			) }
 			<Iframe
 				head={ <EditorStyles styles={ editorStyles } /> }
 				contentRef={ useRefEffect( ( bodyElement ) => {

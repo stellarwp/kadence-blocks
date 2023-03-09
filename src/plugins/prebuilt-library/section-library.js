@@ -252,35 +252,37 @@ class PrebuiltSections extends Component {
 			{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
 		];
 		let breakpointColumnsObj = {
-			default: 5,
+			default: 6,
+			1900: 5,
 			1600: 4,
 			1200: 3,
 			500: 2,
 		};
 		if ( gridSize === 'large' ) {
 			breakpointColumnsObj = {
-				default: 4,
+				default: 5,
+				1900: 4,
 				1600: 3,
 				1200: 2,
 				500: 1,
 			};
 		}
-		if ( sidebarEnabled === 'show' ) {
-			breakpointColumnsObj = {
-				default: 4,
-				1600: 3,
-				1200: 2,
-				500: 1,
-			};
-			if ( gridSize === 'large' ) {
-				breakpointColumnsObj = {
-					default: 3,
-					1600: 2,
-					1200: 2,
-					500: 1,
-				};
-			}
-		}
+		// if ( sidebarEnabled === 'show' ) {
+		// 	breakpointColumnsObj = {
+		// 		default: 4,
+		// 		1600: 3,
+		// 		1200: 2,
+		// 		500: 1,
+		// 	};
+		// 	if ( gridSize === 'large' ) {
+		// 		breakpointColumnsObj = {
+		// 			default: 3,
+		// 			1600: 2,
+		// 			1200: 2,
+		// 			500: 1,
+		// 		};
+		// 	}
+		// }
 		return (
 			<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
 				{ sidebarEnabled === 'show' && (
@@ -437,6 +439,7 @@ class PrebuiltSections extends Component {
 						selectedCategory={ this.state.category }
 						patternCategories={ catOptions }
 						selectedStyle={ this.state.style }
+						breakpointCols={ breakpointColumnsObj }
 					/>
 					// <Masonry
 					// 	breakpointCols={breakpointColumnsObj}

@@ -372,12 +372,12 @@ button.components-button.kb-category-button {
 	}
 }
 .kt-prebuilt-content .block-editor-block-patterns-explorer__wrap {
-    padding: 12px 24px 24px 0;
-    overflow: scroll;
+    padding:0;
     height: 100%;
+	max-height: calc(95vh - 80px);
 }
 .kt-prebuilt-content:not(.kb-prebuilt-has-sidebar) .block-editor-block-patterns-explorer__wrap {
-	padding: 12px 24px 24px 24px;
+	max-height: calc(95vh - 130px);
 }
 .kb-prebuilt-library-reload, .kb-prebuilt-header-close-wrap {
 	.components-button.has-icon {
@@ -559,7 +559,7 @@ h2.kb-template-name {
 .kt-prebuilt-content.kb-prebuilt-has-sidebar {
     display: grid;
     grid-template-columns: 1fr 5fr;
-    gap: 24px;
+    gap: 0;
     height: calc( 100% - 50px );
 }
 .kt-prebuilt-sidebar {
@@ -732,10 +732,18 @@ position: relative;
 // Iframe.
 .kt-prebuilt-content .block-editor-block-patterns-explorer__list {
     margin: 0;
+	max-height: 100%;
 	.block-editor-block-patterns-list {
-		display: grid;
-		grid-gap: 20px;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		height: 100%;
+		overflow: auto;
+		display: block;
+		max-height: calc(95vh - 116px);
+		padding: 12px 24px 24px;
+		.block-editor-block-patterns-list-grid {
+			display: grid;
+			grid-gap: 20px;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
 	}
 }
 .kb-new-connection-content .components-base-control {
@@ -747,4 +755,17 @@ position: relative;
 }
 .kb-connection-add-new .components-button.is-primary {
     margin-top:12px;
+}
+.kb-preview-iframe-loader {
+	min-height: 300px;
+	width: 100%;
+	display: flex;
+	align-content: center;
+	justify-content: center;
+	text-align: center;
+	.components-spinner {
+		height: 100px;
+		width: 100px;
+		display: inline-block;
+	}
 }
