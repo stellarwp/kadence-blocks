@@ -756,16 +756,28 @@ position: relative;
 .kb-connection-add-new .components-button.is-primary {
     margin-top:12px;
 }
+.block-editor-block-patterns-list__item .block-editor-block-preview__container {
+	iframe {
+		background: red;
+	}
+}
 .kb-preview-iframe-loader {
-	min-height: 300px;
-	width: 100%;
-	display: flex;
-	align-content: center;
-	justify-content: center;
-	text-align: center;
+	width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 11;
 	.components-spinner {
-		height: 100px;
-		width: 100px;
+		height: 26px;
+		width: 26px;
+		margin:0;
 		display: inline-block;
 	}
 }

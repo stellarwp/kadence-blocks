@@ -84,28 +84,25 @@ class PrebuiltSections extends Component {
 			gridSize: 'normal',
 			categories: {
 				'category': __( 'Category', 'kadence-blocks' ),
-				'pro': __( 'Pro', 'kadence-blocks' ),
 				'accordion': __( 'Accordion', 'kadence-blocks' ),
 				'cards': __( 'Cards', 'kadence-blocks' ),
 				'columns': __( 'Columns', 'kadence-blocks' ),
-				'countdown': __( 'Countdown', 'kadence-blocks' ),
 				'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
-				'featured-blog-posts': __( 'Featured Blog Posts', 'kadence-blocks' ),
-				'footer': __( 'Footer', 'kadence-blocks' ),
 				'form': __( 'Form', 'kadence-blocks' ),
 				'gallery': __( 'Gallery', 'kadence-blocks' ),
 				'hero': __( 'Hero', 'kadence-blocks' ),
 				'image': __( 'Image', 'kadence-blocks' ),
 				'list': __( 'List', 'kadence-blocks' ),
 				'location': __( 'Location', 'kadence-blocks' ),
-				'logo-list': __( 'Logo List', 'kadence-blocks' ),
+				'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
 				'media-text': __( 'Media and Text', 'kadence-blocks' ),
-				'people': __( 'List', 'kadence-blocks' ),
-				'portfolio': __( 'Location', 'kadence-blocks' ),
+				'people': __( 'People', 'kadence-blocks' ),
+				'post-loop': __( 'Post Loop', 'kadence-blocks' ),
 				'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-				'promotional': __( 'Promotional', 'kadence-blocks' ),
 				'slider': __( 'Slider', 'kadence-blocks' ),
+				'tabs': __( 'Tabs', 'kadence-blocks' ),
 				'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+				'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
 				'video': __( 'Video', 'kadence-blocks' ),
 			},
 			style: 'light',
@@ -252,17 +249,17 @@ class PrebuiltSections extends Component {
 			{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
 		];
 		let breakpointColumnsObj = {
-			default: 6,
-			1900: 5,
-			1600: 4,
-			1200: 3,
+			default: 5,
+			1900: 4,
+			1600: 3,
+			1200: 2,
 			500: 2,
 		};
 		if ( gridSize === 'large' ) {
 			breakpointColumnsObj = {
-				default: 5,
-				1900: 4,
-				1600: 3,
+				default: 4,
+				1900: 3,
+				1600: 2,
 				1200: 2,
 				500: 1,
 			};
@@ -440,6 +437,7 @@ class PrebuiltSections extends Component {
 						patternCategories={ catOptions }
 						selectedStyle={ this.state.style }
 						breakpointCols={ breakpointColumnsObj }
+						onSelect={ ( blockcode ) => control.onInsertContent( blockcode ) }
 					/>
 					// <Masonry
 					// 	breakpointCols={breakpointColumnsObj}

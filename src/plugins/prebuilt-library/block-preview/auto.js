@@ -65,56 +65,58 @@ function ScaledBlockPreview( {
 
 	const scale = containerWidth / viewportWidth;
 	return (
-		<Disabled
-			className="block-editor-block-preview__content"
-			style={ {
-				transform: `scale(${ scale })`,
-				height: contentHeight * scale,
-				maxHeight:
-					contentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
-				minHeight: contentHeight ? undefined : minHeight,
-			} }
-		>
+		<>
 			{ ! contentHeight && (
 				<div className='kb-preview-iframe-loader'><Spinner /></div>
 			) }
-			<Iframe
-				head={ <EditorStyles styles={ editorStyles } /> }
-				contentRef={ useRefEffect( ( bodyElement ) => {
-					const {
-						ownerDocument: { documentElement },
-					} = bodyElement;
-					documentElement.classList.add(
-						'block-editor-block-preview__content-iframe'
-					);
-					documentElement.style.position = 'absolute';
-					documentElement.style.width = '100%';
-
-					// Necessary for contentResizeListener to work.
-					bodyElement.style.boxSizing = 'border-box';
-					bodyElement.style.position = 'absolute';
-					bodyElement.style.width = '100%';
-				}, [] ) }
-				aria-hidden
-				tabIndex={ -1 }
+			<Disabled
+				className="block-editor-block-preview__content"
 				style={ {
-					position: 'absolute',
-					width: viewportWidth,
-					height: contentHeight,
-					pointerEvents: 'none',
-					// This is a catch-all max-height for patterns.
-					// See: https://github.com/WordPress/gutenberg/pull/38175.
-					maxHeight: MAX_HEIGHT,
-					minHeight:
-						scale !== 0 && scale < 1 && minHeight
-							? minHeight / scale
-							: minHeight,
+					transform: `scale(${ scale })`,
+					height: contentHeight * scale,
+					maxHeight:
+						contentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
+					minHeight: contentHeight ? undefined : minHeight,
 				} }
 			>
-				{ contentResizeListener }
-				<MemoizedBlockList renderAppender={ false } />
-			</Iframe>
-		</Disabled>
+				<Iframe
+					head={ <EditorStyles styles={ editorStyles } /> }
+					contentRef={ useRefEffect( ( bodyElement ) => {
+						const {
+							ownerDocument: { documentElement },
+						} = bodyElement;
+						documentElement.classList.add(
+							'block-editor-block-preview__content-iframe'
+						);
+						documentElement.style.position = 'absolute';
+						documentElement.style.width = '100%';
+
+						// Necessary for contentResizeListener to work.
+						bodyElement.style.boxSizing = 'border-box';
+						bodyElement.style.position = 'absolute';
+						bodyElement.style.width = '100%';
+					}, [] ) }
+					aria-hidden
+					tabIndex={ -1 }
+					style={ {
+						position: 'absolute',
+						width: viewportWidth,
+						height: contentHeight,
+						pointerEvents: 'none',
+						// This is a catch-all max-height for patterns.
+						// See: https://github.com/WordPress/gutenberg/pull/38175.
+						maxHeight: MAX_HEIGHT,
+						minHeight:
+							scale !== 0 && scale < 1 && minHeight
+								? minHeight / scale
+								: minHeight,
+					} }
+				>
+					{ contentResizeListener }
+					<MemoizedBlockList renderAppender={ false } />
+				</Iframe>
+			</Disabled>
+		</>
 	);
 }
 

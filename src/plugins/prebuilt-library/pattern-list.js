@@ -214,18 +214,120 @@ function KadenceBlockPatternList( {
 	);
 }
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols  } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		console.log(info );
+		if ( ! selectedStyle || 'light' === selectedStyle ) {
+			onSelect( info.content );
+		} else if ( 'dark' === selectedStyle ) {
+			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
+			// Colors.
+			newInfo = newInfo.replace( /has-theme-palette-3/g, "placeholder-kb-class9");
+			newInfo = newInfo.replace( /has-theme-palette-4/g, "placeholder-kb-class8");
+			newInfo = newInfo.replace( /has-theme-palette-5/g, "placeholder-kb-class7");
+			newInfo = newInfo.replace( /has-theme-palette-6/g, "placeholder-kb-class7");
+			newInfo = newInfo.replace( /has-theme-palette-7/g, "placeholder-kb-class3");
+			newInfo = newInfo.replace( /has-theme-palette-8/g, "placeholder-kb-class3");
+			newInfo = newInfo.replace( /has-theme-palette-9/g, "placeholder-kb-class4");
+			newInfo = newInfo.replace( /theme-palette3/g, "placeholder-class-pal9");
+			newInfo = newInfo.replace( /theme-palette4/g, "placeholder-class-pal8");
+			newInfo = newInfo.replace( /theme-palette5/g, "placeholder-class-pal7");
+			newInfo = newInfo.replace( /theme-palette6/g, "placeholder-class-pal7");
+			newInfo = newInfo.replace( /theme-palette7/g, "placeholder-class-pal3");
+			newInfo = newInfo.replace( /theme-palette8/g, "placeholder-class-pal3");
+			newInfo = newInfo.replace( /theme-palette9/g, "placeholder-class-pal4");
+			newInfo = newInfo.replace( /palette3/g, "placeholder-kb-pal9");
+			newInfo = newInfo.replace( /palette4/g, "placeholder-kb-pal8");
+			newInfo = newInfo.replace( /palette5/g, "placeholder-kb-pal7");
+			newInfo = newInfo.replace( /palette6/g, "placeholder-kb-pal7");
+			newInfo = newInfo.replace( /palette7/g, "placeholder-kb-pal3");
+			newInfo = newInfo.replace( /palette8/g, "placeholder-kb-pal3");
+			newInfo = newInfo.replace( /palette9/g, "placeholder-kb-pal4");
+
+			newInfo = newInfo.replace( /placeholder-kb-class3/g, "has-theme-palette-3");
+			newInfo = newInfo.replace( /placeholder-kb-class4/g, "has-theme-palette-4");
+			newInfo = newInfo.replace( /placeholder-kb-class5/g, "has-theme-palette-5");
+			newInfo = newInfo.replace( /placeholder-kb-class6/g, "has-theme-palette-6");
+			newInfo = newInfo.replace( /placeholder-kb-class7/g, "has-theme-palette-7");
+			newInfo = newInfo.replace( /placeholder-kb-class8/g, "has-theme-palette-8");
+			newInfo = newInfo.replace( /placeholder-kb-class9/g, "has-theme-palette-9");
+			newInfo = newInfo.replace( /placeholder-class-pal3/g, "theme-palette3");
+			newInfo = newInfo.replace( /placeholder-class-pal4/g, "theme-palette4");
+			newInfo = newInfo.replace( /placeholder-class-pal5/g, "theme-palette5");
+			newInfo = newInfo.replace( /placeholder-class-pal6/g, "theme-palette6");
+			newInfo = newInfo.replace( /placeholder-class-pal7/g, "theme-palette7");
+			newInfo = newInfo.replace( /placeholder-class-pal8/g, "theme-palette8");
+			newInfo = newInfo.replace( /placeholder-class-pal9/g, "theme-palette9");
+			newInfo = newInfo.replace( /placeholder-kb-pal3/g, "palette3");
+			newInfo = newInfo.replace( /placeholder-kb-pal4/g, "palette4");
+			newInfo = newInfo.replace( /placeholder-kb-pal5/g, "palette5");
+			newInfo = newInfo.replace( /placeholder-kb-pal6/g, "palette6");
+			newInfo = newInfo.replace( /placeholder-kb-pal7/g, "palette7");
+			newInfo = newInfo.replace( /placeholder-kb-pal8/g, "palette8");
+			newInfo = newInfo.replace( /placeholder-kb-pal9/g, "palette9");
+			onSelect( newInfo );
+		} else if ( 'highlight' === selectedStyle ) {
+			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
+			// Colors.
+			newInfo = newInfo.replace( /has-theme-palette-1/g, "placeholder-kb-class9");
+			newInfo = newInfo.replace( /has-theme-palette-2/g, "placeholder-kb-class8");
+			newInfo = newInfo.replace( /has-theme-palette-3/g, "placeholder-kb-class9");
+			newInfo = newInfo.replace( /has-theme-palette-4/g, "placeholder-kb-class9");
+			newInfo = newInfo.replace( /has-theme-palette-5/g, "placeholder-kb-class8");
+			newInfo = newInfo.replace( /has-theme-palette-6/g, "placeholder-kb-class8");
+			newInfo = newInfo.replace( /has-theme-palette-7/g, "placeholder-kb-class2");
+			newInfo = newInfo.replace( /has-theme-palette-8/g, "placeholder-kb-class2");
+			newInfo = newInfo.replace( /has-theme-palette-9/g, "placeholder-kb-class9");
+			newInfo = newInfo.replace( /theme-palette1/g, "placeholder-class-pal9");
+			newInfo = newInfo.replace( /theme-palette2/g, "placeholder-class-pal8");
+			newInfo = newInfo.replace( /theme-palette3/g, "placeholder-class-pal9");
+			newInfo = newInfo.replace( /theme-palette4/g, "placeholder-class-pal9");
+			newInfo = newInfo.replace( /theme-palette5/g, "placeholder-class-pal8");
+			newInfo = newInfo.replace( /theme-palette6/g, "placeholder-class-pal8");
+			newInfo = newInfo.replace( /theme-palette7/g, "placeholder-class-pal2");
+			newInfo = newInfo.replace( /theme-palette8/g, "placeholder-class-pal2");
+			newInfo = newInfo.replace( /theme-palette9/g, "placeholder-class-pal1");
+			newInfo = newInfo.replace( /palette1/g, "placeholder-kb-pal9");
+			newInfo = newInfo.replace( /palette2/g, "placeholder-kb-pal8");
+			newInfo = newInfo.replace( /palette3/g, "placeholder-kb-pal9");
+			newInfo = newInfo.replace( /palette4/g, "placeholder-kb-pal9");
+			newInfo = newInfo.replace( /palette5/g, "placeholder-kb-pal8");
+			newInfo = newInfo.replace( /palette6/g, "placeholder-kb-pal8");
+			newInfo = newInfo.replace( /palette7/g, "placeholder-kb-pal2");
+			newInfo = newInfo.replace( /palette8/g, "placeholder-kb-pal2");
+			newInfo = newInfo.replace( /palette9/g, "placeholder-kb-pal1");
+
+			newInfo = newInfo.replace( /placeholder-kb-class1/g, "has-theme-palette-1");
+			newInfo = newInfo.replace( /placeholder-kb-class2/g, "has-theme-palette-2");
+			newInfo = newInfo.replace( /placeholder-kb-class3/g, "has-theme-palette-3");
+			newInfo = newInfo.replace( /placeholder-kb-class4/g, "has-theme-palette-4");
+			newInfo = newInfo.replace( /placeholder-kb-class5/g, "has-theme-palette-5");
+			newInfo = newInfo.replace( /placeholder-kb-class6/g, "has-theme-palette-6");
+			newInfo = newInfo.replace( /placeholder-kb-class7/g, "has-theme-palette-7");
+			newInfo = newInfo.replace( /placeholder-kb-class8/g, "has-theme-palette-8");
+			newInfo = newInfo.replace( /placeholder-kb-class9/g, "has-theme-palette-9");
+			newInfo = newInfo.replace( /placeholder-class-pal1/g, "theme-palette1");
+			newInfo = newInfo.replace( /placeholder-class-pal2/g, "theme-palette2");
+			newInfo = newInfo.replace( /placeholder-class-pal3/g, "theme-palette3");
+			newInfo = newInfo.replace( /placeholder-class-pal4/g, "theme-palette4");
+			newInfo = newInfo.replace( /placeholder-class-pal5/g, "theme-palette5");
+			newInfo = newInfo.replace( /placeholder-class-pal6/g, "theme-palette6");
+			newInfo = newInfo.replace( /placeholder-class-pal7/g, "theme-palette7");
+			newInfo = newInfo.replace( /placeholder-class-pal8/g, "theme-palette8");
+			newInfo = newInfo.replace( /placeholder-class-pal9/g, "theme-palette9");
+			newInfo = newInfo.replace( /placeholder-kb-pal1/g, "palette1");
+			newInfo = newInfo.replace( /placeholder-kb-pal2/g, "palette2");
+			newInfo = newInfo.replace( /placeholder-kb-pal3/g, "palette3");
+			newInfo = newInfo.replace( /placeholder-kb-pal4/g, "palette4");
+			newInfo = newInfo.replace( /placeholder-kb-pal5/g, "palette5");
+			newInfo = newInfo.replace( /placeholder-kb-pal6/g, "palette6");
+			newInfo = newInfo.replace( /placeholder-kb-pal7/g, "palette7");
+			newInfo = newInfo.replace( /placeholder-kb-pal8/g, "palette8");
+			newInfo = newInfo.replace( /placeholder-kb-pal9/g, "palette9");
+			onSelect( newInfo );
+		}
 	}
-	const registeredPatternCategories = useMemo(
-		() =>
-			patternCategories.map(
-				( patternCategory ) => patternCategory.name
-			),
-		[ patternCategories ]
-	);
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = [];
 		Object.keys( patterns ).map( function( key, index ) {
@@ -296,7 +398,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }` }
+				{ css: `body { ${tempStyles} }img[src="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder.png"] {filter: invert(1);}` }
 			];
 		}
 
