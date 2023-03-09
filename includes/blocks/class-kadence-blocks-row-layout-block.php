@@ -1201,7 +1201,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => 'kb-blocks-bg-video',
 			'id' => 'bg-row-video-' . $attributes['uniqueID'],
 			'playsinline' => '',
-			'muted' => ( isset( $video_attributes['local'] ) && false === $video_attributes['local'] ? 'false' : '' ),
+			'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
 			'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
 			'src' => $video_attributes['local'],
 		);
@@ -1216,6 +1216,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if( $video_args['loop'] == 'false' ) {
 			unset( $video_args['loop'] );
+		}
+		if( $video_args['muted'] == 'false' ) {
+			unset( $video_args['muted'] );
 		}
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
