@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.24 =
+Release Date: March TBD, 2023
+* Fix: Accordion title padding on tablet & mobile.
+* Fix: Unmute setting not applying on row layout background videos.
+
 = 3.0.23 =
 Release Date: March 8th, 2023
 * Update: MailerLite to work with new API.

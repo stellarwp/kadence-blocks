@@ -94,7 +94,11 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->render_color_output( $title_styles, 'background', 'background' );
 			$css->render_typography( $title_styles, '' );
-			$css->render_measure_output( $title_styles, 'padding', 'padding' );
+			$padding_args = array(
+				'tablet_key'  => 'paddingTablet',
+				'mobile_key'  => 'paddingMobile',
+			);
+			$css->render_measure_output( $title_styles, 'padding', 'padding', $padding_args );
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap' );
 			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
 
