@@ -90,12 +90,14 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, postId, inReusableBlock } = useSelect(
 		( select ) => {
 			return {
+				postId: select( 'core/editor' ).getCurrentPostId(),
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				inReusableBlock: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 			};
 		},
 		[ clientId ]
@@ -104,7 +106,7 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 	useEffect( () => {
 		setBlockDefaults( 'kadence/spacer', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postId, inReusableBlock );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
