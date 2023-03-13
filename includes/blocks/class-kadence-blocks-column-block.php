@@ -484,7 +484,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Hover Text colors.
 		if ( isset( $attributes['textColorHover'] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id . ':hover, .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover, .kadence-column' . $unique_id . ':hover h1, .kadence-column' . $unique_id . ':hover h2, .kadence-column' . $unique_id . ':hover h3, .kadence-column' . $unique_id . ':hover h4, .kadence-column' . $unique_id . ':hover h5, .kadence-column' . $unique_id . ':hover h6' );
 			$css->add_property( 'color', $css->render_color( $attributes['textColorHover'] ) );
 		}
 		if ( isset( $attributes['linkColorHover'] ) ) {
