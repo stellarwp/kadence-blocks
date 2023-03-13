@@ -338,46 +338,46 @@ import { __ } from '@wordpress/i18n';
 									/>
 								</>
 							)}
+								<ResponsiveRadioRangeControls
+									label={__( 'Row Gutter', 'kadence-blocks' )}
+									options={ [
+										{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+										{ value: 'skinny', size:10, label: __('Sm', 'kadence-blocks' ) },
+										{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
+										{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
+									] }
+									value={ {
+										value: ( undefined !== collapseGutter ? collapseGutter : 'default' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[0] ? customRowGutter[0] : '' ),
+									} }
+									onChange={ ( value, size ) => {
+										setAttributes( { collapseGutter: value, customRowGutter: [ size, ( customRowGutter[1] ? customRowGutter[1] : '' ), ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
+									}}
+									tabletValue={ {
+										value: ( undefined !== tabletRowGutter ? tabletRowGutter : '' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[1] ? customRowGutter[1] : '' ),
+									} }
+									onChangeTablet={ ( value, size ) => {
+										setAttributes( { tabletRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), size, ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
+									}}
+									mobileValue={ {
+										value: ( undefined !== mobileRowGutter ? mobileRowGutter : '' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[2] ? customRowGutter[2] : '' ),
+									} }
+									onChangeMobile={ ( value, size ) => {
+										setAttributes( { mobileRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), ( customRowGutter[1] ? customRowGutter[1] : '' ), size ] } );
+									}}
+									min={0}
+									max={( rowGutterType === 'px' ? 200 : 12 )}
+									step={( rowGutterType === 'px' ? 1 : 0.1 )}
+									unit={ rowGutterType ? rowGutterType : 'px' }
+									onUnit={( value ) => {
+										setAttributes( { rowGutterType: value } );
+									}}
+									units={[ 'px', 'em', 'rem' ]}
+								/>
 							{ ( colLayout === 'grid-layout' || innerItemCount > columns || previewDevice != 'Desktop' ) && (
 								<>
-									<ResponsiveRadioRangeControls
-										label={__( 'Row Gutter', 'kadence-blocks' )}
-										options={ [
-											{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
-											{ value: 'skinny', size:10, label: __('Sm', 'kadence-blocks' ) },
-											{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
-											{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
-										] }
-										value={ {
-											value: ( undefined !== collapseGutter ? collapseGutter : 'default' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[0] ? customRowGutter[0] : '' ),
-										} }
-										onChange={ ( value, size ) => {
-											setAttributes( { collapseGutter: value, customRowGutter: [ size, ( customRowGutter[1] ? customRowGutter[1] : '' ), ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
-										}}
-										tabletValue={ {
-											value: ( undefined !== tabletRowGutter ? tabletRowGutter : '' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[1] ? customRowGutter[1] : '' ),
-										} }
-										onChangeTablet={ ( value, size ) => {
-											setAttributes( { tabletRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), size, ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
-										}}
-										mobileValue={ {
-											value: ( undefined !== mobileRowGutter ? mobileRowGutter : '' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[2] ? customRowGutter[2] : '' ),
-										} }
-										onChangeMobile={ ( value, size ) => {
-											setAttributes( { mobileRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), ( customRowGutter[1] ? customRowGutter[1] : '' ), size ] } );
-										}}
-										min={0}
-										max={( rowGutterType === 'px' ? 200 : 12 )}
-										step={( rowGutterType === 'px' ? 1 : 0.1 )}
-										unit={ rowGutterType ? rowGutterType : 'px' }
-										onUnit={( value ) => {
-											setAttributes( { rowGutterType: value } );
-										}}
-										units={[ 'px', 'em', 'rem' ]}
-									/>
 									<SelectControl
 										label={ __( 'Collapse Order', 'kadence-blocks' ) }
 										value={ collapseOrder }
