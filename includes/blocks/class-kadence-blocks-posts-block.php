@@ -264,6 +264,22 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		return $output . $content;
 
 	}
+	/**
+	 * Render for block scripts block.
+	 *
+	 * @param array   $attributes the blocks attributes.
+	 * @param boolean $inline true or false based on when called.
+	 */
+	public function render_scripts( $attributes, $inline = false ) {
+		if ( ! class_exists( 'Kadence\Theme' ) ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+				if ( $inline ) {
+					$this->should_render_inline_stylesheet( 'kadence-blocks-' . $this->block_name );
+				}
+			}
+		}
+	}
 
 }
 
