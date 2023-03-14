@@ -690,6 +690,11 @@ function kadence_blocks_add_global_gutenberg_styles_frontend() {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
+	if ( get_option( 'stylesheet' ) === 'restored316-journey' ) {
+		$css .= '.kt-blocks-carousel-init[data-slider-dots=true].is-overflow {';
+		$css .= 'margin-bottom:0px';
+		$css .= '}';
+	}
 	wp_register_style( 'kadence-blocks-global-variables', false );
 	wp_enqueue_style( 'kadence-blocks-global-variables' );
 	wp_add_inline_style( 'kadence-blocks-global-variables', $css );
