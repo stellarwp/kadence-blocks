@@ -505,7 +505,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$gap_unit     = ( ! empty( $attributes['gutterUnit'] ) ? $attributes['gutterUnit'] : 'px' );
 			if ( 'slider' === $type && is_array( $images ) && 1 === count( $images ) ) {
 				$arrow_style = 'none';
-				$dot_style   = 'none';
+				//$dot_style   = 'none';
 			}
 			$outer_classes = array( 'kb-gallery-wrap-id-' . $unique_id );
 			$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
