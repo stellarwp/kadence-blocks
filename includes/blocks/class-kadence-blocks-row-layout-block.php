@@ -575,16 +575,16 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( $base_selector );
 		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 		$has_radius = false;
-		if ( $css->is_number( $attributes['borderRadius'][0] ) && 0 !== $attributes['borderRadius'][0] ) {
+		if ( isset( $attributes['borderRadius'][0] ) && $css->is_number( $attributes['borderRadius'][0] ) && 0 !== $attributes['borderRadius'][0] ) {
 			$has_radius = true;
 		}
-		if ( $css->is_number( $attributes['borderRadius'][1] ) && 0 !== $attributes['borderRadius'][1] ) {
+		if ( isset( $attributes['borderRadius'][1] ) && $css->is_number( $attributes['borderRadius'][1] ) && 0 !== $attributes['borderRadius'][1] ) {
 			$has_radius = true;
 		}
-		if ( $css->is_number( $attributes['borderRadius'][2] ) && 0 !== $attributes['borderRadius'][2] ) {
+		if ( isset( $attributes['borderRadius'][2] ) && $css->is_number( $attributes['borderRadius'][2] ) && 0 !== $attributes['borderRadius'][2] ) {
 			$has_radius = true;
 		}
-		if ( $css->is_number( $attributes['borderRadius'][3] ) && 0 !== $attributes['borderRadius'][3] ) {
+		if ( isset( $attributes['borderRadius'][3] ) && $css->is_number( $attributes['borderRadius'][3] ) && 0 !== $attributes['borderRadius'][3] ) {
 			$has_radius = true;
 		}
 		if ( $has_radius ) {
