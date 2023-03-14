@@ -89,6 +89,7 @@ Release Date: March TBD, 2023
 * Fix: Mailerlite with hack to get around their firewall.
 * Fix: Possible PHP notice.
 * Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
+* Fix: Issue with possible border showing in tab when set to 0.
 
 = 3.0.23 =
 Release Date: March 8th, 2023
