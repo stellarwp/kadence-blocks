@@ -88,6 +88,7 @@ Release Date: March 14, 2023
 * Fix: Possible spacing issue with single item carousel.
 * Fix: Mailerlite with hack to get around their firewall.
 * Fix: Possible PHP notice.
+* Fix: Issue with some icons not being centered.
 * Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
 * Fix: Issue with possible border showing in tab when set to 0.
 
