@@ -82,14 +82,19 @@ class MailerLiteControls extends Component {
 			),
 		} )
 			.then( ( groups ) => {
-				if ( Array.isArray( groups) ) {
-					console.log( groups );
+				if ( Array.isArray( groups ) ) {
 					const theGroups = [];
 					groups.map( ( item ) => {
 						theGroups.push( { value: item.id, label: item.name } );
 					} );
 					this.setState( { group: theGroups, groupError:'', groupsLoaded: true, isFetching: false } );
-				} else {
+				} else if ( undefined !== groups?.data && Array.isArray( groups.data ) ) {
+					const theGroups = [];
+					groups.data.map( ( item ) => {
+						theGroups.push( { value: item.id, label: item.name } );
+					} );
+					this.setState( { group: theGroups, groupError:'', groupsLoaded: true, isFetching: false } );
+				}else {
 					if ( 'Forbidden' === groups ) {
 						errorNote = __( 'Retrieving groups was denied (403) for that API token or because of Mailerlite firewall. Contact MailerLite for support.', 'kadence-blocks' );
 					} else if ( 'Unauthorized' === groups ) {
@@ -118,15 +123,32 @@ class MailerLiteControls extends Component {
 			),
 		} )
 			.then( ( fields ) => {
-				const theFields = [];
-				theFields.push( { value: null, label: 'None' } );
-				theFields.push( { value: 'email', label: 'Email *' } );
-				fields.map( ( item, index ) => {
-					if ( item.key !== 'email' ) {
-						theFields.push( { value: item.key, label: item.title } );
-					}
-				} );
-				this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				if ( Array.isArray( fields ) ) {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					fields.map( ( item, index ) => {
+						if ( item.key !== 'email' ) {
+							theFields.push( { value: item.key, label: item.title } );
+						}
+					} );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				} else if ( undefined !== fields?.data && Array.isArray( fields.data ) ) {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					fields.data.map( ( item, index ) => {
+						if ( item.key !== 'email' ) {
+							theFields.push( { value: item.key, label: item.name } );
+						}
+					} );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				} else {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				}
 			} )
 			.catch( () => {
 				const theFields = [];

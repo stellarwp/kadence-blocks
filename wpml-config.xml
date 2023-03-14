@@ -1,14 +1,17 @@
 <wpml-config>
 	<gutenberg-blocks>
-		<gutenberg-block type="kadence/advancedbtn" translate="1">
-			<xpath>//div/a/span</xpath>
-			<xpath>//div/a/@href</xpath>
+		<gutenberg-block type="kadence/advancedbtn" translate="0"/>
+		<gutenberg-block type="kadence/singlebtn" translate="1">
+			<key name="link" />
+			<key name="text" />
 		</gutenberg-block>
-		<gutenberg-block type="kadence/icon" translate="1">
-			<xpath>//div/a/@href</xpath>
+		<gutenberg-block type="kadence/icon" translate="0"/>
+		<gutenberg-block type="kadence/single-icon" translate="1">
+			<key name="link" />
+			<key name="title" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advancedheading" translate="1">
-			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
+			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p or self::div]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/tabs" translate="1">
 			<xpath>//span[@class="kt-title-text"]</xpath>

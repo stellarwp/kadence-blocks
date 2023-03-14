@@ -177,7 +177,7 @@ function KadenceCounterUp( props ) {
 					<BlockControls>
 						<CopyPasteAttributes
 						attributes={ attributes }
-						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
+						excludedAttrs={ ['start', 'end', 'endDecimal', 'title', 'suffix', 'prefix'] }
 						defaultAttributes={ metadata['attributes'] }
 						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }

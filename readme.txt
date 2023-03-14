@@ -78,9 +78,19 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.24 =
-Release Date: March TBD, 2023
+Release Date: March 14, 2023
+* Add: Breakout left column and right column options when fullwidth row.
 * Fix: Accordion title padding on tablet & mobile.
 * Fix: Unmute setting not applying on row layout background videos.
+* Fix: Row gutter not always showing in row layout.
+* Fix: Copying styles on CountUp block was copying content.
+* Fix: Advanced text not inheriting font color from section.
+* Fix: Possible spacing issue with single item carousel.
+* Fix: Mailerlite with hack to get around their firewall.
+* Fix: Possible PHP notice.
+* Fix: Issue with some icons not being centered.
+* Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
+* Fix: Issue with possible border showing in tab when set to 0.
 
 = 3.0.23 =
 Release Date: March 8th, 2023

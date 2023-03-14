@@ -377,7 +377,8 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		if ( ! method_exists( $post_object, 'post_content' ) ) {
-			$blocks = parse_blocks( $post_object->post_content );
+			$post_content = apply_filters( 'as3cf_filter_post_local_to_provider', $post_object->post_content );
+			$blocks = parse_blocks( $post_content );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}

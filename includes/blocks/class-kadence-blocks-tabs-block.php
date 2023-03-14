@@ -90,7 +90,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab' );
 
-		if( isset( $attributes['contentBorder'] ) && array_filter( $attributes['contentBorder'] )  ) {
+		if ( ( isset( $attributes['contentBorder'][0] ) && $css->is_number( $attributes['contentBorder'][0] ) ) || ( isset( $attributes['contentBorder'][1] ) && $css->is_number( $attributes['contentBorder'][1] ) ) || ( isset( $attributes['contentBorder'][2] ) && $css->is_number( $attributes['contentBorder'][2] ) ) || ( isset( $attributes['contentBorder'][3] ) && $css->is_number( $attributes['contentBorder'][3] ) ) ) {
 			$css->render_measure_output( $attributes, 'contentBorder', 'border-width', array( 'tablet_key' => false, 'mobile_key' => false ) );
 			if ( ! empty( $attributes['contentBorderColor'] ) ) {
 				$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
