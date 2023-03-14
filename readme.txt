@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.24 =
-Release Date: March TBD, 2023
+Release Date: March 14, 2023
 * Add: Breakout left column and right column options when fullwidth row.
 * Fix: Accordion title padding on tablet & mobile.
 * Fix: Unmute setting not applying on row layout background videos.
