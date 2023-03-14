@@ -690,6 +690,7 @@ function kadence_blocks_add_global_gutenberg_styles_frontend() {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
+	// This is a temp fix for restored316 upgrade issue.
 	if ( get_option( 'stylesheet' ) === 'restored316-journey' ) {
 		$css .= '.kt-blocks-carousel-init[data-slider-dots=true].is-overflow {';
 		$css .= 'margin-bottom:0px';
