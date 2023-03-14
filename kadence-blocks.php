@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Kadence Blocks – Gutenberg Blocks for Page Builder Features
+ * Plugin Name: Kadence Blocks – (Beta Design Library)
  * Plugin URI: https://www.kadencewp.com/product/kadence-gutenberg-blocks/
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
@@ -108,3 +108,16 @@ function kadence_blocks_lang() {
 	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );
+
+/**
+ * Plugin Updates
+ */
+function kt_blocks_beta_updating() {
+	require_once KADENCE_BLOCKS_PATH . 'kadence-update-checker/kadence-update-checker.php';
+	$kadence_blocks_beta_update_checker = Kadence_Update_Checker::buildUpdateChecker(
+		'https://kernl.us/api/v1/updates/639a3259e11b4fa99448e87f/',
+		__FILE__,
+		'kadence-blocks'
+	);
+}
+add_action( 'after_setup_theme', 'kt_blocks_beta_updating', 1 );
