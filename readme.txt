@@ -85,6 +85,10 @@ Release Date: March TBD, 2023
 * Fix: Row gutter not always showing in row layout.
 * Fix: Copying styles on CountUp block was copying content.
 * Fix: Advanced text not inheriting font color from section.
+* Fix: Possible spacing issue with single item carousel.
+* Fix: Mailerlite with hack to get around their firewall.
+* Fix: Possible PHP notice.
+* Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
 
 = 3.0.23 =
 Release Date: March 8th, 2023
