@@ -77,6 +77,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.26 =
+Release Date: March 15, 2023
+* Fix: Open animation when using nesting accordions.
+* Fix: Breakout columns css output.
+* Fix: Issue with TOC and multiplication symbol.
+* Fix: Issue with hiding design library sections.
+
 = 3.0.25 =
 Release Date: March 15, 2023
 * Fix: Breakout columns css output.
