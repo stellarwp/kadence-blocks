@@ -587,6 +587,25 @@ h2.kb-template-name {
     width: 100%;
     z-index: 11;
     padding: 0 24px;
+}
+.kt-prebuilt-content .block-editor-block-patterns-explorer__list .block-editor-block-patterns-explorer__search-results-count {
+    margin: 0;
+    padding: 12px 24px 12px;
+}
+.kb-library-header-colors {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 12px;
+}
+.kb-library-color-select-wrap.kb-library-header-colors {
+	h2 {
+		margin: 0;
+		font-size: 12px;
+		font-weight: normal;
+	}
+}
+.kb-library-color-select-wrap {
 	h2 {
 		margin: 0;
 		font-size: 14px;

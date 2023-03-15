@@ -16,6 +16,7 @@
     "@splidejs/react-splide": "^0.7.12",
     "@wordpress/icons": "^9.7.0",
     "@wordpress/url": "^3.12.0",
+    "change-case": "^4.1.2",
     "classnames": "^2.2.6",
     "colord": "^2.9.3",
     "gradient-parser": "^1.0.2",
@@ -36,6 +37,7 @@
     "react-select": "^2.2.0",
     "react-slick": "^0.24.0",
     "react-transition-group": "^2.4.0",
+    "remove-accents": "^0.4.4",
     "typed.js": "^2.0.12"
   },
   "devDependencies": {

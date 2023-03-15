@@ -20,7 +20,7 @@ import Iframe from '../iframe/index.js';
 // This is used to avoid rendering the block list if the sizes change.
 let MemoizedBlockList;
 
-const MAX_HEIGHT = 2000;
+const MAX_HEIGHT = 1600;
 
 function ScaledBlockPreview( {
 	viewportWidth,

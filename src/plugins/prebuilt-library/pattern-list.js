@@ -32,6 +32,7 @@ import {
 	ExternalLink,
 	Spinner,
 	Tooltip,
+	__experimentalHeading as Heading,
 	__unstableComposite as Composite,
 	__unstableUseCompositeState as useCompositeState,
 	__unstableCompositeItem as CompositeItem,
@@ -51,6 +52,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { speak } from '@wordpress/a11y';
+import { searchItems } from './search-items';
 import {
 	//BlockPreview,
 	store as blockEditorStore,
@@ -150,7 +152,8 @@ function BlockPatternPlaceholder() {
 
 function KadenceBlockPatternList( {
 	blockPatterns,
-	shownPatterns,
+	selectedCategory,
+	filterValue,
 	onHover,
 	onClickPattern,
 	orientation,
@@ -161,7 +164,6 @@ function KadenceBlockPatternList( {
 } ) {
 	const composite = useCompositeState( { orientation } );
 	const showItems = (patterns) => {
-		console.log( records );
 		var items = [];
 		for (var i = 0; i < records; i++) {
 			if ( undefined !== patterns[i]?.name ) {
@@ -180,9 +182,14 @@ function KadenceBlockPatternList( {
 		}
 		return items;
 	};
-	const itemsPerPage = 6;
+	const itemsPerPage = 5;
 	const [hasMore, setHasMore] = useState(true);
 	const [records, setrecords] = useState(itemsPerPage);
+	// clear lazy when category change
+	useEffect( () => {
+		setrecords(itemsPerPage);
+		setHasMore(true);
+	}, [ selectedCategory, filterValue, blockPatterns ] );
 	const loadMore = () => {
 		if ( records >= blockPatterns.length ) {
 			setHasMore(false);
@@ -217,12 +224,22 @@ function KadenceBlockPatternList( {
 function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
-		console.log(info );
+		//console.log(info );
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
 			onSelect( info.content );
 		} else if ( 'dark' === selectedStyle ) {
 			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-3.png/g, "Logo-ploaceholder-3-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-4.png/g, "Logo-ploaceholder-4-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-5.png/g, "Logo-ploaceholder-5-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
 			// Colors.
+			// let newInfoTest = info.content.match(new RegExp('<!-- wp:kadence/singlebtn' + "(.*)" + '/-->'));
+			// console.log( newInfoTest );
 			newInfo = newInfo.replace( /has-theme-palette-3/g, "placeholder-kb-class9");
 			newInfo = newInfo.replace( /has-theme-palette-4/g, "placeholder-kb-class8");
 			newInfo = newInfo.replace( /has-theme-palette-5/g, "placeholder-kb-class7");
@@ -269,6 +286,16 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			onSelect( newInfo );
 		} else if ( 'highlight' === selectedStyle ) {
 			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-3.png/g, "Logo-ploaceholder-3-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-4.png/g, "Logo-ploaceholder-4-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-5.png/g, "Logo-ploaceholder-5-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
+			newInfo = newInfo.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
+			// Buttons.
+			newInfo = newInfo.replace( /"inheritStyles":"inherit"/g, '"color":"placeholder-kb-pal9","background":"placeholder-kb-pal3","colorHover":"placeholder-kb-pal9","backgroundHover":"placeholder-kb-pal4","inheritStyles":"inherit"' );
 			// Colors.
 			newInfo = newInfo.replace( /has-theme-palette-1/g, "placeholder-kb-class9");
 			newInfo = newInfo.replace( /has-theme-palette-2/g, "placeholder-kb-class8");
@@ -351,7 +378,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		// 	console.log( 'here' );
 		// 	allPatterns = allPatterns.slice(0, 30);
 		// }
-		return allPatterns;
+		return searchItems( allPatterns, filterValue );
 	}, [ filterValue, selectedCategory, patterns ] );
 
 	// Announce search results on change.
@@ -385,7 +412,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}img[src="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder.png"] {filter: invert(1);}` }
+				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}` }
 			];
 		} else if ( 'highlight' === selectedStyle ) {
 			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
@@ -398,10 +425,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }img[src="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder.png"] {filter: invert(1);}` }
+				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}` }
 			];
 		}
-
 		return newStyles;
 	}, [ selectedStyle ] );
 
@@ -417,6 +443,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				) }
 				{ hasItems && (
 					<KadenceBlockPatternList
+						selectedCategory={ selectedCategory }
 						blockPatterns={ filteredBlockPatterns }
 						onClickPattern={ onSelectBlockPattern }
 						showTitlesAsTooltip={ false }

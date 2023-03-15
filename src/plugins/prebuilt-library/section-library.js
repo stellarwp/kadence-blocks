@@ -13,7 +13,6 @@ const {
  * External dependencies
  */
  import { debounce } from 'lodash';
-import Masonry from 'react-masonry-css'
 /**
  * WordPress dependencies
  */
@@ -72,7 +71,7 @@ class PrebuiltSections extends Component {
 		this.importProcess = this.importProcess.bind( this );
 		this.reloadTemplateData = this.reloadTemplateData.bind( this );
 		this.state = {
-			category: 'all',
+			category: '',
 			starting: true,
 			search: null,
 			tab: 'section',
@@ -81,7 +80,7 @@ class PrebuiltSections extends Component {
 			isImporting: false,
 			isLoading: false,
 			sidebar: false,
-			gridSize: 'normal',
+			gridSize: '',
 			categories: {
 				'category': __( 'Category', 'kadence-blocks' ),
 				'accordion': __( 'Accordion', 'kadence-blocks' ),
@@ -105,7 +104,7 @@ class PrebuiltSections extends Component {
 				'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
 				'video': __( 'Video', 'kadence-blocks' ),
 			},
-			style: 'light',
+			style: '',
 		};
 		this.debouncedReloadTemplateData = debounce( this.reloadTemplateData.bind( this ), 200 );
 	}
@@ -231,10 +230,13 @@ class PrebuiltSections extends Component {
 		const activePanel = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show' );
 		const savedGridSize = ( activePanel && activePanel['grid'] ? activePanel['grid'] : 'normal' );
+		const savedStyle = ( undefined !== activePanel?.style && '' !== activePanel?.style ? activePanel.style : 'light' );
+		const savedSelectedCategory = ( undefined !== activePanel?.kbCat && '' !== activePanel?.kbCat ? activePanel.kbCat : 'all' );
 		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
 		const gridSize = ( this.state.gridSize ? this.state.gridSize : savedGridSize );
+		const selectedCategory = ( this.state.category ? this.state.category : savedSelectedCategory );
+		const selectedStyle = ( this.state.style ? this.state.style : savedStyle );
 		const control = this;
-		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 		const libraryItems = this.state.items;
 		const categoryItems = this.state.categories;
 		const catOptions = Object.keys( categoryItems ).map( function( key, index ) {
@@ -249,37 +251,21 @@ class PrebuiltSections extends Component {
 			{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
 		];
 		let breakpointColumnsObj = {
-			default: 5,
-			1900: 4,
+			default: 4,
+			1900: 3,
 			1600: 3,
 			1200: 2,
 			500: 2,
 		};
 		if ( gridSize === 'large' ) {
 			breakpointColumnsObj = {
-				default: 4,
+				default: 3,
 				1900: 3,
 				1600: 2,
 				1200: 2,
 				500: 1,
 			};
 		}
-		// if ( sidebarEnabled === 'show' ) {
-		// 	breakpointColumnsObj = {
-		// 		default: 4,
-		// 		1600: 3,
-		// 		1200: 2,
-		// 		500: 1,
-		// 	};
-		// 	if ( gridSize === 'large' ) {
-		// 		breakpointColumnsObj = {
-		// 			default: 3,
-		// 			1600: 2,
-		// 			1200: 2,
-		// 			500: 1,
-		// 		};
-		// 	}
-		// }
 		return (
 			<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
 				{ sidebarEnabled === 'show' && (
@@ -295,35 +281,47 @@ class PrebuiltSections extends Component {
 								className={ 'kb-trigger-sidebar' }
 								icon={ previous }
 								onClick={ () => {
-									const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									activeSidebar['sidebar'] = 'hide';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeStorage['sidebar'] = 'hide';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
 									this.setState( { sidebar: 'hide' } );
 								}}
 							/>
 						</div>
-						<div className="kb-library-sidebar-bottom">
-							{ sideCatOptions.map( ( category, index ) =>
-								<Button
-									key={ `${ category.value }-${ index }` }
-									className={ 'kb-category-button' + ( this.state.category === category.value ? ' is-pressed' : '' ) }
-									aria-pressed={ this.state.category === category.value }
-									onClick={ () => this.setState( { category: category.value } ) }
-								>
-									{ category.label }
-								</Button>
-							) }
-						</div>
-						<div className="kb-library-sidebar-fixed-bottom">
+						{ ! this.state.search && (
+							<div className="kb-library-sidebar-bottom">
+								{ sideCatOptions.map( ( category, index ) =>
+									<Button
+										key={ `${ category.value }-${ index }` }
+										className={ 'kb-category-button' + ( selectedCategory === category.value ? ' is-pressed' : '' ) }
+										aria-pressed={ selectedCategory === category.value }
+										onClick={ () => {
+											const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											activeStorage['kbCat'] = category.value;
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
+											this.setState( { category: category.value } );
+										}}
+									>
+										{ category.label }
+									</Button>
+								) }
+							</div>
+						) }
+						<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
 							<h2>{ __( 'Change Colors', 'kadence-blocks' ) }</h2>
 							<div className="kb-library-style-options">
 								{ styleOptions.map( ( style, index ) =>
 									<Button
 										key={ `${ style.value }-${ index }` }
 										label={ style.label }
-										className={ 'kb-style-button kb-style-' + style.value + ( this.state.style === style.value ? ' is-pressed' : '' ) }
-										aria-pressed={ this.state.style === style.value }
-										onClick={ () => this.setState( { style: style.value } ) }
+										className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
+										aria-pressed={ selectedStyle === style.value }
+										onClick={ () => {
+											const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											activeStorage['style'] = style.value;
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
+											this.setState( { style: style.value } );
+										}}
 									>
 										<span></span>
 									</Button>
@@ -339,20 +337,46 @@ class PrebuiltSections extends Component {
 								className={ 'kb-trigger-sidebar' }
 								icon={ next }
 								onClick={ () => {
-									const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									activeSidebar['sidebar'] = 'show';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeStorage['sidebar'] = 'show';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
 									this.setState( { sidebar: 'show' } );
 								} }
 							/>
 							<SelectControl
 								className={ "kb-library-header-cat-select" }
-								value={ this.state.category }
+								value={ selectedCategory }
 								options={ catOptions }
-								onChange={ value => this.setState( { category: value } ) }
+								onChange={ value => {
+									const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeStorage['kbCat'] = value;
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
+									this.setState( { category: value } );
+								}}
 							/>
 						</div>
 						<div className="kb-library-header-right">
+							<div className="kb-library-header-colors kb-library-color-select-wrap">
+								<h2>{ __( 'Change Colors', 'kadence-blocks' ) }</h2>
+								<div className="kb-library-style-options">
+									{ styleOptions.map( ( style, index ) =>
+										<Button
+											key={ `${ style.value }-${ index }` }
+											label={ style.label }
+											className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
+											aria-pressed={ selectedStyle === style.value }
+											onClick={ () => {
+												const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+												activeStorage['style'] = style.value;
+												localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
+												this.setState( { style: style.value } );
+											}}
+										>
+											<span></span>
+										</Button>
+									) }
+								</div>
+							</div>
 							<Button
 								icon={  <svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -365,9 +389,9 @@ class PrebuiltSections extends Component {
 								className={ 'kb-grid-btns kb-trigger-large-grid-size' + ( gridSize === 'large' ? ' is-pressed' : '' ) }
 								aria-pressed={ gridSize === 'large' }
 								onClick={ () => {
-									const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									activeSidebar['grid'] = 'large';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeStorage['grid'] = 'large';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
 									this.setState( { gridSize: 'large' } );
 								} }
 							/>
@@ -383,9 +407,9 @@ class PrebuiltSections extends Component {
 								className={ 'kb-grid-btns kb-trigger-normal-grid-size' + ( gridSize === 'normal' ? ' is-pressed' : '' ) }
 								aria-pressed={ gridSize === 'normal' }
 								onClick={ () => {
-									const activeSidebar = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									activeSidebar['grid'] = 'normal';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeStorage['grid'] = 'normal';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeStorage ) );
 									this.setState( { gridSize: 'normal' } );
 								} }
 							/>
@@ -432,88 +456,13 @@ class PrebuiltSections extends Component {
 				) : (
 					<PatternList
 						patterns={ this.state.items }
-						filterValue={ '' }
-						selectedCategory={ this.state.category }
+						filterValue={ this.state.search }
+						selectedCategory={ selectedCategory }
 						patternCategories={ catOptions }
-						selectedStyle={ this.state.style }
+						selectedStyle={ selectedStyle }
 						breakpointCols={ breakpointColumnsObj }
 						onSelect={ ( blockcode ) => control.onInsertContent( blockcode ) }
 					/>
-					// <Masonry
-					// 	breakpointCols={breakpointColumnsObj}
-					// 	className={ `kb-css-masonry kb-core-section-library` }
-  					// 	columnClassName="kb-css-masonry_column"
-					// 	// elementType={ 'div' }
-					// 	// options={ {
-					// 	// 	transitionDuration: 0,
-					// 	// } }
-					// 	// disableImagesLoaded={ false }
-					// 	// enableResizableChildren={ true }
-					// 	// updateOnEachImageLoad={ false }
-					// >
-					// 	{ Object.keys( this.state.items ).map( function( key, index ) {
-					// 		const name = libraryItems[key].name;
-					// 		const slug = libraryItems[key].slug;
-					// 		const content = libraryItems[key].content;
-					// 		const image = libraryItems[key].image;
-					// 		const imageWidth = libraryItems[key].imageW;
-					// 		const imageHeight = libraryItems[key].imageH;
-					// 		const categories = libraryItems[key].categories;
-					// 		const keywords = libraryItems[key].keywords;
-					// 		const description = control.state.items[key].description;
-					// 		const pro = libraryItems[key].pro;
-					// 		const locked = libraryItems[key].locked;
-					// 		const descriptionId = `${ slug }_kb_cloud__item-description`;
-					// 		if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
-					// 			return (
-					// 				<div className="kb-css-masonry-inner">
-					// 					<Button
-					// 						key={ key }
-					// 						className="kb-css-masonry-btn"
-					// 						isSmall
-					// 						aria-label={
-					// 							sprintf(
-					// 								/* translators: %s is Prebuilt Name */
-					// 								__( 'Add %s', 'kadence-blocks' ),
-					// 								name
-					// 							)
-					// 						}
-					// 						aria-describedby={ description ? descriptionId : undefined }
-					// 						isDisabled={ locked }
-					// 						onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
-					// 					>
-					// 						<PreviewItem blocks={ content } />
-					// 						<div
-					// 							className="kb-css-masonry-btn-inner"
-					// 							style={ {
-					// 								paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
-					// 							} }
-					// 						>
-					// 							<img src={ image } loading={ "lazy" } alt={ name } />
-					// 							<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
-					// 						</div>
-					// 					</Button>
-					// 					{ !! description && (
-					// 						<VisuallyHidden id={ descriptionId }>
-					// 							{ description }
-					// 						</VisuallyHidden>
-					// 					) }
-					// 					{ undefined !== pro && pro && (
-					// 						<Fragment>
-					// 							<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
-					// 							{ locked && (
-					// 								<div className="kb-popover-pro-notice">
-					// 									<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
-					// 									<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-					// 								</div>
-					// 							) }
-					// 						</Fragment>
-					// 					) }
-					// 				</div>
-					// 			);
-					// 		}
-					// 	} ) }
-					// </Masonry>
 				) }
 			</div>
 		);

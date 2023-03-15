@@ -638,6 +638,7 @@ class Kadence_Blocks_Prebuilt_Library {
 				// Send JSON Error response to the AJAX call.
 				wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
 			} else {
+				
 				wp_send_json( $data );
 			}
 		}
