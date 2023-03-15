@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.25 =
+Release Date: March 15, 2023
+* Fix: Breakout columns css output.
+
 = 3.0.24 =
 Release Date: March 14, 2023
 * Add: Breakout left column and right column options when fullwidth row.

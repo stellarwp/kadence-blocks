@@ -528,24 +528,25 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_selector( $base_selector );
 			$css->add_property( '--breakout-negative-margin-right', 'calc( ( ( ( var(--global-vw, 100vw) - ( ' . $inherit_content_width . ' - ( ' . $padding_right . '*2 ) ) ) / 2 ) *-1) + -1px)' );
-			$css->add_property( '--breakout-negative-margin-left', 'calc( ( ( ( var(--global-vw, 100vw) - ( ' . $inherit_content_width . ' - ( ' . $padding_left . ' + ' . $padding_right . ' ) ) ) / 2 ) *-1) + -1px)' );
+			$css->add_property( '--breakout-negative-margin-left', 'calc( ( ( ( var(--global-vw, 100vw) - ( ' . $inherit_content_width . ' - ( ' . $padding_left . '*2 ) ) ) / 2 ) *-1) + -1px)' );
 			$css->set_media_state( 'desktopOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
-				$css->add_property( 'margin-left', 'calc( ' );
+				$css->add_property( 'margin-left', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
 				$css->add_property( 'margin-right', 'calc( ' . $padding_right . ' *-1 )' );
 			}
+			$css->set_media_state( 'desktop' );
 			if ( isset( $content_width ) && ! empty( $content_width ) ) {
 				$css->start_media_query( '(min-width:' . absint( $content_width ) . 'px)' );
 				if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
 					$css->add_property( 'margin-left', 'var(--breakout-negative-margin-left)' );
 				}
 				if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
 					$css->add_property( 'margin-right', 'var(--breakout-negative-margin-right)' );
 				}
 				$css->stop_media_query();
