@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.25
+Stable tag: 3.0.26
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,8 +78,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.26 =
-Release Date: March TBD, 2023
+Release Date: March 15, 2023
 * Fix: Open animation when using nesting accordions.
+* Fix: Breakout columns css output.
+* Fix: Issue with TOC and multiplication symbol.
+* Fix: Issue with hiding design library sections.
 
 = 3.0.25 =
 Release Date: March 15, 2023

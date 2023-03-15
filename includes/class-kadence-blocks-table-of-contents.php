@@ -612,14 +612,16 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @return string The string converted.
 	 */
 	public function convert_smart_quotes( $string ) {
-		$search = array("’",
+		$search = array("×",
+						"’",
 						"‘",
 						"”",
 						"“",
 						"–",
 						"—",
 						"…");
-		$replace = array("'",
+		$replace = array("x",
+						"'",
 						 "'",
 						 '"',
 						 '"',
