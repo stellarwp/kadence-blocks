@@ -10,7 +10,9 @@ import {
 	showSettings,
 	getPreviewSize,
 	setBlockDefaults,
-	getUniqueId
+	getUniqueId,
+	getPostOrWidgetId,
+	getPostIdOrFseSlug
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -57,9 +59,11 @@ import {
 /**
  * Build the spacer edit
  */
-function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSelection } ) {
+function KadenceSpacerDivider( props ) {
 
-	const {
+	const { attributes, clientId, setAttributes, toggleSelection } = props;
+
+		const {
 		className,
 		blockAlignment,
 		spacerHeight,
@@ -90,23 +94,22 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, postId, inReusableBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
-				postId: select( 'core/editor' ).getCurrentPostId(),
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				inReusableBlock: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 			};
 		},
 		[ clientId ]
 	);
 
+	const postId = getPostIdOrFseSlug( props );
 	useEffect( () => {
 		setBlockDefaults( 'kadence/spacer', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postId, inReusableBlock );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
