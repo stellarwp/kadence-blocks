@@ -249,7 +249,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 			}
 
-			if ( isset( $attributes['iconHover'] ) && $attributes['iconHover'] ) {
+			if ( ! empty( $attributes['iconColorHover'] ) ) {
 				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]:hover .kb-adv-heading-icon' );
 				$css->render_color_output( $attributes, 'iconColorHover', 'color' );
 			}

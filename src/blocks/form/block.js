@@ -53,7 +53,7 @@ registerBlockType( 'kadence/form', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages, submitLabel } } = props;
+		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages, submitLabel, hAlignFormFeilds } } = props;
 		const fieldOutput = ( index ) => {
 			if ( 'hidden' === fields[ index ].type ) {
 				return (
@@ -173,7 +173,7 @@ registerBlockType( 'kadence/form', {
 		} );
 
 		const blockProps = useBlockProps.save( {
-			className: `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }`
+			className: `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }${ ( hAlignFormFeilds ? ' kb-form-field-align' : '' ) }`
 		} );
 
 		return (

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.24
+Stable tag: 3.0.26
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,14 +77,38 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.27 =
+Release Date: March 20, 2023
+* Update: Row layout to allow 5 column to collapse into 2 and 3.
+* Fix: Issue with section overlays in editor.
+* Fix: Issue with submit alignment and label alignment in forms.
+* Fix: Advanced text icon hover color.
+
+= 3.0.26 =
+Release Date: March 15, 2023
+* Fix: Open animation when using nesting accordions.
+* Fix: Breakout columns css output.
+* Fix: Issue with TOC and multiplication symbol.
+* Fix: Issue with hiding design library sections.
+
+= 3.0.25 =
+Release Date: March 15, 2023
+* Fix: Breakout columns css output.
+
 = 3.0.24 =
-Release Date: March TBD, 2023
+Release Date: March 14, 2023
 * Add: Breakout left column and right column options when fullwidth row.
 * Fix: Accordion title padding on tablet & mobile.
 * Fix: Unmute setting not applying on row layout background videos.
 * Fix: Row gutter not always showing in row layout.
 * Fix: Copying styles on CountUp block was copying content.
 * Fix: Advanced text not inheriting font color from section.
+* Fix: Possible spacing issue with single item carousel.
+* Fix: Mailerlite with hack to get around their firewall.
+* Fix: Possible PHP notice.
+* Fix: Issue with some icons not being centered.
+* Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
+* Fix: Issue with possible border showing in tab when set to 0.
 
 = 3.0.23 =
 Release Date: March 8th, 2023
