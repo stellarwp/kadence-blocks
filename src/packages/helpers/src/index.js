@@ -24,3 +24,4 @@ export { getFontSizeOptionOutput  } from './font-size-utilities';
 export { getGapSizeOptionOutput } from './gap-size-utilities';
 export { default as getPostOrWidgetId } from './get-post-or-widget-id';
 export { default as getPostIdOrFseSlug } from './get-post-id-or-fse-slug';
+export { default as hashString } from './hash-string';
