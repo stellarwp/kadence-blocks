@@ -8,7 +8,6 @@ import { __ } from '@wordpress/i18n';
 import edit from './edit';
 import metadata from './block.json';
 import save from './save';
-import deprecated from './deprecated';
 import transforms from './transforms';
 
 registerBlockType('kadence/googlemaps', {
@@ -31,6 +30,5 @@ registerBlockType('kadence/googlemaps', {
 	transforms,
 	edit,
 	save,
-	deprecated,
 	example: {}
 });

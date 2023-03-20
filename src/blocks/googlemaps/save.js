@@ -10,7 +10,12 @@ import { useBlockProps } from '@wordpress/block-editor'
 import classnames from 'classnames';
 
 export function Save( { attributes } ) {
-	const { uniqueID, mapMode, zoom, mapType, apiType, location } = attributes;
+	const { uniqueID, zoom, mapType, apiType, location, kbVersion } = attributes;
+
+	if ( kbVersion >= 2 ) {
+		return null;
+	}
+
 	const classes = classnames( {
 		'kb-google-maps-container': true,
 		[ `kb-google-maps-container${ uniqueID }` ] : true,
@@ -34,12 +39,7 @@ export function Save( { attributes } ) {
 				<div id={`kb-google-map${ uniqueID }`} style={ { width: '100%', height: '100%'} }></div>
 			:
 				<iframe width={ '100%' } height={ '100%' } style={ { border: '0' } } loading={ 'lazy' }
-						src={ 'https://www.google.com/maps/embed/v1/place?' + qs }
-						title={ sprintf(
-							/* translators: %s is the location name or address for the map */
-							__( 'Google map of %s', 'kadence-blocks' ),
-							location
-						) } >
+						src={ 'https://www.google.com/maps/embed/v1/place?' + qs }>
 				</iframe>
 			}
 		</div>
