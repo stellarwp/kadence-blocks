@@ -80,6 +80,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.27 =
 Release Date: March 20, 2023
 * Update: Row layout to allow 5 column to collapse into 2 and 3.
+* Add: Title to iframe in Google Maps block.
 * Fix: Issue with section overlays in editor.
 * Fix: Issue with submit alignment and label alignment in forms.
 * Fix: Advanced text icon hover color.
