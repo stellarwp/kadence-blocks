@@ -82,6 +82,7 @@ Release Date: March 20, 2023
 * Update: Row layout to allow 5 column to collapse into 2 and 3.
 * Fix: Issue with section overlays in editor.
 * Fix: Issue with submit alignment and label alignment in forms.
+* Fix: Advanced text icon hover color.
 
 = 3.0.26 =
 Release Date: March 15, 2023
