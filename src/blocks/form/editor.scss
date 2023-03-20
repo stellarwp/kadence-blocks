@@ -75,11 +75,23 @@
 // Controls
 .kb-form-align-center .kb-form {
     justify-content: center;
-    text-align: center;
 }
 .kb-form-align-right .kb-form {
     justify-content: flex-end;
+}
+.kb-form-align-center.kb-form-field-align .kb-form {
+    text-align: center;
+	.kadence-blocks-form-field {
+		justify-content: center;
+		text-align: center;
+	}
+}
+.kb-form-align-right.kb-form-field-align .kb-form {
     text-align: right;
+	.kadence-blocks-form-field {
+		justify-content: flex-end;
+		text-align: right;
+	}
 }
 .kb-form {
 	display: flex;
@@ -91,13 +103,14 @@
 		padding: 0 5px;
 		margin-bottom: 16px;
 		flex-wrap: wrap;
-		justify-content: inherit;
-		text-align: inherit;
+		justify-content: flex-start;
+		text-align: left;
 		align-items: center;
 		display: flex;
 		width: 100%;
 		&.kb-submit-field {
 			margin-bottom: 0;
+			justify-content: inherit;
 		}
 		.kb-placeholder {
 			opacity: 0.5;

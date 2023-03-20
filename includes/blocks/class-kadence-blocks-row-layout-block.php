@@ -196,6 +196,12 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'grid-column', '1 / -1' );
 						$css->set_selector( $inner_selector );
 						break;
+					case 'two-grid':
+						$grid_layout = 'repeat(2, minmax(0, 1fr))';
+						break;
+					case 'three-grid':
+						$grid_layout = 'repeat(3, minmax(0, 1fr))';
+						break;
 					case 'row':
 						$grid_layout = 'minmax(0, 1fr)';
 						break;
@@ -450,6 +456,34 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector );
 			$css->add_property( 'grid-template-columns', $grid_layout );
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $attributes['tabletLayout'], $collapse_layouts ) ) {
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
+				}
+				// Row Two.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
+				}
+				// Row Three.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
+				}
+				// Row Four.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
+				}
+			}
+			$css->set_media_state( 'desktop' );
+		} elseif ( $columns > 4 ) {
+			$collapse_tab_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( $inner_selector );
+			$grid_layout = $this->get_template_columns( $css, $columns, $collapse_tab_layout, $inner_selector );
+			$css->add_property( 'grid-template-columns', $grid_layout );
+			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $collapse_tab_layout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );

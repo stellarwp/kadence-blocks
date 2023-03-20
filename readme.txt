@@ -77,6 +77,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.27 =
+Release Date: March 20, 2023
+* Update: Row layout to allow 5 column to collapse into 2 and 3.
+* Fix: Issue with section overlays in editor.
+* Fix: Issue with submit alignment and label alignment in forms.
+
 = 3.0.26 =
 Release Date: March 15, 2023
 * Fix: Open animation when using nesting accordions.
