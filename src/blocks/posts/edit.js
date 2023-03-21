@@ -21,8 +21,10 @@ import metadata from './block.json';
  * Import helpers
  */
 import {
+	getPreviewSize,
 	getUniqueId,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -30,10 +32,6 @@ import {
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
-import {
-	getPreviewSize,
-	setBlockDefaults
-} from '@kadence/helpers';
 import {
 	KadencePanelBody,
 	RangeControl,
@@ -71,8 +69,8 @@ import { decodeEntities } from '@wordpress/html-entities';
 /**
  * Build Kadence Posts Block.
  */
-function KadencePosts( { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, getPreviewDevice, clientId } ) {
-
+function KadencePosts( props ) {
+	const { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, clientId } = props;
 	const {
 		uniqueID,
 		order,
@@ -129,12 +127,18 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	const [ activeTab, setActiveTab ] = useState( 'content' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -159,7 +163,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	};
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -227,9 +232,9 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		}
 	}
 
-	const titleSize = getPreviewSize( getPreviewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
-	const titleLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const titleLetterSpacing = getPreviewSize( getPreviewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 0 ] ? titleFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 1 ] ? titleFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 2 ] ? titleFont[ 0 ].letterSpacing[ 2 ] : '' ) );
+	const titleSize = getPreviewSize( previewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
+	const titleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const titleLetterSpacing = getPreviewSize( previewDevice, ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 0 ] ? titleFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 1 ] ? titleFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 2 ] ? titleFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 	const hasPosts = Array.isArray( latestPosts ) && latestPosts.length;
 	const saveTitleFont = ( value ) => {
 		const newUpdate = titleFont.map( ( item, index ) => {
@@ -1119,6 +1124,5 @@ export default withSelect( ( select, props ) => {
 	return {
 		taxList         : taxonomyList,
 		taxOptions      : taxonomyOptions,
-		getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 	};
 } )( KadencePosts );

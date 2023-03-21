@@ -10,18 +10,17 @@ import classnames from 'classnames';
 import {
 	KadenceColorOutput,
 	getPreviewSize,
-	showSettings,
 	setBlockDefaults,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
 	getBorderStyle,
+	getPostOrFseId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
 	TypographyControls,
 	ResponsiveMeasurementControls,
-	MeasurementControls,
 	RangeControl,
 	ResponsiveBorderControl,
 	BoxShadowControl,
@@ -90,7 +89,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Build the TOC edit
  */
-function KadenceTableOfContents( { attributes, setAttributes, clientId, className, isSelected, pageIndex, postContent, blockOrder, isTyping } ) {
+function KadenceTableOfContents( props ) {
+	const { attributes, setAttributes, clientId, className, isSelected, pageIndex, postContent, blockOrder, isTyping } = props;
 	const {
 		uniqueID,
 		allowedHeaders,
@@ -198,6 +198,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const paddingMouseOver = mouseOverVisualizer();
 	const titleMouseOver = mouseOverVisualizer();
 	const contentMouseOver = mouseOverVisualizer();
+
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {

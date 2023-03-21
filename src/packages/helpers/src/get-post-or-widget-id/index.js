@@ -5,11 +5,11 @@ import { getWidgetIdFromBlock } from '@wordpress/widgets';
 import { useSelect } from '@wordpress/data';
 import { has } from 'lodash';
 
-export default function getPostOrWidgetId( props, postId, reusableCheck, fallback = 'block-unknown' ) {
+export default function getPostOrWidgetId( props, postId, reusableParent, fallback = 'block-unknown' ) {
 
 	// Reusable block ID
-	if( has(reusableCheck, 'ref') ){
-		return reusableCheck.ref;
+	if( has(reusableParent, 'ref') ){
+		return reusableParent.ref;
 	}
 
 	// Post ID

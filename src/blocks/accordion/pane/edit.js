@@ -6,7 +6,7 @@
 import classnames from 'classnames';
 
 import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
-import { getUniqueId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
 import {
@@ -31,25 +31,30 @@ import {
 /**
  * Build the Pane edit.
  */
-function PaneEdit( {
-	attributes,
-	setAttributes,
-	isSelected,
-	clientId,
-	className,
-} ) {
+function PaneEdit( props ) {
 
+	const {
+		attributes,
+		setAttributes,
+		clientId
+	} = props;
 	const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 	const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 	const [ activePane, setActivePane ] = useState( false );
 	const { addUniqueID, addUniquePane } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, isUniquePane, isUniquePaneBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, isUniquePane, isUniquePaneBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				isUniquePane: ( value, rootID ) => select( 'kadenceblocks/data' ).isUniquePane( value, rootID ),
 				isUniquePaneBlock: ( value, clientId, rootID ) => select( 'kadenceblocks/data' ).isUniquePaneBlock( value, clientId, rootID ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -81,7 +86,8 @@ function PaneEdit( {
 		updateBlockAttributes( rootID, { paneCount: value } );
 	}
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -171,11 +177,11 @@ function PaneEdit( {
 				</KadencePanelBody>
 			</InspectorControls>
 			<HtmlTagOut className={ `kt-accordion-header-wrap` } >
-				<div 
+				<div
 					className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }
 					onClick={() => {
 						setActivePane( !activePane );
-					}} 
+					}}
 				>
 					<div className="kt-blocks-accordion-title-wrap">
 						{ icon && 'left' === iconSide && (
