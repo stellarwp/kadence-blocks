@@ -207,7 +207,6 @@ function KadenceAdvancedHeading( props ) {
 		iconColorHover,
 		iconSide,
 		iconVerticalAlign,
-		iconHover,
 		iconPadding,
 		tabletIconPadding,
 		mobileIconPadding,
@@ -693,13 +692,18 @@ function KadenceAdvancedHeading( props ) {
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkColor && (
-					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
 						}`
 				)}
 				{linkHoverColor && (
-					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkHoverColor )}!important;
+						}`
+				)}
+				{ iconColorHover && (
+					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
+							color: ${KadenceColorOutput( iconColorHover )}!important;
 						}`
 				)}
 			</style>

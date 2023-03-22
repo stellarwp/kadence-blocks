@@ -207,6 +207,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		return $css->css_output();
 	}
 
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		return str_replace('<div class="kt-accordion-panel">', '<div class="kt-accordion-panel kt-accordion-panel-hidden">', $content );
+	}
+
 	/**
 	 * Registers scripts and styles.
 	 */

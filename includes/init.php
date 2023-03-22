@@ -569,6 +569,110 @@ function kadence_blocks_post_block_get_excerpt_length() {
 	return $kadence_blocks_post_block_get_excerpt_length;
 }
 /**
+ * Add global styles into the backend editor.
+ */
+function kadence_blocks_add_global_gutenberg_inline_styles() {
+	global $content_width;
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
+	$css = ':root {';
+	foreach ( $font_sizes as $key => $value ) {
+		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
+	}
+	$css .= '}';
+	if ( isset( $content_width ) ) {
+		$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
+		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+			max-width:' . esc_attr( $content_width ) . 'px;
+		}';
+	} else {
+		$css .= '.editor-styles-wrapper{ --kb-global-content-width:var(--wp--style--global--content-size);}';
+		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+			max-width:var(--wp--style--global--content-size);
+		}';
+	}
+	$css .= ':root {
+		--global-kb-spacing-xxs: 0.5rem;
+		--global-kb-spacing-xs: 1rem;
+		--global-kb-spacing-sm: 1.5rem;
+		--global-kb-spacing-md: 2rem;
+		--global-kb-spacing-lg: 3rem;
+		--global-kb-spacing-xl: 4rem;
+		--global-kb-spacing-xxl: 5rem;
+		--global-kb-spacing-3xl: 6.5rem;
+		--global-kb-spacing-4xl: 8rem;
+		--global-kb-spacing-5xl: 10rem;
+		--global-row-edge-sm: 15px;
+		--global-row-edge-theme: var(--global-content-edge-padding);
+		--global-kb-gutter-sm: 1rem;
+		--global-kb-gutter-md: 2rem;
+		--global-kb-gutter-lg: 3rem;
+		--global-kb-gutter-xl: 5rem;
+		--global-kb-editor-sidebar: 0px;
+		--global-kb-editor-sidebar-secondary: 0px;
+		--global-kb-editor-full-width: calc( 100vw - ( var(--global-kb-editor-sidebar) +  var(--global-kb-editor-sidebar-secondary) ) );
+	}';
+	$css .= '.is-sidebar-opened.interface-interface-skeleton .interface-interface-skeleton__content {
+		--global-kb-editor-sidebar: 281px;
+		--global-kb-editor-sidebar-secondary: 0px;
+		--global-kb-editor-full-width: calc( 100vw - ( var(--global-kb-editor-sidebar) +  var(--global-kb-editor-sidebar-secondary) ) );
+	}';
+	$css .= '.interface-interface-skeleton:not(.is-sidebar-opened) .interface-interface-skeleton__secondary-sidebar ~ .interface-interface-skeleton__content {
+		--global-kb-editor-sidebar: 0px;
+		--global-kb-editor-sidebar-secondary: 351px;
+		--global-kb-editor-full-width: calc( 100vw - ( var(--global-kb-editor-sidebar) +  var(--global-kb-editor-sidebar-secondary) ) );
+	}';
+	$css .= '.interface-interface-skeleton.is-sidebar-opened .interface-interface-skeleton__secondary-sidebar ~ .interface-interface-skeleton__content {
+		--global-kb-editor-sidebar: 281px;
+		--global-kb-editor-sidebar-secondary: 351px;
+		--global-kb-editor-full-width: calc( 100vw - ( var(--global-kb-editor-sidebar) +  var(--global-kb-editor-sidebar-secondary) ) );
+	}';
+	$css .= ':root .post-content-style-boxed {
+		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
+	}';
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		$css .= ':root {
+			--global-palette1: #3182CE;
+			--global-palette2: #2B6CB0;
+			--global-palette3: #1A202C;
+			--global-palette4: #2D3748;
+			--global-palette5: #4A5568;
+			--global-palette6: #718096;
+			--global-palette7: #EDF2F7;
+			--global-palette8: #F7FAFC;
+			--global-palette9: #ffffff;
+		}';
+	}
+	wp_register_style( 'kadence-blocks-global-editor-styles', false );
+	wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
+}
+add_action( 'admin_init', 'kadence_blocks_add_global_gutenberg_inline_styles', 1 );
+/**
+ * Connects Block styles to core block style so it loads in full size editing context.
+ * This is a workaround so dynamic css can be loaded in Iframe and FSE mode.
+ */
+function kadence_blocks_update_global_gutenberg_inline_styles_dependencies() {
+	$wp_styles = wp_styles();
+	$style     = $wp_styles->query( 'wp-block-library', 'registered' );
+	if ( ! $style ) {
+		return;
+	}
+	if (
+		wp_style_is( 'kadence-blocks-global-editor-styles', 'registered' ) &&
+		! in_array( 'kadence-blocks-global-editor-styles', $style->deps, true )
+	) {
+		$style->deps[] = 'kadence-blocks-global-editor-styles';
+	}
+}
+add_action( 'admin_init', 'kadence_blocks_update_global_gutenberg_inline_styles_dependencies', 2 );
+/**
  * Add global styles into the frontend.
  */
 function kadence_blocks_add_global_gutenberg_styles_frontend() {
@@ -586,119 +690,17 @@ function kadence_blocks_add_global_gutenberg_styles_frontend() {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
+	// This is a temp fix for restored316 upgrade issue.
+	if ( get_option( 'stylesheet' ) === 'restored316-journey' ) {
+		$css .= '.kt-blocks-carousel-init[data-slider-dots=true].is-overflow {';
+		$css .= 'margin-bottom:0px';
+		$css .= '}';
+	}
 	wp_register_style( 'kadence-blocks-global-variables', false );
 	wp_enqueue_style( 'kadence-blocks-global-variables' );
 	wp_add_inline_style( 'kadence-blocks-global-variables', $css );
 }
 add_action( 'wp_enqueue_scripts', 'kadence_blocks_add_global_gutenberg_styles_frontend', 90 );
-/**
- * Add global styles into the editor.
- */
-function kadence_blocks_add_global_gutenberg_styles() {
-	$font_sizes = array(
-		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-	);
-	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
-	$css = ':root {';
-	foreach( $font_sizes as $key => $value ) {
-		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
-	}
-	$css .= '}';
-	wp_add_inline_style( 'wp-edit-blocks', $css );
-}
-add_action( 'enqueue_block_editor_assets', 'kadence_blocks_add_global_gutenberg_styles', 90 );
-/**
- * Add inline css editor width
- */
-function kadence_blocks_admin_theme_content_width() {
-	global $content_width;
-	if ( isset( $content_width ) ) {
-		echo '<style id="kt-block-content-width">';
-		echo '.wp-block-kadence-rowlayout > .kb-theme-content-width {
-			max-width:' . esc_attr( $content_width ) . 'px;
-		}';
-		echo '</style>';
-	} else {
-		echo '<style id="kt-block-content-width">';
-		echo '.wp-block-kadence-rowlayout > .kb-theme-content-width {
-			max-width:var(--wp--style--global--content-size);
-		}';
-		echo '</style>';
-	}
-	echo '<style id="kb-global-styles">';
-	echo ':root {
-		--global-kb-spacing-xxs: 0.5rem;
-		--global-kb-spacing-xs: 1rem;
-		--global-kb-spacing-sm: 1.5rem;
-		--global-kb-spacing-md: 2rem;
-		--global-kb-spacing-lg: 3rem;
-		--global-kb-spacing-xl: 4rem;
-		--global-kb-spacing-xxl: 5rem;
-		--global-kb-spacing-3xl: 6.5rem;
-		--global-kb-spacing-4xl: 8rem;
-		--global-kb-spacing-5xl: 10rem;
-		--global-row-edge-sm: 15px;
-		--global-row-edge-theme: var(--global-content-edge-padding);
-		--global-kb-gutter-sm: 1rem;
-		--global-kb-gutter-md: 2rem;
-		--global-kb-gutter-lg: 3rem;
-		--global-kb-gutter-xl: 5rem;
-	}';
-	// {
-	// 	value: 'lg',
-	// 	output: 'var(--global-kb-font-size-lg, 2rem)',
-	// 	size: 32,
-	// 	label:  __( 'LG', 'kadence-blocks' ),
-	// 	name:  __( 'Large', 'kadence-blocks' ),
-	// },
-	// {
-	// 	value: 'xl',
-	// 	output: 'var(--global-kb-font-size-xl, 3rem)',
-	// 	size: 40,
-	// 	label:  __( 'XL', 'kadence-blocks' ),
-	// 	name:  __( 'X Large', 'kadence-blocks' ),
-	// },
-	// {
-	// 	value: 'xxl',
-	// 	output: 'var(--global-kb-font-size-xxl, 4rem)',
-	// 	size: 64,
-	// 	label:  __( 'XXL', 'kadence-blocks' ),
-	// 	name:  __( '2X Large', 'kadence-blocks' ),
-	// },
-	// {
-	// 	value: '3xl',
-	// 	output: 'var(--global-kb-font-size-xxxl, 5rem)',
-	// 	size: 80,
-	// 	label:  __( '3XL', 'kadence-blocks' ),
-	// 	name:  __( '3X Large', 'kadence-blocks' ),
-	// },
-	echo ':root .post-content-style-boxed {
-		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
-	}';
-	echo '</style>';
-	if ( ! class_exists( 'Kadence\Theme' ) ) {
-		echo '<style id="kt-block-global-colors">';
-		echo ':root {
-			--global-palette1: #3182CE;
-			--global-palette2: #2B6CB0;
-			--global-palette3: #1A202C;
-			--global-palette4: #2D3748;
-			--global-palette5: #4A5568;
-			--global-palette6: #718096;
-			--global-palette7: #EDF2F7;
-			--global-palette8: #F7FAFC;
-			--global-palette9: #ffffff;
-		}';
-		echo '</style>';
-	}
-}
-add_action( 'admin_head-post.php', 'kadence_blocks_admin_theme_content_width', 100 );
-add_action( 'admin_head-post-new.php', 'kadence_blocks_admin_theme_content_width', 100 );
 
 
 /**
@@ -1044,3 +1046,16 @@ function kadence_blocks_register_lottie_custom_post_type() {
 }
 
 add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );
+
+/**
+ * Filter core to remove loading = lazy if class is present.
+ */
+function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
+	if ( 'the_content' === $context ) {
+		if ( false !== strpos( $image, 'kb-skip-lazy' ) ) {
+			return false; // Set to false so lazy loading attribute is omitted.
+		}
+	}
+	return $value;
+}
+add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );

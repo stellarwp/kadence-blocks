@@ -526,6 +526,9 @@ div.kb-blocks-bg-video {
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-equal > .innerblocks-wrap {
 	grid-template-columns: repeat(4, minmax(0, 1fr) );
 }
+.wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-inherit > .innerblocks-wrap {
+	grid-template-columns:  repeat(4, minmax(0, 1fr) );
+}
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-left-forty > .innerblocks-wrap {
 	grid-template-columns: minmax(0, 40% ) minmax(0, 20% )  minmax(0, 20% ) minmax(0, 20% );
 }
@@ -538,6 +541,12 @@ div.kb-blocks-bg-video {
 // Five columns.
 .wp-block-kadence-rowlayout.kt-has-5-columns.kt-row-layout-equal > .innerblocks-wrap {
 	grid-template-columns: repeat(5, minmax(0, 1fr) );
+}
+.wp-block-kadence-rowlayout.kt-has-5-columns.kt-row-layout-two-grid > .innerblocks-wrap {
+	grid-template-columns:  repeat(2, minmax(0, 1fr) );
+}
+.wp-block-kadence-rowlayout.kt-has-5-columns.kt-row-layout-three-grid > .innerblocks-wrap {
+	grid-template-columns:  repeat(3, minmax(0, 1fr) );
 }
 // Six columns.
 .wp-block-kadence-rowlayout.kt-has-6-columns.kt-row-layout-equal > .innerblocks-wrap {

@@ -129,6 +129,7 @@ function KadenceForm( props ) {
 		containerMarginType,
 		submitLabel,
 		postID
+		hAlignFormFeilds,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -1617,6 +1618,7 @@ function KadenceForm( props ) {
 			<BlockControls key="controls">
 				<AlignmentToolbar
 					value={hAlign}
+					label={ __('Align Submit', 'kadence-blocks')}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
 				<CopyPasteAttributes
@@ -3553,6 +3555,11 @@ function KadenceForm( props ) {
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
+							<ToggleControl
+								label={__( 'Align field labels with submit alignment?', 'kadence-blocks' )}
+								checked={( undefined !== hAlignFormFeilds ? hAlignFormFeilds : false )}
+								onChange={( value ) => setAttributes( { hAlignFormFeilds: value } )}
+							/>
 						</KadencePanelBody>
 
 						<div className="kt-sidebar-settings-spacer"></div>
@@ -3561,7 +3568,7 @@ function KadenceForm( props ) {
 					</>
 				)}
 			</KadenceInspectorControls>
-			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
+			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}${ ( hAlignFormFeilds ? ' kb-form-field-align' : '' ) }`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{
 				marginLeft  : ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),

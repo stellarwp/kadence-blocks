@@ -638,18 +638,19 @@ function GalleryEdit( props ) {
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderSettings = {
-		dots          : false,
-		arrows        : ( arrowStyle === 'none' ? false : true ),
-		rewind       : true,
-		fade          : true,
-		speed         : transSpeed,
-		drag     : false,
-		pagination   : false,
-		autoplaySpeed : autoSpeed,
-		autoplay      : autoPlay,
-		slidesToShow  : 1,
-		slidesToScroll: 1,
-		direction : ( isRTL ? 'rtl' : 'ltr' )
+		type           : 'fade',
+		dots           : false,
+		arrows         : ( arrowStyle === 'none' ? false : true ),
+		rewind         : true,
+		fade           : true,
+		speed          : transSpeed,
+		drag           : false,
+		pagination     : false,
+		autoplaySpeed  : autoSpeed,
+		autoplay       : autoPlay,
+		slidesToShow   : 1,
+		slidesToScroll : 1,
+		direction      : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderthumbsSettings = {
 		focus        : 0,

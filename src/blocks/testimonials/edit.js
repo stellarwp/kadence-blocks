@@ -2180,8 +2180,6 @@ function KadenceTestimonials( props ) {
                             >
                             <SplideTrack { ...innerBlocksProps }></SplideTrack>
                         </Splide>
-
-
                     )}
                     {layout && layout === 'grid' && (
                         <div className={'kt-testimonial-grid-wrap'} style={{
