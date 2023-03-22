@@ -34,7 +34,9 @@ import {
 	getSpacingOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrWidgetId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -97,7 +99,6 @@ const actionOptionsList = [
  * Build the form edit
  */
 function KadenceForm( props ) {
-
 	const { attributes, className, isSelected, setAttributes, clientId } = props;
 
 	const {
@@ -127,47 +128,22 @@ function KadenceForm( props ) {
 		mobileContainerMargin,
 		containerMarginType,
 		submitLabel,
+		postID
 	} = attributes;
 
-	const getID = () => {
-		let postID;
-
-		if ( getWidgetIdFromBlock( props ) ) {
-			if ( !postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( props ),
-				} );
-			} else if ( getWidgetIdFromBlock( props ) !== postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( props ),
-				} );
-			}
-		} else if ( wp.data.select( 'core/editor' ) ) {
-			const { getCurrentPostId } = wp.data.select( 'core/editor' );
-			if ( !postID && getCurrentPostId() ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== postID ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			}
-		} else {
-			if ( !postID ) {
-				setAttributes( {
-					postID: 'block-unknown',
-				} );
-			}
-		}
-	};
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -176,7 +152,8 @@ function KadenceForm( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/form', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -241,7 +218,12 @@ function KadenceForm( props ) {
 			}
 		}
 
-		getID();
+		const checkPostID = getPostOrWidgetId( props );
+		if ( checkPostID !== postID ) {
+			setAttributes( {
+				postID: checkPostID,
+			} );
+		}
 
 		/**
 		 * Get settings
