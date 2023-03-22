@@ -128,7 +128,7 @@ function KadenceForm( props ) {
 		mobileContainerMargin,
 		containerMarginType,
 		submitLabel,
-		postID
+		postID,
 		hAlignFormFeilds,
 	} = attributes;
 
