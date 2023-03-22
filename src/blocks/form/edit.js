@@ -161,6 +161,14 @@ function KadenceForm( props ) {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
+
+		const checkPostID = getPostOrWidgetId( props, parentData.postId, parentData.reusableParent );
+		if ( checkPostID.toString() !== postID.toString() ) {
+			setAttributes( {
+				postID: checkPostID.toString(),
+			} );
+		}
+
 	}, [] );
 	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
@@ -216,13 +224,6 @@ function KadenceForm( props ) {
 			} else {
 				setMessageFontBorderControl( 'individual' );
 			}
-		}
-
-		const checkPostID = getPostOrWidgetId( props );
-		if ( checkPostID !== postID ) {
-			setAttributes( {
-				postID: checkPostID,
-			} );
 		}
 
 		/**
