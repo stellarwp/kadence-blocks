@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
-Tested up to: 6.1
-Stable tag: 3.0.26
+Tested up to: 6.2
+Stable tag: 3.0.27
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,9 +78,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.27 =
-Release Date: March 20, 2023
+Release Date: March 21, 2023
 * Update: Row layout to allow 5 column to collapse into 2 and 3.
 * Add: Title to iframe in Google Maps block.
+* Add: Option to skip lazy load for advanced image block.
 * Fix: Issue with section overlays in editor.
 * Fix: Issue with submit alignment and label alignment in forms.
 * Fix: Advanced text icon hover color.

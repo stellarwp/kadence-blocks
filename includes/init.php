@@ -1046,3 +1046,16 @@ function kadence_blocks_register_lottie_custom_post_type() {
 }
 
 add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );
+
+/**
+ * Filter core to remove loading = lazy if class is present.
+ */
+function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
+	if ( 'the_content' === $context ) {
+		if ( false !== strpos( $image, 'kb-skip-lazy' ) ) {
+			return false; // Set to false so lazy loading attribute is omitted.
+		}
+	}
+	return $value;
+}
+add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );

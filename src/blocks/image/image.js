@@ -142,6 +142,7 @@ export default function Image( {
 		borderStyle,
 		tabletBorderStyle,
 		mobileBorderStyle,
+		preventLazyLoad,
 	} = attributes;
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
@@ -504,10 +505,10 @@ export default function Image( {
 								/>
 							) }
 							<ToggleControl
-									label={ __( 'Use fixed ratio instead of image ratio', 'kadence-blocks' ) }
-									checked={ useRatio }
-									onChange={ ( value ) => setAttributes( { useRatio: value } ) }
-								/>
+								label={ __( 'Use fixed ratio instead of image ratio', 'kadence-blocks' ) }
+								checked={ useRatio }
+								onChange={ ( value ) => setAttributes( { useRatio: value } ) }
+							/>
 							{ useRatio && (
 								<SelectControl
 									label={ __( 'Size Ratio', 'kadence-blocks' ) }
@@ -1105,6 +1106,12 @@ export default function Image( {
 
 			</InspectorControls>
 			<InspectorAdvancedControls>
+				<ToggleControl
+					label={ __( 'Prevent Lazy Load', 'kadence-blocks' ) }
+					help={ __( 'This adds a class to tell lazy load plugins to skip this image for lazy load.', 'kadence-blocks' ) }
+					checked={ preventLazyLoad }
+					onChange={ ( value ) => setAttributes( { preventLazyLoad: value } ) }
+				/>
 				<RangeControl
 					label={ __( 'Z-Index Control', 'kadence-blocks' ) }
 					value={ zIndex }
