@@ -198,16 +198,8 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			$media .= '</div>';
 		}
 		if( $attributes['media'] !== 'icon' && $attributes['url'] ) {
-			$media .= '<div
-			class="kt-testimonial-image"
-			style="
-			background-image: url(' . $urlOutput . ');
-			background-size: '. ( $style === 'card' ? $mediaStyles[0]['backgroundSize'] : "undefined" ) .';
-			border-radius: '. ( isset( $mediaStyles[ 0 ]['borderRadius'] ) ? $mediaStyles[ 0 ]['borderRadius'] . 'px' : "undefined" ) .';
-			"
-			></div>';
+			$media .= '<div class="kt-testimonial-image" style="background-image: url(' . $urlOutput . ');' . ( $style === 'card' ? 'background-size: '. $mediaStyles[0]['backgroundSize'] . ';' : '' ) . '' . ( isset( $mediaStyles[ 0 ]['borderRadius'] ) && is_numeric( $mediaStyles[ 0 ]['borderRadius'] ) ? 'border-radius: ' . $mediaStyles[ 0 ]['borderRadius'] . 'px;' : '' ) . '"></div>';
 		}
-
 		$media .= '</div>';
 		$media .= '</div>';
 		$media .= '</div>';
