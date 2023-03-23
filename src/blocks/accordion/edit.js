@@ -1546,7 +1546,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				)}
 				{ ! showPreset && (
 					<>
-						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
 						<div className="kt-accordion-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
