@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.27 =
-Release Date: March 22, 2023
+Release Date: March 23, 2023
 * Add: Title to iframe in Google Maps block.
 * Add: Option to skip lazy load for advanced image block.
 * Update: Row layout to allow 5 column to collapse into 2 and 3.
@@ -87,6 +87,7 @@ Release Date: March 22, 2023
 * Fix: Issue with advanced text with icons and link wraps not opening in a new tab.
 * Fix: Design issues with testimonials and border radius.
 * Fix: Issue with section overlays in editor.
+* Fix: Issue with fluid carousel effecting others on mobile.
 * Fix: Issue with icon blocks not getting unique id in some situations.
 * Fix: Issue with mobile overlay applying to tablet.
 * Fix: Issue with submit alignment and label alignment in forms.

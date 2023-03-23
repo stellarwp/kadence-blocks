@@ -49,11 +49,11 @@
 				let { sliderType } = parsedData;
 
 				if (sliderType && sliderType === "fluidcarousel") {
-					thisSlider
+					elementList[i]
 						.querySelectorAll(".kb-slide-item")
 						.forEach(function (elem) {
 							elem.style.maxWidth =
-								Math.floor((80 / 100) * thisSlider.clientWidth) + "px";
+								Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
 						});
 
 					const splideSlider = new Splide(thisSlider, {
@@ -77,11 +77,11 @@
 					window.addEventListener("resize", function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
-							thisSlider
+							elementList[i]
 								.querySelectorAll(".kb-slide-item")
 								.forEach(function (elem) {
 									elem.style.maxWidth =
-										Math.floor((80 / 100) * thisSlider.clientWidth) + "px";
+										Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
 								});
 						}, 10);
 					});
