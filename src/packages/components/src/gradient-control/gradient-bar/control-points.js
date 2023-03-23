@@ -445,6 +445,7 @@ function ControlPoints( {
 										const style = { color };
 										const palette = slug.replace( 'theme-', '' );
 										const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
+										const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && pointColor === color ) );
 										return (
 											<div key={ color } className="kadence-color-palette__item-wrapper">
 												<Tooltip
@@ -454,7 +455,7 @@ function ControlPoints( {
 													}>
 													<Button
 														type="button"
-														className={ `kadence-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
+														className={ `kadence-color-palette__item ${ ( isActive || isLinked ? 'is-active' : '' ) }` }
 														style={ style }
 														onClick={ () => {
 															if ( slug.startsWith( 'theme-palette' ) ) {
@@ -463,6 +464,14 @@ function ControlPoints( {
 																		controlPoints,
 																		index,
 																		'var(--global-' + palette + ',' + color + ')'
+																	)
+																);
+															} else if ( color.startsWith( 'var(' ) ) {
+																onChange(
+																	updateControlPointColor(
+																		controlPoints,
+																		index,
+																		color
 																	)
 																);
 															} else {
@@ -480,7 +489,7 @@ function ControlPoints( {
 															sprintf( __( 'Color: %s', 'kadence-blocks' ), name ) :
 															// translators: %s: color hex code e.g: "#f00".
 															sprintf( __( 'Color code: %s', 'kadence-blocks' ), color ) }
-														aria-pressed={ isActive }
+														aria-pressed={ isActive || isLinked }
 													/>
 												</Tooltip>
 												{ isActive && <Dashicon icon="admin-site" /> }
@@ -615,6 +624,8 @@ function InsertPoint( {
 								const style = { color };
 								const palette = slug.replace( 'theme-', '' );
 								const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
+								const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && tempColor === color ) );
+								console.log( pointColor );
 								return (
 									<div key={ color } className="kadence-color-palette__item-wrapper">
 										<Tooltip
@@ -624,7 +635,7 @@ function InsertPoint( {
 											}>
 											<Button
 												type="button"
-												className={ `kadence-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
+												className={ `kadence-color-palette__item ${ ( isActive || isLinked ? 'is-active' : '' ) }` }
 												style={ style }
 												onClick={ () => {
 													setTempColor( colord( color ).toRgbString() );
@@ -644,6 +655,25 @@ function InsertPoint( {
 																	controlPoints,
 																	insertPosition,
 																	'var(--global-' + palette + ',' + color + ')'
+																)
+															);
+														}
+													} else if ( color.startsWith( 'var(' ) ) {
+														if ( ! alreadyInsertedPoint ) {
+															onChange(
+																addControlPoint(
+																	controlPoints,
+																	insertPosition,
+																	color,
+																)
+															);
+															setAlreadyInsertedPoint( true );
+														} else {
+															onChange(
+																updateControlPointColorByPosition(
+																	controlPoints,
+																	insertPosition,
+																	color,
 																)
 															);
 														}
@@ -676,7 +706,7 @@ function InsertPoint( {
 											/>
 										</Tooltip>
 										{ isActive && <Dashicon icon="admin-site" /> }
-										{ ! slug.startsWith( 'theme-palette' ) && pointColor === color && <Dashicon icon="saved" /> }
+										{ ! slug.startsWith( 'theme-palette' ) && tempColor === color && <Dashicon icon="saved" /> }
 									</div>
 								);
 							} ) }
