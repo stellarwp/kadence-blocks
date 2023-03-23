@@ -28,6 +28,12 @@
 		height: 32px;
 	}
 }
+.kadence-range-control-inner .components-base-control__field > .components-flex {
+    width: 100%;
+}
+.kadence-range-control-inner .components-base-control__field > .components-flex .components-input-control__input {
+    height: 32px;
+}
 .kadence-controls-content .measure-input-wrap .input-setting-toggle {
 	height: 14px;
 	.components-button.input-setting-toggle-btn {
