@@ -422,15 +422,23 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				);
 				$link_args['href'] = do_shortcode( $attributes['link'] );
 				$rel_add = '';
-				if ( ! empty( $attributes['target'] ) && $attributes['target'] ) {
+				if ( ! empty( $attributes['linkTarget'] ) && $attributes['linkTarget'] ) {
 					$link_args['target'] = '_blank';
-					$rel_add = 'noreferrer noopener';
+					$rel_add .= 'noreferrer noopener';
 				}
-				if ( isset( $attributes['noFollow'] ) && $attributes['noFollow'] ) {
-					$rel_add .= ' nofollow';
+				if ( isset( $attributes['linkNoFollow'] ) && $attributes['linkNoFollow'] ) {
+					if ( ! empty( $rel_add ) ) {
+						$rel_add .= ' nofollow';
+					} else {
+						$rel_add .= 'nofollow';
+					}
 				}
-				if ( isset( $attributes['sponsored'] ) && $attributes['sponsored'] ) {
-					$rel_add .= ' sponsored';
+				if ( isset( $attributes['linkSponsored'] ) && $attributes['linkSponsored'] ) {
+					if ( ! empty( $rel_add ) ) {
+						$rel_add .= ' sponsored';
+					} else {
+						$rel_add .= 'sponsored';
+					}
 				}
 				if ( ! empty( $rel_add ) ) {
 					$link_args['rel'] = $rel_add;
