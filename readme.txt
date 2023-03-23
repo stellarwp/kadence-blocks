@@ -78,13 +78,22 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.27 =
-Release Date: March 21, 2023
-* Update: Row layout to allow 5 column to collapse into 2 and 3.
+Release Date: March 22, 2023
 * Add: Title to iframe in Google Maps block.
 * Add: Option to skip lazy load for advanced image block.
+* Update: Row layout to allow 5 column to collapse into 2 and 3.
+* Update: Option to select parent block settings quickly from sidebar.
+* Update: Change hover styles toggle to tabs.
+* Fix: Issue with advanced text with icons and link wraps not opening in a new tab.
+* Fix: Design issues with testimonials and border radius.
 * Fix: Issue with section overlays in editor.
+* Fix: Issue with icon blocks not getting unique id in some situations.
+* Fix: Issue with mobile overlay applying to tablet.
 * Fix: Issue with submit alignment and label alignment in forms.
 * Fix: Advanced text icon hover color.
+* Fix: Issue with missing overlay opacity in tablet and mobile.
+* Fix: Issue with video poster select.
+* Fix: Gradient color picker when working with third party variables.
 
 = 3.0.26 =
 Release Date: March 15, 2023
