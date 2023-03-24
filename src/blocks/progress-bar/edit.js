@@ -23,6 +23,8 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
+	setBlockDefaults,
+	getUniqueId
 } from '@kadence/helpers';
 
 import {
@@ -34,14 +36,13 @@ import {
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	useState,
 	useEffect,
 	useCallback,
 	useMemo,
-	Fragment,
-	useRef,
+	Fragment
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { map } from 'lodash';
@@ -71,8 +72,6 @@ import {
  * Internal dependencies
  */
 import classnames from 'classnames';
-
-const ktUniqueIDs = [];
 
 export function Edit( props ) {
 
@@ -117,7 +116,6 @@ export function Edit( props ) {
 		progressWidth,
 		progressWidthTablet,
 		progressWidthMobile,
-		progressWidthType,
 		progressBorderRadius,
 		easing,
 		labelLayout,
@@ -127,29 +125,7 @@ export function Edit( props ) {
 		delayUntilInView,
 	} = attributes;
 
-	useEffect( () => {
-		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/block-template' ] !== undefined && typeof blockConfigObject[ 'kadence/block-template' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/block-template' ] ).map( ( attribute ) => {
-					uniqueID = blockConfigObject[ 'kadence/block-template' ][ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			ktUniqueIDs.push( uniqueID );
-		}
-
-	}, [] );
-
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
@@ -160,6 +136,19 @@ export function Edit( props ) {
 		},
 		[ clientId ],
 	);
+
+	useEffect( () => {
+		setBlockDefaults( 'kadence/progress-bar', attributes);
+
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
+	}, [] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -229,9 +218,12 @@ export function Edit( props ) {
 			borderRadius: ( barType === 'line' ? previewProgressBorderRadius + 'px' : '' ),
 		},
 		step: function( state, bar ) {
-			let elementAbove = document.getElementById( 'current-progress-above' + uniqueID );
-			let elementInside = document.getElementById( 'current-progress-inside' + uniqueID );
-			let elementBelow = document.getElementById( 'current-progress-below' + uniqueID );
+			let iFrameSelector = document.getElementsByName('editor-canvas');
+			let selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+
+			let elementAbove = selector.getElementById( 'current-progress-above' + uniqueID );
+			let elementInside = selector.getElementById( 'current-progress-inside' + uniqueID );
+			let elementBelow = selector.getElementById( 'current-progress-below' + uniqueID );
 			let value;
 
 			if ( numberIsRelative ) {
@@ -269,7 +261,7 @@ export function Edit( props ) {
 		} else if ( barType === 'semicircle' ) {
 			return new SemiCircle( container, progressAttributes );
 		}
-	}, [ progressAttributes ] );
+	}, [ progressAttributes, previewDevice ] );
 
 	const ProgressItem = () => {
 		const node = useCallback( node => {
@@ -280,7 +272,7 @@ export function Edit( props ) {
 
 		useEffect( () => {
 			progress.animate( progressAmount / progressMax );
-		}, [ progressAmount, progressMax ] );
+		}, [ previewDevice, progressAmount, progressMax ] );
 
 		return <div ref={node}/>;
 	};
@@ -319,6 +311,10 @@ export function Edit( props ) {
 			wrapperLayoutStyles.left = '50%';
 		} else if ( labelPosition === 'inside' && previewAlign === 'right' ) {
 			wrapperLayoutStyles.right = '0%';
+		}
+
+		if ( barType === 'line' && labelPosition === 'inside' && previewAlign === 'space-between' ) {
+			wrapperLayoutStyles.width = '100%';
 		}
 
 		return (
@@ -545,7 +541,6 @@ export function Edit( props ) {
 				{( activeTab === 'style' ) && (
 
 					<Fragment>
-
 						<KadencePanelBody>
 							<ToggleGroupControl
 								label={__( 'Label Position', 'kadence-blocks' )}
@@ -645,7 +640,6 @@ export function Edit( props ) {
 								onMargin={( value ) => saveLabelFont( { margin: value } )}
 							/>
 						</KadencePanelBody>
-
 					</Fragment>
 
 				)}

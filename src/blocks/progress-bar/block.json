@@ -117,10 +117,6 @@
 	  "type": "number",
 	  "default": ""
 	},
-	"progressWidthType": {
-	  "type": "string",
-	  "default": "px"
-	},
 	"progressColor": {
 	  "type": "string",
 	  "default": "#2B6CB0"

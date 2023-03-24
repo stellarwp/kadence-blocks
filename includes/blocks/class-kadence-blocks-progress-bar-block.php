@@ -97,12 +97,16 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap' );
 		$css->render_typography( $attributes, 'labelFont' );
 
-		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] !== 'inside' );
+		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] === 'inside' );
 
 		if ( ! empty( $attributes['hAlign'] ) && ! $is_inside ) {
 			$this->responsive_alignment( $attributes['hAlign'], $css );
 		} else {
 			$css->add_property( 'justify-content', 'space-between' );
+
+			if( $is_inside && ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && $attributes['barType'] !== 'line' ) ) ) {
+				$css->add_property( 'width', '100%' );
+			}
 		}
 
 		if ( ! empty( $attributes['thAlign'] ) && ! $is_inside ) {
