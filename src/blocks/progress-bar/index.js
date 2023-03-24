@@ -17,6 +17,14 @@ registerBlockType('kadence/progress-bar', {
 	icon: {
 		src: progressIcon,
 	},
+	getEditWrapperProps( attributes ) {
+		if ( 'wide' === attributes.align || 'full' === attributes.align || 'left' === attributes.align || 'right' === attributes.align ) {
+			return {
+				'data-align': attributes.align,
+			};
+		}
+		return;
+	},
 	transforms,
 	edit,
 	save: () => null,

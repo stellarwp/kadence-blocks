@@ -5,11 +5,27 @@
  * which makes it higher in priority.
  */
 
-.kt-progress-label-wrap {
+.kb-progress-label-wrap {
 	display: flex;
-	justify-content: space-between;
+	flex-wrap: wrap;
+}
 
-	h1, h2, h3, h4, h5, h6, p, span, div {
-		display: inline;
-	}
+.kb-progress-bar-type-line .kt-progress-label-inside {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-55%)
+}
+
+.kb-progress-bar-type-circle .kt-progress-label-inside {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.kb-progress-bar-type-semicircle .kt-progress-label-inside {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
 }

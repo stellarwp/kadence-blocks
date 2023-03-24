@@ -13,6 +13,18 @@
 	"align": {
 	  "type": "string"
 	},
+	"hAlign": {
+	  "type": "string",
+	  "default": "space-between"
+	},
+	"thAlign": {
+	  "type": "string",
+	  "default": ""
+	},
+	"mhAlign": {
+	  "type": "string",
+	  "default": ""
+	},
 	"id": {
 	  "type": "number"
 	},
@@ -87,7 +99,7 @@
 	},
 	"barBackground": {
 	  "type": "string",
-	  "default": "#4A5568"
+	  "default": "#EDF2F7"
 	},
 	"barBackgroundOpacity": {
 	  "type": "number",
@@ -140,9 +152,17 @@
 	  "type": "string",
 	  "default": "px"
 	},
+	"labelLayout": {
+	  "type": "string",
+	  "default": "lp"
+	},
 	"displayLabel": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"delayUntilInView": {
+	  "type": "boolean",
+	  "default": false
 	},
 	"labelFont": {
 	  "type": "object",
@@ -183,7 +203,7 @@
 		"margin": [
 		  0,
 		  0,
-		  15,
+		  0,
 		  0
 		]
 	  }
@@ -193,12 +213,12 @@
 	  "default": ""
 	},
 	"labelPosition": {
-	  "default": "top left",
+	  "default": "above",
 	  "type": "string"
 	},
 	"progressAmount": {
 	  "type": "integer",
-	  "default": 50
+	  "default": 90
 	},
 	"progressMax": {
 	  "type": "integer",
@@ -208,9 +228,9 @@
 	  "type": "boolean",
 	  "default": true
 	},
-	"percentPosition": {
-	  "default": "top right",
-	  "type": "string"
+	"numberPrefix": {
+	  "type": "string",
+	  "default": ""
 	},
 	"numberSuffix": {
 	  "type": "string",
@@ -222,11 +242,7 @@
 	},
 	"duration": {
 	  "type": "number",
-	  "default": 2.5
-	},
-	"startDelay": {
-	  "type": "number",
-	  "default": 0
+	  "default": 2.0
 	},
 	"easing": {
 	  "enum": [
@@ -235,7 +251,7 @@
 		"linear",
 		"easeInOut"
 	  ],
-	  "default": "linear",
+	  "default": "easeInOut",
 	  "type": "string"
 	},
 	"progressBorderRadius": {

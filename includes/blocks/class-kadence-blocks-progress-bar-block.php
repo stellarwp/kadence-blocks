@@ -56,47 +56,71 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
 	 * @param string             $unique_id  the blocks attr ID.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
 		wp_enqueue_script( 'kadence-blocks-' . $this->block_name );
+		wp_enqueue_script( 'kadence-blocks-scroll-magic' );
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id );
-		$css->render_responsive_size( $attributes, array( 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ), 'max-width', 'containerMaxWidthUnits' );
+
+		$css->render_responsive_size( $attributes, array( 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ), 'width', 'containerMaxWidthUnits' );
 
 		$margin_args = array(
 			'desktop_key' => 'marginDesktop',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		);
-		$css->render_measure_output( $attributes, 'marginDestop', 'margin', $margin_args );
+		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', $margin_args );
 
-		// echo '<pre>';
-		// print_r($attributes['labelFont']['textTransform']);
-		// die();
+		if ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && $attributes['barType'] === 'line' ) ) {
+			$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' svg' );
 
-		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label ' );
-		$css->render_typography($attributes , 'labelFont');
+			if ( ! empty( $attributes['progressBorderRadius'][0] ) ) {
+				$css->add_property( 'border-radius', $attributes['progressBorderRadius'][0] . 'px' );
+			}
 
-		if ( ! empty( $attributes['labelAlign'] ) ) {
-			$css->add_property( 'text-align', $attributes['labelAlign'][0] );
-
-			if ( ! empty( $attributes['labelAlign'][1] ) ) {
+			if ( ! empty( $attributes['progressBorderRadius'][1] ) ) {
 				$css->set_media_state( 'tablet' );
-				$css->add_property( 'text-align', $attributes['labelAlign'][1] );
+				$css->add_property( 'border-radius', $attributes['progressBorderRadius'][1] . 'px' );
 				$css->set_media_state( 'desktop' );
 			}
 
-			if ( ! empty( $attributes['labelAlign'][2] ) ) {
+			if ( ! empty( $attributes['progressBorderRadius'][2] ) ) {
 				$css->set_media_state( 'mobile' );
-				$css->add_property( 'text-align', $attributes['labelAlign'][2] );
+				$css->add_property( 'border-radius', $attributes['progressBorderRadius'][2] . 'px' );
 				$css->set_media_state( 'desktop' );
 			}
 		}
 
-		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kt-blocks-progress-label mark' );
-		$css->render_typography($attributes , 'labelHighlightFont');
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap' );
+		$css->render_typography( $attributes, 'labelFont' );
+
+		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] !== 'inside' );
+
+		if ( ! empty( $attributes['hAlign'] ) && ! $is_inside ) {
+			$this->responsive_alignment( $attributes['hAlign'], $css );
+		} else {
+			$css->add_property( 'justify-content', 'space-between' );
+		}
+
+		if ( ! empty( $attributes['thAlign'] ) && ! $is_inside ) {
+			$css->set_media_state( 'tablet' );
+			$this->responsive_alignment( $attributes['thAlign'], $css );
+			$css->set_media_state( 'desktop' );
+		}
+
+		if ( ! empty( $attributes['mhAlign'] ) && ! $is_inside ) {
+			$css->set_media_state( 'mobile' );
+			$this->responsive_alignment( $attributes['mhAlign'], $css );
+			$css->set_media_state( 'desktop' );
+		}
+
+
+		if ( isset( $attributes['labelLayout'] ) && ( $attributes['labelLayout'] === 'lt' || $attributes['labelLayout'] === 'lb' ) ) {
+			$css->add_property( 'flex-direction', 'column' );
+		}
 
 		return $css->css_output();
 	}
@@ -113,18 +137,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			'semicircle' => 'SemiCircle'
 		);
 
+		$content = '<div class="kb-progress-bar-container kb-progress-bar-container' . $unique_id . ' kb-progress-bar-type-' . $attributes['barType'] . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ) . '">';
 
-		$content = '<div class="kb-progress-bar-container kb-progress-bar-container' . $unique_id . '">';
+		$content .= $this->get_label( $attributes, 'above' );
 
-		if ( $attributes['labelPosition'] === 'above' ) {
-			$content .= $this->render_label( $attributes );
-		}
+		$content .= '<div id="kb-progress-bar' . $unique_id . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
-		$content .= '<div id="kb-progress-bar' . $unique_id . '"></div>';
-
-		if ( $attributes['labelPosition'] === 'below' ) {
-			$content .= $this->render_label( $attributes );
-		}
+		$content .= $this->get_label( $attributes, 'below' );
 
 		$content .= '</div>';
 
@@ -132,12 +151,17 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_color = $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] );
 		$bar_background = $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] );
 
+		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
+		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
+		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
+		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
+		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : false;
 
 		$content .= '<script>
 
 			var waitForProgressBar' . $simple_id . ' = setInterval(function () {
 
-				if (typeof ProgressBar !== "undefined") {
+				if (typeof ProgressBar !== "undefined" && typeof ScrollMagic !== "undefined") {
 					clearInterval(waitForProgressBar' . $simple_id . ');
 
 					var progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
@@ -146,38 +170,114 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 						duration: "' . ( $attributes['duration'] * 1000 ) . '",
 						easing: "' . $attributes['easing'] . '",
 						strokeWidth:  "' . $attributes['progressWidth'] . '",
-					});
+					});';
 
-					progressBar' . $simple_id . '.animate(
-													' . $attributes['progressAmount'] / 100 . ' ,
-										 			{
-														 duration: ' . ( $attributes['duration'] * 1000 ) . ',
-										 			} ,
-										 			function(){ console.log("Progress animation complete")}
-										 		);
-				}
-			}, 125);
+		if ( $delay ) {
+			$content .= 'let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
+					let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '", logLevel: 3});
+					desiredAnimation.triggerHook(0.88);
+					desiredAnimation.addTo( progressBarController' . $simple_id . ' );
+					desiredAnimation.on("start", function (e) {';
+		}
 
 
-		</script>';
+		$content .= 'progressBar' . $simple_id . '.animate(
+						' . $attributes['progressAmount'] / $attributes['progressMax'] . ' ,
+			            {
+							 duration: ' . ( $attributes['duration'] * 1000 ) . ',
+                             step: function(state, bar) {
+                                let value = 0;
+                                let elementAbove = document.getElementById("current-progress-above' . $unique_id . '");
+                                let elementInside = document.getElementById("current-progress-inside' . $unique_id . '");
+                                let elementBelow = document.getElementById("current-progress-below' . $unique_id . '");
+
+                                if( ' . ( $is_relative ? 'true' : 'false' ) . ' ) {
+                                    value = Math.round(bar.value() * 100 );
+                                } else {
+                                    value = Math.round(bar.value() * ' . $progress_max . ');
+                                }
+
+								if( elementAbove ){
+									elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+								} else if ( elementInside ){
+									elementInside.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+								} else if ( elementBelow ){
+									elementBelow.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+								}
+
+							 }
+			            } ,
+			            function(){}
+			        );';
+
+		if ( $delay ) {
+			$content .= '});';
+		}
+
+		$content .= '} }, 125); </script>';
 
 		return $content;
-
 	}
 
-	private function render_label( $attributes ) {
+	/**
+	 * @param $attributes
+	 * @param $position
+	 *
+	 * @return string HTML that creates the labels on the front end.
+	 */
+	private function get_label( $attributes, $position ) {
 
-		if ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== true ) {
+		if ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] !== $position ) {
 			return '';
 		}
 
-		$tag = 'h3';
-		if ( !empty( $attributes['labelFont']['level'] ) ) {
-			$tag = 'h' . $attributes['labelFont']['level'];
+		$label = '<span role="textbox" class="kt-progress-label">' . $attributes['label'] . '</span>';
+		if ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== true ) {
+			$label = '';
 		}
 
-		return '<' . $tag . ' class="kt-blocks-progress-label">' . $attributes['label'] . '</' . $tag . '>';
+		$response = '<div class="kb-progress-label-wrap ' . ( $position === 'inside' ? 'kt-progress-label-inside' : '' ) . '">';
 
+		$percent = $this->get_percent( $attributes );
+
+		if ( isset( $attributes['labelLayout'] ) && ( $attributes['labelLayout'] === 'pl' || $attributes['labelLayout'] === 'lb' ) ) {
+			$response .= $percent . $label;
+		} else {
+			$response .= $label . $percent;
+		}
+
+		$response .= '</div>';
+
+		return $response;
+	}
+
+	private function get_percent( $attributes ) {
+		if ( isset( $attributes['displayPercent'] ) && $attributes['displayPercent'] !== true ) {
+			return '';
+		}
+
+		$prefix   = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
+		$suffix   = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
+		$starting = 0;
+
+		$position = isset( $attributes['labelPosition'] ) ? $attributes['labelPosition'] : 'above';
+
+		return '<span id="current-progress-' . $position . $attributes['uniqueID'] . '">' . $prefix . $starting . $suffix . '</span>';
+	}
+
+	private function responsive_alignment( $alignment, $css ) {
+
+		if ( $alignment === 'space-between' ) {
+			$css->add_property( 'justify-content', 'space-between' );
+		} elseif ( $alignment === 'center' ) {
+			$css->add_property( 'justify-content', 'center' );
+			$css->add_property( 'text-align', 'center' );
+		} elseif ( $alignment === 'left' ) {
+			$css->add_property( 'justify-content', 'flex-start' );
+		} elseif ( $alignment === 'right' ) {
+			$css->add_property( 'justify-content', 'flex-end' );
+			$css->add_property( 'text-align', 'right' );
+		}
 	}
 
 
@@ -197,6 +297,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/progressBar.min.js', array(), KADENCE_BLOCKS_VERSION, false );
+		wp_register_script( 'kadence-blocks-scroll-magic', KADENCE_BLOCKS_URL . 'includes/assets/js/scroll-magic.min.js', array(), KADENCE_BLOCKS_VERSION, false );
 
 	}
 }
