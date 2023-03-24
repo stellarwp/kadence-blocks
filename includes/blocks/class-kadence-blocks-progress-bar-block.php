@@ -167,6 +167,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 			function reportWindowSize() {
 			  let barContainer = document.querySelector("#kb-progress-bar' . $unique_id . '");
+			  let type = "' . $attributes['barType'] . '";
 			  let barSvg = barContainer.querySelector("svg");
 			  let barPaths = barSvg.querySelectorAll("path");
 			  let path1 = barPaths[0];
@@ -174,33 +175,37 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			  let stokeWidths = [' . implode( ',', $strokeWidths ) . '];
 
 			  if( window.innerWidth < 768 ) {
-			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[0]);
+			    if( type === "line" ){
+			        barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[2]);
 
-			    path1.setAttribute( "stroke-width", stokeWidths[0]);
-                path2.setAttribute( "stroke-width", stokeWidths[0]);
+	                path1.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
+	                path2.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
+				}
 
-                path1.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
-                path2.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
-
+			    path1.setAttribute( "stroke-width", stokeWidths[2]);
+                path2.setAttribute( "stroke-width", stokeWidths[2]);
 			  } else if( window.innerWidth < 1025 ) {
-			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[1]);
+                if( type === "line" ){
+			        barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[1]);
+
+	                path1.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
+	                path2.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
+			    }
 
                 path1.setAttribute( "stroke-width", stokeWidths[1]);
                 path2.setAttribute( "stroke-width", stokeWidths[1]);
-
-                path1.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
-                path2.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
 			  } else {
-			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[2]);
+			    if( type === "line" ){
+			        barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[0]);
 
-                path1.setAttribute( "stroke-width", stokeWidths[2]);
-                path2.setAttribute( "stroke-width", stokeWidths[2]);
+	                path1.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
+                    path2.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
+			    }
 
-                path1.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
-                path2.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
+                path1.setAttribute( "stroke-width", stokeWidths[0]);
+                path2.setAttribute( "stroke-width", stokeWidths[0]);
 			  }
 			}
-
 
 			window.onresize = reportWindowSize;
 
