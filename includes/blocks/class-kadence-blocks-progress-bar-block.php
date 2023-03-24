@@ -214,21 +214,32 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				if (typeof ProgressBar !== "undefined" ) {
 					clearInterval(waitForProgressBar' . $simple_id . ');
 
-					var progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
+					let responsiveStrokeSizes = [' . implode( ',', $strokeWidths ) . '];
+					let initialStroke;
+
+				    if( window.innerWidth < 768 ) {
+				        initialStroke = responsiveStrokeSizes[2];
+			        } else if( window.innerWidth < 1025 ) {
+                        initialStroke = responsiveStrokeSizes[1];
+				    } else {
+                        initialStroke = responsiveStrokeSizes[0];
+                    }
+
+					let progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
 						color: "' . $progress_color . '",
 						trailColor: "' . $bar_background . '",
 						duration: "' . ( $attributes['duration'] * 1000 ) . '",
 						easing: "' . $attributes['easing'] . '",
-						strokeWidth:  "' . $attributes['progressWidth'] . '",
+						strokeWidth: initialStroke,
 					});';
 
 		if ( $delay ) {
 			$content .= '
-					let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
-					let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '", logLevel: 3});
-					desiredAnimation.triggerHook(0.88);
-					desiredAnimation.addTo( progressBarController' . $simple_id . ' );
-					desiredAnimation.on("start", function (e) {';
+				let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
+				let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '", logLevel: 3});
+				desiredAnimation.triggerHook(0.88);
+				desiredAnimation.addTo( progressBarController' . $simple_id . ' );
+				desiredAnimation.on("start", function (e) {';
 		}
 
 		$content .= 'progressBar' . $simple_id . '.animate(
@@ -254,7 +265,6 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 									} else if ( elementBelow ){
 										elementBelow.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
 									}
-
 								 }
 				            } ,
 				            function(){}
