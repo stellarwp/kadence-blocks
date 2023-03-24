@@ -60,36 +60,40 @@ class Kadence_Blocks_Svg_Render {
 		if ( is_admin() ) {
 			return $block_content;
 		}
-		$block_content = preg_replace_callback(
-			'/<span\s+((?:data-[\w\-]+=["\']+.*["\']+[\s]+)+)class=["\'].*kadence-dynamic-icon.*["\']\s*>(.*)<\/span>/U',
-			function ( $matches ) {
-				$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
-				$args = array( 'title' => '' );
-				foreach ( $options as $key => $value ) {
-					$value = trim($value);
-					if ( empty( $value ) ) {
-						continue;
+		if ( ! empty( $block_content ) ) {
+			$replaced_block_content = preg_replace_callback(
+				'/<span\s+((?:data-[\w\-]+=["\']+.*["\']+[\s]+)+)class=["\'].*kadence-dynamic-icon.*["\']\s*>(.*)<\/span>/U',
+				function ( $matches ) {
+					$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
+					$args = array( 'title' => '' );
+					foreach ( $options as $key => $value ) {
+						$value = trim($value);
+						if ( empty( $value ) ) {
+							continue;
+						}
+						$data_split = explode( '=', $value, 2 );
+						if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
+							$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+						}
+						$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
 					}
-					$data_split = explode( '=', $value, 2 );
-					if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
-						$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+					$type = substr( $args['name'] , 0, 2 );
+					$type_fas = ( 'fas' === substr( $args['name'] , 0, 3 ) ? true : false );
+					$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
+					$fill = ( $line_icon ? 'none' : 'currentColor' );
+					$stroke_width = false;
+					if ( $line_icon ) {
+						$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
 					}
-					$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
-				}
-				$type = substr( $args['name'] , 0, 2 );
-				$type_fas = ( 'fas' === substr( $args['name'] , 0, 3 ) ? true : false );
-				$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
-				$fill = ( $line_icon ? 'none' : 'currentColor' );
-				$stroke_width = false;
-				if ( $line_icon ) {
-					$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
-				}
-				$hidden = ( ! empty( $args['title'] ) ? true : false );
-				$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
-				return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
-			},
-			$block_content
-		);
+					$hidden = ( ! empty( $args['title'] ) ? true : false );
+					$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
+					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
+				},
+				$block_content
+			);
+			// if the regex errored out, don't replace the $block_content.
+			$block_content = is_null( $replaced_block_content ) ? $block_content : $replaced_block_content;
+		}
 		return $block_content;
 	}
 	/**
@@ -115,10 +119,11 @@ class Kadence_Blocks_Svg_Render {
 			$vb = ( ! empty( $icon['vB'] ) ? $icon['vB'] : '0 0 24 24' );
 			$preserve = '';
 			$vb_array = explode( ' ', $vb );
-			if ( isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
+			$typeL = substr( $name, 0, 3 );
+			if( $typeL && 'fas' !== $typeL && isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
 				$preserve = 'preserveAspectRatio="xMinYMin meet"';
 			}
-			$svg .= '<svg viewBox="' . $vb . '" fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
+			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';
 			}

@@ -5,7 +5,7 @@ import { createBlock } from '@wordpress/blocks';
 import { times } from 'lodash';
 
 export function migrateToInnerblocks( attributes ) {
-    const { icons, iconCount } = attributes;
+    const { icons, iconCount, blockAlignment, textAlignment } = attributes;
     let iconInnerBlocks = [];
     if ( icons?.length ) {
         times( iconCount, n => {
@@ -33,8 +33,14 @@ export function migrateToInnerblocks( attributes ) {
             iconInnerBlocks.push( createBlock( 'kadence/single-icon', newAttrs ) );
         });
     }
+    let newAlign = blockAlignment;
+    let newTextAlignment = textAlignment;
+    if ( blockAlignment === 'center' ) {
+        newAlign = 'none';
+        newTextAlignment = 'center';
+    }
 
-    let iconParentAttributes = { ...attributes, icons: [], iconCount: 1 }
+    let iconParentAttributes = { ...attributes, blockAlignment: newAlign, textAlignment: newTextAlignment, icons: [], iconCount: 1 }
 
     return [ iconParentAttributes, iconInnerBlocks ];
 }

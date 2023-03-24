@@ -42,13 +42,14 @@ import {
     KadenceBlockDefaults,
     ResponsiveMeasureRangeControl,
     CopyPasteAttributes,
+    SelectParentBlock,
 } from '@kadence/components';
 
 import {
     getPreviewSize,
     KadenceColorOutput,
     showSettings,
-    setBlockDefaults
+    setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -580,7 +581,9 @@ function KadenceTestimonials({
                             />
                         </BlockControls>
                         <InspectorControls>
-
+                            <SelectParentBlock
+                                clientId={ clientId }
+                            />
                             <InspectorControlTabs
                                 panelName={'icon'}
                                 allowedTabs={[ 'general', 'advanced' ]}

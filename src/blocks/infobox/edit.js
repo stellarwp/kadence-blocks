@@ -192,6 +192,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		tabletMaxWidth,
 		mobileMaxWidth,
 		kbVersion,
+		titleTagType
 	} = attributes;
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
@@ -216,8 +217,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
@@ -834,7 +838,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const tconfig = ( textFont[ 0 ].google ? tgconfig : '' );
 	const lconfig = ( learnMoreStyles[ 0 ].google ? lgconfig : '' );
 	const nconfig = ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].google ? ngconfig : '' );
-	const titleTagName = 'h' + titleFont[ 0 ].level;
+	const titleTagName = ( titleTagType !== 'heading' ) ? titleTagType : 'h' + titleFont[ 0 ].level;
 	const ALLOWED_MEDIA_TYPES = [ 'image' ];
 	const onSelectImage = media => {
 		let url;
@@ -2131,6 +2135,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 											<TypographyControls
 												fontGroup={'heading'}
 												tagLevel={titleFont[ 0 ].level}
+												htmlTag={titleTagType}
+												onTagLevelHTML={ ( value, tag ) => { saveTitleFont( { level: value } ); setAttributes( { titleTagType: tag } ) } }
 												onTagLevel={( value ) => saveTitleFont( { level: value } )}
 												fontSize={titleFont[ 0 ].size}
 												onFontSize={( value ) => saveTitleFont( { size: value } )}

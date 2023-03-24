@@ -104,9 +104,12 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$parent_default = $block_instance->context['kadence/listIcon'];
+		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {
+			$parent_default = $block_instance->context['kadence/listIcon'];
 
-		return str_replace('USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+			return str_replace( 'USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+		}
+		return $content;
 	}
 }
 

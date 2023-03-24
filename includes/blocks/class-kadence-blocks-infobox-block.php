@@ -68,7 +68,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['containerBorderRadius'] ) && ! empty( $attributes['containerBorderRadius'] ) ) {
 				$css->add_property( 'border-radius', $attributes['containerBorderRadius'] . 'px' );
 			}
-			$css->render_measure_output( $attributes, 'borderWidth', 'border-width' );
+			$css->render_measure_output( $attributes, 'containerBorderWidth', 'border-width' );
 		} else {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
@@ -312,7 +312,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'box-shadow', 'inset 0 0 0 ' . $media_style['borderWidth'][0] . 'px ' . ( isset( $media_style['border'] ) && ! empty( $media_style['border'] ) ? $media_style['border'] : '#444444' ) );
 			}
 			if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after' );
+				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, ' . $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after' );
 				$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
 			}
 			if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
@@ -333,8 +333,11 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-right-color', ( isset( $media_style['hoverBorder'] ) && ! empty( $media_style['hoverBorder'] ) ? $css->render_color( $media_style['hoverBorder'] ) : '#444444' ) );
 			$css->add_property( 'border-bottom-color', ( isset( $media_style['hoverBorder'] ) && ! empty( $media_style['hoverBorder'] ) ? $css->render_color( $media_style['hoverBorder'] ) : '#444444' ) );
 		}
+
+		$titleTagType = !empty( $attributes['titleTagType'] ) ? $attributes['titleTagType'] : 'heading';
+		$titleTag = 'heading' === $titleTagType ? 'h' . ( !empty( $attributes['titleFont'][0]['level'] ) ? $attributes['titleFont'][0]['level'] : '2' ) : $titleTagType;
 		if ( isset( $attributes['titleColor'] ) || isset( $attributes['titleFont'] ) ) {
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+			$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleColor'] ) && ! empty( $attributes['titleColor'] ) ) {
 				$css->add_property( 'color', $css->render_color( $attributes['titleColor'] ) );
 			}
@@ -394,12 +397,12 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( isset( $attributes['titleHoverColor'] ) && ! empty( $attributes['titleHoverColor'] ) ) {
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title' );
+			$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover ' . $titleTag . '.kt-blocks-info-box-title' );
 			$css->add_property( 'color', $css->render_color( $attributes['titleHoverColor'] ) );
 		}
 		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && ( ( isset( $attributes['titleFont'][0]['size'] ) && is_array( $attributes['titleFont'][0]['size'] ) && isset( $attributes['titleFont'][0]['size'][1] ) && ! empty( $attributes['titleFont'][0]['size'][1] ) ) || ( isset( $attributes['titleFont'][0]['lineHeight'] ) && is_array( $attributes['titleFont'][0]['lineHeight'] ) && isset( $attributes['titleFont'][0]['lineHeight'][1] ) && ! empty( $attributes['titleFont'][0]['lineHeight'][1] ) ) ) ) {
 			$css->set_media_state( 'tablet' );
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+			$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleFont'][0]['size'][1] ) && ! empty( $attributes['titleFont'][0]['size'][1] ) ) {
 				$css->add_property( 'font-size', $css->get_font_size( $attributes['titleFont'][0]['size'][1], ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) ) );
 			}
@@ -410,7 +413,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && ( ( isset( $attributes['titleFont'][0]['size'] ) && is_array( $attributes['titleFont'][0]['size'] ) && isset( $attributes['titleFont'][0]['size'][2] ) && ! empty( $attributes['titleFont'][0]['size'][2] ) ) || ( isset( $attributes['titleFont'][0]['lineHeight'] ) && is_array( $attributes['titleFont'][0]['lineHeight'] ) && isset( $attributes['titleFont'][0]['lineHeight'][2] ) && ! empty( $attributes['titleFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css->set_media_state( 'mobile' );
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+			$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleFont'][0]['size'][2] ) && ! empty( $attributes['titleFont'][0]['size'][2] ) ) {
 				$css->add_property( 'font-size', $css->get_font_size( $attributes['titleFont'][0]['size'][2], ( ! isset( $attributes['titleFont'][0]['sizeType'] ) ? 'px' : $attributes['titleFont'][0]['sizeType'] ) ) );
 			}
@@ -421,18 +424,18 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['titleMinHeight'] ) && is_array( $attributes['titleMinHeight'] ) && isset( $attributes['titleMinHeight'][0] ) ) {
 			if ( is_numeric( $attributes['titleMinHeight'][0] ) ) {
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 				$css->add_property( 'min-height', $attributes['titleMinHeight'][0] . 'px' );
 			}
 			if ( isset( $attributes['titleMinHeight'][1] ) && is_numeric( $attributes['titleMinHeight'][1] ) ) {
 				$css->set_media_state( 'tablet' );
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 				$css->add_property( 'min-height', $attributes['titleMinHeight'][1] . 'px' );
 				$css->set_media_state( 'desktop' );
 			}
 			if ( isset( $attributes['titleMinHeight'][2] ) && is_numeric( $attributes['titleMinHeight'][2] ) ) {
 				$css->set_media_state( 'mobile' );
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-title' );
+				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
 				$css->add_property( 'min-height', $attributes['titleMinHeight'][2] . 'px' );
 				$css->set_media_state( 'desktop' );
 			}
@@ -713,7 +716,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'][0] ) ) {
 				$shadow_hover = $attributes['shadowHover'][0];
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
-				$css->add_property( 'box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $shadow_hover['color'], $shadow_hover['opacity'] ) );
+				$color = ( !empty( $shadow_hover['color'] ) ? $shadow_hover['color'] : '#000000' );
+				$css->add_property( 'box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $color, $shadow_hover['opacity'] ) );
 			} else {
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
 				$css->add_property( 'box-shadow', '0px 0px 14px 0px rgba(0,0,0,0.2)' );

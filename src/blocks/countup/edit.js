@@ -112,8 +112,11 @@ function KadenceCounterUp( props ) {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 	}, [] );
 
@@ -174,7 +177,7 @@ function KadenceCounterUp( props ) {
 					<BlockControls>
 						<CopyPasteAttributes
 						attributes={ attributes }
-						excludedAttrs={ ['start', 'end', 'endDecimal', 'title'] }
+						excludedAttrs={ ['start', 'end', 'endDecimal', 'title', 'suffix', 'prefix'] }
 						defaultAttributes={ metadata['attributes'] }
 						blockSlug={ metadata['name'] }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }

@@ -172,7 +172,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		},
 		[ clientId ]
 	);
-
 	useEffect( () => {
 		setBlockDefaults( 'kadence/accordion', attributes);
 
@@ -212,8 +211,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 
 		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
@@ -240,10 +242,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			setAttributes( { contentBorderColor: '' } );
 		}
 		if ( ( '' !== contentBorder?.[0] || '' !== contentBorder?.[1] || '' !== contentBorder?.[2] || '' !== contentBorder?.[3] ) ) {
-			tempContentBorderStyle[0].top[2] = contentBorder?.[0] || '';
-			tempContentBorderStyle[0].right[2] = contentBorder?.[1] || '';
-			tempContentBorderStyle[0].bottom[2] = contentBorder?.[2] || '';
-			tempContentBorderStyle[0].left[2] = contentBorder?.[3] || '';
+			tempContentBorderStyle[0].top[2] = ('' !== contentBorder?.[0] ? contentBorder[0] : '');
+			tempContentBorderStyle[0].right[2] = ('' !== contentBorder?.[1] ? contentBorder[1] : '');
+			tempContentBorderStyle[0].bottom[2] = ('' !== contentBorder?.[2] ? contentBorder[2] : '');
+			tempContentBorderStyle[0].left[2] = ('' !== contentBorder?.[3] ? contentBorder[3] : '');
 			updateContentBorderStyle = true;
 			setAttributes( { contentBorder:[ '', '', '', '' ] } );
 		}
@@ -802,10 +804,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-blocks-accordion-title {
 					${ previewTitleHeight ? 'line-height:' + previewTitleHeight + titleStyles[ 0 ].lineType : '' };
-				}
-				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-btn-svg-icon svg {
-					width:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
-					height:${titleStyles[ 0 ].size[ 0 ]}${titleStyles[ 0 ].sizeType};
 				}
 				.kt-accordion-${uniqueID} .kt-accordion-panel-inner {
 					${'' !== previewContentPaddingTop ? `padding-top:${ getSpacingOptionOutput(previewContentPaddingTop, previewPaddingType ) };` : ''}
@@ -1411,6 +1409,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										onChange={( value ) => saveTitleStyles( { marginTop: value } )}
 										min={ 0 }
 										max={ 120 }
+										units={ [ 'px' ] }
 										unit={ 'px' }
 										showUnit={ true }
 									/>
@@ -1547,7 +1546,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				)}
 				{ ! showPreset && (
 					<>
-						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
 						<div className="kt-accordion-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>

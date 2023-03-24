@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { Fragment } from '@wordpress/element';
-import { toggleFormat, applyFormat, registerFormatType, useAnchorRef, useAnchor } from '@wordpress/rich-text';
+import { Fragment, useMemo, useState, useEffect, useCallback } from '@wordpress/element';
+import { toggleFormat, applyFormat, registerFormatType, useAnchorRef } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import {
@@ -38,11 +38,13 @@ const kadenceTypedText = {
 		const selectedBlock = useSelect( ( select ) => {
 			return select( 'core/block-editor' ).getSelectedBlock();
 		}, [] );
-
+		if ( undefined === selectedBlock?.name ) {
+			return null;
+		}
 		if ( selectedBlock && !allowedBlocks.includes( selectedBlock.name ) ) {
 			return null;
 		}
-
+		const [ isEditingTyped, setIsEditingTyped ] = useState( false );
 		const onToggle = () => onChange( toggleFormat( value, { type: name } ) );
 
 		const defaultAttributes = {
@@ -94,16 +96,17 @@ const kadenceTypedText = {
 
 		const settings = getCurrentSettings();
 
-		// useAnchorRef was deprecated in 6.1 in favor of useAnchor.
-		// useAnchor is undefined in 6.0, so we need to check for it.
-		if( undefined !== useAnchor ) {
-			let anchorRef = useAnchor( { ref: contentRef, value } );
-		} else {
-			let anchorRef = useAnchorRef( { ref: contentRef, value } );
-		}
-
+		// useAnchorRef was deprecated in 6.1 in favor of useAnchor, but will remain in WP through 6.3
+		const anchorRef = useAnchorRef( { ref: contentRef, value } );
+		useEffect( () => {
+			if ( isActive ) {
+				setIsEditingTyped( true );
+			} else {
+				setIsEditingTyped( false );
+			}
+		}, [ isActive ] );
 		return (
-			<Fragment>
+			<>
 				<RichTextToolbarButton
 					icon={icon}
 					title={__( 'Typed Text' )}
@@ -112,7 +115,7 @@ const kadenceTypedText = {
 					className={`toolbar-button-with-text toolbar-button__${name}`}
 				/>
 
-				{isActive && (
+				{isActive && isEditingTyped && (
 					<Popover
 						className="kb-typing-popover"
 						position="bottom center right"
@@ -271,7 +274,7 @@ const kadenceTypedText = {
 
 					</Popover>
 				)}
-			</Fragment>
+			</>
 		);
 	},
 };

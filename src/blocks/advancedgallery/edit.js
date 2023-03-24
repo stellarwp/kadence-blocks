@@ -179,8 +179,13 @@ function GalleryEdit( props ) {
 		mobileForceHover,
 		kadenceDynamic,
 		imagesDynamic,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingUnit,
 		kbVersion,
 		gutterUnit,
+		lazyLoad,
 	} = attributes;
 	const mainRef = useRef( null );
 	const thumbsRef = useRef();
@@ -206,7 +211,10 @@ function GalleryEdit( props ) {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
 			addUniqueID( uniqueId, clientId );
 		}
 
@@ -248,11 +256,17 @@ function GalleryEdit( props ) {
 			setAttributes( { kbVersion: 2 } );
 		}
 	}, [] );
-
+	const previewPaddingUnit = ( undefined !== paddingUnit ? paddingUnit : 'px' );
+	const previewMarginUnit = ( undefined !== marginUnit ? marginUnit : 'px' );
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[0] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[0] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[0] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[1] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[1] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[1] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[2] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[2] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[2] : '' ) );
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin[ 0 ].desk[0] ? margin[ 0 ].desk[3] : '' ), ( undefined !== margin[ 0 ].tablet[0] ? margin[ 0 ].tablet[3] : '' ), ( undefined !== margin[ 0 ].mobile[0] ? margin[ 0 ].mobile[3] : '' ) );
+
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[1] && '' !== padding[1] ? padding[1] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[3] && '' !== padding[3] ? ( padding[3] ) : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 
 	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns[ 0 ] ? columns[ 0 ] : 3 ), ( undefined !== columns[ 3 ] ? columns[ 3 ] : '' ), ( undefined !== columns[ 5 ] ? columns[ 5 ] : '' ) );
 
@@ -265,13 +279,18 @@ function GalleryEdit( props ) {
 
 	const blockProps = useBlockProps( {
 		className: `kb-gallery-container`,
-		style: {
-			marginTop: getSpacingOptionOutput( previewMarginTop, marginUnit ),
-			marginRight: getSpacingOptionOutput( previewMarginRight, marginUnit ),
-			marginBottom: getSpacingOptionOutput( previewMarginBottom, marginUnit ),
-			marginLeft: getSpacingOptionOutput( previewMarginLeft, marginUnit )
-		},
 	} );
+
+	const spacingSettings = {
+		paddingLeft: ( undefined !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingUnit ) : undefined ),
+		paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingUnit ) : undefined ),
+		paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingUnit ) : undefined ),
+		paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingUnit ) : undefined ),
+		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
+		marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+		marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+		marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+	}
 
 	const [ selectedImage, setSelectedImage ] = useState( null );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -540,6 +559,7 @@ function GalleryEdit( props ) {
 	};
 
 	const marginMouseOver = mouseOverVisualizer();
+	const paddingMouseOver = mouseOverVisualizer();
 
 	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 );
 	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 );
@@ -610,30 +630,30 @@ function GalleryEdit( props ) {
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderSettings = {
-		dots          : false,
-		arrows        : ( arrowStyle === 'none' ? false : true ),
-		rewind       : true,
-		fade          : true,
-		speed         : transSpeed,
-		drag     : false,
-		pagination   : false,
-		autoplaySpeed : autoSpeed,
-		autoplay      : autoPlay,
-		slidesToShow  : 1,
-		slidesToScroll: 1,
-		direction : ( isRTL ? 'rtl' : 'ltr' )
+		type           : 'fade',
+		dots           : false,
+		arrows         : ( arrowStyle === 'none' ? false : true ),
+		rewind         : true,
+		fade           : true,
+		speed          : transSpeed,
+		drag           : false,
+		pagination     : false,
+		autoplaySpeed  : autoSpeed,
+		autoplay       : autoPlay,
+		slidesToShow   : 1,
+		slidesToScroll : 1,
+		direction      : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderthumbsSettings = {
 		focus        : 0,
 		height       : '100%',
 		perPage      : previewThumbColumns,
-		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
 		gap          : '' !== previewGutter ? previewGutter + previewGutterUnit : '4px',
 		rewind       : true,
 		pagination   : false,
 		isNavigation : true,
-		arrows       : true,
+		arrows       : previewThumbColumns > theImages.length ? false : true,
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const nonTransAttrs = ['images', 'imagesDynamic'];
@@ -1023,7 +1043,7 @@ function GalleryEdit( props ) {
 													label={__( 'Autoplay Speed', 'kadence-blocks' )}
 													value={autoSpeed}
 													onChange={( value ) => setAttributes( { autoSpeed: value } )}
-													min={500}
+													min={0}
 													max={15000}
 													step={10}
 												/>
@@ -1033,7 +1053,7 @@ function GalleryEdit( props ) {
 												value={transSpeed}
 												onChange={( value ) => setAttributes( { transSpeed: value } )}
 												min={100}
-												max={2000}
+												max={15000}
 												step={10}
 											/>
 											{type === 'carousel' && (
@@ -1109,6 +1129,11 @@ function GalleryEdit( props ) {
 													onChange={( value ) => setAttributes( { dotStyle: value } )}
 												/>
 											)}
+											<ToggleControl
+												label={__( 'Enable Image Lazy Load', 'kadence-blocks' )}
+												checked={lazyLoad}
+												onChange={( value ) => setAttributes( { lazyLoad: value } )}
+											/>
 										</KadencePanelBody>
 									)}
 								</>
@@ -1351,6 +1376,7 @@ function GalleryEdit( props ) {
 										label={__( 'Enable Shadow', 'kadence-blocks' )}
 										checked={displayShadow}
 										onChange={value => setAttributes( { displayShadow: value } )}
+										help={__( 'Sliders and carousels will cut off shadows because of how items in a carousel are hidden.', 'kadence-blocks' )}
 									/>
 									{displayShadow && (
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
@@ -1459,6 +1485,29 @@ function GalleryEdit( props ) {
 
 								<>
 									<KadencePanelBody panelName={'kb-adv-gallery-spacing-settings'}>
+										<ResponsiveMeasureRangeControl
+											label={__( 'Padding', 'kadence-blocks' )}
+											value={ padding }
+											tabletValue={tabletPadding}
+											mobileValue={mobilePadding}
+											onChange={( value ) => {
+												setAttributes( { padding: value } );
+											}}
+											onChangeTablet={( value ) => {
+												setAttributes( { tabletPadding: value } );
+											}}
+											onChangeMobile={( value ) => {
+												setAttributes( { mobilePadding: value } );
+											}}
+											min={ 0 }
+											max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 ) }
+											step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+											unit={ paddingUnit }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
+											onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+											onMouseOver={ paddingMouseOver.onMouseOver }
+											onMouseOut={ paddingMouseOver.onMouseOut }
+										/>
 										<ResponsiveMeasureRangeControl
 											label={__('Margin', 'kadence-blocks')}
 											value={margin[0].desk}
@@ -1661,10 +1710,21 @@ function GalleryEdit( props ) {
 	return (
 		<div {...blockProps}>
 			<SpacingVisualizer
-				type="outside"
-				offset={ false }
+				type="outsideVertical"
+				//offset={ false }
 				forceShow={ marginMouseOver.isMouseOver }
-				spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+				spacing={ [ getSpacingOptionOutput( previewMarginTop, previewMarginUnit ), getSpacingOptionOutput( previewMarginRight, previewMarginUnit ), getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ), getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) ] }
+			/>
+			<SpacingVisualizer
+				style={ {
+					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+					//marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+					//marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+				} }
+				type="inside"
+				forceShow={ paddingMouseOver.isMouseOver }
+				spacing={ [ getSpacingOptionOutput( previewPaddingTop, previewPaddingUnit ), getSpacingOptionOutput( previewPaddingRight, previewPaddingUnit ), getSpacingOptionOutput( previewPaddingBottom, previewPaddingUnit ), getSpacingOptionOutput( previewPaddingLeft, previewPaddingUnit ) ] }
 			/>
 			{buildCSS}
 			{controls}
@@ -1675,7 +1735,7 @@ function GalleryEdit( props ) {
 				</WebfontLoader>
 			)}
 			{type && type === 'fluidcarousel' && (
-				<div id={`kb-gallery-id-${uniqueID}`} className={galleryClassNames}>
+				<div id={`kb-gallery-id-${uniqueID}`} style={spacingSettings} className={galleryClassNames}>
 					<div className={`kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${dotStyle}${( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' )}`}>
 						{theImages.length !== 1 && (
 							<Splide options={ fluidCarouselSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
@@ -1701,7 +1761,7 @@ function GalleryEdit( props ) {
 				</div>
 			)}
 			{type && type === 'slider' && (
-				<div className={galleryClassNames}>
+				<div className={galleryClassNames} style={spacingSettings}>
 					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 						{theImages.length !== 1 && (
 							<Splide options={ sliderSettings } className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}>
@@ -1727,7 +1787,7 @@ function GalleryEdit( props ) {
 				</div>
 			)}
 			{type && type === 'thumbslider' && (
-				<div className={galleryClassNames}>
+				<div className={galleryClassNames} style={spacingSettings}>
 					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 						{theImages.length !== 1 && (
 							<>
@@ -1765,6 +1825,7 @@ function GalleryEdit( props ) {
 			)}
 			{type && type === 'carousel' && (
 				<div className={galleryClassNames}
+				style={spacingSettings}
 						data-columns-xxl={columns[ 0 ]}
 						data-columns-xl={columns[ 1 ]}
 						data-columns-lg={columns[ 2 ]}
@@ -1787,6 +1848,7 @@ function GalleryEdit( props ) {
 			)}
 			{type && type === 'masonry' && (
 				<Masonry
+					style={spacingSettings}
 					breakpointCols={{
 						default: previewColumns,
 					}}
@@ -1803,6 +1865,7 @@ function GalleryEdit( props ) {
 			)}
 			{type && type === 'grid' && (
 				<ul
+					style={spacingSettings}
 					className={galleryClassNames}
 					data-columns-xxl={columns[ 0 ]}
 					data-columns-xl={columns[ 1 ]}
@@ -1822,6 +1885,7 @@ function GalleryEdit( props ) {
 			)}
 			{type && type === 'tiles' && (
 				<ul
+					style={spacingSettings}
 					className={galleryClassNames}
 				>
 					{theImages.map( ( img, index ) => {

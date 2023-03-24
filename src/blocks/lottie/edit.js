@@ -150,8 +150,11 @@ export function Edit( {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 	}, [] );
 	const containerClasses = classnames( {

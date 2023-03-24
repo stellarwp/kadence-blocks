@@ -17,7 +17,6 @@ import { KadencePanelBody } from '@kadence/components';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,
-	Fragment,
 } = wp.element;
 import {
 	TextControl,
@@ -27,8 +26,8 @@ import {
 	ExternalLink,
 } from '@wordpress/components';
 
-const RETRIEVE_API_URL = 'https://app.mailerlite.com/integrations/api/';
-const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-find-the-api-key';
+const RETRIEVE_API_URL = 'https://dashboard.mailerlite.com/integrations/api';
+const HELP_URL = 'https://www.mailerlite.com/help/where-to-find-the-mailerlite-api-key-groupid-and-documentation';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -50,6 +49,7 @@ class MailerLiteControls extends Component {
 			isFetchingFields: false,
 			groupFields: false,
 			groupFieldsLoaded: false,
+			groupError: '',
 		};
 	}
 	componentDidMount() {
@@ -69,26 +69,42 @@ class MailerLiteControls extends Component {
 		});
 	}
 	getMailerLiteGroup() {
+		let errorNote = __( 'Groups could not be accessed using API key', 'kadence-blocks' );
 		if ( ! this.state.api ) {
-			this.setState( { group: [], groupsLoaded: true } );
+			this.setState( { group: [], groupError: errorNote, groupsLoaded: true } );
 			return;
 		}
 		this.setState( { isFetching: true } );
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-mailerlite/v1/get',
-				{ apikey: this.state.api, endpoint: 'groups', queryargs: [ 'limit=500' ] }
+				{ apikey: this.state.api, endpoint: 'groups', queryargs: [ 'limit=250' ] }
 			),
 		} )
 			.then( ( groups ) => {
-				const theGroups = [];
-				groups.map( ( item ) => {
-					theGroups.push( { value: item.id, label: item.name } );
-				} );
-				this.setState( { group: theGroups, groupsLoaded: true, isFetching: false } );
+				if ( Array.isArray( groups ) ) {
+					const theGroups = [];
+					groups.map( ( item ) => {
+						theGroups.push( { value: item.id, label: item.name } );
+					} );
+					this.setState( { group: theGroups, groupError:'', groupsLoaded: true, isFetching: false } );
+				} else if ( undefined !== groups?.data && Array.isArray( groups.data ) ) {
+					const theGroups = [];
+					groups.data.map( ( item ) => {
+						theGroups.push( { value: item.id, label: item.name } );
+					} );
+					this.setState( { group: theGroups, groupError:'', groupsLoaded: true, isFetching: false } );
+				}else {
+					if ( 'Forbidden' === groups ) {
+						errorNote = __( 'Retrieving groups was denied (403) for that API token or because of Mailerlite firewall. Contact MailerLite for support.', 'kadence-blocks' );
+					} else if ( 'Unauthorized' === groups ) {
+						errorNote = __( 'Retrieving groups was denied because the provided API token is invalid.', 'kadence-blocks' );
+					}
+					this.setState( { group: [], groupError: errorNote, groupsLoaded: true, isFetching: false } );
+				}
 			} )
 			.catch( () => {
-				this.setState( { group: [], groupsLoaded: true, isFetching: false } );
+				this.setState( { group: [], groupError: errorNote, groupsLoaded: true, isFetching: false } );
 			} );
 	}
 	getMailerLiteFields() {
@@ -107,15 +123,32 @@ class MailerLiteControls extends Component {
 			),
 		} )
 			.then( ( fields ) => {
-				const theFields = [];
-				theFields.push( { value: null, label: 'None' } );
-				theFields.push( { value: 'email', label: 'Email *' } );
-				fields.map( ( item, index ) => {
-					if ( item.key !== 'email' ) {
-						theFields.push( { value: item.key, label: item.title } );
-					}
-				} );
-				this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				if ( Array.isArray( fields ) ) {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					fields.map( ( item, index ) => {
+						if ( item.key !== 'email' ) {
+							theFields.push( { value: item.key, label: item.title } );
+						}
+					} );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				} else if ( undefined !== fields?.data && Array.isArray( fields.data ) ) {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					fields.data.map( ( item, index ) => {
+						if ( item.key !== 'email' ) {
+							theFields.push( { value: item.key, label: item.name } );
+						}
+					} );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				} else {
+					const theFields = [];
+					theFields.push( { value: null, label: 'None' } );
+					theFields.push( { value: 'email', label: 'Email *' } );
+					this.setState( { groupFields: theFields, groupFieldsLoaded: true, isFetchingFields: false } );
+				}
 			} )
 			.catch( () => {
 				const theFields = [];
@@ -148,9 +181,9 @@ class MailerLiteControls extends Component {
 		} );
 	}
 	render() {
-		const { group, groupsLoaded, isFetching, isSavedAPI, groupFields, isFetchingFields, groupFieldsLoaded } = this.state;
-		const hasGroup = Array.isArray( group ) && group.length;
-		const hasFields = Array.isArray( this.state.groupFields ) && this.state.groupFields.length;
+		const { group, groupsLoaded, isFetching, isSavedAPI, groupFields, groupError, isFetchingFields, groupFieldsLoaded } = this.state;
+		const hasGroup = Array.isArray( group ) && group.length ? true : false;
+		const hasFields = Array.isArray( this.state.groupFields ) && this.state.groupFields.length ? true : false;
 		return (
 			<KadencePanelBody
 				title={ __( 'MailerLite Settings', 'kadence-blocks-pro' ) }
@@ -158,11 +191,11 @@ class MailerLiteControls extends Component {
 				panelName={ 'kb-mailerlite-settings' }
 			>
 				<p>
-					<Fragment>
+					<>
 						<ExternalLink href={ RETRIEVE_API_URL }>{ __( 'Get API Key', 'kadence-blocks-pro' ) }</ExternalLink>
 						|&nbsp;
 						<ExternalLink href={ HELP_URL }>{ __( 'Get help', 'kadence-blocks-pro' ) }</ExternalLink>
-					</Fragment>
+					</>
 				</p>
 				<TextControl
 					label={ __( 'API Key', 'kadence-blocks' ) }
@@ -178,7 +211,7 @@ class MailerLiteControls extends Component {
 						{ this.state.isSaving ? __( 'Saving', 'kadence-blocks-pro' ) : __( 'Save', 'kadence-blocks-pro' ) }
 					</Button>
 					{ this.state.isSavedKey && (
-						<Fragment>
+						<>
 								&nbsp;
 							<Button
 								isSecondary
@@ -186,26 +219,26 @@ class MailerLiteControls extends Component {
 							>
 								{ __( 'Remove', 'kadence-blocks-pro' ) }
 							</Button>
-						</Fragment>
+						</>
 					) }
 				</div>
 				{ isSavedAPI && (
-					<Fragment>
+					<>
 						{ isFetching && (
 							<Spinner />
 						) }
 						{ ! isFetching && ! hasGroup && (
-							<Fragment>
+							<>
 								<h2 className="kt-heading-size-title">{ __( 'Select Group', 'kadence-blocks' ) }</h2>
 								{ ( ! groupsLoaded ? this.getMailerLiteGroup() : '' ) }
-								{ ! Array.isArray( group ) ?
+								{ ! groupsLoaded ?
 									<Spinner /> :
-									__( 'No group found.', 'kadence-blocks-pro' ) }
-							</Fragment>
+									groupError }
+							</>
 
 						) }
-						{ ! isFetching && hasGroup && (
-							<Fragment>
+						{ ! isFetching && ( true === hasGroup ) && (
+							<>
 								<h2 className="kt-heading-size-title">{ __( 'Select Group', 'kadence-blocks' ) }</h2>
 								<div className="mailerlite-select-form-row">
 								<Select
@@ -222,22 +255,22 @@ class MailerLiteControls extends Component {
 									<div style={ { height: '100px' } }></div>
 								) }
 								{ this.props.settings[ 0 ].group && (
-									<Fragment>
+									<>
 										{ isFetchingFields && (
 											<Spinner />
 										) }
 										{ ! isFetchingFields && ! hasFields && (
-											<Fragment>
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Map Fields', 'kadence-blocks' ) }</h2>
 												{ ( ! groupFieldsLoaded ? this.getMailerLiteFields() : '' ) }
 												{ ! Array.isArray( groupFields ) ?
 													<Spinner /> :
 													__( 'No Fields found.', 'kadence-blocks-pro' ) }
-											</Fragment>
+											</>
 
 										) }
-										{ ! isFetchingFields && hasFields && (
-											<Fragment>
+										{ ! isFetchingFields && ( true === hasFields ) && (
+											<>
 												<h2 className="kt-heading-size-title">{ __( 'Map Fields', 'kadence-blocks' ) }</h2>
 												{ this.props.fields && (
 													this.props.fields.map( ( item, index ) => {
@@ -259,13 +292,13 @@ class MailerLiteControls extends Component {
 														);
 													} )
 												) }
-											</Fragment>
+											</>
 										) }
-									</Fragment>
+									</>
 								) }
-							</Fragment>
+							</>
 						) }
-					</Fragment>
+					</>
 				) }
 			</KadencePanelBody>
 		);

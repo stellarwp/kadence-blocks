@@ -94,9 +94,23 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->render_color_output( $title_styles, 'background', 'background' );
 			$css->render_typography( $title_styles, '' );
-			$css->render_measure_output( $title_styles, 'padding', 'padding' );
+			$padding_args = array(
+				'tablet_key'  => 'paddingTablet',
+				'mobile_key'  => 'paddingMobile',
+			);
+			$css->render_measure_output( $title_styles, 'padding', 'padding', $padding_args );
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap' );
 			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
+
+			// Override for Kadence Theme
+			$css->set_selector( '.single-content .wp-block-kadence-pane>h2:first-child,
+			.single-content .wp-block-kadence-pane>h3:first-child,
+			.single-content .wp-block-kadence-pane>h4:first-child,
+			.single-content .wp-block-kadence-pane>h5:first-child,
+			.single-content .wp-block-kadence-pane>h6:first-child');
+			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
+			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header' );
+
 			if ( ! empty( $attributes['iconColor']['standard'] ) || ! empty( $title_styles['color'] ) ) {
 				$css->set_selector( '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:before' );
 				if ( ! empty( $attributes['iconColor']['standard'] ) ) {
@@ -106,7 +120,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				// Text Colors.
 				if ( isset( $attributes['textColor'] ) ) {
-					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner , .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h1, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h2, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h3, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h4, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h5, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h6' );
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h1, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h2, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h3, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h4, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h5, .kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner h6' );
 					$css->add_property( 'color', $css->render_color( $attributes['textColor'] ) );
 				}
 				if ( isset( $attributes['linkColor'] ) ) {
@@ -191,6 +205,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $css->css_output();
+	}
+
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		return str_replace('<div class="kt-accordion-panel">', '<div class="kt-accordion-panel kt-accordion-panel-hidden">', $content );
 	}
 
 	/**

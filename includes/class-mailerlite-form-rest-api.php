@@ -77,38 +77,64 @@ class Kadence_MailerLite_REST_Controller extends WP_REST_Controller {
 		$api_key    = $request->get_param( self::PROP_API_KEY );
 		$end_point  = $request->get_param( self::PROP_END_POINT );
 		$query_args = $request->get_param( self::PROP_QUERY_ARGS );
-
 		if ( empty( $api_key ) ) {
-			return array();
+			return 'Error';
 		}
-		$base_url = 'https://api.mailerlite.com/api/v2/';
-		$request_args = array(
-			'headers' => array(
-				'X-MailerLite-ApiKey' => $api_key,
-			),
-		);
-		if ( $query_args && is_array( $query_args ) ) {
+		if ( strlen( $api_key ) > 100 ) {
+			// New connect API.
+			$base_url = 'https://connect.mailerlite.com/api/';
 			$args = array();
-			foreach ( $query_args as $key => $value ) {
-				$value_parts = explode( '=', $value );
-				$args[$value_parts[0]] = $value_parts[1];
+			if ( $query_args && is_array( $query_args ) ) {
+				foreach ( $query_args as $key => $value ) {
+					$value_parts = explode( '=', $value );
+					$args[$value_parts[0]] = $value_parts[1];
+				}
 			}
-			$url = add_query_arg( $args, $base_url . $end_point );
-		} else {
 			$url = $base_url . $end_point;
+			$request_args = array(
+				'headers' => array(
+					'Content-Type' => 'application/json',
+					'Accept'       => 'application/json',
+					'Authorization' => 'Bearer ' . $api_key,
+				),
+				'timeout' => 90,
+				'user-agent' => 'Kadence Forms/' . KADENCE_BLOCKS_VERSION,
+				'body' => $args,
+			);
+		} else {
+			$base_url = 'https://api.mailerlite.com/api/v2/';
+			$request_args = array(
+				'headers' => array(
+					'accept'       => 'application/json',
+					'content-type' => 'application/json',
+					'X-MailerLite-ApiKey' => $api_key,
+				),
+			);
+			if ( $query_args && is_array( $query_args ) ) {
+				$args = array();
+				foreach ( $query_args as $key => $value ) {
+					$value_parts = explode( '=', $value );
+					$args[$value_parts[0]] = $value_parts[1];
+				}
+				$url = add_query_arg( $args, $base_url . $end_point );
+			} else {
+				$url = $base_url . $end_point;
+			}
 		}
 		$response = wp_remote_get( $url, $request_args );
-
 		if ( is_wp_error( $response ) || 200 != (int) wp_remote_retrieve_response_code( $response ) ) {
-			//error_log( 'response failed' );
-			return array();
+			if (  401 === wp_remote_retrieve_response_code( $response ) ) {
+				return 'Unauthorized';
+			} else if ( 403 === wp_remote_retrieve_response_code( $response ) ) {
+				return 'Forbidden';
+			} else {
+				return 'Error';
+			}
 		}
-
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-
 		if ( ! is_array( $body ) ) {
 			//error_log( 'no content' );
-			return array();
+			return 'No Content';
 		}
 		// $groups = array();
 		// if ( 'groups' === $end_point ) {

@@ -29,6 +29,7 @@ import {
 } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
+import { SafeParseJSON, showSettings } from '@kadence/helpers';
 /**
  * Import Brand Icons
  */
@@ -46,7 +47,6 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import { SafeParseJSON } from '@kadence/helpers';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
@@ -195,15 +195,15 @@ class PrebuiltModal extends Component {
 									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 								</div>
 								{ this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										<Spinner />
 									</div>
 								) }
 								{ ! this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										{ actions.map( ( action, index ) =>
 											<>
-												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
+												{ action.slug !== 'wire' && showSettings( action.slug, 'kadence/designlibrary' ) &&  (
 													<Button
 														key={ `${ action.slug }-${ index }` }
 														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
@@ -220,7 +220,7 @@ class PrebuiltModal extends Component {
 														{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
 													</Button>
 												) }
-												{ action.slug === 'wire' && this.showSettings( 'wire' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
+												{ action.slug === 'wire' && showSettings( 'wire', 'kadence/designlibrary' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
 													<Button
 														key={ `${ action.slug }-${ index }` }
 														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
@@ -241,7 +241,7 @@ class PrebuiltModal extends Component {
 									</div>
 								) }
 								{ 'cloud' !== active_tab && (
-									<div class="kb-prebuilt-library-reload">
+									<div className="kb-prebuilt-library-reload">
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
@@ -250,7 +250,7 @@ class PrebuiltModal extends Component {
 										/>
 									</div>
 								) }
-								<div class="kb-prebuilt-header-close-wrap">
+								<div className="kb-prebuilt-header-close-wrap">
 									<Button
 										className="kb-prebuilt-header-close"
 										icon={ close }

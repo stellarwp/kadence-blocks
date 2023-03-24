@@ -207,7 +207,6 @@ function KadenceAdvancedHeading( props ) {
 		iconColorHover,
 		iconSide,
 		iconVerticalAlign,
-		iconHover,
 		iconPadding,
 		tabletIconPadding,
 		mobileIconPadding,
@@ -243,8 +242,11 @@ function KadenceAdvancedHeading( props ) {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
@@ -563,6 +565,8 @@ function KadenceAdvancedHeading( props ) {
 
 				<RichText
 					id={ 'adv-heading' + uniqueID }
+					tagName="span"
+					className={'kb-adv-heading-inner'}
 					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
 					value={content}
 					onChange={(value) => setAttributes({content: value})}
@@ -681,13 +685,18 @@ function KadenceAdvancedHeading( props ) {
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkColor && (
-					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
 						}`
 				)}
 				{linkHoverColor && (
-					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkHoverColor )}!important;
+						}`
+				)}
+				{ iconColorHover && (
+					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
+							color: ${KadenceColorOutput( iconColorHover )}!important;
 						}`
 				)}
 			</style>

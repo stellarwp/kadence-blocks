@@ -87,11 +87,15 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kb-image' . $unique_id . ' figure' );
 			if ( isset( $attributes['imgMaxWidth'] ) && is_numeric( $attributes['imgMaxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['imgMaxWidth'] . 'px' );
+				$css->set_selector( '.kb-image' . $unique_id . ' .image-is-svg, .kb-image' . $unique_id . ' .image-is-svg img' );
+				$css->add_property( 'width', '100%' );
 			}
 		} else if ( $align !== 'wide' && $align !== 'full' ) {
 			$css->set_selector( '.kb-image' . $unique_id );
 			if ( isset( $attributes['imgMaxWidth'] ) && is_numeric( $attributes['imgMaxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['imgMaxWidth'] . 'px' );
+				$css->set_selector( '.image-is-svg.kb-image' . $unique_id );
+				$css->add_property( 'flex', '0 1 100%' );
 				$css->set_selector( '.image-is-svg.kb-image' . $unique_id . ' img' );
 				$css->add_property( 'width', '100%' );
 			}
@@ -219,8 +223,23 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
 				$css->add_property( 'background', $css->render_color( $caption_font['background'] ) );
 			}
-			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) && ! empty( $caption_font['size'][0] ) ) {
-				$css->add_property( 'font-size', $caption_font['size'][0] . ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) );
+			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) ) {
+				$caption_font_unit = !empty( $caption_font['sizeType'] ) ? $caption_font['sizeType'] : 'px';
+				if ( ! empty( $caption_font['size'][0] ) ) {
+					$css->add_property( 'font-size', $css->get_font_size( $caption_font['size'][0], $caption_font_unit ) );
+				}
+
+				if ( ! empty( $caption_font['size'][1] ) ) {
+					$css->set_media_state('tablet');
+					$css->add_property( 'font-size', $css->get_font_size( $caption_font['size'][1], $caption_font_unit ) );
+					$css->set_media_state('desktop');
+				}
+
+				if ( ! empty( $caption_font['size'][2] ) ) {
+					$css->set_media_state('mobile');
+					$css->add_property( 'font-size', $css->get_font_size( $caption_font['size'][2], $caption_font_unit ) );
+					$css->set_media_state('desktop');
+				}
 			}
 			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );

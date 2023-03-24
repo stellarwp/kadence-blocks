@@ -251,8 +251,11 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
 	}, [] );
 
@@ -541,7 +544,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 
-		const nonTransAttrs = ['currentTab', 'tabCount'];
+		const nonTransAttrs = ['currentTab', 'tabCount', 'titles'];
 
 		const isAccordionPreview = ( ( previewDevice == 'Tablet' && tabletLayout == 'accordion' ) || ( previewDevice == 'Mobile' && mobileLayout == 'accordion' ) );
 
@@ -555,7 +558,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			{ value: 'vtabs', label: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 
-		const initialTabOptions = times( tabCount, ( n ) => {
+		const initialTabOptions = times( titles.length, ( n ) => {
 			return { value: ( n + 1), label: titles[n].text };
 		});
 
@@ -613,7 +616,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<p class="kadence-control-title" style={{marginTop: "24px", marginBottom: "5px"}}>{ __( 'Set initial Open Tab') }</p>
+				<p className="kadence-control-title" style={{marginTop: "24px", marginBottom: "5px"}}>{ __( 'Set initial Open Tab') }</p>
 				<Select
 					value={initialTabOptions.filter(function(option) {
 						return option.value === startTab;
@@ -1062,7 +1065,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							icon={ plusCircle }
 							onClick={ () => {
 								const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
-								setAttributes( { tabCount: tabCount + 1 } );
 								insertTab( newBlock );
 								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 								const newtabs = titles;
@@ -1073,7 +1075,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									onlyIcon: titles[ 0 ].onlyIcon,
 									subText: '',
 								} );
-								setAttributes( { titles: newtabs } );
+								setAttributes( { titles: newtabs, tabCount: tabCount + 1 } );
 								saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 							} }
 							label={  __( 'Add Tab', 'kadence-blocks' ) }
@@ -1624,7 +1626,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									defaultAttributes={metadata['attributes']}
 									blockSlug={metadata['name']}
 									excludedAttrs={nonTransAttrs}
-									preventMultiple={['titles']}
 								/>
 
 							</>

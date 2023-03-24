@@ -198,24 +198,25 @@ class Kadence_Blocks_Table_Of_Contents {
 						$kadence_pro = Kadence_Pro\Elements_Controller::get_instance();
 						$page_content = '';
 						if ( ! empty( $kadence_pro::$single_template ) ) {
+							$blocks = parse_blocks( $post->post_content );
+							self::$output_content = '';
+							$the_post_content = '';
+							foreach ( $blocks as $block ) {
+								$this->recursively_parse_blocks( $block );
+							}
+							if ( self::$output_content ) {
+								$the_post_content .= do_shortcode( self::$output_content );
+							} else {
+								$the_post_content .= do_shortcode( $post->post_content );
+							}
 							$template_post = get_post( $kadence_pro::$single_template );
 							$blocks = parse_blocks( $template_post->post_content );
 							self::$output_content = '';
 							foreach ( $blocks as $block ) {
-								$this->recursively_parse_blocks( $block );
+								$this->recursively_parse_blocks( $block, $the_post_content );
 							}
 							if ( self::$output_content ) {
 								$page_content .= do_shortcode( self::$output_content );
-							}
-							$blocks = parse_blocks( $post->post_content );
-							self::$output_content = '';
-							foreach ( $blocks as $block ) {
-								$this->recursively_parse_blocks( $block );
-							}
-							if ( self::$output_content ) {
-								$page_content .= do_shortcode( self::$output_content );
-							} else {
-								$page_content .= do_shortcode( $post->post_content );
 							}
 						} else {
 							$blocks = parse_blocks( $post->post_content );
@@ -336,7 +337,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 *
 	 * @param string $block The page content content.
 	 */
-	private function recursively_parse_blocks( $block ) {
+	private function recursively_parse_blocks( $block, $the_post_content = '' ) {
 		if ( ! in_array( $block['blockName'], $this->get_ignore_list() ) ) {
 			if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 				// Can't link to inner blocks so ignore everything past.
@@ -350,6 +351,8 @@ class Kadence_Blocks_Table_Of_Contents {
 			} else {
 				self::$output_content .= render_block( $block );
 			}
+		} else if ( $block['blockName'] === 'core/post-content' ) {
+			self::$output_content .= $the_post_content;
 		}
 	}
 	/**
@@ -609,14 +612,16 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @return string The string converted.
 	 */
 	public function convert_smart_quotes( $string ) {
-		$search = array("’",
+		$search = array("×",
+						"’",
 						"‘",
 						"”",
 						"“",
 						"–",
 						"—",
 						"…");
-		$replace = array("'",
+		$replace = array("x",
+						"'",
 						 "'",
 						 '"',
 						 '"',

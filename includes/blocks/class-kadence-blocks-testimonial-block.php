@@ -80,6 +80,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$titleFont         = $this->get_context( $block_instance->context, 'titleFont' );
 		$mediaStyles	   = $this->get_context( $block_instance->context, 'mediaStyles' );
 		$ratingStyles	   = $this->get_context( $block_instance->context, 'ratingStyles' );
+		$content = '';
 		if ( $layout === 'carousel' ) {
 			$content .= '<div class="kt-blocks-testimonial-carousel-item kb-slide-item">';
 		}
@@ -116,20 +117,17 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 		// end: kt-testimonial-text-wrap
 		$content .= '</div>';
-
-		if ( ( $displayMedia && in_array( $style, array(
+		if ( ( $displayMedia && ! in_array( $style, array(
 					'card',
 					'inlineimage'
 				) ) ) || $displayOccupation || $displayName ) {
 			$content .= '<div class="kt-testimonial-meta-wrap">';
-
 			if ( $displayMedia && !in_array( $style, array(
 					'card',
 					'inlineimage'
 				) ) && ( ( 'icon' !== $attributes['media'] && $attributes['url'] ) || ( 'icon' === $attributes['media'] && $attributes['icon'] ) ) ) {
 				$content .= $this->render_media( $attributes, $mediaStyles, $style, $containerMaxWidth );
 			}
-
 			$content .= '<div class="kt-testimonial-meta-name-wrap">';
 
 			if ( $displayName ) {
@@ -185,7 +183,6 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	private function render_media( $attributes, $mediaStyles, $style, $containerMaxWidth ) {
-
 		$urlOutput = $this->get_media_url( $attributes, $mediaStyles, $style, $containerMaxWidth );
 
 		$media = '<div class="kt-testimonial-media-wrap">';
@@ -200,22 +197,12 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			$media .= $svg;
 			$media .= '</div>';
 		}
-
 		if( $attributes['media'] !== 'icon' && $attributes['url'] ) {
-			$media .= '<div
-			class="kt-testimonial-image"
-			style="
-			background-image: url(' . $urlOutput . ');
-			background-size: '. ( $style === 'card' ? $mediaStyles[0]['backgroundSize'] : "undefined" ) .';
-			border-radius: '. ( isset( $mediaStyles[ 0 ]['borderRadius'] ) ? $mediaStyles[ 0 ]['borderRadius'] . 'px' : "undefined" ) .';
-			"
-			></div>';
+			$media .= '<div class="kt-testimonial-image" style="background-image: url(' . $urlOutput . ');' . ( $style === 'card' ? 'background-size: '. $mediaStyles[0]['backgroundSize'] . ';' : '' ) . '' . ( isset( $mediaStyles[ 0 ]['borderRadius'] ) && is_numeric( $mediaStyles[ 0 ]['borderRadius'] ) ? 'border-radius: ' . $mediaStyles[ 0 ]['borderRadius'] . 'px;' : '' ) . '"></div>';
 		}
-
 		$media .= '</div>';
 		$media .= '</div>';
 		$media .= '</div>';
-
 		return $media;
 	}
 	
@@ -278,7 +265,8 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$extras = '';
 		}
-		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty(  $ratingStyles[ 0 ]['size'] ) ? $ratingStyles[ 0 ]['size'] : '' ), 'fas_star', false, $extras );
+		$svg_title = sprintf( esc_html__( '%d star rating', 'kadence-blocks' ), $attributes['rating'] );
+		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty(  $ratingStyles[ 0 ]['size'] ) ? $ratingStyles[ 0 ]['size'] : '' ), $svg_title, false, $extras );
 
 		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. $attributes['rating'] .'">';
 

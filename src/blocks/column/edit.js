@@ -120,18 +120,24 @@ function SectionEdit( {
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
 		}
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		// Update Old Styles
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
 			setAttributes( { padding: [ topPadding, rightPadding, bottomPadding, leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
 		if ( ( '' !== topPaddingT || '' !== rightPaddingT || '' !== bottomPaddingT || '' !== leftPaddingT ) ) {
-			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
+			setAttributes( { tabletPadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
 		}
 		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
@@ -550,7 +556,7 @@ function SectionEdit( {
 				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }` : '' ) }
 				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
-				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h1.kadence-advancedheading-text, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h2.kadence-advancedheading-text, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h3.kadence-advancedheading-text, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h4.kadence-advancedheading-text, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h5.kadence-advancedheading-text, .kadence-column-${ uniqueID } h6, .kadence-column-${ uniqueID } h6.kadence-advancedheading-text { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
@@ -877,7 +883,7 @@ function SectionEdit( {
 											max={ ( marginType === 'em' || marginType === 'rem' ? 24 : 500 ) }
 											step={ ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 ) }
 											unit={ marginType }
-											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 											onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 											onMouseOver={ marginMouseOver.onMouseOver }
 											onMouseOut={ marginMouseOver.onMouseOut }
@@ -954,45 +960,43 @@ function SectionEdit( {
 										) }
 									</KadencePanelBody>
 								)}
-								{ inRowBlock && (
-									<KadencePanelBody
-										title={ __( 'Sticky Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-sticky-settings' }
-									>
-										<ToggleControl
-											label={ __( 'Make sticky', 'kadence-blocks' ) }
-											help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
-											checked={ ( undefined !== sticky ? sticky : false ) }
-											onChange={ ( value ) => setAttributes( { sticky: value } ) }
+								<KadencePanelBody
+									title={ __( 'Sticky Settings', 'kadence-blocks' ) }
+									initialOpen={ false }
+									panelName={ 'kb-col-sticky-settings' }
+								>
+									<ToggleControl
+										label={ __( 'Make sticky', 'kadence-blocks' ) }
+										help={ __( 'This will stick the section to viewport for the height of outer container.', 'kadence-blocks' ) }
+										checked={ ( undefined !== sticky ? sticky : false ) }
+										onChange={ ( value ) => setAttributes( { sticky: value } ) }
+									/>
+									{ sticky && (
+										<ResponsiveRangeControls
+											label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
+											value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
+											onChange={ value => {
+												setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
+											} }
+											min={ 0 }
+											max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
+											step={ 1 }
+											unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
+											onUnit={ ( value ) => {
+												setAttributes( { stickyOffsetUnit: value } );
+											} }
+											units={ [ 'px', 'rem', 'vh' ] }
 										/>
-										{ sticky && (
-											<ResponsiveRangeControls
-												label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
-												value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
-												onChange={ value => {
-													setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
-												onChangeTablet={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
-												onChangeMobile={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
-												} }
-												min={ 0 }
-												max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
-												step={ 1 }
-												unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
-												onUnit={ ( value ) => {
-													setAttributes( { stickyOffsetUnit: value } );
-												} }
-												units={ [ 'px', 'rem', 'vh' ] }
-											/>
-										) }
-									</KadencePanelBody>
-								) }
+									) }
+								</KadencePanelBody>
 								<KadencePanelBody
 									title={__( 'Visibility Settings', 'kadence-blocks' )}
 									panelName={'kb-col-visibility-settings'}
@@ -1043,7 +1047,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundHoverType && (
+												{ 'gradient' !== backgroundHoverType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1106,7 +1110,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundType && (
+												{ 'gradient' !== backgroundType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1191,7 +1195,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayHoverType && (
+												{ 'gradient' !== overlayHoverType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -1273,7 +1277,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayType && (
+												{ 'gradient' !== overlayType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -1342,7 +1346,7 @@ function SectionEdit( {
 													value={borderHoverStyle}
 													tabletValue={tabletBorderHoverStyle}
 													mobileValue={mobileBorderHoverStyle}
-													onChange={( value ) => setAttributes( { borderHoverStyle: value } )}
+													onChange={( value ) => setAttributes( { borderHoverStyle: value } ) }
 													onChangeTablet={( value ) => setAttributes( { tabletBorderHoverStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderHoverStyle: value } )}
 												/>
@@ -1410,10 +1414,10 @@ function SectionEdit( {
 											<>
 												<ResponsiveBorderControl
 													label={__( 'Border', 'kadence-blocks' )}
-													value={borderStyle}
+													value={ borderStyle ? JSON.parse( JSON.stringify( borderStyle ) ) : '' }
 													tabletValue={tabletBorderStyle}
 													mobileValue={mobileBorderStyle}
-													onChange={( value ) => setAttributes( { borderStyle: value } )}
+													onChange={( value ) => setAttributes( { borderStyle:value } )}
 													onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
 												/>

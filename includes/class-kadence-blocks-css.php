@@ -24,6 +24,13 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @var array
 	 */
+	public static $head_styles = array();
+
+	/**
+	 * CSS to enqueue
+	 *
+	 * @var array
+	 */
 	public static $custom_styles = array();
 
 	/**
@@ -238,6 +245,7 @@ class Kadence_Blocks_CSS {
 	 */
 	public function frontend_block_css() {
 		if ( ! empty( self::$styles ) ) {
+			self::$head_styles = self::$styles;
 			$output = '';
 			foreach ( self::$styles as $key => $value ) {
 				$output .= $value;
@@ -295,6 +303,24 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( isset( self::$styles[ $style_id ] ) ) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Sets a style id to keep a record of rendering.
+	 *
+	 * @access public
+	 * @since  1.0
+	 *
+	 * @param  string $style_id - the css group id.
+	 * @return $this
+	 */
+	public function has_header_styles( $style_id = '' ) {
+		if ( empty( $style_id ) ) {
+			return false;
+		}
+		if ( isset( self::$head_styles[ $style_id ] ) ) {
 			return true;
 		}
 		return false;
@@ -1235,14 +1261,14 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( ! empty( $attributes[ $name ][0] ) ) {
+		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] ) {
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
 		}
-		if ( ! empty( $attributes[ $name ][1] ) ) {
+		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] ) {
 			$this->set_media_state( 'tablet' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
 		}
-		if ( ! empty( $attributes[ $name ][2] ) ) {
+		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] ) {
 			$this->set_media_state( 'mobile' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
 		}
@@ -1771,7 +1797,13 @@ class Kadence_Blocks_CSS {
 						$this->add_property( $args[ $prop_key ] . '-style', $style );
 					}
 				} elseif ( $single_styles && $style ) {
-					$this->add_property( $args[ $prop_key ] . '-style', $style );
+					$desktop_width = $this->get_border_value( $attributes, $args, $side, 'desktop', 'width', $single_styles );
+					$tablet_width = $this->get_border_value( $attributes, $args, $side, 'tablet', 'width', $single_styles );
+
+					// Only need to output *just* the border-style if we're inheriting a width
+					if( ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
+						$this->add_property( $args[ $prop_key ] . '-style', $style );
+					}
 				}
 			}
 		}
@@ -1847,11 +1879,19 @@ class Kadence_Blocks_CSS {
 				$return_unit= $sized_units[$given_size];
 				break;
 			case 'tablet':
-				$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				if( $given_value === 'width'){
+					$return_value =  $this->is_number( $sized_values[$given_size] ) ? $sized_values[$given_size] : $sized_values['desktop'];
+				} else {
+					$return_value = $sized_values[$given_size] ?: $sized_values['desktop'];
+				}
 				$return_unit = $sized_units[$given_size] ?: $sized_units['desktop'];
 				break;
 			default:
-				$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				if( $given_value === 'width') {
+					$return_value = $this->is_number( $sized_values[ $given_size ] ) ? $sized_values[ $given_size ] : ( $sized_values['tablet'] ?: $sized_values['desktop'] );
+				} else {
+					$return_value = $sized_values[$given_size] ?: $sized_values['tablet'] ?: $sized_values['desktop'];
+				}
 				$return_unit = $sized_units[$given_size] ?: $sized_units['tablet'] ?: $sized_units['desktop'];
 				break;
 		}

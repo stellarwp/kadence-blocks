@@ -30,6 +30,7 @@ export default function save( { attributes } ) {
 		imageFilter,
 		useRatio,
 		ratio,
+		preventLazyLoad,
 	} = attributes;
 
 	const classes = classnames( {
@@ -57,6 +58,13 @@ export default function save( { attributes } ) {
 		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
 	} );
 
+	const imgClasses = classnames( {
+		'kb-img': true,
+		[ `wp-image-${ id }` ]: id,
+		[ `skip-lazy` ]: preventLazyLoad,
+		[ `kb-skip-lazy` ]: preventLazyLoad,
+	} );
+
 	let relAttr;
 	if ( linkTarget ) {
 		relAttr = 'noopener noreferrer';
@@ -71,7 +79,7 @@ export default function save( { attributes } ) {
 		<img
 			src={ url }
 			alt={ alt }
-			className={ id ? `kb-img wp-image-${ id }` : 'kb-img' }
+			className={ imgClasses }
 			width={ width }
 			height={ height }
 			title={ title }

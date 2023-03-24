@@ -146,7 +146,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	isSelected,
 	clientId,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight } = attributes;
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -173,26 +173,32 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
 			};
 		},
 		[ clientId ]
 	);
 	useEffect( () => {
 		setBlockDefaults( 'kadence/rowlayout', attributes);
-
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueId, clientId );
 		}
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		debounce( getDynamic, 200 );
 		// Update from old gutter settings.
@@ -344,17 +350,12 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			setAttributes( { kbVersion: 2 } );
 		}
 	}, [] );
-	const { innerItemCount } = useSelect(
-		( select ) => {
-			return {
-				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
-			};
-		},
-		[ clientId ]
-	);
 	useEffect( () => {
-		if ( innerItemCount < columns ) {
+		if ( innerItemCount < columns && uniqueID ) {
 			updateColumns( innerItemCount, columns );
+		} else if ( innerItemCount < columns && !uniqueID ) {
+			let defaults = setBlockDefaults( 'kadence/rowlayout', attributes);
+			updateColumns( innerItemCount, defaults.columns );
 		}
 	}, [ innerItemCount, columns ] );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
@@ -368,19 +369,23 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
-	const paddingSidesDefault = hasBG ? 'sm' : '';
+	const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
+	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
+	const paddingSidesDefault = hasBG && ! ( isKadenceT && true === inheritMaxWidth ) ? 'sm' : '';
 	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== padding?.[0] ? padding[0] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[0] : '' ) );
 	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding?.[1] && '' !== padding[1] ? padding[1] : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[1] : '' ) );
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding?.[2] ? padding[2] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2] : '' ), ( undefined !== mobilePadding ? mobilePadding[2] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding?.[3] && '' !== padding[3] ? ( padding[3] ) : paddingSidesDefault ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[3] : '' ) );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
+	const previewMinHeight = getPreviewSize( previewDevice, ( undefined !== minHeight ? minHeight : '' ), ( undefined !== minHeightTablet ? minHeightTablet : '' ), ( undefined !== minHeightMobile ? minHeightMobile : '' ) );
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[2] ? margin[2] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[2] ? tabletMargin[2] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[2] ? mobileMargin[2] : '' ) );
 	const previewTopSepHeight = getPreviewSize( previewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
 	const previewTopSepWidth = getPreviewSize( previewDevice, ( undefined !== topSepWidth ? topSepWidth : '' ), ( undefined !== topSepWidthTab ? topSepWidthTab : '' ), ( undefined !== topSepWidthMobile ? topSepWidthMobile : '' ) );
 	const previewBottomSepHeight = getPreviewSize( previewDevice, ( undefined !== bottomSepHeight ? bottomSepHeight : '' ), ( undefined !== bottomSepHeightTab ? bottomSepHeightTab : '' ), ( undefined !== bottomSepHeightMobile ? bottomSepHeightMobile : '' ) );
 	const previewBottomSepWidth = getPreviewSize( previewDevice, ( undefined !== bottomSepWidth ? bottomSepWidth : '' ), ( undefined !== bottomSepWidthTab ? bottomSepWidthTab : '' ), ( undefined !== bottomSepWidthMobile ? bottomSepWidthMobile : '' ) );
-
+	const paddingRightBreakout = ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : paddingSidesTheme );
+	const paddingLeftBreakout = ( previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : paddingSidesTheme );
 	const previewLayout = getPreviewSize( previewDevice, ( ! colLayout ? 'equal' : colLayout ), ( ! tabletLayout ? '' : tabletLayout ), ( ! mobileLayout ? '' : mobileLayout ) );
 	let hasBorderRadius = false;
 	if ( undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0] ) {
@@ -559,6 +564,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+				minHeight: previewMinHeight ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
 				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},
@@ -943,69 +949,81 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					</InspectorAdvancedControls>
 				</>
 			) }
-			<style>
-				{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
-				{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
-				{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				<>
-					{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
-				</>
-				{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
-				{ columns && columns === 2 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
-					<>
-						{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
-					</>
-				) }
-				{ columns && columns === 3 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
-					<>
-						{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
-					</>
-				) }
-				{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
-					<>
-					{ times( columns, n => {
-							const item = n + 1;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( columns - item ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 10 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 20 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					{ times( columns, n => {
-							const item = n + 1 + columns + columns + columns;
-							return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 30 + ( columns - ( n + 1 ) ) ) } }`;
-						} )
-					}
-					</>
-				) }
-				{ zIndex && zIndex > 30 && (
-					<>
-						{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
-					</>
-				) }
-				{ kadenceBlockCSS && (
-					<>
-						{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
-					</>
-				)}
-				{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
-					<>
-					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
-					</>
-				)}
-			</style>
 			<RowBackground
 				backgroundClasses={ classes }
 				attributes={ attributes }
 				previewDevice={ previewDevice }
 			>
+				<style>
+					{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+					{ ( linkColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity) { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+					{ ( linkHoverColor ? `.kb-row-id-${ uniqueID } a:not(.use-for-specificity):hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+					<>
+						{ ( undefined !== columnGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { column-gap:${ columnGap } }` : '' ) }
+					</>
+					{ ( undefined !== rowGap ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kt-layout-inner-wrap-id${ uniqueID }, .wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${ rowGap } }` : '' ) }
+					{ columns && columns === 2 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
+						<>
+							{ ( widthNumber && secondWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 2)' : '' } ) ) }` : '' ) }
+						</>
+					) }
+					{ columns && columns === 2 && inheritMaxWidth && (breakoutLeft || breakoutRight ) && 'row' !== previewLayout && 'full' === align && 'Desktop' === previewDevice && (
+						<>
+							{ ( breakoutRight ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingRightBreakout } *2 ) ) ) /2 ) *-1) ) !important; }` : '' ) }
+							{ ( breakoutLeft ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingLeftBreakout } *2 ) ) ) /2 ) *-1) ) !important; }` : '' ) }
+						</>
+					) }
+					{ columns && columns === 2 && inheritMaxWidth && (breakoutLeft || breakoutRight ) && 'row' !== previewLayout && 'full' === align && 'Tablet' === previewDevice && tabLayoutClass !== 'row' && (
+						<>
+							{ ( breakoutRight ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${ paddingRightBreakout } *-1 ) !important; }` : '' ) }
+							{ ( breakoutLeft ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${ paddingLeftBreakout } *-1 ) !important; }` : '' ) }
+						</>
+					) }
+					{ columns && columns === 3 && 'grid-layout' !== previewLayout && ( 'Desktop' === previewDevice || ( 'Tablet' === previewDevice && tabLayoutClass === 'inherit' ) ) && (
+						<>
+							{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
+						</>
+					) }
+					{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
+						<>
+						{ times( columns, n => {
+								const item = n + 1;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( columns - item ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 10 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 20 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						{ times( columns, n => {
+								const item = n + 1 + columns + columns + columns;
+								return `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap >  .wp-block-kadence-column:nth-child(${ item }) { order: ${ ( 30 + ( columns - ( n + 1 ) ) ) } }`;
+							} )
+						}
+						</>
+					) }
+					{ zIndex && zIndex > 30 && (
+						<>
+							{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 } }` };
+						</>
+					) }
+					{ kadenceBlockCSS && (
+						<>
+							{ kadenceBlockCSS.replace( /selector/g, `.kb-row-id-${ uniqueID }` ) }
+						</>
+					)}
+					{ isSelected && colLayout && 'contentOnly' !== templateLock && 'row' !== colLayout && columns && 1 !== columns && 'Desktop' === previewDevice && showSettings( 'columnResize', 'kadence/rowlayout' ) && (
+						<>
+						{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-horizontal.is-with-inserter { display: none }` };
+						</>
+					)}
+				</style>
 				<Overlay
 					attributes={ attributes }
 					previewDevice={ previewDevice }
