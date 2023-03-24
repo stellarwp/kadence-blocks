@@ -280,6 +280,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
+	 * Get HTML for displaying the label and percentage completed.
+	 *
 	 * @param $attributes
 	 * @param $position
 	 *
@@ -311,6 +313,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		return $response;
 	}
 
+	/**
+	 * Get HTML for displaying the percent complete.
+	 *
+	 * @param $attributes
+	 *
+	 * @return string
+	 */
 	private function get_percent( $attributes ) {
 		if ( isset( $attributes['displayPercent'] ) && $attributes['displayPercent'] !== true ) {
 			return '';
@@ -325,6 +334,14 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		return '<span id="current-progress-' . $position . $attributes['uniqueID'] . '">' . $prefix . $starting . $suffix . '</span>';
 	}
 
+	/**
+	 * Set responsive alignment CSS based on alignment.
+	 *
+	 * @param $alignment
+	 * @param $css
+	 *
+	 * @return void
+	 */
 	private function responsive_alignment( $alignment, $css ) {
 
 		if ( $alignment === 'space-between' ) {
