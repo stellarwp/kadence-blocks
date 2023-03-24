@@ -98,24 +98,25 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $attributes, 'labelFont' );
 
 		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] === 'inside' );
+		$barType = !empty( $attributes['barType'] ) ? $attributes['barType'] : 'line';
 
 		if ( ! empty( $attributes['hAlign'] ) && ! $is_inside ) {
 			$this->responsive_alignment( $attributes['hAlign'], $css );
 		} else {
 			$css->add_property( 'justify-content', 'space-between' );
 
-			if( $is_inside && ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && $attributes['barType'] !== 'line' ) ) ) {
+			if( $is_inside && $barType === 'line' ) {
 				$css->add_property( 'width', '100%' );
 			}
 		}
 
-		if ( ! empty( $attributes['thAlign'] ) && ! $is_inside ) {
+		if ( ! empty( $attributes['thAlign'] ) && ( ! $is_inside || $barType === 'line') ) {
 			$css->set_media_state( 'tablet' );
 			$this->responsive_alignment( $attributes['thAlign'], $css );
 			$css->set_media_state( 'desktop' );
 		}
 
-		if ( ! empty( $attributes['mhAlign'] ) && ! $is_inside ) {
+		if ( ! empty( $attributes['mhAlign'] ) && ( ! $is_inside || $barType === 'line') ) {
 			$css->set_media_state( 'mobile' );
 			$this->responsive_alignment( $attributes['mhAlign'], $css );
 			$css->set_media_state( 'desktop' );
