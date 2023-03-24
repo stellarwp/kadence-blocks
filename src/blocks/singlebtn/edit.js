@@ -16,6 +16,7 @@ import {
 	getBorderColor,
 	getUniqueId,
 	getInQueryBlock,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -34,10 +35,8 @@ import {
 	BackgroundTypeControl,
 	KadenceRadioButtons,
 	URLInputInline,
-	ResponsiveAlignControls,
 	GradientControl,
 	BoxShadowControl,
-	DynamicTextControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -45,105 +44,6 @@ import {
 	CopyPasteAttributes,
 } from '@kadence/components';
 import classnames from 'classnames';
-import { times, filter, map, uniqueId } from 'lodash';
-
-const defaultBtns = {
-	text: '',
-	link: '',
-	target: '_self',
-	color: '',
-	background: '',
-	borderRadius: ['', '', '', ''],
-	colorHover: '',
-	backgroundHover: '',
-	icon: '',
-	iconSide: 'right',
-	iconHover: false,
-	noFollow: false,
-	sponsored: false,
-	download: false,
-	gradient: '',
-	gradientHover: '',
-	btnStyle: 'basic',
-	sizePreset: 'standard',
-	backgroundType: 'solid',
-	backgroundHoverType: 'solid',
-	width: [ '', '', '' ],
-	widthType:'auto',
-	borderStyle:[ {
-		top: [ '', '', '' ],
-		right: [ '', '', '' ],
-		bottom: [ '', '', '' ],
-		left: [ '', '', '' ],
-		unit: 'px'
-	} ],
-	borderHoverStyle:[ {
-		top: [ '', '', '' ],
-		right: [ '', '', '' ],
-		bottom: [ '', '', '' ],
-		left: [ '', '', '' ],
-		unit: 'px'
-	} ],
-	displayShadow: false,
-	displayHoverShadow: false,
-	shadow: [ {
-		color: '#000000',
-		opacity: 0.2,
-		spread: 0,
-		blur: 2,
-		hOffset: 1,
-		vOffset: 1,
-		inset: false
-	} ],
-	shadowHover: [ {
-		color: '#000000',
-		opacity: 0.4,
-		spread: 0,
-		blur: 3,
-		hOffset: 2,
-		vOffset: 2,
-		inset: false
-	} ],
-	typography: {
-		type: 'array',
-		default: [ {
-			'size': [ '', '', '' ],
-			'sizeType': 'px',
-			'lineHeight': [ '', '', '' ],
-			'lineType': 'px',
-			'letterSpacing': [ '', '', '' ],
-			'letterType': 'px',
-			'family': '',
-			'google': false,
-			'style': '',
-			'weight': '',
-			'variant': '',
-			'subset': '',
-			'loadGoogle': true,
-			'textTransform': ''
-		} ]
-	},
-	inheritStyles: '',
-	iconSize: [ '', '', '' ],
-	iconPadding: [ '', '', '', '' ],
-	iconTabletPadding: [ '', '', '', '' ],
-	iconMobilePadding: [ '', '', '', '' ],
-	iconPaddingUnit: 'px',
-	onlyIcon: [ false, '', '' ],
-	iconColor: '',
-	iconColorHover: '',
-	iconSizeUnit: 'px',
-	label: '',
-	marginUnit: 'px',
-	margin: [ '', '', '', '' ],
-	tabletMargin: [ '', '', '', '' ],
-	mobileMargin: [ '', '', '', '' ],
-	paddingUnit: 'px',
-	padding: [ '', '', '', '' ],
-	tabletPadding: [ '', '', '', '' ],
-	mobilePadding: [ '', '', '', '' ],
-	borderStyle: [{}],
-};
 
 import metadata from './block.json';
 /**
@@ -153,18 +53,10 @@ import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 
 import {
-	cog,
-	pages,
-	chevronRight,
-	chevronLeft,
-	plus,
-	close,
-	code,
 	link as linkIcon,
 } from '@wordpress/icons';
-import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
+import { displayShortcut } from '@wordpress/keycodes';
 import {
-	Fragment,
 	useEffect,
 	useState,
 } from '@wordpress/element';
@@ -172,36 +64,24 @@ import {
 	RichText,
 	InspectorControls,
 	BlockControls,
-	AlignmentToolbar,
-	InspectorAdvancedControls,
 	JustifyContentControl,
 	BlockVerticalAlignmentControl,
 	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
-	Dashicon,
-	TabPanel,
-	Button,
-	PanelRow,
-	RangeControl,
 	TextControl,
 	ToolbarGroup,
-	ButtonGroup,
 	SelectControl,
-	ToggleControl,
-	DropdownMenu,
-	MenuGroup,
-	MenuItem,
 	ToolbarButton,
-	Icon,
 } from '@wordpress/components';
 import {
 	applyFilters,
 } from '@wordpress/hooks';
 
 
-export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId, name } ) {
+export default function KadenceButtonEdit( props ) {
+	const { attributes, setAttributes, className, isSelected, context, clientId, name } = props;
 	const {
 		uniqueID,
 		text,
@@ -285,12 +165,18 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		updateBlockAttributes( rootID, { [key]: value } );
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -300,7 +186,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
