@@ -160,12 +160,57 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
 		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : false;
+		$strokeWidths = array(
+			!empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2,
+			!empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( !empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ),
+			!empty( $attributes['progressWidthMobile'] ) ? $attributes['progressWidthMobile'] : ( !empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( !empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ) ),
+		);
+
 
 		$content .= '<script>
 
+			function reportWindowSize() {
+			  let barContainer = document.querySelector("#kb-progress-bar' . $unique_id . '");
+			  let barSvg = barContainer.querySelector("svg");
+			  let barPaths = barSvg.querySelectorAll("path");
+			  let path1 = barPaths[0];
+			  let path2 = barPaths[1];
+			  let stokeWidths = [' . implode( ',', $strokeWidths ) . '];
+
+			  if( window.innerWidth < 768 ) {
+			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[0]);
+
+			    path1.setAttribute( "stroke-width", stokeWidths[0]);
+                path2.setAttribute( "stroke-width", stokeWidths[0]);
+
+                path1.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
+                path2.setAttribute( "d", "M 0," + ( stokeWidths[0] / 2) + " L 100," + ( stokeWidths[0] / 2));
+
+			  } else if( window.innerWidth < 1025 ) {
+			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[1]);
+
+                path1.setAttribute( "stroke-width", stokeWidths[1]);
+                path2.setAttribute( "stroke-width", stokeWidths[1]);
+
+                path1.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
+                path2.setAttribute( "d", "M 0," + ( stokeWidths[1] / 2) + " L 100," + ( stokeWidths[1] / 2));
+			  } else {
+			    barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[2]);
+
+                path1.setAttribute( "stroke-width", stokeWidths[2]);
+                path2.setAttribute( "stroke-width", stokeWidths[2]);
+
+                path1.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
+                path2.setAttribute( "d", "M 0," + ( stokeWidths[2] / 2) + " L 100," + ( stokeWidths[2] / 2));
+			  }
+			}
+
+
+			window.onresize = reportWindowSize;
+
 			var waitForProgressBar' . $simple_id . ' = setInterval(function () {
 
-				if (typeof ProgressBar !== "undefined" && typeof ScrollMagic !== "undefined") {
+				if (typeof ProgressBar !== "undefined" ) {
 					clearInterval(waitForProgressBar' . $simple_id . ');
 
 					var progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
@@ -177,42 +222,42 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 					});';
 
 		if ( $delay ) {
-			$content .= 'let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
+			$content .= '
+					let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
 					let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '", logLevel: 3});
 					desiredAnimation.triggerHook(0.88);
 					desiredAnimation.addTo( progressBarController' . $simple_id . ' );
 					desiredAnimation.on("start", function (e) {';
 		}
 
-
 		$content .= 'progressBar' . $simple_id . '.animate(
-						' . $attributes['progressAmount'] / $attributes['progressMax'] . ' ,
-			            {
-							 duration: ' . ( $attributes['duration'] * 1000 ) . ',
-                             step: function(state, bar) {
-                                let value = 0;
-                                let elementAbove = document.getElementById("current-progress-above' . $unique_id . '");
-                                let elementInside = document.getElementById("current-progress-inside' . $unique_id . '");
-                                let elementBelow = document.getElementById("current-progress-below' . $unique_id . '");
+							' . $attributes['progressAmount'] / $attributes['progressMax'] . ' ,
+				            {
+								 duration: ' . ( $attributes['duration'] * 1000 ) . ',
+	                             step: function(state, bar) {
+	                                let value = 0;
+	                                let elementAbove = document.getElementById("current-progress-above' . $unique_id . '");
+	                                let elementInside = document.getElementById("current-progress-inside' . $unique_id . '");
+	                                let elementBelow = document.getElementById("current-progress-below' . $unique_id . '");
 
-                                if( ' . ( $is_relative ? 'true' : 'false' ) . ' ) {
-                                    value = Math.round(bar.value() * 100 );
-                                } else {
-                                    value = Math.round(bar.value() * ' . $progress_max . ');
-                                }
+	                                if( ' . ( $is_relative ? 'true' : 'false' ) . ' ) {
+	                                    value = Math.round(bar.value() * 100 );
+	                                } else {
+	                                    value = Math.round(bar.value() * ' . $progress_max . ');
+	                                }
 
-								if( elementAbove ){
-									elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
-								} else if ( elementInside ){
-									elementInside.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
-								} else if ( elementBelow ){
-									elementBelow.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
-								}
+									if( elementAbove ){
+										elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+									} else if ( elementInside ){
+										elementInside.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+									} else if ( elementBelow ){
+										elementBelow.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
+									}
 
-							 }
-			            } ,
-			            function(){}
-			        );';
+								 }
+				            } ,
+				            function(){}
+				        );';
 
 		if ( $delay ) {
 			$content .= '});';
