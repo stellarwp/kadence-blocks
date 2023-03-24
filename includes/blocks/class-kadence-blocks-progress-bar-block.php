@@ -66,13 +66,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id );
 
 		$css->render_responsive_size( $attributes, array( 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ), 'width', 'containerMaxWidthUnits' );
-
-		$margin_args = array(
-			'desktop_key' => 'marginDesktop',
-			'tablet_key'  => 'marginTablet',
-			'mobile_key'  => 'marginMobile',
-		);
-		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', $margin_args );
+		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
 		if ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && $attributes['barType'] === 'line' ) ) {
 			$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' svg' );
@@ -96,11 +90,12 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap' );
 		$css->render_typography( $attributes, 'labelFont' );
+		$css->render_measure_output( $attributes, 'labelPadding', 'padding' );
 
 		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] === 'inside' );
 		$barType = !empty( $attributes['barType'] ) ? $attributes['barType'] : 'line';
 
-		if ( ! empty( $attributes['hAlign'] ) && ! $is_inside ) {
+		if ( ! empty( $attributes['hAlign'] ) ) {
 			$this->responsive_alignment( $attributes['hAlign'], $css );
 		} else {
 			$css->add_property( 'justify-content', 'space-between' );
@@ -110,13 +105,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if ( ! empty( $attributes['thAlign'] ) && ( ! $is_inside || $barType === 'line') ) {
+		if ( ! empty( $attributes['thAlign'] ) ) {
 			$css->set_media_state( 'tablet' );
 			$this->responsive_alignment( $attributes['thAlign'], $css );
 			$css->set_media_state( 'desktop' );
 		}
 
-		if ( ! empty( $attributes['mhAlign'] ) && ( ! $is_inside || $barType === 'line') ) {
+		if ( ! empty( $attributes['mhAlign'] ) ) {
 			$css->set_media_state( 'mobile' );
 			$this->responsive_alignment( $attributes['mhAlign'], $css );
 			$css->set_media_state( 'desktop' );

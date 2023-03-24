@@ -35,7 +35,7 @@
 	"uniqueID": {
 	  "type": "string"
 	},
-	"marginDesktop": {
+	"margin": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -44,7 +44,7 @@
 		""
 	  ]
 	},
-	"marginTablet": {
+	"tabletMargin": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -53,7 +53,7 @@
 		""
 	  ]
 	},
-	"marginMobile": {
+	"mobileMargin": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -62,11 +62,11 @@
 		""
 	  ]
 	},
-	"marginUnit": {
+	"marginType": {
 	  "type": "string",
 	  "default": "px"
 	},
-	"paddingDesktop": {
+	"labelPadding": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -75,7 +75,7 @@
 		""
 	  ]
 	},
-	"paddingTablet": {
+	"tabletLabelPadding": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -84,7 +84,7 @@
 		""
 	  ]
 	},
-	"paddingMobile": {
+	"mobileLabelPadding": {
 	  "type": "array",
 	  "default": [
 		"",
@@ -93,7 +93,7 @@
 		""
 	  ]
 	},
-	"paddingUnit": {
+	"labelPaddingType": {
 	  "type": "string",
 	  "default": "px"
 	},

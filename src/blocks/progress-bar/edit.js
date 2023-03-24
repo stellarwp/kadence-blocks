@@ -24,7 +24,7 @@ import {
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
 	setBlockDefaults,
-	getUniqueId
+	getUniqueId,
 } from '@kadence/helpers';
 
 import {
@@ -42,7 +42,7 @@ import {
 	useEffect,
 	useCallback,
 	useMemo,
-	Fragment
+	Fragment,
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { map } from 'lodash';
@@ -85,14 +85,14 @@ export function Edit( props ) {
 	const {
 		uniqueID,
 		align,
-		paddingTablet,
-		paddingDesktop,
-		paddingMobile,
-		paddingUnit,
-		marginTablet,
-		marginDesktop,
-		marginMobile,
-		marginUnit,
+		labelPadding,
+		tabletLabelPadding,
+		mobileLabelPadding,
+		labelPaddingType,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginType,
 		barBackground,
 		barBackgroundOpacity,
 		progressColor,
@@ -138,7 +138,7 @@ export function Edit( props ) {
 	);
 
 	useEffect( () => {
-		setBlockDefaults( 'kadence/progress-bar', attributes);
+		setBlockDefaults( 'kadence/progress-bar', attributes );
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
@@ -148,19 +148,24 @@ export function Edit( props ) {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
+
+		if( barType !== 'line' && labelPosition === 'inside' ) {
+			setAttributes( { hAlign: 'center', thAlign: '', mhAlign: '' } );
+		}
+
 	}, [] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 0 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 1 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 2 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 3 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
 
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 0 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 1 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 2 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 3 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
+	const previewLabelPaddingTop = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 0 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 0 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 0 ] : '' ) );
+	const previewLabelPaddingRight = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 1 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 1 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 1 ] : '' ) );
+	const previewLabelPaddingBottom = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 2 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 2 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 2 ] : '' ) );
+	const previewLabelPaddingLeft = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 3 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 3 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 3 ] : '' ) );
 
 	const previewProgressWidth = getPreviewSize( previewDevice, ( undefined !== progressWidth ? progressWidth : '' ), ( undefined !== progressWidthTablet ? progressWidthTablet : '' ), ( undefined !== progressWidthMobile ? progressWidthMobile : '' ) );
 	const previewProgressBorderRadius = getPreviewSize( previewDevice, ( undefined !== progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( undefined !== progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( undefined !== progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) );
@@ -217,8 +222,8 @@ export function Edit( props ) {
 		svgStyle   : {
 			borderRadius: ( barType === 'line' ? previewProgressBorderRadius + 'px' : '' ),
 		},
-		step: function( state, bar ) {
-			let iFrameSelector = document.getElementsByName('editor-canvas');
+		step       : function( state, bar ) {
+			let iFrameSelector = document.getElementsByName( 'editor-canvas' );
 			let selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
 
 			let elementAbove = selector.getElementById( 'current-progress-above' + uniqueID );
@@ -288,7 +293,12 @@ export function Edit( props ) {
 			return null;
 		}
 
-		let wrapperLayoutStyles = {};
+		let wrapperLayoutStyles = {
+			paddingTop   : ( '' !== previewLabelPaddingTop ? getSpacingOptionOutput( previewLabelPaddingTop, labelPaddingType ) : undefined ),
+			paddingRight : ( '' !== previewLabelPaddingRight ? getSpacingOptionOutput( previewLabelPaddingRight, labelPaddingType ) : undefined ),
+			paddingBottom: ( '' !== previewLabelPaddingBottom ? getSpacingOptionOutput( previewLabelPaddingBottom, labelPaddingType ) : undefined ),
+			paddingLeft  : ( '' !== previewLabelPaddingLeft ? getSpacingOptionOutput( previewLabelPaddingLeft, labelPaddingType ) : undefined ),
+		};
 
 		if ( previewAlign === 'space-between' ) {
 			wrapperLayoutStyles.justifyContent = 'space-between';
@@ -553,18 +563,22 @@ export function Edit( props ) {
 								<ToggleGroupControlOption value="below" label={__( 'Below', 'kadence-blocks' )}/>
 							</ToggleGroupControl>
 
-							{labelPosition !== 'inside' || barType === 'line' ? (
-								<ResponsiveAlignControls
-									label={__( 'Label Alignment', 'kadence-blocks' )}
-									value={( hAlign ? hAlign : '' )}
-									mobileValue={( mhAlign ? mhAlign : '' )}
-									tabletValue={( thAlign ? thAlign : '' )}
-									onChange={( nextAlign ) => setAttributes( { hAlign: ( nextAlign ? nextAlign : 'space-between' ) } )}
-									onChangeTablet={( nextAlign ) => setAttributes( { thAlign: ( nextAlign ? nextAlign : '' ) } )}
-									onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: ( nextAlign ? nextAlign : '' ) } )}
-									type={'justify'}
-								/> ) : null
-							}
+							{labelPosition !== 'inside' || barType === 'line' ? ( <ResponsiveAlignControls
+								label={__( 'Label Alignment', 'kadence-blocks' )}
+								value={( hAlign ? hAlign : '' )}
+								mobileValue={( mhAlign ? mhAlign : '' )}
+								tabletValue={( thAlign ? thAlign : '' )}
+								onChange={( nextAlign ) => setAttributes( { hAlign: ( nextAlign ? nextAlign : 'space-between' ) } )}
+								onChangeTablet={( nextAlign ) => setAttributes( { thAlign: ( nextAlign ? nextAlign : '' ) } )}
+								onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: ( nextAlign ? nextAlign : '' ) } )}
+								type={'justify'}
+							/> ) : null}
+
+							<ToggleControl
+								label={__( 'Show Label', 'kadence-blocks' )}
+								checked={displayLabel}
+								onChange={( value ) => setAttributes( { displayLabel: value } )}
+							/>
 
 							{displayLabel && displayPercent ? (
 								<SelectControl
@@ -580,18 +594,12 @@ export function Edit( props ) {
 								/>
 							) : null}
 
-							<ToggleControl
-								label={__( 'Show Label', 'kadence-blocks' )}
-								checked={displayLabel}
-								onChange={( value ) => setAttributes( { displayLabel: value } )}
-							/>
-
 						</KadencePanelBody>
 
 						<KadencePanelBody
 							title={__( 'Text Styling', 'kadence-blocks' )}
 							initialOpen={true}
-							panelName={'kb-testimonials-title-settings'}
+							panelName={'kb-progress-text-settings'}
 						>
 							<PopColorControl
 								label={__( 'Color Settings', 'kadence-blocks' )}
@@ -639,6 +647,26 @@ export function Edit( props ) {
 								margin={labelFont.margin}
 								onMargin={( value ) => saveLabelFont( { margin: value } )}
 							/>
+
+							<ResponsiveMeasureRangeControl
+								label={__( 'Padding', 'kadence-blocks' )}
+								value={labelPadding}
+								tabletValue={tabletLabelPadding}
+								mobileValue={mobileLabelPadding}
+								onChange={( value ) => {
+									setAttributes( { labelPadding: value } );
+								}}
+								onChangeTablet={( value ) => setAttributes( { tabletLabelPadding: value } )}
+								onChangeMobile={( value ) => setAttributes( { mobileLabelPadding: value } )}
+								min={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -200 )}
+								max={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 200 )}
+								step={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 0.1 : 1 )}
+								unit={labelPaddingType}
+								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+								onUnit={( value ) => setAttributes( { labelPaddingType: value } )}
+								// onMouseOver={ labelPaddingMouseOver.onMouseOver }
+								// onMouseOut={ labelPaddingMouseOver.onMouseOut }
+							/>
 						</KadencePanelBody>
 					</Fragment>
 
@@ -664,20 +692,20 @@ export function Edit( props ) {
 						/>
 						<ResponsiveMeasureRangeControl
 							label={__( 'Margin', 'kadence-blocks' )}
-							value={marginDesktop}
-							tabletValue={marginTablet}
-							mobileValue={marginMobile}
+							value={margin}
+							tabletValue={tabletMargin}
+							mobileValue={mobileMargin}
 							onChange={( value ) => {
-								setAttributes( { marginDesktop: value } );
+								setAttributes( { margin: value } );
 							}}
-							onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
-							onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-							min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
-							max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
-							step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
-							unit={marginUnit}
+							onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
+							onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
+							min={( marginType === 'em' || marginType === 'rem' ? -12 : -200 )}
+							max={( marginType === 'em' || marginType === 'rem' ? 24 : 200 )}
+							step={( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 )}
+							unit={marginType}
 							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-							onUnit={( value ) => setAttributes( { marginUnit: value } )}
+							onUnit={( value ) => setAttributes( { marginType: value } )}
 							// onMouseOver={ marginMouseOver.onMouseOver }
 							// onMouseOut={ marginMouseOver.onMouseOut }
 						/>
@@ -687,16 +715,12 @@ export function Edit( props ) {
 			</InspectorControls>
 			<div style={
 				{
-					position     : 'relative',
-					marginTop    : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-					marginRight  : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-					marginBottom : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					marginLeft   : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-					width        : ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' ),
-					paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
-					paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
-					paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+					position    : 'relative',
+					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
+					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
+					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
+					width       : ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' ),
 				}
 			}>
 
