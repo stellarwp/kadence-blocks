@@ -159,11 +159,13 @@ export function Edit( props ) {
 			addUniqueID( uniqueID, clientId );
 		}
 
+	}, [] );
+
+	useEffect( () => {
 		if( barType !== 'line' && labelPosition === 'inside' ) {
 			setAttributes( { hAlign: 'center', thAlign: '', mhAlign: '' } );
 		}
-
-	}, [] );
+	}, [ barType ] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
