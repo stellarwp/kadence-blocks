@@ -89,7 +89,6 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap' );
-		$css->render_typography( $attributes, 'labelFont' );
 		$css->render_measure_output( $attributes, 'labelPadding', 'padding' );
 
 		$is_inside = ! isset( $attributes['labelPosition'] ) || ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] === 'inside' );
@@ -120,6 +119,24 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( isset( $attributes['labelLayout'] ) && ( $attributes['labelLayout'] === 'lt' || $attributes['labelLayout'] === 'lb' ) ) {
 			$css->add_property( 'flex-direction', 'column' );
+		}
+
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap .kt-progress-label' );
+		$css->render_typography( $attributes, 'labelFont' );
+
+
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap .kt-progress-percent' );
+
+		if( isset( $attributes['numberFont'], $attributes['labelFont'] ) ) {
+			$default_font = $this->get_default_font();
+			$diff = $this->arrayRecursiveDiff( $attributes['numberFont'], $default_font );
+			$attributes['numberFont'] = array_merge( $attributes['labelFont'], $diff );
+
+			$css->render_typography( $attributes, 'numberFont' );
+		}  else if ( isset( $attributes['numberFont'] ) ) {
+			$css->render_typography( $attributes, 'numberFont' );
+		} else if ( isset( $attributes['labelFont'] ) ) {
+			$css->render_typography( $attributes, 'labelFont' );
 		}
 
 		return $css->css_output();
@@ -155,7 +172,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
 		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
-		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : false;
+		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : true;
 		$strokeWidths = array(
 			!empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2,
 			!empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( !empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ),
@@ -331,7 +348,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$position = isset( $attributes['labelPosition'] ) ? $attributes['labelPosition'] : 'above';
 
-		return '<span id="current-progress-' . $position . $attributes['uniqueID'] . '">' . $prefix . $starting . $suffix . '</span>';
+		return '<span id="current-progress-' . $position . $attributes['uniqueID'] . '" class="kt-progress-percent">' . $prefix . $starting . $suffix . '</span>';
 	}
 
 	/**
@@ -357,6 +374,78 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 	}
 
+	private function get_default_font() {
+		return array(
+			"color"         => "",
+			"level"         => 6,
+			"size"          => array(
+				"",
+				"",
+				""
+			),
+			"sizeType"      => "px",
+			"lineHeight"    => array(
+				"",
+				"",
+				""
+			),
+			"linetype"      => "px",
+			"letterSpacing" => array(
+				"",
+				"",
+				""
+			),
+			"textTransform" => "",
+			"family"        => "",
+			"google"        => false,
+			"style"         => "",
+			"weight"        => "",
+			"variant"       => "",
+			"subset"        => "",
+			"loadGoogle"    => true,
+			"padding"       => array(
+				0,
+				0,
+				0,
+				0
+			),
+			"margin"        => array(
+				0,
+				0,
+				0,
+				0
+			)
+		);
+	}
+
+	/**
+	 * array_diff_assoc doesn't work on multidimensional arrays, so we need to use this function.
+	 * If any sub-key value is different, to entire parent key is returned.
+	 *
+	 * @param $aArray1
+	 * @param $aArray2
+	 *
+	 * @return array
+	 */
+	private function arrayRecursiveDiff($aArray1, $aArray2) {
+		$aReturn = array();
+
+		foreach ($aArray1 as $mKey => $mValue) {
+			if (array_key_exists($mKey, $aArray2)) {
+				if (is_array($mValue)) {
+					$aRecursiveDiff = $this->arrayRecursiveDiff($mValue, $aArray2[$mKey]);
+					if (count($aRecursiveDiff)) { $aReturn[$mKey] = $mValue; }
+				} else {
+					if ($mValue != $aArray2[$mKey]) {
+						$aReturn[$mKey] = $mValue;
+					}
+				}
+			} else {
+				$aReturn[$mKey] = $mValue;
+			}
+		}
+		return $aReturn;
+	}
 
 	/**
 	 * Registers scripts and styles.

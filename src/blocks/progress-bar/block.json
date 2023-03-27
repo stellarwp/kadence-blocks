@@ -158,7 +158,7 @@
 	},
 	"delayUntilInView": {
 	  "type": "boolean",
-	  "default": false
+	  "default": true
 	},
 	"labelFont": {
 	  "type": "object",
@@ -211,6 +211,50 @@
 	"labelPosition": {
 	  "default": "above",
 	  "type": "string"
+	},
+	"numberFont": {
+	  "type": "object",
+	  "default": {
+		"color": "",
+		"level": 6,
+		"size": [
+		  "",
+		  "",
+		  ""
+		],
+		"sizeType": "px",
+		"lineHeight": [
+		  "",
+		  "",
+		  ""
+		],
+		"linetype": "px",
+		"letterSpacing": [
+		  "",
+		  "",
+		  ""
+		],
+		"textTransform": "",
+		"family": "",
+		"google": false,
+		"style": "",
+		"weight": "",
+		"variant": "",
+		"subset": "",
+		"loadGoogle": true,
+		"padding": [
+		  0,
+		  0,
+		  0,
+		  0
+		],
+		"margin": [
+		  0,
+		  0,
+		  0,
+		  0
+		]
+	  }
 	},
 	"progressAmount": {
 	  "type": "integer",

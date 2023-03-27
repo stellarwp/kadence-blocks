@@ -16,6 +16,7 @@ import {
 	ResponsiveAlignControls,
 	InspectorControlTabs,
 	KadencePanelBody,
+	KadenceRadioButtons
 } from '@kadence/components';
 
 import {
@@ -107,6 +108,7 @@ export function Edit( props ) {
 		labelFont,
 		label,
 		labelPosition,
+		numberFont,
 		progressAmount,
 		progressMax,
 		displayPercent,
@@ -182,6 +184,8 @@ export function Edit( props ) {
 
 	const previewLabelFont = getPreviewSize( previewDevice, ( undefined !== labelFont.size && undefined !== labelFont.size[ 0 ] && '' !== labelFont.size[ 0 ] ? labelFont.size[ 0 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 1 ] && '' !== labelFont.size[ 1 ] ? labelFont.size[ 1 ] : '' ), ( undefined !== labelFont.size && undefined !== labelFont.size[ 2 ] && '' !== labelFont.size[ 2 ] ? labelFont.size[ 2 ] : '' ) );
 	const previewLabelLineHeight = getPreviewSize( previewDevice, ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 0 ] && '' !== labelFont.lineHeight[ 0 ] ? labelFont.lineHeight[ 0 ] : '' ), ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 1 ] && '' !== labelFont.lineHeight[ 1 ] ? labelFont.lineHeight[ 1 ] : '' ), ( undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[ 2 ] && '' !== labelFont.lineHeight[ 2 ] ? labelFont.lineHeight[ 2 ] : '' ) );
+	const previewNumberFont = getPreviewSize( previewDevice, ( undefined !== numberFont.size && undefined !== numberFont.size[ 0 ] && '' !== numberFont.size[ 0 ] ? numberFont.size[ 0 ] : '' ), ( undefined !== numberFont.size && undefined !== numberFont.size[ 1 ] && '' !== numberFont.size[ 1 ] ? numberFont.size[ 1 ] : '' ), ( undefined !== numberFont.size && undefined !== numberFont.size[ 2 ] && '' !== numberFont.size[ 2 ] ? numberFont.size[ 2 ] : '' ) );
+	const previewNumberLineHeight = getPreviewSize( previewDevice, ( undefined !== numberFont.lineHeight && undefined !== numberFont.lineHeight[ 0 ] && '' !== numberFont.lineHeight[ 0 ] ? numberFont.lineHeight[ 0 ] : '' ), ( undefined !== numberFont.lineHeight && undefined !== numberFont.lineHeight[ 1 ] && '' !== numberFont.lineHeight[ 1 ] ? numberFont.lineHeight[ 1 ] : '' ), ( undefined !== numberFont.lineHeight && undefined !== numberFont.lineHeight[ 2 ] && '' !== numberFont.lineHeight[ 2 ] ? numberFont.lineHeight[ 2 ] : '' ) );
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== hAlign ? hAlign : '' ), ( undefined !== thAlign ? thAlign : '' ), ( undefined !== mhAlign ? mhAlign : '' ) );
 
 	const containerClasses = classnames( {
@@ -218,6 +222,19 @@ export function Edit( props ) {
 		fontFamily   : ( labelFont.family ? labelFont.family : '' ),
 		padding      : ( labelFont.padding ? labelFont.padding[ 0 ] + 'px ' + labelFont.padding[ 1 ] + 'px ' + labelFont.padding[ 2 ] + 'px ' + labelFont.padding[ 3 ] + 'px' : '' ),
 		margin       : ( labelFont.margin ? labelFont.margin[ 0 ] + 'px ' + labelFont.margin[ 1 ] + 'px ' + labelFont.margin[ 2 ] + 'px ' + labelFont.margin[ 3 ] + 'px' : '' ),
+	};
+
+	const progressPercentStyles = {
+		fontWeight   : numberFont.weight ? numberFont.weight : progressLabelStyles.fontWeight,
+		fontStyle    : numberFont.style ? numberFont.style : progressLabelStyles.fontStyle,
+		color        : numberFont.color ? KadenceColorOutput( numberFont.color ) : progressLabelStyles.color,
+		fontSize     : previewNumberFont ? ( previewNumberFont ? getFontSizeOptionOutput( previewNumberFont, numberFont.sizeType ) : undefined ) : progressLabelStyles.fontSize,
+		lineHeight   : previewNumberLineHeight ? previewNumberLineHeight + numberFont.lineType : progressLabelStyles.lineHeight,
+		letterSpacing: numberFont.letterSpacing ? numberFont.letterSpacing + 'px' : progressLabelStyles.letterSpacing,
+		textTransform: numberFont.textTransform ? numberFont.textTransform : progressLabelStyles.textTransform,
+		fontFamily   : ( numberFont.family ? numberFont.family : '' ),
+		padding      : ( numberFont.padding ? numberFont.padding[ 0 ] + 'px ' + numberFont.padding[ 1 ] + 'px ' + numberFont.padding[ 2 ] + 'px ' + numberFont.padding[ 3 ] + 'px' : '' ),
+		margin       : ( numberFont.margin ? numberFont.margin[ 0 ] + 'px ' + numberFont.margin[ 1 ] + 'px ' + numberFont.margin[ 2 ] + 'px ' + numberFont.margin[ 3 ] + 'px' : '' ),
 	};
 
 	const progressAttributes = {
@@ -296,6 +313,12 @@ export function Edit( props ) {
 		} );
 	};
 
+	const saveNumberFont = ( value ) => {
+		setAttributes( {
+			numberFont: { ...numberFont, ...value },
+		} );
+	};
+
 	const RenderLabel = ( currentPosition ) => {
 		if ( currentPosition !== labelPosition || ( !displayLabel && !displayPercent ) ) {
 			return null;
@@ -341,7 +364,7 @@ export function Edit( props ) {
 				style={wrapperLayoutStyles}
 			>
 
-				{displayPercent && ( labelLayout === 'lb' || labelLayout === 'pl' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressLabelStyles}></span> : null}
+				{displayPercent && ( labelLayout === 'lb' || labelLayout === 'pl' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span> : null}
 
 				{displayLabel &&
 					<RichText
@@ -356,7 +379,7 @@ export function Edit( props ) {
 					/>
 				}
 
-				{displayPercent && ( labelLayout === 'lt' || labelLayout === 'lp' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressLabelStyles}></span> : null}
+				{displayPercent && ( labelLayout === 'lt' || labelLayout === 'lp' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span> : null}
 
 			</div>
 		);
@@ -406,23 +429,6 @@ export function Edit( props ) {
 
 						{/* These are the wordpress and Kadence components mostly that are imported at the top */}
 						<KadencePanelBody>
-
-							<PopColorControl
-								label={__( 'Progress Background', 'kadence-blocks' )}
-								colorValue={( barBackground ? barBackground : '#4A5568' )}
-								colorDefault={'#4A5568'}
-								opacityValue={barBackgroundOpacity}
-								onColorChange={value => setAttributes( { barBackground: value } )}
-								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
-							/>
-							<PopColorControl
-								label={__( 'Progress Color', 'kadence-blocks' )}
-								colorValue={( progressColor ? progressColor : '#4A5568' )}
-								colorDefault={'#4A5568'}
-								opacityValue={progressOpacity}
-								onColorChange={value => setAttributes( { progressColor: value } )}
-								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
-							/>
 							<ResponsiveRangeControls
 								label={__( 'Progress Thickness', 'kadence-blocks' )}
 								value={progressWidth}
@@ -533,6 +539,7 @@ export function Edit( props ) {
 
 							<ToggleControl
 								label={__( 'Wait until visible to animate', 'kadence-blocks' )}
+								help={__( 'The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor', 'kadence-blocks' )}
 								checked={delayUntilInView}
 								onChange={( value ) => setAttributes( { delayUntilInView: value } )}
 							/>
@@ -560,19 +567,21 @@ export function Edit( props ) {
 
 					<Fragment>
 						<KadencePanelBody>
-							<ToggleGroupControl
-								label={__( 'Label Position', 'kadence-blocks' )}
-								value={labelPosition}
+							<KadenceRadioButtons
+								label={__( 'Letter Case', 'kadence-blocks' )}
+								value={ labelPosition }
+								options={ [
+									{ value: 'above', label: __( 'Above', 'kadence-blocks' ) },
+									{ value: 'inside', label: __( 'Inside', 'kadence-blocks' ) },
+									{ value: 'below', label: __( 'Below', 'kadence-blocks' ) },
+								] }
+								className={ 'kb-letter-case' }
+								allowClear={ false }
 								onChange={( value ) => setAttributes( { labelPosition: value } )}
-								isBlock
-							>
-								<ToggleGroupControlOption value="above" label={__( 'Above', 'kadence-blocks' )}/>
-								<ToggleGroupControlOption value="inside" label={__( 'Inside', 'kadence-blocks' )}/>
-								<ToggleGroupControlOption value="below" label={__( 'Below', 'kadence-blocks' )}/>
-							</ToggleGroupControl>
+							/>
 
 							{labelPosition !== 'inside' || barType === 'line' ? ( <ResponsiveAlignControls
-								label={__( 'Label Alignment', 'kadence-blocks' )}
+								label={__( 'Text Alignment', 'kadence-blocks' )}
 								value={( hAlign ? hAlign : '' )}
 								mobileValue={( mhAlign ? mhAlign : '' )}
 								tabletValue={( thAlign ? thAlign : '' )}
@@ -582,15 +591,9 @@ export function Edit( props ) {
 								type={'justify'}
 							/> ) : null}
 
-							<ToggleControl
-								label={__( 'Show Label', 'kadence-blocks' )}
-								checked={displayLabel}
-								onChange={( value ) => setAttributes( { displayLabel: value } )}
-							/>
-
 							{displayLabel && displayPercent ? (
 								<SelectControl
-									label={__( 'Label Layout', 'kadence-blocks' )}
+									label={__( 'Text Layout', 'kadence-blocks' )}
 									options={[
 										{ value: 'lp', label: __( 'Label then %', 'kadence-blocks' ) },
 										{ value: 'pl', label: __( '% then Label', 'kadence-blocks' ) },
@@ -602,58 +605,144 @@ export function Edit( props ) {
 								/>
 							) : null}
 
+							<ToggleControl
+								label={__( 'Show Label', 'kadence-blocks' )}
+								checked={displayLabel}
+								onChange={( value ) => setAttributes( { displayLabel: value } )}
+							/>
+
+							<ToggleControl
+								label={__( 'Show Number', 'kadence-blocks' )}
+								checked={displayPercent}
+								onChange={( value ) => setAttributes( { displayPercent: value } )}
+							/>
 						</KadencePanelBody>
 
-						<KadencePanelBody
-							title={__( 'Text Styling', 'kadence-blocks' )}
-							initialOpen={true}
+						{displayPercent || displayLabel ? (
+								<KadencePanelBody
+									title={__( 'Text Styling', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-progress-text-settings'}
+								>
+									<PopColorControl
+										label={__( 'Color Settings', 'kadence-blocks' )}
+										value={( labelFont.color ? labelFont.color : '' )}
+										default={''}
+										onChange={value => saveLabelFont( { color: value } )}
+									/>
+									<TypographyControls
+										fontGroup={'heading'}
+										fontSize={labelFont.size}
+										onFontSize={( value ) => saveLabelFont( { size: value } )}
+										fontSizeType={labelFont.sizeType}
+										onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
+										lineHeight={labelFont.lineHeight}
+										onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
+										lineHeightType={labelFont.lineType}
+										onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
+										letterSpacing={labelFont.letterSpacing}
+										onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
+										textTransform={labelFont.textTransform}
+										onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
+										fontFamily={labelFont.family}
+										onFontFamily={( value ) => saveLabelFont( { family: value } )}
+										onFontChange={( select ) => {
+											saveLabelFont( {
+												family: select.value,
+												google: select.google,
+											} );
+										}}
+										onFontArrayChange={( values ) => saveLabelFont( values )}
+										googleFont={labelFont.google}
+										onGoogleFont={( value ) => saveLabelFont( { google: value } )}
+										loadGoogleFont={labelFont.loadGoogle}
+										onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
+										fontVariant={labelFont.variant}
+										onFontVariant={( value ) => saveLabelFont( { variant: value } )}
+										fontWeight={labelFont.weight}
+										onFontWeight={( value ) => saveLabelFont( { weight: value } )}
+										fontStyle={labelFont.style}
+										onFontStyle={( value ) => saveLabelFont( { style: value } )}
+										fontSubset={labelFont.subset}
+										onFontSubset={( value ) => saveLabelFont( { subset: value } )}
+										padding={labelFont.padding}
+										onPadding={( value ) => saveLabelFont( { padding: value } )}
+										margin={labelFont.margin}
+										onMargin={( value ) => saveLabelFont( { margin: value } )}
+									/>
+
+									<ResponsiveMeasureRangeControl
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={labelPadding}
+										tabletValue={tabletLabelPadding}
+										mobileValue={mobileLabelPadding}
+										onChange={( value ) => {
+											setAttributes( { labelPadding: value } );
+										}}
+										onChangeTablet={( value ) => setAttributes( { tabletLabelPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileLabelPadding: value } )}
+										min={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -200 )}
+										max={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 200 )}
+										step={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 0.1 : 1 )}
+										unit={labelPaddingType}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { labelPaddingType: value } )}
+										// onMouseOver={ labelPaddingMouseOver.onMouseOver }
+										// onMouseOut={ labelPaddingMouseOver.onMouseOut }
+									/>
+								</KadencePanelBody> )
+							: null}
+
+						{displayPercent && ( <KadencePanelBody
+							title={__( 'Number Styling', 'kadence-blocks' )}
+							initialOpen={false}
 							panelName={'kb-progress-text-settings'}
 						>
 							<PopColorControl
 								label={__( 'Color Settings', 'kadence-blocks' )}
-								value={( labelFont.color ? labelFont.color : '' )}
+								value={( numberFont.color ? numberFont.color : '' )}
 								default={''}
-								onChange={value => saveLabelFont( { color: value } )}
+								onChange={value => saveNumberFont( { color: value } )}
 							/>
 							<TypographyControls
 								fontGroup={'heading'}
-								fontSize={labelFont.size}
-								onFontSize={( value ) => saveLabelFont( { size: value } )}
-								fontSizeType={labelFont.sizeType}
-								onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
-								lineHeight={labelFont.lineHeight}
-								onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
-								lineHeightType={labelFont.lineType}
-								onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
-								letterSpacing={labelFont.letterSpacing}
-								onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
-								textTransform={labelFont.textTransform}
-								onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
-								fontFamily={labelFont.family}
-								onFontFamily={( value ) => saveLabelFont( { family: value } )}
+								fontSize={numberFont.size}
+								onFontSize={( value ) => saveNumberFont( { size: value } )}
+								fontSizeType={numberFont.sizeType}
+								onFontSizeType={( value ) => saveNumberFont( { sizeType: value } )}
+								lineHeight={numberFont.lineHeight}
+								onLineHeight={( value ) => saveNumberFont( { lineHeight: value } )}
+								lineHeightType={numberFont.lineType}
+								onLineHeightType={( value ) => saveNumberFont( { lineType: value } )}
+								letterSpacing={numberFont.letterSpacing}
+								onLetterSpacing={( value ) => saveNumberFont( { letterSpacing: value } )}
+								textTransform={numberFont.textTransform}
+								onTextTransform={( value ) => saveNumberFont( { textTransform: value } )}
+								fontFamily={numberFont.family}
+								onFontFamily={( value ) => saveNumberFont( { family: value } )}
 								onFontChange={( select ) => {
-									saveLabelFont( {
+									saveNumberFont( {
 										family: select.value,
 										google: select.google,
 									} );
 								}}
-								onFontArrayChange={( values ) => saveLabelFont( values )}
-								googleFont={labelFont.google}
-								onGoogleFont={( value ) => saveLabelFont( { google: value } )}
-								loadGoogleFont={labelFont.loadGoogle}
-								onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
-								fontVariant={labelFont.variant}
-								onFontVariant={( value ) => saveLabelFont( { variant: value } )}
-								fontWeight={labelFont.weight}
-								onFontWeight={( value ) => saveLabelFont( { weight: value } )}
-								fontStyle={labelFont.style}
-								onFontStyle={( value ) => saveLabelFont( { style: value } )}
-								fontSubset={labelFont.subset}
-								onFontSubset={( value ) => saveLabelFont( { subset: value } )}
-								padding={labelFont.padding}
-								onPadding={( value ) => saveLabelFont( { padding: value } )}
-								margin={labelFont.margin}
-								onMargin={( value ) => saveLabelFont( { margin: value } )}
+								onFontArrayChange={( values ) => saveNumberFont( values )}
+								googleFont={numberFont.google}
+								onGoogleFont={( value ) => saveNumberFont( { google: value } )}
+								loadGoogleFont={numberFont.loadGoogle}
+								onLoadGoogleFont={( value ) => saveNumberFont( { loadGoogle: value } )}
+								fontVariant={numberFont.variant}
+								onFontVariant={( value ) => saveNumberFont( { variant: value } )}
+								fontWeight={numberFont.weight}
+								onFontWeight={( value ) => saveNumberFont( { weight: value } )}
+								fontStyle={numberFont.style}
+								onFontStyle={( value ) => saveNumberFont( { style: value } )}
+								fontSubset={numberFont.subset}
+								onFontSubset={( value ) => saveNumberFont( { subset: value } )}
+								padding={numberFont.padding}
+								onPadding={( value ) => saveNumberFont( { padding: value } )}
+								margin={numberFont.margin}
+								onMargin={( value ) => saveNumberFont( { margin: value } )}
 							/>
 
 							<ResponsiveMeasureRangeControl
@@ -674,6 +763,29 @@ export function Edit( props ) {
 								onUnit={( value ) => setAttributes( { labelPaddingType: value } )}
 								// onMouseOver={ labelPaddingMouseOver.onMouseOver }
 								// onMouseOut={ labelPaddingMouseOver.onMouseOut }
+							/>
+						</KadencePanelBody> )}
+
+						<KadencePanelBody
+							title={__( 'Progress Color', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-progress-number-settings'}
+						>
+							<PopColorControl
+								label={__( 'Progress Background', 'kadence-blocks' )}
+								colorValue={( barBackground ? barBackground : '#4A5568' )}
+								colorDefault={'#4A5568'}
+								opacityValue={barBackgroundOpacity}
+								onColorChange={value => setAttributes( { barBackground: value } )}
+								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
+							/>
+							<PopColorControl
+								label={__( 'Progress Color', 'kadence-blocks' )}
+								colorValue={( progressColor ? progressColor : '#4A5568' )}
+								colorDefault={'#4A5568'}
+								opacityValue={progressOpacity}
+								onColorChange={value => setAttributes( { progressColor: value } )}
+								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
 							/>
 						</KadencePanelBody>
 					</Fragment>
@@ -741,10 +853,11 @@ export function Edit( props ) {
 				{RenderLabel( 'below' )}
 			</div>
 
-			{labelFont.google && (
-				<WebfontLoader config={labelFontConfig}>
-				</WebfontLoader>
-			)}
+			{labelFont.google && ( <WebfontLoader config={labelFontConfig}></WebfontLoader> )}
+
+			{displayPercent && labelFont.google ?
+				( <WebfontLoader config={labelFontConfig}></WebfontLoader> ) : null
+			}
 		</div>
 	);
 }
