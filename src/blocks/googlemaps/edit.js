@@ -85,6 +85,7 @@ export function Edit( props ) {
 		mapFilterAmount,
 		sizeSlug,
 		textAlign,
+		kbVersion
 	} = attributes;
 
 	const previewDevice = useSelect( ( select ) => {
@@ -145,10 +146,7 @@ export function Edit( props ) {
 
 	const previewTextAlign = getPreviewSize( previewDevice, ( undefined !== textAlign && undefined !== textAlign[0] ? textAlign[0] : '' ), ( undefined !== textAlign && undefined !== textAlign[1] ? textAlign[1] : '' ), ( undefined !== textAlign && undefined !== textAlign[2] ? textAlign[2] : '' ) );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
 	const [ isOpen, setOpen ] = useState( false );
 
 	const openModal = () => setOpen( true );
@@ -189,6 +187,10 @@ export function Edit( props ) {
 			addUniqueID( uniqueId, clientId );
 		} else {
 			addUniqueID( uniqueID, clientId );
+		}
+
+		if ( ! kbVersion || kbVersion < 2 ) {
+			setAttributes( { kbVersion: 2 } );
 		}
 
 	}, []);

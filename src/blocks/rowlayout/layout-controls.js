@@ -205,6 +205,8 @@ import { __ } from '@wordpress/i18n';
 	} else if ( 5 === columns ) {
 		mobileLayoutOptions = [
 			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
+			{ value: 'three-grid', label: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
 		];
 	} else if ( 6 === columns ) {

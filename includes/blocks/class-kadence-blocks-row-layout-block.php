@@ -196,6 +196,12 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'grid-column', '1 / -1' );
 						$css->set_selector( $inner_selector );
 						break;
+					case 'two-grid':
+						$grid_layout = 'repeat(2, minmax(0, 1fr))';
+						break;
+					case 'three-grid':
+						$grid_layout = 'repeat(3, minmax(0, 1fr))';
+						break;
 					case 'row':
 						$grid_layout = 'minmax(0, 1fr)';
 						break;
@@ -394,7 +400,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'unit_key' => 'paddingUnit',
 			);
 			// If no padding is set, use the default.
-			if( !isset( $attributes['padding'] ) ) {
+			if ( ! isset( $attributes['padding'] ) ) {
 				$attributes['padding'] = [
 					'sm', '', 'sm', ''
 				];
@@ -450,6 +456,34 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector );
 			$css->add_property( 'grid-template-columns', $grid_layout );
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $attributes['tabletLayout'], $collapse_layouts ) ) {
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
+				}
+				// Row Two.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
+				}
+				// Row Three.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
+				}
+				// Row Four.
+				foreach ( range( 1, $columns ) as $item_count ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
+				}
+			}
+			$css->set_media_state( 'desktop' );
+		} elseif ( $columns > 4 ) {
+			$collapse_tab_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( $inner_selector );
+			$grid_layout = $this->get_template_columns( $css, $columns, $collapse_tab_layout, $inner_selector );
+			$css->add_property( 'grid-template-columns', $grid_layout );
+			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $collapse_tab_layout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
@@ -655,12 +689,17 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$tablet_background = ( isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
 		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
 			$css->set_media_state( 'tablet' );
-			$css->set_selector( $base_selector );
+			$css->set_selector( $margin_selector );
 			$tablet_background_type = ! empty( $tablet_background['type'] ) ? $tablet_background['type'] : 'normal';
 			switch ( $tablet_background_type ) {
 				case 'normal':
+					if ( ! empty( $tablet_background['bgImg'] ) ) {
+						$bg_selector = 'background-color';
+					} else {
+						$bg_selector = 'background';
+					}
 					if ( ! empty( $tablet_background['bgColor'] ) ) {
-						$css->render_color_output( $tablet_background, 'bgColor', 'background-color' );
+						$css->render_color_output( $tablet_background, 'bgColor', $bg_selector );
 					}
 					if ( ! empty( $tablet_background['bgImg'] ) ) {
 						if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
@@ -719,12 +758,17 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$mobile_background = ( isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
 		if ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] ) {
 			$css->set_media_state( 'mobile' );
-			$css->set_selector( $base_selector );
+			$css->set_selector( $margin_selector );
 			$mobile_background_type = ! empty( $mobile_background['type'] ) ? $mobile_background['type'] : 'normal';
 			switch ( $mobile_background_type ) {
 				case 'normal':
+					if ( ! empty( $mobile_background['bgImg'] ) ) {
+						$bg_selector = 'background-color';
+					} else {
+						$bg_selector = 'background';
+					}
 					if ( ! empty( $mobile_background['bgColor'] ) ) {
-						$css->render_color_output( $mobile_background, 'bgColor', 'background-color' );
+						$css->render_color_output( $mobile_background, 'bgColor', $bg_selector );
 					}
 					if ( ! empty( $mobile_background['bgImg'] ) ) {
 						if ( ! empty( $mobile_background['bgImgAttachment'] ) ) {
@@ -838,8 +882,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$overlay_type = ! empty( $tablet_overlay['currentOverlayTab'] ) ? $tablet_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
+					if ( ! empty( $tablet_overlay['overlayBgImg'] ) ) {
+						$bg_selector = 'background-color';
+					} else {
+						$bg_selector = 'background';
+					}
 					if ( ! empty( $tablet_overlay['overlay'] ) ) {
-						$css->render_color_output( $tablet_overlay, 'overlay', 'background-color' );
+						$css->render_color_output( $tablet_overlay, 'overlay', $bg_selector );
 					}
 					if ( ! empty( $tablet_overlay['overlayBgImg'] ) ) {
 						if ( ! empty( $tablet_overlay['overlayBgImgAttachment'] ) ) {
@@ -883,14 +932,19 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$mobile_overlay    = ( isset( $attributes['mobileOverlay'] ) && is_array( $attributes['mobileOverlay'] ) && isset( $attributes['mobileOverlay'][0] ) && is_array( $attributes['mobileOverlay'][0] ) ? $attributes['mobileOverlay'][0] : array() );
 		if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
-			$css->set_media_state( 'tablet' );
+			$css->set_media_state( 'mobile' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
 			$css->render_opacity_from_100( $mobile_overlay, 'overlayOpacity' );
 			$overlay_type = ! empty( $mobile_overlay['currentOverlayTab'] ) ? $mobile_overlay['currentOverlayTab'] : 'normal';
 			switch ( $overlay_type ) {
 				case 'normal':
+					if ( ! empty( $mobile_overlay['overlayBgImg'] ) ) {
+						$bg_selector = 'background-color';
+					} else {
+						$bg_selector = 'background';
+					}
 					if ( ! empty( $mobile_overlay['overlay'] ) ) {
-						$css->render_color_output( $mobile_overlay, 'overlay', 'background-color' );
+						$css->render_color_output( $mobile_overlay, 'overlay', $bg_selector );
 					}
 					if ( ! empty( $mobile_overlay['overlayBgImg'] ) ) {
 						if ( ! empty( $mobile_overlay['overlayBgImgAttachment'] ) ) {

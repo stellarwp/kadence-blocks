@@ -255,17 +255,6 @@ import { __ } from '@wordpress/i18n';
 	};
 	const overTabControls = (
 		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveTabletOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
 			<PopColorControl
 				label={ __( 'Overlay Color', 'kadence-blocks' ) }
 				value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
@@ -318,17 +307,6 @@ import { __ } from '@wordpress/i18n';
 	);
 	const overMobileControls = (
 		<div>
-			<RangeControl
-				label={ __( 'Overlay Opacity' ) }
-				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
-				onChange={ ( value ) => {
-					saveMobileOverlay( {
-						overlayOpacity: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 100 }
-			/>
 			<PopColorControl
 				label={ __( 'Overlay Color', 'kadence-blocks' ) }
 				value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
@@ -473,6 +451,17 @@ import { __ } from '@wordpress/i18n';
 			/>
 			{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].enable && (
 				<>
+					<RangeControl
+						label={ __( 'Overlay Opacity' ) }
+						value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
+						onChange={ ( value ) => {
+							saveMobileOverlay( {
+								overlayOpacity: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 100 }
+					/>
 					<BackgroundTypeControl
 						label={ __( 'Overlay Type', 'kadence-blocks' ) }
 						type={ mobileOverlay[ 0 ].currentOverlayTab ? mobileOverlay[ 0 ].currentOverlayTab : 'normal' }
@@ -594,6 +583,17 @@ import { __ } from '@wordpress/i18n';
 			/>
 			{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].enable && (
 				<>
+					<RangeControl
+						label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+						value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
+						onChange={ ( value ) => {
+							saveTabletOverlay( {
+								overlayOpacity: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 100 }
+					/>
 					<BackgroundTypeControl
 						label={ __( 'Overlay Type', 'kadence-blocks' ) }
 						type={ tabletOverlay[ 0 ].currentOverlayTab ? tabletOverlay[ 0 ].currentOverlayTab : 'normal' }
@@ -946,7 +946,7 @@ import { __ } from '@wordpress/i18n';
 					/>
 					<KadenceImageControl
 						label={__( 'Select Video Poster', 'kadence-blocks' )}
-						hasImage={( bgImgID ? true : false )}
+						hasImage={( bgImg ? true : false )}
 						imageURL={( bgImg ? bgImg : '' )}
 						imageID={( bgImgID ? bgImgID : '' )}
 						onRemoveImage={ () => {

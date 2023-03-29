@@ -24,7 +24,7 @@ window.addEventListener('resize', function ( event ) {
 document.body.style.setProperty( '--kb-screen-height-fix', ( document.documentElement.clientHeight + 200 ) + 'px' );
 kbjarforEach( kbNodeList, function( index, value ) {
 	jarallax( value, {
-		speed: -0.1,
+		speed: kadence_blocks_parallax.speed,
 		elementInViewport: value,
 	} );
 } );

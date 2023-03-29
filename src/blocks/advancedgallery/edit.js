@@ -1043,7 +1043,7 @@ function GalleryEdit( props ) {
 													label={__( 'Autoplay Speed', 'kadence-blocks' )}
 													value={autoSpeed}
 													onChange={( value ) => setAttributes( { autoSpeed: value } )}
-													min={500}
+													min={0}
 													max={15000}
 													step={10}
 												/>
@@ -1053,7 +1053,7 @@ function GalleryEdit( props ) {
 												value={transSpeed}
 												onChange={( value ) => setAttributes( { transSpeed: value } )}
 												min={100}
-												max={2000}
+												max={15000}
 												step={10}
 											/>
 											{type === 'carousel' && (

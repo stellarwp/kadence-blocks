@@ -73,7 +73,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$css->maybe_add_google_font( $title_font['family'], $font_variant, $font_subset );
 			}
 		}
-
+		$style = ! empty( $attributes['style'] ) ? $attributes['style'] : 'basic';
 		/* Tiny slider is required if we're using a carousel layout */
 		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
 			$this->enqueue_style( 'kadence-blocks-splide' );
@@ -259,7 +259,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-grid-wrap' );
 		$css->render_gap( $attributes );
 
-		if ( isset( $attributes['style'] ) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ) {
+		if ( 'bubble' === $style || 'inlineimage' === $style ) {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
 			if ( isset( $attributes['containerBorderWidth'] ) && is_array( $attributes['containerBorderWidth'] ) && ! empty( $attributes['containerBorderWidth'][2] ) ) {
 				$css->add_property( 'margin-top', $attributes['containerBorderWidth'][2] . 'px' );
@@ -275,7 +275,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// See if container styles are applied to the item or text.
-		if( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
+		if ( 'bubble' !== $style && 'inlineimage' !== $style ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 		} else {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
@@ -584,7 +584,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/*
 		 * Global styles to apply to all testimonial items
 		 */
-		if( isset( $attributes['style'] ) && ( 'bubble' === $attributes['style'] || 'inlineimage' === $attributes['style'] ) ){
+		if( 'bubble' === $style || 'inlineimage' === $style ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 
 			$css->add_property( 'max-width', ( isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 ) . 'px');
@@ -594,7 +594,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// See if container styles are applied to the item or text
-		if( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && 'bubble' !== $attributes['style'] && 'inlineimage' !== $attributes['style'] ) ){
+		if ( 'bubble' !== $style && 'inlineimage' !== $style ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 		} else {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-text-wrap' );
@@ -641,17 +641,16 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 
 		// $css->render_range( $attributes, 'containerPadding', 'padding' );
 
-		if ( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && in_array( $attributes['style'], array( 'card', 'inlineimage', 'bubble') ) ) ) {
+		if ( in_array( $style, array( 'card', 'inlineimage', 'bubble') ) ) {
 			$css->add_property( 'max-width', isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] . 'px' : '500px' );
 		}
 
 		/*
 		 * Global Media styles
 		 */
-		if( !isset( $attributes['displayMedia'] ) || ( isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ) ){
+		if ( ! isset( $attributes['displayMedia'] ) || ( isset( $attributes['displayMedia'] ) && $attributes['displayMedia'] ) ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap' );
-
-			if ( isset( $attributes['style'], $attributes['mediaStyles'][0]['width'] ) && $attributes['style'] !== 'card' ) {
+			if ( isset( $attributes['mediaStyles'][0]['width'] ) && $style !== 'card' ) {
 				$css->add_property( 'width', $attributes['mediaStyles'][0]['width'] . 'px' );
 			}
 
@@ -690,7 +689,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'align-items', 'center' );
 
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-media-inner-wrap .kadence-testimonial-image-intrisic' );
-			if ( ( ! isset( $attributes['style'] ) || ( isset( $attributes['style'] ) && $attributes['style'] === 'card' ) ) && ! empty( $attributes['mediaStyles'][0]['ratio'] ) ) {
+			if ( $style === 'card' && ! empty( $attributes['mediaStyles'][0]['ratio'] ) ) {
 				$css->add_property( 'padding-bottom', $attributes['mediaStyles'][0]['ratio'] . '%' );
 			}
 		}

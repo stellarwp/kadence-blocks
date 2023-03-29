@@ -234,7 +234,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 							className="kb-icons-add-icon"
 							icon={ plusCircle }
 							onClick={ () => {
-								const latestAttributes = listBlock.innerBlocks[listBlock.innerBlocks.length - 1].attributes;
+								const prevAttributes = listBlock.innerBlocks[listBlock.innerBlocks.length - 1].attributes;
+								const latestAttributes = JSON.parse(JSON.stringify(prevAttributes) );
 								latestAttributes.uniqueID = '';
 								latestAttributes.text = '';
 								const newBlock = createBlock( 'kadence/listitem', latestAttributes );
