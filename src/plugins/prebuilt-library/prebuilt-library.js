@@ -42,7 +42,7 @@ import { kadenceCatNewIcon } from '@kadence/icons';
 /**
  * Internal dependencies
  */
-import SectionLibrary from './section-library';
+import PatternLibrary from './pattern-library';
 import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
@@ -272,7 +272,7 @@ class PrebuiltModal extends Component {
 								/>
 							) }
 							{ 'section' === active_tab && (
-								<SectionLibrary
+								<PatternLibrary
 									clientId={ this.props.clientId }
 									tab={ active_tab }
 									reload={ this.state.reload }

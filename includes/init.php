@@ -221,6 +221,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$icons_path       = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
+	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
+	$product          = get_posts( array( 'numberposts' => 1, 'post_type' => 'products' ) );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -272,6 +274,11 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'wp_max_upload_size' => wp_max_upload_size(),
 			'get_allowed_mime_types' => get_allowed_mime_types(),
 			'global_colors' => $global_colors,
+			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
+			'addPostsLink' => admin_url( 'post-new.php' ),
+			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
+			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
+			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 		)
 	);
 	wp_localize_script(

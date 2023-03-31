@@ -1,21 +1,4 @@
 /**
- * Handle Section Library.
- */
-
-/**
- * Globals.
- */
-const {
-	localStorage,
-} = window;
-
-/**
- * External dependencies
- */
- import { debounce } from 'lodash';
-import Masonry from 'react-masonry-css'
-import InfiniteScroll from 'react-infinite-scroller';
-/**
  * WordPress dependencies
  */
 
@@ -23,7 +6,7 @@ import {
 	withSelect,
 	withDispatch,
 } from '@wordpress/data';
-import { rawHandler, parse } from '@wordpress/blocks';
+import { parse } from '@wordpress/blocks';
 import {
 	Button,
 	TextControl,
@@ -33,9 +16,6 @@ import {
 	Spinner,
 	Tooltip,
 	__experimentalHeading as Heading,
-	__unstableComposite as Composite,
-	__unstableUseCompositeState as useCompositeState,
-	__unstableCompositeItem as CompositeItem,
 } from '@wordpress/components';
 import {
 	arrowLeft,
@@ -46,18 +26,17 @@ import {
 	chevronLeft,
 	chevronDown,
 } from '@wordpress/icons';
-import { BlockPreview } from './block-preview';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDebounce } from '@wordpress/compose';
 import { speak } from '@wordpress/a11y';
 import { searchItems } from './search-items';
-import {
-	//BlockPreview,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-const INITIAL_INSERTER_RESULTS = 2;
+import replaceColors from './block-preview/replace-colors';
+import replaceImages from './block-preview/replace-images';
+import replaceContent from './block-preview/replace-content';
+import deleteContent from './block-preview/remove-content';
+import KadenceBlockPatternList from './block-pattern-list';
+
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
 		return null;
@@ -81,292 +60,112 @@ function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 		</Heading>
 	);
 }
-const WithToolTip = ( { showTooltip, title, children } ) => {
-	if ( showTooltip ) {
-		return <Tooltip text={ title }>{ children }</Tooltip>;
+function BannerHeader( { selectedCategory } ) {
+	if ( ! selectedCategory ) {
+		return null;
 	}
-	return <>{ children }</>;
-};
-function KadenceBlockPattern( {
-	pattern,
-	onClick,
-	onHover,
-	composite,
-	showTooltip,
-	customStyles,
-} ) {
-	const { blocks, viewportWidth } = pattern;
-	const instanceId = useInstanceId( KadenceBlockPattern );
-	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
+	const productLabel = ! kadence_blocks_params.hasWoocommerce ? __( 'Add WooCommerce and create some products.', 'kadence Blocks' ) :  __( 'Add some products here.', 'kadence Blocks' )
 	return (
-		<div
-			className="block-editor-block-patterns-list__list-item"
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice"
 		>
-			<WithToolTip
-				showTooltip={ showTooltip }
-				title={ pattern.title }
-			>
-				<CompositeItem
-					role="option"
-					as="div"
-					{ ...composite }
-					className="block-editor-block-patterns-list__item"
-					onClick={ () => {
-						onClick( pattern, blocks );
-						onHover?.( null );
-					} }
-					onMouseEnter={ () => {
-						onHover?.( pattern );
-					} }
-					onMouseLeave={ () => onHover?.( null ) }
-					aria-label={ pattern.title }
-					aria-describedby={
-						pattern.description ? descriptionId : undefined
-					}
-				>
-					<BlockPreview
-						blocks={ blocks }
-						viewportWidth={ viewportWidth }
-						additionalStyles={ customStyles }
-					/>
-					{ ! showTooltip && (
-						<div className="block-editor-block-patterns-list__item-title">
-							{ pattern.title }
-						</div>
-					) }
-					{ !! pattern.description && (
-						<VisuallyHidden id={ descriptionId }>
-							{ pattern.description }
-						</VisuallyHidden>
-					) }
-				</CompositeItem>
-			</WithToolTip>
-		</div>
-	);
-}
-function BlockPatternPlaceholder() {
-	return (
-		<div className="block-editor-block-patterns-list__item is-placeholder" />
+			{ ( selectedCategory == 'featured-products' || selectedCategory == 'product-loop' ) && (
+				<>
+					{ __( 'These patterns require you to have some products.', 'kadence Blocks' ) } <ExternalLink href={ ( kadence_blocks_params.addProductsLink ? kadence_blocks_params.addProductsLink : '#' ) }>{productLabel}</ExternalLink>
+				</>
+			) }
+			{ selectedCategory == 'post-loop' && (
+				<>
+					{ __( 'These patterns require you to have some posts.', 'kadence Blocks' ) } <ExternalLink href={ ( kadence_blocks_params.addPostsLink ? kadence_blocks_params.addPostsLink : '#' ) }>{__( 'Add some posts here.', 'kadence Blocks' )}</ExternalLink>
+				</>
+			) }
+
+		</Heading>
 	);
 }
 
-function KadenceBlockPatternList( {
-	blockPatterns,
-	selectedCategory,
-	filterValue,
-	onHover,
-	onClickPattern,
-	orientation,
-	label = __( 'Block Patterns', 'kadence-blocks' ),
-	showTitlesAsTooltip,
-	customStyles,
-	breakpointCols,
-} ) {
-	const composite = useCompositeState( { orientation } );
-	const showItems = (patterns) => {
-		var items = [];
-		for (var i = 0; i < records; i++) {
-			if ( undefined !== patterns[i]?.name ) {
-				items.push(
-					<KadenceBlockPattern
-						key={ patterns[i]?.name || i }
-						pattern={ patterns[i] }
-						onClick={ onClickPattern }
-						onHover={ onHover }
-						composite={ composite }
-						showTooltip={ showTitlesAsTooltip }
-						customStyles={ customStyles }
-					/>
-				);
-			}
-		}
-		return items;
-	};
-	const itemsPerPage = 5;
-	const [hasMore, setHasMore] = useState(true);
-	const [records, setrecords] = useState(itemsPerPage);
-	// clear lazy when category change
-	useEffect( () => {
-		setrecords(itemsPerPage);
-		setHasMore(true);
-	}, [ selectedCategory, filterValue, blockPatterns ] );
-	const loadMore = () => {
-		if ( records >= blockPatterns.length ) {
-			setHasMore(false);
-		} else {
-			setTimeout(() => {
-				setrecords(records + itemsPerPage);
-			}, 1500);
-		}
-	};
-	return ( 
-		<div className="block-editor-block-patterns-list">
-			<InfiniteScroll
-				className="block-editor-block-patterns-list-wrap"
-				pageStart={0}
-				loadMore={loadMore}
-				hasMore={hasMore}
-				loader={<Spinner />}
-				useWindow={false}
-				>
-					<Masonry
-						breakpointCols={breakpointCols}
-						className={ `kb-css-masonry kb-core-section-library` }
-  						columnClassName="kb-css-masonry_column"
-					>
-						{showItems(blockPatterns)}
-					</Masonry>
-			</InfiniteScroll>
-		</div>
-	);
-}
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, savedAI = false } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
-		//console.log(info );
+		let newInfo = info.content;
+		newInfo = deleteContent( newInfo );
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
-			onSelect( info.content );
+			onSelect( newInfo );
 		} else if ( 'dark' === selectedStyle ) {
-			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-3.png/g, "Logo-ploaceholder-3-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-4.png/g, "Logo-ploaceholder-4-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-5.png/g, "Logo-ploaceholder-5-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
-			// Colors.
-			// let newInfoTest = info.content.match(new RegExp('<!-- wp:kadence/singlebtn' + "(.*)" + '/-->'));
-			// console.log( newInfoTest );
-			newInfo = newInfo.replace( /has-theme-palette-3/g, "placeholder-kb-class9");
-			newInfo = newInfo.replace( /has-theme-palette-4/g, "placeholder-kb-class8");
-			newInfo = newInfo.replace( /has-theme-palette-5/g, "placeholder-kb-class7");
-			newInfo = newInfo.replace( /has-theme-palette-6/g, "placeholder-kb-class7");
-			newInfo = newInfo.replace( /has-theme-palette-7/g, "placeholder-kb-class3");
-			newInfo = newInfo.replace( /has-theme-palette-8/g, "placeholder-kb-class3");
-			newInfo = newInfo.replace( /has-theme-palette-9/g, "placeholder-kb-class4");
-			newInfo = newInfo.replace( /theme-palette3/g, "placeholder-class-pal9");
-			newInfo = newInfo.replace( /theme-palette4/g, "placeholder-class-pal8");
-			newInfo = newInfo.replace( /theme-palette5/g, "placeholder-class-pal7");
-			newInfo = newInfo.replace( /theme-palette6/g, "placeholder-class-pal7");
-			newInfo = newInfo.replace( /theme-palette7/g, "placeholder-class-pal3");
-			newInfo = newInfo.replace( /theme-palette8/g, "placeholder-class-pal3");
-			newInfo = newInfo.replace( /theme-palette9/g, "placeholder-class-pal4");
-			newInfo = newInfo.replace( /palette3/g, "placeholder-kb-pal9");
-			newInfo = newInfo.replace( /palette4/g, "placeholder-kb-pal8");
-			newInfo = newInfo.replace( /palette5/g, "placeholder-kb-pal7");
-			newInfo = newInfo.replace( /palette6/g, "placeholder-kb-pal7");
-			newInfo = newInfo.replace( /palette7/g, "placeholder-kb-pal3");
-			newInfo = newInfo.replace( /palette8/g, "placeholder-kb-pal3");
-			newInfo = newInfo.replace( /palette9/g, "placeholder-kb-pal4");
-
-			newInfo = newInfo.replace( /placeholder-kb-class3/g, "has-theme-palette-3");
-			newInfo = newInfo.replace( /placeholder-kb-class4/g, "has-theme-palette-4");
-			newInfo = newInfo.replace( /placeholder-kb-class5/g, "has-theme-palette-5");
-			newInfo = newInfo.replace( /placeholder-kb-class6/g, "has-theme-palette-6");
-			newInfo = newInfo.replace( /placeholder-kb-class7/g, "has-theme-palette-7");
-			newInfo = newInfo.replace( /placeholder-kb-class8/g, "has-theme-palette-8");
-			newInfo = newInfo.replace( /placeholder-kb-class9/g, "has-theme-palette-9");
-			newInfo = newInfo.replace( /placeholder-class-pal3/g, "theme-palette3");
-			newInfo = newInfo.replace( /placeholder-class-pal4/g, "theme-palette4");
-			newInfo = newInfo.replace( /placeholder-class-pal5/g, "theme-palette5");
-			newInfo = newInfo.replace( /placeholder-class-pal6/g, "theme-palette6");
-			newInfo = newInfo.replace( /placeholder-class-pal7/g, "theme-palette7");
-			newInfo = newInfo.replace( /placeholder-class-pal8/g, "theme-palette8");
-			newInfo = newInfo.replace( /placeholder-class-pal9/g, "theme-palette9");
-			newInfo = newInfo.replace( /placeholder-kb-pal3/g, "palette3");
-			newInfo = newInfo.replace( /placeholder-kb-pal4/g, "palette4");
-			newInfo = newInfo.replace( /placeholder-kb-pal5/g, "palette5");
-			newInfo = newInfo.replace( /placeholder-kb-pal6/g, "palette6");
-			newInfo = newInfo.replace( /placeholder-kb-pal7/g, "palette7");
-			newInfo = newInfo.replace( /placeholder-kb-pal8/g, "palette8");
-			newInfo = newInfo.replace( /placeholder-kb-pal9/g, "palette9");
+			newInfo = replaceColors( newInfo, 'dark' );
 			onSelect( newInfo );
 		} else if ( 'highlight' === selectedStyle ) {
-			let newInfo = info.content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-3.png/g, "Logo-ploaceholder-3-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-4.png/g, "Logo-ploaceholder-4-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-5.png/g, "Logo-ploaceholder-5-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
-			newInfo = newInfo.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
-			// Buttons.
-			newInfo = newInfo.replace( /"inheritStyles":"inherit"/g, '"color":"placeholder-kb-pal9","background":"placeholder-kb-pal3","colorHover":"placeholder-kb-pal9","backgroundHover":"placeholder-kb-pal4","inheritStyles":"inherit"' );
-			// Colors.
-			newInfo = newInfo.replace( /has-theme-palette-1/g, "placeholder-kb-class9");
-			newInfo = newInfo.replace( /has-theme-palette-2/g, "placeholder-kb-class8");
-			newInfo = newInfo.replace( /has-theme-palette-3/g, "placeholder-kb-class9");
-			newInfo = newInfo.replace( /has-theme-palette-4/g, "placeholder-kb-class9");
-			newInfo = newInfo.replace( /has-theme-palette-5/g, "placeholder-kb-class8");
-			newInfo = newInfo.replace( /has-theme-palette-6/g, "placeholder-kb-class8");
-			newInfo = newInfo.replace( /has-theme-palette-7/g, "placeholder-kb-class2");
-			newInfo = newInfo.replace( /has-theme-palette-8/g, "placeholder-kb-class2");
-			newInfo = newInfo.replace( /has-theme-palette-9/g, "placeholder-kb-class9");
-			newInfo = newInfo.replace( /theme-palette1/g, "placeholder-class-pal9");
-			newInfo = newInfo.replace( /theme-palette2/g, "placeholder-class-pal8");
-			newInfo = newInfo.replace( /theme-palette3/g, "placeholder-class-pal9");
-			newInfo = newInfo.replace( /theme-palette4/g, "placeholder-class-pal9");
-			newInfo = newInfo.replace( /theme-palette5/g, "placeholder-class-pal8");
-			newInfo = newInfo.replace( /theme-palette6/g, "placeholder-class-pal8");
-			newInfo = newInfo.replace( /theme-palette7/g, "placeholder-class-pal2");
-			newInfo = newInfo.replace( /theme-palette8/g, "placeholder-class-pal2");
-			newInfo = newInfo.replace( /theme-palette9/g, "placeholder-class-pal1");
-			newInfo = newInfo.replace( /palette1/g, "placeholder-kb-pal9");
-			newInfo = newInfo.replace( /palette2/g, "placeholder-kb-pal8");
-			newInfo = newInfo.replace( /palette3/g, "placeholder-kb-pal9");
-			newInfo = newInfo.replace( /palette4/g, "placeholder-kb-pal9");
-			newInfo = newInfo.replace( /palette5/g, "placeholder-kb-pal8");
-			newInfo = newInfo.replace( /palette6/g, "placeholder-kb-pal8");
-			newInfo = newInfo.replace( /palette7/g, "placeholder-kb-pal2");
-			newInfo = newInfo.replace( /palette8/g, "placeholder-kb-pal2");
-			newInfo = newInfo.replace( /palette9/g, "placeholder-kb-pal1");
-
-			newInfo = newInfo.replace( /placeholder-kb-class1/g, "has-theme-palette-1");
-			newInfo = newInfo.replace( /placeholder-kb-class2/g, "has-theme-palette-2");
-			newInfo = newInfo.replace( /placeholder-kb-class3/g, "has-theme-palette-3");
-			newInfo = newInfo.replace( /placeholder-kb-class4/g, "has-theme-palette-4");
-			newInfo = newInfo.replace( /placeholder-kb-class5/g, "has-theme-palette-5");
-			newInfo = newInfo.replace( /placeholder-kb-class6/g, "has-theme-palette-6");
-			newInfo = newInfo.replace( /placeholder-kb-class7/g, "has-theme-palette-7");
-			newInfo = newInfo.replace( /placeholder-kb-class8/g, "has-theme-palette-8");
-			newInfo = newInfo.replace( /placeholder-kb-class9/g, "has-theme-palette-9");
-			newInfo = newInfo.replace( /placeholder-class-pal1/g, "theme-palette1");
-			newInfo = newInfo.replace( /placeholder-class-pal2/g, "theme-palette2");
-			newInfo = newInfo.replace( /placeholder-class-pal3/g, "theme-palette3");
-			newInfo = newInfo.replace( /placeholder-class-pal4/g, "theme-palette4");
-			newInfo = newInfo.replace( /placeholder-class-pal5/g, "theme-palette5");
-			newInfo = newInfo.replace( /placeholder-class-pal6/g, "theme-palette6");
-			newInfo = newInfo.replace( /placeholder-class-pal7/g, "theme-palette7");
-			newInfo = newInfo.replace( /placeholder-class-pal8/g, "theme-palette8");
-			newInfo = newInfo.replace( /placeholder-class-pal9/g, "theme-palette9");
-			newInfo = newInfo.replace( /placeholder-kb-pal1/g, "palette1");
-			newInfo = newInfo.replace( /placeholder-kb-pal2/g, "palette2");
-			newInfo = newInfo.replace( /placeholder-kb-pal3/g, "palette3");
-			newInfo = newInfo.replace( /placeholder-kb-pal4/g, "palette4");
-			newInfo = newInfo.replace( /placeholder-kb-pal5/g, "palette5");
-			newInfo = newInfo.replace( /placeholder-kb-pal6/g, "palette6");
-			newInfo = newInfo.replace( /placeholder-kb-pal7/g, "palette7");
-			newInfo = newInfo.replace( /placeholder-kb-pal8/g, "palette8");
-			newInfo = newInfo.replace( /placeholder-kb-pal9/g, "palette9");
+			newInfo = replaceColors( newInfo, 'highlight' );
 			onSelect( newInfo );
 		}
 	}
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = [];
+		let variation = 1;
+		// Temp images.
+		const images = {
+			aRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436637.jpg",
+			aRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436583.jpg",
+			aRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436612.jpg",
+			aRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436470.jpg",
+			aRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436626.jpg",
+			bRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-miriam-alonso-7592995-scaled.jpg",
+			bRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-cottonbro-studio-4327157-scaled.jpg",
+			bRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436554-scaled.jpg",
+			bRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436640-scaled.jpg",
+			bRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436691-scaled.jpg",
+			bRoll6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436771-scaled.jpg",
+			bg1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436581.jpg",
+
+			pp1: "http://dev.local/wp-content/uploads/2023/03/pexels-valeria-ushakova-3094215.jpg",
+			pp2: "http://dev.local/wp-content/uploads/2023/03/pexels-vlada-karpovich-4534864.jpg",
+			pp3: "http://dev.local/wp-content/uploads/2023/03/pexels-elina-fairytale-3823047.jpg",
+			pp4: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-3752836-scaled.jpg",
+			pp5: "http://dev.local/wp-content/uploads/2023/03/pexels-tomaz-barcellos-1987301.jpg",
+			pp6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-4457997.jpg",
+			pp7: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-774909.jpg",
+			pp8: "http://dev.local/wp-content/uploads/2023/03/pexels-hannah-nelson-1065084-scaled.jpg",
+			pp9: "http://dev.local/wp-content/uploads/2023/03/pexels-fabio-nascimento-15824229.jpg",
+			pp10: "http://dev.local/wp-content/uploads/2023/03/pexels-kadeem-stewart-15787374.jpg",
+		}
+		const aiContent = {};
 		Object.keys( patterns ).map( function( key, index ) {
+			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'featured-products' ) ) {
+				return;
+			}
+			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'product-loop' ) ) {
+				return;
+			}
+			if ( ! kadence_blocks_params.hasPosts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'post-loop' ) ) {
+				return;
+			}
 			const temp = [];
+			if ( variation === 4 ) {
+				variation = 1;
+			}
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
-			temp['blocks'] = parse( patterns[key].content, {
-				__unstableSkipMigrationLogs: true
-			  });
-			temp['content'] = patterns[key].content;
+			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
+			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
+			// if ( savedAI ) {
+			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
+			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
+			// }
+			if ( tempContent ) {
+				temp['blocks'] = parse( tempContent, {
+					__unstableSkipMigrationLogs: true
+				});
+			}
+			temp['content'] = tempContent;
+			temp['pro'] = patterns[key].pro;
+			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
+			temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['viewportWidth'] = 1200;
+			variation ++;
 			allPatterns.push( temp );
 		});
 		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
@@ -399,6 +198,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	const customStyles = useMemo( () => {
 		let newStyles = '';
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
+			const tempStyles = `--global-content-edge-padding: 3rem;
+			padding:0px !important;`;
+			newStyles = [
+				{ css: `body { ${tempStyles} }.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
+			];
 			return newStyles;
 		}
 		if ( 'dark' === selectedStyle ) {
@@ -410,9 +214,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
 			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
-			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};`;
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
+			--global-content-edge-padding: 3rem;
+			padding:0px !important;`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}` }
+				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
 			];
 		} else if ( 'highlight' === selectedStyle ) {
 			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
@@ -420,17 +226,18 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
 			--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
 			--global-palette5:${kadence_blocks_params.global_colors['--global-palette8']};
-			--global-palette6:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
 			--global-palette7:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
-			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};`;
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-content-edge-padding: 3rem;
+			padding:0px !important;`;
 			newStyles = [
-				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}` }
+				{ css: `body { ${tempStyles} }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
 			];
 		}
 		return newStyles;
 	}, [ selectedStyle ] );
-
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -439,6 +246,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 					<PatternsListHeader
 						filterValue={ filterValue }
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
+					/>
+				) }
+				{ ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
+					<BannerHeader
+						selectedCategory={ selectedCategory }
 					/>
 				) }
 				{ hasItems && (
