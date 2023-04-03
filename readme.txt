@@ -82,6 +82,7 @@ Release Date: TBD 2023
 * Fix: Border radius on row layout video backgrounds in Safari.
 * Fix: Testimonial icon colors not working when using color pallet.
 * Fix: Testimonial icon display when using outline icons.
+* Fix: Typed text throwing error when previewing mobile & tablet.
 
 = 3.0.27 =
 Release Date: March 23, 2023
