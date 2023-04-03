@@ -80,6 +80,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.0.28 =
 Release Date: TBD 2023
 * Fix: Border radius on row layout video backgrounds in Safari.
+* Fix: Testimonial icon colors not working when using color pallet.
 
 = 3.0.27 =
 Release Date: March 23, 2023
