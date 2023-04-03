@@ -647,13 +647,20 @@ function KadenceAdvancedHeading( props ) {
 					shuffle: typedElement.getAttribute( 'data-shuffle' ) === 'true',
 				};
 
-				typed.current = new Typed( '.kt-adv-heading' + uniqueID + ' .kt-typed-text', options );
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				const typedElementHtml = selector.getElementById( 'adv-heading' + uniqueID ).querySelector( '.kt-typed-text' );
+
+				typed.current = new Typed( typedElementHtml, options );
 			}
 
 			return function cleanup() {
 				// Destroy the typed instance and reset richtext content
 				typed.current.destroy();
-				document.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				selector.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
 			}
 		}
 

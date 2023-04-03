@@ -626,6 +626,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( $has_radius ) {
 			$css->add_property( 'overflow', 'hidden' );
+			$css->add_property( 'isolation', 'isolate' );
 		}
 		// Border, have to check for old styles first.
 		if ( ! empty( $attributes['border'] ) || ! empty( $attributes['tabletBorder'] ) || ! empty( $attributes['mobileBorder'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
