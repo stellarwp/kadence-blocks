@@ -86,7 +86,7 @@
 						}, 10);
 					});
 				} else if (sliderType && sliderType === "slider") {
-					splideOptions.type = "fade";
+					splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.on( 'overflow', function ( isOverflow ) {
@@ -114,7 +114,7 @@
 					navSliderOptions.arrows = true;
 					// navSliderOptions.rewind = true;
 
-					mainSliderOptions.type = "fade";
+					mainSliderOptions.type = parsedData.sliderFade ? "fade" : "slide";
 					mainSliderOptions.rewind = true;
 					mainSliderOptions.pagination = false;
 
