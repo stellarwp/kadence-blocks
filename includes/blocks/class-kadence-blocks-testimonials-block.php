@@ -593,10 +593,8 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		} elseif ( $style === 'basic' ){
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
-      $css->add_property( 'max-width', ( isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 ) . 'px');
+		    $css->add_property( 'max-width', ( isset( $attributes['containerMaxWidth'] ) ? $attributes['containerMaxWidth'] : 500 ) . 'px');
 		}
-
-
 
 		// See if container styles are applied to the item or text
 		if ( 'bubble' !== $style && 'inlineimage' !== $style ){
