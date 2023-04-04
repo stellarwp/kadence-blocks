@@ -758,6 +758,14 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$content .= '<noscript><div class="kadence-blocks-form-message kadence-blocks-form-warning">' . __( 'Please enable JavaScript in your browser to submit the form', 'kadence-blocks' ) . '</div><style>.kadence-form-' . $unique_id . ' .kadence-blocks-form-field.kb-submit-field { display: none; }</style></noscript>';
+
+		// Update honeypot autocomplete value.
+		if( ( !isset( $attributes['honeyPot']) || isset( $attributes['honeyPot'] ) && $attributes['honeyPot'] ) ) {
+			$default = '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="off" aria-hidden="true" placeholder="Email" tabindex="-1"/>';
+			$new     = '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="new-password" aria-hidden="true" placeholder="Email" tabindex="-1" data-1p-ignore="true" data-lpignore="true" />';
+			$content = str_replace( $default, $new, $content );
+		}
+
 		return $content;
 	}
 
