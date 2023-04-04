@@ -188,6 +188,31 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			);
 		}
 	}
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+	} else {
+		$global_colors = array(
+			'--global-palette1' => \Kadence\kadence()->palette_option( 'palette1' ),
+			'--global-palette2' => \Kadence\kadence()->palette_option( 'palette2' ),
+			'--global-palette3' => \Kadence\kadence()->palette_option( 'palette3' ),
+			'--global-palette4' => \Kadence\kadence()->palette_option( 'palette4' ),
+			'--global-palette5' => \Kadence\kadence()->palette_option( 'palette5' ),
+			'--global-palette6' => \Kadence\kadence()->palette_option( 'palette6' ),
+			'--global-palette7' => \Kadence\kadence()->palette_option( 'palette7' ),
+			'--global-palette8' => \Kadence\kadence()->palette_option( 'palette8' ),
+			'--global-palette9' => \Kadence\kadence()->palette_option( 'palette9' ),
+		);
+	}
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -196,6 +221,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$icons_path       = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
+	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
+	$product          = get_posts( array( 'numberposts' => 1, 'post_type' => 'product' ) );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -245,7 +272,13 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
 			'wp_max_upload_size' => wp_max_upload_size(),
-			'get_allowed_mime_types' => get_allowed_mime_types()
+			'get_allowed_mime_types' => get_allowed_mime_types(),
+			'global_colors' => $global_colors,
+			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
+			'addPostsLink' => admin_url( 'post-new.php' ),
+			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
+			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
+			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 		)
 	);
 	wp_localize_script(
