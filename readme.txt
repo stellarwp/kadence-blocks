@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.2
-Stable tag: 3.0.53
+Stable tag: 3.0.30
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,8 +77,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.0.28 =
-Release Date: TBD 2023
+= 3.0.30 =
+Release Date: April 4, 2023
+* Add: New Design library.
 * Add: Additional unit choices to top and bottom row dividers.
 * Fix: Border radius on row layout video backgrounds in Safari.
 * Fix: Testimonial icon colors not working when using color pallet.
