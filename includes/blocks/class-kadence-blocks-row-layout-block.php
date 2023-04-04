@@ -1010,16 +1010,16 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Bottom Sep.
 		if ( isset( $attributes['bottomSep'] ) && 'none' != $attributes['bottomSep'] ) {
-			if ( isset( $attributes['bottomSepHeight'] ) || isset( $attributes['bottomSepWidth'] ) || isset( $attributes['bottomSepColor'] ) ) {
-				if ( isset( $attributes['bottomSepHeight'] ) ) {
-					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeight'] . 'px' );
-				}
+			$bottomSepUnit = !empty( $attributes['bottomSepHeightUnit']) ? $attributes['bottomSepHeightUnit'] : 'px';
+			$bottomSepHeight = !empty ($attributes['bottomSepHeight']) ? $attributes['bottomSepHeight'] : '100';
+
+			$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep' );
+			$css->add_property( 'height', $bottomSepHeight . $bottomSepUnit );
+
 				if ( isset( $attributes['bottomSepWidth'] ) ) {
 					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep svg' );
 					$css->add_property( 'width', $attributes['bottomSepWidth'] . '%' );
 				}
-			}
 			if ( ! empty( $attributes['bottomSepColor'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep svg' );
 				$css->add_property( 'fill', $css->render_color( $attributes['bottomSepColor'] ) . '!important' );
@@ -1028,7 +1028,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'tablet' );
 				if ( isset( $attributes['bottomSepHeightTab'] ) ) {
 					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeightTab'] . 'px' );
+					$css->add_property( 'height', $attributes['bottomSepHeightTab'] . $bottomSepUnit );
 				}
 				if ( isset( $attributes['bottomSepWidthTab'] ) ) {
 					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep svg' );
@@ -1040,7 +1040,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'mobile' );
 				if ( isset( $attributes['bottomSepHeightMobile'] ) ) {
 					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep' );
-					$css->add_property( 'height', $attributes['bottomSepHeightMobile'] . 'px' );
+					$css->add_property( 'height', $attributes['bottomSepHeightMobile'] . $bottomSepUnit );
 				}
 				if ( isset( $attributes['bottomSepWidthMobile'] ) ) {
 					$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep svg' );
@@ -1051,10 +1051,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Top Sep.
 		if ( isset( $attributes['topSep'] ) && 'none' != $attributes['topSep'] ) {
-			if ( $css->is_number( $attributes['topSepHeight'] ) ) {
+			$topSepUnit = !empty( $attributes['topSepHeightUnit']) ? $attributes['topSepHeightUnit'] : 'px';
+			$topSepHeight = !empty ($attributes['topSepHeight']) ? $attributes['topSepHeight'] : '100';
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep' );
-				$css->add_property( 'height', $attributes['topSepHeight'] . 'px' );
-			}
+				$css->add_property( 'height', $topSepHeight . $topSepUnit );
 			if ( $css->is_number( $attributes['topSepWidth'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep svg' );
 				$css->add_property( 'width', $attributes['topSepWidth'] . '%' );
@@ -1066,7 +1066,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tablet' );
 			if ( $css->is_number( $attributes['topSepHeightTab'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep' );
-				$css->add_property( 'height', $attributes['topSepHeightTab'] . 'px' );
+				$css->add_property( 'height', $attributes['topSepHeightTab'] . $topSepUnit );
 			}
 			if ( $css->is_number( $attributes['topSepWidthTab'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep svg' );
@@ -1075,7 +1075,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'mobile' );
 			if ( $css->is_number( $attributes['topSepHeightMobile'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep' );
-				$css->add_property( 'height', $attributes['topSepHeightMobile'] . 'px' );
+				$css->add_property( 'height', $attributes['topSepHeightMobile'] . $topSepUnit );
 			}
 			if ( $css->is_number( $attributes['topSepWidthMobile'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-row-layout-top-sep svg' );
