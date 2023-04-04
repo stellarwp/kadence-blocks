@@ -95,15 +95,25 @@ function PatternLibrary( {
 			data_email = 'iThemes';
 		}
 	}
-	const onInsertContent = ( content ) => {
-		importProcess( content );
+	const onInsertContent = ( pattern ) => {
+		const newPattern = {
+			content: pattern?.content ? pattern.content : '',
+			type: pattern?.type ? pattern.type : 'pattern',
+			style: pattern?.style ? pattern.style : 'light',
+			id: pattern?.id ? pattern.id : '',
+		}
+		importProcess( newPattern.content, newPattern.type, newPattern.id, newPattern.style );
 	}
-	const importProcess = ( blockcode ) => {
+	const importProcess = ( blockcode, type = '', item_id = '', style = '' ) => {
 		setIsImporting( true );
 		var data = new FormData();
 		data.append( 'action', 'kadence_import_process_data' );
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
 		data.append( 'import_content', blockcode );
+		data.append( 'import_item_id', item_id );
+		data.append( 'import_type', type );
+		data.append( 'import_style', style );
+		data.append( 'import_library', 'pattern' );
 		jQuery.ajax( {
 			method:      'POST',
 			url:         kadence_blocks_params.ajax_url,
@@ -651,7 +661,7 @@ function PatternLibrary( {
 							patternCategories={ pageCategorySelectOptions }
 							selectedStyle={ selectedStyle }
 							breakpointCols={ breakpointColumnsObj }
-							onSelect={ ( content ) => onInsertContent( content ) }
+							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
 				</>
@@ -696,7 +706,7 @@ function PatternLibrary( {
 							patternCategories={ categorySelectOptions }
 							selectedStyle={ selectedStyle }
 							breakpointCols={ breakpointColumnsObj }
-							onSelect={ ( content ) => onInsertContent( content ) }
+							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
 				</>

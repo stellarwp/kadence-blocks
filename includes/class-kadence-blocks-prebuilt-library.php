@@ -711,15 +711,22 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
-		$data = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
+		$data           = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
+		$import_library = empty( $_POST['import_library'] ) ? 'standard' : sanitize_text_field( $_POST['import_library'] );
+		$import_type    = empty( $_POST['import_type'] ) ? 'pattern' : sanitize_text_field( $_POST['import_type'] );
+		$import_id      = empty( $_POST['import_item_id'] ) ? '' : sanitize_text_field( $_POST['import_item_id'] );
+		$import_style   = empty( $_POST['import_style'] ) ? 'normal' : sanitize_text_field( $_POST['import_style'] );
+		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
+		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
+		$this->key           = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';
 		// Do you have the data?
 		if ( $data ) {
-			$data = $this->process_content( $data );
+			$data = $this->process_content( $data, $import_library, $import_type, $import_id, $import_style );
 			if ( ! $data ) {
 				// Send JSON Error response to the AJAX call.
 				wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
 			} else {
-				
 				wp_send_json( $data );
 			}
 		}
@@ -732,7 +739,8 @@ class Kadence_Blocks_Prebuilt_Library {
 	 *
 	 * @param  string $content the import post content.
 	 */
-	public function process_content( $content = '' ) {
+	public function process_content( $content = '', $import_library = '', $import_type = '', $import_id = '', $import_style = '' ) {
+		$content = $this->process_individual_import( $content, $import_library, $import_type, $import_id, $import_style );
 		// Find all urls.
 		preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );
 		$all_urls = array_unique( $match[0] );
@@ -869,7 +877,46 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @param string $link url possibly to an image.
 	 */
 	public function check_for_image( $link = '' ) {
-		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|jpeg)\/?$/i', $link );
+		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );
+	}
+	/**
+	 * Ajax function for processing the import data.
+	 */
+	public function process_individual_import( $content, $import_library, $import_type, $import_id, $import_style ) {
+		if ( isset( $import_library ) && 'pattern' === $import_library ) {
+			$args = array(
+				'type'    => $import_type,
+				'id'      => $import_id,
+				'style'   => $import_style,
+				'library' => $import_library,
+				'key'     => $this->key,
+			);
+			// Get the response.
+			$api_url  = add_query_arg( $args, 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/' );
+			$response = wp_remote_get(
+				$api_url,
+				array(
+					'timeout' => 20,
+				)
+			);
+			// Early exit if there was an error.
+			if ( is_wp_error( $response ) ) {
+				return $content;
+			}
+			// Get the CSS from our response.
+			$contents = wp_remote_retrieve_body( $response );
+			// Early exit if there was an error.
+			if ( is_wp_error( $contents ) ) {
+				return $content;
+			}
+			if ( ! $contents ) {
+				// Send JSON Error response to the AJAX call.
+				return $content;
+			} else {
+				return $content;
+			}
+		}
+		return $content;
 	}
 	/**
 	 * Check if the AJAX call is valid.

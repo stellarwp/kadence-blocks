@@ -130,8 +130,14 @@ function PageList( {
 } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
-		let newInfo = BuildPageImportContent( info.rows );
-		onSelect( newInfo );
+		const pageSend = {
+			id: info.id,
+			slug:info.slug,
+			type: 'page',
+			style: 'light',
+		}
+		pageSend.content = BuildPageImportContent( info.rows );
+		onSelect( pageSend );
 		// if ( ! selectedStyle || 'light' === selectedStyle ) {
 		// 	onSelect( newInfo );
 		// } else if ( 'dark' === selectedStyle ) {

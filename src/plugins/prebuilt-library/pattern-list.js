@@ -90,48 +90,54 @@ function BannerHeader( { selectedCategory } ) {
 function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, savedAI = false } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
+		const patternSend = {
+			id: info.id,
+			slug:info.slug,
+			type: 'pattern',
+			style: selectedStyle ? selectedStyle : 'light',
+		}
 		let newInfo = info.content;
 		newInfo = deleteContent( newInfo );
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
-			onSelect( newInfo );
+			// Perhaps do something later.
 		} else if ( 'dark' === selectedStyle ) {
 			newInfo = replaceColors( newInfo, 'dark' );
-			onSelect( newInfo );
 		} else if ( 'highlight' === selectedStyle ) {
 			newInfo = replaceColors( newInfo, 'highlight' );
-			onSelect( newInfo );
 		}
+		patternSend.content = newInfo;
+		onSelect( patternSend );
 	}
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = [];
 		let variation = 1;
-		// Temp images.
-		const images = {
-			aRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436637.jpg",
-			aRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436583.jpg",
-			aRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436612.jpg",
-			aRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436470.jpg",
-			aRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436626.jpg",
-			bRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-miriam-alonso-7592995-scaled.jpg",
-			bRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-cottonbro-studio-4327157-scaled.jpg",
-			bRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436554-scaled.jpg",
-			bRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436640-scaled.jpg",
-			bRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436691-scaled.jpg",
-			bRoll6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436771-scaled.jpg",
-			bg1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436581.jpg",
+		// // Temp images.
+		// const images = {
+		// 	aRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436637.jpg",
+		// 	aRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436583.jpg",
+		// 	aRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436612.jpg",
+		// 	aRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436470.jpg",
+		// 	aRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436626.jpg",
+		// 	bRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-miriam-alonso-7592995-scaled.jpg",
+		// 	bRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-cottonbro-studio-4327157-scaled.jpg",
+		// 	bRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436554-scaled.jpg",
+		// 	bRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436640-scaled.jpg",
+		// 	bRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436691-scaled.jpg",
+		// 	bRoll6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436771-scaled.jpg",
+		// 	bg1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436581.jpg",
 
-			pp1: "http://dev.local/wp-content/uploads/2023/03/pexels-valeria-ushakova-3094215.jpg",
-			pp2: "http://dev.local/wp-content/uploads/2023/03/pexels-vlada-karpovich-4534864.jpg",
-			pp3: "http://dev.local/wp-content/uploads/2023/03/pexels-elina-fairytale-3823047.jpg",
-			pp4: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-3752836-scaled.jpg",
-			pp5: "http://dev.local/wp-content/uploads/2023/03/pexels-tomaz-barcellos-1987301.jpg",
-			pp6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-4457997.jpg",
-			pp7: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-774909.jpg",
-			pp8: "http://dev.local/wp-content/uploads/2023/03/pexels-hannah-nelson-1065084-scaled.jpg",
-			pp9: "http://dev.local/wp-content/uploads/2023/03/pexels-fabio-nascimento-15824229.jpg",
-			pp10: "http://dev.local/wp-content/uploads/2023/03/pexels-kadeem-stewart-15787374.jpg",
-		}
-		const aiContent = {};
+		// 	pp1: "http://dev.local/wp-content/uploads/2023/03/pexels-valeria-ushakova-3094215.jpg",
+		// 	pp2: "http://dev.local/wp-content/uploads/2023/03/pexels-vlada-karpovich-4534864.jpg",
+		// 	pp3: "http://dev.local/wp-content/uploads/2023/03/pexels-elina-fairytale-3823047.jpg",
+		// 	pp4: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-3752836-scaled.jpg",
+		// 	pp5: "http://dev.local/wp-content/uploads/2023/03/pexels-tomaz-barcellos-1987301.jpg",
+		// 	pp6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-4457997.jpg",
+		// 	pp7: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-774909.jpg",
+		// 	pp8: "http://dev.local/wp-content/uploads/2023/03/pexels-hannah-nelson-1065084-scaled.jpg",
+		// 	pp9: "http://dev.local/wp-content/uploads/2023/03/pexels-fabio-nascimento-15824229.jpg",
+		// 	pp10: "http://dev.local/wp-content/uploads/2023/03/pexels-kadeem-stewart-15787374.jpg",
+		// }
+		// const aiContent = {};
 		Object.keys( patterns ).map( function( key, index ) {
 			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'featured-products' ) ) {
 				return;
@@ -148,6 +154,8 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			}
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
+			temp['id'] = patterns[key].id;
+			temp['slug'] = patterns[key].slug;
 			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
