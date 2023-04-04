@@ -84,6 +84,7 @@ Release Date: TBD 2023
 * Fix: Testimonial icon display when using outline icons.
 * Fix: Typed text throwing error when previewing mobile & tablet.
 * Fix: Info box media background hover not showing in editor.
+* Fix: Fluid carousel galleries inside accordions not initializing.
 
 = 3.0.27 =
 Release Date: March 23, 2023
