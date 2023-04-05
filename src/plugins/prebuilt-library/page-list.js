@@ -166,9 +166,9 @@ function PageList( {
 			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
 			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
 			// }
-			temp['blocks'] = parse( tempContent, {
-				__unstableSkipMigrationLogs: true
-			  });
+			// temp['blocks'] = parse( tempContent, {
+			// 	__unstableSkipMigrationLogs: true
+			//   });
 			temp['content'] = tempContent;
 			temp['pro'] = pages[key].pro;
 			temp['locked'] = ( pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );

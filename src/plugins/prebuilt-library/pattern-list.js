@@ -163,11 +163,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
 			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
 			// }
-			if ( tempContent ) {
-				temp['blocks'] = parse( tempContent, {
-					__unstableSkipMigrationLogs: true
-				});
-			}
+			// if ( tempContent ) {
+			// 	temp['blocks'] = parse( tempContent, {
+			// 		__unstableSkipMigrationLogs: true
+			// 	});
+			// }
 			temp['content'] = tempContent;
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );

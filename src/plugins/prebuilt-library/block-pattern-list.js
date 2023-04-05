@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 /**
  * WordPress dependencies
  */
+import { parse } from '@wordpress/blocks';
 import {
 	Button,
 	TextControl,
@@ -40,7 +41,10 @@ function KadenceBlockPattern( {
 	showTooltip,
 	customStyles,
 } ) {
-	const { blocks, viewportWidth, pro, locked, proRender } = pattern;
+	const { content, viewportWidth, pro, locked, proRender } = pattern;
+	const blocks = parse( content, {
+		__unstableSkipMigrationLogs: true
+	});
 	const instanceId = useInstanceId( KadenceBlockPattern );
 	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
 	return (
