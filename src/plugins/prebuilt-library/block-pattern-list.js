@@ -15,6 +15,7 @@ import {
 	SelectControl,
 	VisuallyHidden,
 	Spinner,
+	ExternalLink,
 	Tooltip,
 	__unstableUseCompositeState as useCompositeState,
 	__unstableCompositeItem as CompositeItem,
@@ -87,7 +88,7 @@ function KadenceBlockPattern( {
 					) }
 					{ locked && (
 						<div className="kb-pattern-requires-active-pro">
-							<span className="kb-pattern-requires-active-pro-item">{ __( 'Requires Kadence Blocks Pro', 'kadence-blocks' ) }</span>
+							<span className="kb-pattern-requires-active-pro-item"><ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=patterns' }>{ __( 'Requires Kadence Blocks Pro', 'kadence-blocks' ) }</ExternalLink></span>
 						</div>
 					) }
 					{ ! showTooltip && (

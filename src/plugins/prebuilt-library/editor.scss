@@ -887,7 +887,7 @@ button.components-button.kb-trigger-ai.has-icon {
 		width: 70%;
 		height: 80px;
 		display: flex;
-		background: white;
+		background: #005CB8;
 		justify-content: center;
 		align-items: center;
 		position: absolute;
@@ -896,23 +896,40 @@ button.components-button.kb-trigger-ai.has-icon {
 		transform: translate(-50%, -50%);
 		box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 		opacity: 0;
+		border-radius: 3px;
 		transition: opacity 0.2s ease;
+		color: white;
+		a {
+			color: white;
+		}
 	}
 	.block-editor-block-patterns-list__item:hover .kb-pattern-requires-active-pro {
 		opacity: 1;
 	}
 }
-.kb-css-masonry.kb-core-section-library .block-editor-block-patterns-list__list-item .block-editor-block-patterns-list__item.kb-pattern-item-locked {
+.kb-css-masonry.kb-core-section-library .block-editor-block-patterns-list__list-item .block-editor-block-patterns-list__item.kb-pattern-item-locked .block-editor-block-preview__container {
     filter: grayscale(0);
     transition: filter 0.2s ease;
 	cursor: default;
 }
-.kb-css-masonry.kb-core-section-library .block-editor-block-patterns-list__list-item .block-editor-block-patterns-list__item.kb-pattern-item-locked:hover {
+.kb-css-masonry.kb-core-section-library .block-editor-block-patterns-list__list-item .block-editor-block-patterns-list__item.kb-pattern-item-locked:hover .block-editor-block-preview__container {
     filter: grayscale(1);
 }
 .kb-css-masonry.kb-core-section-library .block-editor-block-patterns-list__item.kb-pattern-item-locked:hover .block-editor-block-preview__container {
    // box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 	border:1px solid rgba(0,0,0,.2);
+}
+.kb-cloud-library-outer-wrap {
+	height: 100%;
+    overflow: auto;
+    display: block;
+    max-height: calc(95vh - 80px);
+	padding: 5px 20px 0px;
+}
+.kb-cloud-library-sidebar .kb-library-sidebar-bottom {
+    overflow: scroll;
+    height: 100%;
+    max-height: calc(95vh - 284px);
 }
 .kt-prebuilt-sidebar.kb-section-sidebar {
 	padding-top: 48px;

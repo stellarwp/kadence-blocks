@@ -157,7 +157,29 @@ function PatternLibrary( {
 			if ( response ) {
 				const o = SafeParseJSON( response, false );
 				if ( o ) {
-					const cats = { 'category': 'Category' };
+					const cats = { 
+						'category': __( 'Category', 'kadence-blocks' ),
+						'hero': __( 'Hero', 'kadence-blocks' ),
+						'cards': __( 'Cards', 'kadence-blocks' ),
+						'columns': __( 'Columns', 'kadence-blocks' ),
+						'media-text': __( 'Media and Text', 'kadence-blocks' ),
+						'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
+						'form': __( 'Form', 'kadence-blocks' ),
+						'gallery': __( 'Gallery', 'kadence-blocks' ),
+						'accordion': __( 'Accordion', 'kadence-blocks' ),
+						'image': __( 'Image', 'kadence-blocks' ),
+						'list': __( 'List', 'kadence-blocks' ),
+						'location': __( 'Location', 'kadence-blocks' ),
+						'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
+						'team': __( 'Team', 'kadence-blocks' ),
+						'post-loop': __( 'Post Loop', 'kadence-blocks' ),
+						'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
+						'slider': __( 'Slider', 'kadence-blocks' ),
+						'tabs': __( 'Tabs', 'kadence-blocks' ),
+						'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+						'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
+						'video': __( 'Video', 'kadence-blocks' ),
+					 };
 					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
 					kadence_blocks_params.library_sections = filteredLibraryItems;
 					{ Object.keys( o ).map( function( key, index ) {
@@ -255,7 +277,29 @@ function PatternLibrary( {
 				if ( o ) {
 					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
 					kadence_blocks_params.library_sections = filteredLibraryItems;
-					const cats = { 'category': 'Category' };
+					const cats = { 
+						'category': __( 'Category', 'kadence-blocks' ),
+						'hero': __( 'Hero', 'kadence-blocks' ),
+						'cards': __( 'Cards', 'kadence-blocks' ),
+						'columns': __( 'Columns', 'kadence-blocks' ),
+						'media-text': __( 'Media and Text', 'kadence-blocks' ),
+						'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
+						'form': __( 'Form', 'kadence-blocks' ),
+						'gallery': __( 'Gallery', 'kadence-blocks' ),
+						'accordion': __( 'Accordion', 'kadence-blocks' ),
+						'image': __( 'Image', 'kadence-blocks' ),
+						'list': __( 'List', 'kadence-blocks' ),
+						'location': __( 'Location', 'kadence-blocks' ),
+						'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
+						'team': __( 'Team', 'kadence-blocks' ),
+						'post-loop': __( 'Post Loop', 'kadence-blocks' ),
+						'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
+						'slider': __( 'Slider', 'kadence-blocks' ),
+						'tabs': __( 'Tabs', 'kadence-blocks' ),
+						'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+						'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
+						'video': __( 'Video', 'kadence-blocks' ),
+					 };
 					{ Object.keys( o ).map( function( key, index ) {
 						//console.log( o[ key ].categories );
 						if ( o[ key ].categories && typeof o[ key ].categories === "object") {

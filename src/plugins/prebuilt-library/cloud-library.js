@@ -268,7 +268,7 @@ class CloudSections extends Component {
 		return (
 			<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
 				{ sidebarEnabled === 'show' && (
-					<div className="kt-prebuilt-sidebar">
+					<div className="kt-prebuilt-sidebar kb-cloud-library-sidebar">
 						<div className="kb-library-sidebar-top">
 							<TextControl
 								type="text"
@@ -407,80 +407,82 @@ class CloudSections extends Component {
 						) }
 					</Fragment>
 				) : (
-					<Masonry
-						breakpointCols={breakpointColumnsObj}
-						className={ `kb-css-masonry kb-core-section-library` }
-  						columnClassName="kb-css-masonry_column"
-						// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
-						// elementType={ 'div' }
-						// options={ {
-						// 	transitionDuration: 0,
-						// } }
-						// disableImagesLoaded={ false }
-						// enableResizableChildren={ true }
-						// updateOnEachImageLoad={ false }
-					>
-						{ Object.keys( this.state.items ).map( function( key, index ) {
-							const name = control.state.items[key].name;
-							const slug = control.state.items[key].slug;
-							const content = control.state.items[key].content;
-							const image = control.state.items[key].image;
-							const imageWidth = control.state.items[key].imageW;
-							const imageHeight = control.state.items[key].imageH;
-							const categories = control.state.items[key].categories;
-							const keywords = control.state.items[key].keywords;
-							const description = control.state.items[key].description;
-							const pro = control.state.items[key].pro;
-							const locked = libraryItems[key].locked;
-							const descriptionId = `${ slug }_kb_cloud__item-description`;
-							if ( ( 'all' === getActiveCat || Object.keys( categories ).includes( getActiveCat ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
-								return (
-									<div className="kb-css-masonry-inner">
-										<Button
-											key={ key }
-											className="kb-css-masonry-btn"
-											isSmall
-											aria-label={
-												sprintf(
-													/* translators: %s is Prebuilt Name */
-													__( 'Add %s', 'kadence-blocks' ),
-													name
-												)
-											}
-											aria-describedby={ description ? descriptionId : undefined }
-											isDisabled={ locked }
-											onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
-										>
-											<div
-												className="kb-css-masonry-btn-inner"
-												style={ {
-													paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
-												} }
+					<div className='kb-cloud-library-outer-wrap'>
+						<Masonry
+							breakpointCols={breakpointColumnsObj}
+							className={ `kb-css-masonry kb-cloud-library-wrap` }
+							columnClassName="kb-css-masonry_column"
+							// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
+							// elementType={ 'div' }
+							// options={ {
+							// 	transitionDuration: 0,
+							// } }
+							// disableImagesLoaded={ false }
+							// enableResizableChildren={ true }
+							// updateOnEachImageLoad={ false }
+						>
+							{ Object.keys( this.state.items ).map( function( key, index ) {
+								const name = control.state.items[key].name;
+								const slug = control.state.items[key].slug;
+								const content = control.state.items[key].content;
+								const image = control.state.items[key].image;
+								const imageWidth = control.state.items[key].imageW;
+								const imageHeight = control.state.items[key].imageH;
+								const categories = control.state.items[key].categories;
+								const keywords = control.state.items[key].keywords;
+								const description = control.state.items[key].description;
+								const pro = control.state.items[key].pro;
+								const locked = libraryItems[key].locked;
+								const descriptionId = `${ slug }_kb_cloud__item-description`;
+								if ( ( 'all' === getActiveCat || Object.keys( categories ).includes( getActiveCat ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
+									return (
+										<div className="kb-css-masonry-inner">
+											<Button
+												key={ key }
+												className="kb-css-masonry-btn"
+												isSmall
+												aria-label={
+													sprintf(
+														/* translators: %s is Prebuilt Name */
+														__( 'Add %s', 'kadence-blocks' ),
+														name
+													)
+												}
+												aria-describedby={ description ? descriptionId : undefined }
+												isDisabled={ locked }
+												onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
 											>
-												<img src={ image } loading={ "lazy" } alt={ name } />
-												<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
-											</div>
-										</Button>
-										{ !! description && (
-											<VisuallyHidden id={ descriptionId }>
-												{ description }
-											</VisuallyHidden>
-										) }
-										{ undefined !== pro && pro && (
-											<Fragment>
-												<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
-												{ locked && (
-													<div className="kb-popover-pro-notice">
-														<h2>{ __( 'Pro required for this item', 'kadence-blocks' ) } </h2>
-													</div>
-												) }
-											</Fragment>
-										) }
-									</div>
-								);
-							}
-						} ) }
-					</Masonry>
+												<div
+													className="kb-css-masonry-btn-inner"
+													style={ {
+														paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
+													} }
+												>
+													<img src={ image } loading={ "lazy" } alt={ name } />
+													<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
+												</div>
+											</Button>
+											{ !! description && (
+												<VisuallyHidden id={ descriptionId }>
+													{ description }
+												</VisuallyHidden>
+											) }
+											{ undefined !== pro && pro && (
+												<Fragment>
+													<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
+													{ locked && (
+														<div className="kb-popover-pro-notice">
+															<h2>{ __( 'Pro required for this item', 'kadence-blocks' ) } </h2>
+														</div>
+													) }
+												</Fragment>
+											) }
+										</div>
+									);
+								}
+							} ) }
+						</Masonry>
+					</div>
 				) }
 			</div>
 		);

@@ -9,7 +9,7 @@ Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Custom Blocks for for Gutenberg to help extend the editing capabilities.
+Custom Blocks for Gutenberg to help extend the editing capabilities.
 
 == Description ==
 

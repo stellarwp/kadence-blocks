@@ -63,6 +63,10 @@
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
+						arrows    : elementList[i].length > 1 ? splideOptions.arrows : false,
+						pagination: elementList[i].length > 1 ? splideOptions.pagination : false,
+						drag      : elementList[i].length > 1 ? splideOptions.drag : false,
+						clones    : elementList[i].length > 1 ? undefined : 0, // Toggle clones
 					});
 					// splideSlider.on( 'overflow', function ( isOverflow ) {
 					// 	// Reset the carousel position
