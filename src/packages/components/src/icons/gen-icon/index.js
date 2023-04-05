@@ -57,7 +57,7 @@ GenIcon.defaultProps = {
 };
 
 GenIcon.propTypes = {
-	icon: PropTypes.string.isRequired,
+	icon: PropTypes.object.isRequired,
 	size: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 	style: PropTypes.object,
 	className: PropTypes.string,

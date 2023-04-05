@@ -192,6 +192,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		tabletMaxWidth,
 		mobileMaxWidth,
 		kbVersion,
+		titleTagType
 	} = attributes;
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
@@ -215,8 +216,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		setBlockDefaults( 'kadence/infobox', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		if ( ! kbVersion || kbVersion < 2 ) {
@@ -832,7 +838,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const tconfig = ( textFont[ 0 ].google ? tgconfig : '' );
 	const lconfig = ( learnMoreStyles[ 0 ].google ? lgconfig : '' );
 	const nconfig = ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].google ? ngconfig : '' );
-	const titleTagName = 'h' + titleFont[ 0 ].level;
+	const titleTagName = ( titleTagType !== 'heading' ) ? titleTagType : 'h' + titleFont[ 0 ].level;
 	const ALLOWED_MEDIA_TYPES = [ 'image' ];
 	const onSelectImage = media => {
 		let url;
@@ -1116,7 +1122,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
 
 
-			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBackground ) } !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
@@ -2129,6 +2135,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 											<TypographyControls
 												fontGroup={'heading'}
 												tagLevel={titleFont[ 0 ].level}
+												htmlTag={titleTagType}
+												onTagLevelHTML={ ( value, tag ) => { saveTitleFont( { level: value } ); setAttributes( { titleTagType: tag } ) } }
 												onTagLevel={( value ) => saveTitleFont( { level: value } )}
 												fontSize={titleFont[ 0 ].size}
 												onFontSize={( value ) => saveTitleFont( { size: value } )}

@@ -55,10 +55,11 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		if ( isset( $attributes['listStyles'] ) && is_array( $attributes['listStyles'] ) && isset( $attributes['listStyles'][0] ) && is_array( $attributes['listStyles'][0] ) && isset( $attributes['listStyles'][0]['google'] ) && $attributes['listStyles'][0]['google'] && ( ! isset( $attributes['listStyles'][0]['loadGoogle'] ) || true === $attributes['listStyles'][0]['loadGoogle'] ) && isset( $attributes['listStyles'][0]['family'] ) ) {
 			$list_font    = $attributes['listStyles'][0];
@@ -97,11 +98,24 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
 		$css->render_responsive_range( $list_gap_props, 'listGap', 'margin-bottom' );
 
-		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list' );
+		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
 		$css->render_responsive_range( $list_gap_props, 'listGap', 'grid-row-gap' );
-
-		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap' );
-		$css->add_property( 'margin', '0px' );
+	
+		if ( ! empty( $attributes['columns'] ) && abs( $attributes['columns'] ) > 1 ) {
+			$css->set_media_state( 'desktopOnly' );
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
+			$css->add_property( 'margin', '0px' );
+		}
+		if ( ( ! empty( $attributes['tabletColumns'] ) && abs( $attributes['tabletColumns'] ) > 1 ) || ( empty( $attributes['tabletColumns'] ) && ! empty( $attributes['columns'] ) && abs( $attributes['columns'] ) > 1 ) ) {
+			$css->set_media_state( 'tabletOnly' );
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-tablet-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
+			$css->add_property( 'margin', '0px' );
+		}
+		if ( ( ! empty( $attributes['mobileColumns'] ) && abs( $attributes['mobileColumns'] ) > 1 ) || ( empty( $attributes['mobileColumns'] ) && ! empty( $attributes['tabletColumns'] ) && abs( $attributes['tabletColumns'] ) > 1 ) || ( empty( $attributes['tabletColumns'] ) && empty( $attributes['mobileColumns'] ) && ! empty( $attributes['columns'] ) && abs( $attributes['columns'] ) > 1 ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-mobile-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
+			$css->add_property( 'margin', '0px' );
+		}
 
 		$css->set_media_state( 'desktop' );
 

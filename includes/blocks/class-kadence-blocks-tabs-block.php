@@ -55,10 +55,11 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'tabs';
 		$tablet_layout = ! empty( $attributes['tabletLayout'] ) && 'inherit' !== $attributes['tabletLayout'] ? $attributes['tabletLayout'] : $layout;
@@ -89,7 +90,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab' );
 
-		if( isset( $attributes['contentBorder'] ) && array_filter( $attributes['contentBorder'] )  ) {
+		if ( ( isset( $attributes['contentBorder'][0] ) && $css->is_number( $attributes['contentBorder'][0] ) ) || ( isset( $attributes['contentBorder'][1] ) && $css->is_number( $attributes['contentBorder'][1] ) ) || ( isset( $attributes['contentBorder'][2] ) && $css->is_number( $attributes['contentBorder'][2] ) ) || ( isset( $attributes['contentBorder'][3] ) && $css->is_number( $attributes['contentBorder'][3] ) ) ) {
 			$css->render_measure_output( $attributes, 'contentBorder', 'border-width', array( 'tablet_key' => false, 'mobile_key' => false ) );
 			if ( ! empty( $attributes['contentBorderColor'] ) ) {
 				$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );

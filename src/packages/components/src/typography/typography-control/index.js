@@ -488,7 +488,7 @@ class TypographyControls extends Component {
 							{ onTagLevelHTML && (
 								<TagSelect
 									label={__( 'HTML Tag', 'kadence-blocks' )}
-									value={ 'heading' === htmlTag ? level : htmlTag }
+									value={ 'heading' === htmlTag ? tagLevel : htmlTag }
 									onChange={ (value) => {
 										if ( 'div' === value || 'p' === value || 'span' === value ) {
 											onTagLevelHTML( 2, value );

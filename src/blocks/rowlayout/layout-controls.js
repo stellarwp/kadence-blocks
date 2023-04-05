@@ -125,7 +125,7 @@ import { __ } from '@wordpress/i18n';
 	widthString,
 	previewDevice,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit  } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	let layoutOptions;
@@ -191,6 +191,7 @@ import { __ } from '@wordpress/i18n';
 			{ value: 'center-exwide', label: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
 			{ value: 'first-row', label: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
 			{ value: 'last-row', label: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 		];
 	} else if ( 4 === columns ) {
@@ -204,6 +205,8 @@ import { __ } from '@wordpress/i18n';
 	} else if ( 5 === columns ) {
 		mobileLayoutOptions = [
 			{ value: 'equal', label: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
+			{ value: 'two-grid', label: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
+			{ value: 'three-grid', label: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
 			{ value: 'row', label: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
 		];
 	} else if ( 6 === columns ) {
@@ -337,46 +340,46 @@ import { __ } from '@wordpress/i18n';
 									/>
 								</>
 							)}
+								<ResponsiveRadioRangeControls
+									label={__( 'Row Gutter', 'kadence-blocks' )}
+									options={ [
+										{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+										{ value: 'skinny', size:10, label: __('Sm', 'kadence-blocks' ) },
+										{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
+										{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
+									] }
+									value={ {
+										value: ( undefined !== collapseGutter ? collapseGutter : 'default' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[0] ? customRowGutter[0] : '' ),
+									} }
+									onChange={ ( value, size ) => {
+										setAttributes( { collapseGutter: value, customRowGutter: [ size, ( customRowGutter[1] ? customRowGutter[1] : '' ), ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
+									}}
+									tabletValue={ {
+										value: ( undefined !== tabletRowGutter ? tabletRowGutter : '' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[1] ? customRowGutter[1] : '' ),
+									} }
+									onChangeTablet={ ( value, size ) => {
+										setAttributes( { tabletRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), size, ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
+									}}
+									mobileValue={ {
+										value: ( undefined !== mobileRowGutter ? mobileRowGutter : '' ),
+										size: ( undefined !== customRowGutter && undefined !== customRowGutter[2] ? customRowGutter[2] : '' ),
+									} }
+									onChangeMobile={ ( value, size ) => {
+										setAttributes( { mobileRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), ( customRowGutter[1] ? customRowGutter[1] : '' ), size ] } );
+									}}
+									min={0}
+									max={( rowGutterType === 'px' ? 200 : 12 )}
+									step={( rowGutterType === 'px' ? 1 : 0.1 )}
+									unit={ rowGutterType ? rowGutterType : 'px' }
+									onUnit={( value ) => {
+										setAttributes( { rowGutterType: value } );
+									}}
+									units={[ 'px', 'em', 'rem' ]}
+								/>
 							{ ( colLayout === 'grid-layout' || innerItemCount > columns || previewDevice != 'Desktop' ) && (
 								<>
-									<ResponsiveRadioRangeControls
-										label={__( 'Row Gutter', 'kadence-blocks' )}
-										options={ [
-											{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
-											{ value: 'skinny', size:10, label: __('Sm', 'kadence-blocks' ) },
-											{ value: 'default', size:30, label: __('Md', 'kadence-blocks' ) },
-											{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
-										] }
-										value={ {
-											value: ( undefined !== collapseGutter ? collapseGutter : 'default' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[0] ? customRowGutter[0] : '' ),
-										} }
-										onChange={ ( value, size ) => {
-											setAttributes( { collapseGutter: value, customRowGutter: [ size, ( customRowGutter[1] ? customRowGutter[1] : '' ), ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
-										}}
-										tabletValue={ {
-											value: ( undefined !== tabletRowGutter ? tabletRowGutter : '' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[1] ? customRowGutter[1] : '' ),
-										} }
-										onChangeTablet={ ( value, size ) => {
-											setAttributes( { tabletRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), size, ( customRowGutter[2] ? customRowGutter[2] : '' ) ] } );
-										}}
-										mobileValue={ {
-											value: ( undefined !== mobileRowGutter ? mobileRowGutter : '' ),
-											size: ( undefined !== customRowGutter && undefined !== customRowGutter[2] ? customRowGutter[2] : '' ),
-										} }
-										onChangeMobile={ ( value, size ) => {
-											setAttributes( { mobileRowGutter: value, customRowGutter: [ ( customRowGutter[0] ? customRowGutter[0] : '' ), ( customRowGutter[1] ? customRowGutter[1] : '' ), size ] } );
-										}}
-										min={0}
-										max={( rowGutterType === 'px' ? 200 : 12 )}
-										step={( rowGutterType === 'px' ? 1 : 0.1 )}
-										unit={ rowGutterType ? rowGutterType : 'px' }
-										onUnit={( value ) => {
-											setAttributes( { rowGutterType: value } );
-										}}
-										units={[ 'px', 'em', 'rem' ]}
-									/>
 									<SelectControl
 										label={ __( 'Collapse Order', 'kadence-blocks' ) }
 										value={ collapseOrder }
@@ -424,6 +427,20 @@ import { __ } from '@wordpress/i18n';
 									units={ [ 'px', '%', 'vw' ] }
 								/>
 							) }
+							{ align === 'full' && 2 === columns && inheritMaxWidth === true && (
+								<>
+									<ToggleControl
+										label={ __( 'Break Left Section Full Width?', 'kadence-blocks' ) }
+										checked={ ( undefined !== breakoutLeft ? breakoutLeft : false ) }
+										onChange={ ( value ) => setAttributes( { breakoutLeft: value } ) }
+									/>
+									<ToggleControl
+										label={ __( 'Break Right Section Full Width?', 'kadence-blocks' ) }
+										checked={ ( undefined !== breakoutRight ? breakoutRight : false ) }
+										onChange={ ( value ) => setAttributes( { breakoutRight: value } ) }
+									/>
+								</>
+							) }
 						</KadencePanelBody>
 					</>
 				) }
@@ -463,7 +480,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( topSep === 'none' ? '' : topSep ) }
 							onChange={ value => setAttributes( { topSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'top' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'top', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -489,10 +506,13 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { topSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
-							unit={ 'px' }
-							units={ ['px'] }
+							max={'em' === topSepHeightUnit ? 100 : 500 }
+							step={ 'em' === topSepHeightUnit ? 0.01 : 1 }
+							unit={ topSepHeightUnit }
+							onUnit={ ( value ) => {
+								setAttributes( { topSepHeightUnit: value } );
+							} }
+							units={ [ 'px', 'em', 'vh' ] }
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
@@ -549,7 +569,7 @@ import { __ } from '@wordpress/i18n';
 							value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 							onChange={ value => setAttributes( { bottomSep: value } ) }
 							showSearch={ false }
-							renderFunc={ svg => renderSVGDivider( svg, 'bottom' ) }
+							renderFunc={ svg => renderSVGDivider( svg, 'bottom', '100%' ) }
 							theme="dividers"
 							allowClear={ true }
 							placeholder={ __( 'Select Divider', 'kadence-blocks' ) }
@@ -575,10 +595,13 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { bottomSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
-							unit={ 'px' }
-							units={ ['px'] }
+							max={'em' === bottomSepHeightUnit ? 100 : 500 }
+							step={ 'em' === bottomSepHeightUnit ? 0.01 : 1 }
+							unit={ bottomSepHeightUnit }
+							onUnit={ ( value ) => {
+								setAttributes( { bottomSepHeightUnit: value } );
+							} }
+							units={ [ 'px', 'em', 'vh' ]}
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
@@ -604,7 +627,7 @@ import { __ } from '@wordpress/i18n';
 						/>
 					</KadencePanelBody>
 				</>
-			) }			
+			) }
 		</Fragment>
 	);
 };

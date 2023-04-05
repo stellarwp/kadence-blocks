@@ -131,8 +131,13 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 		}
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 	}, [] );
 
 	useEffect( () => {
@@ -229,7 +234,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 							className="kb-icons-add-icon"
 							icon={ plusCircle }
 							onClick={ () => {
-								const latestAttributes = listBlock.innerBlocks[listBlock.innerBlocks.length - 1].attributes;
+								const prevAttributes = listBlock.innerBlocks[listBlock.innerBlocks.length - 1].attributes;
+								const latestAttributes = JSON.parse(JSON.stringify(prevAttributes) );
 								latestAttributes.uniqueID = '';
 								latestAttributes.text = '';
 								const newBlock = createBlock( 'kadence/listitem', latestAttributes );
@@ -688,7 +694,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
 					}` }
 
-					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) };
+					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) }
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
 					{ ( color ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${ KadenceColorOutput( color ) }; }` : '' ) }
 					{ ( background ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${ KadenceColorOutput( background ) }; }` : '' ) }

@@ -29,6 +29,7 @@ import {
 } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
+import { SafeParseJSON, showSettings } from '@kadence/helpers';
 /**
  * Import Brand Icons
  */
@@ -41,30 +42,29 @@ import { kadenceCatNewIcon } from '@kadence/icons';
 /**
  * Internal dependencies
  */
-import SectionLibrary from './section-library';
+import PatternLibrary from './pattern-library';
 import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import { SafeParseJSON } from '@kadence/helpers';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
-	{
-		slug: 'section',
-		title: __( 'Sections', 'kadence-blocks' ),
-		key: 'kb-sections-tab',
-	},
 	{
 		slug: 'templates',
 		title: __( 'Starter Packs', 'kadence-blocks' ),
 		key: 'kb-templates-tab',
 	},
 	{
-		slug: 'wire',
-		title: 'Wireframe',
-		key: 'kb-wire-tab',
+		slug: 'section',
+		title: __( 'Kadence', 'kadence-blocks' ),
+		key: 'kb-sections-tab',
 	},
+	// {
+	// 	slug: 'wire',
+	// 	title: 'Wireframe',
+	// 	key: 'kb-wire-tab',
+	// },
 	{
 		slug: 'cloud',
 		title: '',
@@ -73,27 +73,26 @@ const normal_actions =[
 ];
 const no_connect_actions = [
 	{
-		slug: 'section',
-		title: __( 'Sections', 'kadence-blocks' ),
-		key: 'kb-sections-tab',
-	},
-	{
 		slug: 'templates',
 		title: __( 'Starter Packs', 'kadence-blocks' ),
 		key: 'kb-templates-tab',
 	},
 	{
-		slug: 'wire',
-		title: __( 'Wireframe', 'kadence-blocks' ),
-		key: 'kb-wire-tab',
+		slug: 'section',
+		title: __( 'Kadence', 'kadence-blocks' ),
+		key: 'kb-sections-tab',
 	},
+	// {
+	// 	slug: 'wire',
+	// 	title: __( 'Wireframe', 'kadence-blocks' ),
+	// 	key: 'kb-wire-tab',
+	// },
 ];
 class PrebuiltModal extends Component {
 	constructor() {
 		super( ...arguments );
 		this.saveSettings = this.saveSettings.bind( this );
 		this.reloadAllActions = this.reloadAllActions.bind( this );
-		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			reload:false,
 			reloadActions:false,
@@ -107,20 +106,6 @@ class PrebuiltModal extends Component {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			librarySettings: {},
 		};
-	}
-	showSettings( key ) {
-		if ( undefined === this.state.librarySettings[ key ] || 'all' === this.state.librarySettings[ key ] ) {
-			return true;
-		} else if ( 'contributor' === this.state.librarySettings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'author' === this.state.librarySettings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'editor' === this.state.librarySettings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'admin' === this.state.librarySettings[ key ] && 'admin' === this.state.user ) {
-			return true;
-		}
-		return false;
 	}
 	componentDidMount() {
 		if ( this.props.open && this.props.onlyModal ) {
@@ -195,15 +180,15 @@ class PrebuiltModal extends Component {
 									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 								</div>
 								{ this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										<Spinner />
 									</div>
 								) }
 								{ ! this.state.reloadActions && (
-									<div class="kb-prebuilt-library-actions">
+									<div className="kb-prebuilt-library-actions">
 										{ actions.map( ( action, index ) =>
 											<>
-												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
+												{ action.slug !== 'templates' && showSettings( action.slug, 'kadence/designlibrary' ) &&  (
 													<Button
 														key={ `${ action.slug }-${ index }` }
 														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
@@ -220,7 +205,24 @@ class PrebuiltModal extends Component {
 														{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
 													</Button>
 												) }
-												{ action.slug === 'wire' && this.showSettings( 'wire' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
+												{ action.slug === 'templates' && showSettings( action.slug, 'kadence/designlibrary', false ) &&  (
+													<Button
+														key={ `${ action.slug }-${ index }` }
+														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
+														aria-pressed={ active_tab === action.slug }
+														icon={ action.slug === 'cloud' ? plusCircle : undefined }
+														label={ action.slug === 'cloud' ? __( 'Cloud Connect', 'kadence-blocks' ) : undefined }
+														onClick={ () => {
+															const activeTab = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															activeTab['activeTab'] = action.slug;
+															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
+															this.setState( { section: action.slug } );
+														} }
+													>
+														{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
+													</Button>
+												) }
+												{/* { action.slug === 'wire' && showSettings( 'wire', 'kadence/designlibrary' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
 													<Button
 														key={ `${ action.slug }-${ index }` }
 														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
@@ -235,13 +237,13 @@ class PrebuiltModal extends Component {
 													>
 														{ action.slug === 'cloud' ? undefined : <span> { action.title } <span className="new-notice">{ __( 'New', 'kadence-blocks' ) }</span></span> }
 													</Button>
-												) }
+												) } */}
 											</>
 										) }
 									</div>
 								) }
 								{ 'cloud' !== active_tab && (
-									<div class="kb-prebuilt-library-reload">
+									<div className="kb-prebuilt-library-reload">
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
@@ -250,7 +252,7 @@ class PrebuiltModal extends Component {
 										/>
 									</div>
 								) }
-								<div class="kb-prebuilt-header-close-wrap">
+								<div className="kb-prebuilt-header-close-wrap">
 									<Button
 										className="kb-prebuilt-header-close"
 										icon={ close }
@@ -272,7 +274,7 @@ class PrebuiltModal extends Component {
 								/>
 							) }
 							{ 'section' === active_tab && (
-								<SectionLibrary
+								<PatternLibrary
 									clientId={ this.props.clientId }
 									tab={ active_tab }
 									reload={ this.state.reload }

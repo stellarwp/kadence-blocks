@@ -19,7 +19,8 @@
 	"kadence/testimonials-displayMedia": "displayMedia",
 	"kadence/testimonials-titleFont": "titleFont",
 	"kadence/testimonials-mediaStyles": "mediaStyles",
-	"kadence/testimonials-ratingStyles": "ratingStyles"
+	"kadence/testimonials-ratingStyles": "ratingStyles",
+	"kadence/testimonials-containerVAlign": "containerVAlign"
   },
   "attributes": {
 	"uniqueID": {

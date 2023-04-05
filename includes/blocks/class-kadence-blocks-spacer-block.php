@@ -55,10 +55,11 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		if ( ! empty( $attributes['spacerHeight'] ) ) {
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
@@ -135,7 +136,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
 				if ( ! empty( $attributes['tabletDividerHeight'] ) ) {
-					$css->add_property( 'border-top-width', $attributes['tabletSpacerHeight'] . 'px !important' );
+					$css->add_property( 'border-top-width', $attributes['tabletDividerHeight'] . 'px !important' );
 				}
 				if ( ! empty( $attributes['tabletDividerWidth'] ) ) {
 					$css->add_property( 'width', $attributes['tabletDividerWidth'] . $divider_width_units . '!important' );
@@ -146,7 +147,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
 				if ( ! empty( $attributes['mobileDividerHeight'] ) ) {
-					$css->add_property( 'border-top-width', $attributes['mobileSpacerHeight'] . 'px !important' );
+					$css->add_property( 'border-top-width', $attributes['mobileDividerHeight'] . 'px !important' );
 				}
 				if ( ! empty( $attributes['mobileDividerWidth'] ) ) {
 					$css->add_property( 'width', $attributes['mobileDividerWidth'] . $divider_width_units . '!important' );

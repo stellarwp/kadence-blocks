@@ -30,6 +30,10 @@
 		word-wrap: break-word;
 		white-space: normal;
 	}
+	.kb-svg-icon-wrap svg {
+		width: 1em;
+		height: 1em;
+	}
 }
 .kt-blocks-accordion-header:focus {
 	box-shadow: none;
@@ -277,10 +281,10 @@
 }
 .kt-accordion-header-wrap {
 	.kt-btn-side-left {
-		padding-right: 5px;
+		padding-right: .25em;
 	}
 	.kt-btn-side-right {
-		padding-left: 5px;
+		padding-left: .25em;
 	}
 	.kt-acccordion-button-label-hide {
 		.kb-svg-icon-wrap {

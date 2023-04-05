@@ -8,6 +8,12 @@
     margin-bottom: 0;
     margin-top: 0;
 }
+.kt-blocks-carousel-thumbnails.splide:not( .is-overflow ) .splide__slide:last-child {
+	margin: 0 !important;
+}
+.kt-blocks-carousel-thumbnails.splide:not( .is-overflow ) .splide__list {
+	justify-content: center;
+}
  // Controls.
 .kb-gallery-type-select .kadence-radio-control-flexwrap .components-button.kadence-radio-item {
     height: 50px;
@@ -239,7 +245,7 @@
 	margin-top: -9px;
 	margin-left: -9px;
 }
-.wp-block[data-type="kadence/advancedgallery"] .kb-gallery-main-contain {
+.wp-block[data-type="kadence/advancedgallery"] .kb-gallery-main-contain:not(.specificity) {
 	padding:0;
 	box-sizing: border-box;
 }
@@ -247,7 +253,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
-	padding: 0 !important;
+	padding: 0;
 	.kadence-blocks-gallery-item {
 		position: relative;
 		padding:0;

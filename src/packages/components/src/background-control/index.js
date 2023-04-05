@@ -82,7 +82,7 @@ class BackgroundControl extends Component {
 				{ ! hasImage && (
 					<Fragment>
 						{ label && (
-							<div class="components-kadence-image-background__label">{ label }</div>
+							<div className="components-kadence-image-background__label">{ label }</div>
 						) }
 						<KadenceMediaPlaceholder
 							labels={ '' }
@@ -101,7 +101,7 @@ class BackgroundControl extends Component {
 				{ hasImage && (
 					<Fragment>
 						{ label && (
-							<div class="components-kadence-image-background__label">{ label }</div>
+							<div className="components-kadence-image-background__label">{ label }</div>
 						) }
 						{ dynamicAttribute && kadence_blocks_params.dynamic_enabled && attributes.kadenceDynamic && attributes.kadenceDynamic[ dynamicAttribute ] && attributes.kadenceDynamic[ dynamicAttribute ].enable ? (
 							<div className="kb-dynamic-background-sidebar-top">

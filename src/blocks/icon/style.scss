@@ -9,7 +9,7 @@
 	transition: all .3s ease-in-out;
 }
 
-.wp-block-kadence-icon {
+.wp-block-kadence-icon, .wp-block-kadence-icon.aligncenter:not(.specificity) {
 	display: flex;
 	gap: 0.2em;
 	align-items:center;

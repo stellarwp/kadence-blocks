@@ -539,7 +539,7 @@
 		},
 		"borderStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -549,7 +549,7 @@
 		},
 		"tabletBorderStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -559,7 +559,7 @@
 		},
 		"mobileBorderStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -569,7 +569,7 @@
 		},
 		"borderHoverStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -579,7 +579,7 @@
 		},
 		"tabletBorderHoverStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -589,7 +589,7 @@
 		},
 		"mobileBorderHoverStyle": {
 			"type": "array",
-			"default": [ { 
+			"default": [ {
 			  "top": [ "", "", "" ],
 			  "right": [ "", "", "" ],
 			  "bottom": [ "", "", "" ],
@@ -600,7 +600,13 @@
 		"gridArea": {
 			"type": "string",
 			"default": ""
-		}
+		},
+	   	"overlayBlendMode": {
+		 	"type": "string"
+	   	},
+	  	"hoverOverlayBlendMode": {
+			"type": "string"
+	  	}
 	},
 	"supports": {
 		"anchor": true,

@@ -1,14 +1,17 @@
 <wpml-config>
 	<gutenberg-blocks>
-		<gutenberg-block type="kadence/advancedbtn" translate="1">
-			<xpath>//div/a/span</xpath>
-			<xpath>//div/a/@href</xpath>
+		<gutenberg-block type="kadence/advancedbtn" translate="0"/>
+		<gutenberg-block type="kadence/singlebtn" translate="1">
+			<key name="link" />
+			<key name="text" />
 		</gutenberg-block>
-		<gutenberg-block type="kadence/icon" translate="1">
-			<xpath>//div/a/@href</xpath>
+		<gutenberg-block type="kadence/icon" translate="0"/>
+		<gutenberg-block type="kadence/single-icon" translate="1">
+			<key name="link" />
+			<key name="title" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advancedheading" translate="1">
-			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
+			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p or self::div]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/tabs" translate="1">
 			<xpath>//span[@class="kt-title-text"]</xpath>
@@ -33,10 +36,26 @@
 			<xpath>//div[@class="kt-testimonial-occupation"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
+			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/@href</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-required-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-required-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-validation-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-validation-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/span</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/button</xpath>
 			<key name="messages">
 				<key name="*">
 					<key name="success"/>
 					<key name="error"/>
+					<key name="required"/>
+					<key name="invalid"/>
+					<key name="recaptchaerror"/>
 				</key>
 			</key>
 			<key name="redirect"/>
@@ -46,14 +65,6 @@
 					<key name="fromName"/>
 				</key>
 			</key>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/text()</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/@href</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/span</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/button</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/spacer" translate="0"/>
 		<gutenberg-block type="kadence/rowlayout" translate="0"/>

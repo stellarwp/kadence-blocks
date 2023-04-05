@@ -113,7 +113,7 @@
 		justify-content: flex-end;
 	}
 }
-.wp-block-kadence-rowlayout .block-editor-block-list__layout .kadence-section-sticky {
+.wp-block-kadence-rowlayout .innerblocks-wrap > .kadence-section-sticky > .kadence-inner-column-inner, .wp-block-kadence-rowlayout .kadence-inner-column-inner > .kadence-section-sticky {
     position: sticky;
     top:0;
 }

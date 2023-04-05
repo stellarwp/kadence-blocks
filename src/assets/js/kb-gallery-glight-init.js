@@ -7,6 +7,10 @@
 (function() {
 	'use strict';
 	var kadenceBlocksGLight = {
+		carouselCache: {},
+		carouselItem: {},
+		lightboxes: {},
+		foundClasses: {},
 		simulateClick: function (elem) {
 			// Create our event (with options)
 			var evt = new MouseEvent('click', {
@@ -23,8 +27,8 @@
 		// 	);
 		// },
 		handleClones: function( element ) {
-			var foundClones = element.querySelectorAll( '.splide__slide--clone a.kb-gallery-item-link' );
-			var foundRegular = element.querySelectorAll( '.splide__slide:not(.splide__slide--clone) a.kb-gallery-item-link' );
+			var foundClones = element.querySelectorAll( '.kb-slide-item.splide__slide--clone a.kb-gallery-item-link' );
+			var foundRegular = element.querySelectorAll( '.kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link' );
 			for ( let c = 0; c < foundClones.length; c++ ) {
 				foundClones[c].addEventListener('click', function (event) {
 					event.preventDefault();
@@ -44,34 +48,70 @@
 				return;
 			}
 			if ( foundGalleries ) {
-				let carousel = [];
 				for ( let i = 0; i < foundGalleries.length; i++ ) {
-					carousel[i] = foundGalleries[i].querySelector( '.kt-blocks-carousel-init' );
-					let carouselClass = '';
-					if ( carousel[i] ) {
-						carouselClass = ' .splide__slide:not(.splide__slide--clone)';
-						setTimeout( function() {
-							kadenceBlocksGLight.handleClones( carousel[i] );
-						}, 200 );
-					}
 					let galleryClass = foundGalleries[i].classList;
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
-					let foundGalleryClass = false;
+					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
+					var showCaption = foundGalleries[ i ].getAttribute( 'data-lightbox-caption' );
+					kadenceBlocksGLight.foundClasses[i] = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
 						if ( galleryClass[ n ].indexOf( 'kb-gallery-id' ) !== -1 ) {
-							foundGalleryClass = galleryClass[ n ];
+							kadenceBlocksGLight.foundClasses[i] = galleryClass[ n ];
 							break;
 						}
 					}
-					if ( foundGalleryClass ) {
-						const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
-						new GLightbox({
-							selector: '.' + foundGalleryClass + carouselClass + ' a.kb-gallery-item-link:not([target="_blank"])',
+					if ( 'true' == showCaption && ! foundGalleries[i].classList.contains('kb-gallery-non-static') ) {
+						var foundImages = foundGalleries[ i ].querySelectorAll( 'a.kb-gallery-item-link' );
+						for ( let x = 0; x < foundImages.length; x++ ) {
+							var caption = foundImages[x].querySelector( '.kadence-blocks-gallery-item__caption' );
+							if ( caption ) {
+								foundImages[x].setAttribute( 'data-description', caption.innerText );
+							}
+						}
+					}
+					kadenceBlocksGLight.carouselItem[i] = foundGalleries[i].querySelector( '.kt-blocks-carousel-init' );
+					if ( kadenceBlocksGLight.carouselItem[i] ) {
+						if (kadenceBlocksGLight.carouselItem[i].classList.contains('is-initialized')) {
+							kadenceBlocksGLight.handleClones( kadenceBlocksGLight.carouselItem[i] );
+							if ( kadenceBlocksGLight.foundClasses[i] ) {
+								kadenceBlocksGLight.lightboxes[i] = new GLightbox({
+									selector: '.' + kadenceBlocksGLight.foundClasses[i] + ' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
+									touchNavigation: true,
+									skin: skin,
+									loop: true,
+									openEffect: 'fade',
+									closeEffect: 'fade',
+									moreText: kb_glightbox.moreText,
+								});
+							}
+						} else {
+							kadenceBlocksGLight.carouselCache[i] = setInterval(function () {
+								if (kadenceBlocksGLight.carouselItem[i].classList.contains('is-initialized')) {
+									kadenceBlocksGLight.handleClones( kadenceBlocksGLight.carouselItem[i] );
+									kadenceBlocksGLight.lightboxes[i] = new GLightbox({
+										selector: '.' + kadenceBlocksGLight.foundClasses[i] + ' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
+										touchNavigation: true,
+										skin: skin,
+										loop: true,
+										openEffect: 'fade',
+										closeEffect: 'fade',
+										moreText: kb_glightbox.moreText,
+									});
+									clearInterval(kadenceBlocksGLight.carouselCache[i]);
+								} else {
+									console.log("waiting to initialize galllery lightbox");
+								}
+							}, 200);
+						}
+					} else if ( kadenceBlocksGLight.foundClasses[i] ) {
+						kadenceBlocksGLight.lightboxes[i] = new GLightbox({
+							selector: '.' + kadenceBlocksGLight.foundClasses[i] + ' a.kb-gallery-item-link:not([target="_blank"])',
 							touchNavigation: true,
 							skin: skin,
 							loop: true,
 							openEffect: 'fade',
 							closeEffect: 'fade',
+							moreText: kb_glightbox.moreText,
 						});
 					}
 				}

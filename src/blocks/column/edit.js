@@ -5,18 +5,6 @@
  */
 
 /**
- * Import Icons
- */
-import {
-	bottomLeftIcon,
-	bottomRightIcon,
-	radiusIndividualIcon,
-	radiusLinkedIcon,
-	topLeftIcon,
-	topRightIcon
-} from '@kadence/icons';
-
-/**
  * Import Controls
  */
 import classnames from 'classnames';
@@ -53,7 +41,7 @@ import {
 /**
  * Kadence Helpers.
  */
-import { 
+import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
@@ -79,7 +67,6 @@ import {
 	BlockAlignmentToolbar,
 	BlockControls,
 	InnerBlocks,
-	InspectorAdvancedControls,
 	InspectorControls,
 	useBlockProps,
 	useInnerBlocksProps,
@@ -89,10 +76,10 @@ import {
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
-	TabPanel
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 const FORM_ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
+import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
  */
@@ -104,7 +91,7 @@ function SectionEdit( {
 	context,
 	className,
 } ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -132,17 +119,25 @@ function SectionEdit( {
 		setBlockDefaults( 'kadence/column', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
-
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		// Update Old Styles
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
 			setAttributes( { padding: [ topPadding, rightPadding, bottomPadding, leftPadding ], topPadding:'', rightPadding:'', bottomPadding:'', leftPadding:'' } );
 		}
 		if ( ( '' !== topPaddingT || '' !== rightPaddingT || '' !== bottomPaddingT || '' !== leftPaddingT ) ) {
-			setAttributes( { mobilePadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
+			setAttributes( { tabletPadding: [ topPaddingT, rightPaddingT, bottomPaddingT, leftPaddingT ], topPaddingT:'', rightPaddingT:'', bottomPaddingT:'',leftPaddingT:'' } );
 		}
 		if ( ( '' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM ) ) {
 			setAttributes( { mobilePadding: [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ], topPaddingM:'', rightPaddingM:'', bottomPaddingM:'',leftPaddingM:'' } );
@@ -157,7 +152,7 @@ function SectionEdit( {
 			setAttributes( { mobileMargin: [ topMarginM, rightMarginM, bottomMarginM, leftMarginM ], topMarginM:'', rightMarginM:'', bottomMarginM:'',leftMarginM:'' } );
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -184,7 +179,7 @@ function SectionEdit( {
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{ 
+		let tempBorderHoverStyle = JSON.parse(JSON.stringify( attributes.borderHoverStyle ? attributes.borderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -211,7 +206,7 @@ function SectionEdit( {
 		if ( updateBorderHoverStyle ) {
 			setAttributes( { borderHoverStyle: tempBorderHoverStyle } );
 		}
-		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -226,7 +221,7 @@ function SectionEdit( {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes( { tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth:[ '', '', '', '' ] } );
 		}
-		let tempTabBorderHoverStyle = JSON.parse( JSON.stringify( attributes.tabletBorderHoverStyle ? attributes.tabletBorderHoverStyle : [{ 
+		let tempTabBorderHoverStyle = JSON.parse( JSON.stringify( attributes.tabletBorderHoverStyle ? attributes.tabletBorderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -241,7 +236,7 @@ function SectionEdit( {
 			const tempTabBorderHoverWidth = JSON.parse(JSON.stringify(tempTabBorderHoverStyle));
 			setAttributes( { tabletBorderHoverStyle: tempTabBorderHoverWidth, tabletBorderHoverWidth:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -255,7 +250,7 @@ function SectionEdit( {
 			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderHoverStyle = JSON.parse( JSON.stringify( attributes.mobileBorderHoverStyle ? attributes.mobileBorderHoverStyle : [{ 
+		let tempMobileBorderHoverStyle = JSON.parse( JSON.stringify( attributes.mobileBorderHoverStyle ? attributes.mobileBorderHoverStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -534,7 +529,8 @@ function SectionEdit( {
 		<div { ...blockProps }>
 			<style>
 			{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { opacity: ${ overlayOpacity } }` : '' ) }
-				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) } }` : '' ) }
+				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) }; }` : '' ) }
+				{ ( overlayBlendMode ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { mix-blend-mode: ${overlayBlendMode}; }` : '' ) }
 				{ ( previewOverlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-image:${ previewOverlay }; }` : '' ) }
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-position:${ overlayImg[ 0 ].bgImgPosition }; }` : '' ) }
 				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-size:${ overlayImg[ 0 ].bgImgSize }; }` : '' ) }
@@ -547,7 +543,8 @@ function SectionEdit( {
 				{ ( previewRadiusLeft ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { border-bottom-left-radius:${ previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' )  }; }` : '' ) }
 
 				{ ( overlayHoverOpacity !== undefined && overlayHoverOpacity !== '' ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { opacity: ${ overlayHoverOpacity } }` : '' ) }
-				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) } }` : '' ) }
+				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) }; ; }` : '' ) }
+				{ ( hoverOverlayBlendMode ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { mix-blend-mode: ${hoverOverlayBlendMode} !important; }` : '' ) }
 				{ ( previewHoverOverlay ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-image:${ previewHoverOverlay }; }` : '' ) }
 				{ ( ! previewHoverOverlay && overlayHover ? `.kadence-column-${ uniqueID }:hover .kadence-inner-column-inner:before { background-image:none; }` : '' ) }
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-position:${ overlayImgHover[ 0 ].bgImgPosition }; }` : '' ) }
@@ -564,7 +561,7 @@ function SectionEdit( {
 				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }` : '' ) }
 				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
-				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h1.kadence-advancedheading-text, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h2.kadence-advancedheading-text, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h3.kadence-advancedheading-text, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h4.kadence-advancedheading-text, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h5.kadence-advancedheading-text, .kadence-column-${ uniqueID } h6, .kadence-column-${ uniqueID } h6.kadence-advancedheading-text { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
@@ -619,9 +616,9 @@ function SectionEdit( {
 						/>
 						<CopyPasteAttributes
 							attributes={ attributes }
-							excludedAttrs={ nonTransAttrs } 
-							defaultAttributes={ metadata['attributes'] } 
-							blockSlug={ metadata['name'] } 
+							excludedAttrs={ nonTransAttrs }
+							defaultAttributes={ metadata['attributes'] }
+							blockSlug={ metadata['name'] }
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
@@ -891,7 +888,7 @@ function SectionEdit( {
 											max={ ( marginType === 'em' || marginType === 'rem' ? 24 : 500 ) }
 											step={ ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 ) }
 											unit={ marginType }
-											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+											units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 											onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 											onMouseOver={ marginMouseOver.onMouseOver }
 											onMouseOut={ marginMouseOver.onMouseOut }
@@ -968,45 +965,43 @@ function SectionEdit( {
 										) }
 									</KadencePanelBody>
 								)}
-								{ inRowBlock && (
-									<KadencePanelBody
-										title={ __( 'Sticky Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-sticky-settings' }
-									>
-										<ToggleControl
-											label={ __( 'Make sticky', 'kadence-blocks' ) }
-											help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
-											checked={ ( undefined !== sticky ? sticky : false ) }
-											onChange={ ( value ) => setAttributes( { sticky: value } ) }
+								<KadencePanelBody
+									title={ __( 'Sticky Settings', 'kadence-blocks' ) }
+									initialOpen={ false }
+									panelName={ 'kb-col-sticky-settings' }
+								>
+									<ToggleControl
+										label={ __( 'Make sticky', 'kadence-blocks' ) }
+										help={ __( 'This will stick the section to viewport for the height of outer container.', 'kadence-blocks' ) }
+										checked={ ( undefined !== sticky ? sticky : false ) }
+										onChange={ ( value ) => setAttributes( { sticky: value } ) }
+									/>
+									{ sticky && (
+										<ResponsiveRangeControls
+											label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
+											value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
+											onChange={ value => {
+												setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+											} }
+											mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
+											} }
+											min={ 0 }
+											max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
+											step={ 1 }
+											unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
+											onUnit={ ( value ) => {
+												setAttributes( { stickyOffsetUnit: value } );
+											} }
+											units={ [ 'px', 'rem', 'vh' ] }
 										/>
-										{ sticky && (
-											<ResponsiveRangeControls
-												label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
-												value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
-												onChange={ value => {
-													setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
-												onChangeTablet={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-												} }
-												mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
-												onChangeMobile={ ( value ) => {
-													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
-												} }
-												min={ 0 }
-												max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
-												step={ 1 }
-												unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
-												onUnit={ ( value ) => {
-													setAttributes( { stickyOffsetUnit: value } );
-												} }
-												units={ [ 'px', 'rem', 'vh' ] }
-											/>
-										) }
-									</KadencePanelBody>
-								) }
+									) }
+								</KadencePanelBody>
 								<KadencePanelBody
 									title={__( 'Visibility Settings', 'kadence-blocks' )}
 									panelName={'kb-col-visibility-settings'}
@@ -1057,7 +1052,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundHoverType && (
+												{ 'gradient' !== backgroundHoverType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1120,7 +1115,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === backgroundType && (
+												{ 'gradient' !== backgroundType && (
 													<>
 														<PopColorControl
 															label={__( 'Background Color', 'kadence-blocks' )}
@@ -1205,7 +1200,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayHoverType && (
+												{ 'gradient' !== overlayHoverType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -1249,6 +1244,13 @@ function SectionEdit( {
 															name={ 'kadence/column' }
 															clientId={ clientId }
 														/>
+														<SelectControl
+															label={ __( 'Hover Blend Mode' ) }
+															value={ ( hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none' ) }
+															options={ BLEND_OPTIONS }
+															onChange={ value => setAttributes( { hoverOverlayBlendMode: value } ) }
+														/>
+														<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 													</>
 												)}
 											</>
@@ -1280,7 +1282,7 @@ function SectionEdit( {
 														gradients={ [] }
 													/>
 												) }
-												{ 'normal' === overlayType && (
+												{ 'gradient' !== overlayType && (
 													<>
 														<PopColorControl
 															label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -1324,6 +1326,13 @@ function SectionEdit( {
 															name={ 'kadence/column' }
 															clientId={ clientId }
 														/>
+														<SelectControl
+															label={ __( 'Blend Mode' ) }
+															value={ ( overlayBlendMode ? overlayBlendMode : 'none' ) }
+															options={ BLEND_OPTIONS }
+															onChange={ value => setAttributes( { overlayBlendMode: value } ) }
+														/>
+														<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 													</>
 												)}
 											</>
@@ -1342,7 +1351,7 @@ function SectionEdit( {
 													value={borderHoverStyle}
 													tabletValue={tabletBorderHoverStyle}
 													mobileValue={mobileBorderHoverStyle}
-													onChange={( value ) => setAttributes( { borderHoverStyle: value } )}
+													onChange={( value ) => setAttributes( { borderHoverStyle: value } ) }
 													onChangeTablet={( value ) => setAttributes( { tabletBorderHoverStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderHoverStyle: value } )}
 												/>
@@ -1410,10 +1419,10 @@ function SectionEdit( {
 											<>
 												<ResponsiveBorderControl
 													label={__( 'Border', 'kadence-blocks' )}
-													value={borderStyle}
+													value={ borderStyle ? JSON.parse( JSON.stringify( borderStyle ) ) : '' }
 													tabletValue={tabletBorderStyle}
 													mobileValue={mobileBorderStyle}
-													onChange={( value ) => setAttributes( { borderStyle: value } )}
+													onChange={( value ) => setAttributes( { borderStyle:value } )}
 													onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
 													onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
 												/>

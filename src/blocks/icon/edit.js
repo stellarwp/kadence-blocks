@@ -79,8 +79,13 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 		setBlockDefaults( 'kadence/icon', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
@@ -158,7 +163,8 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 						className="kb-icons-add-icon"
 						icon={ plusCircle }
 						onClick={ () => {
-							const latestAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
+							const prevAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
+							const latestAttributes = JSON.parse(JSON.stringify(prevAttributes) );
 							latestAttributes.uniqueID = '';
 							const newBlock = createBlock( 'kadence/single-icon', latestAttributes );
 							insertIcon( newBlock );

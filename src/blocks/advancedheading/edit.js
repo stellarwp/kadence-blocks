@@ -207,7 +207,6 @@ function KadenceAdvancedHeading( props ) {
 		iconColorHover,
 		iconSide,
 		iconVerticalAlign,
-		iconHover,
 		iconPadding,
 		tabletIconPadding,
 		mobileIconPadding,
@@ -242,8 +241,13 @@ function KadenceAdvancedHeading( props ) {
 		setBlockDefaults( 'kadence/advancedheading', attributes);
 
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
@@ -340,6 +344,15 @@ function KadenceAdvancedHeading( props ) {
 	const previewLetterSpacing = getPreviewSize( previewDevice, ( undefined !== letterSpacing ? letterSpacing : '' ), ( undefined !== tabletLetterSpacing ? tabletLetterSpacing : '' ), ( undefined !== mobileLetterSpacing ? mobileLetterSpacing : '' ) );
 
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== align ? align : '' ), ( undefined !== tabletAlign ? tabletAlign : '' ), ( undefined !== mobileAlign ? mobileAlign : '' ) );
+	let previewJustifyAlign = previewAlign;
+	switch (previewAlign) {
+		case 'left':
+			previewJustifyAlign = 'flex-start';
+			break;
+		case 'right':
+			previewJustifyAlign = 'flex-end';
+			break;
+	}
 	const previewMarkPaddingTop = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 0 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 0 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 0 ] : '' ) );
 	const previewMarkPaddingRight = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 1 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 1 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 1 ] : '' ) );
 	const previewMarkPaddingBottom = getPreviewSize( previewDevice, ( undefined !== markPadding ? markPadding[ 2 ] : 0 ), ( undefined !== markTabPadding ? markTabPadding[ 2 ] : '' ), ( undefined !== markMobilePadding ? markMobilePadding[ 2 ] : '' ) );
@@ -485,10 +498,12 @@ function KadenceAdvancedHeading( props ) {
 	const dynamicHeadingContent = (
 			<TagHTML
 				style={{
-					display: 'flex',
-					alignItems: iconVerticalAlign,
-					justifyContent: previewAlign,
-					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
+					display: icon ? 'flex' : undefined,
+					alignItems: icon ? iconVerticalAlign : undefined,
+					gap: icon ? '0.25em' : undefined,
+					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
+					textAlign: previewAlign ? previewAlign : undefined,
+					backgroundColor: background && ! backgroundColorClass ? KadenceColorOutput( background ) : undefined,
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
 					fontStyle      : fontStyle,
@@ -520,11 +535,12 @@ function KadenceAdvancedHeading( props ) {
 			<TagHTML
 			className={classes}
 			style={{
-				display: 'flex',
-				gap:'0.25em',
-				alignItems: iconVerticalAlign,
-				justifyContent: previewAlign,
-				backgroundColor: background ? KadenceColorOutput(background) : undefined,
+				display: icon ? 'flex' : undefined,
+				alignItems: icon ? iconVerticalAlign : undefined,
+				gap: icon ? '0.25em' : undefined,
+				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
+				textAlign: previewAlign ? previewAlign : undefined,
+				backgroundColor: background && ! backgroundColorClass ? KadenceColorOutput(background) : undefined,
 				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
 				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
 				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),
@@ -549,6 +565,8 @@ function KadenceAdvancedHeading( props ) {
 
 				<RichText
 					id={ 'adv-heading' + uniqueID }
+					tagName="span"
+					className={'kb-adv-heading-inner'}
 					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
 					value={content}
 					onChange={(value) => setAttributes({content: value})}
@@ -629,13 +647,22 @@ function KadenceAdvancedHeading( props ) {
 					shuffle: typedElement.getAttribute( 'data-shuffle' ) === 'true',
 				};
 
-				typed.current = new Typed( '.kt-adv-heading' + uniqueID + ' .kt-typed-text', options );
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				const typedElementHtml = selector.getElementById( 'adv-heading' + uniqueID ).querySelector( '.kt-typed-text' );
+
+				typed.current = new Typed( typedElementHtml, options );
 			}
 
 			return function cleanup() {
 				// Destroy the typed instance and reset richtext content
 				typed.current.destroy();
-				document.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				if ( selector.getElementById( 'adv-heading' + uniqueID) ) {
+					selector.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+				}
 			}
 		}
 
@@ -644,7 +671,7 @@ function KadenceAdvancedHeading( props ) {
 	return (
 		<div {...blockProps}>
 			<style>
-				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID}.rich-text:focus mark[data-rich-text-format-boundary] {
+				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID} .rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${KadenceColorOutput( markColor )};
 						background: ${( markBG ? markBGString : 'transparent' )};
 						font-weight: ${( markFontWeight ? markFontWeight : 'inherit' )};
@@ -667,13 +694,18 @@ function KadenceAdvancedHeading( props ) {
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkColor && (
-					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
 						}`
 				)}
 				{linkHoverColor && (
-					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .wp-block-kadence-advancedheading {
+					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkHoverColor )}!important;
+						}`
+				)}
+				{ iconColorHover && (
+					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
+							color: ${KadenceColorOutput( iconColorHover )}!important;
 						}`
 				)}
 			</style>

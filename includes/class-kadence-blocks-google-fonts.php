@@ -166,10 +166,12 @@ class Kadence_Blocks_Google_Fonts {
 					}
 				} else {
 					foreach ( $font['fontvariants'] as $variant ) {
-						if ( ! in_array( $variant, self::$gfonts[ $key ]['fontvariants'], true ) ) {
-							if ( did_action( 'wp_body_open' ) >= 1 ) {
+						if ( did_action( 'wp_body_open' ) >= 1 ) {
+							if ( is_array(self::$footer_gfonts[ $key ]['fontvariants']) && ! in_array( $variant, self::$footer_gfonts[ $key ]['fontvariants'], true ) ) {
 								array_push( self::$footer_gfonts[ $key ]['fontvariants'], $variant );
-							} else {
+							}
+						} else {
+							if ( is_array(self::$gfonts[ $key ]['fontvariants']) && ! in_array( $variant, self::$gfonts[ $key ]['fontvariants'], true ) ) {
 								array_push( self::$gfonts[ $key ]['fontvariants'], $variant );
 							}
 						}

@@ -17,7 +17,9 @@ import './editor.scss';
  import { __ } from '@wordpress/i18n';
 import {
 	Button,
+	TabPanel,
 } from '@wordpress/components';
+import {isRTL} from '@kadence/helpers';
 /**
  * Import Icons
  */
@@ -39,16 +41,53 @@ export default function HoverToggleControl( {
 	className = '',
 	icon = hoverToggle,
 	activeIcon = click,
+	tabUI = true,
 } ) {
 	const [ isHover, setIsHover ] = useState( initial === 'hover' ? true : false );
 	const [ isActive, setIsActive ] = useState( initial === 'active' ? true : false );
 
+	if ( tabUI ) {
+		return [
+			<div className={ `components-base-control kb-hover-toggle-control-tab-ui kb-hover-toggle-control${ className ? ' ' + className : '' }` }>
+				<TabPanel
+					className="kt-inspect-tabs kt-hover-tabs"
+					activeClass="active-tab"
+					tabs={[
+						{
+							name     : 'normal',
+							title    : __( 'Normal', 'kadence-blocks' ),
+							className: 'kt-normal-tab',
+						},
+						{
+							name     : 'hover',
+							title    : __( 'Hover', 'kadence-blocks' ),
+							className: 'kt-hover-tab',
+						},
+					]}>
+					{ ( tab ) => {
+
+						if ( tab.name ) {
+							if ( 'hover' === tab.name ) {
+								return(
+									<>{ hover }</>
+								);
+							} else {
+								return(
+									<>{ normal }</>
+								);
+							}
+						}
+					} }
+				</TabPanel>
+			</div>
+		];
+	}
 	return [
 		<div className={ `components-base-control kb-hover-toggle-control${ className ? ' ' + className : '' }` }>
 			<div className={ 'kb-hover-toggle-control-toggle' }>
 				{ hover && (
 					<Button
-						className={'kb-hover-toggle-btn'}
+						className={'kb-hover-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isHover}
 						icon={ icon }
 						aria-pressed={isHover}
@@ -62,7 +101,7 @@ export default function HoverToggleControl( {
 				)}
 				{ active && (
 					<Button
-						className={'kb-active-toggle-btn'}
+						className={'kb-active-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isActive}
 						icon={ activeIcon }
 						aria-pressed={isActive}

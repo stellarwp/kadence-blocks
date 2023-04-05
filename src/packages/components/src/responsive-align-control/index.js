@@ -88,11 +88,13 @@ export default function ResponsiveAlignControls( {
 	const devices = [
 		{
 			name: 'Desktop',
+			key: 'desktop',
 			title: <Dashicon icon="desktop" />,
 			itemClass: 'kb-desk-tab',
 		},
 		{
 			name: 'Tablet',
+			key: 'tablet',
 			title: <Dashicon icon="tablet" />,
 			itemClass: 'kb-tablet-tab',
 		},

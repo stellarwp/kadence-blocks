@@ -128,7 +128,7 @@ class Kadence_Blocks_Abstract_Block {
 				if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_head_css', true, $this->block_name, $attributes ) ) {
 					// Filter attributes for easier dynamic css.
 					$attributes = apply_filters( 'kadence_blocks_' . $this->block_name . '_render_block_attributes', $attributes );
-					$this->build_css( $attributes, $css_class, $unique_id );
+					$this->build_css( $attributes, $css_class, $unique_id, $unique_id );
 				}
 			}
 		}
@@ -165,15 +165,22 @@ class Kadence_Blocks_Abstract_Block {
 		$this->render_scripts( $attributes, true );
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
+			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
 
 			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
-			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
-				$css        = $this->build_css( $attributes, $css_class, $unique_id );
+			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
+				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
+					$content = '<style>' . $css . '</style>' . $content;
+				}
+			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
+				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
+				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
+				if ( ! empty( $css ) ) {
 					$content = '<style>' . $css . '</style>' . $content;
 				}
 			}
@@ -188,8 +195,9 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		return '';
 	}
 

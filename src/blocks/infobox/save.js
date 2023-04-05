@@ -7,8 +7,8 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 
 function Save( { attributes, className } ) {
-	const { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number, kadenceDynamic, imageRatio, linkTitle } = attributes;
-	const titleTagName = 'h' + titleFont[ 0 ].level;
+	const { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number, kadenceDynamic, imageRatio, linkTitle, titleTagType } = attributes;
+	const titleTagName = ( titleTagType && titleTagType !== 'heading' ) ? titleTagType : 'h' + titleFont[ 0 ].level;
 	let relAttr;
 	if ( '_blank' === target ) {
 		relAttr = 'noopener noreferrer';

@@ -165,7 +165,7 @@ if ( ! class_exists( 'Kadence_Blocks_Site_Health' ) ) {
 			}
 
 			$this->fields = array_merge(
-				$this->map_general_fields(),
+				$this->map_general_fields()
 			);
 
 			return $this->fields;
