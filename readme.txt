@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.32 =
+Release Date: April TBD, 2023
+* Fix: Issue accordion css specificity
+
 = 3.0.31 =
 Release Date: April 4, 2023
 * Fix: Issue design library if using 6.1
