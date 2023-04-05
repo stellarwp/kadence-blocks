@@ -427,7 +427,7 @@ import { __ } from '@wordpress/i18n';
 									units={ [ 'px', '%', 'vw' ] }
 								/>
 							) }
-							{ align === 'full' && inheritMaxWidth === true && (
+							{ align === 'full' && 2 === columns && inheritMaxWidth === true && (
 								<>
 									<ToggleControl
 										label={ __( 'Break Left Section Full Width?', 'kadence-blocks' ) }
@@ -506,8 +506,8 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { topSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
+							max={'em' === topSepHeightUnit ? 100 : 500 }
+							step={ 'em' === topSepHeightUnit ? 0.01 : 1 }
 							unit={ topSepHeightUnit }
 							onUnit={ ( value ) => {
 								setAttributes( { topSepHeightUnit: value } );
@@ -595,8 +595,8 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { bottomSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
+							max={'em' === bottomSepHeightUnit ? 100 : 500 }
+							step={ 'em' === bottomSepHeightUnit ? 0.01 : 1 }
 							unit={ bottomSepHeightUnit }
 							onUnit={ ( value ) => {
 								setAttributes( { bottomSepHeightUnit: value } );
