@@ -25,7 +25,8 @@ import { rawHandler } from '@wordpress/blocks';
 import {
 	Component,
 } from '@wordpress/element';
-import { debounce } from '@wordpress/compose';
+//import { debounce } from '@wordpress/compose';
+import { debounce } from 'lodash';
 import {
 	Button,
 	TextControl,

@@ -24,8 +24,8 @@ import {
 import { BlockPreview } from './block-preview';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useDebounce,debounce, useAsyncList, useInstanceId } from '@wordpress/compose';
-
+import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
+import { debounce } from 'lodash';
 
 const WithToolTip = ( { showTooltip, title, children } ) => {
 	if ( showTooltip ) {
