@@ -88,7 +88,9 @@ Release Date: April 4, 2023
 * Fix: Info box media background hover not showing in editor.
 * Fix: Fluid carousel galleries inside accordions not initializing.
 * Fix: Row Layout slider background "slide" transition style.
+* Fix: Prevent clones in fluid carousel when only one image.
 * Fix: Testimonial max-width not applying for basic layout.
+* Fix: Issue with gallery lightbox sometimes not initializing for carousels.
 
 = 3.0.27 =
 Release Date: March 23, 2023

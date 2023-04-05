@@ -660,7 +660,9 @@ function KadenceAdvancedHeading( props ) {
 
 				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
 				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
-				selector.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+				if ( selector.getElementById( 'adv-heading' + uniqueID) ) {
+					selector.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+				}
 			}
 		}
 
