@@ -81,6 +81,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 Release Date: April TBD, 2023
 * Fix: Issue accordion css specificity
 * Fix: Custom CSS class not applying to Advanced heading in some situations.
+* Fix: Issue with advanced gallery sliding when it should fade.
 
 = 3.0.31 =
 Release Date: April 4, 2023

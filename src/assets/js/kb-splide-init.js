@@ -94,7 +94,11 @@
 						}, 10);
 					});
 				} else if (sliderType && sliderType === "slider") {
-					splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
+					if( undefined === parsedData.sliderFade ) {
+						splideOptions.type = "fade";
+					} else {
+						splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
+					}
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.on( 'overflow', function ( isOverflow ) {
