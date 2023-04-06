@@ -58,7 +58,6 @@
 								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
 							}
 						});
-						console.log( elementList[i].querySelectorAll(".kb-slide-item").length );
 						const childCount = elementList[i].querySelectorAll(".kb-slide-item").length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
