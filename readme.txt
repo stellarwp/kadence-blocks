@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.2
-Stable tag: 3.0.31
+Stable tag: 3.0.32
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,9 +78,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.32 =
-Release Date: April TBD, 2023
-* Fix: Issue accordion css specificity
+Release Date: April 6, 2023
 * Fix: Custom CSS class not applying to Advanced heading in some situations.
+* Fix: Issue accordion css specificity.
+* Fix: Issue with pattern library views on smaller screens.
+* Fix: Possible issue with design library when accessing through row layout.
 
 = 3.0.31 =
 Release Date: April 4, 2023
