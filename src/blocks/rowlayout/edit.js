@@ -1057,11 +1057,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 								/>
 							) ) }
 						</ButtonGroup>
-						<PrebuiltModal
-							clientId={ clientId }
-							open={ isPrebuiltModal ? true : false }
-							onlyModal={ isPrebuiltModal ? true : false }
-						/>
+						<Button className="kt-prebuilt" onClick={ () => setAttributes( { isPrebuiltModal: true } ) }>
+							{ __( 'Design Library', 'kadence-blocks' ) }
+						</Button>
 					</div>
 				) }
 				{ colLayout && 'none' !== topSep && '' !== topSep && (
