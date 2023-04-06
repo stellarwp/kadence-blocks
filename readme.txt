@@ -83,6 +83,7 @@ Release Date: April 6, 2023
 * Fix: Issue accordion css specificity.
 * Fix: Issue with pattern library views on smaller screens.
 * Fix: Possible issue with design library when accessing through row layout.
+* Fix: Issue with advanced gallery sliding when it should fade.
 
 = 3.0.31 =
 Release Date: April 4, 2023
