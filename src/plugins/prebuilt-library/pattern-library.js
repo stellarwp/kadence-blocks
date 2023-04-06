@@ -800,7 +800,7 @@ const PatternLibraryEdit = ( props ) => {
 	const { canUserUseUnfilteredHTML } = useSelect(
 		( select ) => {
 			return {
-				canUserUseUnfilteredHTML: select( 'core/editor' ).canUserUseUnfilteredHTML(),
+				canUserUseUnfilteredHTML: select( 'core/editor' ) ? select( 'core/editor' ).canUserUseUnfilteredHTML() : false
 			};
 		},
 		[]
