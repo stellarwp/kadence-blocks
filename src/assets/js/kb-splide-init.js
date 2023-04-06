@@ -58,6 +58,7 @@
 								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
 							}
 						});
+						console.log( elementList[i].querySelectorAll(".kb-slide-item").length );
 						const childCount = elementList[i].querySelectorAll(".kb-slide-item").length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
@@ -93,12 +94,7 @@
 						}, 10);
 					});
 				} else if (sliderType && sliderType === "slider") {
-					if( undefined === parsedData.sliderFade ) {
-						splideOptions.type = "fade";
-					} else {
-						splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
-					}
-
+					splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.on( 'overflow', function ( isOverflow ) {
