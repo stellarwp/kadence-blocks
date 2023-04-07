@@ -642,9 +642,8 @@ class PrebuiltSections extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { canUserUseUnfilteredHTML } = select( 'core/editor' );
 		return {
-			canUserUseUnfilteredHTML: canUserUseUnfilteredHTML(),
+			canUserUseUnfilteredHTML: select( 'core/editor' ) ? select( 'core/editor' ).canUserUseUnfilteredHTML() : false,
 		};
 	} ),
 	withDispatch( ( dispatch, { canUserUseUnfilteredHTML } ) => ( {
