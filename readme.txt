@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.33 =
+Release Date: April TBD, 2023
+* Fix: Aria label for mute button in row layout video background.
+
 = 3.0.32 =
 Release Date: April 6, 2023
 * Fix: Custom CSS class not applying to Advanced heading in some situations.
