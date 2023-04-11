@@ -82,6 +82,7 @@ Release Date: April 12, 2023
 * Fix: Aria label for mute button in row layout video background.
 * Fix: Possible issue with the info box when title and text are paragraph tags.
 * Fix: "Hide" button visibility setting on Show More block.
+* Fix: Lottie block max-width being applied as width.
 
 = 3.0.32 =
 Release Date: April 6, 2023
