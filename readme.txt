@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.2
-Stable tag: 3.0.32
+Stable tag: 3.0.33
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,8 +78,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.33 =
-Release Date: April TBD, 2023
+Release Date: April 12, 2023
 * Fix: Aria label for mute button in row layout video background.
+* Fix: Possible issue with the info box when title and text are paragraph tags.
 
 = 3.0.32 =
 Release Date: April 6, 2023
