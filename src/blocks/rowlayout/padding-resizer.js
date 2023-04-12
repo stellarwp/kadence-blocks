@@ -19,19 +19,22 @@ export default function PaddingResizer( {
 	setAttributes,
 	toggleSelection,
 	finishedResizing,
+	isPreviewMode,
 } ) {
 	const { leftPadding, rightPadding, topPadding, bottomPadding, tabletPadding, topPaddingM, paddingUnit, firstColumnWidth, columns, columnsUnlocked, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType, colLayout, bgColor, bgImg, gradient, overlay, overlayGradient, overlayBgImg, inheritMaxWidth, maxWidthUnit, maxWidth, padding, mobilePadding, templateLock } = attributes;
 	const index = ( edge === 'top' ? 0 : 2 );
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const previewPaddingLabel = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionName( padding[ index ], paddingUnit ) : __( 'Unset', 'kadence-blocks' ) ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] && '' !== tabletPadding[ index ] ? getSpacingOptionName( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] && '' !== mobilePadding[ index ] ? getSpacingOptionName( mobilePadding[ index ] ) : '' ) );
+
 	const previewPadding = getPreviewSize( previewDevice, ( undefined !== padding && undefined !== padding[ index ] ? getSpacingOptionSize( padding[ index ] ) : '' ), ( undefined !== tabletPadding && undefined !== tabletPadding[ index ] && '' !== tabletPadding[ index ] ? getSpacingOptionSize( tabletPadding[ index ] ) : '' ), ( undefined !== mobilePadding && undefined !== mobilePadding[ index ] && '' !== mobilePadding[ index ] ? getSpacingOptionSize( mobilePadding[ index ] ) : '' ) );
 	let paddingType = 'variable';
 	if ( padding?.[ index ] !== undefined && Number( padding?.[ index ] ) === parseFloat( padding?.[ index ] ) ) {
 		paddingType = 'normal';
 	}
+	const previewPaddingUnit = paddingUnit ? paddingUnit : 'px';
 	return (
 		<>
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'normal' === paddingType && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && 'contentOnly' !== templateLock && (
+			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && ! isPreviewMode && 'normal' === paddingType && 'px' === previewPaddingUnit && 'contentOnly' !== templateLock && (
 				<ResizableBox
 					size={ {
 						height: previewPadding,
@@ -104,7 +107,7 @@ export default function PaddingResizer( {
 					) }
 				</ResizableBox>
 			) }
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && 'variable' === paddingType && 'contentOnly' !== templateLock && (
+			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && showSettings( 'paddingMargin', 'kadence/rowlayout' ) && ! isPreviewMode && 'variable' === paddingType && 'contentOnly' !== templateLock && (
 				<ResizableBox
 					size={ {
 						height: previewPadding,
@@ -186,15 +189,15 @@ export default function PaddingResizer( {
 					) }
 				</ResizableBox>
 			) }
-			{ ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || ( 'contentOnly' === templateLock ) || ( 'normal' === paddingType && paddingUnit && 'px' !== paddingUnit ) ) && (
+			{ ( ! showSettings( 'allSettings', 'kadence/rowlayout' ) || ! showSettings( 'paddingMargin', 'kadence/rowlayout' ) || isPreviewMode || ( 'contentOnly' === templateLock ) || ( 'normal' === paddingType && paddingUnit && 'px' !== paddingUnit ) ) && (
 				<>
 					{ uniqueID && (
 						<div className="kt-row-padding kb-static-row-padding" style={ {
-							paddingTop: previewPadding + ( paddingUnit ? paddingUnit : 'px' ),
+							paddingTop: previewPadding + ( 'variable' !== paddingType ? previewPaddingUnit : 'px' ),
 						} }>
 							<div className={ 'kb-row-padding-container' }>
 								<span id={ `row-${ edge }-${ uniqueID }` } >
-									{ previewPadding + ( paddingUnit ? paddingUnit : 'px' ) }
+									{ 'variable' === paddingType ? previewPaddingLabel : previewPadding + previewPaddingUnit }
 								</span>
 							</div>
 						</div>
