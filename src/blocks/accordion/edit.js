@@ -108,7 +108,7 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane, getPreviewDevice } ) {
+function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } ) {
 	const {
 		uniqueID,
 		paneCount,
@@ -1507,7 +1507,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 											label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
 											checked={faqSchema}
 											onChange={( value ) => {
-												updateFaqSchema( value );
 												setAttributes( { faqSchema: value } );
 											}}
 										/>
@@ -1546,7 +1545,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				)}
 				{ ! showPreset && (
 					<>
-						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
 						<div className="kt-accordion-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
@@ -1619,13 +1617,6 @@ export default compose( [
 				times( block.innerBlocks.length, n => {
 					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
 						titleTag: value,
-					} );
-				} );
-			},
-			updateFaqSchema( value ) {
-				times( block.innerBlocks.length, n => {
-					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
-						faqSchema: value,
 					} );
 				} );
 			},

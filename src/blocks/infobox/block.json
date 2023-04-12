@@ -284,7 +284,7 @@
 	"contentText": {
 	  "type": "array",
 	  "source": "children",
-	  "selector": "p",
+	  "selector": ".kt-blocks-info-box-text",
 	  "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo."
 	},
 	"textColor": {

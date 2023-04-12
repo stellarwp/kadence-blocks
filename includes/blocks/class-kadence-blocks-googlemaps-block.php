@@ -180,7 +180,13 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( $updated_version ) {
-			$content = '<div data-mapid="' . $unique_id . '" class="kb-google-maps-container kb-google-maps-container' . $unique_id . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ) . '">';
+			$wrapper_args = array(
+				'class' => 'kb-google-maps-container kb-google-maps-container' . $unique_id . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ),
+				'data-mapid' => $unique_id,
+			);
+			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+			$content = '<div ' . $wrapper_attributes . '>';
 
 			if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
 				$content .= '<div id="kb-google-map' . $unique_id . '" style="width: 100%; height: 100%"></div>';

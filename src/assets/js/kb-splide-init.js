@@ -49,22 +49,29 @@
 				let { sliderType } = parsedData;
 
 				if (sliderType && sliderType === "fluidcarousel") {
-					thisSlider
+					elementList[i]
 						.querySelectorAll(".kb-slide-item")
 						.forEach(function (elem) {
-							elem.style.maxWidth =
-								Math.floor((80 / 100) * thisSlider.clientWidth) + "px";
+							if( !elementList[i].clientWidth ) {
+								elem.style.maxWidth = "100%";
+							} else {
+								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
+							}
 						});
-
+						const childCount = elementList[i].querySelectorAll(".kb-slide-item").length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
 						autoWidth: true,
+						arrows    : childCount > 1 ? splideOptions.arrows : false,
+						pagination: childCount > 1 ? splideOptions.pagination : false,
+						drag      : childCount > 1 ? splideOptions.drag : false,
+						clones    : childCount > 1 ? undefined : 0, // Toggle clones
 					});
 					// splideSlider.on( 'overflow', function ( isOverflow ) {
 					// 	// Reset the carousel position
 					// 	splideSlider.go( 0 );
-					  
+
 					// 	splideSlider.options = {
 					// 	  arrows    : splideOptions.arrows ? isOverflow : false,
 					// 	  pagination: splideOptions.pagination ? isOverflow : false,
@@ -77,16 +84,20 @@
 					window.addEventListener("resize", function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
-							thisSlider
+							elementList[i]
 								.querySelectorAll(".kb-slide-item")
 								.forEach(function (elem) {
 									elem.style.maxWidth =
-										Math.floor((80 / 100) * thisSlider.clientWidth) + "px";
+										Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
 								});
 						}, 10);
 					});
 				} else if (sliderType && sliderType === "slider") {
-					splideOptions.type = "fade";
+					if( undefined === parsedData.sliderFade ) {
+						splideOptions.type = "fade";
+					} else {
+						splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
+					}
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.on( 'overflow', function ( isOverflow ) {
@@ -126,7 +137,7 @@
 					thumbnailSlider.on( 'overflow', function ( isOverflow ) {
 						// Reset the carousel position
 						thumbnailSlider.go( 0 );
-					  
+
 						thumbnailSlider.options = {
 						  arrows    : navSliderOptions.arrows ? isOverflow : false,
 						  pagination: navSliderOptions.pagination ? isOverflow : false,
@@ -144,7 +155,7 @@
 					splideSlider.on( 'overflow', function ( isOverflow ) {
 						// Reset the carousel position
 						splideSlider.go( 0 );
-					  
+
 						splideSlider.options = {
 						  arrows    : splideOptions.arrows ? isOverflow : false,
 						  pagination: splideOptions.pagination ? isOverflow : false,

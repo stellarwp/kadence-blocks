@@ -111,7 +111,7 @@ const attributes = {
 		default: '',
 	},
 	bgImgID: {
-		type: 'string',
+		type: 'number',
 		default: '',
 	},
 	bgImgSize: {
@@ -167,7 +167,7 @@ const attributes = {
 		default: '',
 	},
 	overlayBgImgID: {
-		type: 'string',
+		type: 'number',
 		default: '',
 	},
 	overlayBgImgSize: {

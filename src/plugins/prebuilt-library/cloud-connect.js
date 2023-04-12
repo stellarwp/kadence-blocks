@@ -195,11 +195,10 @@ class CloudConnect extends Component {
 export default compose(
 	withSelect( ( select, { clientId } ) => {
 		const { getBlock } = select( 'core/block-editor' );
-		const { canUserUseUnfilteredHTML } = select( 'core/editor' );
 		const block = getBlock( clientId );
 		return {
 			block,
-			canUserUseUnfilteredHTML: canUserUseUnfilteredHTML(),
+			canUserUseUnfilteredHTML: select( 'core/editor' ) ? select( 'core/editor' ).canUserUseUnfilteredHTML() : false,
 		};
 	} ),
 	withDispatch( ( dispatch, { block, canUserUseUnfilteredHTML } ) => ( {

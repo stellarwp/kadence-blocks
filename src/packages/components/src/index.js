@@ -96,3 +96,5 @@ export { default as BorderColorControls } from './color/border-color-control'
 export { default as KadenceBlockDefaults } from './block-defaults';
 
 export { default as KadenceIconPicker } from './icon-picker';
+
+export { default as SelectParentBlock } from './select-parent-block';

@@ -163,7 +163,8 @@ function KadenceIcons( { attributes, className, setAttributes, isSelected, icons
 						className="kb-icons-add-icon"
 						icon={ plusCircle }
 						onClick={ () => {
-							const latestAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
+							const prevAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
+							const latestAttributes = JSON.parse(JSON.stringify(prevAttributes) );
 							latestAttributes.uniqueID = '';
 							const newBlock = createBlock( 'kadence/single-icon', latestAttributes );
 							insertIcon( newBlock );

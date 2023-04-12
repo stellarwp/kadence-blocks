@@ -5,7 +5,7 @@
  */
 import classnames from 'classnames';
 
-import { KadencePanelBody, KadenceIconPicker, IconRender } from '@kadence/components';
+import { KadencePanelBody, KadenceIconPicker, IconRender, SelectParentBlock } from '@kadence/components';
 import { getUniqueId } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
@@ -139,6 +139,9 @@ function PaneEdit( {
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
+				<SelectParentBlock
+					clientId={ clientId }
+				/>
 				<KadencePanelBody
 					title={ __( 'Title Icon Settings', 'kadence-blocks' ) }
 					initialOpen={ false }

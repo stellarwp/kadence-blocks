@@ -127,7 +127,12 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( ! empty( $attributes['listLabelGap'] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single' );
-			$css->add_property( 'margin-right', $attributes['listLabelGap'] . 'px' );
+
+			if( is_rtl() ){
+				$css->add_property( 'margin-left', $attributes['listLabelGap'] . 'px' );
+			} else {
+				$css->add_property( 'margin-right', $attributes['listLabelGap'] . 'px' );
+			}
 		}
 		if ( isset( $attributes['listStyles'] ) && is_array( $attributes['listStyles'] ) && is_array( $attributes['listStyles'][0] ) ) {
 			$list_styles = $attributes['listStyles'][0];

@@ -35,11 +35,34 @@
 			<xpath>//div[@class="kt-testimonial-name"]</xpath>
 			<xpath>//div[@class="kt-testimonial-occupation"]</xpath>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/testimonial" translate="1">
+			<key name="url"/>
+			<key name="title"/>
+			<key name="content"/>
+			<key name="name"/>
+			<key name="occupation"/>
+		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
+			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/@href</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-required-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-required-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-validation-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-validation-message']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/span</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/button</xpath>
 			<key name="messages">
 				<key name="*">
 					<key name="success"/>
 					<key name="error"/>
+					<key name="required"/>
+					<key name="invalid"/>
+					<key name="recaptchaerror"/>
 				</key>
 			</key>
 			<key name="redirect"/>
@@ -49,14 +72,6 @@
 					<key name="fromName"/>
 				</key>
 			</key>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/text()</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/a[contains(@class, "kb-accept-link")]/@href</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/span</xpath>
-			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/button</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/spacer" translate="0"/>
 		<gutenberg-block type="kadence/rowlayout" translate="0"/>

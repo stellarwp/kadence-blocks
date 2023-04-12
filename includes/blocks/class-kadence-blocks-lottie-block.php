@@ -209,7 +209,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
 							id="kb-lottie-player' . $unique_id .'"
-							style="width: ' . $width . '; margin: 0 auto;"
+							style="max-width: ' . $width . '; margin: 0 auto;"
 						></dotlottie-player>';
 			$content .= '</div>';
 		}

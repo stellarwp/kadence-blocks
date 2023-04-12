@@ -231,7 +231,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['rel'] = $rel_add;
 			}
 		}
-		$wrapper_args = kadence_apply_aos_wrapper_args( $attributes, $wrapper_args );
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 		$text       = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
@@ -251,6 +250,19 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
 		$html_tag   = ! empty( $attributes['link'] ) ? 'a' : 'span';
 		$content    = sprintf( '<%1$s %2$s>%3$s%4$s%5$s</%1$s>', $html_tag, $wrapper_attributes, $icon_left, $text, $icon_right );
+
+		/*  Wrap in div is AOS is enabled. AOS transitions will interfere with hover transitions. */
+		$aos_args = array();
+		$aos_args = kadence_apply_aos_wrapper_args( $attributes, $aos_args );
+		if ( ! empty( $aos_args ) ) {
+			$normalized_attributes = array();
+			foreach ( $aos_args as $key => $value ) {
+				$normalized_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+			}
+
+			$content = sprintf( '<div %1$s>%2$s</div>', implode( ' ', $normalized_attributes ), $content );
+		}
+
 		return $content;
 	}
 
