@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.0 =
+Release Date: TBD, 2023
+* New: Progress Bar Block
+* New: Dynamic block labels in list view.
+
 = 3.0.33 =
 Release Date: April 12, 2023
 * Fix: Aria label for mute button in row layout video background.
