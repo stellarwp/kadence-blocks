@@ -33,6 +33,8 @@ import {
 	SearchControl,
 	TextareaControl,
 	SelectControl,
+	Popover,
+	ToggleControl,
 	VisuallyHidden,
 	ExternalLink,
 	Spinner,
@@ -46,6 +48,7 @@ import {
 	edit,
 	chevronLeft,
 	chevronDown,
+	settings,
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import PatternList from './pattern-list';
@@ -105,10 +108,17 @@ function PatternLibrary( {
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
 	const [ sidebar, setSidebar ] = useState( false );
 	const [ gridSize, setGridSize ] = useState( '' );
+	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
 	const [ isError, setIsError ] = useState( false );
 	const [ style, setStyle ] = useState( '' );
+	const [ fontSize, setFontSize ] = useState( '' );
+	const [ isVisible, setIsVisible ] = useState( false );
+	const [ popoverAnchor, setPopoverAnchor ] = useState();
+    const toggleVisible = () => {
+        setIsVisible( ( state ) => ! state );
+    };
 	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	let data_email   = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
 	const product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
@@ -415,11 +425,15 @@ function PatternLibrary( {
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
 	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
 	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
+	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
+	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
 	const sidebarEnabled = ( sidebar ? sidebar : sidebar_saved_enabled );
 	const theGridSize = ( gridSize ? gridSize : savedGridSize );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
 	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
+	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
 	const selectedStyle = ( style ? style : savedStyle );
+	const selectedFontSize = ( fontSize ? fontSize : savedFontSize );
 	const selectedSubTab = ( subTab ? subTab : savedTab );
 	useEffect( () => {
 		setCategorySelectOptions( Object.keys( categories ).map( function( key, index ) {
@@ -442,6 +456,11 @@ function PatternLibrary( {
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
 		{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
 	];
+	const sizeOptions = [
+		{ value: 'sm', label: __( 'Smaller', 'kadence-blocks' ) },
+		{ value: 'lg', label: __( 'Normal', 'kadence-blocks' ) }
+	];
+
 	// let breakpointColumnsObj = {
 	// 	default: 4,
 	// 	1900: 3,
@@ -557,7 +576,7 @@ function PatternLibrary( {
 					) }
 					{ selectedSubTab !== 'pages' && (
 						<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
-							<h2>{ __( 'Change Colors', 'kadence-blocks' ) }</h2>
+							<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
 							<div className="kb-library-style-options">
 								{ styleOptions.map( ( style, index ) =>
 									<Button
@@ -574,6 +593,53 @@ function PatternLibrary( {
 									>
 										<span></span>
 									</Button>
+								) }
+							</div>
+							<div className="kb-library-style-popover">
+								<Button
+									className={ 'kb-trigger-extra-settings' }
+									icon={ settings }
+									ref={ setPopoverAnchor }
+									onClick={ toggleVisible }
+								/>
+								{ isVisible && (
+									<Popover
+										className="kb-library-extra-settings"
+										placement="top-end"
+										onClose={ () => {
+											setIsVisible( false );
+										} }
+										anchor={ popoverAnchor }
+									>
+										<ToggleControl
+											label={__( 'Disable iFrame Preview', 'kadence-blocks' )}
+											checked={selectedPreviewMode === 'image'}
+											help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
+											onChange={( value ) => {
+												const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+												tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
+												localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+												setPreviewMode( ( value ? 'image' : 'iframe' ) );
+											}}
+										/>
+										{/* <div className="kb-library-size-options">
+											{ sizeOptions.map( ( size, index ) =>
+												<Button
+													key={ `${ size.value }-${ index }` }
+													className={ 'kb-size-button kb-size-' + size.value + ( selectedFontSize === size.value ? ' is-pressed' : '' ) }
+													aria-pressed={ selectedFontSize === size.value }
+													onClick={ () => {
+														const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+														tempActiveStorage['fontSize'] = size.value;
+														localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+														setFontSize( size.value );
+													}}
+												>
+													{size.label}
+												</Button>
+											) }
+										</div> */}
+									</Popover>
 								) }
 							</div>
 						</div>
@@ -622,7 +688,7 @@ function PatternLibrary( {
 					<div className="kb-library-header-right">
 						{ selectedSubTab !== 'pages' && (
 							<div className="kb-library-header-colors kb-library-color-select-wrap">
-								<h2>{ __( 'Change Colors', 'kadence-blocks' ) }</h2>
+								<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
 								<div className="kb-library-style-options">
 									{ styleOptions.map( ( style, index ) =>
 										<Button
@@ -727,6 +793,7 @@ function PatternLibrary( {
 							selectedCategory={ selectedPageCategory }
 							patternCategories={ pageCategorySelectOptions }
 							selectedStyle={ selectedStyle }
+							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
@@ -772,7 +839,9 @@ function PatternLibrary( {
 							selectedCategory={ selectedCategory }
 							patternCategories={ categorySelectOptions }
 							selectedStyle={ selectedStyle }
+							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
+							previewMode={ savedPreviewMode }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }

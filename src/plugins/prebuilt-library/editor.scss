@@ -112,6 +112,42 @@ button.components-button.kb-grid-btns svg {
 		opacity:1;
 	}
 }
+.kb-pattern-image-wrap {
+    height: 0;
+    position: relative;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	img {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		max-width: 100%;
+	}
+}
+.block-editor-block-patterns-list__list-item.kb-pattern-style-dark .kb-pattern-image-wrap:after {
+    box-shadow: inset 0px 0px 0px 3px var(--global-palette3);
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    bottom: 0;
+}
+.block-editor-block-patterns-list__list-item.kb-pattern-style-highlight .kb-pattern-image-wrap:after {
+    box-shadow: inset 0px 0px 0px 3px var(--global-palette1);
+	content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    bottom: 0;
+}
+.block-editor-block-patterns-list__item:hover .kb-pattern-image-wrap {
+	border-color: #000;
+}
 .kt-import-btn-inner .kb-import-btn-title {
     position: absolute;
     bottom: 0;
@@ -586,6 +622,7 @@ h2.kb-template-name {
     background: white;
     width: 100%;
     z-index: 11;
+	gap: 8px;
     padding: 0 24px;
 }
 .kt-prebuilt-content .block-editor-block-patterns-explorer__list .block-editor-block-patterns-explorer__search-results-count {
@@ -617,6 +654,7 @@ h2.kb-template-name {
 	.kb-library-style-options {
 		display: flex;
 		gap:5px;
+		flex-grow: 1;
 		.components-button.kb-style-button {
 			width: 30px;
 			height: 30px;
@@ -970,6 +1008,10 @@ button.components-button.kb-trigger-ai.has-icon {
     display: flex;
     justify-content: center;
     padding: 48px;
+}
+.components-popover.kb-library-extra-settings  .components-popover__content {
+    min-width: 260px;
+    padding:1.2em;
 }
 .preparing-importing-images {
     display: flex;

@@ -87,7 +87,7 @@ function BannerHeader( { selectedCategory } ) {
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, savedAI = false } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, savedAI = false } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -111,33 +111,6 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = [];
 		let variation = 1;
-		// // Temp images.
-		// const images = {
-		// 	aRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436637.jpg",
-		// 	aRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436583.jpg",
-		// 	aRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436612.jpg",
-		// 	aRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436470.jpg",
-		// 	aRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436626.jpg",
-		// 	bRoll1: "http://dev.local/wp-content/uploads/2023/03/pexels-miriam-alonso-7592995-scaled.jpg",
-		// 	bRoll2: "http://dev.local/wp-content/uploads/2023/03/pexels-cottonbro-studio-4327157-scaled.jpg",
-		// 	bRoll3: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436554-scaled.jpg",
-		// 	bRoll4: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436640-scaled.jpg",
-		// 	bRoll5: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436691-scaled.jpg",
-		// 	bRoll6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436771-scaled.jpg",
-		// 	bg1: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-8436581.jpg",
-
-		// 	pp1: "http://dev.local/wp-content/uploads/2023/03/pexels-valeria-ushakova-3094215.jpg",
-		// 	pp2: "http://dev.local/wp-content/uploads/2023/03/pexels-vlada-karpovich-4534864.jpg",
-		// 	pp3: "http://dev.local/wp-content/uploads/2023/03/pexels-elina-fairytale-3823047.jpg",
-		// 	pp4: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-3752836-scaled.jpg",
-		// 	pp5: "http://dev.local/wp-content/uploads/2023/03/pexels-tomaz-barcellos-1987301.jpg",
-		// 	pp6: "http://dev.local/wp-content/uploads/2023/03/pexels-yan-krukau-4457997.jpg",
-		// 	pp7: "http://dev.local/wp-content/uploads/2023/03/pexels-andrea-piacquadio-774909.jpg",
-		// 	pp8: "http://dev.local/wp-content/uploads/2023/03/pexels-hannah-nelson-1065084-scaled.jpg",
-		// 	pp9: "http://dev.local/wp-content/uploads/2023/03/pexels-fabio-nascimento-15824229.jpg",
-		// 	pp10: "http://dev.local/wp-content/uploads/2023/03/pexels-kadeem-stewart-15787374.jpg",
-		// }
-		// const aiContent = {};
 		Object.keys( patterns ).map( function( key, index ) {
 			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'featured-products' ) ) {
 				return;
@@ -154,6 +127,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			}
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
+			temp['image'] = patterns[key].image;
+			temp['imageWidth'] = patterns[key].imageW;
+			temp['imageHeight'] = patterns[key].imageH;
 			temp['id'] = patterns[key].id;
 			temp['slug'] = patterns[key].slug;
 			let tempContent = patterns[key].content;
@@ -162,11 +138,6 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			// if ( savedAI ) {
 			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
 			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			// }
-			// if ( tempContent ) {
-			// 	temp['blocks'] = parse( tempContent, {
-			// 		__unstableSkipMigrationLogs: true
-			// 	});
 			// }
 			temp['content'] = tempContent;
 			temp['pro'] = patterns[key].pro;
@@ -204,17 +175,12 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 
 	// Define selected style.
 	const customStyles = useMemo( () => {
-		let newStyles = '';
+		let tempStyles = '';
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
-			const tempStyles = `--global-content-edge-padding: 3rem;
-			padding:0px !important;`;
-			newStyles = [
-				{ css: `body { ${tempStyles} }.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
-			];
-			return newStyles;
+			tempStyles = tempStyles.concat( `body {--global-content-edge-padding: 3rem;padding:0px !important;}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` );
 		}
 		if ( 'dark' === selectedStyle ) {
-			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+			tempStyles = tempStyles.concat( `body {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
 			--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
@@ -224,12 +190,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
 			--global-content-edge-padding: 3rem;
-			padding:0px !important;`;
-			newStyles = [
-				{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
-			];
+			padding:0px !important;}.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` );
 		} else if ( 'highlight' === selectedStyle ) {
-			const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
+			tempStyles = tempStyles.concat( `body {--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
 			--global-palette2:${kadence_blocks_params.global_colors['--global-palette8']};
 			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
 			--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
@@ -239,13 +202,19 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-content-edge-padding: 3rem;
-			padding:0px !important;`;
-			newStyles = [
-				{ css: `body { ${tempStyles} }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
-			];
+			padding:0px !important; }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` );
 		}
+		if ( 'sm' === selectedFontSize ) {
+			tempStyles = tempStyles.concat( `.block-editor-block-list__layout.is-root-container {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
+			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes['xl']};
+			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes['lg']};
+			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes['md']}; }` );
+		}
+		const newStyles = [
+			{ css: tempStyles }
+		];
 		return newStyles;
-	}, [ selectedStyle ] );
+	}, [ selectedStyle, selectedFontSize ] );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -269,6 +238,8 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						showTitlesAsTooltip={ false }
 						customStyles={ customStyles }
 						breakpointCols={ breakpointCols }
+						previewMode={ previewMode }
+						selectedStyle={ selectedStyle }
 					/>
 				) }
 			</div>

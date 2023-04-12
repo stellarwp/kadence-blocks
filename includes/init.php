@@ -213,6 +213,16 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'--global-palette9' => \Kadence\kadence()->palette_option( 'palette9' ),
 		);
 	}
+	$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -274,6 +284,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'wp_max_upload_size' => wp_max_upload_size(),
 			'get_allowed_mime_types' => get_allowed_mime_types(),
 			'global_colors' => $global_colors,
+			'font_sizes' => $font_sizes,
 			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
 			'addPostsLink' => admin_url( 'post-new.php' ),
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),

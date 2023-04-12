@@ -33,6 +33,7 @@ const WithToolTip = ( { showTooltip, title, children } ) => {
 	}
 	return <>{ children }</>;
 };
+const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 function KadenceBlockPattern( {
 	pattern,
 	onClick,
@@ -40,8 +41,10 @@ function KadenceBlockPattern( {
 	composite,
 	showTooltip,
 	customStyles,
+	previewMode,
+	selectedStyle,
 } ) {
-	const { content, viewportWidth, pro, locked, proRender } = pattern;
+	const { content, viewportWidth, pro, locked, proRender, image, imageHeight, imageWidth } = pattern;
 	const blocks = parse( content, {
 		__unstableSkipMigrationLogs: true
 	});
@@ -49,7 +52,7 @@ function KadenceBlockPattern( {
 	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
 	return (
 		<div
-			className="block-editor-block-patterns-list__list-item"
+			className={ `block-editor-block-patterns-list__list-item kb-pattern-style-${selectedStyle}`}
 		>
 			<WithToolTip
 				showTooltip={ showTooltip }
@@ -78,17 +81,27 @@ function KadenceBlockPattern( {
 						pattern.description ? descriptionId : undefined
 					}
 				>
-					{ proRender && (
+					{ proRender && 'image' !== previewMode && (
 						<div className="kb-pattern-requires-pro-item-wrap block-editor-block-preview__container">
 							<span className="kb-pattern-requires-pro-item">{ __( 'Requires Kadence Blocks Pro to Render Preview', 'kadence-blocks' ) }</span>
 						</div>
 					) }
-					{ ! proRender && (
+					{ ! proRender && 'image' !== previewMode && (
 						<BlockPreview
 							blocks={ blocks }
 							viewportWidth={ viewportWidth }
 							additionalStyles={ customStyles }
 						/>
+					) }
+					{ 'image' === previewMode && (
+						<div
+							className="kb-pattern-image-wrap"
+							style={ {
+								paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
+							} }
+						>
+							<img src={ image } loading={ "lazy" } alt={ pattern.title } />
+						</div>
 					) }
 					{ locked && (
 						<div className="kb-pattern-requires-active-pro">
@@ -125,6 +138,8 @@ function KadenceBlockPatternList( {
 	showTitlesAsTooltip,
 	customStyles,
 	breakpointCols,
+	previewMode = 'iframe',
+	selectedStyle = 'light',
 } ) {
 	const composite = useCompositeState( { orientation } );
 	const showItems = (patterns) => {
@@ -140,13 +155,15 @@ function KadenceBlockPatternList( {
 						composite={ composite }
 						showTooltip={ showTitlesAsTooltip }
 						customStyles={ customStyles }
+						previewMode={ previewMode }
+						selectedStyle={ selectedStyle }
 					/>
 				);
 			}
 		}
 		return items;
 	};
-	const itemsPerPage = 4;
+	const itemsPerPage = previewMode === 'image' ? 16 : 4;
 	const [hasMore, setHasMore] = useState(true);
 	const [records, setrecords] = useState(itemsPerPage);
 	const debounceSetRecords = debounce( ( newRecord ) => {
