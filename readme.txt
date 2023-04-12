@@ -2,7 +2,7 @@
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.0
+Requires at least: 6.1
 Tested up to: 6.2
 Stable tag: 3.0.33
 Requires PHP: 7.2
@@ -79,6 +79,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.33 =
 Release Date: April 12, 2023
+* Add: Option to set design library to use images instead of iframes.
+* Fix: Issue with typed text popover not showing correctly.
 * Fix: Aria label for mute button in row layout video background.
 * Fix: Possible issue with the info box when title and text are paragraph tags.
 * Fix: "Hide" button visibility setting on Show More block.
