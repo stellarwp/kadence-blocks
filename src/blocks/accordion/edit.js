@@ -1507,7 +1507,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 											label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
 											checked={faqSchema}
 											onChange={( value ) => {
-												updateFaqSchema( value );
 												setAttributes( { faqSchema: value } );
 											}}
 										/>
@@ -1618,13 +1617,6 @@ export default compose( [
 				times( block.innerBlocks.length, n => {
 					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
 						titleTag: value,
-					} );
-				} );
-			},
-			updateFaqSchema( value ) {
-				times( block.innerBlocks.length, n => {
-					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
-						faqSchema: value,
 					} );
 				} );
 			},
