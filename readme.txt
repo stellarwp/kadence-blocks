@@ -87,6 +87,7 @@ Release Date: April 12, 2023
 * Fix: Issue with row padding in content only mode.
 * Fix: Issue with WPML and testimonials.
 * Fix: Fix AOS animation breaking hover transition on advanced button block.
+* Fix: Accordion FAQ Schema not always updating.
 
 = 3.0.32 =
 Release Date: April 6, 2023
