@@ -83,6 +83,7 @@ Release Date: April 12, 2023
 * Fix: Possible issue with the info box when title and text are paragraph tags.
 * Fix: "Hide" button visibility setting on Show More block.
 * Fix: Lottie block max-width being applied as width.
+* Fix: Icon list gap on rtl sites
 
 = 3.0.32 =
 Release Date: April 6, 2023
