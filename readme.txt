@@ -85,6 +85,7 @@ Release Date: April 12, 2023
 * Fix: Lottie block max-width being applied as width.
 * Fix: Icon list gap on rtl sites
 * Fix: Issue with row padding in content only mode.
+* Fix: Issue with WPML and testimonials.
 
 = 3.0.32 =
 Release Date: April 6, 2023
