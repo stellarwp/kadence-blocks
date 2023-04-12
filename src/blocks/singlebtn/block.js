@@ -39,6 +39,16 @@ registerBlockType( 'kadence/singlebtn', {
     icon: {
         src: advancedBtnIcon,
     },
+	__experimentalLabel( attributes, { context } ) {
+		const { text } = attributes;
+
+		// In the list view, use the block's content as the label.
+		// If the content is empty, fall back to the default label.
+		if ( context === 'list-view' && text ) {
+			return text;
+		}
+
+	},
     edit,
 	save() {
 		return null;
