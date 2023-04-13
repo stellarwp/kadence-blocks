@@ -87,7 +87,7 @@ function BannerHeader( { selectedCategory } ) {
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, savedAI = false } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, aiContent, savedAI = true } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -159,10 +159,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
-			// if ( savedAI ) {
-			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			// }
+			if ( savedAI ) {
+				//tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
+				tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
+			}
 			// if ( tempContent ) {
 			// 	temp['blocks'] = parse( tempContent, {
 			// 		__unstableSkipMigrationLogs: true

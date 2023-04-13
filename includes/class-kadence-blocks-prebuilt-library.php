@@ -140,6 +140,14 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @access protected
 	 * @var string
 	 */
+	protected $remote_ai_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/ai/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
 
 	/**
@@ -177,6 +185,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_templates_data', array( $this, 'prebuilt_templates_data_reload_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_pages_data', array( $this, 'prebuilt_pages_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_pages_data', array( $this, 'prebuilt_pages_data_reload_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_get_ai_data', array( $this, 'ai_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_process_data', array( $this, 'process_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_subscribe_process_data', array( $this, 'process_subscribe_ajax_callback' ) );
 		}
@@ -577,6 +586,30 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->key           = 'pages';
 		// Do you have the data?
 		$get_data = $this->get_template_data();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( esc_html__( 'No library data', 'kadence-blocks' ) );
+		} else {
+			wp_send_json( $get_data );
+		}
+		die;
+	}
+	/**
+	 * Main AJAX callback function for getting the prebuilt templates array.
+	 */
+	public function ai_data_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$this->local_pages_data_path = '';
+		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->product_id   = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
+		$this->package       = 'ai-test';
+		$this->url           = $this->remote_ai_url;
+		$this->key           = 'pages';
+		// Do you have the data?
+		//$get_data = $this->get_template_data();
+		$get_data = $this->get_local_template_data_contents();
 		if ( ! $get_data ) {
 			// Send JSON Error response to the AJAX call.
 			wp_send_json( esc_html__( 'No library data', 'kadence-blocks' ) );

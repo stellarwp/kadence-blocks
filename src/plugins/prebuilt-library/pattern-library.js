@@ -75,6 +75,7 @@ function PatternLibrary( {
 	const [ subTab, setSubTab ] = useState( '' );
 	const [ patterns, setPatterns ] = useState( false );
 	const [ pages, setPages ] = useState( false );
+	const [ aiContent, setAIContent ] = useState( false );
 	const [ categories, setCategories ] = useState( { 
 		'category': __( 'Category', 'kadence-blocks' ),
 		'hero': __( 'Hero', 'kadence-blocks' ),
@@ -404,6 +405,46 @@ function PatternLibrary( {
 			setPages( 'error' );
 		});
 	}, 250 );
+	const loadAIData = debounce( () => {
+		setIsLoading( true );
+		setIsError( false );
+
+		var data = new FormData();
+		data.append( 'action', 'kadence_import_get_ai_data' );
+		data.append( 'security', kadence_blocks_params.ajax_nonce );
+		data.append( 'api_key', data_key );
+		data.append( 'api_email', data_email );
+		data.append( 'product_id', product_id );
+		data.append( 'package', 'ai-test' );
+		var control = this;
+		jQuery.ajax( {
+			method:      'POST',
+			url:         kadence_blocks_params.ajax_url,
+			data:        data,
+			contentType: false,
+			processData: false,
+		} )
+		.done( function( response, status, stately ) {
+			if ( response ) {
+				const o = SafeParseJSON( response, false );
+				if ( o ) {
+					setIsLoading( false );
+					setIsError( false );
+					setAIContent( o );
+				} else {
+					setIsLoading( false );
+					setIsError( true );
+					setAIContent( 'error' );
+				}
+			}
+		})
+		.fail( function( error ) {
+			console.log(error);
+			setIsLoading( false );
+			setIsError( true );
+			setAIContent( 'error' );
+		});
+	}, 250 );
 	if ( reload && ! isLoading ) {
 		onReload();
 		reloadAllData();
@@ -437,6 +478,11 @@ function PatternLibrary( {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
 		} ) );
 	}, [ pagesCategories ] );
+
+	useEffect( () => {
+		loadAIData();
+	}, [] );
+
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
@@ -728,6 +774,7 @@ function PatternLibrary( {
 							patternCategories={ pageCategorySelectOptions }
 							selectedStyle={ selectedStyle }
 							breakpointCols={ breakpointColumnsObj }
+							aiContent={ aiContent }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
@@ -773,6 +820,7 @@ function PatternLibrary( {
 							patternCategories={ categorySelectOptions }
 							selectedStyle={ selectedStyle }
 							breakpointCols={ breakpointColumnsObj }
+							aiContent={ aiContent }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
