@@ -14,7 +14,7 @@
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
     "@react-google-maps/api": "^2.12.0",
     "@splidejs/react-splide": "^0.7.12",
-    "@wordpress/icons": "^9.7.0",
+    "@wordpress/icons": "^9.22.0",
     "@wordpress/url": "^3.12.0",
     "change-case": "^4.1.2",
     "classnames": "^2.2.6",
