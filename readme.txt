@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.34 =
+Release Date: April TBD, 2023
+* Update: filter for custom palette.
+* Fix: Issue with image crop.
+
 = 3.0.33 =
 Release Date: April 12, 2023
 * Add: Option to set design library to use images instead of iframes.
