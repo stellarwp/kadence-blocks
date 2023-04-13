@@ -682,17 +682,23 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
 	}';
 	if ( ! class_exists( 'Kadence\Theme' ) ) {
-		$css .= ':root {
-			--global-palette1: #3182CE;
-			--global-palette2: #2B6CB0;
-			--global-palette3: #1A202C;
-			--global-palette4: #2D3748;
-			--global-palette5: #4A5568;
-			--global-palette6: #718096;
-			--global-palette7: #EDF2F7;
-			--global-palette8: #F7FAFC;
-			--global-palette9: #ffffff;
-		}';
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+		$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+		$css .= ':root {';
+		foreach ( $global_colors as $key => $value ) {
+			$css .= esc_attr( $key ) . ': ' . esc_attr( $value ) . ';';
+		}
+		$css .= '}';
 	}
 	wp_register_style( 'kadence-blocks-global-editor-styles', false );
 	wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -730,10 +736,30 @@ function kadence_blocks_add_global_gutenberg_styles_frontend() {
 	);
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
-	foreach( $font_sizes as $key => $value ) {
+	foreach ( $font_sizes as $key => $value ) {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+		$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+		$css .= ':root {';
+		foreach ( $global_colors as $key => $value ) {
+			$css .= esc_attr( $key ) . ': ' . esc_attr( $value ) . ';';
+		}
+		$css .= '}';
+	}
+
 	// This is a temp fix for restored316 upgrade issue.
 	if ( get_option( 'stylesheet' ) === 'restored316-journey' ) {
 		$css .= '.kt-blocks-carousel-init[data-slider-dots=true].is-overflow {';
