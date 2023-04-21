@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.33
+Stable tag: 3.0.34
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,9 +78,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.34 =
-Release Date: April TBD, 2023
+Release Date: April 24th, 2023
 * Update: filter for custom palette.
+* Update: Design library to use shadow dom. 
 * Fix: Issue with image crop.
+* Fix: Issue with typed text script. 
 
 = 3.0.33 =
 Release Date: April 12, 2023

@@ -214,6 +214,34 @@ class Kadence_Blocks_Prebuilt_Library {
 	}
 
 	/**
+	 * Get the section data if available locally.
+	 */
+	public function get_page_prebuilt_data( $pro_data ) {
+		$pro_key = ( isset( $pro_data['api_key'] ) && ! empty( $pro_data['api_key'] ) ? $pro_data['api_key'] : '' );
+		$api_email = ( isset( $pro_data['api_email'] ) && ! empty( $pro_data['api_email'] ) ? $pro_data['api_email'] : '' );
+		$product_id = ( isset( $pro_data['product_id'] ) && ! empty( $pro_data['product_id'] ) ? $pro_data['product_id'] : '' );
+		if ( empty( $pro_key ) ) {
+			$pro_key = ( isset( $pro_data['ithemes_key'] ) && ! empty( $pro_data['ithemes_key'] ) ? $pro_data['ithemes_key'] : '' );
+			if ( $pro_key ) {
+				$api_email = 'iThemes';
+			}
+		}
+		$this->api_key       = $pro_key;
+		$this->api_email     = $api_email;
+		$this->product_id    = $product_id;
+		$this->package       = 'pages';
+		$this->url           = $this->remote_pages_url;
+		$this->key           = 'pages';
+		// Do you have the data?
+		$get_data = $this->get_only_local_template_data();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			return false;
+		}
+		return $get_data;
+	}
+
+	/**
 	 * Get the local data file if there.
 	 *
 	 * @access public
@@ -248,7 +276,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		// 		return $this->get_local_template_data_contents();
 		// 	}
 		// }
-		// If it's a Kadence Cloud, lets make sure it's within date.
+		// If it's a Kadence Pattern Hub connect, lets make sure it's within date.
 		if ( 'templates' !== $this->package && 'pages' !== $this->package && 'section' !== $this->package && ! $this->is_template ) {
 			$cloud_settings = json_decode( get_option( 'kadence_blocks_cloud' ), true );
 			if ( isset( $cloud_settings['connections'] ) && isset( $cloud_settings['connections'][ $this->package ] ) && isset( $cloud_settings['connections'][ $this->package ]['expires'] ) && ! empty( $cloud_settings['connections'][ $this->package ]['expires'] ) ) {
@@ -720,18 +748,13 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		$this->key           = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';
-		// Do you have the data?
-		if ( $data ) {
-			$data = $this->process_content( $data, $import_library, $import_type, $import_id, $import_style );
-			if ( ! $data ) {
-				// Send JSON Error response to the AJAX call.
-				wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
-			} else {
-				wp_send_json( $data );
-			}
+		$data = $this->process_content( $data, $import_library, $import_type, $import_id, $import_style );
+		if ( ! $data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
+		} else {
+			wp_send_json( $data );
 		}
-		// Send JSON Error response to the AJAX call.
-		wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
 		die;
 	}
 	/**

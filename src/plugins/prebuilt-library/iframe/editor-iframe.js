@@ -91,6 +91,20 @@ function useParsedAssets( html ) {
 	}, [ html ] );
 }
 
+async function loadScript( head, { id, src } ) {
+	return new Promise( ( resolve, reject ) => {
+		const script = head.ownerDocument.createElement( 'script' );
+		script.id = id;
+		if ( src ) {
+			script.src = src;
+			script.onload = () => resolve();
+			script.onerror = () => reject();
+		} else {
+			resolve();
+		}
+		head.appendChild( script );
+	} );
+}
 
 function Iframe( {
 	contentRef,
@@ -109,20 +123,16 @@ function Iframe( {
 			select( blockEditorStore ).getSettings().__unstableResolvedAssets,
 		[]
 	);
-	//const [ , forceRender ] = useReducer( () => ( {} ) );
+	const [ , forceRender ] = useReducer( () => ( {} ) );
 	const [ iframeDocument, setIframeDocument ] = useState();
 	const [ bodyClasses, setBodyClasses ] = useState( [] );
 	const styles = useParsedAssets( assets?.styles );
 	const styleIds = styles.map( ( style ) => style.id );
-	const styleIdsTest = [ "kadence-blocks-global-editor-styles-inline-css", "kadence-editor-global-inline-css" ];
-	const styleIdsExclude = [ "yoast-seo-metabox-css-css" ];
-	const baseCompatStyles = styles.filter(
-		( style ) => styleIdsTest.includes( style.id )
-	);
 	const compatStyles = useCompatibilityStyles();
 	const neededCompatStyles = compatStyles.filter(
-		( style ) => ! styleIds.includes( style.id ) && ! styleIdsExclude.includes( style.id )
+		( style ) => ! styleIds.includes( style.id )
 	);
+	const scripts = useParsedAssets( assets?.scripts );
 	const clearerRef = useBlockSelectionClearer();
 	//const [ before, writingFlowRef, after ] = useWritingFlow();
 	const [ contentResizeListener, { height: contentHeight } ] =
@@ -191,25 +201,20 @@ function Iframe( {
 		};
 	}, [] );
 
-	// const headRef = useRefEffect( ( element ) => {
-	// 	scripts
-	// 		.reduce(
-	// 			( promise, script ) =>
-	// 				promise.then( () => loadScript( element, script ) ),
-	// 			Promise.resolve()
-	// 		)
-	// 		.finally( () => {
-	// 			// When script are loaded, re-render blocks to allow them
-	// 			// to initialise.
-	// 			forceRender();
-	// 		} );
-	// }, [] );
+	const headRef = useRefEffect( ( element ) => {
+		scripts
+			.reduce(
+				( promise, script ) =>
+					promise.then( () => loadScript( element, script ) ),
+				Promise.resolve()
+			)
+			.finally( () => {
+				// When script are loaded, re-render blocks to allow them
+				// to initialise.
+				forceRender();
+			} );
+	}, [] );
 	const disabledRef = useDisabled( { isDisabled: ! readonly } );
-	const headRef = useMergeRefs( [
-		contentRef,
-		clearerRef,
-		disabledRef,
-	] );
 	const bodyRef = useMergeRefs( [
 		contentRef,
 		clearerRef,
@@ -219,15 +224,13 @@ function Iframe( {
 	const styleAssets = (
 		<>
 			<style>{ 'html{height:auto!important;}body{margin:0}' }</style>
-			<link rel="stylesheet" id="kadence-blocks-iframe-base" href={ kadence_blocks_params.livePreviewStyles } media="all"></link>
-			{ [ ...neededCompatStyles, ...baseCompatStyles ].map(
+			{ [ ...styles, ...neededCompatStyles ].map(
 				( { tagName, href, id, rel, media, textContent } ) => {
 					const TagName = tagName.toLowerCase();
-					const finalTextContent = textContent.replace( / .block-editor-block-list__layout/g, '' );
 					if ( TagName === 'style' ) {
 						return (
 							<TagName { ...{ id } } key={ id }>
-								{ finalTextContent }
+								{ textContent }
 							</TagName>
 						);
 					}

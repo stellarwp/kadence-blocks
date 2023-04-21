@@ -35,7 +35,6 @@ const {
 import { compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
 import { debounce, map } from 'lodash';
-import LazyLoad from 'react-lazy-load';
 
 /**
  * Internal dependencies
@@ -183,7 +182,7 @@ class CloudConnect extends Component {
 					</div>
 					<div className="kb-connection-info">
 						{ __( 'Learn about connecting libraries at:', 'kadence-blocks' ) + ' ' }
-						<ExternalLink href={ 'https://www.kadencewp.com/kadence-cloud/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Kadence Cloud', 'kadence-blocks' ) }</ExternalLink>
+						<ExternalLink href={ 'https://www.kadencewp.com/kadence-cloud/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Kadence Pattern Hub', 'kadence-blocks' ) }</ExternalLink>
 					</div>
 					</Fragment>
 				) }

@@ -140,9 +140,13 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
 			// }
 			temp['content'] = tempContent;
+			if ( patterns[key]?.html) {
+				temp['html'] = patterns[key].html;
+			}
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
-			temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );
+			// temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );
+			temp['proRender'] = false;
 			temp['viewportWidth'] = 1200;
 			variation ++;
 			allPatterns.push( temp );
@@ -152,12 +156,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
-		// if ( allPatterns.length > 30 ) {
-		// 	console.log( 'here' );
-		// 	allPatterns = allPatterns.slice(0, 30);
-		// }
 		return searchItems( allPatterns, filterValue );
 	}, [ filterValue, selectedCategory, patterns ] );
+	const hasHTml = useMemo( () => {
+		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
+	}, [ patterns ] );
 
 	// Announce search results on change.
 	useEffect( () => {
@@ -215,6 +218,47 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		];
 		return newStyles;
 	}, [ selectedStyle, selectedFontSize ] );
+	const customShadowStyles = useMemo( () => {
+		let tempStyles = '';
+		if ( ! selectedStyle || 'light' === selectedStyle ) {
+			tempStyles = tempStyles.concat( `.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}` );
+		}
+		if ( 'dark' === selectedStyle ) {
+			tempStyles = tempStyles.concat( `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
+			--global-content-edge-padding: 3rem;
+			padding:0px !important;}.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}` );
+		} else if ( 'highlight' === selectedStyle ) {
+			tempStyles = tempStyles.concat( `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-content-edge-padding: 3rem;
+			padding:0px !important; }.single-iframe-content .kb-form .kadence-blocks-form-field .kb-forms-submit, .kb-buttons-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-buttons-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}` );
+		}
+		if ( 'sm' === selectedFontSize ) {
+			tempStyles = tempStyles.concat( `.single-iframe-content {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
+			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes['xl']};
+			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes['lg']};
+			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes['md']}; }` );
+		}
+		const newStyles = [
+			{ css: tempStyles }
+		];
+		return newStyles;
+	}, [ selectedStyle, selectedFontSize ] );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
@@ -237,9 +281,11 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						onClickPattern={ onSelectBlockPattern }
 						showTitlesAsTooltip={ false }
 						customStyles={ customStyles }
+						customShadowStyles={ customShadowStyles }
 						breakpointCols={ breakpointCols }
 						previewMode={ previewMode }
 						selectedStyle={ selectedStyle }
+						renderType={ hasHTml ? 'shadow' : 'iframe' }
 					/>
 				) }
 			</div>
