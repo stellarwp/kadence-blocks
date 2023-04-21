@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { get } from 'lodash';
 
 /**
  * Register sub blocks.
@@ -30,6 +31,15 @@ registerBlockType( 'kadence/testimonials', {
 	],
 	icon    : {
 		src: testimonialBlockIcon,
+	},
+	__experimentalLabel( attributes, { context } ) {
+		const { title, metadata } = attributes;
+
+		// In the list view, use the block's content as the label.
+		// If the content is empty, fall back to the default label.
+		if ( context === 'list-view' && get( metadata, 'name', '') !== '' ) {
+			return metadata.name;
+		}
 	},
 	edit,
 	save,

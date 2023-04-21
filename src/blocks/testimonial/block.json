@@ -110,6 +110,12 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"metadata": {
+	  "type": "object",
+	  "default": {
+		  "name": ""
+	  }
 	}
   },
   "usesContext": [

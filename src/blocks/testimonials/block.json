@@ -802,7 +802,13 @@
 	"kbVersion": {
 		"type": "number",
 		"default": ""
-	}
+	},
+  	"metadata": {
+		"type": "object",
+		"default": {
+			"name": ""
+		}
+  	}
   },
   "usesContext": [
 	"postId",
