@@ -86,9 +86,6 @@ function ScaledPatternShadowPreview( {
 	}
 	return (
 		<>
-			{ ! contentHeight && (
-				<div className='kb-preview-iframe-loader-ratio' style={ {paddingBottom: ratio ? ratio : undefined, minHeight: ratio ? undefined : minHeight,}}><div className='kb-preview-iframe-loader'><Spinner /></div></div>
-			) }
 			<LazyLoad onContentVisible={() => {resizeClear()}}>
 				<Disabled
 					className="block-editor-block-preview__content"
@@ -124,6 +121,9 @@ function ScaledPatternShadowPreview( {
 					</root.div>
 				</Disabled>
 			</LazyLoad>
+			{ ! contentHeight && (
+				<div className='kb-preview-iframe-loader-ratio' style={ {paddingBottom: ratio ? ratio : undefined, minHeight: ratio ? undefined : minHeight,}}><div className='kb-preview-iframe-loader'><Spinner /></div></div>
+			) }
 		</>
 	);
 }
