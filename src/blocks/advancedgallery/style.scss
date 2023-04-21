@@ -529,4 +529,27 @@
 			display:block;
 		}
 	}
+	&[data-slider-type="thumbnail"] .kb-slide-item:not(.specificity) {
+		display:none;
+		&:first-child {
+			display:block;
+			width: 100%;
+		}
+	}
+	&[data-slider-type="thumbnail"] {
+		@for $i from 3 through 7 {
+			&[data-columns-xl="#{ $i }"] ~ .kb-blocks-slider .kb-slide-item {
+				display:none;
+				&:nth-child(-n+#{ $i }) {
+					width: calc(100% / #{ $i });
+					display:block;
+					float:left;
+				}
+			}
+		}
+	}
+	&[data-slider-type="thumbnail"] ~ .kb-blocks-slider {
+		display: flex;
+		gap: 10px;
+	}
 }

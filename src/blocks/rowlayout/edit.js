@@ -147,6 +147,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	clientId,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit } = attributes;
+	const { isPreviewMode } = useSelect( ( _select ) => {
+		const { __unstableIsPreviewMode } =
+			_select( blockEditorStore ).getSettings();
+		return {
+			isPreviewMode: __unstableIsPreviewMode,
+		};
+	}, [] );
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -199,8 +206,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes( { inQueryBlock: isInQueryBlock } );
 		}
-
-		debounce( getDynamic, 200 );
+		if ( ! isPreviewMode ) {
+			debounce( getDynamic, 200 );
+		}
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
 			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
@@ -580,7 +588,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const marginMouseOver = mouseOverVisualizer();
 	return (
 		<>
-			{ 'contentOnly' !== templateLock && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
+			{ 'contentOnly' !== templateLock && ! isPreviewMode && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ align }
@@ -675,7 +683,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					/>
 				</BlockControls>
 			)}
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
+			{ ! isPreviewMode && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<>
 					<InspectorControls>
 						<InspectorControlTabs
@@ -1074,6 +1082,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					<PaddingResizer
 						previewDevice={ previewDevice }
 						edge={ 'top' }
+						isPreviewMode={ isPreviewMode }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }
@@ -1109,6 +1118,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					<PaddingResizer
 						previewDevice={ previewDevice }
 						edge={ 'bottom' }
+						isPreviewMode={ isPreviewMode }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }

@@ -170,6 +170,7 @@ function PageList( {
 			// 	__unstableSkipMigrationLogs: true
 			//   });
 			temp['content'] = tempContent;
+			temp['html'] = pages[key].rows_html;
 			temp['pro'] = pages[key].pro;
 			temp['locked'] = ( pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['proRender'] = ( temp['keywords'].includes('Requires Pro') ? true : false );
@@ -206,76 +207,106 @@ function PageList( {
 	// Define selected style.
 	const customStyles = useMemo( () => {
 		let newStyles = '';
-		const darkStyles = `.kb-pattern-preview-dark {
-			--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
-			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
-			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
-			--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
-			--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
-			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
-			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
-			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
-			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
+		let globalColors = '';
+		let colorClasses = '';
+		if ( ! kadence_blocks_params.isKadenceT ) {
+			globalColors = `
+				--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+				--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+				--global-palette3:${kadence_blocks_params.global_colors['--global-palette3']};
+				--global-palette4:${kadence_blocks_params.global_colors['--global-palette4']};
+				--global-palette5:${kadence_blocks_params.global_colors['--global-palette5']};
+				--global-palette6:${kadence_blocks_params.global_colors['--global-palette6']};
+				--global-palette7:${kadence_blocks_params.global_colors['--global-palette7']};
+				--global-palette8:${kadence_blocks_params.global_colors['--global-palette8']};
+				--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};
+			`;
+			colorClasses = `:root .has-theme-palette-1-color { color: var(--global-palette1); }
+			:root .has-theme-palette-2-color { color: var(--global-palette2); }
+			:root .has-theme-palette-3-color { color: var(--global-palette3); }
+			:root .has-theme-palette-4-color { color: var(--global-palette4); }
+			:root .has-theme-palette-5-color { color: var(--global-palette5); }
+			:root .has-theme-palette-6-color { color: var(--global-palette6); }
+			:root .has-theme-palette-7-color { color: var(--global-palette7); }
+			:root .has-theme-palette-8-color { color: var(--global-palette8); }
+			:root .has-theme-palette-9-color { color: var(--global-palette9); }
+			:root .has-theme-palette1-color { color: var(--global-palette1); }
+			:root .has-theme-palette2-color { color: var(--global-palette2); }
+			:root .has-theme-palette3-color { color: var(--global-palette3); }
+			:root .has-theme-palette4-color { color: var(--global-palette4); }
+			:root .has-theme-palette5-color { color: var(--global-palette5); }
+			:root .has-theme-palette6-color { color: var(--global-palette6); }
+			:root .has-theme-palette7-color { color: var(--global-palette7); }
+			:root .has-theme-palette8-color { color: var(--global-palette8); }
+			:root .has-theme-palette9-color { color: var(--global-palette9); }
+			:root .has-theme-palette1-background-color { background-color: var(--global-palette1); }
+			:root .has-theme-palette2-background-color { background-color: var(--global-palette2); }
+			:root .has-theme-palette3-background-color { background-color: var(--global-palette3); }
+			:root .has-theme-palette4-background-color { background-color: var(--global-palette4); }
+			:root .has-theme-palette5-background-color { background-color: var(--global-palette5); }
+			:root .has-theme-palette6-background-color { background-color: var(--global-palette6); }
+			:root .has-theme-palette7-background-color { background-color: var(--global-palette7); }
+			:root .has-theme-palette8-background-color { background-color: var(--global-palette8); }
+			:root .has-theme-palette9-background-color { background-color: var(--global-palette9); }`
 		}
-		.kb-pattern-preview-dark .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-pattern-preview-dark .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} .kb-pattern-preview-dark img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);} .kb-pattern-preview-dark .wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-preview-dark .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}`;
-		const highlightStyles = `.kb-pattern-preview-highlight {
-			--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
-			--global-palette2:${kadence_blocks_params.global_colors['--global-palette8']};
-			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
-			--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
-			--global-palette5:${kadence_blocks_params.global_colors['--global-palette8']};
-			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
-			--global-palette7:${kadence_blocks_params.global_colors['--global-palette2']};
-			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
-			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
-		}
-		.kb-pattern-preview-highlight .kb-submit-field .kb-forms-submit, .kb-pattern-preview-highlight .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};}.kb-pattern-preview-highlight .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} .kb-pattern-preview-highlight img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}`;
 
 		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
 		newStyles = [
-			{ css: `body { ${normalizeStyles} }.kb-pattern-preview-dark, .kb-pattern-preview-light, .kb-pattern-preview-highlight {margin-bottom: -1px;}.kb-pattern-delete-block {display: none;}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}${darkStyles}${highlightStyles}` }
+			{ css: `:root {margin-block:0;}body{${normalizeStyles} ${globalColors}}.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
 		];
 		return newStyles;
+	}, [ selectedStyle ] );
+	// Define selected style.
+	const customShadowStyles = useMemo( () => {
+		let newStyles = '';
+		let globalColors = '';
+		let colorClasses = '';
+		if ( ! kadence_blocks_params.isKadenceT ) {
+			globalColors = `
+				--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+				--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+				--global-palette3:${kadence_blocks_params.global_colors['--global-palette3']};
+				--global-palette4:${kadence_blocks_params.global_colors['--global-palette4']};
+				--global-palette5:${kadence_blocks_params.global_colors['--global-palette5']};
+				--global-palette6:${kadence_blocks_params.global_colors['--global-palette6']};
+				--global-palette7:${kadence_blocks_params.global_colors['--global-palette7']};
+				--global-palette8:${kadence_blocks_params.global_colors['--global-palette8']};
+				--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};
+			`;
+			colorClasses = `:root .has-theme-palette-1-color { color: var(--global-palette1); }
+			:root .has-theme-palette-2-color { color: var(--global-palette2); }
+			:root .has-theme-palette-3-color { color: var(--global-palette3); }
+			:root .has-theme-palette-4-color { color: var(--global-palette4); }
+			:root .has-theme-palette-5-color { color: var(--global-palette5); }
+			:root .has-theme-palette-6-color { color: var(--global-palette6); }
+			:root .has-theme-palette-7-color { color: var(--global-palette7); }
+			:root .has-theme-palette-8-color { color: var(--global-palette8); }
+			:root .has-theme-palette-9-color { color: var(--global-palette9); }
+			:root .has-theme-palette1-color { color: var(--global-palette1); }
+			:root .has-theme-palette2-color { color: var(--global-palette2); }
+			:root .has-theme-palette3-color { color: var(--global-palette3); }
+			:root .has-theme-palette4-color { color: var(--global-palette4); }
+			:root .has-theme-palette5-color { color: var(--global-palette5); }
+			:root .has-theme-palette6-color { color: var(--global-palette6); }
+			:root .has-theme-palette7-color { color: var(--global-palette7); }
+			:root .has-theme-palette8-color { color: var(--global-palette8); }
+			:root .has-theme-palette9-color { color: var(--global-palette9); }
+			:root .has-theme-palette1-background-color { background-color: var(--global-palette1); }
+			:root .has-theme-palette2-background-color { background-color: var(--global-palette2); }
+			:root .has-theme-palette3-background-color { background-color: var(--global-palette3); }
+			:root .has-theme-palette4-background-color { background-color: var(--global-palette4); }
+			:root .has-theme-palette5-background-color { background-color: var(--global-palette5); }
+			:root .has-theme-palette6-background-color { background-color: var(--global-palette6); }
+			:root .has-theme-palette7-background-color { background-color: var(--global-palette7); }
+			:root .has-theme-palette8-background-color { background-color: var(--global-palette8); }
+			:root .has-theme-palette9-background-color { background-color: var(--global-palette9); }`
+		}
 
-		// if ( ! selectedStyle || 'light' === selectedStyle ) {
-		// 	const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
-		// 	newStyles = [
-		// 		{ css: `body { ${normalizeStyles} }.kb-pattern-preview-dark, .kb-pattern-preview-light, .kb-pattern-preview-highlight {margin-bottom: -1px;}.kb-pattern-delete-block {display: none;}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}${darkStyles}${highlightStyles}` }
-		// 	];
-		// 	return newStyles;
-		// }
-		// if ( 'dark' === selectedStyle ) {
-		// 	const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
-		// 	--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
-		// 	--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
-		// 	--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
-		// 	--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
-		// 	--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
-		// 	--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
-		// 	--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
-		// 	--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
-		// 	--global-content-edge-padding: 3rem;
-		// 	padding:0px !important;`;
-		// 	newStyles = [
-		// 		{ css: `body { ${tempStyles} }.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
-		// 	];
-		// } else if ( 'highlight' === selectedStyle ) {
-		// 	const tempStyles = `--global-palette1:${kadence_blocks_params.global_colors['--global-palette9']};
-		// 	--global-palette2:${kadence_blocks_params.global_colors['--global-palette8']};
-		// 	--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
-		// 	--global-palette4:${kadence_blocks_params.global_colors['--global-palette9']};
-		// 	--global-palette5:${kadence_blocks_params.global_colors['--global-palette8']};
-		// 	--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
-		// 	--global-palette7:${kadence_blocks_params.global_colors['--global-palette2']};
-		// 	--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
-		// 	--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
-		// 	--global-content-edge-padding: 3rem;
-		// 	padding:0px !important;`;
-		// 	newStyles = [
-		// 		{ css: `body { ${tempStyles} }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` }
-		// 	];
-		// }
-		// return newStyles;
+		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
+		newStyles = [
+			{ css: `.single-iframe-content{${normalizeStyles} ${globalColors}}.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
+		];
+		return newStyles;
 	}, [ selectedStyle ] );
 	const hasItems = !! filteredBlockPatterns?.length;
 	return (
@@ -294,7 +325,9 @@ function PageList( {
 						onClickPattern={ onSelectBlockPattern }
 						showTitlesAsTooltip={ false }
 						customStyles={ customStyles }
+						customShadowStyles={ customShadowStyles }
 						breakpointCols={ breakpointCols }
+						patternType={ 'page' }
 					/>
 				) }
 			</div>
