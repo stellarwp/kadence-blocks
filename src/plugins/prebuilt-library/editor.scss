@@ -346,7 +346,7 @@ button.components-button.kb-category-button {
 	width: 100%;
 	max-width: 1000px;
 	height: 86%;
-	overflow: scroll;
+	overflow: auto;
 	.components-button-group {
 		width: auto;
 	}
@@ -678,7 +678,7 @@ h2.kb-template-name {
 	}
 }
 .kb-library-sidebar-bottom {
-	overflow: scroll;
+	overflow: auto;
 	height: 100%;
 	max-height: calc(95vh - 204px);
 }
@@ -886,7 +886,7 @@ button.components-button.kb-trigger-ai.has-icon {
 	.block-editor-block-patterns-list__item .block-editor-block-preview__container {
 	    //box-shadow: 0 0 0 1px rgba(0,0,0,.2);
 		box-shadow: none;
-		translate: border-color 0.2s ease;
+		transition: border-color 0.2s ease;
 		border:1px solid rgba(0,0,0,.2);
 	}
 	.block-editor-block-patterns-list__item:hover .block-editor-block-preview__container {
@@ -964,7 +964,7 @@ button.components-button.kb-trigger-ai.has-icon {
 	padding: 5px 20px 0px;
 }
 .kb-cloud-library-sidebar .kb-library-sidebar-bottom {
-    overflow: scroll;
+    overflow: auto;
     height: 100%;
     max-height: calc(95vh - 284px);
 }
@@ -1073,4 +1073,12 @@ h2.components-heading.kb-patterns-banner-notice {
 		--kb-patterns-inner-sidebar-spacing: 5px;
 		--kb-patterns-outer-wrap-spacing: 24px;
 	}
+}
+// Handle hover scroll when too large.
+.kb-pattern-shadow-container.kb-pattern-overflow::part(container) {
+	transition: transform 2s ease;
+    transform: translateY(0);
+}
+.block-editor-block-patterns-list__item:hover .kb-pattern-shadow-container.kb-pattern-overflow::part(container) {
+    transform: translateY(calc(-100% + 1600px));
 }

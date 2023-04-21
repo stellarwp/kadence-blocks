@@ -1,0 +1,198 @@
+textarea {
+	width: 100%;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+	-webkit-appearance: none;
+	color: var(--global-palette5);
+	border: 1px solid var(--global-gray-400);
+	border-radius: 3px;
+	padding: 0.4em 0.5em;
+	max-width: 100%;
+	background: var(--global-palette9);
+	box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+color: var(--global-palette6);
+}
+::-moz-placeholder { /* Firefox 19+ */
+color: var(--global-palette6);
+opacity: 1;
+}
+:-ms-input-placeholder { /* IE 10+ */
+color: var(--global-palette6);
+}
+:-moz-placeholder { /* Firefox 18- */
+color: var(--global-palette6);
+}
+::placeholder {
+	color: var(--global-palette6);
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[type="range"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="time"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="color"]:focus,
+textarea:focus {
+	color: var(--global-palette3);
+	border-color:var(--global-palette6);
+	outline: 0;
+	box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+}
+
+select {
+	border: 1px solid var(--global-gray-400);
+	background-size: 16px 100%;
+	padding: 0.2em 35px 0.2em 0.5em;
+    background: var(--global-palette9) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat 98% 50%;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    box-shadow: none;
+    outline: 0;
+	box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+}
+select::-ms-expand {
+    display: none;
+}
+select:focus {
+	color: var(--global-palette3);
+	border-color:var(--global-palette6);
+	background-color: var(--global-palette9);
+	box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+	outline: 0;
+	// Fix for firefox if the color palette is dark.
+	option {
+		color: #333;
+	}
+}
+.single-iframe-content {
+    background: var(--global-palette9);
+	color: var(--global-palette3);
+    font-family: var(--global-body-font-family);
+    font-size: 16px;
+    line-height: 1.6;
+}
+.single-content {
+	address, figure, hr, p, table, pre, form, .wp-block-buttons, .wp-block-button, .wc-block-grid, .wp-block-kadence-advancedbtn, .wp-block-media-text, .wp-block-cover, .entry-content-asset, .wp-block-kadence-form, .wp-block-group, .wp-block-yoast-faq-block, .wp-block-yoast-how-to-block, .schema-faq-section, .wp-block-kadence-tableofcontents, .enlighter-default, .wp-block-kadence-iconlist, [class*=__inner-content] {
+		margin-top: 0;
+		margin-bottom:var(--global-md-spacing);
+	}
+	.wp-block-buttons .wp-block-button {
+		margin-bottom: 0;
+	}
+	p > img {
+		display: inline-block;
+		&.aligncenter {
+			display: block;
+		}
+	}
+	li > img {
+		display: inline-block;
+		&.aligncenter {
+			display: block;
+		}
+	}
+	// This removes the extra space when adding a spacer below the paragraph.
+	p:not(.wp-block-kadence-advancedheading) + .wp-block-kadence-spacer {
+		margin-top: calc( 0rem - var(--global-md-spacing) );
+	}
+	h1, h2, h3, h4, h5, h6 {
+		margin: 1.5em 0 .5em;
+		&:first-child {
+			margin-top: 0;
+		}
+		// Useful if you add one heading after another.
+		&+* {
+			margin-top: 0;
+		}
+	}
+	.wp-block-kadence-advancedgallery + p {
+		margin-top: var(--global-md-spacing);
+	}
+	ul, ol {
+		margin: 0 0 var(--global-md-spacing);
+		padding-left: 2em;
+		&.aligncenter {
+			text-align: center;
+			padding-left: 0;
+		}
+	}
+	.kad-slider ul {
+		padding: 0;
+		margin: 0;
+	}
+	li>ol, li>ul {
+		margin: 0;
+	}
+	/* Align .more-link with the content. */
+	> .more-link {
+		display: block;
+	}
+	address, figure, hr, p, table, pre, form, .wp-block-buttons, .wp-block-button, .wp-block-kadence-advancedbtn, .wp-block-media-text, .wp-block-cover, .entry-content-asset, .wp-block-kadence-form, .wp-block-group, .wp-block-yoast-faq-block, .wp-block-yoast-how-to-block, .schema-faq-section, .wp-block-kadence-tableofcontents, .enlighter-default, .wp-block-kadence-iconlist, h1, h2, h3, h4, h5, h6, ul, ol {
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+	.wp-block-image {
+		margin-top: 0;
+		margin-bottom: 0;
+		figure {
+			margin-bottom: var(--global-md-spacing);
+		}
+		&:last-child {
+			figure {
+				margin-bottom: 0;
+			}
+		}
+	}
+	figure.wp-block-image {
+		margin-bottom: var(--global-md-spacing);
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+// Make JS blocks work.
+.pattern-shadow-wrap {
+	.kt-tabs-wrap .wp-block-kadence-tab {
+		display: none;
+	}
+	.kt-tabs-wrap .wp-block-kadence-tab.kt-inner-tab-1 {
+		display: block;
+	}
+	.wp-block-kadence-advancedgallery .kb-gallery-ul.kb-gallery-type-masonry {
+		column-count: 3;
+		column-gap: 10px;
+		display: block;
+	}
+	.wp-block-kadence-advancedgallery .kb-gallery-ul.kb-gallery-type-masonry .kadence-blocks-gallery-item {
+		width: 100%;
+		break-inside: avoid;
+	}
+}

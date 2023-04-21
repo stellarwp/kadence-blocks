@@ -86,7 +86,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $name the stylesheet name.
 	 */
 	public function should_render_inline_stylesheet( $name ) {
-		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
+		if ( apply_filters( 'kadence_blocks_force_render_inline_stylesheet', false, $name ) || ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) ) {
 			if ( function_exists( 'wp_is_block_theme' ) ) {
 				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() && 1 === did_action( 'wp_head' ) ) {
 					wp_print_styles( $name );

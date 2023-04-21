@@ -15,7 +15,7 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
-import Iframe from '../iframe/index.js';
+import Iframe from '../iframe/editor-iframe.js';
 
 // This is used to avoid rendering the block list if the sizes change.
 let MemoizedBlockList;
@@ -27,6 +27,10 @@ function ScaledBlockPreview( {
 	containerWidth,
 	minHeight = '200px',
 	additionalStyles = [],
+	editorStyles,
+	ratio,
+	neededCompatStyles = [],
+	baseCompatStyles,
 } ) {
 	if ( ! viewportWidth ) {
 		viewportWidth = containerWidth;
@@ -34,31 +38,7 @@ function ScaledBlockPreview( {
 
 	const [ contentResizeListener, { height: contentHeight } ] =
 		useResizeObserver();
-	const { styles } = useSelect( ( select ) => {
-		const settings = select( blockEditorStore ).getSettings();
-		return {
-			styles: settings.styles,
-		};
-	}, [] );
-	// console.log( Iframe );
-	// console.log( assets.styles );
 
-
-	// Avoid scrollbars for pattern previews.
-	const editorStyles = useMemo( () => {
-		if ( styles ) {
-			return [
-				...styles,
-				{
-					css: 'body{height:auto;overflow:hidden;border:none;padding:0;}',
-					__unstableType: 'presets',
-				},
-				...additionalStyles,
-			];
-		}
-
-		return styles;
-	}, [ styles, additionalStyles ] );
 
 	// Initialize on render instead of module top level, to avoid circular dependency issues.
 	MemoizedBlockList = MemoizedBlockList || pure( BlockList );

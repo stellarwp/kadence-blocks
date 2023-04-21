@@ -2310,7 +2310,9 @@ class Kadence_Blocks_CSS {
 	 * @return string
 	 */
 	public function css_output() {
-		$this->render_media_queries();
+		if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
+			$this->render_media_queries();
+		}
 		// Add current selector's rules to output
 		$this->add_selector_rules_to_output();
 

@@ -612,7 +612,7 @@ function PatternLibrary( {
 										anchor={ popoverAnchor }
 									>
 										<ToggleControl
-											label={__( 'Disable iFrame Preview', 'kadence-blocks' )}
+											label={__( 'Disable Live Preview', 'kadence-blocks' )}
 											checked={selectedPreviewMode === 'image'}
 											help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
 											onChange={( value ) => {
