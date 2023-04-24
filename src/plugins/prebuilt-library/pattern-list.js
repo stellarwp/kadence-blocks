@@ -205,7 +205,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-content-edge-padding: 3rem;
-			padding:0px !important; }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` );
+			padding:0px !important; }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btns-outer-wrap .kb-button.kb-btn-global-outline {color:${kadence_blocks_params.global_colors['--global-palette9']};border-color:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}` );
 		}
 		if ( 'sm' === selectedFontSize ) {
 			tempStyles = tempStyles.concat( `.block-editor-block-list__layout.is-root-container {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
@@ -222,6 +222,36 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		let tempStyles = '';
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
 			tempStyles = tempStyles.concat( `.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}` );
+		}
+		if ( ! kadence_blocks_params.isKadenceT ) {
+			const colorClasses = `.single-iframe-content .has-theme-palette-1-color { color: var(--global-palette1); }
+			.single-iframe-content .has-theme-palette-2-color { color: var(--global-palette2); }
+			.single-iframe-content .has-theme-palette-3-color { color: var(--global-palette3); }
+			.single-iframe-content .has-theme-palette-4-color { color: var(--global-palette4); }
+			.single-iframe-content .has-theme-palette-5-color { color: var(--global-palette5); }
+			.single-iframe-content .has-theme-palette-6-color { color: var(--global-palette6); }
+			.single-iframe-content .has-theme-palette-7-color { color: var(--global-palette7); }
+			.single-iframe-content .has-theme-palette-8-color { color: var(--global-palette8); }
+			.single-iframe-content .has-theme-palette-9-color { color: var(--global-palette9); }
+			.single-iframe-content .has-theme-palette1-color { color: var(--global-palette1); }
+			.single-iframe-content .has-theme-palette2-color { color: var(--global-palette2); }
+			.single-iframe-content .has-theme-palette3-color { color: var(--global-palette3); }
+			.single-iframe-content .has-theme-palette4-color { color: var(--global-palette4); }
+			.single-iframe-content .has-theme-palette5-color { color: var(--global-palette5); }
+			.single-iframe-content .has-theme-palette6-color { color: var(--global-palette6); }
+			.single-iframe-content .has-theme-palette7-color { color: var(--global-palette7); }
+			.single-iframe-content .has-theme-palette8-color { color: var(--global-palette8); }
+			.single-iframe-content .has-theme-palette9-color { color: var(--global-palette9); }
+			.single-iframe-content .has-theme-palette1-background-color { background-color: var(--global-palette1); }
+			.single-iframe-content .has-theme-palette2-background-color { background-color: var(--global-palette2); }
+			.single-iframe-content .has-theme-palette3-background-color { background-color: var(--global-palette3); }
+			.single-iframe-content .has-theme-palette4-background-color { background-color: var(--global-palette4); }
+			.single-iframe-content .has-theme-palette5-background-color { background-color: var(--global-palette5); }
+			.single-iframe-content .has-theme-palette6-background-color { background-color: var(--global-palette6); }
+			.single-iframe-content .has-theme-palette7-background-color { background-color: var(--global-palette7); }
+			.single-iframe-content .has-theme-palette8-background-color { background-color: var(--global-palette8); }
+			.single-iframe-content .has-theme-palette9-background-color { background-color: var(--global-palette9); }`
+			tempStyles = tempStyles.concat( colorClasses );
 		}
 		if ( 'dark' === selectedStyle ) {
 			tempStyles = tempStyles.concat( `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
@@ -246,7 +276,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-content-edge-padding: 3rem;
-			padding:0px !important; }.single-iframe-content .kb-form .kadence-blocks-form-field .kb-forms-submit, .kb-buttons-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-buttons-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}` );
+			padding:0px !important; }.single-iframe-content .kb-form .kadence-blocks-form-field .kb-forms-submit, .kb-buttons-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-buttons-wrap .kb-button.kb-btn-global-outline {color:${kadence_blocks_params.global_colors['--global-palette3']};border-color:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-buttons-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}` );
 		}
 		if ( 'sm' === selectedFontSize ) {
 			tempStyles = tempStyles.concat( `.single-iframe-content {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
