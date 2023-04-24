@@ -87,7 +87,7 @@ function BannerHeader( { selectedCategory } ) {
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContent, savedAI = false } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContent, savedAI = true } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -135,10 +135,6 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
-			if ( savedAI ) {
-				//tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-				tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			}
 			// if ( tempContent ) {
 			// 	temp['blocks'] = parse( tempContent, {
 			// 		__unstableSkipMigrationLogs: true
@@ -147,10 +143,19 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
 			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
 			// }
-			temp['content'] = tempContent;
 			if ( patterns[key]?.html) {
 				temp['html'] = patterns[key].html;
 			}
+			if ( savedAI ) {
+				if ( patterns[key]?.html) {
+					temp['html'] = replaceContent( patterns[key].html, aiContent, temp['categories'], 'general', variation );
+				} else {
+					tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
+				}
+				//tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
+				tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
+			}
+			temp['content'] = tempContent;
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
 			// temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );

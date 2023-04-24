@@ -79,6 +79,7 @@ function PatternLibrary( {
 	const [ patterns, setPatterns ] = useState( false );
 	const [ pages, setPages ] = useState( false );
 	const [ aiContent, setAIContent ] = useState( false );
+	const [ aiContentData, setAIContentData ] = useState( false );
 	const [ categories, setCategories ] = useState( { 
 		'category': __( 'Category', 'kadence-blocks' ),
 		'hero': __( 'Hero', 'kadence-blocks' ),
@@ -415,6 +416,49 @@ function PatternLibrary( {
 			setPages( 'error' );
 		});
 	}, 250 );
+	const loadAIContent = debounce( ( jobData ) => {
+		setIsLoading( true );
+		setIsError( false );
+		console.log( jobData );
+		var data = new FormData();
+		data.append( 'action', 'kadence_import_get_ai_content' );
+		data.append( 'security', kadence_blocks_params.ajax_nonce );
+		data.append( 'api_key', data_key );
+		data.append( 'api_email', data_email );
+		data.append( 'product_id', product_id );
+		data.append( 'package', 'ai-test' );
+		data.append( 'job_url', jobData?.data?.link );
+		var control = this;
+		jQuery.ajax( {
+			method:      'POST',
+			url:         kadence_blocks_params.ajax_url,
+			data:        data,
+			contentType: false,
+			processData: false,
+		} )
+		.done( function( response, status, stately ) {
+			if ( response ) {
+				console.log( response );
+				const o = SafeParseJSON( response, false );
+				if ( o ) {
+					console.log( o );
+					setIsLoading( false );
+					setIsError( false );
+					setAIContent( o );
+				} else {
+					setIsLoading( false );
+					setIsError( true );
+					setAIContent( 'error' );
+				}
+			}
+		})
+		.fail( function( error ) {
+			console.log(error);
+			setIsLoading( false );
+			setIsError( true );
+			setAIContent( 'error' );
+		});
+	}, 250 );
 	const loadAIData = debounce( () => {
 		setIsLoading( true );
 		setIsError( false );
@@ -438,9 +482,15 @@ function PatternLibrary( {
 			if ( response ) {
 				const o = SafeParseJSON( response, false );
 				if ( o ) {
-					setIsLoading( false );
-					setIsError( false );
-					setAIContent( o );
+					console.log( o );
+					if ( o?.data?.job_id ) {
+						setAIContentData( o );
+						loadAIContent( o );
+					} else {
+						setIsLoading( false );
+						setIsError( false );
+						setAIContent( o );
+					}
 				} else {
 					setIsLoading( false );
 					setIsError( true );

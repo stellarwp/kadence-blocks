@@ -140,7 +140,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_ai_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/ai/';
+	protected $remote_ai_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/content/create';
 
 	/**
 	 * The remote URL.
@@ -186,6 +186,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_pages_data', array( $this, 'prebuilt_pages_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_pages_data', array( $this, 'prebuilt_pages_data_reload_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_get_ai_data', array( $this, 'ai_data_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_get_ai_content', array( $this, 'ai_content_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_process_data', array( $this, 'process_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_subscribe_process_data', array( $this, 'process_subscribe_ajax_callback' ) );
 		}
@@ -628,23 +629,235 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function ai_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
-		$this->local_pages_data_path = '';
 		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->product_id   = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
-		$this->package       = 'ai-test';
+		$this->package       = 'ai-full';
 		$this->url           = $this->remote_ai_url;
-		$this->key           = 'pages';
+		$this->key           = 'ai-full';
 		// Do you have the data?
-		//$get_data = $this->get_template_data();
-		$get_data = $this->get_local_template_data_contents();
+		$get_data = $this->process_ai_request();
 		if ( ! $get_data ) {
 			// Send JSON Error response to the AJAX call.
-			wp_send_json( esc_html__( 'No library data', 'kadence-blocks' ) );
+			wp_send_json( 'failed' );
 		} else {
 			wp_send_json( $get_data );
 		}
 		die;
+	}
+	/**
+	 * Main AJAX callback function for getting the prebuilt templates array.
+	 */
+	public function ai_content_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->product_id   = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
+		$this->url   = empty( $_POST['job_url'] ) ? '' : sanitize_text_field( $_POST['job_url'] );
+		
+		$this->package       = 'ai-full-content';
+		$this->key           = 'ai-full';
+		error_log( print_r( $this->url, true) );
+		if ( ! $this->url ) {
+			wp_send_json( 'failed before' );
+			die;
+		}
+		// Do you have the data?
+		$get_data = $this->process_ai_request();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( 'failed' );
+		} else {
+			wp_send_json( $get_data );
+		}
+		die;
+	}
+	/**
+	 * Write the data to the filesystem.
+	 *
+	 * @access protected
+	 * @return string|false Returns the absolute path of the file on success, or false on fail.
+	 */
+	protected function create_ai_data_file( $skip_local ) {
+		$file_path  = $this->get_local_template_data_path();
+		$filesystem = $this->get_filesystem();
+
+		// If the folder doesn't exist, create it.
+		if ( ! file_exists( $this->get_block_library_folder() ) ) {
+			$chmod_dir = ( 0755 & ~ umask() );
+			if ( defined( 'FS_CHMOD_DIR' ) ) {
+				$chmod_dir = FS_CHMOD_DIR;
+			}
+			$this->get_filesystem()->mkdir( $this->get_block_library_folder(), $chmod_dir );
+		}
+
+		// If the file doesn't exist, create it. Return false if it can not be created.
+		if ( ! $filesystem->exists( $file_path ) && ! $filesystem->touch( $file_path ) ) {
+			return false;
+		}
+
+		// If we got this far, we need to write the file.
+		// Get the data.
+		if ( $skip_local || ! $this->data ) {
+			$this->get_ai_data();
+		}
+		// Put the contents in the file. Return false if that fails.
+		if ( ! $filesystem->put_contents( $file_path, $this->data ) ) {
+			return false;
+		}
+
+		return $file_path;
+	}
+	/**
+	 * Get the local data file if there, else query the api.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function process_ai_request( $skip_local = false ) {
+		// Check if the local data file exists. (true means the file doesn't exist).
+		if ( $skip_local || $this->local_file_exists() ) {
+			// Attempt to create the file.
+			if ( $this->create_ai_data_file( $skip_local ) ) {
+				return $this->get_local_template_data_contents();
+			}
+		}
+		// If the local file exists, return it's data.
+		return file_exists( $this->get_local_template_data_path() )
+			? $this->get_local_template_data_contents()
+			: '';
+	}
+	/**
+	 * Get data.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_ai_data() {
+		// Get the remote URL contents.
+		$this->data = $this->get_ai_remote_url_contents();
+
+		return $this->data;
+	}
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_ai_remote_url_contents() {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		// $site_url = preg_replace( '/^https/', 'http', $site_url );
+		// $site_url = preg_replace('#^https?://#i', '', $site_url );
+		// $site_url = preg_replace( '|/$|', '', $site_url );
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$args = array(
+			'key'  => $this->key,
+			'site' => $site_url,
+		);
+		$args['api_email'] = $this->api_email;
+		$args['api_key']   = $this->api_key;
+		$args['product_id']   = $this->product_id;
+		// Get the response.
+		$body = array(
+			'context' => 'kadence',
+			'company' => 'Brandi Toole',
+			'industry' => 'Photography',
+			'location' => "I'm based out of Rochester, New York but also travel to Atlanta, Georgia frequently.",
+			'mission' => "I'm a self taught photographer, with over 10 years of experience photographing weddings and couples. My goal is to create photos in a photojournalistic and unobtrusive way to help you to remember the day as it really happened. I send a curated preview of your personalized gallery within 48 hours of your wedding day and your full a gallery will be completed in 8-10 weeks for you to print, download and share.",
+			'tone' => 'PASSIONATE',
+			'keywords'=> array(
+				'wedding photography',
+				'couples photography',
+				'family photograph',
+				'portrait',
+			),
+			'prompts' => array(
+				'accordion-faq',
+				// 'accordion-get-started',
+				// 'cards-location',
+				// 'cards-products-services',
+				// 'columns-about',
+				// 'columns-profile',
+				// 'counter-stats-work',
+				// 'forms-subscribe',
+				// 'gallery-work',
+				// 'hero-about',
+				// 'hero-value-prop',
+				// 'image-mission',
+				// 'media-text-about',
+				// 'media-text-donate', 
+				// 'people-team',
+				// 'pricing-table-plans',
+				// 'testimonials-testimonials',
+			),
+		);
+		$auth = array(
+			'domain' => $site_url,
+			'key' => $this->api_key,
+		);
+		if ( 'ai-full' === $this->package ) {
+			$api_url  = add_query_arg( $body, $this->url );
+			$response = wp_remote_post(
+				$api_url,
+				array(
+					'timeout' => 20,
+					'headers' => array(
+						'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					),
+					'body'    => json_encode( $body ),
+				)
+			);
+		} else {
+			// $args = array(
+			// 	'context' => 'kadence',
+			// );
+			$api_url  = $this->url;
+			$response = wp_remote_get(
+				$api_url,
+				array(
+					'timeout' => 20,
+					'headers' => array(
+						'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					),
+				)
+			);
+		}
+		// $auth = array(
+		// 	'domain' => $site_url,
+		// 	'key' => $this->api_key,
+		// );
+		error_log( print_r( $api_url, true ) );
+		// $response = wp_remote_post(
+		// 	$api_url,
+		// 	array(
+		// 		'timeout' => 20,
+		// 		'headers' => array(
+		// 			'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+		// 		),
+		// 		'body'    => json_encode( $body ),
+		// 	)
+		// );
+		error_log( print_r( $response, true ) );
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) ) {
+			return '';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return;
+		}
+
+		return $contents;
 	}
 	/**
 	 * Main AJAX callback function for:

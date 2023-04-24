@@ -18,6 +18,10 @@ export default function replaceContent( content, aiContent, categories, context,
 	if ( ! content ) {
 		return content;
 	}
+	//console.log( aiContent );
+	if ( ! aiContent?.content ) {
+		return content;
+	}
 	const currentCategory = categories?.[0] ? categories[0] : '';
 	switch (currentCategory) {
 		case "media-text":
