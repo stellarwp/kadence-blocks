@@ -825,10 +825,10 @@ function KadenceTestimonials({
 						${ previewMediaBorderRight ? 'border-right: ' + previewMediaBorderRight + ';' : '' }
 						${ previewMediaBorderBottom ? 'border-bottom: ' + previewMediaBorderBottom + ';' : '' }
 						${ previewMediaBorderLeft ? 'border-left: ' + previewMediaBorderLeft + ';' : '' }
-						${ previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
 						${ previewMediaMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewMediaMarginTop, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewMediaMarginRight, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewMediaMarginBottom, mediaMarginUnit ) + ';' : '' }
