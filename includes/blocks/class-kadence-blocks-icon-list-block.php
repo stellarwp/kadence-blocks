@@ -95,12 +95,9 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			),
 		);
 
-		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
-		$css->render_responsive_range( $list_gap_props, 'listGap', 'margin-bottom' );
-
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );
 		$css->render_responsive_range( $list_gap_props, 'listGap', 'grid-row-gap' );
-	
+
 		if ( ! empty( $attributes['columns'] ) && abs( $attributes['columns'] ) > 1 ) {
 			$css->set_media_state( 'desktopOnly' );
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.kt-svg-icon-list-columns-1) ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child)' );
