@@ -170,27 +170,31 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 					$mask_size     = ( ! empty( $attributes['maskSize'] ) ? $attributes['maskSize'] : 'auto' );
 					$mask_position = ( ! empty( $attributes['maskPosition'] ) ? $attributes['maskPosition'] : 'center center' );
 					$mask_repeat   = ( ! empty( $attributes['maskRepeat'] ) ? $attributes['maskRepeat'] : 'no-repeat' );
-					$css->add_property( 'mask-image', 'url(' . $attributes['maskUrl'] . ')' );
-					$css->add_property( 'mask-size', $mask_size );
-					$css->add_property( 'mask-repeat', $mask_repeat );
-					$css->add_property( 'mask-position', $mask_position );
-
 					$css->add_property( '-webkit-mask-image', 'url(' . $attributes['maskUrl'] . ')' );
+					$css->add_property( 'mask-image', 'url(' . $attributes['maskUrl'] . ')' );
+
 					$css->add_property( '-webkit-mask-size', $mask_size );
+					$css->add_property( 'mask-size', $mask_size );
+
 					$css->add_property( '-webkit-mask-repeat', $mask_repeat );
+					$css->add_property( 'mask-repeat', $mask_repeat );
+
 					$css->add_property( '-webkit-mask-position', $mask_position );
+					$css->add_property( 'mask-position', $mask_position );
 				}
 			} else {
 				$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
-				$css->add_property( 'mask-image', 'url(' . $mask_base_url . $attributes['maskSvg'] . '.svg)' );
-				$css->add_property( 'mask-size', 'auto' );
-				$css->add_property( 'mask-repeat', 'no-repeat' );
-				$css->add_property( 'mask-position', 'center' );
-
 				$css->add_property( '-webkit-mask-image', 'url(' . $mask_base_url . $attributes['maskSvg'] . '.svg)' );
+				$css->add_property( 'mask-image', 'url(' . $mask_base_url . $attributes['maskSvg'] . '.svg)' );
+
 				$css->add_property( '-webkit-mask-size', 'auto' );
+				$css->add_property( 'mask-size', 'auto' );
+
 				$css->add_property( '-webkit-mask-repeat', 'no-repeat' );
+				$css->add_property( 'mask-repeat', 'no-repeat' );
+
 				$css->add_property( '-webkit-mask-position', 'center' );
+				$css->add_property( 'mask-position', 'center' );
 			}
 		}
 

@@ -28,20 +28,20 @@ import {
 	MediaReplaceFlow,
 	store as blockEditorStore,
 	BlockAlignmentControl,
+	__experimentalImageEditor as ImageEditor,
 } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { __, sprintf, isRTL } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { crop, upload } from '@wordpress/icons';
+import { crop, upload, caption as captionIcon } from '@wordpress/icons';
 import { store as noticesStore } from '@wordpress/notices';
 import { store as coreStore } from '@wordpress/core-data';
-
 /**
  * Internal dependencies
  */
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
-import ImageEditor, { ImageEditingProvider } from './image-editing';
+//import ImageEditor, { ImageEditingProvider } from './image-editing';
 import { KadenceColorOutput, getPreviewSize, getFontSizeOptionOutput, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
@@ -173,8 +173,8 @@ export default function Image( {
 	const previewCaptionLineHeightUnit = captionStyles[ 0 ].lineType !== undefined ? captionStyles[ 0 ].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].lineHeight[0] ? captionStyles[ 0 ].lineHeight[0] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[1] ? captionStyles[ 0 ].lineHeight[ 1 ] + previewCaptionLineHeightUnit : 'normal' ), ( undefined !== captionStyles[ 0 ].lineHeight[2] + previewCaptionLineHeightUnit ? captionStyles[ 0 ].lineHeight[ 2 ] : 'normal' ) );
 
-	const captionRef = useRef();
-	const prevUrl = usePrevious( url );
+	const prevCaption = usePrevious( caption );
+	const [ stateShowCaption, setStateShowCaption ] = useState( !! caption );
 	const { allowResize = true } = context;
 	function saveDropShadow( value ) {
 		const newItems = dropShadow.map( ( item, thisIndex ) => {
@@ -283,17 +283,24 @@ export default function Image( {
 			.catch( () => {} );
 	}, [ id, url, isSelected, externalBlob ] );
 
-	// Focus the caption after inserting an image from the placeholder. This is
-	// done to preserve the behaviour of focussing the first tabbable element
-	// when a block is mounted. Previously, the image block would remount when
-	// the placeholder is removed. Maybe this behaviour could be removed.
+
+	// We need to show the caption when changes come from
+	// history navigation(undo/redo).
 	useEffect( () => {
-		if ( url && ! prevUrl && isSelected ) {
-			if(captionRef.current !== undefined) {
-				captionRef.current.focus();
-			}
+		if ( caption && ! prevCaption ) {
+			setStateShowCaption( true );
 		}
-	}, [ url, prevUrl ] );
+	}, [ caption, prevCaption ] );
+
+	// Focus the caption when we click to add one.
+	const captionRef = useCallback(
+		( node ) => {
+			if ( node && ! caption ) {
+				node.focus();
+			}
+		},
+		[ caption ]
+	);
 
 	function onResizeStart() {
 		toggleSelection( false );
@@ -389,8 +396,11 @@ export default function Image( {
 	useEffect( () => {
 		if ( ! isSelected ) {
 			setIsEditingImage( false );
+			if ( ! caption ) {
+				setStateShowCaption( false );
+			}
 		}
-	}, [ isSelected ] );
+	}, [ isSelected, caption ] );
 	const isDynamic = attributes.kadenceDynamic && attributes.kadenceDynamic.url && attributes.kadenceDynamic.url.enable ? true : false;
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
@@ -403,6 +413,22 @@ export default function Image( {
 					value={ align }
 					onChange={ updateAlignment }
 				/>
+				{ showCaption && (
+					<ToolbarButton
+						onClick={ () => {
+							setStateShowCaption( ! stateShowCaption );
+							if ( stateShowCaption && caption ) {
+								setAttributes( { caption: undefined } );
+							}
+						} }
+						icon={ captionIcon }
+						isPressed={ stateShowCaption }
+						label={
+							stateShowCaption ? __( 'Remove caption' )
+								: __( 'Add caption' )
+						}
+					/>
+				) }
 				{ ! isEditingImage && ! isDynamic && ! isDynamicLink && (
 					<KadenceImageURLInputUI
 						url={ link || '' }
@@ -443,6 +469,8 @@ export default function Image( {
 						label={ __( 'Upload external image', 'kadence-blocks' ) }
 					/>
 				) }
+			</BlockControls>
+			<BlockControls>
 				<CopyPasteAttributes
 					attributes={ attributes }
 					excludedAttrs={ nonTransAttrs }
@@ -833,7 +861,7 @@ export default function Image( {
 							panelName={ 'kb-image-caption-settings' }
 						>
 							<ToggleControl
-								label={ __( 'Show Caption', 'kadence-blocks' ) }
+								label={ __( 'Enable Caption', 'kadence-blocks' ) }
 								checked={ showCaption }
 								onChange={ (value) => setAttributes( { showCaption: value } ) }
 							/>
@@ -1249,12 +1277,19 @@ export default function Image( {
 	if ( canEditImage && isEditingImage ) {
 		img = (
 			<ImageEditor
+				id={ id }
 				url={ url }
 				width={ width }
 				height={ height }
 				clientWidth={ clientWidth }
 				naturalHeight={ naturalHeight }
 				naturalWidth={ naturalWidth }
+				onSaveImage={ ( imageAttributes ) =>
+					setAttributes( imageAttributes )
+				}
+				onFinishEditing={ () => {
+					setIsEditingImage( false );
+				} }
 			/>
 		);
 	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
@@ -1383,23 +1418,12 @@ export default function Image( {
 	}
 
 	return (
-		<ImageEditingProvider
-			id={ id }
-			url={ url }
-			naturalWidth={ naturalWidth }
-			naturalHeight={ naturalHeight }
-			clientWidth={ clientWidth }
-			onSaveImage={ ( imageAttributes ) =>
-				setAttributes( imageAttributes )
-			}
-			isEditing={ isEditingImage }
-			onFinishEditing={ () => setIsEditingImage( false ) }
-		>
+		<>
 			{ /* Hide controls during upload to avoid component remount,
 				which causes duplicated image upload. */ }
 			{ ! temporaryURL && controls }
 			{ img }
-			{ ( ( ! RichText.isEmpty( caption ) || isSelected ) && showCaption !== false ) && (
+			{ ( ( ! RichText.isEmpty( caption ) || isSelected ) && stateShowCaption && showCaption !== false ) && (
 				<RichText
 					ref={ captionRef }
 					tagName="figcaption"
@@ -1426,6 +1450,6 @@ export default function Image( {
 					}
 				/>
 			) }
-		</ImageEditingProvider>
+		</>
 	);
 }

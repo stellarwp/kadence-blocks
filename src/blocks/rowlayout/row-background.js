@@ -44,9 +44,18 @@ import { getSpacingOptionOutput } from './utils';
 	previewBackgroundImage = getPreviewSize(  previewDevice, ( backgroundSettingTab && 'gradient' == backgroundSettingTab ? gradient : previewBackgroundImage ), ( 'gradient' == tabletBackground?.[0]?.type && tabletBackground?.[0]?.gradient && tabletBackground?.[0]?.enable ? tabletBackground[0].gradient : previewBackgroundImage ), ( undefined !== mobileBackground[0] && undefined !== mobileBackground[0].type && 'gradient' == mobileBackground[0].type && undefined !== mobileBackground[0].gradient && mobileBackground[0].gradient && mobileBackground[0].enable ? mobileBackground[0].gradient : previewBackgroundImage ) );
 
 	previewBackgroundImage = getPreviewSize( previewDevice, previewBackgroundImage, ( tabletAllowForceOverride && tabletBackground?.[0]?.forceOverDesk && tabletBackground?.[0]?.enable ? 'none' : previewBackgroundImage ), ( mobileAllowForceOverride && mobileBackground?.[0]?.forceOverDesk && mobileBackground?.[0]?.enable ? 'none' : previewBackgroundImage ) );
+
+	previewBackgroundImage = getPreviewSize( previewDevice, previewBackgroundImage, ( 'gradient' !== tabletBackground?.[0]?.type && '' === tabletBackground?.[0]?.bgImg && tabletBackground?.[0]?.enable ? 'none' : previewBackgroundImage ), ( 'gradient' !== mobileBackground?.[0]?.type && '' === mobileBackground?.[0]?.bgImg && mobileBackground?.[0]?.enable ? 'none' : previewBackgroundImage ) );
+	
 	if ( previewBackgroundImage === 'none' ) {
 		previewBackgroundImage = undefined;
 	}
+	// let disableBGImage = false;
+	// if ( 'Mobile' === previewDevice && undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].enable && 'gradient' !== mobileBackground[0].type && '' === mobileBackground[0].bgImg ) {
+	// 	disableBGImage = true;
+	// } else if ( 'Tablet' === previewDevice && undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].enable && 'gradient' !== tabletBackground[0].type && '' === tabletBackground[0].bgImg ) {
+	// 	disableBGImage = true;
+	// }
 	const previewBackgroundSize = getPreviewSize( previewDevice, ( bgImgSize ? bgImgSize : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgSize && tabletBackground[0].enable ? tabletBackground[0].bgImgSize : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgSize && mobileBackground[0].enable ? mobileBackground[0].bgImgSize : '' ) );
 	const previewBackgroundPosition = getPreviewSize( previewDevice, ( bgImgPosition ? bgImgPosition : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgPosition && tabletBackground[0].enable ? tabletBackground[0].bgImgPosition : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgPosition && mobileBackground[0].enable ? mobileBackground[0].bgImgPosition : '' ) );
 	const previewBackgroundRepeat = getPreviewSize( previewDevice, ( bgImgRepeat ? bgImgRepeat : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgRepeat && tabletBackground[0].enable ? tabletBackground[0].bgImgRepeat : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgRepeat && mobileBackground[0].enable ? mobileBackground[0].bgImgRepeat : '' ) );

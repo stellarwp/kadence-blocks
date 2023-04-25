@@ -219,6 +219,7 @@
 .kt-button.kb-btn-global-outline {
     border: 2px solid var(--global-palette-btn-bg, #3633E1);
 	background:transparent;
+    padding: calc( 0.4em - 2px ) calc( 1em - 2px );
 	color: var(--global-palette-btn-bg, #3633E1);
     &:hover {
         border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
@@ -264,9 +265,11 @@
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
     border-width: 3px;
+    padding: calc( 0.4em - 3px ) calc( 1em - 3px );
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
     border-width: 1px;
+    padding: calc( 0.4em - 1px ) calc( 1em - 1px );
 }
 // .wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {
 //     display: flex;

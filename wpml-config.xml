@@ -35,6 +35,13 @@
 			<xpath>//div[@class="kt-testimonial-name"]</xpath>
 			<xpath>//div[@class="kt-testimonial-occupation"]</xpath>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/testimonial" translate="1">
+			<key name="url"/>
+			<key name="title"/>
+			<key name="content"/>
+			<key name="name"/>
+			<key name="occupation"/>
+		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
 			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
