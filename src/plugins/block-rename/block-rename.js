@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { BlockSettingsMenuControls } from '@wordpress/block-editor';
+import { hasBlockSupport } from '@wordpress/blocks';
 import {
 	MenuItem,
 	Modal,
@@ -31,7 +32,7 @@ const RenameBlockMenuItem = () => {
 				{( props ) => {
 					const { selectedClientIds, selectedBlocks, onClose } = props;
 
-					if ( selectedClientIds.length !== 1 || !startsWith( get( selectedBlocks, [ 0 ] ), 'kadence/' ) ) {
+					if ( selectedClientIds.length !== 1 || !hasBlockSupport( get( selectedBlocks, [ 0 ] ), 'kbMetadata' ) ) {
 						return null;
 					}
 

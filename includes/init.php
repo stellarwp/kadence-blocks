@@ -307,6 +307,11 @@ function kadence_blocks_gutenberg_editor_plugin_enqueue() {
 		wp_enqueue_script( 'kadence-blocks-plugin-js' );
 		wp_enqueue_style( 'kadence-blocks-plugin-css' );
 	}
+
+	$asset_meta = kadence_blocks_get_asset_file( 'dist/early-filters' );
+	//wp_register_script( 'kadence-blocks-pro-early-filters-vendor-js', KBP_URL . 'includes/assets/js/vendors/blocks_early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
+	wp_enqueue_script( 'kadence-blocks-early-filters-js', KADENCE_BLOCKS_URL . 'dist/early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
+
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );
 /**
