@@ -47,4 +47,4 @@ export function blockMetadataAttribute( settings ) {
 	return settings;
 }
 
-addFilter( 'blocks.registerBlockType', 'kadence/block-name', blockMetadataAttribute );
+addFilter( 'blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute );
