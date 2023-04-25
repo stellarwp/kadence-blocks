@@ -23,17 +23,6 @@ registerBlockType( 'kadence/testimonial', {
 	icon    : {
 		src: testimonialSingleBlockIcon,
 	},
-	__experimentalLabel( attributes, { context } ) {
-		const { title, metadata } = attributes;
-
-		// In the list view, use the block's content as the label.
-		// If the content is empty, fall back to the default label.
-		if ( context === 'list-view' && get( metadata, 'name', '') !== '' ) {
-			return metadata.name;
-		} else if ( context === 'list-view' && title ) {
-			return title;
-		}
-	},
 	edit,
 	example: {}
 } );

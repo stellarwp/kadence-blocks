@@ -45,16 +45,6 @@ registerBlockType( 'kadence/advancedheading', {
 		__( 'text', 'kadence-blocks' ),
 		'KB',
 	],
-	__experimentalLabel( attributes, { context } ) {
-		const { content } = attributes;
-
-		// In the list view, use the block's content as the label.
-		// If the content is empty, fall back to the default label.
-		if ( context === 'list-view' && content ) {
-			return content;
-		}
-
-	},
 	icon: {
 		src: advancedHeadingIcon,
 	},

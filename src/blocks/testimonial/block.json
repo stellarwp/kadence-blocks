@@ -110,12 +110,6 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
-	},
-	"metadata": {
-	  "type": "object",
-	  "default": {
-		  "name": ""
-	  }
 	}
   },
   "usesContext": [
@@ -139,6 +133,8 @@
   ],
   "supports": {
 	"anchor": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true,
+	"kbContentLabel": "title"
   }
 }

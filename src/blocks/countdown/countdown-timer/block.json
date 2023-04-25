@@ -16,6 +16,7 @@
   "supports": {
 	"inserter": false,
 	"reusable": false,
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

@@ -51,16 +51,6 @@ registerBlockType( 'kadence/pane', {
 	getEditWrapperProps( attributes ) {
 		return { 'data-pane': attributes.id };
 	},
-	__experimentalLabel( attributes, { context } ) {
-		const { title } = attributes;
-
-		// In the list view, use the block's content as the label.
-		// If the content is empty, fall back to the default label.
-		if ( context === 'list-view' && title && undefined !== title[0] ) {
-			return title[0];
-		}
-
-	},
 	edit,
 	save( { attributes } ) {
 		const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
