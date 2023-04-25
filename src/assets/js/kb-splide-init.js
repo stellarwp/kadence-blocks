@@ -115,9 +115,8 @@
 					this.createSplideElements(navSlider);
 
 					// Switch the datasets for the nav and main slider elements
-					let mainSliderOptions = this.getSplideOptions(
-						this.parseDataset(navSlider.dataset)
-					);
+					let mainSliderParsedData = this.parseDataset(navSlider.dataset)
+					let mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
@@ -125,7 +124,7 @@
 					navSliderOptions.arrows = true;
 					// navSliderOptions.rewind = true;
 
-					mainSliderOptions.type = "fade";
+					mainSliderOptions.type = ( mainSliderParsedData.sliderFade ||  undefined == mainSliderParsedData.sliderFade ) ? "fade" : "slide";
 					mainSliderOptions.rewind = true;
 					mainSliderOptions.pagination = false;
 
