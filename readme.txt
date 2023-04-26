@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.35 =
+Release Date: TBD, 2023
+* Fix: Issue with fullwidth image.
+
 = 3.0.34 =
 Release Date: April 24th, 2023
 * Update: Design library to use shadow dom. 
