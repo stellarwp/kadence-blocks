@@ -5,6 +5,7 @@ import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { BlockSettingsMenuControls } from '@wordpress/block-editor';
 import { hasBlockSupport } from '@wordpress/blocks';
+import { ENTER } from '@wordpress/keycodes';
 import {
 	MenuItem,
 	Modal,
@@ -62,6 +63,13 @@ const RenameBlockMenuItem = () => {
 						onFocus={( event ) => event.target.select()}
 						onChange={( value ) => {
 							setTmpName( value );
+						}}
+						onKeyDown={( event ) => {
+							const { keyCode } = event;
+							if ( keyCode === ENTER ) {
+								updateBlockAttributes( block.clientId, { metadata: { ...block.attributes.metadata, name: tmpName } } );
+								closeModal();
+							}
 						}}
 					/>
 
