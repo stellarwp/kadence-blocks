@@ -91,7 +91,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		);
 		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
 
-		$width = '0' === $attributes['width'] ? 'auto' : $attributes['width'] . 'px';
+		$width = ( !isset( $attributes['width'] ) || '0' === $attributes['width'] ) ? 'auto' : $attributes['width'] . 'px';
 
 		if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
 			$css->add_property( 'max-width', $width );
