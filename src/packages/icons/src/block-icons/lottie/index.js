@@ -1,8 +1,8 @@
 export default <svg width="20px" height="20px" viewBox="0 0 380 361" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<defs>
 		<linearGradient x1="0.260883299%" y1="10.3043172%" x2="95.3936038%" y2="72.4618806%" id="linearGradient-1">
-			<stop stopColor="var(--kadence-color, #0058b0 )" offset="0%"></stop>
-			<stop stopColor="var(--kadence-color, #0058b0 )" offset="100%"></stop>
+			<stop stop-color="var(--kadence-color, #0058b0 )" offset="0%"></stop>
+			<stop stop-color="var(--kadence-color, #0058b0 )" offset="100%"></stop>
 		</linearGradient>
 	</defs>
 	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1.000000, 0.000000)">

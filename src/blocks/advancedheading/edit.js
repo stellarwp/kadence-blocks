@@ -388,9 +388,10 @@ function KadenceAdvancedHeading( props ) {
 	const previewBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
 	const previewBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
 	const previewBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
-
-
-
+	let backgroundIgnoreClass = backgroundColorClass ? false : true;
+	if ( ! backgroundIgnoreClass && ! kadence_blocks_params.isKadenceT && background && background.startsWith( 'palette' ) ) {
+		backgroundIgnoreClass = true;
+	}
 	const headingOptions = [
 		[
 			{
@@ -503,7 +504,7 @@ function KadenceAdvancedHeading( props ) {
 					gap: icon ? '0.25em' : undefined,
 					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 					textAlign: previewAlign ? previewAlign : undefined,
-					backgroundColor: background && ! backgroundColorClass ? KadenceColorOutput( background ) : undefined,
+					backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput( background ) : undefined,
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
 					fontStyle      : fontStyle,
@@ -540,7 +541,7 @@ function KadenceAdvancedHeading( props ) {
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
-				backgroundColor: background && ! backgroundColorClass ? KadenceColorOutput(background) : undefined,
+				backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput(background) : undefined,
 				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
 				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
 				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),

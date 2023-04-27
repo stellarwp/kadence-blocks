@@ -173,7 +173,6 @@
 	.splide__list {
 		height: 100% !important;
 	}
-	
 	.kb-bg-slide-contain div.kb-bg-slide {
 		background-position: center;
 		background-size: cover;
@@ -192,6 +191,9 @@
 }
 .kb-blocks-bg-slider-init.splide .splide__pagination {
     bottom: 10px;
+}
+.kb-blocks-bg-slider-init.splide .splide__arrow {
+    z-index: 100;
 }
 // background Video
 .kb-blocks-bg-video-container {

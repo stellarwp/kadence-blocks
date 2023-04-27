@@ -24,6 +24,10 @@ export function BlockPreview( {
 	viewportWidth = 1200,
 	minHeight,
 	additionalStyles = [],
+	editorStyles,
+	ratio,
+	neededCompatStyles = [],
+	baseCompatStyles,
 } ) {
 
 	const originalSettings = useSelect(
@@ -52,6 +56,10 @@ export function BlockPreview( {
 				viewportWidth={ viewportWidth }
 				minHeight={ minHeight }
 				additionalStyles={ additionalStyles }
+				ratio={ ratio }
+				editorStyles={ editorStyles }
+				baseCompatStyles={ baseCompatStyles }
+				neededCompatStyles={ neededCompatStyles }
 			/>
 		</BlockEditorProvider>
 	);

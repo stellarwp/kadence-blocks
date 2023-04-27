@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.0
+Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.33
+Stable tag: 3.0.34
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,13 +77,34 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+
 = 3.1.0 =
 Release Date: TBD, 2023
-* New: Progress Bar Block
-* New: Dynamic block labels in list view.
+* Add: Advanced Form Block
+* Add: Progress Bar Block
+* Add: Dynamic block labels in list view.
+* Add: Ability to set custom names for Kadence blocks in list view
+
+= 3.0.35 =
+Release Date: TBD, 2023
+* Fix: Issue with fullwidth image.
+
+= 3.0.34 =
+Release Date: April 24th, 2023
+* Update: Design library to use shadow dom.
+* Update: Filter for custom palette.
+* Fix: Issue with image crop.
+* Fix: Issue with testimonial media border radius in admin.
+* Fix: Accordion output styles.
+* Fix: Possible max width issue with sections.
+* Fix: Issue with typed text script.
+* Fix: Issue with row background override in editor on mobile.
+* Fix: Issue with some columns in gallery when using individual settings.
 
 = 3.0.33 =
 Release Date: April 12, 2023
+* Add: Option to set design library to use images instead of iframes.
+* Fix: Issue with typed text popover not showing correctly.
 * Fix: Aria label for mute button in row layout video background.
 * Fix: Possible issue with the info box when title and text are paragraph tags.
 * Fix: "Hide" button visibility setting on Show More block.

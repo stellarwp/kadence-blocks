@@ -59,11 +59,20 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			//Section inside Section compatablity.
 			// $css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			// $css->add_property( 'flex', '1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-md-dir-vertical)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->add_property( 'max-width', 'unset' );
 			$css->add_property( 'margin-left', 'unset' );
 			$css->add_property( 'margin-right', 'unset' );
+			if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
+				$css->set_media_state( 'desktopOnly' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id );
+				$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+				$css->add_property( 'max-width', 'unset' );
+				$css->add_property( 'margin-left', 'unset' );
+				$css->add_property( 'margin-right', 'unset' );
+				$css->set_media_state( 'desktop' );
+			}
 		}
 		// Margin, check old first.
 		if ( $css->is_number( $attributes['topMargin'] ) || $css->is_number( $attributes['bottomMargin'] ) || $css->is_number( $attributes['rightMargin'] ) || $css->is_number( $attributes['leftMargin'] ) || $css->is_number( $attributes['topMarginT'] ) || $css->is_number( $attributes['bottomMarginT'] ) || $css->is_number( $attributes['rightMarginT'] ) || $css->is_number( $attributes['leftMarginT'] ) || $css->is_number( $attributes['topMarginM'] ) || $css->is_number( $attributes['bottomMarginM'] ) || $css->is_number( $attributes['rightMarginM'] ) || $css->is_number( $attributes['leftMarginM'] ) ) {

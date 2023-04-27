@@ -120,6 +120,9 @@ export default function replaceColors( content, style ) {
 		}
 		// Handle Buttons differently.
 		content = content.replace( /"inheritStyles":"inherit"/g, '"color":"ph-kb-pal9","background":"ph-kb-pal3","colorHover":"ph-kb-pal9","backgroundHover":"ph-kb-pal4","inheritStyles":"inherit"' );
+		// Outline Buttons.
+		content = content.replace( /"inheritStyles":"outline"/g, '"color":"ph-kb-pal3","colorHover":"ph-kb-pal4","borderStyle":[{"top":["ph-kb-pal3","",""],"right":["ph-kb-pal3","",""],"bottom":["ph-kb-pal3","",""],"left":["ph-kb-pal3","",""],"unit":"px"}],"borderHoverStyle":[{"top":["ph-kb-pal4","",""],"right":["ph-kb-pal4","",""],"bottom":["ph-kb-pal4","",""],"left":["ph-kb-pal4","",""],"unit":"px"}],"inheritStyles":"outline"' );
+
 		// Color Map Switch
 		// 1 => 9
 		// 2 => 8

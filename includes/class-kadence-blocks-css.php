@@ -501,20 +501,20 @@ class Kadence_Blocks_CSS {
 		// Switch through the property types and add prefixed rules.
 		switch ( $property ) {
 			case 'border-top-left-radius':
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
+				$this->add_rule( $property, $value );
 				break;
 			case 'border-top-right-radius':
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
+				$this->add_rule( $property, $value );
 				break;
 			case 'border-bottom-left-radius':
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
+				$this->add_rule( $property, $value );
 				break;
 			case 'border-bottom-right-radius':
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
+				$this->add_rule( $property, $value );
 				break;
 			case 'background-image':
 				$this->add_rule( $property, sprintf( "url('%s')", $value ) );
@@ -523,13 +523,13 @@ class Kadence_Blocks_CSS {
 				$this->add_rule( $property, sprintf( '%s', $value ) );
 				break;
 			case 'flex':
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
+				$this->add_rule( $property, $value );
 				break;
 			default:
-				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
 				$this->add_rule( $property, $value, '-moz-' );
+				$this->add_rule( $property, $value );
 				break;
 		}
 
@@ -2310,7 +2310,9 @@ class Kadence_Blocks_CSS {
 	 * @return string
 	 */
 	public function css_output() {
-		$this->render_media_queries();
+		if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
+			$this->render_media_queries();
+		}
 		// Add current selector's rules to output
 		$this->add_selector_rules_to_output();
 

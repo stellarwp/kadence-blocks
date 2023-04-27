@@ -213,6 +213,16 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'--global-palette9' => \Kadence\kadence()->palette_option( 'palette9' ),
 		);
 	}
+	$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+	$font_sizes = array(
+		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
+		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
+		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
+		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
+	);
+	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -239,7 +249,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'userrole'       => $userrole,
 			'proData'        => $pro_data,
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
-			'library_sections' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_section_prebuilt_data( $pro_data ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
@@ -274,6 +283,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'wp_max_upload_size' => wp_max_upload_size(),
 			'get_allowed_mime_types' => get_allowed_mime_types(),
 			'global_colors' => $global_colors,
+			'font_sizes' => $font_sizes,
+			'livePreviewStyles' => apply_filters( 'kadence_blocks_design_library_iframe_styles', KADENCE_BLOCKS_URL . 'includes/assets/css/live-preview-base.min.css?ver=' . KADENCE_BLOCKS_VERSION ),
 			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
 			'addPostsLink' => admin_url( 'post-new.php' ),
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
@@ -293,6 +304,20 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		'kadence_blocks_params_fa',
 		array(
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
+		)
+	);
+	wp_localize_script(
+		'kadence-blocks-js',
+		'kadence_blocks_params_patterns',
+		array(
+			'library_patterns' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_section_prebuilt_data( $pro_data ),
+		)
+	);
+	wp_localize_script(
+		'kadence-blocks-js',
+		'kadence_blocks_params_pages',
+		array(
+			'library_pages' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_page_prebuilt_data( $pro_data ),
 		)
 	);
 }
@@ -676,17 +701,23 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 		--global-row-edge-theme: calc( var(--global-content-edge-padding) + 2rem);
 	}';
 	if ( ! class_exists( 'Kadence\Theme' ) ) {
-		$css .= ':root {
-			--global-palette1: #3182CE;
-			--global-palette2: #2B6CB0;
-			--global-palette3: #1A202C;
-			--global-palette4: #2D3748;
-			--global-palette5: #4A5568;
-			--global-palette6: #718096;
-			--global-palette7: #EDF2F7;
-			--global-palette8: #F7FAFC;
-			--global-palette9: #ffffff;
-		}';
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+		$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+		$css .= ':root {';
+		foreach ( $global_colors as $key => $value ) {
+			$css .= esc_attr( $key ) . ': ' . esc_attr( $value ) . ';';
+		}
+		$css .= '}';
 	}
 	wp_register_style( 'kadence-blocks-global-editor-styles', false );
 	wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -724,10 +755,30 @@ function kadence_blocks_add_global_gutenberg_styles_frontend() {
 	);
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
-	foreach( $font_sizes as $key => $value ) {
+	foreach ( $font_sizes as $key => $value ) {
 		$css .= '--global-kb-font-size-' . $key . ':' . $value . ';';
 	}
 	$css .= '}';
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		$global_colors = array(
+			'--global-palette1' => '#3182CE',
+			'--global-palette2' => '#2B6CB0',
+			'--global-palette3' => '#1A202C',
+			'--global-palette4' => '#2D3748',
+			'--global-palette5' => '#4A5568',
+			'--global-palette6' => '#718096',
+			'--global-palette7' => '#EDF2F7',
+			'--global-palette8' => '#F7FAFC',
+			'--global-palette9' => '#ffffff',
+		);
+		$global_colors = apply_filters( 'kadence_blocks_pattern_global_colors', $global_colors );
+		$css .= ':root {';
+		foreach ( $global_colors as $key => $value ) {
+			$css .= esc_attr( $key ) . ': ' . esc_attr( $value ) . ';';
+		}
+		$css .= '}';
+	}
+
 	// This is a temp fix for restored316 upgrade issue.
 	if ( get_option( 'stylesheet' ) === 'restored316-journey' ) {
 		$css .= '.kt-blocks-carousel-init[data-slider-dots=true].is-overflow {';
