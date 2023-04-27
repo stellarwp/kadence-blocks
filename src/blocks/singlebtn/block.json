@@ -130,7 +130,7 @@
 	},
 	"borderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -140,7 +140,7 @@
 	},
 	"tabletBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -150,7 +150,7 @@
 	},
 	"mobileBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -160,7 +160,7 @@
 	},
 	"borderHoverStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -170,7 +170,7 @@
 	},
 	"tabletBorderHoverStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -180,7 +180,7 @@
 	},
 	"mobileBorderHoverStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -364,7 +364,9 @@
 	"ktanimatepreview": true,
 	"ktdynamic": true,
 	"html": false,
-	"reusable": false
+	"reusable": false,
+	"kbMetadata": true,
+	"kbContentLabel": "text"
   },
   "usesContext": [
 	"postId",

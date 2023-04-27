@@ -133,6 +133,8 @@
   ],
   "supports": {
 	"anchor": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true,
+	"kbContentLabel": "title"
   }
 }

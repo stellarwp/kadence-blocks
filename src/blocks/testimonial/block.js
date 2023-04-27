@@ -1,5 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
-
+import { get } from 'lodash';
 /**
  * Internal dependencies
  */
@@ -22,15 +22,6 @@ registerBlockType( 'kadence/testimonial', {
 	],
 	icon    : {
 		src: testimonialSingleBlockIcon,
-	},
-	__experimentalLabel( attributes, { context } ) {
-		const { title } = attributes;
-
-		// In the list view, use the block's content as the label.
-		// If the content is empty, fall back to the default label.
-		if ( context === 'list-view' && title ) {
-			return title;
-		}
 	},
 	edit,
 	example: {}
