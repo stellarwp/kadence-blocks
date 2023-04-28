@@ -30,6 +30,7 @@
 
 				const slideCount = this.createSplideElements( thisSlider );
 				let parsedData = this.parseDataset(thisSlider.dataset);
+				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
 
 				if (document.querySelector('html[dir="rtl"]')) {
 					parsedData.sliderDirection = "rtl";
@@ -151,17 +152,19 @@
 					thumbnailSlider.mount();
 				} else {
 					let splideSlider = new Splide(thisSlider, splideOptions);
-					splideSlider.on( 'overflow', function ( isOverflow ) {
-						// Reset the carousel position
-						splideSlider.go( 0 );
+					if ( ! inHiddenMenu ) {
+						splideSlider.on( 'overflow', function ( isOverflow ) {
+							// Reset the carousel position
+							splideSlider.go( 0 );
 
-						splideSlider.options = {
-						  arrows    : splideOptions.arrows ? isOverflow : false,
-						  pagination: splideOptions.pagination ? isOverflow : false,
-						  drag      : splideOptions.drag ? isOverflow : false,
-						  clones    : isOverflow ? undefined : 0, // Toggle clones
-						};
-					} );
+							splideSlider.options = {
+							arrows    : splideOptions.arrows ? isOverflow : false,
+							pagination: splideOptions.pagination ? isOverflow : false,
+							drag      : splideOptions.drag ? isOverflow : false,
+							clones    : isOverflow ? undefined : 0, // Toggle clones
+							};
+						} );
+					}
 					splideSlider.mount();
 				}
 			}
