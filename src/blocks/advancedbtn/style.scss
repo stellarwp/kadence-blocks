@@ -21,6 +21,10 @@
         width: 100%;
     }
 }
+.kb-blocks-button-aos.kb-btn-width-type-full {
+    flex: 1 0 fit-content;
+    width: 100%;
+}
 .kb-button:not(.kb-btn-global-inherit) {
     border: 0 solid transparent;
     padding: 0.4em 1em;

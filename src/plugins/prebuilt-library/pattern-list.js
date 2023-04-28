@@ -112,15 +112,6 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		let allPatterns = [];
 		let variation = 1;
 		Object.keys( patterns ).map( function( key, index ) {
-			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'featured-products' ) ) {
-				return;
-			}
-			if ( ! kadence_blocks_params.hasProducts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'product-loop' ) ) {
-				return;
-			}
-			if ( ! kadence_blocks_params.hasPosts && patterns[key].categories && patterns[key].categories.hasOwnProperty( 'post-loop' ) ) {
-				return;
-			}
 			const temp = [];
 			if ( variation === 4 ) {
 				variation = 1;
@@ -232,7 +223,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		return newStyles;
 	}, [ selectedStyle, selectedFontSize ] );
 	const customShadowStyles = useMemo( () => {
-		let tempStyles = '';
+		let tempStyles = '.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px }';
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
 			tempStyles = tempStyles.concat( `.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}` );
 		}

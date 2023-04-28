@@ -23,7 +23,7 @@
     display: table;
     content: '';
 }
-.wp-block-kadence-advancedgallery .kb-gallery-ul {
+.wp-block-kadence-advancedgallery .kb-gallery-ul, ul.menu .wp-block-kadence-advancedgallery ul.kb-gallery-ul.kb-gallery-ul {
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
