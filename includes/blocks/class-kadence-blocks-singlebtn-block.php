@@ -255,11 +255,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$aos_args = array();
 		$aos_args = kadence_apply_aos_wrapper_args( $attributes, $aos_args );
 		if ( ! empty( $aos_args ) ) {
+			$aos_classes = array( 'kb-blocks-button-aos' );
+			$aos_classes[] = ! empty( $attributes['widthType'] ) ? 'kb-btn-width-type-' . $attributes['widthType'] : 'kb-btn-width-type-auto';
+			$aos_args['class'] = implode( ' ', $aos_classes );
 			$normalized_attributes = array();
 			foreach ( $aos_args as $key => $value ) {
 				$normalized_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 			}
-
 			$content = sprintf( '<div %1$s>%2$s</div>', implode( ' ', $normalized_attributes ), $content );
 		}
 
