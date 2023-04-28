@@ -81,6 +81,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 Release Date: April 28th, 2023
 * Fix: Typo in image css.
 * Fix: Issue with icon list editor preview.
+* Fix: Issue with fullwidth button and aos.
 
 = 3.0.35 =
 Release Date: April 27th, 2023
