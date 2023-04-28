@@ -876,6 +876,9 @@ class Kadence_Blocks_Settings {
 	 */
 	public function config_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
+
+		$kadence_sso = new Kadence_Blocks_SSO();
+		$license_url = $kadence_sso->get_auth_url();
 		?>
 		<div class="kadence_blocks_dash_head">
 			<div class="kadence_blocks_dash_head_container">
@@ -952,6 +955,14 @@ class Kadence_Blocks_Settings {
 						<?php do_action( 'kadence_blocks_dash_side_panel' ); ?>
 						<?php if ( apply_filters( 'kadence_blocks_dash_brand_sidebar', true ) ) { ?>
 							<?php do_action( 'kadence_blocks_dash_side_panel_pro' ); ?>
+							<div class="community-section sidebar-section components-panel">
+								<div class="components-panel__body is-opened">
+									<h2>License your site</h2>
+
+									<a href="<?php echo $license_url; ?>">Login with KadenceWP.com</a>
+								</div>
+							</div>
+
 							<div class="community-section sidebar-section components-panel">
 								<div class="components-panel__body is-opened">
 									<h2><?php esc_html_e( 'Web Creators Community', 'kadence-blocks' ); ?></h2>
