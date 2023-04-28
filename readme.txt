@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.35
+Stable tag: 3.0.36
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,8 +77,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.36 =
+Release Date: April 28th, 2023
+* Fix: Typo in image css.
+
 = 3.0.35 =
 Release Date: April 27th, 2023
+* Add: Option to set the gallery slider to slide transition.
+* Update: Icon list grid styles.
+* Fix: Outline button styles to maintain same size.
 * Fix: Issue with editor timeout on some servers with some plugin combinations.
 * Fix: Issue with fullwidth image.
 * Fix: Small issue with design library shadow dom styles.
