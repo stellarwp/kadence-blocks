@@ -1465,8 +1465,6 @@ const v_2 = {
 			paddingLeft: containerPadding && undefined !== containerPadding[ 3 ] && '' !== containerPadding[ 3 ] && null !== containerPadding[ 3 ] ? containerPadding[ 3 ] + 'px' : undefined,
 			maxWidth: ( ( 'bubble' === style || 'inlineimage' === style || undefined === containerMaxWidth || '' === containerMaxWidth ) ? undefined : containerMaxWidth + 'px' ),
 		};
-		console.log( 'here' );
-		console.log( containerStyles );
 		const renderTestimonialIcon = ( index ) => {
 			return (
 				<div className="kt-svg-testimonial-global-icon-wrap" style={ {

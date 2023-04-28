@@ -155,8 +155,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
-						$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
-					}
+					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+				}
 			} else if ( strpos( $attributes['background'], 'palette' ) === 0 ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {

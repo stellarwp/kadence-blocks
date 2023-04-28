@@ -284,7 +284,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'get_allowed_mime_types' => get_allowed_mime_types(),
 			'global_colors' => $global_colors,
 			'font_sizes' => $font_sizes,
-			'livePreviewStyles' => apply_filters( 'kadence_blocks_design_library_iframe_styles', KADENCE_BLOCKS_URL . 'includes/assets/css/live-preview-base.min.css?ver=' . KADENCE_VERSION ),
+			'livePreviewStyles' => apply_filters( 'kadence_blocks_design_library_iframe_styles', KADENCE_BLOCKS_URL . 'includes/assets/css/live-preview-base.min.css?ver=' . KADENCE_BLOCKS_VERSION ),
 			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
 			'addPostsLink' => admin_url( 'post-new.php' ),
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),

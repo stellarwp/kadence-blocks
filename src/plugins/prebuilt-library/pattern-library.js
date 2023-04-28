@@ -229,9 +229,11 @@ function PatternLibrary( {
 					setIsError( false );
 					setPatterns( filteredLibraryItems );
 					setCategories( cats );
+					setIsLoading( false );
 				} else {
 					setIsError( true );
 					setPatterns( 'error' );
+					setIsLoading( false );
 				}
 			}
 		})
@@ -239,6 +241,7 @@ function PatternLibrary( {
 			console.log(error);
 			setIsError( true );
 			setPatterns( 'error' );
+			setIsLoading( false );
 		});
 		if ( ! isError ) {
 			const pageData = new FormData();
@@ -285,7 +288,6 @@ function PatternLibrary( {
 				setPages( 'error' );
 			});
 		}
-		setIsLoading( false );
 	}, 250 );
 	const loadPatternData = debounce( () => {
 		setIsLoading( true );

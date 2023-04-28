@@ -228,6 +228,10 @@
 	  "type": "string",
 	  "default": "1"
 	},
+	"slideType": {
+	  "type": "string",
+	  "default": "fade"
+	},
 	"arrowStyle": {
 	  "type": "string",
 	  "default": "whiteondark"

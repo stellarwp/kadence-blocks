@@ -79,10 +79,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.0.34 =
 Release Date: April 24th, 2023
-* Update: filter for custom palette.
 * Update: Design library to use shadow dom. 
+* Update: Filter for custom palette.
 * Fix: Issue with image crop.
+* Fix: Issue with testimonial media border radius in admin.
+* Fix: Accordion output styles.
+* Fix: Possible max width issue with sections.
 * Fix: Issue with typed text script. 
+* Fix: Issue with row background override in editor on mobile.
+* Fix: Issue with some columns in gallery when using individual settings.
 
 = 3.0.33 =
 Release Date: April 12, 2023

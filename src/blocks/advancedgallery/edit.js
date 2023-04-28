@@ -186,6 +186,7 @@ function GalleryEdit( props ) {
 		kbVersion,
 		gutterUnit,
 		lazyLoad,
+		slideType,
 	} = attributes;
 	const mainRef = useRef( null );
 	const thumbsRef = useRef();
@@ -617,7 +618,7 @@ function GalleryEdit( props ) {
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const sliderSettings = {
-		type          : 'fade',
+		type          : slideType,
 		dots          : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		rewind       : true,
@@ -630,7 +631,7 @@ function GalleryEdit( props ) {
 		direction : ( isRTL ? 'rtl' : 'ltr' )
 	};
 	const thumbsliderSettings = {
-		type           : 'fade',
+		type           : slideType,
 		dots           : false,
 		arrows         : ( arrowStyle === 'none' ? false : true ),
 		rewind         : true,
@@ -1046,6 +1047,23 @@ function GalleryEdit( props ) {
 													min={0}
 													max={15000}
 													step={10}
+												/>
+											)}
+											{ (type === 'thumbslider' ||  type === 'slider' ) && (
+												<SelectControl
+													label={__( 'Transition Style', 'kadence-blocks' )}
+													options={[
+														{
+															label: __( 'Fade', 'kadence-blocks' ),
+															value: 'fade',
+														},
+														{
+															label: __( 'Slide', 'kadence-blocks' ),
+															value: 'slide',
+														},
+													]}
+													value={slideType ? slideType : 'fade'}
+													onChange={( value ) => setAttributes( { slideType: value } )}
 												/>
 											)}
 											<RangeControl
