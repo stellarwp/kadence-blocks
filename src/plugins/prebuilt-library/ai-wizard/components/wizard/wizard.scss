@@ -1,0 +1,97 @@
+@import '../../scss/variables.scss';
+
+.stellarwp.components-modal__frame.components-guide {
+	max-width: 95%;
+	width: 100%;
+	max-height: 95%;
+	height: 100%;
+
+	/* Header */
+	.components-modal__header {
+		height: 68px;
+
+		.components-button {
+			margin: 18px 26px 0 0;
+
+			svg {
+				transition: fill 0.2s ease-in;
+			}
+
+			&:hover svg {
+				fill: $color-gray-400;
+			}
+		}
+	}
+
+	/* Header: Heading */
+	.components-modal__header-heading {
+		margin-left: 32px;
+	}
+
+	/* Container */
+	.components-guide__container {
+		margin-top: -68px;
+	}
+
+	/* Container: Page */
+	.components-guide__page {
+		flex-grow: 1;
+	}
+
+	/* Footer */
+	.components-guide__footer {
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		margin: 0;
+		padding: 16px 32px;
+		height: 68px;
+		border-top: 1px solid $color-gray-400;
+	}
+
+	.components-wizard__back-button,
+	.components-wizard__forward-button,
+	.components-wizard__finish-button {
+		position: absolute;
+	}
+
+	.components-wizard__back-button {
+		left: 32px;
+	}
+
+	.components-wizard__forward-button,
+	.components-wizard__finish-button {
+		right: 32px;
+	}
+
+	/* Page Control (Stepper) */
+	.components-guide__page-control {
+		.components-button {
+			padding: 6px 8px;
+			font-size: 12px;
+
+			&:disabled,
+			&:disabled:hover {
+				opacity: 1;
+				color: $color-black !important;
+			}
+		}
+	}
+
+	/* Page Control: Step */
+	.stellarwp.step-count {
+		height: 24px;
+		width: 24px;
+		margin-right: 6px;
+		background: $color-black;
+		color: $color-white;
+		border-radius: 12px;
+		line-height: 24px;
+		font-size: 10px;
+
+		.dashicon {
+			margin: 2px;
+		}
+	}
+}
+

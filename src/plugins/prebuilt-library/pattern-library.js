@@ -62,6 +62,7 @@ import {
  * Internal dependencies
  */
 import { SafeParseJSON } from '@kadence/helpers'
+import { AiWizard } from './ai-wizard'
 
 /**
  * Prebuilt Sections.
@@ -644,6 +645,7 @@ function PatternLibrary( {
 									</Popover>
 								) }
 							</div>
+							<AiWizard />
 						</div>
 					) }
 				</div>

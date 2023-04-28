@@ -166,7 +166,13 @@ class PrebuiltModal extends Component {
 					<Modal
 						className="kt-prebuilt-modal kb-prebuilt-library-modal"
 						title={ __( 'Design Library', 'kadence-blocks' ) }
-						onRequestClose={ () => {
+						onRequestClose={ (event) => {
+							// @todo: Check with Ben on this guard.
+							// No action on blur event (prevents AI modal from closing when Media Library modal opens).
+							if (event.type === 'blur') {
+								return;
+							}
+
 							this.setState( { modalOpen: false } );
 							if ( this.state.onlyModal ) {
                                 this.props.removeBlock( this.props.clientId );

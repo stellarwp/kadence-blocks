@@ -1,0 +1,54 @@
+.stellarwp.components-modal__frame.components-guide {
+ 
+  /* Page Style Overrides */
+	&.how-it-works,
+	&.industry-information,
+	&.about-your-site {
+		.components-modal__header .components-button {
+			color: $color-white;
+		}
+	}
+
+	/* Photography Page Style Overrides */
+	&.photography {
+		.stellarwp-ai-photography-library {
+			padding: 0 42px;
+		}
+
+		.stellarwp-ai-photography-control.components-select-control {
+			width: 400px;
+
+			label.components-input-control__label {
+				text-align: center;
+			}
+		}
+
+		.stellarwp-ai-photography-library__selection {
+			position: relative;
+			z-index: 11;
+		}
+	
+		.components-button.is-link {
+			font-size: 10px;
+			color: #000000;
+
+			&:hover {
+				text-decoration: none;
+			}
+		}
+
+		.components-button.is-link.has-icon {
+			.dashicon {
+				width: 10px;
+				height: 10px;
+				font-size: 12px;
+			}
+
+			.dashicon:before {
+				display: inline-block;
+				text-decoration: none;
+			}
+		}
+	}
+}
+

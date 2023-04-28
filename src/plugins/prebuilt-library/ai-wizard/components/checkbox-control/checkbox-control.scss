@@ -1,0 +1,27 @@
+@import '../../scss/variables.scss';
+
+.stellarwp.components-checkbox-control {
+	.components-base-control__field {
+		display: flex;
+	}
+
+	.components-checkbox-control__label {
+		font-size: 14px;
+		color: $color-black;
+	}
+
+	.components-checkbox-control__input[type=checkbox] {
+		border-width: 2px;
+		border-color: $color-gray-500;
+		border-radius: 3px;
+
+		&:checked {
+			border-color: $color-black;
+			background-color: $color-black;
+		}
+
+		&:focus {
+			box-shadow: 0 0 0 2px $color-white, 0 0 0 3px $color-black;
+		}
+	}
+}

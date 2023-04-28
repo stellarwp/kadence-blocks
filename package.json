@@ -37,6 +37,7 @@
     "react-select": "^2.2.0",
     "react-shadow": "^20.0.0",
     "react-slick": "^0.24.0",
+    "react-slidy": "^4.3.3",
     "react-transition-group": "^2.4.0",
     "remove-accents": "^0.4.4",
     "typed.js": "^2.0.12"
