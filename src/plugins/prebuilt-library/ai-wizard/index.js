@@ -25,17 +25,16 @@ export function AiWizard() {
 		setVerticals();
 		// Set collections data in session storage.
 		setCollections();
-
-		// Get previously saved wizard data.
-		async function getData() {
-			const response = await getAiWizardData();
-			const data = response ? JSON.parse(response) : {};
-
-			setWizardData(data);
-		}
-
-		getData();
+		// Get previously-saved wizard data.
+		getPreviousData();
 	}, []);
+
+	async function getPreviousData() {
+		const response = await getAiWizardData();
+		const data = response ? JSON.parse(response) : {};
+
+		setWizardData(data);
+	}
 
 	function handleWizardClose() {
 		setWizardOpen(false);

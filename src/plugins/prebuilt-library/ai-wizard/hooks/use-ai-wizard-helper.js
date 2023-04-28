@@ -58,7 +58,8 @@ export function useAiWizardHelper(state, pages) {
 		const {
 			currentPageIndex,
 			industry,
-			industrySpecific
+			industrySpecific,
+			keywords
 		} = state;
 		const missing = getMissingFields();
 		const pageId = pages?.[currentPageIndex]?.id;
@@ -74,7 +75,12 @@ export function useAiWizardHelper(state, pages) {
 				if (missing.length === 1 && missing.includes('industryOther')) {
 					return false;
 				}
+
 				return missing.length > 0 ? true : false;
+			case 'about-your-site':
+				const missingKeywords = keywords.length >= 5 ? false : true;
+
+				return (missingKeywords || missing.length > 0) ? true : false;
 			default:
 				return missing.length > 0 ? true : false;
 		}

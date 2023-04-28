@@ -42,8 +42,8 @@ const styles = {
 }
 
 export function AboutYourSite() {
-	const {state, dispatch} = useKadenceAi();
-	const maxTags = 5;
+	const { state, dispatch } = useKadenceAi();
+	const maxTags = 10;
 	const {
 		missionStatement,
 		keywords,
@@ -75,7 +75,7 @@ export function AboutYourSite() {
 								selectedTags={ (selectedTags) => dispatch({ type: 'SET_KEYWORDS', payload: selectedTags }) }
 								help={
 									<Flex>
-										<FlexBlock>Help text about this input.</FlexBlock>
+										<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence') }</FlexBlock>
 										<FlexItem>{ `${ keywords.length }/${ maxTags }`}</FlexItem>
 									</Flex>
 								}

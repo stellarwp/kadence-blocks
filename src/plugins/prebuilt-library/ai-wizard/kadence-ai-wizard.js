@@ -44,7 +44,7 @@ export function KadenceAiWizard({ handleWizardClose }) {
 	const { state, dispatch } = useKadenceAi();
 	const {
 		isForwardButtonDisabled,
-		isFinishButtonDisabled,
+		isFinishButtonDisabled
 	} = useAiWizardHelper(state, getPages());
 
 	async function handleOnFinish(event) {
