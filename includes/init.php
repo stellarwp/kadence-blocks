@@ -256,7 +256,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
 			'editor_width'   => $enable_editor_width,
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
-			'headingWeights' => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null,
+			'headingWeights' => apply_filters( 'kadence_blocks_default_heading_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null ) ),
 			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
 			'postTypes'      => kadence_blocks_get_post_types(),
 			'taxonomies'     => kadence_blocks_get_taxonomies(),
@@ -304,20 +304,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		'kadence_blocks_params_fa',
 		array(
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
-		)
-	);
-	wp_localize_script(
-		'kadence-blocks-js',
-		'kadence_blocks_params_patterns',
-		array(
-			'library_patterns' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_section_prebuilt_data( $pro_data ),
-		)
-	);
-	wp_localize_script(
-		'kadence-blocks-js',
-		'kadence_blocks_params_pages',
-		array(
-			'library_pages' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_page_prebuilt_data( $pro_data ),
 		)
 	);
 }
