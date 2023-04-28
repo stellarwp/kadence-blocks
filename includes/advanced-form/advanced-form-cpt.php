@@ -29,6 +29,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
 		// Register the meta settings for from post.
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
+		// Define the form post gutenberg template.
+		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
+		if ( is_admin() ) {
+			// Filter Kadence Theme to give the correct admin editor layout.
+			add_filter( 'kadence_post_layout', array( $this, 'single_form_layout' ), 99 );
+		}
 	}
 	/**
 	 * Registers the form post type.
@@ -68,10 +74,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'show_in_admin_bar'  => false,
 			'can_export'         => true,
 			'show_in_rest'       => true,
-			'template'              => array(
-				array( 'kadence/advanced-form' )
-			),
-			'template_lock'      => 'all',
 			'rewrite'            => $rewrite,
 			'rest_controller_class' => Kadence_Blocks_Form_CPT_Rest_Controller::class,
 			'rest_base'          => 'kadence_form',
@@ -86,6 +88,48 @@ class Kadence_Blocks_Form_CPT_Controller {
 			),
 		);
 		register_post_type( self::SLUG, $args );
+	}
+	/**
+	 * Renders the admin template.
+	 *
+	 * @param array $layout the layout array.
+	 */
+	public function single_form_layout( $layout ) {
+		global $post;
+		if ( is_singular( self::SLUG ) || ( is_admin() && is_object( $post ) && self::SLUG === $post->post_type ) ) {
+			$layout = wp_parse_args(
+				array(
+					'layout'           => 'narrow',
+					'boxed'            => 'unboxed',
+					'feature'          => 'hide',
+					'feature_position' => 'above',
+					'comments'         => 'hide',
+					'navigation'       => 'hide',
+					'title'            => 'hide',
+					'transparent'      => 'disable',
+					'sidebar'          => 'disable',
+					'vpadding'         => 'hide',
+					'footer'           => 'disable',
+					'header'           => 'disable',
+					'content'          => 'enable',
+				),
+				$layout
+			);
+		}
+
+		return $layout;
+	}
+	/**
+	 * Add filters for element content output.
+	 */
+	public function form_gutenberg_template() {
+		$post_type_object = get_post_type_object( self::SLUG );
+		$post_type_object->template = array(
+			array(
+				'kadence/advanced-form',
+			),
+		);
+		$post_type_object->template_lock = 'all';
 	}
 	/**
 	 * Filters the capabilities of a user to conditionally grant them capabilities for managing forms.
@@ -111,6 +155,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 		return $allcaps;
 	}
 	/**
+	 * Check that user can edit these.
+	 */
+	public function meta_auth_callback() {
+		return current_user_can( 'edit_kadence_forms' );
+	}
+	/**
 	 * Register Post Meta options
 	 */
 	public function register_meta() {
@@ -118,12 +168,24 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'kadence_form',
 			'_kad_form_fields',
 			array(
-				'type'          => 'array',
 				'single'        => true,
-				'auth_callback' => function() {
-					return current_user_can( 'edit_kadence_forms' );
-				},
-				'show_in_rest'  => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'array',
+				'default'       => array(),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type' => 'object',
+							'properties' => array(
+								'uniqueID'   => array( 'type' => 'string' ),
+								'name'   => array( 'type' => 'string' ),
+								'label' => array( 'type' => 'string' ),
+								'type'  => array( 'type' => 'string' ),
+							),
+						),
+					),
+				),
 			)
 		);
 
@@ -133,7 +195,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'type'          => 'object',
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'default'       => array(
 					'emailTo'   => '',
 					'subject'   => '',
@@ -167,7 +229,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_actions',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'array',
 				'default'       => array(),
 				'show_in_rest'  => array(
@@ -186,7 +248,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_mailerlite',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "group" => array(), "map" => array() ),
 				'show_in_rest'  => array(
@@ -206,7 +268,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_fluentcrm',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "lists" => array(), "tags" => array(), "map" => array(), "doubleOptin" => false ),
 				'show_in_rest'  => array(
@@ -228,7 +290,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_sendinblue',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "lists" => array(), "map" => array() ),
 				'show_in_rest'  => array(
@@ -248,7 +310,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_mailchimp',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "list" => array(), "map" => array() ),
 				'show_in_rest'  => array(
@@ -268,7 +330,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_convertkit',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "form" => array(), "sequence" => array(), "tags" => array(), "map" => array() ),
 				'show_in_rest'  => array(
@@ -290,7 +352,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_activecampaign',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "lists" => array(), "map" => array() ),
 				'show_in_rest'  => array(
@@ -312,7 +374,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
 				'default'       => ''
 			)
@@ -325,7 +387,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'boolean',
 				'default'       => false
 			)
@@ -338,7 +400,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'boolean',
 				'default'       => true
 			)
@@ -350,7 +412,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'boolean',
 				'default'       => false
 			)
@@ -363,7 +425,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
 				'default'       => 'v3'
 			)
@@ -375,7 +437,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
 				'default'       => ''
 			)
@@ -386,7 +448,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_submit',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"label"                  => "Submit",
@@ -537,7 +599,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_webhook',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array( "url" => '', "map" => array() ),
 				'show_in_rest'  => array(
@@ -557,7 +619,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_autoEmail',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"emailTo"   => '',
@@ -594,7 +656,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_entry',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"formName"   => '',
@@ -619,7 +681,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_messages',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"success"        => '',
@@ -651,7 +713,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_messageFont',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(),
 				'show_in_rest'  => array(
@@ -667,7 +729,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_submitFont',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"size"          => array(
@@ -720,7 +782,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_submitMargin',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"desk"    => array(
@@ -765,7 +827,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_style',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"showRequired"            => true,
@@ -920,7 +982,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_labelFont',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"color"         => "",
@@ -989,7 +1051,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'_kad_form_helpFont',
 			array(
 				'single'        => true,
-				'auth_callback' => '__return_true',
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
 					"color"         => "",

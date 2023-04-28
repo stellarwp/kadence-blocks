@@ -1,6 +1,6 @@
-import { formBlockIcon } from '@kadence/icons';
-
 import { registerBlockType } from '@wordpress/blocks';
+
+import { formBlockIcon } from '@kadence/icons';
 
 import './style.scss';
 import './fields/accept/index';
@@ -35,5 +35,7 @@ registerBlockType('kadence/advanced-form', {
 	},
 	transforms,
 	edit,
-	save: InnerBlocks.Content
+	save:() => {
+		return <InnerBlocks.Content />;
+	}
 });

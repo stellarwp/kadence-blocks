@@ -16,7 +16,6 @@ import { registerBlockType } from '@wordpress/blocks';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-text', {
 	...metadata,

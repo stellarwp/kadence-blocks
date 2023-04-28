@@ -1,7 +1,5 @@
 <?php
 
-include 'advanced-form/advanced-form-submit-actions.php';
-
 /**
  * Advanced Form Ajax Handing.
  *
@@ -59,10 +57,9 @@ class KB_Ajax_Advanced_Form {
 		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
 			$this->start_buffer();
 
-			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
+			if ( apply_filters( 'kadence_blocks_form_verify_nonce', is_user_logged_in() ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
-
 			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_post_id'] ) );
 
 			$form_args = $this->get_form( $post_id );
@@ -70,11 +67,11 @@ class KB_Ajax_Advanced_Form {
 
 			// Check Honey Pot.
 			if ( isset( $form_args['attributes']['honeyPot'] ) && true === $form_args['attributes']['honeyPot'] && isset( $_POST['_kb_verify_email'] ) ) {
-
 				$honeypot_check = htmlspecialchars( $_POST['_kb_verify_email'], ENT_QUOTES );
 				if ( ! empty( $honeypot_check ) ) {
 					$this->process_bail( __( 'Submission Rejected', 'kadence-blocks' ), __( 'Spam Detected', 'kadence-blocks' ) );
 				}
+				unset( $_POST['_kb_verify_email'] );
 			}
 
 			// Check Recaptcha.
@@ -93,22 +90,20 @@ class KB_Ajax_Advanced_Form {
 				}
 				unset( $_POST['recaptcha_response'] );
 			}
-			unset( $_POST['_kb_form_sub_id'], $_POST['_kb_verify_email'] );
 
+			$processed_fields = $this->process_fields( $form_args['fields'] );
 
-			$responses = $this->process_fields( $form_args['fields'] );
+			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $processed_fields, $post_id );
 
-			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $form_args['fields'], $post_id, $responses );
+			$this->after_submit_actions( $form_args, $processed_fields, $post_id );
 
-			$this->after_submit_actions( $form_args, $responses, $post_id );
-
-			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args['fields'], $post_id, $responses );
-			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages );
+			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args, $processed_fields, $post_id );
+			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id );
 
 			if ( ! $success ) {
 				$this->process_bail( $messages['error'], __( 'Third Party Failed', 'kadence-blocks' ) );
 			} else {
-				$final_data['html'] = '<div class="kadence-blocks-form-message kadence-blocks-form-success">' . $messages['success'] . '</div>';
+				$final_data['html'] = '<div class="kb-adv-form-message kb-adv-form-success">' . $messages['success'] . '</div>';
 				$this->send_json( $final_data );
 			}
 
@@ -165,49 +160,49 @@ class KB_Ajax_Advanced_Form {
 		return $value;
 	}
 
-	public function after_submit_actions( $form_args, $responses, $post_id ) {
+	public function after_submit_actions( $form_args, $processed_fields, $post_id ) {
 
 		$success = true;
 
 		$actions = $form_args['attributes']['actions'];
 
-		$submitActions = new AdvancedFormSubmitActions( $form_args, $responses, $post_id );
+		$submit_actions = new Kadence_Blocks_Advanced_Form_Submit_Actions( $form_args, $processed_fields, $post_id );
 
 		foreach ( $actions as $action ) {
 			switch ( $action ) {
 				case 'email':
-					$submitActions->email();
+					$submit_actions->email();
 					break;
 				case 'redirect':
 					if ( isset( $form_args['attributes']['redirect'] ) && ! empty( trim( $form_args['attributes']['redirect'] ) ) ) {
-						self::$redirect = apply_filters( 'kadence_blocks_advanced_form_redirect', trim( $form_args['attributes']['redirect'] ), $form_args, $responses, $post_id );
+						self::$redirect = apply_filters( 'kadence_blocks_advanced_form_redirect', trim( $form_args['attributes']['redirect'] ), $form_args, $processed_fields, $post_id );
 					}
 					break;
 				case 'mailerlite':
-					$submitActions->mailerlite();
+					$submit_actions->mailerlite();
 					break;
 				case 'fluentCRM':
-					$submitActions->fluentCRM();
+					$submit_actions->fluentCRM();
 					break;
 				case 'sendinblue':
-					$submitActions->sendinblue();
+					$submit_actions->sendinblue();
 					break;
 				case 'mailchimp':
-					$submitActions->mailchimp();
+					$submit_actions->mailchimp();
 					break;
 				case 'convertkit':
-					$submitActions->convertkit();
+					$submit_actions->convertkit();
 					break;
 				case 'activecampaign':
-					$submitActions->activecampaign();
+					$submit_actions->activecampaign();
 					break;
 				case 'webhook':
-					$submitActions->webhook();
+					$submit_actions->webhook();
 				case 'entry':
-					$submitActions->entry($post_id);
+					$submit_actions->entry($post_id);
 					break;
 				case 'autoEmail':
-					$submitActions->autoEmail();
+					$submit_actions->autoEmail();
 					break;
 			}
 		}
@@ -221,11 +216,10 @@ class KB_Ajax_Advanced_Form {
 
 	public function process_fields( $fields ) {
 
-		$responses = array();
+		$processed_fields = array();
 
 		foreach ( $fields as $index => $field ) {
-
-			$expected_field = 'kb_field_' . $index;
+			$expected_field = ! empty( $field['name'] ) ? $field['name'] : 'field' . $field['uniqueID'];
 
 			// Fail if required field is missing
 			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
@@ -303,7 +297,7 @@ class KB_Ajax_Advanced_Form {
 			}
 
 
-			$responses[] = array(
+			$processed_fields[] = array(
 				'label'    => $field['label'],
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
@@ -311,7 +305,7 @@ class KB_Ajax_Advanced_Form {
 			);
 		}
 
-		return $responses;
+		return $processed_fields;
 
 	}
 
@@ -427,7 +421,7 @@ class KB_Ajax_Advanced_Form {
 		$html = '';
 		foreach ( $notices as $note_type => $notice ) {
 			if ( ! empty( $notice['note'] ) ) {
-				$html .= '<div class="kadence-blocks-form-message kadence-blocks-form-warning">' . $notice['note'] . '</div>';
+				$html .= '<div class="kb-adv-form-message kb-adv-form-warning">' . $notice['note'] . '</div>';
 			}
 		}
 
@@ -476,24 +470,6 @@ class KB_Ajax_Advanced_Form {
 			wp_send_json( $data );
 		} else {
 			wp_send_json_error( $data );
-		}
-	}
-
-	/**
-	 * Get form args
-	 *
-	 * @param string $content the post content.
-	 */
-	public function parse_blocks( $content ) {
-		$parser_class = apply_filters( 'block_parser_class', 'WP_Block_Parser' );
-		if ( class_exists( $parser_class ) ) {
-			$parser = new $parser_class();
-
-			return $parser->parse( $content );
-		} elseif ( function_exists( 'gutenberg_parse_blocks' ) ) {
-			return gutenberg_parse_blocks( $content );
-		} else {
-			return false;
 		}
 	}
 
@@ -567,7 +543,7 @@ class KB_Ajax_Advanced_Form {
 
 		$post_data = get_post( absint( $post_id ) );
 		if ( is_object( $post_data ) ) {
-			$blocks = $this->parse_blocks( $post_data->post_content );
+			$blocks = parse_blocks( $post_data->post_content );
 		}
 
 		// No form field inner blocks found.
@@ -578,30 +554,43 @@ class KB_Ajax_Advanced_Form {
 		$post_meta = get_post_meta( $post_id );
 		$meta_args = array();
 
-		foreach($post_meta as $meta_key => $meta_value ){
-			if( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
-				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize($meta_value[0]);
+		foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
+				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 			}
 		}
 
-		$form_args['attributes'] = json_decode(json_encode($meta_args), true);
-
+		$form_args['attributes'] = json_decode( json_encode( $meta_args ), true );
 		foreach ( $blocks[0]['innerBlocks'] as $block ) {
-			if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
+			$this->recursively_parse_blocks( $block );
+		}
+		$form_args['fields'] = self::$fields;
 
-
-				if ( strpos( $block['blockName'], 'kadence/advanced-form-' ) === 0 ) {
-					$form_args['fields'][] = array_merge(
+		return $form_args;
+	}
+	/**
+	 * Gets all the field blocks that are in post.
+	 *
+	 * @access private
+	 *
+	 * @param string $block The page content content.
+	 */
+	private function recursively_parse_blocks( $block ) {
+		if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
+			if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				foreach ( $block['innerBlocks'] as $inner_block ) {
+					$this->recursively_parse_blocks( $inner_block );
+				}
+			} else {
+				if ( 'kadence/advanced-form-submit' !== $block['blockName'] && strpos( $block['blockName'], 'kadence/advanced-form-' ) === 0 ) {
+					self::$fields[] = array_merge(
 						$block['attrs'],
 						array( 'type' => str_replace( 'kadence/advanced-form-', '', $block['blockName'] ) )
 					);
 				}
 			}
 		}
-
-		return $form_args;
 	}
-
 	private function get_messages( $form_attributes ) {
 		$messages = array(
 			'success'        => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),

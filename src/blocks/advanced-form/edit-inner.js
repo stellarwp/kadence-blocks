@@ -81,7 +81,9 @@ import {
 	DbEntryOptions,
 	BackendStyles,
 	MessageOptions,
+	MessageStyling,
 	getFormFields,
+	FieldBlockAppender,
 } from './components';
 
 /**
@@ -102,8 +104,8 @@ export function EditInner( props ) {
 		direct,
 		id,
 		insert,
+		isSelected,
 	} = props;
-
 	const {
 		uniqueID,
 		padding,
@@ -138,17 +140,11 @@ export function EditInner( props ) {
 	const [ recaptcha, setRecaptcha ] = useFormMeta( '_kad_form_recaptcha' );
 	const [ recaptchaVersion, setRecaptchaVersion ] = useFormMeta( '_kad_form_recaptchaVersion' );
 
-	const [ submit, setSubmit ] = useFormMeta( '_kad_form_submit' );
-	const [ submitLabel, setSubmitLabel ] = useFormMeta( '_kad_form_submitLabel' );
-
 	const [ webhook, setWebhook ] = useFormMeta( '_kad_form_webhook' );
 	const [ autoEmail, setAutoEmail ] = useFormMeta( '_kad_form_autoEmail' );
 	const [ entry, setEntry ] = useFormMeta( '_kad_form_entry' );
 	const [ messages, setMessages ] = useFormMeta( '_kad_form_messages' );
-	const [ messageFont, setMessageFont ] = useFormMeta( '_kad_form_messageFont' );
 
-	const [ submitFont, setSubmitFont ] = useFormMeta( '_kad_form_submitFont' );
-	const [ submitMargin, setSubmitMargin ] = useFormMeta( '_kad_form_submitMargin' );
 	const [ labelFont, setLabelFont ] = useFormMeta( '_kad_form_labelFont' );
 
 	const [ style, setStyle ] = useFormMeta( '_kad_form_style' );
@@ -157,8 +153,7 @@ export function EditInner( props ) {
 
 	const setMetaAttribute = ( value, key ) => {
 		let keyPrefix = '_kad_form_';
-
-		setMeta( { ...meta, [keyPrefix + key]: value } );
+		const info = setMeta( { ...meta, [keyPrefix + key]: value } );
 	};
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
@@ -193,10 +188,12 @@ export function EditInner( props ) {
 	} = useDispatch( editorStore );
 	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
 	useEffect( () => {
-		console.log( fields );
-		let currentFields = getFormFields( formInnerBlocks );
-		if ( ! isEqual( fields, currentFields ) ) {
-			setMetaAttribute( currentFields, 'fields' );
+		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
+			let currentFields = getFormFields( formInnerBlocks );
+			if ( ! isEqual( fields, currentFields ) ) {
+				//setMetaAttribute( currentFields, 'fields' );
+				setFields( currentFields );
+			}
 		}
 	}, [formInnerBlocks] );
 	let newBlock = get( blocks, [ 0 ], {} );
@@ -230,6 +227,14 @@ export function EditInner( props ) {
 			console.error( error );
 		}
 	};
+	const useFieldBlockAppender = () => {
+		if ( ! isSelected ) {
+			return null;
+		}
+		return (
+			<FieldBlockAppender inline={ true } rootClientId={ clientId } />
+		);
+	};
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: formClasses,
@@ -240,9 +245,7 @@ export function EditInner( props ) {
 			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			templateLock: false,
-			renderAppender: size( formInnerBlocks )
-				? undefined
-				: InnerBlocks.ButtonBlockAppender,
+			renderAppender: useFieldBlockAppender,
 			style: {
 					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
 					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
@@ -271,6 +274,13 @@ export function EditInner( props ) {
 	}
 	return (
 		<>
+			<style>
+				{ isSelected && (
+					<>
+					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }` };
+					</>
+				)}
+			</style>
 			<BlockControls>
 				<ToolbarGroup group="align-block">
 					<JustifyContentControl
@@ -299,7 +309,7 @@ export function EditInner( props ) {
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup group="add-block" className="kb-add-block">
-					<InnerBlocks.ButtonBlockAppender />
+					<FieldBlockAppender rootClientId={clientId} />
 				</ToolbarGroup>
 			</BlockControls>
 			
@@ -319,15 +329,6 @@ export function EditInner( props ) {
 							title={__( 'Submit Actions', 'kadence-blocks' )}
 						>
 							<SubmitActionOptions setAttributes={setMetaAttribute} selectedActions={actions}/>
-						</KadencePanelBody>
-
-
-						<KadencePanelBody
-							panelName={'kb-advanced-form-spam'}
-							title={__( 'Spam Prevention', 'kadence-blocks' )}
-							initialOpen={false}
-						>
-							<SpamOptions setAttributes={setMetaAttribute} honeyPot={honeyPot} recaptcha={recaptcha} recaptchaVersion={recaptchaVersion}/>
 						</KadencePanelBody>
 
 						{size( actions ) > 0 && (
@@ -476,7 +477,21 @@ export function EditInner( props ) {
 								save={( value ) => setMetaAttribute( { ...entry, ...value }, 'entry' )}
 							/>
 						)}
-
+						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							panelName={'kb-advanced-form-spam'}
+							title={__( 'Spam Prevention', 'kadence-blocks' )}
+							initialOpen={false}
+						>
+							<SpamOptions setAttributes={setMetaAttribute} honeyPot={honeyPot} recaptcha={recaptcha} recaptchaVersion={recaptchaVersion}/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__( 'Message Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-message'}
+						>
+							<MessageOptions setAttributes={setMetaAttribute} messages={ messages } recaptcha={recaptcha} />
+						</KadencePanelBody>
 					</>
 				}
 
@@ -510,19 +525,11 @@ export function EditInner( props ) {
 						</KadencePanelBody>
 
 						<KadencePanelBody
-							title={__( 'Submit Button', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-form-submit-styles'}
-						>
-							<SubmitButtonStyles setAttributes={setMetaAttribute} submit={submit} submitFont={submitFont} submitMargin={submitMargin} submitLabel={submitLabel}/>
-						</KadencePanelBody>
-
-						<KadencePanelBody
-							title={__( 'Message Settings', 'kadence-blocks' )}
+							title={__( 'Message Styling', 'kadence-blocks' )}
 							initialOpen={false}
 							panelName={'kb-form-message'}
 						>
-							<MessageOptions setAttributes={setMetaAttribute} messages={messages} messageFont={messageFont} recaptcha={recaptcha}/>
+							<MessageStyling setAttributes={ setAttributes } attributes={ attributes } />
 						</KadencePanelBody>
 					</>
 				}
@@ -585,7 +592,6 @@ export function EditInner( props ) {
 			<BackendStyles id={id} previewDevice={previewDevice} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
 
 			<div {...innerBlocksProps} />
-
 			<SpacingVisualizer
 				style={ {
 					marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),

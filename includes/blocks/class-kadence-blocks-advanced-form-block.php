@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @category class
  */
 class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
+
 	/**
 	 * Instance of this class
 	 *
@@ -41,6 +42,19 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 	protected $form_fields = array();
 
+	/**
+	 * Block determines if style needs to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = true;
+
+	/**
+	 * Instance of this class
+	 *
+	 * @var null
+	 */
+	private static $seen_refs = array();
 	/**
 	 * Instance Control
 	 */
@@ -322,8 +336,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		static $seen_refs = array();
-
 		if ( empty( $attributes['id'] ) ) {
 			return '';
 		}
@@ -333,30 +345,34 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return '';
 		}
 
-		if ( isset( $seen_refs[ $attributes['id'] ] ) ) {
+		if ( 'publish' !== $form_block->post_status || ! empty( $form_block->post_password ) ) {
+			return '';
+		}
+		// Prevent a form block from being rendered inside itself.
+		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
 			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
 			// is set in `wp_debug_mode()`.
 			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
 
 			return $is_debug ?
 				// translators: Visible only in the front end, this warning takes the place of a faulty block.
-				__( '[block rendering halted]' ) :
+				__( '[block rendering halted]', 'kadence-blocks' ) :
 				'';
 		}
+		self::$seen_refs[ $attributes['id'] ] = true;
+		// Break post content into lines.
+		$block_lines = explode( PHP_EOL, $form_block->post_content );
+		// Remove the advanced form block so it doesn't try and render.
+		$content = str_replace( $block_lines[0], '', $form_block->post_content );
+		$content = str_replace( '<!-- /wp:kadence/advanced-form -->', '', $content );
 
-		if ( 'publish' !== $form_block->post_status || ! empty( $form_block->post_password ) ) {
-			return '';
-		}
-
-		$seen_refs[ $attributes['id'] ] = true;
-
-		// Handle embeds for reusable blocks.
+		// Handle embeds for form block.
 		global $wp_embed;
-		$content = $wp_embed->run_shortcode( $form_block->post_content );
+		$content = $wp_embed->run_shortcode( $content );
 		$content = $wp_embed->autoembed( $content );
-
 		$content = do_blocks( $content );
-		unset( $seen_refs[ $attributes['id'] ] );
+
+		unset( self::$seen_refs[ $attributes['id'] ] );
 
 		// $form_fields = $this->get_form_fields( $attributes['id'] );
 
@@ -385,7 +401,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['honeypot'] ) && true === $attributes['honeypot'] ) {
 			$form_fields .= '<div class="kb-honeypot-field">';
 			$form_fields .= '<label for="_kb_verify_email">' . __( 'Email', 'kadence-blocks' ) . '</label>';
-			$form_fields .= '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" placeholder="Email" tabIndex="-1" />';
+			$form_fields .= '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="new-password" aria-hidden="true" placeholder="Email" tabindex="-1" data-1p-ignore="true" data-lpignore="true" />';
 			$form_fields .= '</div>';
 		}
 		if ( ! empty( $attributes['id'] ) ) {
@@ -454,9 +470,21 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-		if ( $this->has_script ) {
-			wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		}
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_localize_script(
+			'kadence-blocks-' . $this->block_name,
+			'kb_adv_form_params',
+			array(
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'error_message' => __( 'Please fix the errors to proceed', 'kadence-blocks' ),
+				'nonce'         => wp_create_nonce( 'kb_form_nonce' ),
+				'required'      => __( 'is required', 'kadence-blocks' ),
+				'mismatch'      => __( 'does not match', 'kadence-blocks' ),
+				'validation'    => __( 'is not valid', 'kadence-blocks' ),
+				'duplicate'     => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
+				'item'          => __( 'Item', 'kadence-blocks' ),
+			)
+		);
 	}
 }
 

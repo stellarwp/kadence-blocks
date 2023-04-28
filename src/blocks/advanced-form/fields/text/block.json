@@ -57,10 +57,16 @@
 		"helpText": {
 			"type": "string"
 		},
-		"name": {
+		"inputName": {
 			"type": "string"
 		},
 		"auto": {
+			"type": "string"
+		},
+		"errorMessage": {
+			"type": "string"
+		},
+		"requiredMessage": {
 			"type": "string"
 		},
 		"anchor": {
@@ -70,6 +76,7 @@
 	"supports": {
 		"anchor": true,
 		"html": false,
+		"ktdynamic": true,
 		"reusable": false
 	},
 	"ancestor": [ "kadence/advanced-form" ],

@@ -5,7 +5,11 @@
   "category": "kadence-blocks",
   "description": "Kadence advanced form",
   "supports": {
-	"html": false
+	"html": false,
+	"className": true,
+	"reusable": false,
+	"anchor": true,
+	"lock": false
   },
   "textdomain": "kadence-blocks",
   "keywords": [
@@ -81,85 +85,6 @@
 		"type": "string",
 		"default": "px"
 	},
-	"actions": {
-	  "type": "array",
-	  "default": [ "email" ]
-	},
-	"email": {
-	  "type": "object",
-	  "default": {
-		"emailTo": "",
-		"subject": "",
-		"fromEmail": "",
-		"fromName": "",
-		"replyTo": "email_field",
-		"cc": "",
-		"bcc": "",
-		"html": true
-	  }
-	},
-	"mailerlite": {
-	  "type": "object",
-	  "default": {
-		  "group": [],
-		  "map": []
-		}
-	},
-	"fluentcrm": {
-	  "type": "object",
-	  "default": {
-		  "lists": [],
-		  "tags": [],
-		  "map": [],
-		  "doubleOptin": false
-		}
-	},
-	"sendinblue": {
-	  "type": "object",
-	  "default": {
-		  "list": [],
-		  "map": []
-		}
-	},
-	"mailchimp": {
-	  "type": "object",
-	  "default": {
-		"list": [],
-		"map": []
-	  }
-	},
-	"convertkit": {
-	  "type": "object",
-	  "default": {
-		"form": [],
-		"sequence": [],
-		"tags": [],
-		"map": []
-	  }
-	},
-	"activecampaign": {
-	  "type": "object",
-	  "default": {
-		"list": [],
-		"map": []
-	  }
-	},
-	"redirect": {
-	  "type": "string",
-	  "default": ""
-	},
-	"honeyPot":  {
-	  "type": "boolean",
-	  "default": false
-	},
-	"recaptcha": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"recaptchaVersion": {
-	  "type": "string",
-	  "default": "v3"
-	},
 	"style": {
 	  "type": "object",
 	  "default": {
@@ -201,47 +126,132 @@
 		"mobileGutter": ""
 	  }
 	},
+	"inputColor": {
+		"type": "string",
+		"default": ""
+	},
+	"inputFocusColor": {
+		"type": "string",
+		"default": ""
+	},
+	"inputBackground": {
+		"type": "string",
+		"default": ""
+	},
+	"inputFocusBackground": {
+		"type": "string",
+		"default": ""
+	},
+	"inputFont": {
+		"type": "array",
+		"default": [
+			{
+			"size": [
+				"",
+				"",
+				""
+			],
+			"sizetype": "px",
+			"lineHeight": [
+				"",
+				"",
+				""
+			],
+			"linetype": "",
+			"letterSpacing": [
+				"",
+				"",
+				""
+			],
+			"letterType": "px",
+			"textTransform": "",
+			"family": "",
+			"google": "",
+			"style": "",
+			"weight": "",
+			"variant": "",
+			"subset": "",
+			"loadGoogle": true
+			}
+		]
+	},
+	"requiredColor": {
+		"type": "string",
+		"default": ""
+	},
+	"labelColor": {
+		"type": "string",
+		"default": ""
+	},
 	"labelFont": {
-	  "type": "object",
-	  "default": {
-		"color": "",
-		"size": [ "", "", "" ],
-		"sizeType": "px",
-		"lineHeight": [ "", "", "" ],
-		"lineType": "px",
-		"letterSpacing": "",
-		"textTransform": "",
-		"family": "",
-		"google": "",
-		"style": "",
-		"weight": "",
-		"variant": "",
-		"subset": "",
-		"loadGoogle": true,
-		"padding": [ "", "", "", "" ],
-		"margin": [ "", "", "", "" ]
-	  }
+		"type": "array",
+		"default": [
+			{
+			"size": [
+				"",
+				"",
+				""
+			],
+			"sizetype": "px",
+			"lineHeight": [
+				"",
+				"",
+				""
+			],
+			"linetype": "",
+			"letterSpacing": [
+				"",
+				"",
+				""
+			],
+			"letterType": "px",
+			"textTransform": "",
+			"family": "",
+			"google": "",
+			"style": "",
+			"weight": "",
+			"variant": "",
+			"subset": "",
+			"loadGoogle": true
+			}
+		]
 	},
 	"helpFont": {
-	  "type": "object",
-	  "default": {
-		"color": "",
-		"size": [ "", "", "" ],
-		"sizeType": "px",
-		"lineHeight": [ "", "", "" ],
-		"lineType": "px",
-		"letterSpacing": "",
-		"textTransform": "",
-		"family": "",
-		"google": "",
-		"style": "",
-		"weight": "",
-		"variant": "",
-		"subset": "",
-		"loadGoogle": true,
-		"padding": [ "", "", "", "" ],
-		"margin": [ "", "", "", "" ]
-	  }
+		"type": "array",
+		"default": [
+			{
+			"size": [
+				"",
+				"",
+				""
+			],
+			"sizetype": "px",
+			"lineHeight": [
+				"",
+				"",
+				""
+			],
+			"linetype": "",
+			"letterSpacing": [
+				"",
+				"",
+				""
+			],
+			"letterType": "px",
+			"textTransform": "",
+			"family": "",
+			"google": "",
+			"style": "",
+			"weight": "",
+			"variant": "",
+			"subset": "",
+			"loadGoogle": true
+			}
+		]
+	},
+	"helpColor": {
+		"type": "string",
+		"default": ""
 	},
 	"messages": {
 	  "type": "object",
@@ -254,6 +264,230 @@
 		  "preError": ""
 		}
 	},
+	"messageColor": {
+		"type": "string",
+		"default": ""
+	},
+	"messageBackground": {
+		"type": "string",
+		"default": ""
+	},
+	"messageColorError": {
+		"type": "string",
+		"default": ""
+	},
+	"messageBackgroundError": {
+		"type": "string",
+		"default": ""
+	},
+	"messageFont": {
+		"type": "array",
+		"default": [
+			{
+			"size": [
+				"",
+				"",
+				""
+			],
+			"sizetype": "px",
+			"lineHeight": [
+				"",
+				"",
+				""
+			],
+			"linetype": "",
+			"letterSpacing": [
+				"",
+				"",
+				""
+			],
+			"letterType": "px",
+			"textTransform": "",
+			"family": "",
+			"google": "",
+			"style": "",
+			"weight": "",
+			"variant": "",
+			"subset": "",
+			"loadGoogle": true
+			}
+		]
+	},
+	"messageBorderSuccess": {
+		"type": "array",
+		"default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": ""
+		} ]
+	  },
+	  "tabletMessageBorderSuccess": {
+		"type": "array",
+		"default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": ""
+		} ]
+	  },
+	  "mobileMessageBorderSuccess": {
+		"type": "array",
+		"default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": ""
+		} ]
+	  },
+	  "messageBorderError": {
+	   "type": "array",
+	   "default": [ {
+		 "top": [ "", "", "" ],
+		 "right": [ "", "", "" ],
+		 "bottom": [ "", "", "" ],
+		 "left": [ "", "", "" ],
+		 "unit": ""
+	   } ]
+	  },
+	  "tabletMessageBorderError": {
+		"type": "array",
+		"default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": ""
+		} ]
+	  },
+	  "mobileMessageBorderError": {
+		"type": "array",
+		"default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": ""
+		} ]
+	  },
+	  "messageBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	  },
+	  "tabletMessageBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	  },
+	  "mobileMessageBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	  },
+	  "messageBorderRadiusUnit": {
+		"type": "string",
+		"default": "px"
+	  },
+	  "messagePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"tableMessagePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"mobileMessagePadding": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"messagePaddingUnit": {
+		"type": "string",
+		"default": "px"
+	},
+	"messageMargin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"tabletMessageMargin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"mobileMessageMargin": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"messageMarginUnit": {
+		"type": "string",
+		"default": "px"
+	},
+	"actions": {
+		"type": "array",
+		"default": [ "email" ]
+	  },
+	  "email": {
+		"type": "object",
+		"default": {
+		  "emailTo": "",
+		  "subject": "",
+		  "fromEmail": "",
+		  "fromName": "",
+		  "replyTo": "email_field",
+		  "cc": "",
+		  "bcc": "",
+		  "html": true
+		}
+	  },
+	  "mailerlite": {
+		"type": "object",
+		"default": {
+			"group": [],
+			"map": []
+		  }
+	  },
+	  "fluentcrm": {
+		"type": "object",
+		"default": {
+			"lists": [],
+			"tags": [],
+			"map": [],
+			"doubleOptin": false
+		  }
+	  },
+	  "sendinblue": {
+		"type": "object",
+		"default": {
+			"list": [],
+			"map": []
+		  }
+	  },
+	  "mailchimp": {
+		"type": "object",
+		"default": {
+		  "list": [],
+		  "map": []
+		}
+	  },
+	  "convertkit": {
+		"type": "object",
+		"default": {
+		  "form": [],
+		  "sequence": [],
+		  "tags": [],
+		  "map": []
+		}
+	  },
+	  "activecampaign": {
+		"type": "object",
+		"default": {
+		  "list": [],
+		  "map": []
+		}
+	  },
+	  "redirect": {
+		"type": "string",
+		"default": ""
+	  },
 	"webhook": {
 	  "type": "object",
 	  "default": {
@@ -282,6 +516,18 @@
 		"userIP": true,
 		"userDevice": true
 	  }
-	}
+	},
+	"recaptcha": {
+		"type": "boolean",
+		"default": false
+	  },
+	  "recaptchaVersion": {
+		"type": "string",
+		"default": "v3"
+	  },
+	"honeyPot":  {
+		"type": "boolean",
+		"default": false
+	  }
   }
 }

@@ -30,6 +30,7 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 * @var string
 	 */
 	protected $block_name = 'text';
+	
 
 	/**
 	 * Instance Control
@@ -56,6 +57,9 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 		$type = 'text';
 		$is_required = $this->is_required( $attributes );
 		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		if ( ! empty( $attributes['className'] ) ) {
+			$outer_classes[] = $attributes['className'];
+		}
 		$wrapper_args = array(
 			'class' => implode( ' ', $outer_classes ),
 		);

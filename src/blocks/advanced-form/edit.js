@@ -92,6 +92,11 @@ export function Edit( props ) {
 		} else {
 			addUniqueID( uniqueId, clientId );
 		}
+		if ( currentPostType === 'kadence_form' ) {
+			// Lame workaround for gutenberg to prevent showing the block Validity error.
+			window.wp.data.dispatch( 'core/block-editor' ).setTemplateValidity( true );
+			window.wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'kadence/advanced-form' ] );
+		}
 	}, [] );
 
 	{/* Directly editing from via kadence_form post type */}

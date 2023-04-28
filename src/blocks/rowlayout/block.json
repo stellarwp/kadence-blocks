@@ -766,6 +766,10 @@
 		"type": "boolean",
 		"default": false
 	},
+	"hideDesignLibrary": {
+		"type": "boolean",
+		"default": false
+	},
 	"anchor": {
 		"type": "string"
 	},
