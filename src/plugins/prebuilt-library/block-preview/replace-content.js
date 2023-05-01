@@ -24,6 +24,34 @@ export default function replaceContent( content, aiContent, categories, context,
 	}
 	const currentCategory = categories?.[0] ? categories[0] : '';
 	switch (currentCategory) {
+		case "columns":
+			let columns_contextID = 'columns-about';
+			if ( '' !== context && 'general' !== context) {
+				columns_contextID = 'columns-' + context;
+			}
+			const columns_aiContent = aiContent.content.find( x => x.id === columns_contextID );
+			// Headline.
+			if ( columns_aiContent?.heading?.medium ) {
+				content = content.replace( /Compose a captivating title for this section./g, columns_aiContent?.heading?.medium );
+			}
+			// Paragraph
+			if ( columns_aiContent?.sentence?.short ) {
+				content = content.replace( /Support your idea with a clear, descriptive sentence or phrase that has a consistent writing style./g, columns_aiContent?.sentence?.short );
+			}
+			if ( columns_aiContent?.columns ) {
+				for (let index = 0; index < columns_aiContent?.columns.length; index++) {
+					// Title.
+					if ( columns_aiContent?.columns?.[index]?.['title-medium'] ) {
+						content = content.replace( "Add a descriptive title for the column.", columns_aiContent?.columns?.[index]?.['title-medium'] );
+					}
+					console.log( index );
+					// Paragraph.
+					if ( columns_aiContent?.columns?.[index]?.['sentence-short'] ) {
+						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", columns_aiContent?.columns?.[index]?.['sentence-short'] )
+					}
+				}
+			}
+			break;
 		case "media-text":
 			let media_contextID = 'media-text-about';
 			if ( 'why' == context ) {

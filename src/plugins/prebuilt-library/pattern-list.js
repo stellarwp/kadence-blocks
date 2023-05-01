@@ -161,7 +161,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			);
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, patterns ] );
+	}, [ filterValue, selectedCategory, patterns, aiContent ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );

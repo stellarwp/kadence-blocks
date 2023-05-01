@@ -778,11 +778,11 @@ class Kadence_Blocks_Prebuilt_Library {
 				'portrait',
 			),
 			'prompts' => array(
-				'accordion-faq',
+				// 'accordion-faq',
 				// 'accordion-get-started',
 				// 'cards-location',
 				// 'cards-products-services',
-				// 'columns-about',
+				'columns-about',
 				// 'columns-profile',
 				// 'counter-stats-work',
 				// 'forms-subscribe',
@@ -801,8 +801,10 @@ class Kadence_Blocks_Prebuilt_Library {
 			'domain' => $site_url,
 			'key' => $this->api_key,
 		);
+		error_log( json_encode( $body ) );
 		if ( 'ai-full' === $this->package ) {
 			$api_url  = add_query_arg( $body, $this->url );
+			//$api_url  = $this->url;
 			$response = wp_remote_post(
 				$api_url,
 				array(
@@ -810,7 +812,7 @@ class Kadence_Blocks_Prebuilt_Library {
 					'headers' => array(
 						'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
 					),
-					'body'    => json_encode( $body ),
+					//'body'    => json_encode( $body ),
 				)
 			);
 		} else {
