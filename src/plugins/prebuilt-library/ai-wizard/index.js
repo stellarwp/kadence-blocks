@@ -10,13 +10,14 @@ import { Button } from '@wordpress/components';
  */
 import { KadenceAiProvider } from './context/kadence-ai-provider';
 import { KadenceAiWizard } from './kadence-ai-wizard';
-import { getAiWizardData } from './utils/database';
+import { useDatabase } from './hooks/use-database';
 import { verticalsHelper } from './utils/verticals-helper';
 import { collectionsHelper } from './utils/collections-helper';
 
 export function AiWizard() {
 	const [ wizardData, setWizardData ] = useState();
 	const [ wizardOpen, setWizardOpen ] = useState(false);
+	const { loading, getAiWizardData } = useDatabase();
 	const { setVerticals } = verticalsHelper();
 	const { setCollections } = collectionsHelper();
 
@@ -25,9 +26,14 @@ export function AiWizard() {
 		setVerticals();
 		// Set collections data in session storage.
 		setCollections();
-		// Get previously-saved wizard data.
-		getPreviousData();
 	}, []);
+	
+	useEffect(() => {
+		if (wizardOpen) {
+			// Get previously-saved wizard data.
+			getPreviousData();
+		}
+	}, [ wizardOpen ]);
 
 	async function getPreviousData() {
 		const response = await getAiWizardData();
@@ -51,9 +57,9 @@ export function AiWizard() {
 				text={ __('AI Me', 'kadence') }
 				onClick={ handleButtonClick }
 			/>
-			{ (wizardOpen && wizardData) && (
+			{ (wizardOpen && wizardData && ! loading) && (
 				<KadenceAiProvider value={ wizardData }>
-					<KadenceAiWizard handleWizardClose={ handleWizardClose }/>
+					<KadenceAiWizard loading={ loading } handleWizardClose={ handleWizardClose }/>
 				</KadenceAiProvider>
 			) }
 		</>

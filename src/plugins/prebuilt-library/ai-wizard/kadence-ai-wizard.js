@@ -5,7 +5,7 @@ import { Wizard, KadenceK } from './components';
 import { HowItWorks, IndustryInformation, AboutYourSite, Photography } from './pages';
 import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
-import { saveAiWizardData } from './utils/database';
+import { useDatabase } from './hooks/use-database';
 
 const pages = [
 	{
@@ -40,12 +40,13 @@ function getPages() {
 	return ! firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
 }
 
-export function KadenceAiWizard({ handleWizardClose }) {
+export function KadenceAiWizard({ loading, handleWizardClose }) {
 	const { state, dispatch } = useKadenceAi();
 	const {
 		isForwardButtonDisabled,
 		isFinishButtonDisabled
 	} = useAiWizardHelper(state, getPages());
+	const { saveAiWizardData } = useDatabase();
 
 	async function handleOnFinish(event) {
 		// No action on blur or escape keydown.
@@ -79,6 +80,10 @@ export function KadenceAiWizard({ handleWizardClose }) {
 	
 		// Close wizard.
 		handleWizardClose(false);
+	}
+
+	if (loading) {
+		return <></>;
 	}
 
 	return (
