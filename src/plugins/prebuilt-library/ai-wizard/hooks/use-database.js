@@ -1,0 +1,78 @@
+/**
+ * WordPress dependencies
+ */
+import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
+
+export function useDatabase() {
+	const [ loading, setLoading ] = useState(false);
+	const [ error, setError ] = useState(false);
+
+	/**
+	 * Save wizard data to Wordpress options table.
+	 *
+	 * @return {Promise<boolean>}
+	 */
+	async function saveAiWizardData(data) {
+		setLoading(true);
+		setError(false);
+
+		try {
+			const response = await apiFetch({
+				path: '/wp/v2/settings',
+				method: 'POST',
+				data: { kadence_blocks_prophecy: JSON.stringify(data) }
+			});
+
+			if (response) {
+				setLoading(false);
+
+				return true;
+			}
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			setLoading(false);
+			setError(true);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Get wizard data from database.
+	 *
+	 * @return {Promise<object>}
+	 */
+	async function getAiWizardData() {
+		setLoading(true);
+		setError(false);
+
+		try {
+			const response = await apiFetch({
+				path: '/wp/v2/settings',
+				method: 'GET',
+			});
+
+			if (response && response.kadence_blocks_prophecy) {
+				setLoading(false);
+
+				return response.kadence_blocks_prophecy;
+			}
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			setLoading(false);
+			setError(true);
+
+			return {};
+		}
+	}
+
+	return {
+		loading,
+		error,
+		saveAiWizardData,
+		getAiWizardData
+	}
+}
+
