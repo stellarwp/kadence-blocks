@@ -1,7 +1,18 @@
+/**
+ * External dependencies
+ */
 import classnames from 'classnames';
 
+/**
+ * WordPress dependencies
+ */
 import { useState } from '@wordpress/element';
 import { SelectControl as CoreSelectControl } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import './select-control.scss';
 
 export function SelectControl(props) {
 	const {

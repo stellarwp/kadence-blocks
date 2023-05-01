@@ -1,5 +1,11 @@
+/**
+ * External dependencies
+ */
 import classnames from 'classnames';
 
+/**
+ * WordPress dependencies
+ */
 import { Icon } from '@wordpress/components';
 
 export function StepperIcon(props) {

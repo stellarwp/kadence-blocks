@@ -11,8 +11,12 @@ import { Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { focus } from '@wordpress/dom';
 
+/**
+ * Internal dependencies
+ */
 import { Button } from '../button';
 import { StepperIcon } from './stepper-icon';
+import './wizard.scss';
 
 export function Wizard({
 	className,

@@ -1,6 +1,14 @@
+/**
+ * WordPress dependencies
+ */
 import { useState } from '@wordpress/element';
 import { BaseControl } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
 import { Chip } from '../chip';
+import './chips-input.scss';
 
 export function ChipsInput(props) {
 	const{
@@ -14,7 +22,7 @@ export function ChipsInput(props) {
 	} = props;
 
 	const internalId = id ? `inspector-chips-input-control-${ id }` : '';
-	const [inputValue, setInputValue] = useState('');
+	const [ inputValue, setInputValue ] = useState('');
 
 	function handleTagDelete(tag) {
     const newSelectedTags = [...tags];

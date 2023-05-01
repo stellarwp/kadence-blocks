@@ -1,12 +1,21 @@
+/**
+ * External dependencies
+ */
+import ReactSlidy from 'react-slidy'
+
+/**
+ * WordPress dependencies
+ */
 import { Dashicon, __experimentalText as Text } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import ReactSlidy from 'react-slidy'
-import './slider.scss';
-
+/**
+ * Internal dependencies
+ */
 import img1 from '../../assets/sample-content-1.jpg';
 import img2 from '../../assets/sample-content-2.jpg';
 import img3 from '../../assets/sample-content-3.jpg';
+import './slider.scss';
 
 const styles = {
 	img: {

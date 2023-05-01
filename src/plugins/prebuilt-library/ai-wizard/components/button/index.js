@@ -1,4 +1,12 @@
+/**
+ * WordPress dependencies
+ */
 import { Button as CoreButton } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import './button.scss';
 
 /**
  * @param {object} props

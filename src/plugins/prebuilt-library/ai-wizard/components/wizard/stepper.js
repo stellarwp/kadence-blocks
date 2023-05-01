@@ -1,6 +1,12 @@
+/**
+ * WordPress dependencies
+ */
 import { Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import { StepperIcon } from './stepper-icon';
 
 export default function Stepper(props) {
