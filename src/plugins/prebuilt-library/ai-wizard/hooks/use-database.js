@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useState, useEffect } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
@@ -54,10 +54,12 @@ export function useDatabase() {
 				method: 'GET',
 			});
 
-			if (response && response.kadence_blocks_prophecy) {
+			if (response) {
 				setLoading(false);
 
-				return response.kadence_blocks_prophecy;
+				if (response?.kadence_blocks_prophecy) {
+					return response.kadence_blocks_prophecy;
+				}
 			}
 		} catch (error) {
 			console.log(`ERROR: ${ error }`);
