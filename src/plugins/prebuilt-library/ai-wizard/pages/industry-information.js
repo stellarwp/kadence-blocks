@@ -102,6 +102,7 @@ export function IndustryInformation() {
 			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: 'Default' })
 		}
 	}
+
 	function handleIndustrySpecificChange(value) {
 		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: value });
 

@@ -13,6 +13,7 @@ import { KadenceAiWizard } from './kadence-ai-wizard';
 import { useDatabase } from './hooks/use-database';
 import { verticalsHelper } from './utils/verticals-helper';
 import { collectionsHelper } from './utils/collections-helper';
+import './kadence-ai-wizard.scss';
 
 export function AiWizard() {
 	const [ wizardData, setWizardData ] = useState();
