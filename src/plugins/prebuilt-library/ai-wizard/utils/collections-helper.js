@@ -11,25 +11,30 @@ export function collectionsHelper() {
 	 * @return {Promise<array>}
 	 */
 	async function getCollectionsFromProphecy() {
-		let collections = [];
+		try {
+			let collections = [];
 
-		const response = await fetch(PROPHECY_ROUTE_GET_COLLECTIONS, {
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
+			const response = await fetch(PROPHECY_ROUTE_GET_COLLECTIONS, {
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			});
+
+			if (response.ok) {
+				const responseData = await response.json();
+
+				if (responseData?.data?.collections) {
+					collections = responseData.data.collections;
+
+					// Save collections object to session storage.
+					saveCollections(collections);
+				}
+
+				return collections;
 			}
-		});
-
-		if (response.ok) {
-			const responseData = await response.json();
-
-			if (responseData?.data?.collections) {
-				collections = responseData.data.collections;
-
-				// Save collections object to session storage.
-				saveCollections(collections);
-			}
-
-			return collections;
+		} catch (error) {
+			console.log('Collections Error:');
+			console.log(error);
 		}
 	}
 

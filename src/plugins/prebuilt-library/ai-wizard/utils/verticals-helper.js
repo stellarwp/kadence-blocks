@@ -10,27 +10,33 @@ export function verticalsHelper() {
 	 * @return {Promise<array>}
 	 */
 	async function getVerticalsFromProphecy() {
-		let verticals = [];
+		try {
+			let verticals = [];
 
-		const response = await fetch(PROPHECY_ROUTE_GET_VERTICALS, {
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
+			const response = await fetch(PROPHECY_ROUTE_GET_VERTICALS, {
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			});
+
+			if (response.ok) {
+				const responseData = await response.json();
+
+				if (responseData?.data) {
+					// Create expected data structure.
+					verticals = formatVerticals(responseData.data);
+
+					// Save verticals object to session storage.
+					saveVerticals(verticals);
+				}
+
+				return verticals;
 			}
-		});
-
-		if (response.ok) {
-			const responseData = await response.json();
-
-			if (responseData?.data) {
-				// Create expected data structure.
-				verticals = formatVerticals(responseData.data);
-
-				// Save verticals object to session storage.
-				saveVerticals(verticals);
-			}
-
-			return verticals;
+		} catch (error) {
+			console.log('Verticals Error:');
+			console.log(error);
 		}
+
 	}
 
 	/**
