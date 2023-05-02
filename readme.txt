@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.36
+Stable tag: 3.0.37
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.0.37 =
+Release Date: May 2nd, 2023
+* Fix: Issue with icon list mobile column setting.
+* Fix: Issue with pasting styles changing icon in infobox.
 
 = 3.0.36 =
 Release Date: April 28th, 2023

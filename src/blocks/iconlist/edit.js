@@ -174,6 +174,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 
 	const previewColumnGap = getPreviewSize( previewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
 	const previewListGap = getPreviewSize( previewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
+	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns ? columns : '' ), ( undefined !== tabletColumns ? tabletColumns : '' ), ( undefined !== mobileColumns ? mobileColumns : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
 	const listPaddingMouseOver = mouseOverVisualizer();
 
@@ -705,7 +706,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 				<KadenceWebfontLoader typography={ listStyles } clientId={ clientId } id={ 'listStyles' } />
 			) }
 			<div ref={container}
-				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kb-icon-list-style-${style} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
+				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kb-icon-list-style-${style} kt-svg-icon-list-columns-${previewColumns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
 				 style={{
 					marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType ),
 					marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType ),
