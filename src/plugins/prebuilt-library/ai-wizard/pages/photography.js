@@ -88,13 +88,15 @@ export function Photography() {
 							onChange={ handlePhotoLibraryChange }
 						>
 							{
-								Object.keys(verticals).map((vertical) => (
-									<optgroup label={ vertical }>{
-										verticals[vertical].map((subVertical) => (
-											<option value={ subVertical }>{ subVertical }</option>
-										))
-									}</optgroup>
-								))
+								verticals && (
+									Object.keys(verticals).map((vertical) => (
+										<optgroup label={ vertical }>{
+											verticals[vertical].map((subVertical) => (
+												<option value={ subVertical }>{ subVertical }</option>
+											))
+										}</optgroup>
+									))
+								)
 							}
 							<option value="My Images">{ __('My Images', 'kadence') }</option>
 						</SelectControl>
