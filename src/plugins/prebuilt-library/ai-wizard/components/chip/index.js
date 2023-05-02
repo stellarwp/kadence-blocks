@@ -13,6 +13,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import './chip.scss';
+
 /**
  * @param {object} props
  * @param {function} props.onDelete Event handler for delete button click

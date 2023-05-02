@@ -33,8 +33,7 @@ export function verticalsHelper() {
 				return verticals;
 			}
 		} catch (error) {
-			console.log('Verticals Error:');
-			console.log(error);
+			console.log(`Error: ${ error }`);
 		}
 
 	}

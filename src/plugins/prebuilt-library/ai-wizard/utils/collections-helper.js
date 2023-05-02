@@ -33,8 +33,7 @@ export function collectionsHelper() {
 				return collections;
 			}
 		} catch (error) {
-			console.log('Collections Error:');
-			console.log(error);
+			console.log(`Error: ${ error }`);
 		}
 	}
 
@@ -103,7 +102,7 @@ export function collectionsHelper() {
 				return responseData;
 			}
 		} catch (error) {
-			console.log(`ERROR: ${error}`);
+			console.log(`ERROR: ${ error }`);
 		}
 	}
 
@@ -120,6 +119,11 @@ export function collectionsHelper() {
 		}
 
 		const collections = await getCollections();
+
+		if (! collections) {
+			return '';
+		}
+
 		const matches = collections.filter((collection) => {
 			return collection.collection_industries.includes(industry) && collection.collection_slug.includes('a-roll')
 		})

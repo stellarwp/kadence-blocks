@@ -81,13 +81,13 @@ export function IndustryInformation() {
 		return [
 			{
 				value: '',
-				label: 'Category...',
+				label: __('Category...', 'kadence'),
 				disabled: true
 			},
 			...data,
 			{
 				label: __('Other', 'kadence'),
-				value: __('Other', 'kadence')
+				value: 'Other'
 			}
 		]
 	}
