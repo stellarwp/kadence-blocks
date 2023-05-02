@@ -877,7 +877,7 @@ class Kadence_Blocks_Settings {
 	public function config_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
 
-		$kadence_sso = new Kadence_Blocks_SSO();
+		$kadence_sso = new Kadence_License_SSO();
 		$license_url = $kadence_sso->get_auth_url();
 		?>
 		<div class="kadence_blocks_dash_head">

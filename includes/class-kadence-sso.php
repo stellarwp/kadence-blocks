@@ -1,52 +1,33 @@
 <?php
 
-class Kadence_Blocks_SSO {
+require( 'stellar-license-sso.php' );
 
-	protected $auth_url = 'http://auth-site.local/sample-page/';
+class Kadence_License_SSO extends Stellar_License_SSO {
 
-	public function __construct() {
+	protected $auth_url = 'http://auth-site.local/license';
+
+	protected $callback_path = '/wp-admin/admin.php?page=kadence-blocks';
+
+	protected $password_option_name = 'kadence_blocks_sso_password';
+
+	protected $product_name = 'kadence-blocks';
+
+	public function save_license_key( $key ) {
+
+		/* Plugin specific code to save license key, activate items, etc. */
+
+		return true;
 	}
 
-	public function get_auth_url() {
-		$parameters = array(
-			'callback' => home_url( '/wp-admin/admin.php?page=kadence-blocks' ),
-			'home_url' => home_url(),
-			'hash'     => $this->get_hash(),
-		);
-
-		return $this->auth_url . '?' . http_build_query( $parameters );
+	public function invalid_hash() {
+		$message = __( 'Unable to license site. Invalid Hash.', 'kadence-blocks' );
+		printf( '<div class="notice notice-error"><p>%1$s</p></div>', esc_html( $message ) );
 	}
 
-	public function get_hash() {
-		$password = get_option( 'kadence_blocks_sso_password' );
-
-		if ( $password === false || ( ! empty( $password['expire'] ) && $password['expire'] < time() ) ) {
-			$password = $this->generate_password();
-		}
-
-		return wp_hash( get_current_user_id() . $password['password'] );
+	public function license_successful() {
+		$message = __( 'Site licensed successfully!', 'kadence-blocks' );
+		printf( '<div class="notice notice-success"><p>%1$s</p></div>', esc_html( $message ) );
 	}
 
-	/**
-	 * Generates new SSO password
-	 *
-	 * @return mixed
-	 */
-	private function generate_password() {
-		$password = wp_generate_password( 16 );
-		$expire   = time() + 1800;
 
-		$password_array = array(
-			'password' => $password,
-			'expire'   => $expire,
-		);
-
-		update_option( 'kadence_blocks_sso_password', $password_array );
-
-		return $password_array;
-	}
-
-	public function validate_hash( $provided_hash ) {
-		return hash_equals( $this->get_hash(), $provided_hash );
-	}
 }

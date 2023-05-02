@@ -92,6 +92,11 @@ function kadence_blocks_init() {
 	 */
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-site-health.php';
 	/**
+	 * Kadence SSO
+	 */
+	$kadence_sso = new Kadence_License_SSO();
+
+	/**
 	 * Telemetry.
 	 */
 	Config::set_container( new Container() );
