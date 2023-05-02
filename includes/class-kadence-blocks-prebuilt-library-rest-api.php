@@ -14,7 +14,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Include ai prompt.
 	 */
-	const PROP_CONTEXT = 'prompt';
+	const PROP_CONTEXT = 'context';
 
 	/**
 	 * Force reload.
@@ -73,7 +73,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_ai_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/content/';
+	protected $remote_ai_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/';
 
 	/**
 	 * Constructor.
@@ -81,6 +81,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function __construct() {
 		$this->namespace = 'kb-design-library/v1';
 		$this->rest_base = 'get';
+		$this->reset = 'reset';
 		$this->reset = 'reset';
 	}
 
@@ -97,6 +98,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_verticals',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_industry_verticals' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -125,6 +138,32 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
 	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_industry_verticals( $request ) {
+		$context = $request->get_param( self::PROP_CONTEXT );
+		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
+		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
+		$available_prompts = get_option( 'kb_design_library_image', array() );
+		if ( file_exists( $this->get_local_data_path( 'industry_verticals' ) ) && ! $reload ) {
+			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'industry_verticals' ) ) );
+		} else {
+			// Check if we have a remote file.
+			$response = $this->get_remote_industry_verticals();
+			$data = json_decode( $response, true );
+			if ( $data === 'error' ) {
+				return rest_ensure_response( 'error' );
+			} else {
+				$this->create_data_file( $response, 'industry_verticals' );
+				return rest_ensure_response( $response );
+			}
+		}
+	}
 
 	/**
 	 * Retrieves a collection of objects.
@@ -147,7 +186,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			} else {
 				// Check if we have a remote file.
 				$response = $this->get_remote_contents( $available_prompts[ $context ] );
-				if ( isset( $response['data']['status'] ) ) {
+				$data = json_decode( $response, true );
+				if ( $data === 'error' ) {
+					return rest_ensure_response( 'error' );
+				} else if ( isset( $data['data']['status'] ) ) {
 					return rest_ensure_response( 'processing' );
 				} else {
 					$this->create_data_file( $response, $available_prompts[ $context ] );
@@ -157,10 +199,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		} else {
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
-			if ( isset( $response['data']['job_id'] ) ) {
+			$data = json_decode( $response, true );
+			error_log( print_r( $data, true ) );
+			if ( isset( $data['data']['job_id'] ) ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', array() );
-				$current_prompts[ $context ] = $response['data']['job_id'];
+				$current_prompts[ $context ] = $data['data']['job_id'];
 				update_option( 'kb_design_library_prompts', $current_prompts );
+				error_log( print_r( 'HERE?', true ) );
 				return rest_ensure_response( 'processing' );
 			} else {
 				return rest_ensure_response( 'failed' );
@@ -255,7 +300,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
-		$prophecy_data = get_option( 'kadence_blocks_prophecy' );
+		$prophecy_data = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 		// Get the response.
 		$body = array(
 			'context' => 'kadence',
@@ -266,31 +311,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body['mission'] = ! empty( $prophecy_data['mission'] ) ? $prophecy_data['mission'] : '';
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
-		switch ( $context ) {
-			case 'about':
-				$body['prompts'] = array(
-					'columns-about',
-					'hero-about',
-					'media-text-about',
-				);
-				break;
-			case 'faq':
-				$body['prompts'] = array(
-					'accordion-faq',
-				);
-				break;
-		}
-		$test_data = array(
-			'company' => 'Brandi Toole',	
-			'industry' => 'Photography',
-			'location' => "I'm based out of Rochester, New York but also travel to Atlanta, Georgia frequently.",
-			'mission' => "I'm a self taught photographer, with over 10 years of experience photographing weddings and couples. My goal is to create photos in a photojournalistic and unobtrusive way to help you to remember the day as it really happened. I send a curated preview of your personalized gallery within 48 hours of your wedding day and your full a gallery will be completed in 8-10 weeks for you to print, download and share.",
+
+		// Use test data.
+		$body = array(
+			'context' => 'kadence',
+			'company' => 'Pinnacle Foods',
+			'industry' => 'Food',
+			'location' => "United States",
+			'mission' => "The best days are filled with moments when you are fully engaged in the present, thriving in the adventure. These precious moments so often involve great food. At Pinnacle Foods we create gourmet freeze-dried meals that are easy to pack and prepare so you can focus on the adventure at hand and enjoy the experience fully.",
 			'tone' => 'PASSIONATE',
 			'keywords'=> array(
-				'wedding photography',
-				'couples photography',
-				'family photograph',
-				'portrait',
+				'Backpacking Meals',
+				'Freeze-Dried Food',
+				'Adventure Food',
+				'gourmet packaged meals',
 			),
 			'prompts' => array(
 				// 'accordion-faq',
@@ -312,7 +346,21 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				// 'testimonials-testimonials',
 			),
 		);
-		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'create' );
+		switch ( $context ) {
+			case 'about':
+				$body['prompts'] = array(
+					'columns-about',
+					'hero-about',
+					'media-text-about',
+				);
+				break;
+			case 'faq':
+				$body['prompts'] = array(
+					'accordion-faq',
+				);
+				break;
+		}
+		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'content/create' );
 		$response = wp_remote_post(
 			$api_url,
 			array(
@@ -322,7 +370,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		error_log( print_r( $response, true ) );
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
 			return 'Error';
@@ -330,7 +377,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		// Get the CSS from our response.
 		$contents = wp_remote_retrieve_body( $response );
-
+		error_log( print_r( $contents, true ) );
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
 			return 'Error';
@@ -355,37 +402,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
-		$prophecy_data = get_option( 'kadence_blocks_prophecy' );
-		// Get the response.
-		$body = array(
-			'context' => 'kadence',
-		);
-		$body['company'] = ! empty( $prophecy_data['company'] )	? $prophecy_data['company'] : '';
-		$body['industry'] = ! empty( $prophecy_data['industry'] ) ? $prophecy_data['industry'] : '';
-		$body['location'] = ! empty( $prophecy_data['location'] ) ? $prophecy_data['location'] : '';
-		$body['mission'] = ! empty( $prophecy_data['mission'] ) ? $prophecy_data['mission'] : '';
-		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
-		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
-		switch ( $context ) {
-			case 'about':
-				$body['prompts'] = array(
-					'columns-about',
-					'hero-about',
-					'media-text-about',
-				);
-				break;
-			case 'faq':
-				$body['prompts'] = array(
-					'accordion-faq',
-				);
-				break;
-		}
-		$auth = array(
-			'domain' => $site_url,
-			'key' => $this->api_key,
-		);
-		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'job/' . $job );
-		$response = wp_remote_post(
+		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
+		// error_log( print_r( $api_url, true ) );
+		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -394,18 +413,61 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		error_log( print_r( $response, true ) );
+		// error_log( print_r( $response, true ) );
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
-			return 'Error';
+			return 'error';
 		}
 
 		// Get the CSS from our response.
 		$contents = wp_remote_retrieve_body( $response );
-
+		error_log( print_r( $contents, true ) );
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
-			return 'Error';
+			return 'error';
+		}
+
+		return $contents;
+	}
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_remote_industry_verticals() {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$auth = array(
+			'domain' => $site_url,
+			'key'    => $this->api_key,
+		);
+		$api_url  = $this->remote_ai_url . 'verticals';
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+				),
+			)
+		);
+		// error_log( print_r( $response, true ) );
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		error_log( print_r( $contents, true ) );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
 		}
 
 		return $contents;

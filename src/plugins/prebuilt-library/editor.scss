@@ -1082,3 +1082,32 @@ h2.components-heading.kb-patterns-banner-notice {
 .block-editor-block-patterns-list__item:hover .kb-pattern-shadow-container.kb-pattern-overflow::part(container) {
     transform: translateY(calc(-100% + 1600px));
 }
+.kb-library-sidebar-context-choices {
+    display: flex;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #eee;
+}
+
+.kb-library-sidebar-context-choices button.components-button.kb-context-tab-button {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background:transparent;
+    color: var(--wp-components-color-foreground,#1e1e1e);
+    border: 2px solid transparent;
+    border-right: 0;
+    margin-bottom: -1px;
+    border-left: 0;
+    border-radius: 0;
+	&:hover {
+		background:transparent;
+		color: var(--wp-components-color-foreground,#1e1e1e);
+		border-bottom-color: #eee;
+	}
+}
+
+.kb-library-sidebar-context-choices button.components-button.kb-context-tab-button.is-pressed {
+    border-bottom-color: var(--wp-admin-theme-color);
+    font-weight: 500;
+}

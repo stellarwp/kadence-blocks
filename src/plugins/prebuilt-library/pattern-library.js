@@ -22,6 +22,8 @@ import {
 	withDispatch,
 } from '@wordpress/data';
 import { rawHandler } from '@wordpress/blocks';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import {
 	Component,
 } from '@wordpress/element';
@@ -78,8 +80,9 @@ function PatternLibrary( {
 	const [ subTab, setSubTab ] = useState( '' );
 	const [ patterns, setPatterns ] = useState( false );
 	const [ pages, setPages ] = useState( false );
-	const [ aiContent, setAIContent ] = useState( false );
-	const [ aiContentData, setAIContentData ] = useState( false );
+	const [ aiContent, setAIContent ] = useState( {} );
+	const [ context, setContext ] = useState( '' );
+	const [ contextTab, setContextTab ] = useState( '' );
 	const [ categories, setCategories ] = useState( { 
 		'category': __( 'Category', 'kadence-blocks' ),
 		'hero': __( 'Hero', 'kadence-blocks' ),
@@ -105,6 +108,30 @@ function PatternLibrary( {
 	 } );
 	const [ categorySelectOptions, setCategorySelectOptions ] = useState( [] );
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
+	const [ contextOptions, setContextOptions ] = useState( {
+		'hero': __( 'Website Hero', 'kadence-blocks' ),
+		'about': __( 'About', 'kadence-blocks' ),
+		'products-services': __( 'Products or Services', 'kadence-blocks' ),
+		'call-to-action': __( 'Call to Action', 'kadence-blocks' ),
+		'work': __( 'Work', 'kadence-blocks' ),
+		'faq': __( 'FAQ', 'kadence-blocks' ),
+		'value-prop': __( 'Value Proposition', 'kadence-blocks' ),
+		'news': __( 'News', 'kadence-blocks' ),
+		'blog': __( 'Blog', 'kadence-blocks' ),
+		'contact': __( 'Contact', 'kadence-blocks' ),
+		'subscribe': __( 'Subscribe', 'kadence-blocks' ),
+		'welcome': __( 'Welcome', 'kadence-blocks' ),
+		'location': __( 'Location', 'kadence-blocks' ),
+		'partners': __( 'Partners', 'kadence-blocks' ),
+		'team': __( 'Team', 'kadence-blocks' ),
+		'testimonial': __( 'Testimonials', 'kadence-blocks' ),
+		'profile': __( 'Profile', 'kadence-blocks' ),
+		'mission': __( 'Mission', 'kadence-blocks' ),
+		'history': __( 'History', 'kadence-blocks' ),
+		'get-started': __( 'Get Started', 'kadence-blocks' ),
+		'plans': __( 'Plans', 'kadence-blocks' ),
+	 } );
+	const [ contextListOptions, setContextListOptions ] = useState( [] );
 	const [ pagesCategories, setPagesCategories ] = useState( { 'category': __( 'Category', 'kadence-blocks' ) } );
 	const [ pageCategorySelectOptions, setPageCategorySelectOptions ] = useState( [] );
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
@@ -113,6 +140,7 @@ function PatternLibrary( {
 	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
+	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
 	const [ isError, setIsError ] = useState( false );
 	const [ style, setStyle ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
@@ -418,95 +446,6 @@ function PatternLibrary( {
 			setPages( 'error' );
 		});
 	}, 250 );
-	const loadAIContent = debounce( ( jobData ) => {
-		setIsLoading( true );
-		setIsError( false );
-		console.log( jobData );
-		var data = new FormData();
-		data.append( 'action', 'kadence_import_get_ai_content' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', data_key );
-		data.append( 'api_email', data_email );
-		data.append( 'product_id', product_id );
-		data.append( 'package', 'ai-test' );
-		data.append( 'job_url', jobData?.data?.link );
-		var control = this;
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				console.log( response );
-				const o = SafeParseJSON( response, false );
-				if ( o ) {
-					console.log( o );
-					setIsLoading( false );
-					setIsError( false );
-					setAIContent( o );
-				} else {
-					setIsLoading( false );
-					setIsError( true );
-					setAIContent( 'error' );
-				}
-			}
-		})
-		.fail( function( error ) {
-			console.log(error);
-			setIsLoading( false );
-			setIsError( true );
-			setAIContent( 'error' );
-		});
-	}, 250 );
-	const loadAIData = debounce( () => {
-		setIsLoading( true );
-		setIsError( false );
-
-		var data = new FormData();
-		data.append( 'action', 'kadence_import_get_ai_data' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', data_key );
-		data.append( 'api_email', data_email );
-		data.append( 'product_id', product_id );
-		data.append( 'package', 'ai-test' );
-		var control = this;
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				const o = SafeParseJSON( response, false );
-				if ( o ) {
-					console.log( o );
-					if ( o?.data?.job_id ) {
-						setAIContentData( o );
-						loadAIContent( o );
-					} else {
-						setIsLoading( false );
-						setIsError( false );
-						setAIContent( o );
-					}
-				} else {
-					setIsLoading( false );
-					setIsError( true );
-					setAIContent( 'error' );
-				}
-			}
-		})
-		.fail( function( error ) {
-			console.log(error);
-			setIsLoading( false );
-			setIsError( true );
-			setAIContent( 'error' );
-		});
-	}, 250 );
 	if ( reload && ! isLoading ) {
 		onReload();
 		reloadAllData();
@@ -520,6 +459,8 @@ function PatternLibrary( {
 	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
 	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
 	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
+	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
+	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'about' );
 	const sidebarEnabled = ( sidebar ? sidebar : sidebar_saved_enabled );
 	const theGridSize = ( gridSize ? gridSize : savedGridSize );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
@@ -528,6 +469,8 @@ function PatternLibrary( {
 	const selectedStyle = ( style ? style : savedStyle );
 	const selectedFontSize = ( fontSize ? fontSize : savedFontSize );
 	const selectedSubTab = ( subTab ? subTab : savedTab );
+	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
+	const selectedContext = ( context ? context : savedContext );
 	useEffect( () => {
 		setCategorySelectOptions( Object.keys( categories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: categories[key] }
@@ -544,10 +487,33 @@ function PatternLibrary( {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
 		} ) );
 	}, [ pagesCategories ] );
-
 	useEffect( () => {
-		loadAIData();
+		setContextListOptions( Object.keys( contextOptions ).map( function( key, index ) {
+			return { value: key, label: contextOptions[key] }
+		} ) );
 	}, [] );
+	const loadAI = async ( theContext ) => {
+		const response = await apiFetch( {
+			path: addQueryArgs( '/kb-design-library/v1/get', {
+				context: theContext,
+				api_key: data_key,
+				api_email: data_email,
+			} ),
+		} );
+		const o = SafeParseJSON( response, false );
+		if ( o === 'processing' ) {
+			setTimeout( () => {
+				loadAI( theContext );
+			}, 1000 );
+		} else {
+			aiContent[theContext] = o;
+			console.log( aiContent );
+			setAIContent( aiContent );
+		}
+	};
+	useEffect( () => {
+		loadAI( selectedContext );
+	}, [selectedContext] );
 
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
@@ -629,7 +595,33 @@ function PatternLibrary( {
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div>
-					{ ! search && (
+					<div className="kb-library-sidebar-context-choices">
+						<Button
+							className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
+							aria-pressed={ selectedContextTab === 'design' }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+								tempActiveStorage['contextTab'] = 'design';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								setContextTab( 'design' );
+							}}
+						>
+							{ __( 'By Design', 'kadence-blocks' ) }
+						</Button>
+						<Button
+							className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
+							aria-pressed={ selectedContextTab === 'context' }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+								tempActiveStorage['contextTab'] = 'context';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								setContextTab( 'context' );
+							}}
+						>
+							{ __( 'By Context', 'kadence-blocks' ) }
+						</Button>
+					</div>
+					{ ! search && selectedContextTab === 'design' && (
 						<div className="kb-library-sidebar-bottom-wrap">
 							<div className="kb-library-sidebar-bottom">
 								{ selectedSubTab === 'pages' ? (
@@ -665,6 +657,49 @@ function PatternLibrary( {
 												}}
 											>
 												{ category.label }
+											</Button>
+										) }
+									</>
+								) }
+							</div>
+						</div>
+					) }
+					{ ! search && selectedContextTab === 'context' && (
+						<div className="kb-library-sidebar-bottom-wrap">
+							<div className="kb-library-sidebar-bottom">
+								{ selectedSubTab === 'pages' ? (
+									<>
+										{ pageCategoryListOptions.map( ( category, index ) =>
+											<Button
+												key={ `${ category.value }-${ index }` }
+												className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
+												aria-pressed={ selectedPageCategory === category.value }
+												onClick={ () => {
+													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+													tempActiveStorage['kbPageCat'] = category.value;
+													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+													setPageCategory( category.value );
+												}}
+											>
+												{ category.label }
+											</Button>
+										) }
+									</>
+								) : (
+									<>
+										{ contextListOptions.map( ( contextCategory, index ) =>
+											<Button
+												key={ `${ contextCategory.value }-${ index }` }
+												className={ 'kb-category-button' + ( selectedContext === contextCategory.value ? ' is-pressed' : '' ) }
+												aria-pressed={ selectedContext === contextCategory.value }
+												onClick={ () => {
+													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+													tempActiveStorage['context'] = contextCategory.value;
+													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+													setContext( contextCategory.value );
+												}}
+											>
+												{ contextCategory.label }
 											</Button>
 										) }
 									</>
@@ -893,7 +928,9 @@ function PatternLibrary( {
 							selectedStyle={ selectedStyle }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
+							aiContext={ selectedContext }
 							aiContent={ aiContent }
+							contextTab={ selectedContextTab }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
@@ -940,7 +977,9 @@ function PatternLibrary( {
 							selectedStyle={ selectedStyle }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
+							contextTab={ selectedContextTab }
 							aiContent={ aiContent }
+							aiContext={ selectedContext }
 							previewMode={ savedPreviewMode }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>

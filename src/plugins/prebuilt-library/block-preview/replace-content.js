@@ -18,18 +18,17 @@ export default function replaceContent( content, aiContent, categories, context,
 	if ( ! content ) {
 		return content;
 	}
-	//console.log( aiContent );
-	if ( ! aiContent?.content ) {
+	if ( ! aiContent?.[context]?.content ) {
 		return content;
 	}
 	const currentCategory = categories?.[0] ? categories[0] : '';
+	const contextAI = aiContent?.[context]?.content;
 	switch (currentCategory) {
 		case "columns":
-			let columns_contextID = 'columns-about';
-			if ( '' !== context && 'general' !== context) {
-				columns_contextID = 'columns-' + context;
+			const columns_aiContent = contextAI.find( x => x.id === 'columns-' + context );
+			if ( ! columns_aiContent ) {
+				return content;
 			}
-			const columns_aiContent = aiContent.content.find( x => x.id === columns_contextID );
 			// Headline.
 			if ( columns_aiContent?.heading?.medium ) {
 				content = content.replace( /Compose a captivating title for this section./g, columns_aiContent?.heading?.medium );
@@ -44,7 +43,6 @@ export default function replaceContent( content, aiContent, categories, context,
 					if ( columns_aiContent?.columns?.[index]?.['title-medium'] ) {
 						content = content.replace( "Add a descriptive title for the column.", columns_aiContent?.columns?.[index]?.['title-medium'] );
 					}
-					console.log( index );
 					// Paragraph.
 					if ( columns_aiContent?.columns?.[index]?.['sentence-short'] ) {
 						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", columns_aiContent?.columns?.[index]?.['sentence-short'] )
@@ -52,20 +50,42 @@ export default function replaceContent( content, aiContent, categories, context,
 				}
 			}
 			break;
-		case "media-text":
-			let media_contextID = 'media-text-about';
-			if ( 'why' == context ) {
-				media_contextID = 'media-text-why';
+		case "hero":
+			const hero_aiContent = contextAI.find( x => x.id === 'hero-' + context );
+			if ( ! hero_aiContent ) {
+				return content;
 			}
-			const media_aiContent = aiContent.content.find( x => x.id === media_contextID );
-			console.log( media_aiContent );
+			// Headline.
+			if ( hero_aiContent?.heading?.medium ) {
+				content = content.replace( /Briefly and concisely explain what you do for your audience./g, hero_aiContent?.heading?.medium );
+			}
+			// overline
+			if ( hero_aiContent?.overline?.short ) {
+				content = content.replace( /ADD AN OVERLINE TEXT/g, hero_aiContent?.overline?.short );
+				content = content.replace( /Add an overline text/g, hero_aiContent?.overline?.short );
+			}
+			// Paragraph
+			if ( hero_aiContent?.sentence?.short ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, hero_aiContent?.sentence?.short );
+			}
+			// Button
+			if ( hero_aiContent?.button?.short ) {
+				content = content.replace( /Call To Action/g, hero_aiContent?.button?.short );
+				content = content.replace( /Call to Action/g, hero_aiContent?.button?.short );
+			}
+			break;
+		case "media-text":
+			const media_aiContent = contextAI.find( x => x.id === 'media-text-' + context );
+			if ( ! media_aiContent ) {
+				return content;
+			}
 			// Headline.
 			if ( media_aiContent?.heading?.medium ) {
 				content = content.replace( /Add a compelling title for your section to engage your audience./g, media_aiContent?.heading?.medium );
 			}
 			// Paragraph
-			if ( media_aiContent?.paragraph?.short ) {
-				content = content.replace( /Use this paragraph section to get your website visitors to know you. Consider writing about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style./g, media_aiContent?.paragraph?.short );
+			if ( media_aiContent?.sentence?.short ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Consider writing about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style./g, media_aiContent?.sentence?.short );
 			}
 			// Button
 			if ( media_aiContent?.button?.short ) {
@@ -74,12 +94,10 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			break;
 		case "cards":
-			let cards_contextID = 'cards-products-services';
-			if ( 'why' == context ) {
-				cards_contextID = 'cards-products-services';
+			const cards_aiContent = contextAI.find( x => x.id === 'cards-' + context );
+			if ( ! cards_aiContent ) {
+				return content;
 			}
-			const cards_aiContent = aiContent.content.find( x => x.id === cards_contextID );
-			console.log( cards_aiContent );
 			// Overline.
 			if ( cards_aiContent?.overline?.short ) {
 				content = content.replace( /ADD AN OVERLINE/g, cards_aiContent?.overline?.short );
@@ -160,7 +178,7 @@ export default function replaceContent( content, aiContent, categories, context,
 	// content = content.replace( /Add a succinct headline/g, "Discover the Benefits of Yoga and Make Friends for Life!");
 	// content = content.replace( /Add a compelling title for your section to engage your audience./g, "Discover Inner Harmony: Join a Yoga Class and Transform Your Life!");
 
-	// content = content.replace( "Use this paragraph to add supporting context. Consider your audience and what matters to them, and provide insights that support your topic.", aiContent.content.paragraph_medium );
+	// content = content.replace( "Use this paragraph to add supporting context. Consider your audience and what matters to them, and provide insights that support your topic.", contextAI.paragraph_medium );
 
 	// // People
 	// content = content.replace( /A short and sweet title for this section./g, aiContent.people.headline_medium );

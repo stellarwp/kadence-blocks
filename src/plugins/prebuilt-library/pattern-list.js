@@ -87,7 +87,7 @@ function BannerHeader( { selectedCategory } ) {
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContent, savedAI = true } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContext, aiContent, contextTab } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -108,14 +108,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		patternSend.content = newInfo;
 		onSelect( patternSend );
 	}
-	const filteredBlockPatterns = useMemo( () => {
+	const thePatterns = useMemo( () => {
 		let allPatterns = [];
-		let variation = 1;
 		Object.keys( patterns ).map( function( key, index ) {
 			const temp = [];
-			if ( variation === 4 ) {
-				variation = 1;
-			}
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
 			temp['image'] = patterns[key].image;
@@ -125,43 +121,55 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			temp['slug'] = patterns[key].slug;
 			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
+			temp['contexts'] = patterns[key].contexts ? Object.keys( patterns[key].contexts ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
-			// if ( tempContent ) {
-			// 	temp['blocks'] = parse( tempContent, {
-			// 		__unstableSkipMigrationLogs: true
-			// 	});
-			// if ( savedAI ) {
-			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			// }
 			if ( patterns[key]?.html) {
 				temp['html'] = patterns[key].html;
-			}
-			if ( savedAI ) {
-				if ( patterns[key]?.html) {
-					temp['html'] = replaceContent( patterns[key].html, aiContent, temp['categories'], 'general', variation );
-				} else {
-					tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-				}
-				//tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-				tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
 			}
 			temp['content'] = tempContent;
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
-			// temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['proRender'] = false;
 			temp['viewportWidth'] = 1200;
-			variation ++;
 			allPatterns.push( temp );
 		});
-		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
+		return allPatterns;
+	}, [ patterns ] );
+	const filteredBlockPatterns = useMemo( () => {
+		if ( contextTab === 'context' ) {
+			if ( ! aiContent?.[aiContext]?.content){
+				console.log( 'no ai content' );
+				return [];
+			}
+		}
+		let allPatterns = thePatterns;
+		if ( ! filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
+		if ( ! filterValue && contextTab === 'context' && aiContext ) {
+			allPatterns = allPatterns.filter( ( pattern ) =>
+				pattern.contexts?.includes( aiContext )
+			);
+		}
+		if ( contextTab === 'context' ) {
+			let variation = 1;
+			allPatterns = allPatterns.map( ( item, index ) => {
+				if ( variation === 4 ) {
+					variation = 1;
+				}
+				if ( item?.html) {
+					item['html'] = replaceContent( item.html, aiContent, item.categories, aiContext, variation );
+				} else {
+					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
+				}
+				variation ++;
+				return item;
+			} );
+		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, patterns, aiContent ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContent, aiContext, contextTab ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );
