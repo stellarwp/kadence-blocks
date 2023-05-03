@@ -52,16 +52,6 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 *
 	 * @return mixed
 	 */
-	/**
-	 * Build HTML for dynamic blocks
-	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
-	 *
-	 * @return mixed
-	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$outer_classes = array( 'kb-adv-form-field', 'kb-submit-field', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
