@@ -126,11 +126,8 @@ function SectionEdit( {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
-		if ( attributes.inQueryBlock !== isInQueryBlock ) {
-			attributes.inQueryBlock = isInQueryBlock;
-			setAttributes( { inQueryBlock: isInQueryBlock } );
-		}
+
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
 		// Update Old Styles
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
@@ -1090,6 +1087,7 @@ function SectionEdit( {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1155,6 +1153,7 @@ function SectionEdit( {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1238,6 +1237,7 @@ function SectionEdit( {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Hover Blend Mode' ) }
@@ -1320,6 +1320,7 @@ function SectionEdit( {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Blend Mode' ) }

@@ -3,7 +3,13 @@
 	"title": "Section",
 	"name": "kadence/column",
 	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId" ],
+	"usesContext": [
+		"postId",
+		"queryId",
+		"kadence/dynamicSource",
+		"kadence/repeaterSlug",
+		"kadence/repeaterRow"
+	],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 		"id": {
