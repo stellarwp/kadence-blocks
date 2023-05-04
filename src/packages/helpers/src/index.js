@@ -17,6 +17,7 @@ export { default as setBlockDefaults } from './set-block-defaults';
 export { default as getUniqueId } from './get-unique-id';
 export { default as getTransferableAttributes } from './get-transferable-attributes';
 export { default as getInQueryBlock } from './get-in-query-block';
+export { default as setDynamicState } from './set-dynamic-state';
 export { default as mouseOverVisualizer } from './mouse-over-visualizer';
 export { SPACING_SIZES_MAP, FONT_SIZES_MAP, GAP_SIZES_MAP, isRTL } from './constants';
 export { getSpacingOptionName, getSpacingOptionOutput, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize, objectSameFill, clearNonMatchingValues } from './spacing-utilities';
