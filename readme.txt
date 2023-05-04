@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.38 =
+Release Date: May 4th, 2023
+* Fix: Issue with tabs and mega menu.
+
 = 3.0.37 =
 Release Date: May 2nd, 2023
 * Fix: Issue with icon list mobile column setting.
