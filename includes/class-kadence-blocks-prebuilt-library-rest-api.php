@@ -563,9 +563,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			);
 		}
+		if ( empty( $image_type ) ) {
+			$image_type = 'JPEG';
+		}
 		$body = array(
 			'industries' => $industries,
-			'image_type' => strtoupper( $image_type ),
+			'image_type' => $image_type,
 			'sizes' => $sizes,
 		);
 		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'images/collections' );

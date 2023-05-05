@@ -58,7 +58,7 @@ import { useMemo, useEffect, useState } from '@wordpress/element';
 import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-
+import { getAsyncData } from './data-fetch/get-async-data';
 /**
  * Internal dependencies
  */
@@ -85,6 +85,8 @@ function PatternLibrary( {
 	const [ aiContent, setAIContent ] = useState( {} );
 	const [ context, setContext ] = useState( '' );
 	const [ contextTab, setContextTab ] = useState( '' );
+	const [ aIUserData, setAIUserData ] = useState( {} );
+	const [ imageCollection, setImageCollection ] = useState( {} );
 	const [ categories, setCategories ] = useState( { 
 		'category': __( 'Category', 'kadence-blocks' ),
 		'hero': __( 'Hero', 'kadence-blocks' ),
@@ -144,6 +146,7 @@ function PatternLibrary( {
 	const [ isError, setIsError ] = useState( false );
 	const [ style, setStyle ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
+	const [ aiDataState, triggerAIDataReload ] = useState( false );
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
@@ -152,9 +155,12 @@ function PatternLibrary( {
         setIsVisible( ( state ) => ! state );
     };
 	const toggleReloadVisible = () => {
-		console.log( "here" );
         setIsContextReloadVisible( ( state ) => ! state );
     };
+	const closeAIWizard = () => {
+		setIsWizardVisible( false );
+		triggerAIDataReload( ( state ) => ! state );
+	};
 	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	let data_email   = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
 	const product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
@@ -586,7 +592,26 @@ function PatternLibrary( {
 		//loadACollection();
 		loadAI( selectedContext );
 	}, [selectedContext] );
+	const { getAiWizardData, getCollectionByIndustry } = getAsyncData();
+	async function getAIUserData() {
+		const response = await getAiWizardData();
+		const data = response ? SafeParseJSON(response) : {};
+		console.log( data );
+		setAIUserData(data);
+	}
+	async function getImageCollection() {
+		const response = await getCollectionByIndustry( aIUserData );
+		const data = response ? response : {};
+		console.log( data );
+		setImageCollection(data);
+	}
+	useEffect(() => {
+		getAIUserData();
+	}, [aiDataState]);
 
+	useEffect(() => {
+		getImageCollection();
+	}, [aIUserData]);
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
@@ -666,7 +691,7 @@ function PatternLibrary( {
 								</Popover>
 							) }
 							{ isWizardVisible && (
-								<AiWizard onClose={ () => setIsWizardVisible( false ) } />
+								<AiWizard onClose={ closeAIWizard } />
 							) }
 						</div>
 					</div>
@@ -936,6 +961,7 @@ function PatternLibrary( {
 							aiContext={ selectedContext }
 							aiContent={ aiContent }
 							contextTab={ selectedContextTab }
+							imageCollection={ imageCollection }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }
@@ -986,6 +1012,7 @@ function PatternLibrary( {
 							aiContent={ aiContent }
 							aiContext={ selectedContext }
 							previewMode={ savedPreviewMode }
+							imageCollection={ imageCollection }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }

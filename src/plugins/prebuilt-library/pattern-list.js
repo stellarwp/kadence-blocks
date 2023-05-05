@@ -102,7 +102,7 @@ function LoadingHeader() {
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContext, aiContent, contextTab } ) {
+function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContext, aiContent, contextTab, imageCollection } ) {
 	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
@@ -182,6 +182,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				}
 				if ( item?.html) {
 					item['html'] = replaceContent( item.html, aiContent, item.categories, aiContext, variation );
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
 				} else {
 					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
 				}
