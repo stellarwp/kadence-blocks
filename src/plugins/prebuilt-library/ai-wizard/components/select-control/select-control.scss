@@ -1,0 +1,38 @@
+@import '../../scss/mixins.scss';
+
+.stellarwp.components-select-control {
+	label.components-input-control__label {
+		@include input_label;
+	}
+
+	select.components-select-control__input {
+		padding-left: 16px;
+		height: 40px;
+		font-size: 16px;
+		box-shadow: none;
+		outline: none;
+	}
+
+	.components-input-control__suffix .components-input-control-suffix-wrapper {
+		padding-right: 16px;
+
+		svg {
+			width: 22px;
+			height: 22px;
+		}
+	}
+
+	.components-input-control__container {
+		.components-input-control__backdrop {
+			border-width: 1px;
+			border-style: solid;
+			border-color: $color-gray-300;
+			border-radius: 4px;
+			box-shadow: none;
+		}
+	}
+
+	&.is-focused .components-input-control__backdrop {
+		border-color: $color-black;
+	}
+}

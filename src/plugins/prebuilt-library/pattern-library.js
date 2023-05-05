@@ -66,6 +66,7 @@ import {
 import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceCatNewIcon, kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { AiWizard } from './ai-wizard'
 
 /**
  * Prebuilt Sections.
@@ -660,23 +661,7 @@ function PatternLibrary( {
 											setPreviewMode( ( value ? 'image' : 'iframe' ) );
 										}}
 									/>
-									{/* <div className="kb-library-size-options">
-										{ sizeOptions.map( ( size, index ) =>
-											<Button
-												key={ `${ size.value }-${ index }` }
-												className={ 'kb-size-button kb-size-' + size.value + ( selectedFontSize === size.value ? ' is-pressed' : '' ) }
-												aria-pressed={ selectedFontSize === size.value }
-												onClick={ () => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['fontSize'] = size.value;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setFontSize( size.value );
-												}}
-											>
-												{size.label}
-											</Button>
-										) }
-									</div> */}
+									<AiWizard />
 								</Popover>
 							) }
 						</div>

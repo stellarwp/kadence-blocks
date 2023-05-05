@@ -1,0 +1,50 @@
+@import './variables.scss';
+
+@mixin stellarwp_font_base {
+	font-family: $fonts-system;
+	font-size: 14px;
+	line-height: 1.4;
+	color: $color-black;
+}
+
+.stellarwp-h1 {
+	margin-bottom: 24px;
+	font-family: $fonts-system;
+	font-weight: 500;
+	font-size: 32px;
+	line-height: 1.25;
+}
+
+.stellarwp-body {
+	@include stellarwp_font_base;
+
+	p, ul, ol {
+		@include stellarwp_font_base;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.stellarwp-p {
+	@include stellarwp_font_base;
+
+	margin-top: 0;
+	margin-bottom: 24px;
+}
+
+.stellarwp-ul {
+	@include stellarwp_font_base;
+
+	list-style: disc;
+	padding-left: 20px;
+}
+
+.stellarwp-overline {
+	@include stellarwp_font_base;
+
+	text-transform: uppercase;
+	font-size: 12px;
+	margin-bottom: 8px;
+}
