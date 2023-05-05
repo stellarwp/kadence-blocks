@@ -61,33 +61,36 @@ export function AboutYourSite() {
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
 						<VStack spacing={ 6 } style={{ margin: '0 auto' }}>
 							<TextareaControl
-								label={ __('Your Mission Statement', 'kadence') }
+								label={ __('Your Mission Statement', 'kadence-blocks') }
 								placeholder="..."
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
 							/>
 							<ChipsInput
 								id="2"
-								label={ __('Keywords', 'kadence') }
+								label={ __('Keywords', 'kadence-blocks') }
 								placeholder="..."
 								tags={ keywords }
 								maxTags={ maxTags }
 								selectedTags={ (selectedTags) => dispatch({ type: 'SET_KEYWORDS', payload: selectedTags }) }
 								help={
-									<Flex>
-										<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence') }</FlexBlock>
-										<FlexItem>{ `${ keywords.length }/${ maxTags }`}</FlexItem>
-									</Flex>
+									<>
+										<Flex>{ __('Separate with commas or the Enter key.', 'kadence-blocks') }</Flex>
+										<Flex>
+											<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
+											<FlexItem>{ `${ keywords.length }/${ maxTags }`}</FlexItem>
+										</Flex>
+									</>
 								}
 							/>
 						 	<SelectControl
-								label={ __('Tone', 'kadence') }
+								label={ __('Tone', 'kadence-blocks') }
 								value={ tone }
 								onChange={ (value) => dispatch({ type: 'SET_TONE', payload: value }) }
 								options={ [
 									...[{
 										value: '',
-										label: 'Category...',
+										label: __('Select...', 'kadence-blocks'),
 										disabled: true
 									}],
 									...CONTENT_TONE
@@ -95,7 +98,7 @@ export function AboutYourSite() {
 							/>
 							<Divider style={ { borderBottomColor: '#DFDFDF', marginBottom: 10 } } />
 							<CheckboxControl
-								label={ __('Creating an account means you\'re okay with our Terms of Service and Privacy Policy.', 'kadence') }
+								label={ __('Creating an account means you\'re okay with our Terms of Service and Privacy Policy.', 'kadence-blocks') }
 								checked={ privacyAgreement }
 								onChange={ () => dispatch({ type: 'SET_PRIVACY_AGREEMENT' }) }
 							/>

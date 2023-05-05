@@ -1,7 +1,11 @@
 import {
-	PROPHECY_ROUTE_GET_VERTICALS,
-	VERTICALS_SESSION_KEY
+	VERTICALS_SESSION_KEY,
+	API_ROUTE_GET_VERTICALS
 } from '../constants';
+
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
+import { SafeParseJSON } from '@kadence/helpers';
 
 export function verticalsHelper() {
 	/**
@@ -12,26 +16,18 @@ export function verticalsHelper() {
 	async function getVerticalsFromProphecy() {
 		try {
 			let verticals = [];
-
-			const response = await fetch(PROPHECY_ROUTE_GET_VERTICALS, {
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				}
-			});
-
-			if (response.ok) {
-				const responseData = await response.json();
-
-				if (responseData?.data) {
-					// Create expected data structure.
-					verticals = formatVerticals(responseData.data);
-
-					// Save verticals object to session storage.
-					saveVerticals(verticals);
-				}
-
-				return verticals;
+			const response = await apiFetch( {
+				path: addQueryArgs( API_ROUTE_GET_VERTICALS, {
+					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
+				} ),
+			} );
+			const responseData = SafeParseJSON( response, false );
+			if ( responseData?.data ) {
+				verticals = formatVerticals(responseData.data);
+				// Save verticals object to session storage.
+				saveVerticals(verticals);
 			}
+			return verticals;
 		} catch (error) {
 			console.log(`Error: ${ error }`);
 		}

@@ -15,26 +15,14 @@ import { verticalsHelper } from './utils/verticals-helper';
 import { collectionsHelper } from './utils/collections-helper';
 import './kadence-ai-wizard.scss';
 
-export function AiWizard() {
+export function AiWizard( {
+	onClose,
+} ) {
 	const [ wizardData, setWizardData ] = useState();
-	const [ wizardOpen, setWizardOpen ] = useState(false);
+	//const [ wizardOpen, setWizardOpen ] = useState(false);
 	const { loading, getAiWizardData } = useDatabase();
 	const { setVerticals } = verticalsHelper();
 	const { setCollections } = collectionsHelper();
-
-	useEffect(() => {
-		// Set verticals data in session storage.
-		setVerticals();
-		// Set collections data in session storage.
-		setCollections();
-	}, []);
-	
-	useEffect(() => {
-		if (wizardOpen) {
-			// Get previously-saved wizard data.
-			getPreviousData();
-		}
-	}, [ wizardOpen ]);
 
 	async function getPreviousData() {
 		const response = await getAiWizardData();
@@ -42,25 +30,21 @@ export function AiWizard() {
 
 		setWizardData(data);
 	}
+	useEffect(() => {
+		// Set verticals data in session storage.
+		setVerticals();
+		// Set collections data in session storage.
+		setCollections();
 
-	function handleWizardClose() {
-		setWizardOpen(false);
-	}
+		getPreviousData();
+	}, []);
 
-	function handleButtonClick() {
-		setWizardOpen(true);
-	}
 
 	return (
 		<>
-			<Button
-				variant="primary"
-				text={ __('AI Me', 'kadence') }
-				onClick={ handleButtonClick }
-			/>
-			{ (wizardOpen && wizardData && ! loading) && (
+			{ ( wizardData && ! loading) && (
 				<KadenceAiProvider value={ wizardData }>
-					<KadenceAiWizard loading={ loading } handleWizardClose={ handleWizardClose }/>
+					<KadenceAiWizard loading={ loading } handleWizardClose={ onClose }/>
 				</KadenceAiProvider>
 			) }
 		</>

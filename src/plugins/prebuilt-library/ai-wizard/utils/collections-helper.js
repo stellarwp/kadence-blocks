@@ -1,8 +1,14 @@
 import {
-	PROPHECY_ROUTE_GET_COLLECTIONS,
+	API_ROUTE_GET_IMAGES,
 	COLLECTIONS_SESSION_KEY,
-	COLLECTION_REQUEST_BODY
+	COLLECTION_REQUEST_IMAGE_TYPE,
+	API_ROUTE_GET_COLLECTIONS,
+	COLLECTION_REQUEST_IMAGE_SIZES,
 } from '../constants';
+
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
+import { SafeParseJSON } from '@kadence/helpers';
 
 export function collectionsHelper() {
 	/**
@@ -13,25 +19,18 @@ export function collectionsHelper() {
 	async function getCollectionsFromProphecy() {
 		try {
 			let collections = [];
-
-			const response = await fetch(PROPHECY_ROUTE_GET_COLLECTIONS, {
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				}
-			});
-
-			if (response.ok) {
-				const responseData = await response.json();
-
-				if (responseData?.data?.collections) {
-					collections = responseData.data.collections;
-
-					// Save collections object to session storage.
-					saveCollections(collections);
-				}
-
-				return collections;
+			const response = await apiFetch( {
+				path: addQueryArgs( API_ROUTE_GET_COLLECTIONS, {
+					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
+				} ),
+			} );
+			const responseData = SafeParseJSON( response, false );
+			if ( responseData?.data?.collections ) {
+				collections = responseData.data.collections;
+				// Save collections object to session storage.
+				saveCollections(collections);
 			}
+			return collections;
 		} catch (error) {
 			console.log(`Error: ${ error }`);
 		}
@@ -83,24 +82,20 @@ export function collectionsHelper() {
 	 */
 	async function getCollectionByIndustry(industry) {
 		const industries = Array.isArray(industry) ? industry : [ industry ];
-
 		try {
-			const response = await fetch(PROPHECY_ROUTE_GET_COLLECTIONS, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				},
-				body: JSON.stringify({
-					industries,
-					...COLLECTION_REQUEST_BODY
-				})
-			});
-
-			if (response.ok) {
-				const responseData = await response.json();
-
+			const response = await apiFetch( {
+				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
+					industries: industries,
+					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
+					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
+					image_sizes: COLLECTION_REQUEST_IMAGE_SIZES,
+				} ),
+			} );
+			const responseData = SafeParseJSON( response, false );
+			if ( responseData ) {
 				return responseData;
 			}
+			return [];
 		} catch (error) {
 			console.log(`ERROR: ${ error }`);
 		}

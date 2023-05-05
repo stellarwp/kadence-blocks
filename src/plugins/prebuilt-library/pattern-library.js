@@ -27,7 +27,6 @@ import { addQueryArgs } from '@wordpress/url';
 import {
 	Component,
 } from '@wordpress/element';
-//import { debounce } from '@wordpress/compose';
 import { debounce } from 'lodash';
 import {
 	Button,
@@ -65,7 +64,7 @@ import {
  */
 import { SafeParseJSON } from '@kadence/helpers';
 
-import { kadenceCatNewIcon, kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard'
 
 /**
@@ -138,12 +137,10 @@ function PatternLibrary( {
 	const [ pagesCategories, setPagesCategories ] = useState( { 'category': __( 'Category', 'kadence-blocks' ) } );
 	const [ pageCategorySelectOptions, setPageCategorySelectOptions ] = useState( [] );
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
-	const [ sidebar, setSidebar ] = useState( false );
-	const [ gridSize, setGridSize ] = useState( '' );
 	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
-	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
+	const [ isWizardVisible, setIsWizardVisible ] = useState( false );
 	const [ isError, setIsError ] = useState( false );
 	const [ style, setStyle ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
@@ -460,8 +457,6 @@ function PatternLibrary( {
 		reloadAllData();
 	}
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-	const sidebar_saved_enabled = ( activeStorage && activeStorage['sidebar'] ? activeStorage['sidebar'] : 'show' );
-	const savedGridSize = ( activeStorage && activeStorage['grid'] ? activeStorage['grid'] : 'normal' );
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
 	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
@@ -470,8 +465,6 @@ function PatternLibrary( {
 	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
 	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
 	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'about' );
-	const sidebarEnabled = ( sidebar ? sidebar : sidebar_saved_enabled );
-	const theGridSize = ( gridSize ? gridSize : savedGridSize );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
 	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
 	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
@@ -537,7 +530,6 @@ function PatternLibrary( {
 				api_email: data_email,
 			} ),
 		} );
-		console.log(  response );
 		if ( response === 'processing' ) {
 			console.log( 'is processing' );
 			setTimeout( () => {
@@ -589,9 +581,9 @@ function PatternLibrary( {
 		console.log( o );
 	};
 	useEffect( () => {
-		loadVerticals();
-		loadCollections();
-		loadACollection();
+		//loadVerticals();
+		//loadCollections();
+		//loadACollection();
 		loadAI( selectedContext );
 	}, [selectedContext] );
 
@@ -650,6 +642,16 @@ function PatternLibrary( {
 									onClose={ debounce( toggleVisible, 100 ) }
 									anchor={ popoverAnchor }
 								>
+									<Button
+										className='kadence-ai-wizard-button'
+										iconPosition='right'
+										icon={ aiIcon }
+										text={ __('Update My Information', 'kadence') }
+										onClick={ () => {
+											setIsVisible( false );
+											setIsWizardVisible( true );
+										}}
+									/>
 									<ToggleControl
 										label={__( 'Disable Live Preview', 'kadence-blocks' )}
 										checked={selectedPreviewMode === 'image'}
@@ -661,8 +663,10 @@ function PatternLibrary( {
 											setPreviewMode( ( value ? 'image' : 'iframe' ) );
 										}}
 									/>
-									<AiWizard />
 								</Popover>
+							) }
+							{ isWizardVisible && (
+								<AiWizard onClose={ () => setIsWizardVisible( false ) } />
 							) }
 						</div>
 					</div>
@@ -811,9 +815,8 @@ function PatternLibrary( {
 									) : (
 										<>
 											{ contextListOptions.map( ( contextCategory, index ) =>
-												<div className='context-category-wrap'>
+												<div key={ `${ contextCategory.value }-${ index }` } className='context-category-wrap'>
 													<Button
-														key={ `${ contextCategory.value }-${ index }` }
 														className={ 'kb-category-button' + ( selectedContext === contextCategory.value ? ' is-pressed' : '' ) }
 														aria-pressed={ selectedContext === contextCategory.value }
 														onClick={ () => {
@@ -828,7 +831,6 @@ function PatternLibrary( {
 													{ selectedContext === contextCategory.value && (
 														<>
 															<Button
-																key={ `reload-${ contextCategory.value }-${ index }` }
 																className={ 'kb-reload-context-popover-toggle' + ( isContextReloadVisible ? ' is-pressed' : '' ) }
 																aria-pressed={ isContextReloadVisible }
 																ref={ setPopoverContextAnchor }
@@ -844,17 +846,14 @@ function PatternLibrary( {
 																	onClose={ debounce( toggleReloadVisible, 100 ) }
 																	anchor={ popoverContextAnchor }
 																>
-																	<ToggleControl
-																		label={__( 'Disable Live Preview', 'kadence-blocks' )}
-																		checked={selectedPreviewMode === 'image'}
-																		help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
-																		onChange={( value ) => {
-																			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-																			tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
-																			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-																			setPreviewMode( ( value ? 'image' : 'iframe' ) );
-																		}}
-																	/>
+																	<p>{__('You can regenerate ai content for this context. This will use one credit and your current ai text will be forever lost. Would you like to regenerate ai content for this context?', 'kadence-blocks')}</p>
+																	<Button
+																		variant='primary'
+																		className={ 'kb-reload-context-confirm' }
+																		onClick={ () => reloadAI( selectedContext ) }
+																	>
+																		{ __( 'Reload Context', 'kadence-blocks' ) }
+																	</Button>
 																</Popover>
 															) }
 														</>

@@ -27,9 +27,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	const PROP_API_KEY = 'api_key';
 
 	/**
-	 * Handle API Email.
+	 * Handle image Type.
 	 */
-	const PROP_API_EMAIL = 'api_email';
+	const PROP_IMAGE_TYPE = 'image_type';
+	/**
+	 * Handle image sizes.
+	 */
+	const PROP_IMAGE_SIZES = 'image_sizes';
+	/**
+	 * Handle image sizes.
+	 */
+	const PROP_INDUSTRY = 'industries';
 
 	/**
 	 * The library folder.
@@ -168,20 +176,36 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_images_by_industry( $request ) {
-		$context = $request->get_param( self::PROP_CONTEXT );
+		$industries = $request->get_param( self::PROP_INDUSTRY );
+		$image_type = $request->get_param( self::PROP_IMAGE_TYPE );
+		$image_sizes = $request->get_param( self::PROP_IMAGE_SIZES );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
-		if ( file_exists( $this->get_local_data_path( 'imageCollection' . $context ) ) && ! $reload ) {
-			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'imageCollection' . $context ) ) );
+		if ( empty( $industries ) ) {
+			return rest_ensure_response( 'error' );
+		}
+		if ( ! is_array( $industries ) ) {
+			return rest_ensure_response( 'error' );
+		}
+		$identifier = 'imageCollection' . json_encode( $industries );
+		if ( ! empty( $image_type ) ) {
+			$identifier .= '_' . $image_type;
+		}
+		if ( ! empty( $image_sizes ) && is_array( $image_sizes ) ) {
+			$identifier .= '_' . json_encode( $image_sizes );
+		}
+		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
+			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
 		} else {
 			// Check if we have a remote file.
-			$response = $this->get_remote_industry_images( $context );
+			$response = $this->get_remote_industry_images( $industries, $image_type, $image_sizes );
 			$data = json_decode( $response, true );
-			if ( $data === 'error' ) {
+			if ( $response === 'error' ) {
+				return rest_ensure_response( 'error' );
+			} else if ( ! isset( $data['data'][0]['collection_slug'] ) ) {
 				return rest_ensure_response( 'error' );
 			} else {
-				$this->create_data_file( $response, 'imageCollection' . $context );
+				$this->create_data_file( $response, $identifier );
 				return rest_ensure_response( $response );
 			}
 		}
@@ -196,14 +220,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		if ( file_exists( $this->get_local_data_path( 'image_collections' ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'image_collections' ) ) );
 		} else {
 			// Check if we have a remote file.
 			$response = $this->get_remote_image_collections();
 			$data = json_decode( $response, true );
-			if ( $data === 'error' ) {
+			if ( $response === 'error' ) {
 				return rest_ensure_response( 'error' );
 			} else {
 				$this->create_data_file( $response, 'image_collections' );
@@ -221,14 +244,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		if ( file_exists( $this->get_local_data_path( 'industry_verticals' ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'industry_verticals' ) ) );
 		} else {
 			// Check if we have a remote file.
 			$response = $this->get_remote_industry_verticals();
 			$data = json_decode( $response, true );
-			if ( $data === 'error' ) {
+			if ( $response === 'error' ) {
 				return rest_ensure_response( 'error' );
 			} else {
 				$this->create_data_file( $response, 'industry_verticals' );
@@ -247,7 +269,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 
 		// Check if we have captured prompt.
@@ -260,9 +281,21 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$response = $this->get_remote_contents( $available_prompts[ $context ] );
 				$data = json_decode( $response, true );
 				if ( $data === 'error' ) {
+					$current_prompts = get_option( 'kb_design_library_prompts', array() );
+					if ( isset( $current_prompts[ $context ] ) ) {
+						unset( $current_prompts[ $context ] );
+						update_option( 'kb_design_library_prompts', $current_prompts );
+					}
 					return wp_send_json( 'error' );
-				} else if ( isset( $data['data']['status'] ) ) {
+				} else if ( isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
 					return wp_send_json( 'processing' );
+				} else if ( isset( $data['data']['status'] ) && 409 !== $data['data']['status'] ) {
+					$current_prompts = get_option( 'kb_design_library_prompts', array() );
+					if ( isset( $current_prompts[ $context ] ) ) {
+						unset( $current_prompts[ $context ] );
+						update_option( 'kb_design_library_prompts', $current_prompts );
+					}
+					return wp_send_json( 'error' );
 				} else {
 					$this->create_data_file( $response, $available_prompts[ $context ] );
 					return wp_send_json( $response );
@@ -272,17 +305,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
 			$data = json_decode( $response, true );
-			error_log( print_r( $data, true ) );
-			if ( $data === 'error' ) {
+			if ( $response === 'error' ) {
 				return wp_send_json( 'error' );
 			} else if ( isset( $data['data']['job_id'] ) ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', array() );
 				$current_prompts[ $context ] = $data['data']['job_id'];
 				update_option( 'kb_design_library_prompts', $current_prompts );
-				error_log( print_r( 'HERE?', true ) );
 				return wp_send_json( 'processing' );
 			} else {
-				return wp_send_json( 'failed' );
+				return wp_send_json( 'error' );
 			}
 		}
 	}
@@ -379,47 +410,41 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body = array(
 			'context' => 'kadence',
 		);
-		$body['company'] = ! empty( $prophecy_data['company'] )	? $prophecy_data['company'] : '';
-		$body['industry'] = ! empty( $prophecy_data['industry'] ) ? $prophecy_data['industry'] : '';
+		$body['company'] = ! empty( $prophecy_data['companyName'] )	? $prophecy_data['companyName'] : '';
+		if ( ! empty( $prophecy_data['industrySpecific'] ) && 'Other' !== $prophecy_data['industrySpecific'] ) {
+			$body['industry'] = ! empty( $prophecy_data['industrySpecific'] ) ? $prophecy_data['industrySpecific'] : '';
+		} elseif ( ! empty( $prophecy_data['industrySpecific'] ) && 'Other' === $prophecy_data['industrySpecific'] && ! empty( $prophecy_data['industryOther'] ) ) {
+			$body['industry'] = ! empty( $prophecy_data['industryOther'] ) ? $prophecy_data['industryOther'] : '';
+		} elseif ( ! empty( $prophecy_data['industry'] ) && 'Other' === $prophecy_data['industry'] && ! empty( $prophecy_data['industryOther'] ) ) {
+			$body['industry'] = ! empty( $prophecy_data['industryOther'] ) ? $prophecy_data['industryOther'] : '';
+		} else {
+			$body['industry'] = ! empty( $prophecy_data['industry'] ) ? $prophecy_data['industry'] : '';
+		}
 		$body['location'] = ! empty( $prophecy_data['location'] ) ? $prophecy_data['location'] : '';
-		$body['mission'] = ! empty( $prophecy_data['mission'] ) ? $prophecy_data['mission'] : '';
+		$body['mission'] = ! empty( $prophecy_data['missionStatement'] ) ? $prophecy_data['missionStatement'] : '';
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
 
-		// Use test data.
-		$body = array(
-			'context' => 'kadence',
-			'company' => 'Pinnacle Foods',
-			'industry' => 'Food',
-			'location' => "United States",
-			'mission' => "The best days are filled with moments when you are fully engaged in the present, thriving in the adventure. These precious moments so often involve great food. At Pinnacle Foods we create gourmet freeze-dried meals that are easy to pack and prepare so you can focus on the adventure at hand and enjoy the experience fully.",
-			'tone' => 'PASSIONATE',
-			'keywords'=> array(
-				'Backpacking Meals',
-				'Freeze-Dried Food',
-				'Adventure Food',
-				'gourmet packaged meals',
-			),
-			'prompts' => array(
-				// 'accordion-faq',
-				// 'accordion-get-started',
-				// 'cards-location',
-				// 'cards-products-services',
-				'columns-about',
-				// 'columns-profile',
-				// 'counter-stats-work',
-				// 'forms-subscribe',
-				// 'gallery-work',
-				// 'hero-about',
-				// 'hero-value-prop',
-				// 'image-mission',
-				// 'media-text-about',
-				// 'media-text-donate', 
-				// 'people-team',
-				// 'pricing-table-plans',
-				// 'testimonials-testimonials',
-			),
-		);
+		// Current prompts.
+		// 	'prompts' => array(
+		// 		// 'accordion-faq',
+		// 		// 'accordion-get-started',
+		// 		// 'cards-location',
+		// 		// 'cards-products-services',
+		// 		'columns-about',
+		// 		// 'columns-profile',
+		// 		// 'counter-stats-work',
+		// 		// 'forms-subscribe',
+		// 		// 'gallery-work',
+		// 		// 'hero-about',
+		// 		// 'hero-value-prop',
+		// 		// 'image-mission',
+		// 		// 'media-text-about',
+		// 		// 'media-text-donate', 
+		// 		// 'people-team',
+		// 		// 'pricing-table-plans',
+		// 		// 'testimonials-testimonials',
+		// 	);
 		switch ( $context ) {
 			case 'about':
 				$body['prompts'] = array(
@@ -431,6 +456,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			case 'faq':
 				$body['prompts'] = array(
 					'accordion-faq',
+				);
+				break;
+			default:
+				$body['prompts'] = array(
+					'image-mission',
 				);
 				break;
 		}
@@ -509,7 +539,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
-	public function get_remote_industry_images( $collection ) {
+	public function get_remote_industry_images( $industries, $image_type = 'JPEG', $sizes = array() ) {
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
 		} else {
@@ -520,17 +550,23 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
-		$body = array(
-			'industries' => array( $collection ),
-			'image_type' => 'JPEG',
-			'sizes' => array(
+		if ( empty( $industries ) ) {
+			return 'error';
+		}
+		if ( empty( $sizes ) ) {
+			$sizes = array(
 				array(
 					"id" => "2048x2048",
 					"width" => 2048,
 					"height" => 2048,
 					"crop" => false,
 				),
-			),
+			);
+		}
+		$body = array(
+			'industries' => $industries,
+			'image_type' => strtoupper( $image_type ),
+			'sizes' => $sizes,
 		);
 		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'images/collections' );
 		error_log( print_r( $api_url, true ) );
@@ -717,13 +753,64 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'sanitize_callback' => 'sanitize_text_field',
 		);
 
-		$query_params[ self::PROP_API_EMAIL ] = array(
-			'description'       => __( 'Kadence License Email.', 'kadence-blocks' ),
+		$query_params[ self::PROP_IMAGE_TYPE ] = array(
+			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		);
+		$query_params[ self::PROP_INDUSTRY ] = array(
+			'description'       => __( 'The industries to return', 'kadence-blocks' ),
+			'type'              => 'array',
+			'sanitize_callback' => array( $this, 'sanitize_industries_array' ),
+		);
+		$query_params[ self::PROP_IMAGE_SIZES ] = array(
+			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
+			'type'              => 'array',
+			'sanitize_callback' => array( $this, 'sanitize_image_sizes_array' ),
+		);
 
 		return $query_params;
+	}
+	/**
+	 * Sanitizes an array of industries.
+	 *
+	 * @param array    $industries One or more size arrays.
+	 * @param WP_REST_Request $request   Full details about the request.
+	 * @param string          $parameter Parameter name.
+	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
+	 */
+	public function sanitize_industries_array( $industries, $request ) {
+		if ( ! empty( $industries ) && is_array( $industries ) ) {
+			$new_industries = array();
+			foreach ( $industries as $key => $value ) {
+				$new_industries[] = sanitize_text_field( $value );
+			}
+			return $new_industries;
+		}
+		return array();
+	}
+	/**
+	 * Sanitizes an array of sizes.
+	 *
+	 * @param array    $sizes One or more size arrays.
+	 * @param WP_REST_Request $request   Full details about the request.
+	 * @param string          $parameter Parameter name.
+	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
+	 */
+	public function sanitize_image_sizes_array( $sizes, $request ) {
+		if ( ! empty( $sizes ) && is_array( $sizes ) ) {
+			$new_sizes = array();
+			foreach ( $sizes as $key => $value ) {
+				$new_sizes[] = array(
+					'id'     => sanitize_text_field( $value['id'] ),
+					'width'  => absint( $value['width'] ),
+					'height' => absint( $value['height'] ),
+					'crop'   => (bool) $value['crop'],
+				);
+			}
+			return $new_sizes;
+		}
+		return array();
 	}
 	/**
 	 * Get the filesystem.
