@@ -95,7 +95,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return void
 	 */
 	public function field_name( $attributes ) {
-		return ! empty( $attributes['name'] ) ? $attributes['name'] : 'field' . $attributes['uniqueID'];
+		return ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'];
 	}
 	/**
 	 * Add the field name to the HTML response.
