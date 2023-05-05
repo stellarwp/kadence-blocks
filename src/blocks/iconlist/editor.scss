@@ -55,12 +55,14 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-
+.kt-svg-icon-list-columns-1 .block-editor-block-list__layout {
+    grid-template-columns: minmax(0, 1fr);
+}
 .kt-svg-icon-list-columns-2 .block-editor-block-list__layout {
-    grid-template-columns: 50% auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .kt-svg-icon-list-columns-3 .block-editor-block-list__layout {
-    grid-template-columns: 33% 33% auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .kt-list-icon-aligntop .kt-svg-icon-list-item-wrap {
 	align-items: flex-start;
@@ -69,31 +71,31 @@
 	align-items: flex-end;
 }
 
-#start-resizable-editor-section {
-    display: none;
-}
+// #start-resizable-editor-section {
+//     display: none;
+// }
 
-/* add all responsive styles here */
-@media (max-width: 1024px) {
-	.kt-tablet-svg-icon-list-columns-2 .block-editor-block-list__layout {
-		grid-template-columns: 50% auto;
-	}
-	.kt-tablet-svg-icon-list-columns-3 .block-editor-block-list__layout {
-		grid-template-columns: 33% 33% auto;
-	}
-}
-@media (max-width: 767px) {
-	.kt-mobile-svg-icon-list-columns-2 .block-editor-block-list__layout {
-		grid-template-columns: 50% auto;
-	}
-	.kt-mobile-svg-icon-list-columns-3 .block-editor-block-list__layout {
-		grid-template-columns: 33% 33% auto;
-	}
-}
+// /* add all responsive styles here */
+// @media (max-width: 1024px) {
+// 	.kt-tablet-svg-icon-list-columns-2 .block-editor-block-list__layout {
+// 		grid-template-columns: repeat(2, minmax(0, 1fr));;
+// 	}
+// 	.kt-tablet-svg-icon-list-columns-3 .block-editor-block-list__layout {
+// 		grid-template-columns: repeat(3, minmax(0, 1fr));;
+// 	}
+// }
+// @media (max-width: 767px) {
+// 	.kt-mobile-svg-icon-list-columns-2 .block-editor-block-list__layout {
+// 		grid-template-columns: repeat(2, minmax(0, 1fr));;
+// 	}
+// 	.kt-mobile-svg-icon-list-columns-3 .block-editor-block-list__layout {
+// 		grid-template-columns: repeat(3, minmax(0, 1fr));;
+// 	}
+// }
 
-#end-resizable-editor-section {
-    display: none;
-}
+// #end-resizable-editor-section {
+//     display: none;
+// }
 
 .kt-svg-icon-list-level-0 {
 	padding-left: 0rem;

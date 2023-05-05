@@ -18,8 +18,7 @@
 	text-align: left;
 	grid-template-rows: auto;
 	display: grid;
-	column-gap: 5px;
-
+	gap: 5px 0;
 	svg {
 		width: 1em;
 		height: 1em;
@@ -91,11 +90,9 @@
 }
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 5px 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 5px 1em;
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
     align-items: flex-start;
@@ -104,6 +101,9 @@
 	align-items: flex-end;
 }
 @media (max-width: 1024px) {
+	.kt-tablet-svg-icon-list-columns-1 ul.kt-svg-icon-list {
+		grid-template-columns: minmax(0, 1fr);
+	}
 	.kt-tablet-svg-icon-list-columns-2 ul.kt-svg-icon-list {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -112,6 +112,9 @@
 	}
 }
 @media (max-width: 767px) {
+	.kt-mobile-svg-icon-list-columns-1 ul.kt-svg-icon-list {
+		grid-template-columns: minmax(0, 1fr);
+	}
 	.kt-mobile-svg-icon-list-columns-2 ul.kt-svg-icon-list {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
