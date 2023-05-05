@@ -95,6 +95,8 @@ function SectionEdit( {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
 
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
+
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -254,10 +256,10 @@ function SectionEdit( {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		setDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
 	}, [] );
 	useEffect( () => {
-		setDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
 	}, [ 'backgroundImg' ] );
 	const { hasInnerBlocks, inRowBlock } = useSelect(
 		( select ) => {

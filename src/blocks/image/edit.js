@@ -26,7 +26,15 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl, SpacingVisualizer } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+import {
+	getPreviewSize,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
+	setDynamicState
+} from '@kadence/helpers';
 
 /* global wp */
 
@@ -144,15 +152,8 @@ export function ImageEdit( {
 		paddingUnit,
 		inQueryBlock,
 	} = attributes;
-	function getDynamic() {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['url'] && attributes.kadenceDynamic['url'].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'url', contextPost );
-		}
-	}
+
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
@@ -237,11 +238,16 @@ export function ImageEdit( {
 			tempMobileBorderStyle[0].left[2] = borderWidthMobile?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile:[ '', '', '', '' ] } );
 		}
-		debounce( getDynamic, 200 );
+		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, setDynamicURL, context );
 	}, [] );
+	useEffect( () => {
+		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, setDynamicURL, context );
+	}, [ 'url' ] );
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	const [ temporaryURL, setTemporaryURL ] = useState();
+	const [ dynamicURL, setDynamicURL ] = useState();
+
 	const altRef = useRef();
 	useEffect( () => {
 		altRef.current = alt;
@@ -470,6 +476,7 @@ export function ImageEdit( {
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
+					dynamicURL={ dynamicURL }
 					previewDevice={ previewDevice }
 					attributes={ attributes }
 					setAttributes={ setAttributes }
