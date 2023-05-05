@@ -175,10 +175,6 @@ class PrebuiltModal extends Component {
 					>
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header kb-prebuilt-library-header">
-								<div className="kb-prebuilt-header kb-prebuilt-library-logo">
-									<span className="kb-prebuilt-header-logo">{ kadenceCatNewIcon }</span>
-									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
-								</div>
 								{ this.state.reloadActions && (
 									<div className="kb-prebuilt-library-actions">
 										<Spinner />

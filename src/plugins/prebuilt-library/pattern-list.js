@@ -21,10 +21,12 @@ import {
 	arrowLeft,
 	download,
 	previous,
-	update,
 	next,
 	chevronLeft,
 	chevronDown,
+	update,
+	close,
+	plusCircle,
 } from '@wordpress/icons';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
@@ -86,8 +88,22 @@ function BannerHeader( { selectedCategory } ) {
 	);
 }
 
+function LoadingHeader() {
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice"
+		>
+			<Spinner />
+			{ __( 'Loading Content.', 'kadence Blocks' ) }
+		</Heading>
+	);
+}
+
 
 function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContext, aiContent, contextTab } ) {
+	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -137,9 +153,14 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	}, [ patterns ] );
 	const filteredBlockPatterns = useMemo( () => {
 		if ( contextTab === 'context' ) {
-			if ( ! aiContent?.[aiContext]?.content){
+			console.log( aiContext );
+			if ( ! aiContent?.[aiContext]?.content ){
+				setIsLoadingAI( true );
 				console.log( 'no ai content' );
 				return [];
+			} else if ( isLoadingAI ){
+				console.log( 'done loading ai' );
+				setIsLoadingAI( false );
 			}
 		}
 		let allPatterns = thePatterns;
@@ -148,7 +169,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
-		if ( ! filterValue && contextTab === 'context' && aiContext ) {
+		if ( contextTab === 'context' && aiContext ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.contexts?.includes( aiContext )
 			);
@@ -311,10 +332,13 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
 					/>
 				) }
-				{ ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
+				{/* { ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
 					<BannerHeader
 						selectedCategory={ selectedCategory }
 					/>
+				) } */}
+				{ contextTab === 'context' && isLoadingAI && (
+					<LoadingHeader />
 				) }
 				{ hasItems && (
 					<KadenceBlockPatternList

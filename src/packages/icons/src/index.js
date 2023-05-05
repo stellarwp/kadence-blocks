@@ -49,7 +49,9 @@ export { default as copy } from './copy'
 export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
-export { default as dynamicIcon } from './dynamic'
+export { default as dynamicIcon } from './dynamic';
+export { default as aiIcon } from './ai';
+export { default as aiSettings } from './ai-settings';
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'

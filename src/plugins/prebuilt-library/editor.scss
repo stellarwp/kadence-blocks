@@ -4,6 +4,9 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kt-prebuilt-modal {
+	--kadence-ui-color: #0073E6;
+}
  .kb-css-masonry {
 	display: flex;
 	margin-left: -15px; /* gutter size offset */
@@ -275,7 +278,7 @@ height: 100%;
 
 .kb-library-sidebar-bottom button.components-button.kb-category-button.is-pressed, .kb-library-sidebar-bottom .components-button.is-pressed:hover:not(:disabled) {
     color: #fff;
-    background: var(--wp-admin-theme-color);
+    background: var( --kadence-ui-color );
 }
 
 button.components-button.kb-category-button {
@@ -366,6 +369,14 @@ button.components-button.kb-category-button {
 	}
 }
 // DEV Prebuilt Library
+.kt-prebuilt-sidebar.kb-section-sidebar {
+	margin-top: -80px;
+    z-index: 111;
+	padding: 0;
+	background: #fff;
+	border-right: 1px solid #edf2f7;
+	max-height: 95vh;
+}
 .kb-prebuilt-header.kb-prebuilt-library-header {
 	position: relative;
 	background:#fff;
@@ -375,6 +386,7 @@ button.components-button.kb-category-button {
     right: 0;
     top: 0;
     z-index: 100;
+	padding-left: calc( 290px + 24px );
 }
 .preparing-importing-images {
     display: flex;
@@ -539,7 +551,6 @@ h2.kb-template-name {
         }
     }
 }
-
 .components-modal__frame.kt-prebuilt-modal .components-button-group.kb-prebuilt-grid {
 	gap: 30px;
 	.kt-prebuilt-item {
@@ -654,10 +665,9 @@ h2.kb-template-name {
 	.kb-library-style-options {
 		display: flex;
 		gap:5px;
-		flex-grow: 1;
 		.components-button.kb-style-button {
-			width: 30px;
-			height: 30px;
+			width: 26px;
+			height: 26px;
 			padding: 0;
 			border-radius: 100%;
 			border: 2px solid rgb(218, 218, 218);
@@ -693,13 +703,6 @@ h2.kb-template-name {
 }
 .components-modal__frame.kt-prebuilt-modal .kt-prebuilt-item .kt-import-btn .kb-scroll-over-image img {
 transition: transform 2s ease;
-}
-.kb-library-sidebar-top .components-search-control input[type=search].components-search-control__input {
-    padding: 5px 48px 5px 16px;
-    height: 36px;
-}
-.kb-library-sidebar-top .components-search-control .components-search-control__input-wrapper {
-    width: calc(100% - var(--kb-patterns-inner-sidebar-spacing, 20px ) );
 }
 .kt-prebuilt-item .demo-title {
     height: 50px;
@@ -969,20 +972,117 @@ button.components-button.kb-trigger-ai.has-icon {
     max-height: calc(95vh - 284px);
 }
 .kt-prebuilt-sidebar.kb-section-sidebar {
-	padding-top: var(--kb-patterns-outer-wrap-spacing, 48px );
-	padding-right: 0;
-	padding-left: var(--kb-patterns-outer-wrap-spacing, 48px );
-	border-right: 0;
+	.kb-prebuilt-sidebar-header-wrap {
+		padding-top: var(--kb-patterns-sidebar-general-spacing, 24px );
+		padding-left: var(--kb-patterns-outer-wrap-spacing, 45px );
+		padding-right: var(--kb-patterns-outer-wrap-spacing, 45px );
+		background: #FAFAFA;
+	}
+	.kb-prebuilt-sidebar-body-wrap {
+		padding-top: var(--kb-patterns-sidebar-general-spacing, 24px );
+		.kb-library-sidebar-search, .kb-library-sidebar-bottom {
+			padding-left: var(--kb-patterns-outer-wrap-spacing, 45px );
+			padding-right: var(--kb-patterns-outer-wrap-spacing, 45px );
+		}
+		.kb-library-sidebar-bottom {
+			padding-bottom: 30px;
+		}
+	}
+	.kb-library-sidebar-search {
+		padding-bottom: var(--kb-patterns-sidebar-general-spacing, 24px );
+	}
+	.components-search-control input[type=search].components-search-control__input {
+		padding: 5px 48px 5px 16px;
+		height: 36px;
+		border: 1px solid #DFDFDF;
+		background:white;
+	}
+	.components-search-control .components-search-control__input-wrapper {
+		// width: calc(100% - var(--kb-patterns-inner-sidebar-spacing, 20px ) );
+	}
+	.kb-prebuilt-sidebar-header {
+		display: flex;
+		justify-content: space-between;
+	}
+	.kb-prebuilt-header-logo {
+		padding: 0;
+		font-size: 32px;
+    	display: flex;
+		svg {
+			fill: var( --kadence-ui-color );
+			width: 1em !important;
+    		height: 1em !important;
+		}
+	}
+	.kb-library-style-popover {
+		display: flex;
+	}
+	.kb-library-style-popover .components-button.kb-trigger-extra-settings.has-icon {
+		font-size: 16px;
+		background: transparent;
+		color: #676767;
+		text-align: center;
+		justify-content: center;
+		font-weight: 500;
+		border: 1px solid #DFDFDF;
+		height: 32px;
+		min-width: 32px;
+		&.is-pressed {
+			background: var(--wp-components-color-foreground,#1e1e1e);
+    		color: var(--wp-components-color-foreground-inverted,#fff);
+		}
+	}
+	.kb-library-style-popover .components-button.kb-trigger-extra-settings.has-icon svg {
+		width:1em;
+		height:1em;
+	}
+	.kb-library-sidebar-sub-choices {
+		height: auto;
+		display: flex;
+		padding-top: var(--kb-patterns-outer-wrap-spacing, 45px );
+		gap: 0px;
+	}
+	.kb-library-sidebar-context-choices {
+		padding-top: var(--kb-patterns-sidebar-general-spacing, 24px );
+		margin-left: calc( var(--kb-patterns-outer-wrap-spacing, 45px ) * -1 );
+		margin-right: calc( var(--kb-patterns-outer-wrap-spacing, 45px ) * -1 );
+	}
+	// padding-top: var(--kb-patterns-outer-wrap-spacing, 48px );
+	// padding-right: 0;
+	// padding-left: var(--kb-patterns-outer-wrap-spacing, 48px );
+	// border-right: 0;
+	.kb-library-sidebar-bottom button.components-button.kb-category-button {
+		color: #676767;
+	}
 	.kb-library-sidebar-bottom button.components-button.kb-category-button.is-pressed, .kb-library-sidebar-bottom .components-button.is-pressed:hover:not(:disabled) {
-		background: var(--wp-components-color-foreground,#1e1e1e);
+		color: var(--wp-components-color-foreground,#1e1e1e);
+		background: #F5F5F5;
 	}
 	.kb-library-sidebar-bottom {
-		max-height: calc(95vh - 283px);
-		padding-right: var(--kb-patterns-inner-sidebar-spacing, 20px );
-		padding-bottom: 30px;
+		max-height: calc(95vh - ( var(--kb-patterns-sidebar-general-spacing, 24px ) + 32px + var(--kb-patterns-outer-wrap-spacing, 45px ) + 32px + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + var(--kb-patterns-sidebar-general-spacing, 24px ) + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + 50px ) );
+		// padding-right: var(--kb-patterns-inner-sidebar-spacing, 20px );
+		// padding-bottom: 30px;
+	}
+	.context-category-wrap {
+		position: relative;
+	}
+	.context-category-wrap .components-button.kb-reload-context-popover-toggle.has-icon {
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 11;
+		font-size:14px;
+		&.is-pressed {
+			background: var(--kadence-ui-color);
+			color: #fff;
+		}
+	}
+	.context-category-wrap .components-button.kb-reload-context-popover-toggle.has-icon svg {
+		width:1em;
+		height:1em;
 	}
 	.kb-library-sidebar-fixed-bottom {
-		padding: 0 var(--kb-patterns-inner-sidebar-spacing, 20px ) 0 var(--kb-patterns-outer-wrap-spacing, 48px );
+		padding: 0 var(--kb-patterns-outer-wrap-spacing, 45px ) 0 var(--kb-patterns-outer-wrap-spacing, 45px );
 		h2 {
 			font-size: 13px;
 		}
@@ -1040,21 +1140,45 @@ h2.components-heading.kb-patterns-banner-notice {
 .kb-library-sidebar-sub-choices {
     height: 50px;
     display: flex;
-    gap: 6px;
+    gap: 0px;
 }
 .kb-library-sidebar-sub-choices .kb-subtab-button {
-    border-radius: 16px;
+    border-radius:0;
     padding: 0px 16px;
+	flex: 1;
     height: 32px;
     line-height: 1;
     min-height: 0;
-    color: var(--wp-components-color-foreground,#1e1e1e);
-    background: #f2f2f2;
+    color: #676767;
+	text-align: center;
+	justify-content: center;
     font-weight: 500;
+	border: 1px solid #DFDFDF;
+    background: transparent;
+	&:focus{
+		box-shadow: none;
+	}
+}
+.kb-library-sidebar-sub-choices .kb-subtab-button:first-child {
+    border-radius: 4px 0 0 4px;
+	border-right:0;
+}
+.kb-library-sidebar-sub-choices .kb-subtab-button:last-child {
+    border-radius: 0 4px 4px 0;
+	border-left:0;
 }
 .kb-library-sidebar-sub-choices .kb-subtab-button.is-pressed {
-    background: var(--wp-components-color-foreground,#1e1e1e);
-    color: var(--wp-components-color-foreground-inverted,#fff);
+    background: var( --kadence-ui-color );
+	border-color: var( --kadence-ui-color );
+    color: #fff;
+	&:hover {
+		background: var( --kadence-ui-color );
+		border-color: var( --kadence-ui-color );
+		color: #fff;
+	}
+	&:focus{
+		box-shadow: none;
+	}
 }
 @media (max-width: 1600px) {
 	.kt-prebuilt-content.kb-prebuilt-has-sidebar {
@@ -1084,8 +1208,7 @@ h2.components-heading.kb-patterns-banner-notice {
 }
 .kb-library-sidebar-context-choices {
     display: flex;
-    margin-bottom: 28px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #DFDFDF;
 }
 
 .kb-library-sidebar-context-choices button.components-button.kb-context-tab-button {
@@ -1100,14 +1223,28 @@ h2.components-heading.kb-patterns-banner-notice {
     margin-bottom: -1px;
     border-left: 0;
     border-radius: 0;
+	gap: 6px;
+	svg {
+		background: var( --kadence-ui-color );
+		padding: 3px 5px;
+		color: white;
+		border-radius: 3px;
+		width: auto !important;
+	}
 	&:hover {
 		background:transparent;
 		color: var(--wp-components-color-foreground,#1e1e1e);
 		border-bottom-color: #eee;
 	}
+	&:focus{
+		box-shadow: none;
+	}
 }
 
 .kb-library-sidebar-context-choices button.components-button.kb-context-tab-button.is-pressed {
-    border-bottom-color: var(--wp-admin-theme-color);
+    border-bottom-color: var( --kadence-ui-color );
     font-weight: 500;
+	&:focus{
+		box-shadow: none;
+	}
 }

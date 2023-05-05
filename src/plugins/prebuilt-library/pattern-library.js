@@ -63,7 +63,9 @@ import {
 /**
  * Internal dependencies
  */
-import { SafeParseJSON } from '@kadence/helpers'
+import { SafeParseJSON } from '@kadence/helpers';
+
+import { kadenceCatNewIcon, kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 
 /**
  * Prebuilt Sections.
@@ -145,9 +147,15 @@ function PatternLibrary( {
 	const [ style, setStyle ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
 	const [ isVisible, setIsVisible ] = useState( false );
+	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
+	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
     const toggleVisible = () => {
         setIsVisible( ( state ) => ! state );
+    };
+	const toggleReloadVisible = () => {
+		console.log( "here" );
+        setIsContextReloadVisible( ( state ) => ! state );
     };
 	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	let data_email   = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
@@ -500,18 +508,89 @@ function PatternLibrary( {
 				api_email: data_email,
 			} ),
 		} );
-		const o = SafeParseJSON( response, false );
-		if ( o === 'processing' ) {
+		if ( response === 'processing' ) {
+			console.log( 'is processing' );
 			setTimeout( () => {
 				loadAI( theContext );
 			}, 1000 );
+		} else if ( response === 'error' ) {
+			console.log( 'Error getting AI Content.' );
+			const newAiContent = { ...aiContent };
+			newAiContent[theContext] = 'failed';
+			console.log( newAiContent );
+			setAIContent( newAiContent );
 		} else {
-			aiContent[theContext] = o;
-			console.log( aiContent );
-			setAIContent( aiContent );
+			const o = SafeParseJSON( response, false );
+			const newAiContent = { ...aiContent };
+			newAiContent[theContext] = o;
+			console.log( newAiContent );
+			setAIContent( newAiContent );
 		}
 	};
+	const reloadAI = async ( theContext ) => {
+		const response = await apiFetch( {
+			path: addQueryArgs( '/kb-design-library/v1/get', {
+				reload: true,
+				context: theContext,
+				api_key: data_key,
+				api_email: data_email,
+			} ),
+		} );
+		console.log(  response );
+		if ( response === 'processing' ) {
+			console.log( 'is processing' );
+			setTimeout( () => {
+				reloadAI( theContext );
+			}, 1000 );
+		} else if ( response === 'error' ) {
+			console.log( 'Error getting AI Content.' );
+			const newAiContent = { ...aiContent };
+			newAiContent[theContext] = 'failed';
+			console.log( newAiContent );
+			setAIContent( newAiContent );
+		} else {
+			const o = SafeParseJSON( response, false );
+			const newAiContent = { ...aiContent };
+			newAiContent[theContext] = o;
+			console.log( newAiContent );
+			setAIContent( newAiContent );
+		}
+	};
+	const loadVerticals = async () => {
+		const response = await apiFetch( {
+			path: addQueryArgs( '/kb-design-library/v1/get_verticals', {
+				api_key: data_key,
+				api_email: data_email,
+			} ),
+		} );
+		const o = SafeParseJSON( response, false );
+		console.log( o );
+	};
+	const loadCollections = async () => {
+		const response = await apiFetch( {
+			path: addQueryArgs( '/kb-design-library/v1/get_image_collections', {
+				api_key: data_key,
+				api_email: data_email,
+			} ),
+		} );
+		const o = SafeParseJSON( response, false );
+		console.log( o );
+	};
+	const loadACollection = async () => {
+		const response = await apiFetch( {
+			path: addQueryArgs( '/kb-design-library/v1/get_images', {
+				context: 'Consulting',
+				api_key: data_key,
+				api_email: data_email,
+			} ),
+		} );
+		const o = SafeParseJSON( response, false );
+		console.log( o );
+	};
 	useEffect( () => {
+		loadVerticals();
+		loadCollections();
+		loadACollection();
 		loadAI( selectedContext );
 	}, [selectedContext] );
 
@@ -549,25 +628,58 @@ function PatternLibrary( {
 		500: 1,
 	};
 	return (
-		<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
-			{ sidebarEnabled === 'show' && (
-				<div className="kt-prebuilt-sidebar kb-section-sidebar">
-					<div className="kb-library-sidebar-top">
-						<SearchControl
-							value={ search }
-							placeholder={ __( 'Search', 'kadence-blocks' ) }
-							onChange={ value => setSearch( value ) }
-						/>
-						{/* <Button
-							className={ 'kb-trigger-sidebar' }
-							icon={ previous }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['sidebar'] = 'hide';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setSidebar( 'hide' );
-							}}
-						/> */}
+		<div className={ `kt-prebuilt-content kb-prebuilt-has-sidebar` }>
+			<div className="kt-prebuilt-sidebar kb-section-sidebar">
+				<div className='kb-prebuilt-sidebar-header-wrap'>
+					<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
+						<span className="kb-prebuilt-header-logo">{ kadenceNewIcon }</span>
+						<div className="kb-library-style-popover">
+							<Button
+								className={ 'kb-trigger-extra-settings' }
+								icon={ aiSettings }
+								ref={ setPopoverAnchor }
+								isPressed={ isVisible }
+								disabled={ isVisible }
+								onClick={ toggleVisible }
+							/>
+							{ isVisible && (
+								<Popover
+									className="kb-library-extra-settings"
+									placement="top-end"
+									onClose={ debounce( toggleVisible, 100 ) }
+									anchor={ popoverAnchor }
+								>
+									<ToggleControl
+										label={__( 'Disable Live Preview', 'kadence-blocks' )}
+										checked={selectedPreviewMode === 'image'}
+										help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
+										onChange={( value ) => {
+											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+											setPreviewMode( ( value ? 'image' : 'iframe' ) );
+										}}
+									/>
+									{/* <div className="kb-library-size-options">
+										{ sizeOptions.map( ( size, index ) =>
+											<Button
+												key={ `${ size.value }-${ index }` }
+												className={ 'kb-size-button kb-size-' + size.value + ( selectedFontSize === size.value ? ' is-pressed' : '' ) }
+												aria-pressed={ selectedFontSize === size.value }
+												onClick={ () => {
+													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+													tempActiveStorage['fontSize'] = size.value;
+													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+													setFontSize( size.value );
+												}}
+											>
+												{size.label}
+											</Button>
+										) }
+									</div> */}
+								</Popover>
+							) }
+						</div>
 					</div>
 					<div className="kb-library-sidebar-sub-choices">
 						<Button
@@ -595,297 +707,206 @@ function PatternLibrary( {
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div>
-					<div className="kb-library-sidebar-context-choices">
-						<Button
-							className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
-							aria-pressed={ selectedContextTab === 'design' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['contextTab'] = 'design';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setContextTab( 'design' );
-							}}
-						>
-							{ __( 'By Design', 'kadence-blocks' ) }
-						</Button>
-						<Button
-							className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
-							aria-pressed={ selectedContextTab === 'context' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['contextTab'] = 'context';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setContextTab( 'context' );
-							}}
-						>
-							{ __( 'By Context', 'kadence-blocks' ) }
-						</Button>
-					</div>
-					{ ! search && selectedContextTab === 'design' && (
-						<div className="kb-library-sidebar-bottom-wrap">
-							<div className="kb-library-sidebar-bottom">
-								{ selectedSubTab === 'pages' ? (
-									<>
-										{ pageCategoryListOptions.map( ( category, index ) =>
-											<Button
-												key={ `${ category.value }-${ index }` }
-												className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
-												aria-pressed={ selectedPageCategory === category.value }
-												onClick={ () => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['kbPageCat'] = category.value;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setPageCategory( category.value );
-												}}
-											>
-												{ category.label }
-											</Button>
-										) }
-									</>
-								) : (
-									<>
-										{ categoryListOptions.map( ( category, index ) =>
-											<Button
-												key={ `${ category.value }-${ index }` }
-												className={ 'kb-category-button' + ( selectedCategory === category.value ? ' is-pressed' : '' ) }
-												aria-pressed={ selectedCategory === category.value }
-												onClick={ () => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['kbCat'] = category.value;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setCategory( category.value );
-												}}
-											>
-												{ category.label }
-											</Button>
-										) }
-									</>
-								) }
-							</div>
+					{ selectedSubTab === 'pages' ? (
+						<div className="kb-library-sidebar-context-choices">
+							<Button
+								className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
+								aria-pressed={ selectedContextTab === 'design' }
+								onClick={ () => {
+									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									tempActiveStorage['contextTab'] = 'design';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setContextTab( 'design' );
+								}}
+							>
+								{ __( 'Wireframe', 'kadence-blocks' ) }
+							</Button>
+							<Button
+								className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
+								aria-pressed={ selectedContextTab === 'context' }
+								icon={ aiIcon }
+								iconPosition='right'
+								iconSize={ 16 }
+								text={ __( 'With Context', 'kadence-blocks' )}
+								onClick={ () => {
+									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									tempActiveStorage['contextTab'] = 'context';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setContextTab( 'context' );
+								}}
+							/>
 						</div>
-					) }
-					{ ! search && selectedContextTab === 'context' && (
-						<div className="kb-library-sidebar-bottom-wrap">
-							<div className="kb-library-sidebar-bottom">
-								{ selectedSubTab === 'pages' ? (
-									<>
-										{ pageCategoryListOptions.map( ( category, index ) =>
-											<Button
-												key={ `${ category.value }-${ index }` }
-												className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
-												aria-pressed={ selectedPageCategory === category.value }
-												onClick={ () => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['kbPageCat'] = category.value;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setPageCategory( category.value );
-												}}
-											>
-												{ category.label }
-											</Button>
-										) }
-									</>
-								) : (
-									<>
-										{ contextListOptions.map( ( contextCategory, index ) =>
-											<Button
-												key={ `${ contextCategory.value }-${ index }` }
-												className={ 'kb-category-button' + ( selectedContext === contextCategory.value ? ' is-pressed' : '' ) }
-												aria-pressed={ selectedContext === contextCategory.value }
-												onClick={ () => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['context'] = contextCategory.value;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setContext( contextCategory.value );
-												}}
-											>
-												{ contextCategory.label }
-											</Button>
-										) }
-									</>
-								) }
-							</div>
-						</div>
-					) }
-					{ selectedSubTab !== 'pages' && (
-						<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
-							<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
-							<div className="kb-library-style-options">
-								{ styleOptions.map( ( style, index ) =>
-									<Button
-										key={ `${ style.value }-${ index }` }
-										label={ style.label }
-										className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
-										aria-pressed={ selectedStyle === style.value }
-										onClick={ () => {
-											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['style'] = style.value;
-											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setStyle( style.value );
-										}}
-									>
-										<span></span>
-									</Button>
-								) }
-							</div>
-							<div className="kb-library-style-popover">
-								<Button
-									className={ 'kb-trigger-extra-settings' }
-									icon={ settings }
-									ref={ setPopoverAnchor }
-									onClick={ toggleVisible }
-								/>
-								{ isVisible && (
-									<Popover
-										className="kb-library-extra-settings"
-										placement="top-end"
-										onClose={ () => {
-											setIsVisible( false );
-										} }
-										anchor={ popoverAnchor }
-									>
-										<ToggleControl
-											label={__( 'Disable Live Preview', 'kadence-blocks' )}
-											checked={selectedPreviewMode === 'image'}
-											help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
-											onChange={( value ) => {
-												const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-												tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
-												localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-												setPreviewMode( ( value ? 'image' : 'iframe' ) );
-											}}
-										/>
-										{/* <div className="kb-library-size-options">
-											{ sizeOptions.map( ( size, index ) =>
-												<Button
-													key={ `${ size.value }-${ index }` }
-													className={ 'kb-size-button kb-size-' + size.value + ( selectedFontSize === size.value ? ' is-pressed' : '' ) }
-													aria-pressed={ selectedFontSize === size.value }
-													onClick={ () => {
-														const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-														tempActiveStorage['fontSize'] = size.value;
-														localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-														setFontSize( size.value );
-													}}
-												>
-													{size.label}
-												</Button>
-											) }
-										</div> */}
-									</Popover>
-								) }
-							</div>
+					) : (
+						<div className="kb-library-sidebar-context-choices">
+							<Button
+								className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
+								aria-pressed={ selectedContextTab === 'design' }
+								onClick={ () => {
+									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									tempActiveStorage['contextTab'] = 'design';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setContextTab( 'design' );
+								}}
+							>
+								{ __( 'By Design', 'kadence-blocks' ) }
+							</Button>
+							<Button
+								className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
+								aria-pressed={ selectedContextTab === 'context' }
+								icon={ aiIcon }
+								iconPosition='right'
+								iconSize={ 16 }
+								text={ __( 'By Context', 'kadence-blocks' )}
+								onClick={ () => {
+									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									tempActiveStorage['contextTab'] = 'context';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setContextTab( 'context' );
+								}}
+							/>
 						</div>
 					) }
 				</div>
-			) }
-			{ sidebarEnabled !== 'show' && (
-				<div className="kt-prebuilt-header kb-library-header">
-					<div className="kb-library-header-left">
-						<Button
-							className={ 'kb-trigger-sidebar' }
-							icon={ next }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['sidebar'] = 'show';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setSidebar( 'show' );
-							} }
-						/>
-						{ selectedSubTab === 'pages' ? (
-							<SelectControl
-								className={ "kb-library-header-cat-select" }
-								value={ selectedPageCategory }
-								options={ pageCategorySelectOptions }
-								onChange={ value => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['kbPageCat'] = value;
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									setPageCategory( value );
-								}}
-							/>
-						) : (
-							<SelectControl
-								className={ "kb-library-header-cat-select" }
-								value={ selectedCategory }
-								options={ categorySelectOptions }
-								onChange={ value => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['kbCat'] = value;
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									setCategory( value );
-								}}
-							/>
-						) }
-					</div>
-					<div className="kb-library-header-right">
-						{ selectedSubTab !== 'pages' && (
-							<div className="kb-library-header-colors kb-library-color-select-wrap">
-								<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
-								<div className="kb-library-style-options">
-									{ styleOptions.map( ( style, index ) =>
-										<Button
-											key={ `${ style.value }-${ index }` }
-											label={ style.label }
-											className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
-											aria-pressed={ selectedStyle === style.value }
-											onClick={ () => {
-												const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-												tempActiveStorage['style'] = style.value;
-												localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-												setStyle( style.value );
-											}}
-										>
-											<span></span>
-										</Button>
-									) }
-								</div>
-							</div>
-						) }
-						{/* <Button
-							icon={  <svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="32"
-								height="32"
-								viewBox="0 0 32 32"
-								>
-								<path d="M8 15h7V8H8v7zm9-7v7h7V8h-7zm0 16h7v-7h-7v7zm-9 0h7v-7H8v7z"></path>
-								</svg> }
-							className={ 'kb-grid-btns kb-trigger-large-grid-size' + ( theGridSize === 'large' ? ' is-pressed' : '' ) }
-							aria-pressed={ theGridSize === 'large' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['grid'] = 'large';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								this.setState( { theGridSize: 'large' } );
-							} }
-						/>
-						<Button
-							icon={ <svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="32"
-								height="32"
-								viewBox="0 0 32 32"
-								>
-								<path d="M8 12h4V8H8v4zm6 0h4V8h-4v4zm6-4v4h4V8h-4zM8 18h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4zM8 24h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4z"></path>
-								</svg> }
-							className={ 'kb-grid-btns kb-trigger-normal-grid-size' + ( theGridSize === 'normal' ? ' is-pressed' : '' ) }
-							aria-pressed={ theGridSize === 'normal' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['grid'] = 'normal';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								this.setState( { theGridSize: 'normal' } );
-							} }
-						/> */}
+				<div className='kb-prebuilt-sidebar-body-wrap'>
+					<div className="kb-library-sidebar-search">
 						<SearchControl
 							value={ search }
 							placeholder={ __( 'Search', 'kadence-blocks' ) }
 							onChange={ value => setSearch( value ) }
 						/>
 					</div>
+					<div className="kb-library-sidebar-bottom-wrap">
+						<div className="kb-library-sidebar-bottom">
+							{ selectedSubTab === 'pages' ? (
+								<>
+									{ ! search && (
+										<>
+											{ pageCategoryListOptions.map( ( category, index ) =>
+												<Button
+													key={ `${ category.value }-${ index }` }
+													className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
+													aria-pressed={ selectedPageCategory === category.value }
+													onClick={ () => {
+														const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+														tempActiveStorage['kbPageCat'] = category.value;
+														localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+														setPageCategory( category.value );
+													}}
+												>
+													{ category.label }
+												</Button>
+											) }
+										</>
+									) }
+								</>
+							) : (
+								<>
+									{ selectedContextTab === 'design' ? (
+										<>
+											{ ! search && (
+												<>
+													{ categoryListOptions.map( ( category, index ) =>
+														<Button
+															key={ `${ category.value }-${ index }` }
+															className={ 'kb-category-button' + ( selectedCategory === category.value ? ' is-pressed' : '' ) }
+															aria-pressed={ selectedCategory === category.value }
+															onClick={ () => {
+																const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+																tempActiveStorage['kbCat'] = category.value;
+																localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+																setCategory( category.value );
+															}}
+														>
+															{ category.label }
+														</Button>
+													) }
+												</>
+											) }
+										</>
+									) : (
+										<>
+											{ contextListOptions.map( ( contextCategory, index ) =>
+												<div className='context-category-wrap'>
+													<Button
+														key={ `${ contextCategory.value }-${ index }` }
+														className={ 'kb-category-button' + ( selectedContext === contextCategory.value ? ' is-pressed' : '' ) }
+														aria-pressed={ selectedContext === contextCategory.value }
+														onClick={ () => {
+															const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															tempActiveStorage['context'] = contextCategory.value;
+															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+															setContext( contextCategory.value );
+														}}
+													>
+														{ contextCategory.label }
+													</Button>
+													{ selectedContext === contextCategory.value && (
+														<>
+															<Button
+																key={ `reload-${ contextCategory.value }-${ index }` }
+																className={ 'kb-reload-context-popover-toggle' + ( isContextReloadVisible ? ' is-pressed' : '' ) }
+																aria-pressed={ isContextReloadVisible }
+																ref={ setPopoverContextAnchor }
+																icon={ update }
+																disabled={ isContextReloadVisible }
+																onClick={ debounce( toggleReloadVisible, 100 ) }
+															>
+															</Button>
+															{ isContextReloadVisible && (
+																<Popover
+																	className="kb-library-extra-settings"
+																	placement="top-end"
+																	onClose={ debounce( toggleReloadVisible, 100 ) }
+																	anchor={ popoverContextAnchor }
+																>
+																	<ToggleControl
+																		label={__( 'Disable Live Preview', 'kadence-blocks' )}
+																		checked={selectedPreviewMode === 'image'}
+																		help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
+																		onChange={( value ) => {
+																			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+																			tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
+																			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+																			setPreviewMode( ( value ? 'image' : 'iframe' ) );
+																		}}
+																	/>
+																</Popover>
+															) }
+														</>
+													)}
+												</div>
+											) }
+										</>
+									) }
+								</>
+							) }
+						</div>
+					</div>
 				</div>
-			) }
+				{ selectedSubTab !== 'pages' && (
+					<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
+						<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
+						<div className="kb-library-style-options">
+							{ styleOptions.map( ( style, index ) =>
+								<Button
+									key={ `${ style.value }-${ index }` }
+									label={ style.label }
+									className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
+									aria-pressed={ selectedStyle === style.value }
+									onClick={ () => {
+										const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+										tempActiveStorage['style'] = style.value;
+										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+										setStyle( style.value );
+									}}
+								>
+									<span></span>
+								</Button>
+							) }
+						</div>
+					</div>
+				) }
+			</div>
 			{ selectedSubTab === 'pages' ? (
 				<>
 					{ ( isImporting || isLoading || false === pages || isError ) ? (
