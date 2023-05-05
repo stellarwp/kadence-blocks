@@ -18,6 +18,7 @@ require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-hi
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-date-input-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-time-input-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-telephone-input-block.php';
+require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-select-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-submit-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-rest-api.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-cpt.php';

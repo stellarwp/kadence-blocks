@@ -219,5 +219,20 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		return '';
 	}
+
+	/**
+	 * Get Option value given attributes for an input field
+	 *
+	 * @param $attrs array Attributes for a specific input field
+	 *
+	 * @return string
+	 */
+	public function get_option_value( $attributes ) {
+		if ( isset( $attributes['value'] ) && $attributes['value'] !== '' ) {
+			return $attributes['value'];
+		}
+
+		return isset( $attributes['label'] ) ? $attributes['label'] : '';
+	}
 }
 
