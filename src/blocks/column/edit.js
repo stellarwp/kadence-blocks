@@ -256,10 +256,9 @@ function SectionEdit( {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
 	}, [] );
 	useEffect( () => {
-		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context );
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context, backgroundImg ? false : true );
 	}, [ 'backgroundImg' ] );
 	const { hasInnerBlocks, inRowBlock } = useSelect(
 		( select ) => {

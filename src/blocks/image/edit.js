@@ -238,10 +238,10 @@ export function ImageEdit( {
 			tempMobileBorderStyle[0].left[2] = borderWidthMobile?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile:[ '', '', '', '' ] } );
 		}
-		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, setDynamicURL, context );
 	}, [] );
 	useEffect( () => {
-		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, setDynamicURL, context );
+		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
+		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, setDynamicURL, context, url ? false : true);
 	}, [ 'url' ] );
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
@@ -460,6 +460,9 @@ export function ImageEdit( {
 		className: classes,
 		['data-align']: ( 'center' === align ) ? align : undefined
 	} );
+
+
+    console.log(uniqueID, attributes);
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
 			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
