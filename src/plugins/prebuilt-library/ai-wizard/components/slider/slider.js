@@ -19,7 +19,7 @@ import './slider.scss';
 
 const styles = {
 	img: {
-		height: 'clamp(400px, 600px, 80vh)',
+		height: 'clamp(400px, 600px, 60vh)',
 		width: 'auto',
 		aspectRation: '11/15'
 	},
