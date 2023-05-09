@@ -142,7 +142,10 @@ function PatternLibrary( {
 	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
-	const [ isWizardVisible, setIsWizardVisible ] = useState( false );
+	const [ wizardState, setWizardState ] = useState( {
+		visible: false,
+		photographyOnly: false
+	} );
 	const [ isError, setIsError ] = useState( false );
 	const [ style, setStyle ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
@@ -158,7 +161,10 @@ function PatternLibrary( {
         setIsContextReloadVisible( ( state ) => ! state );
     };
 	const closeAIWizard = () => {
-		setIsWizardVisible( false );
+		setWizardState( {
+			visible: false,
+			photographyOnly: false
+		} );
 		triggerAIDataReload( ( state ) => ! state );
 	};
 	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
@@ -674,7 +680,23 @@ function PatternLibrary( {
 										text={ __('Update My Information', 'kadence') }
 										onClick={ () => {
 											setIsVisible( false );
-											setIsWizardVisible( true );
+											setWizardState( {
+												visible: true,
+												photographyOnly: false
+											} );
+										}}
+									/>
+									<Button
+										className='kadence-ai-wizard-button'
+										iconPosition='right'
+										icon={ aiIcon }
+										text={ __('Update Image Collection', 'kadence') }
+										onClick={ () => {
+											setIsVisible( false );
+											setWizardState( {
+												visible: true,
+												photographyOnly: true
+											} );
 										}}
 									/>
 									<ToggleControl
@@ -690,8 +712,8 @@ function PatternLibrary( {
 									/>
 								</Popover>
 							) }
-							{ isWizardVisible && (
-								<AiWizard onClose={ closeAIWizard } />
+							{ wizardState.visible && (
+								<AiWizard onClose={ closeAIWizard } photographyOnly={ wizardState.photographyOnly } />
 							) }
 						</div>
 					</div>

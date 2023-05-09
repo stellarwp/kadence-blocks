@@ -34,18 +34,22 @@ const pages = [
 	},
 ];
 
-function getPages() {
+function getPages(photographyOnly) {
 	const { state: { firstTime } } = useKadenceAi();
+
+	if (photographyOnly) {
+		return pages.filter((page) => page.id === 'photography');
+	}
 
 	return ! firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
 }
 
-export function KadenceAiWizard({ loading, handleWizardClose }) {
+export function KadenceAiWizard({ loading, handleWizardClose, photographyOnly }) {
 	const { state, dispatch } = useKadenceAi();
 	const {
 		isForwardButtonDisabled,
 		isFinishButtonDisabled
-	} = useAiWizardHelper(state, getPages());
+	} = useAiWizardHelper(state, getPages(photographyOnly));
 	const { saveAiWizardData } = useDatabase();
 
 	async function handleOnFinish(event) {
@@ -89,7 +93,7 @@ export function KadenceAiWizard({ loading, handleWizardClose }) {
 	return (
 		<Wizard
 			logo={ <KadenceK /> }
-			pages={ getPages() }
+			pages={ getPages(photographyOnly) }
 			forwardButtonDisabled={ isForwardButtonDisabled() }
 			finishButtonDisabled={ isFinishButtonDisabled() }
 			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
