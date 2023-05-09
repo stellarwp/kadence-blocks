@@ -22,9 +22,11 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
-	  "type": "string",
-	  "default": ""
+	"defaultValue": {
+	  "type": "string"
+	},
+	"defaultParameter": {
+	  "type": "string"
 	},
 	"ariaDescription": {
 	  "type": "string",
@@ -34,17 +36,48 @@
 	  "type": "string",
 	  "default": ""
 	},
-	"width": {
+	"maxWidth": {
 	  "type": "array",
 	  "default": [
-		"100",
-		"",
-		""
+		  "",
+		  "",
+		  ""
 	  ]
+	},
+	"maxWidthUnit": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"minWidth": {
+	  "type": "array",
+	  "default": [
+		  "",
+		  "",
+		  ""
+	  ]
+	},
+	"minWidthUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"rows": {
 	  "type": "number",
 	  "default": 3
+	},
+	"inputName": {
+	  "type": "string"
+	},
+	"auto": {
+	  "type": "string"
+	},
+	"errorMessage": {
+	  "type": "string"
+	},
+	"requiredMessage": {
+	  "type": "string"
+	},
+	"anchor": {
+	  "type": "string"
 	}
   },
   "supports": {

@@ -18,9 +18,11 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
-	  "type": "boolean",
-	  "default": false
+	"defaultValue": {
+	  "type": "string"
+	},
+	"defaultParameter": {
+	  "type": "string"
 	},
 	"ariaDescription": {
 	  "type": "string",
@@ -30,20 +32,50 @@
 	  "type": "string",
 	  "default": ""
 	},
-	"terms": {
+	"description": {
 	  "type": "string",
 	  "default": ""
 	},
-	"width": {
+	"maxWidth": {
 	  "type": "array",
 	  "default": [
-		"100",
-		"",
-		""
+		  "",
+		  "",
+		  ""
 	  ]
+	},
+	"maxWidthUnit": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"minWidth": {
+	  "type": "array",
+	  "default": [
+		  "",
+		  "",
+		  ""
+	  ]
+	},
+	"minWidthUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"inputName": {
+	  "type": "string"
+	},
+	"requiredMessage": {
+	  "type": "string"
+	},
+	"anchor": {
+	  "type": "string"
 	}
   },
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"ktdynamic": true,
+	"reusable": false
+  },
+  "ancestor": [ "kadence/advanced-form" ],
+  "parent": [ "kadence/advanced-form", "kadence/column" ]
 }
