@@ -10,7 +10,7 @@ import {
 } from '@kadence/components';
 
 export default function MessageOptions( { setAttributes, attributes } ) {
-	const { messageFont, messageColor, messageColorError, messageBackground, messageBackgroundError, messageBorderRadius, messageBorderRadiusUnit, messageBorderSuccess, tabletMessageBorderSuccess, mobileMessageBorderSuccess, messageBorderError, tabletMessageBorderError, mobileMessageBorderError, messagePadding, messagePaddingUnit, tabletMessagePadding, mobileMessagePadding, messageMargin, messageMarginUnit, tabletMessageMargin, mobileMessageMargin } = attributes;
+	const { messageFont, messageColor, messageColorError, messageBackground, messageBackgroundError, messageBorderRadius, messageBorderRadiusUnit, tabletMessageBorderRadius, mobileMessageBorderRadius, messageBorderSuccess, tabletMessageBorderSuccess, mobileMessageBorderSuccess, messageBorderError, tabletMessageBorderError, mobileMessageBorderError, messagePadding, messagePaddingUnit, tabletMessagePadding, mobileMessagePadding, messageMargin, messageMarginUnit, tabletMessageMargin, mobileMessageMargin } = attributes;
 
 	const saveMessageFont = ( value ) => {
 		const newUpdate = messageFont.map( ( item, index ) => {
