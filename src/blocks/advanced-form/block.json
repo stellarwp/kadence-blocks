@@ -507,10 +507,6 @@
 	  "recaptchaVersion": {
 		"type": "string",
 		"default": "v3"
-	  },
-	"honeyPot":  {
-		"type": "boolean",
-		"default": false
 	  }
   }
 }

@@ -130,7 +130,6 @@ export function EditInner( props ) {
 	const [ activecampaign, setActivecampaign ] = useFormMeta( '_kad_form_activecampaign' );
 
 	const [ redirect, setRedirect ] = useFormMeta( '_kad_form_redirect' );
-	const [ honeyPot, setHoneyPot ] = useFormMeta( '_kad_form_honeyPot' );
 	const [ single, setSingle ] = useFormMeta( '_kad_form_single' );
 	const [ recaptcha, setRecaptcha ] = useFormMeta( '_kad_form_recaptcha' );
 	const [ recaptchaVersion, setRecaptchaVersion ] = useFormMeta( '_kad_form_recaptchaVersion' );
@@ -479,7 +478,7 @@ export function EditInner( props ) {
 							title={__( 'Spam Prevention', 'kadence-blocks' )}
 							initialOpen={false}
 						>
-							<SpamOptions setAttributes={setMetaAttribute} honeyPot={honeyPot} recaptcha={recaptcha} recaptchaVersion={recaptchaVersion}/>
+							<SpamOptions setAttributes={setMetaAttribute} recaptcha={recaptcha} recaptchaVersion={recaptchaVersion}/>
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__( 'Message Settings', 'kadence-blocks' )}

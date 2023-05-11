@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
-export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recaptchaVersion} ) {
+export default function SpamOptions( { setAttributes, recaptcha, recaptchaVersion} ) {
 
 	const RETRIEVE_KEY_URL = 'https://www.google.com/recaptcha/admin';
 	const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
@@ -71,15 +71,6 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 
 	return (
 		<>
-			<ToggleControl
-				label={ __( 'Enable Basic Honey Pot Spam Check', 'kadence-blocks' ) }
-				help={ __( 'This adds a hidden field that if filled out prevents the form from submitting.', 'kadence-blocks' ) }
-				checked={ honeyPot }
-				onChange={ ( value ) => setAttributes( value, 'honeyPot' ) }
-			/>
-
-			<hr/>
-
 			<ToggleControl
 				label={ __( 'Enable Google reCAPTCHA', 'kadence-blocks' ) }
 				checked={ recaptcha }

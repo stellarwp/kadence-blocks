@@ -403,12 +403,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 		$form_fields = '';
-		if ( isset( $attributes['honeypot'] ) && true === $attributes['honeypot'] ) {
-			$form_fields .= '<div class="kb-honeypot-field">';
-			$form_fields .= '<label for="_kb_verify_email">' . __( 'Email', 'kadence-blocks' ) . '</label>';
-			$form_fields .= '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="new-password" aria-hidden="true" placeholder="Email" tabindex="-1" data-1p-ignore="true" data-lpignore="true" />';
-			$form_fields .= '</div>';
-		}
 		if ( ! empty( $attributes['id'] ) ) {
 			$form_fields .= '<input type="hidden" name="_kb_form_post_id" value="' . $attributes['id'] . '">';
 		}
