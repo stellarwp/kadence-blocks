@@ -15,13 +15,27 @@ import {
 	PopColorControl,
 	TypographyControls,
 	BoxShadowControl,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
+	KadencePanelBody
 } from '@kadence/components';
-import { useState } from '@wordpress/element';
 
-export default function FieldStyles( { setAttributes, style } ) {
+export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {
+
+	const [ fieldBorderRadius, setFieldBorderRadius ] = useFormMeta( '_kad_form_fieldBorderRadius' );
+	const [ tabletFieldBorderRadius, setTabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
+	const [ mobileFieldBorderRadius, setMobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
+	const [ fieldBorderRadiusUnit, setFieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
+
+	const [ fieldBorderStyle, setFieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
+	const [ tabletFieldBorderStyle, setTabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
+	const [ mobileFieldBorderStyle, setMobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
+
+	console.log( "fieldBorderStyle" );
+	console.log( fieldBorderStyle );
 
 	const saveStyle = ( value ) => {
-		setAttributes( { ...style, ...value }, 'style');
+		setMetaAttribute( { ...style, ...value }, 'style');
 	}
 
 	const btnSizes = [
@@ -90,22 +104,21 @@ export default function FieldStyles( { setAttributes, style } ) {
 		saveStyle( { gradientActive: newItems } );
 	};
 
-	const [ borderControl, setBorderControl ] = useState( 'linked' );
-	const [ mobilePaddingControl, setMobilePaddingControl ] = useState( 'linked' );
-	const [ tabletPaddingControl, setTabletPaddingControl ] = useState( 'linked' );
-	const [ deskPaddingControl, setDeskPaddingControl ] = useState( 'linked' );
+	const saveInputFont = ( value ) => {
+		setMetaAttribute( { ...inputFont, ...value }, 'inputFont');
+	};
 
 	return (
 		<>
 			<TypographyControls
-				fontSize={style.fontSize}
-				onFontSize={( value ) => saveStyle( { fontSize: value } )}
-				fontSizeType={style.fontSizeType}
-				onFontSizeType={( value ) => saveStyle( { fontSizeType: value } )}
-				lineHeight={style.lineHeight}
-				onLineHeight={( value ) => saveStyle( { lineHeight: value } )}
-				lineHeightType={style.lineType}
-				onLineHeightType={( value ) => saveStyle( { lineType: value } )}
+				fontSize={inputFont.size}
+				onFontSize={( value ) => saveInputFont( { size: value } )}
+				fontSizeType={inputFont.sizeType}
+				onFontSizeType={( value ) => saveInputFont( { sizeType: value } )}
+				lineHeight={inputFont.lineHeight}
+				onLineHeight={( value ) => saveInputFont( { lineHeight: value } )}
+				lineHeightType={inputFont.lineType}
+				onLineHeightType={( value ) => saveInputFont( { lineType: value } )}
 			/>
 
 			<div className="kt-btn-size-settings-container">
@@ -157,9 +170,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 												<MeasurementControls
 													label={__( 'Mobile Padding', 'kadence-blocks' )}
 													measurement={style.mobilePadding}
-													control={mobilePaddingControl}
 													onChange={( value ) => saveStyle( { mobilePadding: value } )}
-													onControl={( value ) => setMobilePaddingControl( value )}
 													min={0}
 													max={100}
 													step={1}
@@ -171,9 +182,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 											<MeasurementControls
 												label={__( 'Tablet Padding', 'kadence-blocks' )}
 												measurement={style.tabletPadding}
-												control={tabletPaddingControl}
 												onChange={( value ) => saveStyle( { tabletPadding: value } )}
-												onControl={( value ) => setTabletPaddingControl( value )}
 												min={0}
 												max={100}
 												step={1}
@@ -184,9 +193,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 											<MeasurementControls
 												label={__( 'Desktop Padding', 'kadence-blocks' )}
 												measurement={style.deskPadding}
-												control={deskPaddingControl}
 												onChange={( value ) => saveStyle( { deskPadding: value } )}
-												onControl={( value ) => setDeskPaddingControl( value )}
 												min={0}
 												max={100}
 												step={1}
@@ -200,7 +207,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 					</TabPanel>
 				</div>
 			)}
-			<h2 className="kt-heading-size-title kt-secondary-color-size">{__( 'Input Colors', 'kadence-blocks' )}</h2>
+
 			<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 					  activeClass="active-tab"
 					  tabs={[
@@ -224,10 +231,10 @@ export default function FieldStyles( { setAttributes, style } ) {
 									<>
 										<PopColorControl
 											label={__( 'Input Focus Color', 'kadence-blocks' )}
-											value={( style.colorActive ? style.colorActive : '' )}
+											value={( inputFont.colorActive ? inputFont.colorActive : '' )}
 											default={''}
 											onChange={value => {
-												saveStyle( { colorActive: value } );
+												saveInputFont( { colorActive: value } );
 											}}
 										/>
 										<div className="kt-btn-size-settings-container">
@@ -357,17 +364,6 @@ export default function FieldStyles( { setAttributes, style } ) {
 												)}
 											</div>
 										)}
-										<PopColorControl
-											label={__( 'Input Focus Border', 'kadence-blocks' )}
-											value={( style.borderActive ? style.borderActive : '' )}
-											default={''}
-											onChange={value => {
-												saveStyle( { borderActive: value } );
-											}}
-											opacityValue={style.borderActiveOpacity}
-											onOpacityChange={value => saveStyle( { borderActiveOpacity: value } )}
-											onArrayChange={( color, opacity ) => saveStyle( { borderActive: color, borderActiveOpacity: opacity } )}
-										/>
 										<BoxShadowControl
 											label={__( 'Input Focus Box Shadow', 'kadence-blocks' )}
 											enable={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 0 ] ? style.boxShadowActive[ 0 ] : false )}
@@ -403,6 +399,17 @@ export default function FieldStyles( { setAttributes, style } ) {
 											onInsetChange={value => {
 												saveStyleBoxShadowActive( value, 7 );
 											}}
+										/>
+										<PopColorControl
+											label={__( 'Input Focus Border', 'kadence-blocks' )}
+											value={( style.borderActive ? style.borderActive : '' )}
+											default={''}
+											onChange={value => {
+												saveStyle( { borderActive: value } );
+											}}
+											opacityValue={style.borderActiveOpacity}
+											onOpacityChange={value => saveStyle( { borderActiveOpacity: value } )}
+											onArrayChange={( color, opacity ) => saveStyle( { borderActive: color, borderActiveOpacity: opacity } )}
 										/>
 									</>
 								);
@@ -544,17 +551,6 @@ export default function FieldStyles( { setAttributes, style } ) {
 												)}
 											</div>
 										)}
-										<PopColorControl
-											label={__( 'Input Border', 'kadence-blocks' )}
-											value={( style.border ? style.border : '' )}
-											default={''}
-											onChange={value => {
-												saveStyle( { border: value } );
-											}}
-											opacityValue={style.borderOpacity}
-											onOpacityChange={value => saveStyle( { borderOpacity: value } )}
-											onArrayChange={( color, opacity ) => saveStyle( { border: color, borderOpacity: opacity } )}
-										/>
 										<BoxShadowControl
 											label={__( 'Input Box Shadow', 'kadence-blocks' )}
 											enable={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 0 ] ? style.boxShadow[ 0 ] : false )}
@@ -600,24 +596,31 @@ export default function FieldStyles( { setAttributes, style } ) {
 				}
 			</TabPanel>
 			<h2>{__( 'Border Settings', 'kadence-blocks' )}</h2>
-			<MeasurementControls
-				label={__( 'Border Width', 'kadence-blocks' )}
-				measurement={style.borderWidth}
-				control={borderControl}
-				onChange={( value ) => saveStyle( { borderWidth: value } )}
-				onControl={( value ) => setBorderControl( value )}
-				min={0}
-				max={20}
-				step={1}
+			<ResponsiveBorderControl
+				label={__( 'Border', 'kadence-blocks' )}
+				value={ [ fieldBorderStyle ] }
+				tabletValue={tabletFieldBorderStyle}
+				mobileValue={mobileFieldBorderStyle}
+				onChange={( value ) => { setFieldBorderStyle( value[0] ); console.log( "value[0]" );console.log( value[0] ); } }
+				onChangeTablet={( value ) => setTabletFieldBorderStyle( value[0] )}
+				onChangeMobile={( value ) => setMobileFieldBorderStyle( value[0] )}
 			/>
-			<RangeControl
+			<ResponsiveMeasurementControls
 				label={__( 'Border Radius', 'kadence-blocks' )}
-				value={style.borderRadius}
-				onChange={value => {
-					saveStyle( { borderRadius: value } );
-				}}
-				min={0}
-				max={50}
+				value={fieldBorderRadius}
+				tabletValue={tabletFieldBorderRadius}
+				mobileValue={mobileFieldBorderRadius}
+				onChange={( value ) => setFieldBorderRadius( value )}
+				onChangeTablet={( value ) => setTabletFieldBorderRadius( value )}
+				onChangeMobile={( value ) => setMobileFieldBorderRadius( value )}
+				unit={fieldBorderRadiusUnit}
+				units={[ 'px', 'em', 'rem', '%' ]}
+				onUnit={( value ) => setFieldBorderRadiusUnit( value )}
+				max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
+				step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
+				min={ 0 }
+				isBorderRadius={ true }
+				allowEmpty={true}
 			/>
 			<ResponsiveRangeControls
 				label={__( 'Field Row Gap', 'kadence-blocks' )}
@@ -650,6 +653,40 @@ export default function FieldStyles( { setAttributes, style } ) {
 					saveStyle( { placeholderColor: value } );
 				}}
 			/>
+
+			<KadencePanelBody
+				title={__( 'Advanced Field Settings', 'kadence-blocks' )}
+				initialOpen={false}
+				panelName={'kb-form-advanced-field-settings'}
+			>
+				<TypographyControls
+					letterSpacing={inputFont.letterSpacing}
+					onLetterSpacing={( value ) => saveInputFont( { letterSpacing: value.toString() } )}
+					textTransform={inputFont.textTransform}
+					onTextTransform={( value ) => saveInputFont( { textTransform: value } )}
+					fontFamily={inputFont.family}
+					onFontFamily={( value ) => saveInputFont( { family: value } )}
+					onFontChange={( select ) => {
+						saveInputFont( {
+							family: select.value,
+							google: select.google,
+						} );
+					}}
+					onFontArrayChange={( values ) => saveInputFont( values )}
+					googleFont={inputFont.google}
+					onGoogleFont={( value ) => saveInputFont( { google: value } )}
+					loadGoogleFont={inputFont.loadGoogle}
+					onLoadGoogleFont={( value ) => saveInputFont( { loadGoogle: value } )}
+					fontVariant={inputFont.variant}
+					onFontVariant={( value ) => saveInputFont( { variant: value } )}
+					fontWeight={inputFont.weight}
+					onFontWeight={( value ) => saveInputFont( { weight: value } )}
+					fontStyle={inputFont.style}
+					onFontStyle={( value ) => saveInputFont( { style: value } )}
+					fontSubset={inputFont.subset}
+					onFontSubset={( value ) => saveInputFont( { subset: value } )}
+				/>
+			</KadencePanelBody>
 		</>
 	);
 

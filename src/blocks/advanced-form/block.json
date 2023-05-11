@@ -96,35 +96,54 @@
 		"color": "",
 		"requiredColor": "",
 		"background": "",
-		"border": "",
 		"backgroundOpacity": 1,
-		"borderOpacity": 1,
-		"borderRadius": "",
-		"borderWidth": [ "", "", "", "" ],
-		"colorActive": "",
 		"backgroundActive": "",
-		"borderActive": "",
 		"backgroundActiveOpacity": 1,
-		"borderActiveOpacity": 1,
 		"gradient": [ "#999999", 1, 0, 100, "linear", 180, "center center" ],
 		"gradientActive": [ "#777777", 1, 0, 100, "linear", 180, "center center" ],
 		"backgroundType": "solid",
 		"backgroundActiveType": "solid",
 		"boxShadow": [ false, "#000000", 0.2, 1, 1, 2, 0, false ],
 		"boxShadowActive": [ false, "#000000", 0.4, 2, 2, 3, 0, false ],
-		"fontSize": [ "", "", "" ],
-		"fontSizeType": "px",
 		"lineHeight": [ "", "", "" ],
 		"lineType": "px",
 		"rowGap": "",
 		"rowGapType": "px",
-		"gutter": "",
-		"gutterType": "px",
 		"tabletRowGap": "",
 		"mobileRowGap": "",
 		"tabletGutter": "",
 		"mobileGutter": ""
 	  }
+	},
+	"fieldBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+	  } ]
+	},
+	"tabletFieldBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+	  } ]
+	},
+	"mobileFieldBorderStyle": {
+	  "type": "array",
+	  "default": [ {
+		  "top": [ "", "", "" ],
+		  "right": [ "", "", "" ],
+		  "bottom": [ "", "", "" ],
+		  "left": [ "", "", "" ],
+		  "unit": "px"
+	  } ]
 	},
 	"inputColor": {
 		"type": "string",
@@ -187,23 +206,11 @@
 		"type": "array",
 		"default": [
 			{
-			"size": [
-				"",
-				"",
-				""
-			],
+			"size": ["", "", ""],
 			"sizetype": "px",
-			"lineHeight": [
-				"",
-				"",
-				""
-			],
+			"lineHeight": ["", "", ""],
 			"linetype": "",
-			"letterSpacing": [
-				"",
-				"",
-				""
-			],
+			"letterSpacing": ["", "", ""],
 			"letterType": "px",
 			"textTransform": "",
 			"family": "",
@@ -220,23 +227,11 @@
 		"type": "array",
 		"default": [
 			{
-			"size": [
-				"",
-				"",
-				""
-			],
+			"size": ["", "", ""],
 			"sizetype": "px",
-			"lineHeight": [
-				"",
-				"",
-				""
-			],
+			"lineHeight": ["", "", ""],
 			"linetype": "",
-			"letterSpacing": [
-				"",
-				"",
-				""
-			],
+			"letterSpacing": ["", "", ""],
 			"letterType": "px",
 			"textTransform": "",
 			"family": "",
@@ -284,23 +279,11 @@
 		"type": "array",
 		"default": [
 			{
-			"size": [
-				"",
-				"",
-				""
-			],
+			"size": ["", "", ""],
 			"sizetype": "px",
-			"lineHeight": [
-				"",
-				"",
-				""
-			],
+			"lineHeight": ["", "", ""],
 			"linetype": "",
-			"letterSpacing": [
-				"",
-				"",
-				""
-			],
+			"letterSpacing": [ "", "", "" ],
 			"letterType": "px",
 			"textTransform": "",
 			"family": "",

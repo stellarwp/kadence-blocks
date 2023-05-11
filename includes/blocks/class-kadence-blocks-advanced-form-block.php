@@ -133,11 +133,16 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'.wp-block-kadence-advanced-form' . $unique_id . ' select,' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea'
 		);
-		$css->render_responsive_size( $field_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
-		$css->render_responsive_size( $field_style['fontSize'], array( 0, 1, 2 ), 'font-size', 'fontSizeType' );
-		$css->render_color_output( $field_style, 'border', 'border-color' );
-		$css->render_measure_range( $field_style, 'borderWidth', 'border-width' );
-		$css->render_range( $field_style, 'borderRadius', 'border-radius' );
+
+		$css->render_typography( $form_attributes, 'inputFont');
+
+		$borderStyle = array(
+			'fieldBorderStyle' => array( !empty( $form_attributes['fieldBorderStyle'] ) ? $form_attributes['fieldBorderStyle'] : array() ),
+			'tabletFieldBorderStyle' => array( !empty( $form_attributes['tabletFieldBorderStyle'] ) ? $form_attributes['tabletFieldBorderStyle'] : array() ),
+			'mobileFieldBorderStyle' => array( !empty( $form_attributes['mobileFieldBorderStyle'] ) ? $form_attributes['mobileFieldBorderStyle'] : array()  ),
+		);
+		$css->render_border_styles( $borderStyle, 'fieldBorderStyle' );
+		$css->render_measure_output( $form_attributes, 'fieldBorderRadius', 'border-radius' );
 		$css->render_color_output( $field_style, 'color', 'color' );
 
 		if ( isset( $field_style['backgroundType'] ) && $field_style['backgroundType'] === 'gradient' ) {

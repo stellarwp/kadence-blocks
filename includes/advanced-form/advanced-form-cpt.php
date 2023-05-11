@@ -678,6 +678,161 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_fieldBorderRadius',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array( "", "", ""),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'array',
+						'properties' => array( "", "", "" ),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_tabletFieldBorderRadius',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array( "", "", ""),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'array',
+						'properties' => array( "", "", "" ),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_mobileFieldBorderRadius',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array( "", "", ""),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'array',
+						'properties' => array( "", "", "" ),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_fieldBorderRadiusUnit',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'string',
+				'default'       => "px",
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'string',
+						'properties' => "px",
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_fieldBorderStyle',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'string',
+				'default'       => array(
+					'top' => array( '', '', '' ),
+					'right' => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left' => array( '', '', '' ),
+					'unit' => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_tabletFieldBorderStyle',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'string',
+				'default'       => array(
+					'top' => array( '', '', '' ),
+					'right' => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left' => array( '', '', '' ),
+					'unit' => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_mobileFieldBorderStyle',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'string',
+				'default'       => array(
+					'top' => array( '', '', '' ),
+					'right' => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left' => array( '', '', '' ),
+					'unit' => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_messages',
 			array(
 				'single'        => true,
@@ -824,6 +979,77 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_inputFont',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					"color"         => "",
+					"colorActive"   => "",
+					"size"          => array(
+						"",
+						"",
+						""
+					),
+					"sizeType"      => "px",
+					"lineHeight"    => array(
+						"",
+						"",
+						""
+					),
+					"lineType"      => "px",
+					"letterSpacing" => "",
+					"textTransform" => "",
+					"family"        => "",
+					"google"        => "",
+					"style"         => "",
+					"weight"        => "",
+					"variant"       => "",
+					"subset"        => "",
+					"loadGoogle"    => true,
+					"padding"       => array(
+						"",
+						"",
+						"",
+						""
+					),
+					"margin"        => array(
+						"",
+						"",
+						"",
+						""
+					)
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'color'         => array( 'type' => 'string' ),
+							'colorActive'   => array( 'type' => 'string' ),
+							'size'          => array( 'type' => 'array' ),
+							'sizeType'      => array( 'type' => 'string' ),
+							'lineHeight'    => array( 'type' => 'array' ),
+							'lineType'      => array( 'type' => 'string' ),
+							'letterSpacing' => array( 'type' => 'string' ),
+							'textTransform' => array( 'type' => 'string' ),
+							"family"        => array( 'type' => 'string' ),
+							'google'        => array( 'type' => 'string' ),
+							'style'         => array( 'type' => 'string' ),
+							'weight'        => array( 'type' => 'string' ),
+							'variant'       => array( 'type' => 'string' ),
+							'subset'        => array( 'type' => 'string' ),
+							'loadGoogle'    => array( 'type' => 'boolean' ),
+							'padding'       => array( 'type' => 'array' ),
+							'margin'        => array( 'type' => 'array' )
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_style',
 			array(
 				'single'        => true,
@@ -853,21 +1079,9 @@ class Kadence_Blocks_Form_CPT_Controller {
 					"color"                   => "",
 					"requiredColor"           => "",
 					"background"              => "",
-					"border"                  => "",
 					"backgroundOpacity"       => 1,
-					"borderOpacity"           => 1,
-					"borderRadius"            => "",
-					"borderWidth"             => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"colorActive"             => "",
 					"backgroundActive"        => "",
-					"borderActive"            => "",
 					"backgroundActiveOpacity" => 1,
-					"borderActiveOpacity"     => 1,
 					"placeholderColor"        => "",
 					"gradient"                => array(
 						"#999999",
@@ -909,12 +1123,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 						0,
 						false
 					),
-					"fontSize"                => array(
-						"",
-						"",
-						""
-					),
-					"fontSizeType"            => "px",
 					"lineHeight"              => array(
 						"",
 						"",
@@ -923,8 +1131,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 					"lineType"                => "px",
 					"rowGap"                  => "",
 					"rowGapType"              => "px",
-					"gutter"                  => "",
-					"gutterType"              => "px",
 					"tabletRowGap"            => "",
 					"mobileRowGap"            => "",
 					"tabletGutter"            => "",

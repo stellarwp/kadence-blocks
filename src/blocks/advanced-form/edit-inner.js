@@ -59,14 +59,9 @@ import {
 } from '@wordpress/components';
 
 import {
-	plusCircle,
-} from '@wordpress/icons';
-
-import {
 	FieldStyles,
 	SpamOptions,
 	SubmitActionOptions,
-	SubmitButtonStyles,
 	LabelOptions,
 	HelpTextOptions,
 	MailerLiteOptions,
@@ -146,6 +141,7 @@ export function EditInner( props ) {
 	const [ messages, setMessages ] = useFormMeta( '_kad_form_messages' );
 
 	const [ labelFont, setLabelFont ] = useFormMeta( '_kad_form_labelFont' );
+	const [ inputFont, setInputFont ] = useFormMeta( '_kad_form_inputFont' );
 
 	const [ style, setStyle ] = useFormMeta( '_kad_form_style' );
 	const [ helpFont, setHelpFont ] = useFormMeta( '_kad_form_helpFont' );
@@ -312,7 +308,7 @@ export function EditInner( props ) {
 					<FieldBlockAppender rootClientId={clientId} />
 				</ToolbarGroup>
 			</BlockControls>
-			
+
 			<InspectorControls>
 
 				<InspectorControlTabs
@@ -503,7 +499,7 @@ export function EditInner( props ) {
 							initialOpen={true}
 							panelName={'kb-form-field-styles'}
 						>
-							<FieldStyles setAttributes={setMetaAttribute} style={style}/>
+							<FieldStyles setMetaAttribute={setMetaAttribute} inputFont={inputFont} style={style} useFormMeta={ useFormMeta }/>
 						</KadencePanelBody>
 
 						{/* Label Styles*/}
@@ -589,7 +585,7 @@ export function EditInner( props ) {
 				}
 
 			</InspectorControls>
-			<BackendStyles id={id} previewDevice={previewDevice} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
+			<BackendStyles id={id} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
 
 			<div {...innerBlocksProps} />
 			<SpacingVisualizer
