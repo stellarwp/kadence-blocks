@@ -79,7 +79,7 @@ export function ImageSelect(props) {
 			// Image selections.
 			const images = frame.state().get('selection').map((attachment) => {
 				const image = attachment.toJSON();
-				console.log(image);
+				// console.log(image);
 
 				return {
 					id: image.id,

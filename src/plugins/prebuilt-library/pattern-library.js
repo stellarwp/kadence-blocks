@@ -21,7 +21,10 @@ import {
 	useSelect,
 	withDispatch,
 } from '@wordpress/data';
-import { rawHandler } from '@wordpress/blocks';
+/**
+ * WordPress dependencies
+ */
+import { parse, rawHandler } from '@wordpress/blocks';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import {
@@ -65,7 +68,8 @@ import { getAsyncData } from './data-fetch/get-async-data';
 import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
-import { AiWizard } from './ai-wizard'
+import { AiWizard } from './ai-wizard';
+import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES } from './data-fetch/constants';
 
 /**
  * Prebuilt Sections.
@@ -85,66 +89,23 @@ function PatternLibrary( {
 	const [ aiContent, setAIContent ] = useState( {} );
 	const [ context, setContext ] = useState( '' );
 	const [ contextTab, setContextTab ] = useState( '' );
-	const [ aIUserData, setAIUserData ] = useState( {} );
+	const [ aIUserData, setAIUserData ] = useState( false );
 	const [ imageCollection, setImageCollection ] = useState( {} );
-	const [ categories, setCategories ] = useState( { 
-		'category': __( 'Category', 'kadence-blocks' ),
-		'hero': __( 'Hero', 'kadence-blocks' ),
-		'cards': __( 'Cards', 'kadence-blocks' ),
-		'columns': __( 'Columns', 'kadence-blocks' ),
-		'media-text': __( 'Media and Text', 'kadence-blocks' ),
-		'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
-		'form': __( 'Form', 'kadence-blocks' ),
-		'gallery': __( 'Gallery', 'kadence-blocks' ),
-		'accordion': __( 'Accordion', 'kadence-blocks' ),
-		'image': __( 'Image', 'kadence-blocks' ),
-		'list': __( 'List', 'kadence-blocks' ),
-		'location': __( 'Location', 'kadence-blocks' ),
-		'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
-		'team': __( 'Team', 'kadence-blocks' ),
-		'post-loop': __( 'Post Loop', 'kadence-blocks' ),
-		'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-		'slider': __( 'Slider', 'kadence-blocks' ),
-		'tabs': __( 'Tabs', 'kadence-blocks' ),
-		'testimonials': __( 'Testimonials', 'kadence-blocks' ),
-		'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
-		'video': __( 'Video', 'kadence-blocks' ),
-	 } );
-	const [ categorySelectOptions, setCategorySelectOptions ] = useState( [] );
+	const [ categories, setCategories ] = useState( PATTERN_CATEGORIES );
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
-	const [ contextOptions, setContextOptions ] = useState( {
-		'hero': __( 'Website Hero', 'kadence-blocks' ),
-		'about': __( 'About', 'kadence-blocks' ),
-		'products-services': __( 'Products or Services', 'kadence-blocks' ),
-		'call-to-action': __( 'Call to Action', 'kadence-blocks' ),
-		'work': __( 'Work', 'kadence-blocks' ),
-		'faq': __( 'FAQ', 'kadence-blocks' ),
-		'value-prop': __( 'Value Proposition', 'kadence-blocks' ),
-		'news': __( 'News', 'kadence-blocks' ),
-		'blog': __( 'Blog', 'kadence-blocks' ),
-		'contact': __( 'Contact', 'kadence-blocks' ),
-		'subscribe': __( 'Subscribe', 'kadence-blocks' ),
-		'welcome': __( 'Welcome', 'kadence-blocks' ),
-		'location': __( 'Location', 'kadence-blocks' ),
-		'partners': __( 'Partners', 'kadence-blocks' ),
-		'team': __( 'Team', 'kadence-blocks' ),
-		'testimonial': __( 'Testimonials', 'kadence-blocks' ),
-		'profile': __( 'Profile', 'kadence-blocks' ),
-		'mission': __( 'Mission', 'kadence-blocks' ),
-		'history': __( 'History', 'kadence-blocks' ),
-		'get-started': __( 'Get Started', 'kadence-blocks' ),
-		'plans': __( 'Plans', 'kadence-blocks' ),
-	 } );
+	const [ contextOptions, setContextOptions ] = useState( PATTERN_CONTEXTS );
 	const [ contextListOptions, setContextListOptions ] = useState( [] );
-	const [ pagesCategories, setPagesCategories ] = useState( { 'category': __( 'Category', 'kadence-blocks' ) } );
-	const [ pageCategorySelectOptions, setPageCategorySelectOptions ] = useState( [] );
+	const [ pagesCategories, setPagesCategories ] = useState( PAGE_CATEGORIES );
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
 	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
+	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
 	const [ isWizardVisible, setIsWizardVisible ] = useState( false );
 	const [ isError, setIsError ] = useState( false );
+	const [ isErrorType, setIsErrorType ] = useState( 'general' );
 	const [ style, setStyle ] = useState( '' );
+	const [ replaceImages, setReplaceImages ] = useState( '' );
 	const [ fontSize, setFontSize ] = useState( '' );
 	const [ aiDataState, triggerAIDataReload ] = useState( false );
 	const [ isVisible, setIsVisible ] = useState( false );
@@ -161,275 +122,70 @@ function PatternLibrary( {
 		setIsWizardVisible( false );
 		triggerAIDataReload( ( state ) => ! state );
 	};
-	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
-	let data_email   = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
-	const product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
-	if ( ! data_key ) {
-		data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.ithemes_key ?  kadence_blocks_params.proData.ithemes_key : '' );
-		if ( data_key ) {
-			data_email = 'iThemes';
-		}
-	}
-	const onInsertContent = ( pattern ) => {
-		const newPattern = {
-			content: pattern?.content ? pattern.content : '',
-			type: pattern?.type ? pattern.type : 'pattern',
-			style: pattern?.style ? pattern.style : 'light',
-			id: pattern?.id ? pattern.id : '',
-		}
-		importProcess( newPattern.content, newPattern.type, newPattern.id, newPattern.style );
-	}
-	const importProcess = ( blockcode, type = '', item_id = '', style = '' ) => {
-		setIsImporting( true );
-		var data = new FormData();
-		data.append( 'action', 'kadence_import_process_data' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'import_content', blockcode );
-		data.append( 'import_item_id', item_id );
-		data.append( 'import_type', type );
-		data.append( 'import_style', style );
-		data.append( 'import_library', 'pattern' );
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				importContent( response, clientId );
-				setIsImporting( false );
-			}
-		})
-		.fail( function( error ) {
-			console.log( error );
-			setIsImporting( false );
-		});
-	}
-	const reloadAllData = debounce( () => {
+	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
+	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
+	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
+	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
+	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
+	const savedReplaceImages = ( undefined !== activeStorage?.replaceImages && '' !== activeStorage?.replaceImages ? activeStorage.replaceImages : 'all' );
+	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
+	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
+	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'about' );
+	const selectedCategory = ( category ? category : savedSelectedCategory );
+	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
+	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
+	const selectedStyle = ( style ? style : savedStyle );
+	const selectedReplaceImages = ( replaceImages ? replaceImages : savedReplaceImages );
+	const selectedFontSize = ( fontSize ? fontSize : savedFontSize );
+	const selectedSubTab = ( subTab ? subTab : savedTab );
+	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
+	const selectedContext = ( context ? context : savedContext );
+	useEffect( () => {
+		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
+			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
+		} ) );
+	}, [ categories ] );
+	useEffect( () => {
+		setPageCategoryListOptions( Object.keys( pagesCategories ).map( function( key, index ) {
+			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
+		} ) );
+	}, [ pagesCategories ] );
+	useEffect( () => {
+		setContextListOptions( Object.keys( contextOptions ).map( function( key, index ) {
+			return { value: key, label: contextOptions[key] }
+		} ) );
+	}, [] );
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern } = getAsyncData();
+	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
-		setPatterns( 'loading' );
-		setPages( 'loading' );
-
-		// Prep Form.
-		const data = new FormData();
-		data.append( 'action', 'kadence_import_reload_prebuilt_data' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', data_key );
-		data.append( 'api_email', data_email );
-		data.append( 'product_id', product_id );
-		data.append( 'package', 'section' );
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				const o = SafeParseJSON( response, false );
-				if ( o ) {
-					const cats = { 
-						'category': __( 'Category', 'kadence-blocks' ),
-						'hero': __( 'Hero', 'kadence-blocks' ),
-						'cards': __( 'Cards', 'kadence-blocks' ),
-						'columns': __( 'Columns', 'kadence-blocks' ),
-						'media-text': __( 'Media and Text', 'kadence-blocks' ),
-						'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
-						'form': __( 'Form', 'kadence-blocks' ),
-						'gallery': __( 'Gallery', 'kadence-blocks' ),
-						'accordion': __( 'Accordion', 'kadence-blocks' ),
-						'image': __( 'Image', 'kadence-blocks' ),
-						'list': __( 'List', 'kadence-blocks' ),
-						'location': __( 'Location', 'kadence-blocks' ),
-						'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
-						'team': __( 'Team', 'kadence-blocks' ),
-						'post-loop': __( 'Post Loop', 'kadence-blocks' ),
-						'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-						'slider': __( 'Slider', 'kadence-blocks' ),
-						'tabs': __( 'Tabs', 'kadence-blocks' ),
-						'testimonials': __( 'Testimonials', 'kadence-blocks' ),
-						'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
-						'video': __( 'Video', 'kadence-blocks' ),
-					 };
-					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
-					kadence_blocks_params.library_sections = filteredLibraryItems;
-					{ Object.keys( o ).map( function( key, index ) {
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! cats.hasOwnProperty( ckey ) ) {
-									cats[ ckey ] = o[ key ].categories[ ckey ];
-								}
-							} ) }
-						}
-					} ) }
-					setIsError( false );
-					setPatterns( filteredLibraryItems );
-					setCategories( cats );
-					setIsLoading( false );
-				} else {
-					setIsError( true );
-					setPatterns( 'error' );
-					setIsLoading( false );
-				}
-			}
-		})
-		.fail( function( error ) {
-			console.log(error);
-			setIsError( true );
-			setPatterns( 'error' );
-			setIsLoading( false );
-		});
-		if ( ! isError ) {
-			const pageData = new FormData();
-			pageData.append( 'action', 'kadence_import_reload_prebuilt_pages_data' );
-			pageData.append( 'security', kadence_blocks_params.ajax_nonce );
-			pageData.append( 'api_key', data_key );
-			pageData.append( 'api_email', data_email );
-			pageData.append( 'product_id', product_id );
-			pageData.append( 'package', 'pages' );
-			jQuery.ajax( {
-				method:      'POST',
-				url:         kadence_blocks_params.ajax_url,
-				data:        pageData,
-				contentType: false,
-				processData: false,
-			} )
-			.done( function( response, status, stately ) {
-				if ( response ) {
-					const o = SafeParseJSON( response, false );
-					if ( o ) {
-						const pageCats = { 'category': 'Category' };
-						kadence_blocks_params.library_pages = o;
-						{ Object.keys( o ).map( function( key, index ) {
-							if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-								{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-									if ( ! pageCats.hasOwnProperty( ckey ) ) {
-										pageCats[ ckey ] = o[ key ].categories[ ckey ];
-									}
-								} ) }
-							}
-						} ) }
-						setIsError( false );
-						setPages( o );
-						setPagesCategories( pageCats );
-					} else {
-						setIsError( true );
-						setPages( 'error' );
-					}
-				}
-			})
-			.fail( function( error ) {
-				console.log(error);
-				setIsError( true );
+		setIsErrorType( 'general' );
+		const response = await getPatterns( ( tempSubTab === 'pages' ? 'pages' : 'section' ), tempReload );
+		if ( response === 'failed' ) {
+			console.log( 'Permissions Error getting library Content' );
+			if ( tempSubTab === 'pages' ) {
 				setPages( 'error' );
-			});
-		}
-	}, 250 );
-	const loadPatternData = debounce( () => {
-		setIsLoading( true );
-		setIsError( false );
-		setPatterns( 'loading' );
-
-		var data = new FormData();
-		data.append( 'action', 'kadence_import_get_prebuilt_data' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', data_key );
-		data.append( 'api_email', data_email );
-		data.append( 'product_id', product_id );
-		data.append( 'package', 'section' );
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				const o = SafeParseJSON( response, false );
-				if ( o ) {
-					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
-					kadence_blocks_params.library_sections = filteredLibraryItems;
-					const cats = { 
-						'category': __( 'Category', 'kadence-blocks' ),
-						'hero': __( 'Hero', 'kadence-blocks' ),
-						'cards': __( 'Cards', 'kadence-blocks' ),
-						'columns': __( 'Columns', 'kadence-blocks' ),
-						'media-text': __( 'Media and Text', 'kadence-blocks' ),
-						'counter-or-stats': __( 'Counter or Stats', 'kadence-blocks' ),
-						'form': __( 'Form', 'kadence-blocks' ),
-						'gallery': __( 'Gallery', 'kadence-blocks' ),
-						'accordion': __( 'Accordion', 'kadence-blocks' ),
-						'image': __( 'Image', 'kadence-blocks' ),
-						'list': __( 'List', 'kadence-blocks' ),
-						'location': __( 'Location', 'kadence-blocks' ),
-						'logo-farm': __( 'Logo Farm', 'kadence-blocks' ),
-						'team': __( 'Team', 'kadence-blocks' ),
-						'post-loop': __( 'Post Loop', 'kadence-blocks' ),
-						'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-						'slider': __( 'Slider', 'kadence-blocks' ),
-						'tabs': __( 'Tabs', 'kadence-blocks' ),
-						'testimonials': __( 'Testimonials', 'kadence-blocks' ),
-						'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
-						'video': __( 'Video', 'kadence-blocks' ),
-					 };
-					{ Object.keys( o ).map( function( key, index ) {
-						//console.log( o[ key ].categories );
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! cats.hasOwnProperty( ckey ) ) {
-									cats[ ckey ] = o[ key ].categories[ ckey ];
-								}
-							} ) }
-						}
-					} ) }
-					setIsError( false );
-					setIsLoading( false );
-					setPatterns( filteredLibraryItems );
-					setCategories( cats );
-				} else {
-					setIsError( true );
-					setIsLoading( false );
-					setPatterns( 'error' );
-				}
+			} else {
+				setPatterns( 'error' );
 			}
-		})
-		.fail( function( error ) {
-			console.log(error);
+			setIsError( true );
+			setIsErrorType( 'reload' );
+			setIsLoading( false );
+		} else if ( response === 'error' ) {
+			console.log( 'Error getting library Content.' );
+			if ( tempSubTab === 'pages' ) {
+				setPages( 'error' );
+			} else {
+				setPatterns( 'error' );
+			}
 			setIsError( true );
 			setIsLoading( false );
-			setPatterns( 'error' );
-		});
-	}, 250 );
-	const loadPagesData = debounce( () => {
-		setIsLoading( true );
-		setIsError( false );
-		setPages( 'loading' );
-
-		var data = new FormData();
-		data.append( 'action', 'kadence_import_get_prebuilt_pages_data' );
-		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', data_key );
-		data.append( 'api_email', data_email );
-		data.append( 'product_id', product_id );
-		data.append( 'package', 'pages' );
-		var control = this;
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				const o = SafeParseJSON( response, false );
-				if ( o ) {
-					const pageCats = { 'category': 'Category' };
+		} else {
+			const o = SafeParseJSON( response, false );
+			if ( o ) {
+				if ( tempSubTab === 'pages' ) {
+					const pageCats = PAGE_CATEGORIES;
 					kadence_blocks_params.library_pages = o;
 					{ Object.keys( o ).map( function( key, index ) {
 						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
@@ -440,178 +196,149 @@ function PatternLibrary( {
 							} ) }
 						}
 					} ) }
-					setIsLoading( false );
-					setIsError( false );
-					setPages( o );
 					setPagesCategories( pageCats );
+					setPages( o );
 				} else {
-					setIsLoading( false );
-					setIsError( true );
-					setPages( 'error' );
+					const cats = PATTERN_CATEGORIES;
+					kadence_blocks_params.library_sections = o;
+					{ Object.keys( o ).map( function( key, index ) {
+						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
+							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
+								if ( ! cats.hasOwnProperty( ckey ) ) {
+									cats[ ckey ] = o[ key ].categories[ ckey ];
+								}
+							} ) }
+						}
+					} ) }
+					setPatterns( o );
+					setCategories( cats );
 				}
+			} else {
+				if ( tempSubTab === 'pages' ) {
+					setPages( 'error' );
+				} else {
+					setPatterns( 'error' );
+				}
+				setIsError( true );
 			}
-		})
-		.fail( function( error ) {
-			console.log(error);
 			setIsLoading( false );
-			setIsError( true );
-			setPages( 'error' );
-		});
-	}, 250 );
-	if ( reload && ! isLoading ) {
-		onReload();
-		reloadAllData();
+		}
 	}
-	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
-	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
-	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
-	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
-	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
-	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
-	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
-	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'about' );
-	const selectedCategory = ( category ? category : savedSelectedCategory );
-	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
-	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
-	const selectedStyle = ( style ? style : savedStyle );
-	const selectedFontSize = ( fontSize ? fontSize : savedFontSize );
-	const selectedSubTab = ( subTab ? subTab : savedTab );
-	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
-	const selectedContext = ( context ? context : savedContext );
 	useEffect( () => {
-		setCategorySelectOptions( Object.keys( categories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: categories[key] }
-		} ) );
-		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
-		} ) );
-	}, [ categories ] );
-	useEffect( () => {
-		setPageCategorySelectOptions( Object.keys( pagesCategories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: pagesCategories[key] }
-		} ) );
-		setPageCategoryListOptions( Object.keys( pagesCategories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
-		} ) );
-	}, [ pagesCategories ] );
-	useEffect( () => {
-		setContextListOptions( Object.keys( contextOptions ).map( function( key, index ) {
-			return { value: key, label: contextOptions[key] }
-		} ) );
-	}, [] );
-	const loadAI = async ( theContext ) => {
-		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get', {
-				context: theContext,
-				api_key: data_key,
-				api_email: data_email,
-			} ),
-		} );
+		if ( reload && ! isLoading ) {
+			onReload();
+			getLibraryContent( selectedSubTab, true );
+		} else if ( ! isLoading ) {
+			getLibraryContent( selectedSubTab, false );
+		}
+	}, [reload, selectedSubTab] );
+	const forceRefreshLibrary = () => {
+		if ( ! isLoading && patterns ) {
+			setPatterns( JSON.parse(JSON.stringify(patterns)) );
+		}
+		if ( ! isLoading && pages ) {
+			setPages( JSON.parse(JSON.stringify(pages)) );
+		}
+	}
+	async function getAIContent( tempContext ) {
+		setIsLoadingAI( true );
+		const response = await getAIContentData( tempContext );
 		if ( response === 'processing' ) {
-			console.log( 'is processing' );
+			console.log( 'Is processing AI' );
 			setTimeout( () => {
-				loadAI( theContext );
+				getAIContent( tempContext );
 			}, 1000 );
+		} else if ( response === 'Failed' ) {
+			console.log( 'Permissions Error getting AI Content.' );
+			const newAiContent = { ...aiContent };
+			newAiContent[tempContext] = 'failedReload';
+			setAIContent( newAiContent );
+			debounce( forceRefreshLibrary, 500 );
+			setIsLoadingAI( false );
 		} else if ( response === 'error' ) {
 			console.log( 'Error getting AI Content.' );
 			const newAiContent = { ...aiContent };
-			newAiContent[theContext] = 'failed';
-			console.log( newAiContent );
+			newAiContent[tempContext] = 'failed';
 			setAIContent( newAiContent );
+			debounce( forceRefreshLibrary, 500 );
+			setIsLoadingAI( false );
 		} else {
 			const o = SafeParseJSON( response, false );
 			const newAiContent = { ...aiContent };
-			newAiContent[theContext] = o;
+			newAiContent[tempContext] = o;
 			console.log( newAiContent );
 			setAIContent( newAiContent );
+			debounce( forceRefreshLibrary, 500 );
+			setIsLoadingAI( false );
 		}
-	};
-	const reloadAI = async ( theContext ) => {
-		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get', {
-				reload: true,
-				context: theContext,
-				api_key: data_key,
-				api_email: data_email,
-			} ),
-		} );
+	}
+	async function reloadAI( tempContext ) {
+		setIsLoadingAI( true );
+		const response = await getAIContentDataReload( tempContext, aiContent );
 		if ( response === 'processing' ) {
-			console.log( 'is processing' );
+			console.log( 'Is processing AI' );
 			setTimeout( () => {
-				reloadAI( theContext );
+				getAIContent( tempContext );
 			}, 1000 );
-		} else if ( response === 'error' ) {
-			console.log( 'Error getting AI Content.' );
-			const newAiContent = { ...aiContent };
-			newAiContent[theContext] = 'failed';
-			console.log( newAiContent );
-			setAIContent( newAiContent );
+		} else if ( response === 'credits' ) {
+			console.log( 'Error not enough credits to reload.' );
+			setIsLoadingAI( false );
 		} else {
-			const o = SafeParseJSON( response, false );
+			console.log( 'Error getting New AI Job.' );
 			const newAiContent = { ...aiContent };
-			newAiContent[theContext] = o;
-			console.log( newAiContent );
+			newAiContent[tempContext] = 'failed';
 			setAIContent( newAiContent );
+			debounce( forceRefreshLibrary, 500 );
+			setIsLoadingAI( false );
 		}
-	};
-	const loadVerticals = async () => {
-		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get_verticals', {
-				api_key: data_key,
-				api_email: data_email,
-			} ),
-		} );
-		const o = SafeParseJSON( response, false );
-		console.log( o );
-	};
-	const loadCollections = async () => {
-		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get_image_collections', {
-				api_key: data_key,
-				api_email: data_email,
-			} ),
-		} );
-		const o = SafeParseJSON( response, false );
-		console.log( o );
-	};
-	const loadACollection = async () => {
-		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get_images', {
-				context: 'Consulting',
-				api_key: data_key,
-				api_email: data_email,
-			} ),
-		} );
-		const o = SafeParseJSON( response, false );
-		console.log( o );
-	};
+	}
 	useEffect( () => {
-		//loadVerticals();
-		//loadCollections();
-		//loadACollection();
-		loadAI( selectedContext );
+		getAIContent( selectedContext );
 	}, [selectedContext] );
-	const { getAiWizardData, getCollectionByIndustry } = getAsyncData();
 	async function getAIUserData() {
-		const response = await getAiWizardData();
+		const response = await getAIWizardData();
 		const data = response ? SafeParseJSON(response) : {};
-		console.log( data );
 		setAIUserData(data);
 	}
 	async function getImageCollection() {
 		const response = await getCollectionByIndustry( aIUserData );
 		const data = response ? response : {};
+		console.log( 'Image Collection' );
 		console.log( data );
-		setImageCollection(data);
+		setImageCollection(response);
 	}
 	useEffect(() => {
+		console.log( 'triggered recheck' );
 		getAIUserData();
 	}, [aiDataState]);
-
 	useEffect(() => {
-		getImageCollection();
+		if ( aIUserData ) {
+			console.log( 'triggered data update recheck' );
+			getImageCollection();
+		}
 	}, [aIUserData]);
+	async function onInsertContent( pattern ) {
+		setIsImporting( true );
+		const response = await getPattern( ( pattern?.type === 'page' ? 'pages' : 'section' ), ( pattern?.type ? pattern.type : 'pattern' ), ( pattern?.id ? pattern.id : '' ), ( pattern?.style ? pattern.style : 'light' ) );
+		let patternBlocks = pattern?.content ? pattern.content : '';
+		if ( response && ! patternBlocks ) {
+			patternBlocks = parse( response, {
+				__unstableSkipMigrationLogs: true
+			});
+		}
+		processImportContent( patternBlocks );
+	}
+	async function processImportContent( blockCode ) {
+		const response = await processPattern( blockCode, imageCollection );
+		if ( response === 'failed' ) {
+			console.log( 'Import Process Failed when processing data.' );
+			setIsError( true );
+			setIsErrorType( 'reload' );
+		} else {
+			importContent( response, clientId );
+		}
+		setIsImporting( false );
+	}
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
@@ -621,23 +348,6 @@ function PatternLibrary( {
 		{ value: 'sm', label: __( 'Smaller', 'kadence-blocks' ) },
 		{ value: 'lg', label: __( 'Normal', 'kadence-blocks' ) }
 	];
-
-	// let breakpointColumnsObj = {
-	// 	default: 4,
-	// 	1900: 3,
-	// 	1600: 3,
-	// 	1200: 2,
-	// 	500: 2,
-	// };
-	// if ( theGridSize === 'large' ) {
-	// 	breakpointColumnsObj = {
-	// 		default: 3,
-	// 		1900: 3,
-	// 		1600: 2,
-	// 		1200: 2,
-	// 		500: 1,
-	// 	};
-	// }
 	const breakpointColumnsObj = {
 		default: 3,
 		1900: 3,
@@ -675,6 +385,18 @@ function PatternLibrary( {
 										onClick={ () => {
 											setIsVisible( false );
 											setIsWizardVisible( true );
+										}}
+									/>
+									<ToggleControl
+										label={__( 'Disable Custom Images', 'kadence-blocks' )}
+										checked={selectedReplaceImages === 'none'}
+										help={__('If disabled you will import and preview only wireframe images.')}
+										onChange={( value ) => {
+											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											tempActiveStorage['replaceImages'] = ( value ? 'none' : 'all' );
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+											setPatterns( JSON.parse(JSON.stringify(patterns)) );
+											setReplaceImages( ( value ? 'none' : 'all' ) );
 										}}
 									/>
 									<ToggleControl
@@ -759,6 +481,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'design';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setPatterns( JSON.parse(JSON.stringify(patterns)) );
 									setContextTab( 'design' );
 								}}
 							>
@@ -775,6 +498,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'context';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									setPatterns( JSON.parse(JSON.stringify(patterns)) );
 									setContextTab( 'context' );
 								}}
 							/>
@@ -874,11 +598,17 @@ function PatternLibrary( {
 																	<p>{__('You can regenerate ai content for this context. This will use one credit and your current ai text will be forever lost. Would you like to regenerate ai content for this context?', 'kadence-blocks')}</p>
 																	<Button
 																		variant='primary'
+																		icon={ aiIcon }
+																		iconSize={ 16 }
+																		disabled={ isLoadingAI }
+																		iconPosition='right'
+																		text={ __( 'Regenerate AI Content', 'kadence-blocks' ) }
 																		className={ 'kb-reload-context-confirm' }
-																		onClick={ () => reloadAI( selectedContext ) }
-																	>
-																		{ __( 'Reload Context', 'kadence-blocks' ) }
-																	</Button>
+																		onClick={ () => {
+																			setIsContextReloadVisible(false);
+																			reloadAI( selectedContext );
+																		}}
+																	/>
 																</Popover>
 															) }
 														</>
@@ -929,8 +659,8 @@ function PatternLibrary( {
 									<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
 								</div>
 							) }
-							{ isError && (
-								<div>
+							{ isError && isErrorType === 'general' && (
+								<div className='kb-pattern-error-wrapper'>
 									<h2 style={ { textAlign:'center' } }>
 										{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 									</h2>
@@ -938,23 +668,29 @@ function PatternLibrary( {
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
-											onClick={ () => reloadAllData() }
+											onClick={ () => ! isLoading ? getLibraryContent( selectedSubTab, true ) : null }
 										>
 											{ __( ' Sync with Cloud', 'kadence-blocks' ) }
 										</Button>
 									</div>
 								</div>
 							) }
-							{ false === pages && (
-								<>{ loadPagesData() }</>
+							{ isError && isErrorType === 'reload' && (
+								<div className='kb-pattern-error-wrapper'>
+									<h2 style={ { textAlign:'center' } }>
+										{ __( 'Error, Unable to access library, please reload this page in your browser.', 'kadence-blocks' ) }
+									</h2>
+								</div>
 							) }
+							{/* { false === pages && (
+								<>{ loadPagesData() }</>
+							) } */}
 						</>
 					) : (
 						<PageList
 							pages={ pages }
 							filterValue={ search }
 							selectedCategory={ selectedPageCategory }
-							patternCategories={ pageCategorySelectOptions }
 							selectedStyle={ selectedStyle }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
@@ -979,8 +715,8 @@ function PatternLibrary( {
 									<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
 								</div>
 							) }
-							{ isError && (
-								<div>
+							{ isError && isErrorType === 'general' && (
+								<div className='kb-pattern-error-wrapper'>
 									<h2 style={ { textAlign:'center' } }>
 										{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 									</h2>
@@ -988,15 +724,19 @@ function PatternLibrary( {
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
-											onClick={ () => reloadAllData() }
+											onClick={ () => ! isLoading ? getLibraryContent( selectedSubTab, true ) : null }
 										>
 											{ __( ' Sync with Cloud', 'kadence-blocks' ) }
 										</Button>
 									</div>
 								</div>
 							) }
-							{ false === patterns && (
-								<>{ loadPatternData() }</>
+							{ isError && isErrorType === 'reload' && (
+								<div className='kb-pattern-error-wrapper'>
+									<h2 style={ { textAlign:'center' } }>
+										{ __( 'Error, Unable to access library, please reload this page in your browser.', 'kadence-blocks' ) }
+									</h2>
+								</div>
 							) }
 						</>
 					) : (
@@ -1004,7 +744,6 @@ function PatternLibrary( {
 							patterns={ patterns }
 							filterValue={ search }
 							selectedCategory={ selectedCategory }
-							patternCategories={ categorySelectOptions }
 							selectedStyle={ selectedStyle }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
@@ -1014,6 +753,8 @@ function PatternLibrary( {
 							previewMode={ savedPreviewMode }
 							imageCollection={ imageCollection }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
+							isLoadingAI={ isLoadingAI }
+							useImageReplace={ selectedReplaceImages }
 						/>
 					) }
 				</>

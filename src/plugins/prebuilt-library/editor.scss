@@ -368,6 +368,9 @@ button.components-button.kb-category-button {
 		max-width: 1500px;
 	}
 }
+button.components-button.kb-reload-context-confirm.has-icon svg {
+    margin-left: 5px;
+}
 // DEV Prebuilt Library
 .kt-prebuilt-sidebar.kb-section-sidebar {
 	margin-top: -80px;
@@ -1141,14 +1144,27 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 }
 h2.components-heading.kb-patterns-banner-notice {
     font-size: 14px;
-    background: #1B8F6D;
-    color: white;
+    background: #e5f2ff;
+	color:var(--kadence-ui-color);
     text-align: center;
     margin: 48px;
-    border-radius: 2px;
+    border-radius: 0px;
 	a {
 		color:white;
 	}
+}
+h2.components-heading.kb-patterns-banner-notice.ai-failed-loading {
+	background: #fff4e5;
+	color:#e68400;
+}
+.kb-pattern-error-wrapper {
+    padding: 2em;
+}
+.kb-pattern-error-wrapper h2 {
+    padding: 1em;
+    margin: 0;
+    background: #ffeee5;
+    color: #e64e00;
 }
 .kb-pattern-requires-pro-item-wrap.block-editor-block-preview__container {
     min-height: 180px;

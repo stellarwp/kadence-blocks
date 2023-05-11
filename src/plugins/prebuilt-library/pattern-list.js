@@ -96,14 +96,42 @@ function LoadingHeader() {
 			className="kb-patterns-banner-notice"
 		>
 			<Spinner />
-			{ __( 'Loading Content.', 'kadence Blocks' ) }
+			{ __( 'Loading AI Content.', 'kadence Blocks' ) }
+		</Heading>
+	);
+}
+
+function LoadingFailedHeader( type ) {
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice ai-failed-loading"
+		>
+			{ 'reload' === type ? __( 'AI Content Failed to Load, Please reload this browser window.', 'kadence Blocks' ) : __( 'AI Content Failed to Load.', 'kadence Blocks' ) }
 		</Heading>
 	);
 }
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, aiContext, aiContent, contextTab, imageCollection } ) {
-	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
+function PatternList( {
+	patterns,
+	filterValue,
+	selectedCategory,
+	selectedStyle = 'light',
+	breakpointCols,
+	onSelect,
+	previewMode = 'iframe',
+	selectedFontSize,
+	aiContext,
+	aiContent,
+	contextTab,
+	imageCollection,
+	isLoadingAI,
+	useImageReplace,
+ } ) {
+	const [ failedAI, setFailedAI ] = useState( false );
+	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
@@ -135,14 +163,13 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			temp['imageHeight'] = patterns[key].imageH;
 			temp['id'] = patterns[key].id;
 			temp['slug'] = patterns[key].slug;
-			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
 			temp['contexts'] = patterns[key].contexts ? Object.keys( patterns[key].contexts ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
 			if ( patterns[key]?.html) {
 				temp['html'] = patterns[key].html;
 			}
-			temp['content'] = tempContent;
+			temp['content'] = patterns[key]?.content || '';
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['proRender'] = false;
@@ -153,14 +180,18 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 	}, [ patterns ] );
 	const filteredBlockPatterns = useMemo( () => {
 		if ( contextTab === 'context' ) {
-			console.log( aiContext );
-			if ( ! aiContent?.[aiContext]?.content ){
-				setIsLoadingAI( true );
-				console.log( 'no ai content' );
+			if ( isLoadingAI ){
+				console.log( 'Loading AI Content' );
+				setFailedAI( false );
 				return [];
-			} else if ( isLoadingAI ){
-				console.log( 'done loading ai' );
-				setIsLoadingAI( false );
+			} else if ( aiContent?.[aiContext] === 'failed' ){
+				console.log( 'AI Content has failed' );
+				setFailedAI( true );
+				setFailedAIType( 'general' );
+			}else if ( aiContent?.[aiContext] === 'failedReload' ){
+				console.log( 'AI Content has failed, reload page required.' );
+				setFailedAI( true );
+				setFailedAIType( 'reload' );
 			}
 		}
 		let allPatterns = thePatterns;
@@ -174,15 +205,31 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 				pattern.contexts?.includes( aiContext )
 			);
 		}
-		if ( contextTab === 'context' ) {
-			let variation = 1;
+		if ( useImageReplace === 'all' && imageCollection ) {
+			let variation = 0;
 			allPatterns = allPatterns.map( ( item, index ) => {
-				if ( variation === 4 ) {
-					variation = 1;
+				if ( variation === 11 ) {
+					variation = 0;
+				}
+				if ( item?.html ) {
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+				} else {
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+				}
+				variation ++;
+				return item;
+			} );
+		}
+		if ( contextTab === 'context' ) {
+			let variation = 0;
+			allPatterns = allPatterns.map( ( item, index ) => {
+				if ( variation === 11 ) {
+					variation = 0;
 				}
 				if ( item?.html) {
 					item['html'] = replaceContent( item.html, aiContent, item.categories, aiContext, variation );
-					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
+					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
 				} else {
 					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
 				}
@@ -191,7 +238,7 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			} );
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, thePatterns, aiContent, aiContext, contextTab ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContent, aiContext, contextTab, imageCollection, isLoadingAI, useImageReplace ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );
@@ -338,6 +385,9 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						selectedCategory={ selectedCategory }
 					/>
 				) } */}
+				{ contextTab === 'context' && failedAI && (
+					<LoadingFailedHeader type={ failedAIType } />
+				) }
 				{ contextTab === 'context' && isLoadingAI && (
 					<LoadingHeader />
 				) }

@@ -123,7 +123,6 @@ function PageList( {
 	pages,
 	filterValue,
 	selectedCategory,
-	patternCategories,
 	selectedStyle = 'light',
 	breakpointCols,
 	onSelect

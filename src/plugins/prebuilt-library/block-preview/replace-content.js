@@ -93,6 +93,36 @@ export default function replaceContent( content, aiContent, categories, context,
 				content = content.replace( /Call to Action/g, media_aiContent?.button?.short );
 			}
 			break;
+		case "accordion":
+			const accordion_aiContent = contextAI.find( x => x.id === 'accordion-' + context );
+			if ( ! accordion_aiContent ) {
+				return content;
+			}
+			// Headline.
+			if ( accordion_aiContent?.heading?.medium ) {
+				content = content.replace( /A brief headline here will add context for the section/g, accordion_aiContent?.heading?.medium );
+			}
+			if ( accordion_aiContent?.heading?.short ) {
+				content = content.replace( /Add a short headline/g, accordion_aiContent?.heading?.short );
+			}
+			// Paragraph
+			if ( accordion_aiContent?.sentence?.medium ) {
+				content = content.replace( /Use this space to provide your website visitors with a brief description on what to expect before clicking on a section title./g, accordion_aiContent?.sentence?.medium );
+			}
+			// Accordion
+			if ( accordion_aiContent?.accordion ) {
+				for (let index = 0; index < accordion_aiContent?.accordion.length; index++) {
+					// Title.
+					if ( accordion_aiContent?.accordion?.[index]?.['title-medium'] ) {
+						content = content.replace( "Add a section title that is relevant for your readers.", accordion_aiContent?.accordion?.[index]?.['title-medium']);
+					}
+					// Paragraph.
+					if ( accordion_aiContent?.accordion?.[index]?.['paragraph-medium'] ) {
+						content = content.replace( "By default, this panel is concealed and appears when the user clicks on the section title. Input relevant information about its title using paragraphs or bullet points. Accordions can enhance the user experience when utilized effectively. They allow users to choose what they want to read and disregard the rest. Accordions are often utilized for frequently asked questions (FAQs).", accordion_aiContent?.accordion?.[index]?.['paragraph-medium'])
+					}
+				}
+			}
+			break;
 		case "cards":
 			const cards_aiContent = contextAI.find( x => x.id === 'cards-' + context );
 			if ( ! cards_aiContent ) {
