@@ -31,9 +31,6 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 	const [ tabletFieldBorderStyle, setTabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
 	const [ mobileFieldBorderStyle, setMobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
 
-	console.log( "fieldBorderStyle" );
-	console.log( fieldBorderStyle );
-
 	const saveStyle = ( value ) => {
 		setMetaAttribute( { ...style, ...value }, 'style');
 	}
@@ -601,7 +598,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				value={ [ fieldBorderStyle ] }
 				tabletValue={tabletFieldBorderStyle}
 				mobileValue={mobileFieldBorderStyle}
-				onChange={( value ) => { setFieldBorderStyle( value[0] ); console.log( "value[0]" );console.log( value[0] ); } }
+				onChange={( value ) => setFieldBorderStyle( value[0] ) }
 				onChangeTablet={( value ) => setTabletFieldBorderStyle( value[0] )}
 				onChangeMobile={( value ) => setMobileFieldBorderStyle( value[0] )}
 			/>
@@ -615,7 +612,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				onChangeMobile={( value ) => setMobileFieldBorderRadius( value )}
 				unit={fieldBorderRadiusUnit}
 				units={[ 'px', 'em', 'rem', '%' ]}
-				onUnit={( value ) => setFieldBorderRadiusUnit( value )}
+				onUnit={( value ) => setFieldBorderRadiusUnit( value ) }
 				max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
 				step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
 				min={ 0 }

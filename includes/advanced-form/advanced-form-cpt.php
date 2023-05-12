@@ -719,12 +719,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'string',
+				'type'          => 'object',
 				'default'       => "px",
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'string',
-						'properties' => "px",
+						'properties' => "",
 					),
 				),
 			)
@@ -736,7 +736,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'string',
+				'type'          => 'object',
 				'default'       => array(
 					'top' => array( '', '', '' ),
 					'right' => array( '', '', '' ),
@@ -765,7 +765,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'string',
+				'type'          => 'object',
 				'default'       => array(
 					'top' => array( '', '', '' ),
 					'right' => array( '', '', '' ),
@@ -794,7 +794,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'string',
+				'type'          => 'object',
 				'default'       => array(
 					'top' => array( '', '', '' ),
 					'right' => array( '', '', '' ),
