@@ -16,7 +16,8 @@ import { collectionsHelper } from './utils/collections-helper';
 import './kadence-ai-wizard.scss';
 
 export function AiWizard( {
-	onClose,
+	photographyOnly = false,
+	onClose
 } ) {
 	const [ wizardData, setWizardData ] = useState();
 	//const [ wizardOpen, setWizardOpen ] = useState(false);
@@ -44,7 +45,11 @@ export function AiWizard( {
 		<>
 			{ ( wizardData && ! loading) && (
 				<KadenceAiProvider value={ wizardData }>
-					<KadenceAiWizard loading={ loading } handleWizardClose={ onClose }/>
+					<KadenceAiWizard
+						loading={ loading }
+						handleWizardClose={ onClose }
+						photographyOnly={ photographyOnly }
+					/>
 				</KadenceAiProvider>
 			) }
 		</>

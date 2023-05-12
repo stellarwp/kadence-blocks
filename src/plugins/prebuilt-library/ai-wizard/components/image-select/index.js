@@ -62,7 +62,7 @@ export function ImageSelect(props) {
 
 		frame = media({
 			title,
-			multiple: true,
+			multiple: 'add',
 			button: {
 				text: mediaButtonText || 'Use these images'
 			}

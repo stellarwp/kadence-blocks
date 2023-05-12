@@ -974,7 +974,7 @@ button.components-button.kb-trigger-ai.has-icon {
     height: 100%;
     max-height: calc(95vh - 284px);
 }
-button.components-button.kadence-ai-wizard-button.has-icon {
+button.components-button.kadence-ai-wizard-button {
 	margin-bottom: 24px;
 	text-decoration: underline;
 	font-weight: 500;
@@ -990,6 +990,12 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 	color: white;
 	border-radius: 3px;
 	width: auto !important;
+}
+.components-toggle-control.kb-toggle-align-right {
+	--wp-components-color-accent:var(--kadence-ui-color, #0073E6);
+}
+.components-toggle-control.kb-toggle-align-right .components-base-control__field .components-flex {
+    flex-direction: row-reverse;
 }
 .kt-prebuilt-sidebar.kb-section-sidebar {
 	.kb-prebuilt-sidebar-header-wrap {

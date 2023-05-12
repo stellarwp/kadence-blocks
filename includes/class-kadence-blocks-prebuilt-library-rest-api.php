@@ -422,6 +422,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					$image_data = $this->get_image_info( $image_library, $image_url );
 					if ( $image_data ) {
 						$image['alt']  = $image_data['alt'];
+						$image['photographer']  = $image_data['photographer'];
+						$image['photographer_url']  = $image_data['photographer_url'];
+						$image['alt']  = $image_data['alt'];
 						$image['title'] = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
 					}
 				}
@@ -1307,6 +1310,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if (  ! empty( $image_data['alt'] ) ) {
 			update_post_meta( $post_id, '_wp_attachment_image_alt', $image_data['alt'] );
 		}
+		if (  ! empty( $image_data['photographer'] ) ) {
+			update_post_meta( $post_id, '_pexels_photographer', $image_data['photographer'] );
+		}
+		if (  ! empty( $image_data['photographer_url'] ) ) {
+			update_post_meta( $post_id, '_pexels_photographer_url', $image_data['photographer_url'] );
+		}
 		update_post_meta( $post_id, '_kadence_blocks_image_hash', sha1( $image_data['url'] ) );
 
 		return array(
@@ -1327,7 +1336,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					if ($size['src'] === $target_src) {
 						return array(
 							'alt' => $image['alt'],
-							'photographer' => $image['photographer']
+							'photographer' => $image['photographer'],
+							'photographer_url' => $image['photographer_url']
 						);
 						break;
 					}

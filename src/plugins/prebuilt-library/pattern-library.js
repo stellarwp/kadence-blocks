@@ -30,7 +30,7 @@ import { addQueryArgs } from '@wordpress/url';
 import {
 	Component,
 } from '@wordpress/element';
-import { debounce } from 'lodash';
+import { debounce, isEqual } from 'lodash';
 import {
 	Button,
 	TextControl,
@@ -101,7 +101,10 @@ function PatternLibrary( {
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
 	const [ isLoadingAI, setIsLoadingAI ] = useState( false );
-	const [ isWizardVisible, setIsWizardVisible ] = useState( false );
+	const [ wizardState, setWizardState ] = useState( {
+		visible: false,
+		photographyOnly: false
+	} );
 	const [ isError, setIsError ] = useState( false );
 	const [ isErrorType, setIsErrorType ] = useState( 'general' );
 	const [ style, setStyle ] = useState( '' );
@@ -119,7 +122,10 @@ function PatternLibrary( {
         setIsContextReloadVisible( ( state ) => ! state );
     };
 	const closeAIWizard = () => {
-		setIsWizardVisible( false );
+		setWizardState( {
+			visible: false,
+			photographyOnly: false
+		} );
 		triggerAIDataReload( ( state ) => ! state );
 	};
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
@@ -233,7 +239,9 @@ function PatternLibrary( {
 		}
 	}, [reload, selectedSubTab] );
 	const forceRefreshLibrary = () => {
+		console.log( 'Force Refresh Library start');
 		if ( ! isLoading && patterns ) {
+			console.log( 'Force Refresh Library');
 			setPatterns( JSON.parse(JSON.stringify(patterns)) );
 		}
 		if ( ! isLoading && pages ) {
@@ -302,10 +310,11 @@ function PatternLibrary( {
 	}
 	async function getImageCollection() {
 		const response = await getCollectionByIndustry( aIUserData );
-		const data = response ? response : {};
-		console.log( 'Image Collection' );
-		console.log( data );
-		setImageCollection(response);
+		if ( ! isEqual( response, imageCollection ) ) {
+			console.log( 'Image Collection Updating' );
+			setImageCollection(response);
+			forceRefreshLibrary();
+		}
 	}
 	useEffect(() => {
 		console.log( 'triggered recheck' );
@@ -381,39 +390,57 @@ function PatternLibrary( {
 										className='kadence-ai-wizard-button'
 										iconPosition='right'
 										icon={ aiIcon }
-										text={ __('Update My Information', 'kadence') }
+										text={ __('Update My Information', 'kadence-blocks') }
 										onClick={ () => {
 											setIsVisible( false );
-											setIsWizardVisible( true );
+											setWizardState( {
+												visible: true,
+												photographyOnly: false
+											} );
 										}}
 									/>
+									{ selectedReplaceImages !== 'none' && (
+										<Button
+											className='kadence-ai-wizard-button'
+											text={ __('Update Image Selection', 'kadence-blocks') }
+											onClick={ () => {
+												setIsVisible( false );
+												setWizardState( {
+													visible: true,
+													photographyOnly: true
+												} );
+											}}
+										/>
+									) }
 									<ToggleControl
-										label={__( 'Disable Custom Images', 'kadence-blocks' )}
-										checked={selectedReplaceImages === 'none'}
-										help={__('If disabled you will import and preview only wireframe images.')}
+										className='kb-toggle-align-right'
+										label={__( 'Custom Image Selection', 'kadence-blocks' )}
+										checked={selectedReplaceImages !== 'none'}
+										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
 										onChange={( value ) => {
 											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['replaceImages'] = ( value ? 'none' : 'all' );
+											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
 											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 											setPatterns( JSON.parse(JSON.stringify(patterns)) );
-											setReplaceImages( ( value ? 'none' : 'all' ) );
+											setReplaceImages( ( value ? 'all' : 'none' ) );
 										}}
 									/>
 									<ToggleControl
-										label={__( 'Disable Live Preview', 'kadence-blocks' )}
-										checked={selectedPreviewMode === 'image'}
-										help={__('If disabled you will not see a live preview of how the patterns will look on your site.')}
+										className='kb-toggle-align-right'
+										label={__( 'Live Preview', 'kadence-blocks' )}
+										checked={selectedPreviewMode !== 'image'}
+										help={__('If disabled you will not see a live preview of how the patterns will look on your site.', 'kadence-blocks')}
 										onChange={( value ) => {
 											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['previewMode'] = value ? 'image' : 'iframe';
+											tempActiveStorage['previewMode'] = value ? 'iframe' : 'image';
 											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setPreviewMode( ( value ? 'image' : 'iframe' ) );
+											setPreviewMode( ( value ? 'iframe' : 'image' ) );
 										}}
 									/>
 								</Popover>
 							) }
-							{ isWizardVisible && (
-								<AiWizard onClose={ closeAIWizard } />
+							{ wizardState.visible && (
+								<AiWizard onClose={ closeAIWizard } photographyOnly={ wizardState.photographyOnly } />
 							) }
 						</div>
 					</div>
