@@ -30,7 +30,7 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 * @var string
 	 */
 	protected $block_name = 'text';
-	
+
 
 	/**
 	 * Instance Control
@@ -43,6 +43,23 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 		return self::$instance;
 	}
 
+	/**
+	 * Builds CSS for block.
+	 *
+	 * @param array  $attributes the blocks attributes.
+	 * @param string $css the css class for blocks.
+	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 */
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $unique_style_id );
+
+		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
+		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
+
+		return $css->css_output();
+	}
 	/**
 	 * Return dynamically generated HTML for block
 	 *
