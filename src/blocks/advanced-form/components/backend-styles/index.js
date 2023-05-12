@@ -13,13 +13,13 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form-${id} .kb-adv-form-field {
+			.wp-block-kadence-advanced-form${id} .kb-adv-form-field {
 				margin-bottom: ${( previewRowGap ? previewRowGap : undefined )};
 			}
 
-			.wp-block-kadence-advanced-form-${id} input:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form-${id} select:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form-${id} textarea {
+			.wp-block-kadence-advanced-form${id} input:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${id} select:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${id} textarea {
 
 				${ fieldStyles.fontSize ? 'font-size:' + fieldStyles.fontSize + ';' : ''}
 				${ fieldStyles.lineHeight ? 'line-height:' + fieldStyles.lineHeight + ';' : '' }
@@ -54,21 +54,21 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 				box-shadow: ${fieldStyles.boxShadow};
 		}
 
-		.wp-block-kadence-advanced-form-${id} input::placeholder,
-		.wp-block-kadence-advanced-form-${id} select::placeholder,
-		.wp-block-kadence-advanced-form-${id} textarea::placeholder {
+		.wp-block-kadence-advanced-form${id} input::placeholder,
+		.wp-block-kadence-advanced-form${id} select::placeholder,
+		.wp-block-kadence-advanced-form${id} textarea::placeholder {
 			color: ${fieldStyles.placeholderColor};
 		}
 
-		.wp-block-kadence-advanced-form-${id} input[type="radio"]{
+		.wp-block-kadence-advanced-form${id} input[type="radio"]{
 			border-color: ${fieldStyles.borderColor};
 		}
 
-		.wp-block-kadence-advanced-form-${id} input[type="file"]{
+		.wp-block-kadence-advanced-form${id} input[type="file"]{
 			display: block
 		}
 
-		.wp-block-kadence-advanced-form-${id} input[type="checkbox"]{
+		.wp-block-kadence-advanced-form${id} input[type="checkbox"]{
 			border-color: ${fieldStyles.borderColor};
 		}
 
@@ -81,7 +81,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form-${id} .kb-advanced-form-label {
+			.wp-block-kadence-advanced-form${id} .kb-advanced-form-label {
 				font-size: ${labelStyles.fontSize};
 				line-height: ${labelStyles.lineHeight};
 				font-weight: ${labelStyles.fontWeight};
@@ -106,7 +106,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 
 			}
 
-			.wp-block-kadence-advanced-form-${id} .kadence-label .required {
+			.wp-block-kadence-advanced-form${id} .kadence-label .required {
 				color: ${fieldStyle.requiredColor};
 			}
 
@@ -118,7 +118,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form-${id} .kb-adv-form-help {
+			.wp-block-kadence-advanced-form${id} .kb-adv-form-help {
 				${helpStyles.fontSize ? 'font-size: ' + helpStyles.fontSize + ';' : ''}
 				line-height: ${helpStyles.lineHeight};
 				font-weight: ${helpStyles.fontWeight};
@@ -150,7 +150,7 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form-${id} .kb-advanced-form-submit {
+			.wp-block-kadence-advanced-form${id} .kb-advanced-form-submit {
 
 			}
 

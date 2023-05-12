@@ -584,7 +584,7 @@ export function EditInner( props ) {
 				}
 
 			</InspectorControls>
-			<BackendStyles id={id} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
+			<BackendStyles id={uniqueID} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
 
 			<div {...innerBlocksProps} />
 			<SpacingVisualizer
