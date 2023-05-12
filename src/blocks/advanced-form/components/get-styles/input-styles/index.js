@@ -54,21 +54,18 @@ export default ( previewDevice, parentFieldStyle, inputFont, useFormMeta ) => {
 
 	styles.boxShadow = ( undefined !== parentFieldStyle.boxShadow && undefined !== parentFieldStyle.boxShadow[ 0 ] && parentFieldStyle.boxShadow[ 0 ] ? ( undefined !== parentFieldStyle.boxShadow[ 7 ] && parentFieldStyle.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== parentFieldStyle.boxShadow[ 3 ] ? parentFieldStyle.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 4 ] ? parentFieldStyle.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 5 ] ? parentFieldStyle.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 6 ] ? parentFieldStyle.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== parentFieldStyle.boxShadow[ 1 ] ? parentFieldStyle.boxShadow[ 1 ] : '#000000' ), ( undefined !== parentFieldStyle.boxShadow[ 2 ] ? parentFieldStyle.boxShadow[ 2 ] : 1 ) ) : undefined );
 
-	let inputBG, inputGrad, inputGrad2;
-
-	if ( undefined !== parentFieldStyle.backgroundType && 'gradient' === parentFieldStyle.backgroundType ) {
-		inputGrad = ( undefined === parentFieldStyle.background ? 'rgba(255,255,255,0)' : KadenceColorOutput( parentFieldStyle.background, ( parentFieldStyle.backgroundOpacity !== undefined ? parentFieldStyle.backgroundOpacity : 1 ) ) );
-		inputGrad2 = ( undefined !== parentFieldStyle.gradient && undefined !== parentFieldStyle.gradient[ 0 ] && '' !== parentFieldStyle.gradient[ 0 ] ? KadenceColorOutput( parentFieldStyle.gradient[ 0 ], ( undefined !== parentFieldStyle.gradient && parentFieldStyle.gradient[ 1 ] !== undefined ? parentFieldStyle.gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== parentFieldStyle.gradient && parentFieldStyle.gradient[ 1 ] !== undefined ? parentFieldStyle.gradient[ 1 ] : 1 ) ) );
-		if ( undefined !== parentFieldStyle.gradient && 'radial' === parentFieldStyle.gradient[ 4 ] ) {
-			inputBG = `radial-gradient(at ${ ( undefined === parentFieldStyle.gradient[ 6 ] ? 'center center' : parentFieldStyle.gradient[ 6 ] ) }, ${ inputGrad } ${ ( undefined === parentFieldStyle.gradient[ 2 ] ? '0' : parentFieldStyle.gradient[ 2 ] ) }%, ${ inputGrad2 } ${ ( undefined === parentFieldStyle.gradient[ 3 ] ? '100' : parentFieldStyle.gradient[ 3 ] ) }%)`;
-		} else if ( undefined === parentFieldStyle.gradient || 'radial' !== parentFieldStyle.gradient[ 4 ] ) {
-			inputBG = `linear-gradient(${ ( undefined !== parentFieldStyle.gradient && undefined !== parentFieldStyle.gradient[ 5 ] ? parentFieldStyle.gradient[ 5 ] : '180' ) }deg, ${ inputGrad } ${ ( undefined !== parentFieldStyle.gradient && undefined !== parentFieldStyle.gradient[ 2 ] ? parentFieldStyle.gradient[ 2 ] : '0' ) }%, ${ inputGrad2 } ${ ( undefined !== parentFieldStyle.gradient && undefined !== parentFieldStyle.gradient[ 3 ] ? parentFieldStyle.gradient[ 3 ] : '100' ) }%)`;
-		}
+	if ( undefined !== parentFieldStyle.backgroundType && 'gradient' === parentFieldStyle.backgroundType && undefined !== parentFieldStyle.gradient && '' !== parentFieldStyle.gradient ) {
+		styles.background = parentFieldStyle.gradient;
 	} else {
-		inputBG = ( undefined === parentFieldStyle.background ? undefined : KadenceColorOutput( parentFieldStyle.background, ( parentFieldStyle.backgroundOpacity !== undefined ? parentFieldStyle.backgroundOpacity : 1 ) ) );
+		styles.background = ( undefined === parentFieldStyle.background ? undefined : KadenceColorOutput( parentFieldStyle.background, ( parentFieldStyle.backgroundOpacity !== undefined ? parentFieldStyle.backgroundOpacity : 1 ) ) );
 	}
 
- 	styles.background = ( undefined !== inputBG ? inputBG : undefined );
+	if ( undefined !== parentFieldStyle.backgroundActiveType && 'gradient' === parentFieldStyle.backgroundActiveType && undefined !== parentFieldStyle.gradientActive && '' !== parentFieldStyle.gradientActive ) {
+		styles.backgroundActive = parentFieldStyle.gradientActive;
+	} else {
+		styles.backgroundActive = ( undefined === parentFieldStyle.backgroundActive ? undefined : KadenceColorOutput( parentFieldStyle.backgroundActive, ( parentFieldStyle.backgroundActiveOpacity !== undefined ? parentFieldStyle.backgroundActiveOpacity : 1 ) ) );
+	}
+
 
 	return styles;
 };

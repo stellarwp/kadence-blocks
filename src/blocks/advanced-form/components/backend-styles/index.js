@@ -29,10 +29,11 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${ fieldStyles.fieldFont?.style ? 'font-style:' + fieldStyles.fieldFont.style + ';' : '' }
 				${ fieldStyles.fieldFont?.weight ? 'font-weight:' + fieldStyles.fieldFont.weight + ';' : '' }
 
-				padding-top: ${fieldStyles.paddingTop};
-				padding-right: ${fieldStyles.paddingRight};
-				padding-bottom: ${fieldStyles.paddingBottom};
-				padding-left: ${fieldStyles.paddingLeft};
+				${ fieldStyles.paddingTop ? 'padding-top:' + fieldStyles.paddingTop + ';' : '' }
+				${ fieldStyles.paddingRight ? 'padding-right:' + fieldStyles.paddingRight + ';' : '' }
+				${ fieldStyles.paddingBottom ? 'padding-bottom:' + fieldStyles.paddingBottom + ';' : '' }
+				${ fieldStyles.paddingLeft ? 'padding-left:' + fieldStyles.paddingLeft + ';' : '' }
+
 				background: ${fieldStyles.background};
 
 				border-top-left-radius: ${fieldStyles.borderRadiusTop}${fieldStyles.borderRadiusUnit};
@@ -52,6 +53,12 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 
 				color: ${fieldStyles.color};
 				box-shadow: ${fieldStyles.boxShadow};
+		}
+
+		.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} select:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} textarea:focus {
+				background: ${fieldStyles.backgroundActive};
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input::placeholder,

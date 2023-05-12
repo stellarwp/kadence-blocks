@@ -146,14 +146,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_color_output( $field_style, 'color', 'color' );
 
 		if ( isset( $field_style['backgroundType'] ) && $field_style['backgroundType'] === 'gradient' ) {
-			$bg1 = ( ! isset( $field_style['background'] ) || 'transparent' === $field_style['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $field_style['background'], ( isset( $field_style['backgroundOpacity'] ) && is_numeric( $field_style['backgroundOpacity'] ) ? $field_style['backgroundOpacity'] : 1 ) ) );
-			$bg2 = ( isset( $field_style['gradient'][0] ) && ! empty( $field_style['gradient'][0] ) ? $css->render_color( $field_style['gradient'][0], ( isset( $field_style['gradient'][1] ) && is_numeric( $field_style['gradient'][1] ) ? $field_style['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $field_style['gradient'][1] ) && is_numeric( $field_style['gradient'][1] ) ? $field_style['gradient'][1] : 1 ) ) );
-
-			if ( isset( $field_style['gradient'][4] ) && 'radial' === $field_style['gradient'][4] ) {
-				$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $field_style['gradient'][6] ) && ! empty( $field_style['gradient'][6] ) ? $field_style['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $field_style['gradient'][2] ) && is_numeric( $field_style['gradient'][2] ) ? $field_style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $field_style['gradient'][3] ) && is_numeric( $field_style['gradient'][3] ) ? $field_style['gradient'][3] : '100' ) . '%)' );
-			} elseif ( ! isset( $field_style['gradient'][4] ) || 'radial' !== $field_style['gradient'][4] ) {
-				$css->add_property( 'background', 'linear-gradient(' . ( isset( $field_style['gradient'][5] ) && ! empty( $field_style['gradient'][5] ) ? $field_style['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $field_style['gradient'][2] ) && is_numeric( $field_style['gradient'][2] ) ? $field_style['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $field_style['gradient'][3] ) && is_numeric( $field_style['gradient'][3] ) ? $field_style['gradient'][3] : '100' ) . '%)' );
-			}
+			$css->add_property( 'background', $field_style['gradient'] );
 		} else {
 			$css->render_color_output( $field_style, 'background', 'background', 'backgroundOpacity' );
 		}
@@ -164,6 +157,22 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $field_style, 'padding', 'padding', [ 'desktop_key' => 'deskPadding' ] );
 
+		$css->set_selector(
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=text]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=tel]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=number]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=date]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=time]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' select:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea:focus'
+		);
+
+		if ( isset( $field_style['backgroundActiveType'] ) && $field_style['backgroundActiveType'] === 'gradient' ) {
+			$css->add_property( 'background', $field_style['gradientActive'] );
+		} else {
+			$css->render_color_output( $field_style, 'background', 'backgroundActive', 'backgroundActiveOpacity' );
+		}
 		/*
 		 * Field Placeholder text
 		 */
