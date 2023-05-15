@@ -730,7 +730,7 @@
 	},
 	"borderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -740,7 +740,7 @@
 	},
 	"tabletBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -750,7 +750,7 @@
 	},
 	"mobileBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -786,6 +786,7 @@
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

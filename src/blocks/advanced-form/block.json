@@ -9,7 +9,8 @@
 	"className": true,
 	"reusable": false,
 	"anchor": true,
-	"lock": false
+	"lock": false,
+    "kbMetadata": true
   },
   "textdomain": "kadence-blocks",
   "keywords": [
