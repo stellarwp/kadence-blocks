@@ -17,7 +17,7 @@ export default ( previewDevice, parentFieldStyle, inputFont, useFormMeta ) => {
 
 	let styles = {};
 
-	let lineHeight = getPreviewSize( previewDevice, parentFieldStyle.lineHeight[0], parentFieldStyle.lineHeight[1], parentFieldStyle.lineHeight[2] );
+	let lineHeight = getPreviewSize( previewDevice, parentFieldStyle?.lineHeight?.[0], parentFieldStyle?.lineHeight?.[1], parentFieldStyle?.lineHeight?.[2] );
 	let lineHeightType = get( parentFieldStyle, 'lineType', 'px');
 	styles.lineHeight = lineHeight + lineHeightType;
 
@@ -25,16 +25,16 @@ export default ( previewDevice, parentFieldStyle, inputFont, useFormMeta ) => {
 	styles.fontSize = getFontSizeOptionOutput( fontSize, inputFont.sizeType );
 	styles.fieldFont = inputFont;
 
-	styles.previewRowGap = getPreviewSize( previewDevice, ( undefined !== parentFieldStyle.rowGap && '' !== parentFieldStyle.rowGap ? parentFieldStyle.rowGap + 'px' : '' ), ( undefined !== parentFieldStyle.tabletRowGap && '' !== parentFieldStyle.tabletRowGap ? parentFieldStyle.tabletRowGap + 'px' : '' ), ( undefined !== parentFieldStyle.mobileRowGap && '' !== parentFieldStyle.mobileRowGap ? parentFieldStyle.mobileRowGap + 'px' : '' ) );
-	styles.previewGutter = getPreviewSize( previewDevice, ( undefined !== parentFieldStyle.gutter && '' !== parentFieldStyle.gutter ? parentFieldStyle.gutter : '' ), ( undefined !== parentFieldStyle.tabletGutter && '' !== parentFieldStyle.tabletGutter ? parentFieldStyle.tabletGutter : '' ), ( undefined !== parentFieldStyle.mobileGutter && '' !== parentFieldStyle.mobileGutter ? parentFieldStyle.mobileGutter : '' ) );
+	styles.previewRowGap = getPreviewSize( previewDevice, ( undefined !== parentFieldStyle?.rowGap && '' !== parentFieldStyle?.rowGap ? parentFieldStyle?.rowGap + 'px' : '' ), ( undefined !== parentFieldStyle?.tabletRowGap && '' !== parentFieldStyle?.tabletRowGap ? parentFieldStyle?.tabletRowGap + 'px' : '' ), ( undefined !== parentFieldStyle?.mobileRowGap && '' !== parentFieldStyle?.mobileRowGap ? parentFieldStyle?.mobileRowGap + 'px' : '' ) );
+	styles.previewGutter = getPreviewSize( previewDevice, ( undefined !== parentFieldStyle?.gutter && '' !== parentFieldStyle?.gutter ? parentFieldStyle?.gutter : '' ), ( undefined !== parentFieldStyle?.tabletGutter && '' !== parentFieldStyle?.tabletGutter ? parentFieldStyle?.tabletGutter : '' ), ( undefined !== parentFieldStyle?.mobileGutter && '' !== parentFieldStyle?.mobileGutter ? parentFieldStyle?.mobileGutter : '' ) );
 
-	styles.paddingTop = ( 'custom' === parentFieldStyle.size && '' !== parentFieldStyle.deskPadding[ 0 ] ? parentFieldStyle.deskPadding[ 0 ] + 'px' : undefined );
-	styles.paddingRight = ( 'custom' === parentFieldStyle.size && '' !== parentFieldStyle.deskPadding[ 1 ] ? parentFieldStyle.deskPadding[ 1 ] + 'px' : undefined );
-	styles.paddingBottom = ( 'custom' === parentFieldStyle.size && '' !== parentFieldStyle.deskPadding[ 2 ] ? parentFieldStyle.deskPadding[ 2 ] + 'px' : undefined );
-	styles.paddingLeft = ( 'custom' === parentFieldStyle.size && '' !== parentFieldStyle.deskPadding[ 3 ] ? parentFieldStyle.deskPadding[ 3 ] + 'px' : undefined );
+	styles.paddingTop = ( 'custom' === parentFieldStyle?.size && '' !== parentFieldStyle?.deskPadding[ 0 ] ? parentFieldStyle?.deskPadding[ 0 ] + 'px' : undefined );
+	styles.paddingRight = ( 'custom' === parentFieldStyle?.size && '' !== parentFieldStyle?.deskPadding[ 1 ] ? parentFieldStyle?.deskPadding[ 1 ] + 'px' : undefined );
+	styles.paddingBottom = ( 'custom' === parentFieldStyle?.size && '' !== parentFieldStyle?.deskPadding[ 2 ] ? parentFieldStyle?.deskPadding[ 2 ] + 'px' : undefined );
+	styles.paddingLeft = ( 'custom' === parentFieldStyle?.size && '' !== parentFieldStyle?.deskPadding[ 3 ] ? parentFieldStyle?.deskPadding[ 3 ] + 'px' : undefined );
 
-	styles.color = ( undefined !== parentFieldStyle.color ? KadenceColorOutput( parentFieldStyle.color ) : undefined );
-	styles.placeholderColor = ( undefined !== parentFieldStyle.placeholderColor ? KadenceColorOutput( parentFieldStyle.placeholderColor ) : undefined );
+	styles.color = ( undefined !== parentFieldStyle?.color ? KadenceColorOutput( parentFieldStyle?.color ) : undefined );
+	styles.placeholderColor = ( undefined !== parentFieldStyle?.placeholderColor ? KadenceColorOutput( parentFieldStyle?.placeholderColor ) : undefined );
 
 	styles.borderRadiusTop = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 0 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 0 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 0 ] : '' ) );
 	styles.borderRadiusRight = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 1 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 1 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 1 ] : '' ) );
@@ -52,18 +52,18 @@ export default ( previewDevice, parentFieldStyle, inputFont, useFormMeta ) => {
 	styles.borderBottom = getBorderStyle( previewDevice, 'bottom', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderLeft = getBorderStyle( previewDevice, 'left', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 
-	styles.boxShadow = ( undefined !== parentFieldStyle.boxShadow && undefined !== parentFieldStyle.boxShadow[ 0 ] && parentFieldStyle.boxShadow[ 0 ] ? ( undefined !== parentFieldStyle.boxShadow[ 7 ] && parentFieldStyle.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== parentFieldStyle.boxShadow[ 3 ] ? parentFieldStyle.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 4 ] ? parentFieldStyle.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 5 ] ? parentFieldStyle.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== parentFieldStyle.boxShadow[ 6 ] ? parentFieldStyle.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== parentFieldStyle.boxShadow[ 1 ] ? parentFieldStyle.boxShadow[ 1 ] : '#000000' ), ( undefined !== parentFieldStyle.boxShadow[ 2 ] ? parentFieldStyle.boxShadow[ 2 ] : 1 ) ) : undefined );
+	styles.boxShadow = ( undefined !== parentFieldStyle?.boxShadow && undefined !== parentFieldStyle?.boxShadow[ 0 ] && parentFieldStyle?.boxShadow[ 0 ] ? ( undefined !== parentFieldStyle?.boxShadow[ 7 ] && parentFieldStyle?.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== parentFieldStyle?.boxShadow[ 3 ] ? parentFieldStyle?.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle?.boxShadow[ 4 ] ? parentFieldStyle?.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== parentFieldStyle?.boxShadow[ 5 ] ? parentFieldStyle?.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== parentFieldStyle?.boxShadow[ 6 ] ? parentFieldStyle?.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== parentFieldStyle?.boxShadow[ 1 ] ? parentFieldStyle?.boxShadow[ 1 ] : '#000000' ), ( undefined !== parentFieldStyle?.boxShadow[ 2 ] ? parentFieldStyle?.boxShadow[ 2 ] : 1 ) ) : undefined );
 
-	if ( undefined !== parentFieldStyle.backgroundType && 'gradient' === parentFieldStyle.backgroundType && undefined !== parentFieldStyle.gradient && '' !== parentFieldStyle.gradient ) {
-		styles.background = parentFieldStyle.gradient;
+	if ( undefined !== parentFieldStyle?.backgroundType && 'gradient' === parentFieldStyle?.backgroundType && undefined !== parentFieldStyle?.gradient && '' !== parentFieldStyle?.gradient ) {
+		styles.background = parentFieldStyle?.gradient;
 	} else {
-		styles.background = ( undefined === parentFieldStyle.background ? undefined : KadenceColorOutput( parentFieldStyle.background, ( parentFieldStyle.backgroundOpacity !== undefined ? parentFieldStyle.backgroundOpacity : 1 ) ) );
+		styles.background = ( undefined === parentFieldStyle?.background ? undefined : KadenceColorOutput( parentFieldStyle?.background, ( parentFieldStyle?.backgroundOpacity !== undefined ? parentFieldStyle?.backgroundOpacity : 1 ) ) );
 	}
 
-	if ( undefined !== parentFieldStyle.backgroundActiveType && 'gradient' === parentFieldStyle.backgroundActiveType && undefined !== parentFieldStyle.gradientActive && '' !== parentFieldStyle.gradientActive ) {
-		styles.backgroundActive = parentFieldStyle.gradientActive;
+	if ( undefined !== parentFieldStyle?.backgroundActiveType && 'gradient' === parentFieldStyle?.backgroundActiveType && undefined !== parentFieldStyle?.gradientActive && '' !== parentFieldStyle?.gradientActive ) {
+		styles.backgroundActive = parentFieldStyle?.gradientActive;
 	} else {
-		styles.backgroundActive = ( undefined === parentFieldStyle.backgroundActive ? undefined : KadenceColorOutput( parentFieldStyle.backgroundActive, ( parentFieldStyle.backgroundActiveOpacity !== undefined ? parentFieldStyle.backgroundActiveOpacity : 1 ) ) );
+		styles.backgroundActive = ( undefined === parentFieldStyle?.backgroundActive ? undefined : KadenceColorOutput( parentFieldStyle?.backgroundActive, ( parentFieldStyle?.backgroundActiveOpacity !== undefined ? parentFieldStyle?.backgroundActiveOpacity : 1 ) ) );
 	}
 
 

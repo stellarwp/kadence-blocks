@@ -7,7 +7,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 	const labelStyles = GetLabelStyles( previewDevice, labelStyle );
 	const helpStyles = GetHelpStyles( previewDevice, helpStyle );
 
-	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle.rowGap && '' !== fieldStyle.rowGap ? fieldStyle.rowGap + 'px' : '' ), ( undefined !== fieldStyle.tabletRowGap && '' !== fieldStyle.tabletRowGap ? fieldStyle.tabletRowGap + 'px' : '' ), ( undefined !== fieldStyle.mobileRowGap && '' !== fieldStyle.mobileRowGap ? fieldStyle.mobileRowGap + 'px' : '' ) );
+	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.rowGap && '' !== fieldStyle?.rowGap ? fieldStyle?.rowGap + 'px' : '' ), ( undefined !== fieldStyle?.tabletRowGap && '' !== fieldStyle?.tabletRowGap ? fieldStyle?.tabletRowGap + 'px' : '' ), ( undefined !== fieldStyle?.mobileRowGap && '' !== fieldStyle?.mobileRowGap ? fieldStyle?.mobileRowGap + 'px' : '' ) );
 
 	const fieldCss = (
 		<style>
@@ -114,7 +114,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 			}
 
 			.wp-block-kadence-advanced-form${uniqueID} .kadence-label .required {
-				color: ${fieldStyle.requiredColor};
+				color: ${fieldStyle?.requiredColor};
 			}
 
 			`}
