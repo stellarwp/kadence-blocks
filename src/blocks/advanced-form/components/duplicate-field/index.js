@@ -33,13 +33,10 @@ export default function DuplicateField( { clientId, name, attributes } ) {
 					className="kb-duplicate-field"
 					icon={ duplicate }
 					onClick={ () => {
-						console.log( blockIndex );
-						console.log( name );
 						const latestAttributes = attributes;
 						latestAttributes.uniqueID = '';
 						latestAttributes.name = '';
 						const newBlock = createBlock( name, latestAttributes );
-						console.log( newBlock );
 						insertBlock( newBlock, blockIndex + 1, rootClientId );
 					} }
 					label={  __( 'Duplicate Field', 'kadence-blocks' ) }
