@@ -421,6 +421,9 @@
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterSlug",
+	"kadence/repeaterRow" 
   ]
 }
