@@ -431,7 +431,7 @@ class InlineTypographyControls extends Component {
 				<Dropdown
 					className="kt-popover-font-family-container components-dropdown-menu components-toolbar"
 					contentClassName="kt-popover-font-family"
-					position="top center"
+					placement="top"
 					renderToggle={ ( { isOpen, onToggle } ) => (
 						<Fragment>
 							<Button

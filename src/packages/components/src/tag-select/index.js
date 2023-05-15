@@ -11,7 +11,6 @@ import { useInstanceId } from '@wordpress/compose';
 import { range } from 'lodash';
 import {
 	Button,
-	DropdownMenu,
 	ToolbarGroup,
 } from '@wordpress/components';
 /**
@@ -45,6 +44,7 @@ export default function tagSelect( {
 	onChange,
 	value = '',
 	className = '',
+	isCollapsed = false,
 	ariaLabel = __( 'Change HTML Tag', 'kadence-blocks' ),
 	reset = false,
 	headingOnly = false,
@@ -140,6 +140,7 @@ export default function tagSelect( {
 		} ];
 	};
 	const headingOnlyOptions = range( tagLowLevel, tagHighLevel ).map( createhtmlTagControl );
+	const UIComponent = isCollapsed ? ToolbarDropdownMenu : ToolbarGroup;
 	return [
 		onChange && (
 			<div className={ `kb-tag-level-control components-base-control${ className ? ' ' + className : '' }`}>
@@ -166,8 +167,8 @@ export default function tagSelect( {
 					</div>
 				) }
 				<div className={ 'kadence-controls-content kb-tag-select-control-inner' }>
-					<ToolbarGroup
-						isCollapsed={false}
+					<UIComponent
+						isCollapsed={ isCollapsed}
 						label={ ariaLabel }
 						controls={ headingOnly ? headingOnlyOptions : headingOptions }
 					/>

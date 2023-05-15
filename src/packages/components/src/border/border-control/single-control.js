@@ -157,7 +157,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 						label={ __( 'Border Style', 'kadence-blocks' ) }
 						popoverProps={ {
 							className: 'border-control-style-select__popover',
-							position: 'bottom left',
+							placement: 'bottom',
 						} }
 					>
 						{ ( { onClose } ) => (

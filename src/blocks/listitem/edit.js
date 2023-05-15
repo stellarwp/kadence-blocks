@@ -47,7 +47,7 @@ import {
     RangeControl,
     ToggleControl,
     SelectControl,
-    Toolbar,
+    ToolbarGroup,
     ToolbarButton
 } from '@wordpress/components';
 
@@ -118,7 +118,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
     return (
         <div {...blockProps}>
             <BlockControls>
-                <Toolbar>
+                <ToolbarGroup group="add-indent">
 
                     <ToolbarButton
                         icon={formatOutdent}
@@ -135,7 +135,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                         onClick={() => onMoveRight()}
                     />
 
-                </Toolbar>
+                </ToolbarGroup>
             </BlockControls>
             <InspectorControls>
                 <SelectParentBlock

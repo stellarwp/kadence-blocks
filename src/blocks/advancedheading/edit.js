@@ -90,6 +90,7 @@ import {
 	ToolbarGroup,
 	Spinner,
 	SelectControl,
+	ToolbarDropdownMenu,
 	TextControl,
 } from '@wordpress/components';
 
@@ -711,12 +712,13 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
-				<ToolbarGroup
-					isCollapsed={true}
-					icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
-					label={__( 'Change heading tag', 'kadence-blocks' )}
-					controls={headingOptions}
-				/>
+				<ToolbarGroup group="tag">
+					<ToolbarDropdownMenu
+						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
+						label={__( 'Change heading tag', 'kadence-blocks' )}
+						controls={headingOptions}
+					/>
+				</ToolbarGroup>
 				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarTypography', 'kadence/advancedheading', false ) && (
 					<InlineTypographyControls
 						uniqueID={uniqueID}
