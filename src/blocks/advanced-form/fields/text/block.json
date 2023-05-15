@@ -77,7 +77,9 @@
 		"anchor": true,
 		"html": false,
 		"ktdynamic": true,
-		"reusable": false
+		"reusable": false,
+		"kbMetadata": true,
+		"kbContentLabel": "label"
 	},
 	"ancestor": [ "kadence/advanced-form" ],
 	"parent": [ "kadence/advanced-form", "kadence/column" ]

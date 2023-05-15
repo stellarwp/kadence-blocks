@@ -76,8 +76,12 @@
 	  "type": "string"
 	}
   },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"reusable": false,
+	"kbMetadata": true,
+	"kbContentLabel": "label"
+  },
+  "parent": [ "kadence/advanced-form" ]
 }
