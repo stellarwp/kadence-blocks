@@ -9,7 +9,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { Button, withFilters, Popover, ExternalLink, Toolbar } from '@wordpress/components';
+import { Button, withFilters, Popover, ExternalLink, ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { createRef } from '@wordpress/element';
 
 /**
@@ -49,8 +49,8 @@ class DynamicTextControl extends Component {
 		</svg>;
 
 		return (
-			<Toolbar>
-				<Button
+			<ToolbarGroup group="dynamic-text">
+				<ToolbarButton
 					className="kb-dynamic-menu"
 					icon={ icons.dynamic }
 					onClick={ () => this.debouncedToggle() }
@@ -78,7 +78,7 @@ class DynamicTextControl extends Component {
 						</div>
 					</Popover>
 				) }
-			</Toolbar>
+			</ToolbarGroup>
 		);
 	}
 };

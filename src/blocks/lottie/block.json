@@ -80,6 +80,14 @@
 	  "type": "number",
 	  "default": "0"
 	},
+	"ratio": {
+		"type": "number",
+		"default": 100
+	},
+	"useRatio": {
+		"type": "boolean",
+		"default": false
+	},
 	"uniqueID": {
 	  "type": "string"
 	},

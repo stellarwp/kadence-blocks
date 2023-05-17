@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.37
+Stable tag: 3.0.38
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,8 +78,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.38 =
-Release Date: May 4th, 2023
+Release Date: May 16th, 2023
+* Add: Ratio option to lottie block.
+* Update: Deprecated toolbar controls.
 * Fix: Issue with tabs and mega menu.
+* Fix: Possible issue with scheduling monthly library cleanup.
 
 = 3.0.37 =
 Release Date: May 2nd, 2023

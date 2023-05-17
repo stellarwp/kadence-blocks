@@ -76,6 +76,8 @@ export function Edit( {
 		bouncePlayback,
 		playbackSpeed,
 		loopLimit,
+		useRatio,
+		ratio,
 		uniqueID,
 		delay,
 		align,
@@ -299,6 +301,37 @@ export function Edit( {
 	if( delay !== 0){
 		playerProps.intermission = 1000 * delay;
 	}
+
+	const previewMaxWidth = (width === '0' ? 'auto' : width + 'px');
+
+	const animationContent = <>
+		<dotlottie-player
+			{...playerProps}
+			src={getAnimationUrl()}
+			key={rerenderKey}
+			id={'kb-lottie-player' + uniqueID}
+			style={{
+				maxWidth: ! useRatio ? previewMaxWidth : null,
+			}}
+		/>
+
+		<SpacingVisualizer
+			style={ {
+				marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+				marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+			} }
+			type="inside"
+			forceShow={ paddingMouseOver.isMouseOver }
+			spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
+		/>
+		<SpacingVisualizer
+			type="outside"
+			forceShow={ marginMouseOver.isMouseOver }
+			spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
+		/>
+	</>
 
 	return (
 		<div { ...blockProps }>
@@ -566,6 +599,22 @@ export function Edit( {
 								min={ 25 }
 								max={ 1000 }
 							/>
+							<ToggleControl
+								label={ __( 'Use fixed ratio (prevents layout shift)', 'kadence-blocks' ) }
+								checked={ useRatio }
+								onChange={ ( value ) => setAttributes( { useRatio: value } ) }
+							/>
+							{ useRatio && (
+								<RangeControl
+									label={ __( 'Set Size Ratio (%)', 'kadence-blocks' ) }
+									value={ ratio ? ratio : 100 }
+									onChange={ ( value ) => setAttributes( { ratio: value } ) }
+									allowReset={ true }
+									step={ 1 }
+									min={ 0 }
+									max={ 100 }
+								/>
+							) }
 						</KadencePanelBody>
 
 						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
@@ -573,47 +622,32 @@ export function Edit( {
 				}
 
 			</KadenceInspectorControls>
-			<div className={ containerClasses } style={
-				{
-					marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-					marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+			<div className={ containerClasses } style={ {
+				marginTop: ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				marginRight: ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				marginLeft: ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
 
-					paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+				paddingTop: ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+				paddingRight: ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+				paddingLeft: ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+
+				maxWidth: useRatio ? previewMaxWidth : null,
+				margin: useRatio ? '0 auto' : null,
+			} }>
+				{ ( useRatio ) && 
+					<div class="kb-is-ratio-animation" style={ {
+						paddingBottom: ratio ? ratio + '%' : '100%',
+					} }>
+						{ animationContent }
+					</div>
 				}
-			}>
-
-				<dotlottie-player
-					{...playerProps}
-					src={getAnimationUrl()}
-					key={rerenderKey}
-					id={'kb-lottie-player' + uniqueID}
-					style={{
-						maxWidth: (width === '0' ? 'auto' : width + 'px'),
-						margin: '0 auto'
-					}}
-				/>
-
-				<SpacingVisualizer
-					style={ {
-						marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-						marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-						marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-						marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					} }
-					type="inside"
-					forceShow={ paddingMouseOver.isMouseOver }
-					spacing={ [ getSpacingOptionOutput( previewPaddingTop, paddingUnit ), getSpacingOptionOutput( previewPaddingRight, paddingUnit ), getSpacingOptionOutput( previewPaddingBottom, paddingUnit ), getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) ] }
-				/>
-				<SpacingVisualizer
-					type="outside"
-					forceShow={ marginMouseOver.isMouseOver }
-					spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }
-				/>
+				{ ( ! useRatio ) && 
+					<>
+						{ animationContent }
+					</>
+				}
 			</div>
 		</div>
 	);

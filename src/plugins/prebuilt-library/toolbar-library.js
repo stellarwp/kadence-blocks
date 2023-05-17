@@ -75,10 +75,10 @@ function ToolbarLibrary() {
 		</Button>
 	);
 	const renderButton = ( selector ) => {
-		const toolbarButton = document.createElement( 'div' );
-		toolbarButton.classList.add( 'kadence-toolbar-design-library' );
-		selector.appendChild( toolbarButton );
-		render( <LibraryButton />, toolbarButton );
+		const patternButton = document.createElement( 'div' );
+		patternButton.classList.add( 'kadence-toolbar-design-library' );
+		selector.appendChild( patternButton );
+		render( <LibraryButton />, patternButton );
 	}
 	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
 		// Watch for the toolbar to be visible and the design library button to be missing.

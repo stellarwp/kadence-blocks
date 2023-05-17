@@ -40,9 +40,9 @@ registerBlockType( 'kadence/advancedheading', {
 	title: __( 'Advanced Text', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	keywords: [
+		__( 'text', 'kadence-blocks' ),
 		__( 'title', 'kadence-blocks' ),
 		__( 'heading', 'kadence-blocks' ),
-		__( 'text', 'kadence-blocks' ),
 		'KB',
 	],
 	icon: {

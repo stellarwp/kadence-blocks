@@ -2,22 +2,29 @@
 	'use strict';
 	window.KBTabs = {
 		setupTabs: function() {
+			console.log(1)
 			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
-				thisElem.setAttribute('role', 'tablist');
+
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
+					subElem.setAttribute('role', 'tablist');
+				});
 				thisElem.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
 					subElem.setAttribute('role', 'tabpanel');
 					subElem.setAttribute('aria-hidden', 'true');
 				});
 
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
-					var parentId = subElem.parentElement.getAttribute("id");
-					var isActive = subElem.parentElement.classList.contains('kt-tab-title-active');
+					var parentListItem = subElem.parentElement;
+					var parentId = parentListItem.getAttribute("id");
+					var isActive = parentListItem.classList.contains('kt-tab-title-active');
 
-					subElem.setAttribute('role', 'tab');
-					subElem.setAttribute('aria-controls', parentId);
-					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');
-					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
+					parentListItem.setAttribute('role', 'tab');
+					// parentListItem.setAttribute('aria-controls', parentId);
+					parentListItem.setAttribute('aria-selected', isActive ? 'true' : 'false');
+					parentListItem.setAttribute('tabindex', isActive ? '0' : '-1');
+
+					subElem.setAttribute('role', 'presentation');
 
 					// Set attr on the related content tab
 					var tabId = subElem.getAttribute('data-tab');
@@ -151,15 +158,17 @@
 		setActiveTab: function( wrapper, tabNumber, moveFocus = true ) {
 
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
-			prevActiveAnchor.parentElement.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
-			prevActiveAnchor.setAttribute('tabindex', '-1');
-			prevActiveAnchor.setAttribute('aria-selected', 'false');
+			const prevActiveListItem= wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
+			prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
+			prevActiveListItem.setAttribute('tabindex', '-1');
+			prevActiveListItem.setAttribute('aria-selected', 'false');
 
 			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
 			const newActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' a');
-			newActiveAnchor.parentElement.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
-			newActiveAnchor.setAttribute('tabindex', '0');
-			newActiveAnchor.setAttribute('aria-selected', 'true');
+			const newActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber);
+			newActiveListItem.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+			newActiveListItem.setAttribute('tabindex', '0');
+			newActiveListItem.setAttribute('aria-selected', 'true');
 
 			// Hide all tab panels.
 			wrapper.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
