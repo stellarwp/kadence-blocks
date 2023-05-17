@@ -10,7 +10,7 @@
 		"allowResize", 
 		"imageCrop",
 		"kadence/dynamicSource",
-		"kadence/repeaterSlug",
+		"kadence/repeaterRowData",
 		"kadence/repeaterRow" 
 	],
 	"description": "Image block with greater controls and advanced features",

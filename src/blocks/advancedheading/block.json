@@ -534,7 +534,7 @@
 	"postId",
 	"queryId",
 	"kadence/dynamicSource",
-	"kadence/repeaterSlug",
+	"kadence/repeaterRowData",
 	"kadence/repeaterRow" 
   ],
   "supports": {
