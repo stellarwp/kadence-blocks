@@ -285,6 +285,7 @@ function PatternLibrary( {
 		const response = await getAIContentDataReload( tempContext, aiContent );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
+			setIsLoadingAI( 'processing' );
 			setTimeout( () => {
 				getAIContent( tempContext );
 			}, 1000 );
@@ -352,6 +353,10 @@ function PatternLibrary( {
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
 		{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
+	];
+	const pageStyleOptions = [
+		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
+		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
 	];
 	const sizeOptions = [
 		{ value: 'sm', label: __( 'Smaller', 'kadence-blocks' ) },
@@ -672,6 +677,29 @@ function PatternLibrary( {
 						</div>
 					</div>
 				) }
+				{ selectedSubTab === 'pages' && (
+					<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
+						<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
+						<div className="kb-library-style-options">
+							{ pageStyleOptions.map( ( style, index ) =>
+								<Button
+									key={ `${ style.value }-${ index }` }
+									label={ style.label }
+									className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
+									aria-pressed={ selectedStyle === style.value || ( selectedStyle === 'highlight' && style.value === 'light' ) }
+									onClick={ () => {
+										const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+										tempActiveStorage['style'] = style.value;
+										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+										setStyle( style.value );
+									}}
+								>
+									<span></span>
+								</Button>
+							) }
+						</div>
+					</div>
+				) }
 			</div>
 			{ selectedSubTab === 'pages' ? (
 				<>
@@ -721,10 +749,11 @@ function PatternLibrary( {
 							selectedStyle={ selectedStyle }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
-							aiContext={ selectedContext }
 							aiContent={ aiContent }
+							aiContext={ selectedContext }
 							contextTab={ selectedContextTab }
 							imageCollection={ imageCollection }
+							useImageReplace={ selectedReplaceImages }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 						/>
 					) }

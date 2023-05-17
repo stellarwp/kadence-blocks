@@ -125,6 +125,10 @@ function PageList( {
 	selectedCategory,
 	selectedStyle = 'light',
 	breakpointCols,
+	imageCollection,
+	aiContext,
+	aiContent,
+	useImageReplace,
 	onSelect
 } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
@@ -147,47 +151,62 @@ function PageList( {
 		// 	onSelect( newInfo );
 		// }
 	}
-	const filteredBlockPatterns = useMemo( () => {
+	const thePages = useMemo( () => {
 		let allPatterns = [];
-		let variation = 1;
 		Object.keys( pages ).map( function( key, index ) {
 			const temp = [];
-			if ( variation === 4 ) {
-				variation = 1;
-			}
 			temp['title'] = pages[key].name;
 			temp['name'] = pages[key].name;
-			temp['rows'] = pages[key].rows;
-			let tempContent = BuildPageContent( pages[key].rows );
+			temp['image'] = pages[key].image;
+			temp['imageWidth'] = pages[key].imageW;
+			temp['imageHeight'] = pages[key].imageH;
+			temp['id'] = pages[key].id;
+			temp['slug'] = pages[key].slug;
 			temp['categories'] = pages[key].categories ? Object.keys( pages[key].categories ) : [];
+			temp['contexts'] = pages[key].contexts ? Object.keys( pages[key].contexts ) : [];
 			temp['keywords'] = pages[key].keywords ? pages[key].keywords : [];
-			// if ( savedAI ) {
-			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			// }
-			// temp['blocks'] = parse( tempContent, {
-			// 	__unstableSkipMigrationLogs: true
-			//   });
-			temp['content'] = tempContent;
-			temp['html'] = pages[key].rows_html;
+			if ( pages[key]?.rows_html) {
+				temp['html'] = pages[key].rows_html;
+			}
+			temp['rows'] = pages[key].rows;
+			temp['content'] =  BuildPageContent( pages[key].rows );
 			temp['pro'] = pages[key].pro;
 			temp['locked'] = ( pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
-			temp['proRender'] = ( temp['keywords'].includes('Requires Pro') ? true : false );
+			temp['proRender'] = false;
 			temp['viewportWidth'] = 1200;
-			variation ++;
 			allPatterns.push( temp );
 		});
+		return allPatterns;
+	}, [ pages ] );
+	const filteredBlockPatterns = useMemo( () => {
+		let allPatterns = thePages;
 		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
 			);
+		}
+		if ( useImageReplace === 'all' && imageCollection ) {
+			let variation = 0;
+			allPatterns = allPatterns.map( ( item, index ) => {
+				if ( variation === 11 ) {
+					variation = 0;
+				}
+				if ( item?.html ) {
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+				} else {
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+				}
+				variation ++;
+				return item;
+			} );
 		}
 		// if ( allPatterns.length > 30 ) {
 		// 	console.log( 'here' );
 		// 	allPatterns = allPatterns.slice(0, 30);
 		// }
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, pages ] );
+	}, [ filterValue, selectedCategory, pages, useImageReplace, imageCollection ] );
 
 	// Announce search results on change.
 	useEffect( () => {
@@ -260,6 +279,7 @@ function PageList( {
 		let newStyles = '';
 		let globalColors = '';
 		let colorClasses = '';
+		let styleColors = '';
 		if ( ! kadence_blocks_params.isKadenceT ) {
 			globalColors = `
 				--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
@@ -302,8 +322,31 @@ function PageList( {
 		}
 
 		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
+		if ( 'dark' === selectedStyle ) {
+			styleColors = `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette9']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
+			--global-content-edge-padding: 3rem;
+			padding:0px !important;}
+			.single-iframe-content .kb-blocks-highlight-page-section { --global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
+			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
+			--global-palette3:${kadence_blocks_params.global_colors['--global-palette3']};
+			--global-palette4:${kadence_blocks_params.global_colors['--global-palette4']};
+			--global-palette5:${kadence_blocks_params.global_colors['--global-palette5']};
+			--global-palette6:${kadence_blocks_params.global_colors['--global-palette6']};
+			--global-palette7:${kadence_blocks_params.global_colors['--global-palette7']};
+			--global-palette8:${kadence_blocks_params.global_colors['--global-palette8']};
+			--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};
+		}.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}`;
+		}
 		newStyles = [
-			{ css: `.single-iframe-content{${normalizeStyles} ${globalColors}}.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px }.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
+			{ css: `.single-iframe-content{${normalizeStyles} ${globalColors}}.pattern-shadow-wrap > .single-iframe-content > .kb-row-layout-wrap, .pattern-shadow-wrap > .single-iframe-content > .kb-blocks-highlight-page-section { margin-top:-1px;}.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px }.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}${styleColors}` }
 		];
 		return newStyles;
 	}, [ selectedStyle ] );

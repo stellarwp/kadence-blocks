@@ -744,78 +744,212 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
 
-		// Current prompts.
-		// 	'prompts' => array(
-		// 		// 'accordion-faq',
-		// 		// 'accordion-get-started',
-		// 		// 'cards-location',
-		// 		// 'cards-products-services',
-		// 		'columns-about',
-		// 		// 'columns-profile',
-		// 		// 'counter-stats-work',
-		// 		// 'forms-subscribe',
-		// 		// 'gallery-work',
-		// 		// 'hero-about',
-		// 		// 'hero-value-prop',
-		// 		// 'image-mission',
-		// 		// 'media-text-about',
-		// 		// 'media-text-donate', 
-		// 		// 'people-team',
-		// 		// 'pricing-table-plans',
-		// 		// 'testimonials-testimonials',
-		// 	);
 		switch ( $context ) {
 			case 'about':
 				$body['prompts'] = array(
-					'columns-about',
-					'hero-about',
-					'media-text-about',
+					'about',
+					'about-hero',
+					'about-columns',
+					'about-media-text',
+					'about-video',
 				);
 				break;
-			case 'profile':
+			case 'achievements':
 				$body['prompts'] = array(
-					'columns-profile',
+					'achievements',
+					'achievements-list',
+					'achievements-video',
+				);
+				break;
+			case 'blog':
+				$body['prompts'] = array(
+					'blog-post-loop',
+					'blog-table-contents',
+				);
+				break;
+			case 'call-to-action':
+				$body['prompts'] = array(
+					'call-to-action',
+					'call-to-action-media-text',
+					'call-to-action-video',
+				);
+				break;
+			case 'careers':
+				$body['prompts'] = array(
+					'careers',
+					'careers-hero',
+					'careers-list',
+					'careers-video',
+				);
+				break;
+			case 'contact-form':
+				$body['prompts'] = array(
+					'contact-form',
+				);
+				break;
+			case 'donate':
+				$body['prompts'] = array(
+					'donate',
+					'donate-hero',
+					'donate-media-text',
+					'donate-video',
+				);
+				break;
+			case 'events':
+				$body['prompts'] = array(
+					'events',
+					'events-hero',
+					'events-media-text',
+					'events-video',
 				);
 				break;
 			case 'faq':
 				$body['prompts'] = array(
-					'accordion-faq',
-				);
-				break;
-			case 'work':
-				$body['prompts'] = array(
-					'counter-stats-work',
-					'gallery-work',
-				);
-				break;
-			case 'location':
-				$body['prompts'] = array(
-					'cards-location',
-				);
-				break;
-			case 'value-prop':
-				$body['prompts'] = array(
-					'hero-value-prop',
-				);
-				break;
-			case 'mission':
-				$body['prompts'] = array(
-					'image-mission',
-				);
-				break;
-			case 'products-services':
-				$body['prompts'] = array(
-					'cards-products-services',
+					'faq-accordion',
 				);
 				break;
 			case 'get-started':
 				$body['prompts'] = array(
-					'accordion-get-started',
+					'get-started',
+					'get-started-accordion',
+					'get-started-columns',
+					'get-started-list',
 				);
 				break;
-			default:
+			case 'history':
 				$body['prompts'] = array(
-					'columns-about',
+					'history',
+					'history-columns',
+					'history-media-text',
+					'history-video',
+				);
+				break;
+			case 'industries':
+				$body['prompts'] = array(
+					'industries',
+					'industries-accordion',
+					'industries-list',
+					'industries-tabs',
+				);
+				break;
+			case 'location':
+				$body['prompts'] = array(
+					'location',
+					'location-cards',
+					'location-tabs',
+				);
+				break;
+			case 'mission':
+				$body['prompts'] = array(
+					'mission',
+					'mission-columns',
+					'mission-media-text',
+					'mission-video',
+				);
+				break;
+			case 'news':
+				$body['prompts'] = array(
+					'news-post-loop',
+				);
+				break;
+			case 'partners':
+				$body['prompts'] = array(
+					'partners',
+					'partners-list',
+				);
+				break;
+			case 'podcast':
+				$body['prompts'] = array(
+					'podcast',
+				);
+				break;
+			case 'pricing-table':
+				$body['prompts'] = array(
+					'pricing-pricing-table',
+				);
+				break;
+			case 'product-details':
+				$body['prompts'] = array(
+					'product-details-accordion',
+				);
+				break;
+			case 'products-services':
+				$body['prompts'] = array(
+					'products-services',
+					'products-services-columns',
+					'products-services-hero',
+					'products-services-list',
+					'products-services-single',
+					'products-services-tabs',
+					'products-services-video',
+				);
+				break;
+			case 'profile':
+				$body['prompts'] = array(
+					'profile',
+					'profile-columns',
+					'profile-media-text',
+					'profile-video',
+				);
+				break;
+			case 'subscribe-form':
+				$body['prompts'] = array(
+					'subscribe-form',
+				);
+				break;
+			case 'support':
+				$body['prompts'] = array(
+					'support',
+					'support-list',
+					'support-video',
+				);
+				break;
+			case 'team':
+				$body['prompts'] = array(
+					'team',
+					'team-list',
+					'team-people',
+					'team-video',
+				);
+				break;
+			case 'testimonials':
+				$body['prompts'] = array(
+					'testimonials-testimonials',
+				);
+				break;
+			case 'value-prop':
+				$body['prompts'] = array(
+					'value-prop',
+					'value-prop-columns',
+					'value-prop-hero',
+					'value-prop-list',
+					'value-prop-tabs',
+					'value-prop-video',
+				);
+				break;
+			case 'volunteer':
+				$body['prompts'] = array(
+					'volunteer',
+					'volunteer-hero',
+					'volunteer-list',
+					'volunteer-video',
+				);
+				break;
+			case 'welcome':
+				$body['prompts'] = array(
+					'welcome',
+					'welcome-hero',
+					'welcome-media-text',
+					'welcome-video',
+				);
+				break;
+			case 'work':
+				$body['prompts'] = array(
+					'work',
+					'work-columns',
+					'work-counter-stats',
+					'work-media-text',
+					'work-video',
 				);
 				break;
 		}
@@ -829,6 +963,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
+		error_log( print_r( $response, true ));
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
 			return 'error';
