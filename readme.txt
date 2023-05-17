@@ -78,7 +78,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.0.38 =
-Release Date: May 15th, 2023
+Release Date: May 16th, 2023
 * Add: Ratio option to lottie block.
 * Update: Deprecated toolbar controls.
 * Fix: Issue with tabs and mega menu.
