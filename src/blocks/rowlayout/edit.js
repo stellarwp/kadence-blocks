@@ -60,7 +60,18 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
+
+import {
+	KadenceColorOutput, 
+	getPreviewSize,
+	showSettings,
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock, 
+	setDynamicState,
+	isRTL 
+} from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -155,30 +166,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		};
 	}, [] );
 
-	const getDynamic = () => {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['bgImg'] && attributes.kadenceDynamic['bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['overlayBgImg'] && attributes.kadenceDynamic['overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'overlayBgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['tabletBackground:0:bgImg'] && attributes.kadenceDynamic['tabletBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'tabletBackground:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'] && attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'tabletOverlay:0:overlayBgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['mobileBackground:0:bgImg'] && attributes.kadenceDynamic['mobileBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'mobileBackground:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'] && attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'mobileOverlay:0:overlayBgImg', contextPost );
-		}
-	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount } = useSelect(
 		( select ) => {
@@ -205,9 +192,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		if ( attributes.inQueryBlock !== isInQueryBlock ) {
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes( { inQueryBlock: isInQueryBlock } );
-		}
-		if ( ! isPreviewMode ) {
-			debounce( getDynamic, 200 );
 		}
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
@@ -366,6 +350,13 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			updateColumns( innerItemCount, defaults.columns );
 		}
 	}, [ innerItemCount, columns ] );
+	useEffect( () => {
+		console.log(2)
+		if ( ! isPreviewMode ) {
+			debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, setDynamicBackgroundImg, context, bgImg ? false : true );
+		}
+	}, [ 'bgImg' ] );
+
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
 	const [ resizingVisually, setResizingVisually ] = useState( false );
 	const timeoutRef = useRef();
@@ -375,6 +366,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	};
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
+	
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
@@ -729,6 +723,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 								attributes={ attributes }
 								setAttributes={setAttributes}
 								isSelected={ isSelected }
+								context={ context }
 							/>
 						) }
 						{ ( activeTab === 'advanced' ) && (
@@ -961,6 +956,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				backgroundClasses={ classes }
 				attributes={ attributes }
 				previewDevice={ previewDevice }
+				dynamicBackgroundImg={ dynamicBackgroundImg }
 			>
 				<style>
 					{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
