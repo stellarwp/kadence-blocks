@@ -256,6 +256,24 @@ export function getAsyncData() {
 		}
 	}
 	/**
+	 * Get local contexts.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getLocalAIContexts() {
+		try {
+			const response = await apiFetch( {
+				path: '/kb-design-library/v1/get_local_contexts',
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'failed';
+		}
+	}
+	/**
 	 * Get library data.
 	 *
 	 * @param {(object)} userData
@@ -289,6 +307,7 @@ export function getAsyncData() {
 		getPatterns,
 		getPattern,
 		processPattern,
+		getLocalAIContexts,
 	}
 }
 

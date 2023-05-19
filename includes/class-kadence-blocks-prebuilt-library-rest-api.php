@@ -81,6 +81,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @var string
 	 */
 	protected $block_library_folder;
+
+	/**
+	 * The library folder.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $block_ai_folder;
 	/**
 	 * Base URL.
 	 *
@@ -195,6 +203,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_library' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_local_contexts',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_local_contexts' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -385,7 +405,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$content = $parameters['content'];
 		$image_library = $parameters['image_library'];
-		error_log( print_r( $image_library, true ) );
+		//error_log( print_r( $image_library, true ) );
 		// Find all urls.
 		preg_match_all( '/https?:\/\/[^\'" ]+/i', $content, $match );
 		// preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );
@@ -531,6 +551,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_url;
+			$key = 'new-pages';
 		} else {
 			$library_url = $this->remote_url;
 		}
@@ -584,6 +605,31 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
+	public function get_local_contexts( $request ) {
+		$available_prompts = get_option( 'kb_design_library_prompts', array() );
+		error_log( print_r( $available_prompts, true ) );
+		if ( ! empty( $available_prompts && is_array( $available_prompts) ) ) {
+			$contexts_available = array();
+			foreach( $available_prompts as $key => $prompt ) {
+				if ( ! empty( $prompt ) ) {
+					$contexts_available[] = $key;
+				}
+			}
+			if ( ! empty( $contexts_available ) ) {
+				return rest_ensure_response( $contexts_available );
+			} else {
+				return rest_ensure_response( 'failed' );
+			}
+		} else {
+			return rest_ensure_response( 'failed' );
+		}
+	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
 	public function get_items( $request ) {
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
@@ -593,8 +639,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// Check if we have captured prompt.
 		if ( ! empty( $available_prompts[ $context ] ) && ! $reload ) {
 			// Check if we have a local file.
-			if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ] ) ) ) {
-				return wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ] ) ) );
+			if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) ) {
+				return wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) );
 			} else {
 				// Check if we have a remote file.
 				$response = $this->get_remote_contents( $available_prompts[ $context ] );
@@ -616,7 +662,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					}
 					return wp_send_json( 'error' );
 				} else {
-					$this->create_data_file( $response, $available_prompts[ $context ] );
+					$this->create_data_file( $response, $available_prompts[ $context ], 'ai' );
 					return wp_send_json( $response );
 				}
 			}
@@ -643,8 +689,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @return string of the path to local data file.
 	 */
-	public function get_local_data_path( $prompt_data ) {
-		return $this->get_block_library_folder() . '/' . $this->get_local_data_filename( $prompt_data ) . '.json';
+	public function get_local_data_path( $prompt_data, $path_type = 'content' ) {
+		return $this->get_block_library_folder( $path_type ) . '/' . $this->get_local_data_filename( $prompt_data ) . '.json';
 	}
 	/**
 	 * Get the local data filename.
@@ -667,6 +713,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_subfolder_name() {
 		$subfolder_name = apply_filters( 'kadence_block_library_local_data_subfolder_name', 'kadence_blocks_library' );
+		return $subfolder_name;
+	}
+	/**
+	 * Get the subfolder name.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_ai_subfolder_name() {
+		$subfolder_name = apply_filters( 'kadence_block_ai_local_data_subfolder_name', 'kadence_blocks_ai' );
 		return $subfolder_name;
 	}
 	/**
@@ -700,11 +756,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string
 	 */
-	public function get_block_library_folder() {
+	public function get_block_library_folder( $path_type = 'content' ) {
+		if ( 'ai' === $path_type ) {
+			if ( ! $this->block_ai_folder ) {
+				$this->block_ai_folder = $this->get_base_path();
+				$this->block_ai_folder .= $this->get_ai_subfolder_name();
+			}
+			return $this->block_ai_folder;
+
+		} 
 		if ( ! $this->block_library_folder ) {
 			$this->block_library_folder = $this->get_base_path();
 			$this->block_library_folder .= $this->get_subfolder_name();
 		}
+			
 		return $this->block_library_folder;
 	}
 	/**
@@ -721,7 +786,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => $site_url,
+			'domain' => 'prep.local', //$site_url
 			'key'    => $this->api_key,
 		);
 		$prophecy_data = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
@@ -750,15 +815,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'about',
 					'about-hero',
 					'about-columns',
-					'about-media-text',
-					'about-video',
+					'about-list',
+					'about-videos',
 				);
 				break;
 			case 'achievements':
 				$body['prompts'] = array(
 					'achievements',
+					'achievements-columns',
 					'achievements-list',
-					'achievements-video',
+					'achievements-videos',
 				);
 				break;
 			case 'blog':
@@ -770,16 +836,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			case 'call-to-action':
 				$body['prompts'] = array(
 					'call-to-action',
-					'call-to-action-media-text',
-					'call-to-action-video',
+					'call-to-action-columns',
+					'call-to-action-list',
+					'call-to-action-videos',
 				);
 				break;
 			case 'careers':
 				$body['prompts'] = array(
 					'careers',
 					'careers-hero',
+					'careers-columns',
 					'careers-list',
-					'careers-video',
+					'careers-videos',
 				);
 				break;
 			case 'contact-form':
@@ -791,16 +859,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$body['prompts'] = array(
 					'donate',
 					'donate-hero',
-					'donate-media-text',
-					'donate-video',
+					'donate-columns',
+					'donate-list',
+					'donate-videos',
 				);
 				break;
 			case 'events':
 				$body['prompts'] = array(
 					'events',
 					'events-hero',
-					'events-media-text',
-					'events-video',
+					'events-columns',
+					'events-list',
+					'events-videos',
 				);
 				break;
 			case 'faq':
@@ -820,8 +890,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$body['prompts'] = array(
 					'history',
 					'history-columns',
-					'history-media-text',
-					'history-video',
+					'history-list',
+					'history-videos',
 				);
 				break;
 			case 'industries':
@@ -829,13 +899,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'industries',
 					'industries-accordion',
 					'industries-list',
+					'industries-columns',
 					'industries-tabs',
 				);
 				break;
 			case 'location':
 				$body['prompts'] = array(
 					'location',
-					'location-cards',
+					'location-columns',
 					'location-tabs',
 				);
 				break;
@@ -843,8 +914,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$body['prompts'] = array(
 					'mission',
 					'mission-columns',
-					'mission-media-text',
-					'mission-video',
+					'mission-list',
+					'mission-videos',
 				);
 				break;
 			case 'news':
@@ -855,6 +926,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			case 'partners':
 				$body['prompts'] = array(
 					'partners',
+					'partners-columns',
 					'partners-list',
 				);
 				break;
@@ -881,15 +953,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'products-services-list',
 					'products-services-single',
 					'products-services-tabs',
-					'products-services-video',
+					'products-services-videos',
 				);
 				break;
 			case 'profile':
 				$body['prompts'] = array(
 					'profile',
 					'profile-columns',
-					'profile-media-text',
-					'profile-video',
+					'profile-list',
+					'profile-videos',
 				);
 				break;
 			case 'subscribe-form':
@@ -900,16 +972,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			case 'support':
 				$body['prompts'] = array(
 					'support',
+					'support-columns',
 					'support-list',
-					'support-video',
+					'support-videos',
 				);
 				break;
 			case 'team':
 				$body['prompts'] = array(
 					'team',
+					'team-columns',
 					'team-list',
 					'team-people',
-					'team-video',
+					'team-videos',
 				);
 				break;
 			case 'testimonials':
@@ -924,7 +998,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'value-prop-hero',
 					'value-prop-list',
 					'value-prop-tabs',
-					'value-prop-video',
+					'value-prop-videos',
 				);
 				break;
 			case 'volunteer':
@@ -932,15 +1006,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'volunteer',
 					'volunteer-hero',
 					'volunteer-list',
-					'volunteer-video',
+					'volunteer-columns',
+					'volunteer-videos',
 				);
 				break;
 			case 'welcome':
 				$body['prompts'] = array(
 					'welcome',
 					'welcome-hero',
-					'welcome-media-text',
-					'welcome-video',
+					'welcome-list',
+					'welcome-columns',
+					'welcome-videos',
 				);
 				break;
 			case 'work':
@@ -948,11 +1024,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'work',
 					'work-columns',
 					'work-counter-stats',
-					'work-media-text',
-					'work-video',
+					'work-list',
+					'work-videos',
 				);
 				break;
 		}
+		//error_log( print_r( $body, true ));
 		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'content/create' );
 		$response = wp_remote_post(
 			$api_url,
@@ -992,7 +1069,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => $site_url,
+			'domain' => 'prep.local', //$site_url
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
@@ -1085,7 +1162,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => $site_url,
+			'domain' => 'prep.local', //$site_url,
 			'key'    => $this->api_key,
 		);
 		if ( empty( $industries ) ) {
@@ -1147,7 +1224,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => $site_url,
+			'domain' => 'prep.local', //$site_url
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'images/collections';
@@ -1188,7 +1265,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => $site_url,
+			'domain' => 'prep.local', //$site_url
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'verticals';
@@ -1221,17 +1298,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @return string|false Returns the absolute path of the file on success, or false on fail.
 	 */
-	protected function create_data_file( $content, $prompt_data ) {
-		$file_path  = $this->get_local_data_path( $prompt_data );
+	protected function create_data_file( $content, $prompt_data, $path_type = 'content' ) {
+		$file_path  = $this->get_local_data_path( $prompt_data, $path_type );
 		$filesystem = $this->get_filesystem();
 
 		// If the folder doesn't exist, create it.
-		if ( ! file_exists( $this->get_block_library_folder() ) ) {
+		if ( ! file_exists( $this->get_block_library_folder( $path_type ) ) ) {
 			$chmod_dir = ( 0755 & ~ umask() );
 			if ( defined( 'FS_CHMOD_DIR' ) ) {
 				$chmod_dir = FS_CHMOD_DIR;
 			}
-			$this->get_filesystem()->mkdir( $this->get_block_library_folder(), $chmod_dir );
+			$this->get_filesystem()->mkdir( $this->get_block_library_folder( $path_type ), $chmod_dir );
 		}
 
 		// If the file doesn't exist, create it. Return false if it can not be created.

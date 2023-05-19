@@ -88,7 +88,7 @@ function BannerHeader( { selectedCategory } ) {
 	);
 }
 
-function LoadingHeader() {
+function LoadingHeader( { type } ) {
 	return (
 		<Heading
 			level={ 2 }
@@ -96,12 +96,23 @@ function LoadingHeader() {
 			className="kb-patterns-banner-notice"
 		>
 			<Spinner />
-			{ __( 'Loading AI Content.', 'kadence Blocks' ) }
+			{ 'processing' === type ? __( 'Generating AI Content.', 'kadence Blocks' ) : __( 'Loading AI Content.', 'kadence Blocks' ) }
+		</Heading>
+	);
+}
+function GenerateHeader() {
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice"
+		>
+			{ __( 'Generate AI Content Required', 'kadence Blocks' ) }
 		</Heading>
 	);
 }
 
-function LoadingFailedHeader( type ) {
+function LoadingFailedHeader( { type } ) {
 	return (
 		<Heading
 			level={ 2 }
@@ -129,6 +140,7 @@ function PatternList( {
 	imageCollection,
 	isLoadingAI,
 	useImageReplace,
+	isAINeeded,
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
@@ -180,7 +192,10 @@ function PatternList( {
 	}, [ patterns ] );
 	const filteredBlockPatterns = useMemo( () => {
 		if ( contextTab === 'context' ) {
-			if ( isLoadingAI ){
+			if ( isAINeeded ) {
+				console.log( 'AI Needed' );
+				return [];
+			} else if ( isLoadingAI ){
 				console.log( 'Loading AI Content' );
 				setFailedAI( false );
 				return [];
@@ -389,7 +404,10 @@ function PatternList( {
 					<LoadingFailedHeader type={ failedAIType } />
 				) }
 				{ contextTab === 'context' && isLoadingAI && (
-					<LoadingHeader />
+					<LoadingHeader type={isLoadingAI} />
+				) }
+				{ contextTab === 'context' && isAINeeded && (
+					<GenerateHeader />
 				) }
 				{ hasItems && (
 					<KadenceBlockPatternList

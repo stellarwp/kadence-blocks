@@ -100,6 +100,36 @@ function BuildPageContent( rows ) {
 	} );
 	return tempContent;
 }
+function BuildHTMLPageContent( rows, useImageReplace, imageCollection, contextTab, aiContent ) {
+	if ( ! rows ) {
+		return '';
+	}
+	let tempArray = [];
+	let tempContent = '';
+	let variation = 0;
+	//console.log( rows );
+	tempArray = Object.keys( rows ).map( function( key, index ) {
+		if ( variation === 11 ) {
+			variation = 0;
+		}
+		let theContent = '';
+		const categories = rows?.[key]?.['pattern_category'] ? Object.keys( rows[key]['pattern_category'] ) : [];
+		const context = rows[key]['pattern_context'];
+		theContent = rows[key]['pattern_html'];
+		if ( useImageReplace === 'all' && imageCollection ) {
+			theContent = replaceImages( theContent, imageCollection, categories, context, variation );
+		}
+		if ( contextTab === 'context' ) {
+			theContent = replaceContent( theContent, aiContent, categories, context, variation );
+		}
+		variation ++;
+		return theContent;
+	} );
+	Object.keys( tempArray ).map( function( key, index ) {
+		tempContent = tempContent.concat( tempArray[key] );
+	} );
+	return tempContent;
+}
 function BuildPageImportContent( rows ) {
 	if ( ! rows ) {
 		return '';
@@ -127,6 +157,7 @@ function PageList( {
 	breakpointCols,
 	imageCollection,
 	aiContext,
+	contextTab,
 	aiContent,
 	useImageReplace,
 	onSelect
@@ -153,8 +184,12 @@ function PageList( {
 	}
 	const thePages = useMemo( () => {
 		let allPatterns = [];
+		let variation = 0;
 		Object.keys( pages ).map( function( key, index ) {
 			const temp = [];
+			if ( variation === 11 ) {
+				variation = 0;
+			}
 			temp['title'] = pages[key].name;
 			temp['name'] = pages[key].name;
 			temp['image'] = pages[key].image;
@@ -165,19 +200,22 @@ function PageList( {
 			temp['categories'] = pages[key].categories ? Object.keys( pages[key].categories ) : [];
 			temp['contexts'] = pages[key].contexts ? Object.keys( pages[key].contexts ) : [];
 			temp['keywords'] = pages[key].keywords ? pages[key].keywords : [];
-			if ( pages[key]?.rows_html) {
+			temp['content'] = BuildPageContent( pages[key].rows );
+			if ( pages[key]?.rows?.[0]?.pattern_html) {
+				temp['html'] = BuildHTMLPageContent( pages[key].rows, useImageReplace, imageCollection, contextTab, aiContent );
+			} else if ( pages[key]?.rows_html) {
 				temp['html'] = pages[key].rows_html;
 			}
 			temp['rows'] = pages[key].rows;
-			temp['content'] =  BuildPageContent( pages[key].rows );
 			temp['pro'] = pages[key].pro;
 			temp['locked'] = ( pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['proRender'] = false;
 			temp['viewportWidth'] = 1200;
+			variation ++;
 			allPatterns.push( temp );
 		});
 		return allPatterns;
-	}, [ pages ] );
+	}, [ pages, imageCollection, useImageReplace, contextTab ] );
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = thePages;
 		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
@@ -185,22 +223,38 @@ function PageList( {
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
-		if ( useImageReplace === 'all' && imageCollection ) {
-			let variation = 0;
-			allPatterns = allPatterns.map( ( item, index ) => {
-				if ( variation === 11 ) {
-					variation = 0;
-				}
-				if ( item?.html ) {
-					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
-				} else {
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
-				}
-				variation ++;
-				return item;
-			} );
-		}
+		// if ( useImageReplace === 'all' && imageCollection ) {
+		// 	let variation = 0;
+		// 	allPatterns = allPatterns.map( ( item, index ) => {
+		// 		if ( variation === 11 ) {
+		// 			variation = 0;
+		// 		}
+		// 		if ( item?.html ) {
+		// 			item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
+		// 			item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+		// 		} else {
+		// 			item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+		// 		}
+		// 		variation ++;
+		// 		return item;
+		// 	} );
+		// }
+		// if ( contextTab === 'context' ) {
+		// 	let variation = 0;
+		// 	allPatterns = allPatterns.map( ( item, index ) => {
+		// 		if ( variation === 11 ) {
+		// 			variation = 0;
+		// 		}
+		// 		if ( item?.html) {
+		// 			item['html'] = replaceContent( item.html, aiContent, item.categories, aiContext, variation );
+		// 			item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
+		// 		} else {
+		// 			item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
+		// 		}
+		// 		variation ++;
+		// 		return item;
+		// 	} );
+		// }
 		// if ( allPatterns.length > 30 ) {
 		// 	console.log( 'here' );
 		// 	allPatterns = allPatterns.slice(0, 30);
