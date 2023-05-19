@@ -38,54 +38,6 @@
 		  "type": "string",
 		  "default": "%"
 	  },
-	"vAlign": {
-		"type": "array",
-		"default": [
-			"",
-			"",
-			""
-		]
-	},
-	"hAlign": {
-		"type": "array",
-		"default": [
-			"",
-			"",
-			""
-		]
-	},
-	"padding": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"tabletPadding": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"mobilePadding": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"paddingUnit": {
-		"type": "string",
-		"default": "px"
-	},
-	"margin": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"tabletMargin": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"mobileMargin": {
-		"type": "array",
-		"default": [ "", "", "", "" ]
-	},
-	"marginUnit": {
-		"type": "string",
-		"default": "px"
-	},
 	"inputColor": {
 		"type": "string",
 		"default": ""

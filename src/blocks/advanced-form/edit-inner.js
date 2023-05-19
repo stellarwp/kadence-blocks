@@ -12,13 +12,8 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useEffect } from '@wordpress/element';
-import {
-	useSelect,
-	useDispatch,
-} from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
-import { applyFilters } from '@wordpress/hooks';
-import { rawHandler } from '@wordpress/blocks';
 import { size, get, isEqual } from 'lodash';
 import {
 	useEntityBlockEditor,
@@ -85,7 +80,7 @@ import {
  */
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
-const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
+const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 
 export function EditInner( props ) {
 
@@ -93,26 +88,24 @@ export function EditInner( props ) {
 		attributes,
 		setAttributes,
 		className,
-		previewDevice,
 		clientId,
 		direct,
 		id,
-		insert,
 		isSelected,
 	} = props;
 	const {
-		uniqueID,
-		padding,
-		tabletPadding,
-		mobilePadding,
-		paddingUnit,
-		margin,
-		tabletMargin,
-		mobileMargin,
-		marginUnit,
-		vAlign,
-		hAlign,
+		uniqueID
 	} = attributes;
+
+	const { previewDevice } = useSelect(
+		( select ) => {
+			return {
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ],
+	);
+
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const paddingMouseOver = mouseOverVisualizer();
@@ -138,13 +131,29 @@ export function EditInner( props ) {
 	const [ labelFont, setLabelFont ] = useFormMeta( '_kad_form_labelFont' );
 	const [ inputFont, setInputFont ] = useFormMeta( '_kad_form_inputFont' );
 
+	const [ vAlign, setValign ] = useFormMeta( '_kad_form_vAlign' );
+	const [ hAlign, setHalign ] = useFormMeta( '_kad_form_hAlign' );
+
+	const [ padding, setPadding ] = useFormMeta( '_kad_form_padding' );
+	const [ tabletPadding, setTabletPadding ] = useFormMeta( '_kad_form_tabletPadding' );
+	const [ mobilePadding, setMobilePadding ] = useFormMeta( '_kad_form_mobilePadding' );
+	const [ paddingUnit, setPaddingUnit ] = useFormMeta( '_kad_form_paddingUnit' );
+
+	const [ margin, setMargin ] = useFormMeta( '_kad_form_margin' );
+	const [ tabletMargin, setTabletMargin ] = useFormMeta( '_kad_form_tabletMargin' );
+	const [ mobileMargin, setMobileMargin ] = useFormMeta( '_kad_form_mobileMargin' );
+	const [ marginUnit, setMarginUnit ] = useFormMeta( '_kad_form_marginUnit' );
+
+	console.log( margin );
+	console.log( padding );
+	console.log( '---------' );
+
 	const [ style, setStyle ] = useFormMeta( '_kad_form_style' );
 	const [ helpFont, setHelpFont ] = useFormMeta( '_kad_form_helpFont' );
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
-		let keyPrefix = '_kad_form_';
-		const info = setMeta( { ...meta, [keyPrefix + key]: value } );
+		setMeta( { ...meta, ['_kad_form_' + key]: value } );
 	};
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
@@ -156,6 +165,9 @@ export function EditInner( props ) {
 	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 1 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
+
+	console.log(' previewPaddingTop: ' + getSpacingOptionOutput( previewPaddingTop, marginUnit ));
+	console.log(' PReview: ' + getSpacingOptionOutput( previewMarginTop, marginUnit ));
 
 	const previewHorizontalAlign = getPreviewSize( previewDevice, ( undefined !== hAlign?.[0] ? hAlign[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign[2] : '' ) );
 	const previewVerticalAlign = getPreviewSize( previewDevice, ( undefined !== vAlign?.[0] ? vAlign[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign[2] : '' ) );
@@ -229,6 +241,17 @@ export function EditInner( props ) {
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: formClasses,
+			style: {
+				marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
+				marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
+				marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
+				marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
+
+				paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
+				paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
+				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
+				paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+			}
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
@@ -236,18 +259,7 @@ export function EditInner( props ) {
 			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			templateLock: false,
-			renderAppender: useFieldBlockAppender,
-			style: {
-					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
-					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginUnit ) : undefined ),
-					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),
-
-					paddingTop   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit ) : undefined ),
-					paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
-					paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
-				},
+			renderAppender: useFieldBlockAppender
 		}
 	);
 	if ( title === '' ) {
@@ -278,11 +290,11 @@ export function EditInner( props ) {
 						value={ previewHorizontalAlign }
 						onChange={ value => {
 							if ( previewDevice === 'Mobile' ) {
-								setAttributes( { hAlign: [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ] } );
+								setHalign( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ] );
 							} else if ( previewDevice === 'Tablet' ) {
-								setAttributes( { hAlign: [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] } );
+								setHalign( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] );
 							} else {
-								setAttributes( { hAlign: [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] } );
+								setHalign( [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] );
 							}
 						} }
 					/>
@@ -290,11 +302,11 @@ export function EditInner( props ) {
 						value={ previewVerticalAlign }
 						onChange={ value => {
 							if ( previewDevice === 'Mobile' ) {
-								setAttributes( { vAlign: [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ] } );
+								setValign(  [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ] );
 							} else if ( previewDevice === 'Tablet' ) {
-								setAttributes( { vAlign: [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] } );
+								setValign( [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] );
 							} else {
-								setAttributes( { vAlign: [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] } );
+								setValign( [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] );
 							}
 						}}
 					/>
@@ -534,20 +546,20 @@ export function EditInner( props ) {
 								tabletValue={tabletPadding}
 								mobileValue={mobilePadding}
 								onChange={(value) => {
-									setAttributes( { padding: value } );
+									setPadding( value );
 								}}
 								onChangeTablet={(value) => {
-									setAttributes( { tabletPadding: value } );
+									setTabletPadding( value );
 								}}
 								onChangeMobile={(value) => {
-									setAttributes( { mobilePadding: value } );
+									setMobilePadding( value );
 								}}
 								min={0}
 								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
 								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setAttributes( { paddingUnit: value } )}
+								onUnit={(value) => setPaddingUnit( value )}
 								onMouseOver={paddingMouseOver.onMouseOver}
 								onMouseOut={paddingMouseOver.onMouseOut}
 							/>
@@ -557,20 +569,20 @@ export function EditInner( props ) {
 								tabletValue={tabletMargin}
 								mobileValue={mobileMargin}
 								onChange={(value) => {
-									setAttributes( { margin: value } );
+									setMargin( value );
 								}}
 								onChangeTablet={(value) => {
-									setAttributes( { tabletMargin: value } );
+									setTabletMargin( value );
 								}}
 								onChangeMobile={(value) => {
-									setAttributes( { mobileMargin: value } );
+									setMobileMargin( value );
 								}}
 								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
 								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
 								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}
-								onUnit={(value) => setAttributes( { marginUnit: value } )}
+								onUnit={(value) => setMarginUnit( value )}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
