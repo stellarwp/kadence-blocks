@@ -92,7 +92,12 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 			setTurnstileSiteKey( response.kadence_blocks_turnstile_site_key );
 			setTurnstileSecretKey( response.kadence_blocks_turnstile_secret_key );
 
-			setKadenceRecaptha( JSON.parse( response.kt_recaptcha ) );
+			try {
+				setKadenceRecaptha( JSON.parse( get( response, 'kt_recaptcha', {} ) ) );
+			} catch (e) {
+				setKadenceRecaptha( {} );
+			}
+
 			setSettingsLoaded( true );
 		} );
 
