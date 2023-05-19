@@ -58,7 +58,7 @@
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
-	"tablePadding": {
+	"tabletPadding": {
 		"type": "array",
 		"default": [ "", "", "", "" ]
 	},
@@ -86,66 +86,6 @@
 		"type": "string",
 		"default": "px"
 	},
-	"style": {
-	  "type": "object",
-	  "default": {
-		"showRequired": true,
-		"size": "standard",
-		"deskPadding": [ "", "", "", "" ],
-		"tabletPadding": [ "", "", "", "" ],
-		"mobilePadding": [ "", "", "", "" ],
-		"color": "",
-		"requiredColor": "",
-		"background": "",
-		"backgroundOpacity": 1,
-		"backgroundActive": "",
-		"backgroundActiveOpacity": 1,
-		"gradient": [ "#999999", 1, 0, 100, "linear", 180, "center center" ],
-		"gradientActive": [ "#777777", 1, 0, 100, "linear", 180, "center center" ],
-		"backgroundType": "solid",
-		"backgroundActiveType": "solid",
-		"boxShadow": [ false, "#000000", 0.2, 1, 1, 2, 0, false ],
-		"boxShadowActive": [ false, "#000000", 0.4, 2, 2, 3, 0, false ],
-		"lineHeight": [ "", "", "" ],
-		"lineType": "px",
-		"rowGap": "",
-		"rowGapType": "px",
-		"tabletRowGap": "",
-		"mobileRowGap": "",
-		"tabletGutter": "",
-		"mobileGutter": ""
-	  }
-	},
-	"fieldBorderStyle": {
-	  "type": "array",
-	  "default": [ {
-		  "top": [ "", "", "" ],
-		  "right": [ "", "", "" ],
-		  "bottom": [ "", "", "" ],
-		  "left": [ "", "", "" ],
-		  "unit": "px"
-	  } ]
-	},
-	"tabletFieldBorderStyle": {
-	  "type": "array",
-	  "default": [ {
-		  "top": [ "", "", "" ],
-		  "right": [ "", "", "" ],
-		  "bottom": [ "", "", "" ],
-		  "left": [ "", "", "" ],
-		  "unit": "px"
-	  } ]
-	},
-	"mobileFieldBorderStyle": {
-	  "type": "array",
-	  "default": [ {
-		  "top": [ "", "", "" ],
-		  "right": [ "", "", "" ],
-		  "bottom": [ "", "", "" ],
-		  "left": [ "", "", "" ],
-		  "unit": "px"
-	  } ]
-	},
 	"inputColor": {
 		"type": "string",
 		"default": ""
@@ -162,90 +102,7 @@
 		"type": "string",
 		"default": ""
 	},
-	"inputFont": {
-		"type": "array",
-		"default": [
-			{
-			"size": [
-				"",
-				"",
-				""
-			],
-			"sizetype": "px",
-			"lineHeight": [
-				"",
-				"",
-				""
-			],
-			"linetype": "",
-			"letterSpacing": [
-				"",
-				"",
-				""
-			],
-			"letterType": "px",
-			"textTransform": "",
-			"family": "",
-			"google": "",
-			"style": "",
-			"weight": "",
-			"variant": "",
-			"subset": "",
-			"loadGoogle": true
-			}
-		]
-	},
 	"requiredColor": {
-		"type": "string",
-		"default": ""
-	},
-	"labelColor": {
-		"type": "string",
-		"default": ""
-	},
-	"labelFont": {
-		"type": "array",
-		"default": [
-			{
-			"size": ["", "", ""],
-			"sizetype": "px",
-			"lineHeight": ["", "", ""],
-			"linetype": "",
-			"letterSpacing": ["", "", ""],
-			"letterType": "px",
-			"textTransform": "",
-			"family": "",
-			"google": "",
-			"style": "",
-			"weight": "",
-			"variant": "",
-			"subset": "",
-			"loadGoogle": true
-			}
-		]
-	},
-	"helpFont": {
-		"type": "array",
-		"default": [
-			{
-			"size": ["", "", ""],
-			"sizetype": "px",
-			"lineHeight": ["", "", ""],
-			"linetype": "",
-			"letterSpacing": ["", "", ""],
-			"letterType": "px",
-			"textTransform": "",
-			"family": "",
-			"google": "",
-			"style": "",
-			"weight": "",
-			"variant": "",
-			"subset": "",
-			"loadGoogle": true
-			}
-		]
-	},
-	"helpColor": {
 		"type": "string",
 		"default": ""
 	},
@@ -404,110 +261,6 @@
 	"messageMarginUnit": {
 		"type": "string",
 		"default": "px"
-	},
-	"actions": {
-		"type": "array",
-		"default": [ "email" ]
-	  },
-	  "email": {
-		"type": "object",
-		"default": {
-		  "emailTo": "",
-		  "subject": "",
-		  "fromEmail": "",
-		  "fromName": "",
-		  "replyTo": "email_field",
-		  "cc": "",
-		  "bcc": "",
-		  "html": true
-		}
-	  },
-	  "mailerlite": {
-		"type": "object",
-		"default": {
-			"group": [],
-			"map": []
-		  }
-	  },
-	  "fluentcrm": {
-		"type": "object",
-		"default": {
-			"lists": [],
-			"tags": [],
-			"map": [],
-			"doubleOptin": false
-		  }
-	  },
-	  "sendinblue": {
-		"type": "object",
-		"default": {
-			"list": [],
-			"map": []
-		  }
-	  },
-	  "mailchimp": {
-		"type": "object",
-		"default": {
-		  "list": [],
-		  "map": []
-		}
-	  },
-	  "convertkit": {
-		"type": "object",
-		"default": {
-		  "form": [],
-		  "sequence": [],
-		  "tags": [],
-		  "map": []
-		}
-	  },
-	  "activecampaign": {
-		"type": "object",
-		"default": {
-		  "list": [],
-		  "map": []
-		}
-	  },
-	  "redirect": {
-		"type": "string",
-		"default": ""
-	  },
-	"webhook": {
-	  "type": "object",
-	  "default": {
-		"url": "",
-		"map": []
-	  }
-	},
-	"autoEmail": {
-	  "type": "object",
-	  "default": {
-		"emailTo": "",
-		"subject": "",
-		"message": "",
-		"fromEmail": "",
-		"fromName": "",
-		"replyTo": "",
-		"cc": "",
-		"bcc": "",
-		"html": true
-	  }
-	},
-	"entry": {
-	  "type": "object",
-	  "default": {
-		"formName": "",
-		"userIP": true,
-		"userDevice": true
-	  }
-	},
-	"recaptcha": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "recaptchaVersion": {
-		"type": "string",
-		"default": "v3"
-	  }
+	}
   }
 }

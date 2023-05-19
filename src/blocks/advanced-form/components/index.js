@@ -2,7 +2,6 @@ export { default as getFormFields } from './get-form-fields';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';
 export { default as FormTitle } from './form-title';
-export { default as SpamOptions } from './spam-options';
 export { default as MessageOptions } from './messages';
 export { default as MessageStyling } from './message-styles';
 

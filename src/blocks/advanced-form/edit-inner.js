@@ -60,7 +60,6 @@ import {
 
 import {
 	FieldStyles,
-	SpamOptions,
 	SubmitActionOptions,
 	LabelOptions,
 	HelpTextOptions,
@@ -130,9 +129,6 @@ export function EditInner( props ) {
 	const [ activecampaign, setActivecampaign ] = useFormMeta( '_kad_form_activecampaign' );
 
 	const [ redirect, setRedirect ] = useFormMeta( '_kad_form_redirect' );
-	const [ single, setSingle ] = useFormMeta( '_kad_form_single' );
-	const [ recaptcha, setRecaptcha ] = useFormMeta( '_kad_form_recaptcha' );
-	const [ recaptchaVersion, setRecaptchaVersion ] = useFormMeta( '_kad_form_recaptchaVersion' );
 
 	const [ webhook, setWebhook ] = useFormMeta( '_kad_form_webhook' );
 	const [ autoEmail, setAutoEmail ] = useFormMeta( '_kad_form_autoEmail' );
@@ -473,19 +469,19 @@ export function EditInner( props ) {
 							/>
 						)}
 						<div className="kt-sidebar-settings-spacer"></div>
-						<KadencePanelBody
-							panelName={'kb-advanced-form-spam'}
-							title={__( 'Spam Prevention', 'kadence-blocks' )}
-							initialOpen={false}
-						>
-							<SpamOptions setAttributes={setMetaAttribute} recaptcha={recaptcha} recaptchaVersion={recaptchaVersion}/>
-						</KadencePanelBody>
+						{/*<KadencePanelBody*/}
+						{/*	panelName={'kb-advanced-form-spam'}*/}
+						{/*	title={__( 'Spam Prevention', 'kadence-blocks' )}*/}
+						{/*	initialOpen={false}*/}
+						{/*>*/}
+						{/*	*/}
+						{/*</KadencePanelBody>*/}
 						<KadencePanelBody
 							title={__( 'Message Settings', 'kadence-blocks' )}
 							initialOpen={false}
 							panelName={'kb-form-message'}
 						>
-							<MessageOptions setAttributes={setMetaAttribute} messages={ messages } recaptcha={recaptcha} />
+							<MessageOptions setAttributes={setMetaAttribute} messages={ messages } />
 						</KadencePanelBody>
 					</>
 				}

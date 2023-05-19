@@ -5,7 +5,7 @@ import {
 	RangeControl
 } from '@wordpress/components';
 
-export default function MessageOptions( { setAttributes, messages, recaptcha } ) {
+export default function MessageOptions( { setAttributes, messages } ) {
 
 	const saveMessages = ( value ) => {
 		setAttributes( {  ...messages, ...value }, 'messages' );
@@ -31,14 +31,6 @@ export default function MessageOptions( { setAttributes, messages, recaptcha } )
 				value={( undefined !== messages.error ? messages.error : '' )}
 				onChange={( value ) => saveMessages( { error: value } )}
 			/>
-			{recaptcha && (
-				<TextControl
-					label={__( 'Recapcha Error Message', 'kadence-blocks' )}
-					placeholder={__( 'Submission Failed, reCaptcha spam prevention.', 'kadence-blocks' )}
-					value={( undefined !== messages.recaptchaerror ? messages.recaptchaerror : '' )}
-					onChange={( value ) => saveMessages( { recaptchaerror: value } )}
-				/>
-			)}
 		</>
 	);
 
