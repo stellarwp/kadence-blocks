@@ -30,7 +30,7 @@ const SHOWN_BLOCK_PATTERNS = 2;
 const SHOWN_BLOCK_PATTERNS_WITH_PRIORITIZATION = 4;
 const fieldBlocks = [ 'kadence/advanced-form-text', 'kadence/advanced-form-email', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-radio', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-number' ];
 const advancedFieldBlocks = [ 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-accept', 'kadence/advanced-form-hidden' ];
-const submitBlocks = [ 'kadence/advanced-form-submit' ];
+const submitBlocks = [ 'kadence/advanced-form-submit', 'kadence/advanced-form-captcha' ];
 const layoutBlocks = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/column', 'kadence/rowlayout', 'kadence/spacer' ];
 
 /**

@@ -33,6 +33,9 @@
 	"helpText": {
 	  "type": "string",
 	  "default": ""
+	},
+	"anchor": {
+	  "type": "string"
 	}
   },
   "parent": [

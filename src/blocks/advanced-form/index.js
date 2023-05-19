@@ -4,6 +4,7 @@ import { formBlockIcon } from '@kadence/icons';
 
 import './style.scss';
 import './fields/accept/index';
+import './fields/captcha/index';
 import './fields/checkbox/index';
 import './fields/date/index';
 import './fields/email/index';
@@ -12,11 +13,11 @@ import './fields/hidden/index';
 import './fields/number/index';
 import './fields/radio/index';
 import './fields/select/index';
+import './fields/submit/index';
 import './fields/telephone/index';
 import './fields/text/index';
 import './fields/textarea/index';
 import './fields/time/index';
-import './fields/submit/index';
 
 /**
  * Internal dependencies

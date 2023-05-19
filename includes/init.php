@@ -291,6 +291,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
 			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
+			'hasKadenceCaptcha' => ( is_plugin_active('kadence-recaptcha/kadence-recaptcha.php') ? true : false ),
+			'adminUrl' => get_admin_url()
 		)
 	);
 	wp_localize_script(
