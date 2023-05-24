@@ -607,7 +607,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_local_contexts( $request ) {
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
-		error_log( print_r( $available_prompts, true ) );
 		if ( ! empty( $available_prompts && is_array( $available_prompts) ) ) {
 			$contexts_available = array();
 			foreach( $available_prompts as $key => $prompt ) {
@@ -1040,7 +1039,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		error_log( print_r( $response, true ));
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
 			return 'error';
@@ -1513,6 +1511,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$post['post_mime_type'] = $info['type'];
 		} else {
 			return $image_data;
+		}
+		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+			include( ABSPATH . 'wp-admin/includes/image.php' );
 		}
 		$post_id = wp_insert_attachment( $post, $upload['file'] );
 		wp_update_attachment_metadata(
