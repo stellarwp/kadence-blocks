@@ -2,7 +2,6 @@
 	'use strict';
 	window.KBTabs = {
 		setupTabs: function() {
-			console.log(1)
 			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
 
@@ -25,6 +24,7 @@
 					parentListItem.setAttribute('tabindex', isActive ? '0' : '-1');
 
 					subElem.setAttribute('role', 'presentation');
+					subElem.setAttribute('tabindex', '-1');
 
 					// Set attr on the related content tab
 					var tabId = subElem.getAttribute('data-tab');
@@ -37,12 +37,11 @@
 					}
 				});
 
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list a').forEach((anchor) => {
-					anchor.addEventListener('keydown', function(evt) {
-						const listItem = this.parentElement;
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li').forEach((listItem) => {
+					listItem.addEventListener('keydown', function(evt) {
+						//const listItem = this.parentElement;
 						switch ( evt.which ) {
 							case 37:
-							case 38:
 								if (listItem.previousElementSibling) {
 									listItem.previousElementSibling.querySelector('a').click();
 								} else {
@@ -50,7 +49,6 @@
 								}
 								break;
 							case 39:
-							case 40:
 								if (listItem.nextElementSibling) {
 									listItem.nextElementSibling.querySelector('a').click();
 								} else {
