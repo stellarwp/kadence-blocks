@@ -547,7 +547,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				minHeight: previewMinHeight ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
+				minHeight: previewMinHeight && paddingUnit && '%' !== paddingUnit ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
 				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},

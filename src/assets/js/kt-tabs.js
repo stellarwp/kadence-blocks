@@ -92,7 +92,8 @@
 
 					ktContentWrap.insertBefore(newElem, ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId));
 
-					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('role')
+					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('role');
+					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('tabindex');
 				});
 			});
 

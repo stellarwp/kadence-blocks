@@ -63,6 +63,9 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		$key_positions = [ 'top', 'right', 'bottom', 'left' ];
 		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id . ':not(.kb-specificity-added):not(.kb-extra-specificity-added)' );
+		if ( ! empty( $attributes['align'] ) && ( 'left' === $attributes['align'] || 'right' === $attributes['align'] ) ) {
+			$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id . ':not(.kb-specificity-added):not(.kb-extra-specificity-added) > figure' );
+		}
 
 		// Margins
 		$css->render_measure_output( $attributes, 'marginDesktop', 'margin', array(

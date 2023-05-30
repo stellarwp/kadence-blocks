@@ -79,9 +79,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 
 = 3.0.39 =
-Release Date: June 1st, 2023
+Release Date: May 30th, 2023
 * Fix: Issue with tabs keyboard navigation.
+* Fix: Issue with row alignment in editor.
 * FIx: Issue with single icon custom class.
+* Fix: Issue with css for Lottie Block.
+* Fix: Issue with left and right margin in image block when aligned left or right.
+* Fix: Issue with wpml and title for info box when using a div or span tag.
+* Fix: Spacing issue with icon list in editor.
+* Fix: RTL gallery slider issues.
 
 = 3.0.38 =
 Release Date: May 16th, 2023
