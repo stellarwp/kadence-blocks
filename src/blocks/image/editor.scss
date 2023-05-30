@@ -328,3 +328,16 @@ figure.wp-block-kadence-image:not(.wp-block) {
 .wp-block-kadence-image[data-align="center"].kb-image-is-ratio-size {
 	width: 100%;
 }
+.kb-image-has-overlay {
+    position: relative;
+}
+.kb-image-has-overlay:after {
+    content: '';
+    position: absolute;
+	opacity: 0.3;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 9;
+}
