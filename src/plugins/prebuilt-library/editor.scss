@@ -1077,11 +1077,22 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 	// padding-right: 0;
 	// padding-left: var(--kb-patterns-outer-wrap-spacing, 48px );
 	// border-right: 0;
+	.kb-context-library-categories.kb-library-sidebar-bottom {
+		display: flex;
+		flex-direction: column;
+	}
 	.kb-library-sidebar-bottom button.components-button.kb-category-button {
-		color: #676767;
+		color: #333;
+	}
+	.kb-library-sidebar-bottom .context-category-wrap:not(.has-content) {
+		order: 10;
+	}
+	.kb-library-sidebar-bottom .context-category-wrap:not(.has-content) button.components-button.kb-category-button {
+		color: #777;
 	}
 	.kb-library-sidebar-bottom button.components-button.kb-category-button.is-pressed, .kb-library-sidebar-bottom .components-button.is-pressed:hover:not(:disabled) {
 		color: var(--wp-components-color-foreground,#1e1e1e);
+		font-weight: 500;
 		background: #F5F5F5;
 	}
 	.kb-library-sidebar-bottom {
@@ -1129,7 +1140,52 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 		position: relative;
 	}
 }
-
+// Placeholder to inform generating.
+.kb-patterns-banner-generate-notice {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    min-height: calc(95vh - 80px);
+    max-width: 550px;
+    text-align: center;
+    margin: 0 auto;
+}
+.kb-patterns-banner-generate-notice h2.components-heading {
+    margin: 1rem 0;
+}
+.kb-patterns-banner-generate-notice p {
+    margin: 0 0 1rem;
+    font-size: 15px;
+}
+.kb-patterns-banner-generate-notice {
+	button.components-button.kadence-generate-copy-button.has-icon {
+		color: white;
+		background: var(--kadence-ui-color, #0073E6);
+		border-color: var(--kadence-ui-color, #0073E6);
+		padding: 8px 16px;
+		height: auto;
+		font-size: 16px;
+		line-height: 1.4;
+	}
+	button.components-button.kadence-generate-copy-button.has-icon svg {
+		width: 1em;
+		height: 1em;
+		margin-left: .8em;
+	}
+}
+.kb-category-button svg.components-spinner {
+    margin: 0 10px 0 0;
+    height: 14px;
+    width: 14px;
+}
+.kb-patterns-banner-generate-notice .kadence-generate-icons {
+    width: 1em;
+    height: 1em;
+    font-size: 50px;
+    fill: var(--kadence-ui-color);
+}
 .kb-loading-library {
     display: flex;
     justify-content: center;

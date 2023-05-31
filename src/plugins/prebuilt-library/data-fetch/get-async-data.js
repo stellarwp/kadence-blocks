@@ -151,6 +151,27 @@ export function getAsyncData() {
 			return 'failed';
 		}
 	}
+
+	/**
+	 * Get the AI content data from the server.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getLocalAIContentData() {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_all_items', {
+					api_key:data_key,
+				} ),
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'failed';
+		}
+	}
 	/**
 	 * Force a reload of the AI content data.
 	 *
@@ -194,6 +215,7 @@ export function getAsyncData() {
 					api_key:data_key,
 				} ),
 			} );
+			console.log( response );
 			return response;
 		} catch (error) {
 			console.log(`ERROR: ${ error }`);
@@ -300,6 +322,7 @@ export function getAsyncData() {
 	return {
 		error,
 		getAIContentData,
+		getLocalAIContentData,
 		getAIContentDataReload,
 		saveAIWizardData,
 		getAIWizardData,
