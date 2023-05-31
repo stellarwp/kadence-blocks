@@ -1021,7 +1021,7 @@ export default function Image( {
 						</KadencePanelBody>
 						{ showSettings( 'overlay', 'kadence/image' ) && (
 							<KadencePanelBody
-								title={ __( 'Overlay Settings', 'kadence-blocks' ) }
+								title={ __( 'Overlay Color', 'kadence-blocks' ) }
 								initialOpen={ false }
 								panelName={ 'kb-image-overlay-settings' }
 							>
@@ -1053,7 +1053,7 @@ export default function Image( {
 								{ 'gradient' !== overlayType && (
 									<>
 										<PopColorControl
-											label={ __( 'Background Color', 'kadence-blocks' ) }
+											label={ __( 'Color', 'kadence-blocks' ) }
 											value={ ( overlay ? overlay : '' ) }
 											default={ '' }
 											onChange={ value => setAttributes( { overlay: value } ) }
@@ -1193,7 +1193,7 @@ export default function Image( {
 			// Disable reason: Image itself is not meant to be interactive, but
 			// should direct focus to block.
 			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
-		<div className={ `${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>
+		<div className={ `${ ( ! useRatio && useOverlay ? 'kb-image-has-overlay' : '' ) }` }>
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
@@ -1252,7 +1252,7 @@ export default function Image( {
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
 	if ( useRatio ){
-		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ img }</div>;
+		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>{ img }</div>;
 	}
 	let imageWidthWithinContainer;
 	let imageHeightWithinContainer;
