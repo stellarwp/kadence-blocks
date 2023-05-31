@@ -82,6 +82,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 Release Date: May 31st, 2023
 * Add: Overlay color to advanced image block.
 * Fix: Issue with tabs accessibility.
+* Fix: Possible issue with countUp start trigger.
+* Fix: Issue with icon list stroke width.
 
 = 3.0.39 =
 Release Date: May 30th, 2023
