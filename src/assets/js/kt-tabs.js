@@ -18,13 +18,10 @@
 					var parentId = parentListItem.getAttribute("id");
 					var isActive = parentListItem.classList.contains('kt-tab-title-active');
 
-					parentListItem.setAttribute('role', 'tab');
-					// parentListItem.setAttribute('aria-controls', parentId);
-					parentListItem.setAttribute('aria-selected', isActive ? 'true' : 'false');
-					parentListItem.setAttribute('tabindex', isActive ? '0' : '-1');
-
-					subElem.setAttribute('role', 'presentation');
-					subElem.setAttribute('tabindex', '-1');
+					subElem.setAttribute('role', 'tab');
+					// subElem.setAttribute('aria-controls', parentId);
+					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');
+					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 
 					// Set attr on the related content tab
 					var tabId = subElem.getAttribute('data-tab');
@@ -42,7 +39,7 @@
 						//const listItem = this.parentElement;
 						switch ( evt.which ) {
 							case 37:
-								if (listItem.previousElementSibling) {
+								if ( listItem.previousElementSibling ) {
 									listItem.previousElementSibling.querySelector('a').click();
 								} else {
 									listItem.parentElement.querySelector('li:last-of-type > a' ).click();
@@ -159,15 +156,15 @@
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
 			const prevActiveListItem= wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
 			prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
-			prevActiveListItem.setAttribute('tabindex', '-1');
-			prevActiveListItem.setAttribute('aria-selected', 'false');
+			prevActiveAnchor.setAttribute('tabindex', '-1');
+			prevActiveAnchor.setAttribute('aria-selected', 'false');
 
 			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
 			const newActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' a');
 			const newActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber);
 			newActiveListItem.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
-			newActiveListItem.setAttribute('tabindex', '0');
-			newActiveListItem.setAttribute('aria-selected', 'true');
+			newActiveAnchor.setAttribute('tabindex', '0');
+			newActiveAnchor.setAttribute('aria-selected', 'true');
 
 			// Hide all tab panels.
 			wrapper.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
