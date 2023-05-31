@@ -1185,14 +1185,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'image_type' => $image_type,
 			'sizes' => $sizes,
 		);
-		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'images/collections' );
 		$response = wp_remote_post(
-			$api_url,
+			$this->remote_ai_url . 'images/collections',
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
 				),
+				'body' => json_encode( $body ),
 			)
 		);
 		// Early exit if there was an error.
