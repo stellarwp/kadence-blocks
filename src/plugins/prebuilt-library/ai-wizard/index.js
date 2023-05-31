@@ -3,7 +3,6 @@
  */
 import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -20,7 +19,6 @@ export function AiWizard( {
 	onClose
 } ) {
 	const [ wizardData, setWizardData ] = useState();
-	//const [ wizardOpen, setWizardOpen ] = useState(false);
 	const { loading, getAiWizardData } = useDatabase();
 	const { setVerticals } = verticalsHelper();
 	const { setCollections } = collectionsHelper();
@@ -36,10 +34,9 @@ export function AiWizard( {
 		setVerticals();
 		// Set collections data in session storage.
 		setCollections();
-
+		// Get previously-saved data for modal.
 		getPreviousData();
 	}, []);
-
 
 	return (
 		<>
