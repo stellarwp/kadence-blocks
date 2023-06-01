@@ -4,7 +4,6 @@ import {
 } from '../constants';
 
 import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
 import { SafeParseJSON } from '@kadence/helpers';
 
 export function verticalsHelper() {
@@ -16,16 +15,14 @@ export function verticalsHelper() {
 	async function getVerticalsFromProphecy() {
 		try {
 			let verticals = [];
-			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_VERTICALS, {
-					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
-				} ),
-			} );
+			const response = await apiFetch({
+				path: API_ROUTE_GET_VERTICALS
+			});
 			const responseData = SafeParseJSON( response, false );
 			if ( responseData?.data ) {
 				verticals = formatVerticals(responseData.data);
 				// Save verticals object to session storage.
-				saveVerticals(verticals);
+				saveVerticalsToSession(verticals);
 			}
 			return verticals;
 		} catch (error) {
@@ -65,10 +62,34 @@ export function verticalsHelper() {
 	 *
 	 * @return {void}
 	 */
-	function saveVerticals(verticals) {
+	function saveVerticalsToSession(verticals) {
 		if (verticals) {
 			sessionStorage.setItem(VERTICALS_SESSION_KEY, JSON.stringify(verticals));
 		}
+	}
+
+	/**
+	 * Check session storage for existing data.
+	 *
+	 * @return {boolean}
+	 *
+	 */
+	function verticalsSessionHasData() {
+		if (! sessionStorage.getItem(VERTICALS_SESSION_KEY)) {
+			return false;
+		}
+
+		try {
+			const verticals = JSON.parse(sessionStorage.getItem(VERTICALS_SESSION_KEY));
+
+			if (Object.keys(verticals).length === 0) {
+				return false;
+			}
+		} catch (error) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -77,7 +98,7 @@ export function verticalsHelper() {
 	 * @return {void}
 	 */
 	function setVerticals() {
-		if (! sessionStorage.getItem(VERTICALS_SESSION_KEY)) {
+		if (! verticalsSessionHasData()) {
 			getVerticals();
 		}
 	}
@@ -88,7 +109,7 @@ export function verticalsHelper() {
 	 * @return {Promise<object>}
 	 */
 	async function getVerticals() {
-		if (sessionStorage.getItem(VERTICALS_SESSION_KEY)) {
+		if (verticalsSessionHasData()) {
 			return JSON.parse(sessionStorage.getItem(VERTICALS_SESSION_KEY));
 		}
 
