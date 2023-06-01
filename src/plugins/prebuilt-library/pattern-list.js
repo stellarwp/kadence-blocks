@@ -15,6 +15,7 @@ import {
 	ExternalLink,
 	Spinner,
 	Tooltip,
+	Icon,
 	__experimentalHeading as Heading,
 } from '@wordpress/components';
 import {
@@ -28,6 +29,7 @@ import {
 	close,
 	plusCircle,
 } from '@wordpress/icons';
+import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
@@ -100,15 +102,41 @@ function LoadingHeader( { type } ) {
 		</Heading>
 	);
 }
-function GenerateHeader() {
+function GenerateHeader( { context, contextLabel, generateContext } ) {
 	return (
-		<Heading
-			level={ 2 }
-			lineHeight={ '48px' }
-			className="kb-patterns-banner-notice"
-		>
-			{ __( 'Generate AI Content Required', 'kadence Blocks' ) }
-		</Heading>
+		<div className="kb-patterns-banner-generate-notice">
+			<Icon className='kadence-generate-icons' icon={ aiIcon } />
+			<Heading
+				level={ 2 }
+				lineHeight={ '1.2' }
+				className="kb-patterns-heading-notice"
+			>
+				{ sprintf(
+				/* translators: %s: the current context */
+				__(
+					'Would you like to generate copy for the %s context', 'kadence Blocks'
+				),
+				contextLabel,
+			) }
+			</Heading>
+			<p>
+				{ sprintf(
+					/* translators: %s: the current context */
+				__('Using the site information provided we will generate copy for the %s context.', 'kadence Blocks' ),
+				contextLabel,
+				) }
+			</p>
+			<Button
+				className='kadence-generate-copy-button'
+				iconPosition='right'
+				icon={ aiIcon }
+				text={ __('Generate Copy', 'kadence-blocks') }
+				onClick={ () => {
+					generateContext( context );
+				}}
+			/>
+
+		</div>
 	);
 }
 
@@ -141,6 +169,8 @@ function PatternList( {
 	isLoadingAI,
 	useImageReplace,
 	isAINeeded,
+	generateContext,
+	contextLabel,
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
@@ -192,10 +222,10 @@ function PatternList( {
 	}, [ patterns ] );
 	const filteredBlockPatterns = useMemo( () => {
 		if ( contextTab === 'context' ) {
-			if ( isAINeeded ) {
+			if ( isAINeeded?.[aiContext] ) {
 				console.log( 'AI Needed' );
 				return [];
-			} else if ( isLoadingAI ){
+			} else if ( isLoadingAI?.[aiContext] ){
 				console.log( 'Loading AI Content' );
 				setFailedAI( false );
 				return [];
@@ -403,11 +433,11 @@ function PatternList( {
 				{ contextTab === 'context' && failedAI && (
 					<LoadingFailedHeader type={ failedAIType } />
 				) }
-				{ contextTab === 'context' && isLoadingAI && (
-					<LoadingHeader type={isLoadingAI} />
+				{ contextTab === 'context' && isLoadingAI?.[aiContext] && (
+					<LoadingHeader type={isLoadingAI?.[aiContext]} />
 				) }
-				{ contextTab === 'context' && isAINeeded && (
-					<GenerateHeader />
+				{ contextTab === 'context' && isAINeeded?.[aiContext] && (
+					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
 				{ hasItems && (
 					<KadenceBlockPatternList

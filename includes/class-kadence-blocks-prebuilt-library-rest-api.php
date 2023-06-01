@@ -70,9 +70,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	const PROP_IMAGE_SIZES = 'image_sizes';
 	/**
-	 * Handle image sizes.
+	 * Handle image Industry.
 	 */
-	const PROP_INDUSTRY = 'industries';
+	const PROP_INDUSTRIES = 'industries';
+	/**
+	 * Handle image Industry.
+	 */
+	const PROP_INDUSTRY = 'industry';
 
 	/**
 	 * The library folder.
@@ -198,6 +202,42 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/get_all_items',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_all_items' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_initial_jobs',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_initial_jobs' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_remaining_jobs',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_remaining_jobs' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
 			'/get_library',
 			array(
 				array(
@@ -310,7 +350,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_images_by_industry( $request ) {
-		$industries = $request->get_param( self::PROP_INDUSTRY );
+		$industries = $request->get_param( self::PROP_INDUSTRIES );
 		$image_type = $request->get_param( self::PROP_IMAGE_TYPE );
 		$image_sizes = $request->get_param( self::PROP_IMAGE_SIZES );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
@@ -517,7 +557,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				)
 			);
 			// Early exit if there was an error.
-			if ( is_wp_error( $response ) ) {
+			if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 				return rest_ensure_response( 'error' );
 			}
 			// Get the CSS from our response.
@@ -609,7 +649,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		if ( ! empty( $available_prompts && is_array( $available_prompts) ) ) {
 			$contexts_available = array();
-			foreach( $available_prompts as $key => $prompt ) {
+			foreach ( $available_prompts as $key => $prompt ) {
 				if ( ! empty( $prompt ) ) {
 					$contexts_available[] = $key;
 				}
@@ -624,6 +664,29 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 	}
 	/**
+	 * Retrieves all the currently available ai content.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_all_items( $request ) {
+		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$available_prompts = get_option( 'kb_design_library_prompts', array() );
+		$return_data = array();
+		if ( ! empty( $available_prompts ) && is_array( $available_prompts ) ) {
+			foreach ( $available_prompts as $context => $prompt ) {
+				if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) ) {
+					$return_data[ $context ] = json_decode( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ), true );
+				}
+			}
+		}
+		if ( ! empty( $return_data ) ) {
+			return rest_ensure_response( $return_data );
+		} else {
+			return rest_ensure_response( 'empty' );
+		}
+	}
+	/**
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -634,7 +697,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
-
 		// Check if we have captured prompt.
 		if ( ! empty( $available_prompts[ $context ] ) && ! $reload ) {
 			// Check if we have a local file.
@@ -651,7 +713,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 						update_option( 'kb_design_library_prompts', $current_prompts );
 					}
 					return wp_send_json( 'error' );
-				} else if ( isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+				} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
 					return wp_send_json( 'processing' );
 				} else if ( isset( $data['data']['status'] ) && 409 !== $data['data']['status'] ) {
 					$current_prompts = get_option( 'kb_design_library_prompts', array() );
@@ -680,6 +742,82 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return wp_send_json( 'error' );
 			}
 		}
+	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_remaining_jobs( $request ) {
+		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
+		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$available_prompts = get_option( 'kb_design_library_prompts', array() );
+		$contexts = array(
+			'about',
+			'achievements',
+			'blog',
+			'call-to-action',
+			'careers',
+			'contact-form',
+			'donate',
+			'events',
+			'faq',
+			'get-started',
+			'history',
+			'industries',
+			'location',
+			'mission',
+			'news',
+			'partners',
+			// 'podcast',
+			'pricing-table',
+			// 'product-details',
+			'products-services',
+			'profile',
+			'subscribe-form',
+			'support',
+			'team',
+			'testimonials',
+			'value-prop',
+			'volunteer',
+			'welcome',
+			'work',
+		);
+		foreach ( $contexts as $context ) {
+			// Check if we have captured prompt.
+			if ( empty( $available_prompts[ $context ] ) || $reload ) {
+				// Create a job.
+				$response = $this->get_new_remote_contents( $context );
+				$data = json_decode( $response, true );
+				if ( $response === 'error' ) {
+					return wp_send_json( 'error' );
+				} else if ( isset( $data['data']['job_id'] ) ) {
+					$current_prompts = get_option( 'kb_design_library_prompts', array() );
+					$current_prompts[ $context ] = $data['data']['job_id'];
+					update_option( 'kb_design_library_prompts', $current_prompts );
+				} else {
+					return wp_send_json( 'error' );
+				}
+			}
+		}
+	}
+	/**
+	 * Converts a string into a slug.
+	 * 
+	 * @param string $str The prompt data.
+	 *
+	 * @return string of the slug.
+	 */
+	public function sanitize_industry_name( $str ) {
+		if ( empty( $str ) ) {
+			return 'other';
+		}
+		$str = strtolower( $str ); // converts all uppercase letters to lowercase.
+		$str = str_replace( '&', 'and', $str ); // replaces all '&' with 'and'.
+		$str = str_replace( ' ', '-', $str ); // replaces all spaces with '-'.
+
+		return $str;
 	}
 	/**
 	 * Retrieves the path to the local data file.
@@ -768,7 +906,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$this->block_library_folder = $this->get_base_path();
 			$this->block_library_folder .= $this->get_subfolder_name();
 		}
-			
 		return $this->block_library_folder;
 	}
 	/**
@@ -1029,18 +1166,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				break;
 		}
 		//error_log( print_r( $body, true ));
-		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'content/create' );
 		$response = wp_remote_post(
-			$api_url,
+			$this->remote_ai_url . 'content/create',
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
 				),
+				'body' => json_encode( $body ),
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1052,6 +1190,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		return $contents;
+	}
+	/**
+	 * Check if a response code is an error.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function is_response_code_error( $response ) {
+		$response_code = (int) wp_remote_retrieve_response_code( $response );
+		if ( $response_code >= 200 && $response_code < 300 ) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	/**
 	 * Get remote file contents.
@@ -1080,9 +1232,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		// error_log( print_r( $response, true ) );
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
+			return 'error';
+		}
+		$response_code = (int) wp_remote_retrieve_response_code( $response );
+		if ( 409 === $response_code ) {
+			return 'processing';
+		}
+		if ( $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1133,7 +1291,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1184,18 +1342,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'image_type' => $image_type,
 			'sizes' => $sizes,
 		);
-		$api_url  = add_query_arg( $body, $this->remote_ai_url . 'images/collections' );
 		$response = wp_remote_post(
-			$api_url,
+			$this->remote_ai_url . 'images/collections',
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
 				),
+				'body' => json_encode( $body ),
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1236,7 +1395,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1277,7 +1436,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
@@ -1400,12 +1559,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		);
+		$query_params[ self::PROP_INDUSTRY ] = array(
+			'description'       => __( 'The selected Industry', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+		);
 		$query_params[ self::PROP_IMAGE_TYPE ] = array(
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		);
-		$query_params[ self::PROP_INDUSTRY ] = array(
+		$query_params[ self::PROP_INDUSTRIES ] = array(
 			'description'       => __( 'The industries to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => array( $this, 'sanitize_industries_array' ),
@@ -1520,13 +1684,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$post_id,
 			wp_generate_attachment_metadata( $post_id, $upload['file'] )
 		);
-		if (  ! empty( $image_data['alt'] ) ) {
+		if ( ! empty( $image_data['alt'] ) ) {
 			update_post_meta( $post_id, '_wp_attachment_image_alt', $image_data['alt'] );
 		}
-		if (  ! empty( $image_data['photographer'] ) ) {
+		if ( ! empty( $image_data['photographer'] ) ) {
 			update_post_meta( $post_id, '_pexels_photographer', $image_data['photographer'] );
 		}
-		if (  ! empty( $image_data['photographer_url'] ) ) {
+		if ( ! empty( $image_data['photographer_url'] ) ) {
 			update_post_meta( $post_id, '_pexels_photographer_url', $image_data['photographer_url'] );
 		}
 		update_post_meta( $post_id, '_kadence_blocks_image_hash', sha1( $image_data['url'] ) );
