@@ -206,3 +206,15 @@
 .wp-block-kadence-image figure {
 	margin: 0;
 }
+.kb-image-has-overlay {
+    position: relative;
+}
+.kb-image-has-overlay:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 9;
+}
