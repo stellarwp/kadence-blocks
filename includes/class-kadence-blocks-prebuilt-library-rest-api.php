@@ -502,7 +502,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		return $content;
 	}
-	
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -784,6 +783,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'welcome',
 			'work',
 		);
+		$contexts_available = array();
 		foreach ( $contexts as $context ) {
 			// Check if we have captured prompt.
 			if ( empty( $available_prompts[ $context ] ) || $reload ) {
@@ -796,10 +796,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					$current_prompts = get_option( 'kb_design_library_prompts', array() );
 					$current_prompts[ $context ] = $data['data']['job_id'];
 					update_option( 'kb_design_library_prompts', $current_prompts );
+					$contexts_available[] = $context;
 				} else {
 					return wp_send_json( 'error' );
 				}
 			}
+		}
+		if ( ! empty( $contexts_available ) ) {
+			return rest_ensure_response( $contexts_available );
+		} else {
+			return rest_ensure_response( 'failed' );
 		}
 	}
 	/**

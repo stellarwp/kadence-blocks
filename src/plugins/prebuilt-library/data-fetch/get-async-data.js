@@ -215,7 +215,28 @@ export function getAsyncData() {
 					api_key:data_key,
 				} ),
 			} );
-			console.log( response );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'failed';
+		}
+	}
+
+	/**
+	 * Get Remaining Contexts, or All if forcing reload.
+	 *
+	 * @param {(object)} context
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getAIContentRemaining( reload = false ) {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_remaining_jobs', {
+					force_reload: reload,
+					api_key:data_key,
+				} ),
+			} );
 			return response;
 		} catch (error) {
 			console.log(`ERROR: ${ error }`);
@@ -331,6 +352,7 @@ export function getAsyncData() {
 		getPattern,
 		processPattern,
 		getLocalAIContexts,
+		getAIContentRemaining,
 	}
 }
 
