@@ -25,7 +25,8 @@ import {
 	InspectorControlTabs,
 	URLInputControl,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	ResponsiveRangeControls
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -40,7 +41,6 @@ import {
 	BlockAlignmentControl,
 	InspectorControls,
 	BlockControls,
-	InnerBlocks,
 	useInnerBlocksProps,
 	BlockVerticalAlignmentControl,
 	JustifyContentControl,
@@ -111,45 +111,44 @@ export function EditInner( props ) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	const [ fields, setFields ] = useFormMeta( '_kad_form_fields' )
-	const [ email, setEmail ] = useFormMeta( '_kad_form_email' );
-	const [ actions, setActions ] = useFormMeta( '_kad_form_actions' );
-	const [ mailerlite, setMailerlite ] = useFormMeta( '_kad_form_mailerlite' );
-	const [ fluentcrm, setFluentcrm ] = useFormMeta( '_kad_form_fluentcrm' );
-	const [ sendinblue, setSendinblue ] = useFormMeta( '_kad_form_sendinblue' );
-	const [ mailchimp, setMailchimp ] = useFormMeta( '_kad_form_mailchimp' );
-	const [ convertkit, setConvertkit ] = useFormMeta( '_kad_form_convertkit' );
-	const [ activecampaign, setActivecampaign ] = useFormMeta( '_kad_form_activecampaign' );
+	const [ fields ] = useFormMeta( '_kad_form_fields' )
+	const [ email ] = useFormMeta( '_kad_form_email' );
+	const [ actions ] = useFormMeta( '_kad_form_actions' );
+	const [ mailerlite ] = useFormMeta( '_kad_form_mailerlite' );
+	const [ fluentcrm ] = useFormMeta( '_kad_form_fluentcrm' );
+	const [ sendinblue ] = useFormMeta( '_kad_form_sendinblue' );
+	const [ mailchimp ] = useFormMeta( '_kad_form_mailchimp' );
+	const [ convertkit ] = useFormMeta( '_kad_form_convertkit' );
+	const [ activecampaign ] = useFormMeta( '_kad_form_activecampaign' );
 
-	const [ redirect, setRedirect ] = useFormMeta( '_kad_form_redirect' );
+	const [ redirect ] = useFormMeta( '_kad_form_redirect' );
 
-	const [ webhook, setWebhook ] = useFormMeta( '_kad_form_webhook' );
-	const [ autoEmail, setAutoEmail ] = useFormMeta( '_kad_form_autoEmail' );
-	const [ entry, setEntry ] = useFormMeta( '_kad_form_entry' );
-	const [ messages, setMessages ] = useFormMeta( '_kad_form_messages' );
+	const [ webhook ] = useFormMeta( '_kad_form_webhook' );
+	const [ autoEmail ] = useFormMeta( '_kad_form_autoEmail' );
+	const [ entry ] = useFormMeta( '_kad_form_entry' );
+	const [ messages ] = useFormMeta( '_kad_form_messages' );
 
-	const [ labelFont, setLabelFont ] = useFormMeta( '_kad_form_labelFont' );
-	const [ inputFont, setInputFont ] = useFormMeta( '_kad_form_inputFont' );
+	const [ labelFont ] = useFormMeta( '_kad_form_labelFont' );
+	const [ inputFont ] = useFormMeta( '_kad_form_inputFont' );
 
-	const [ vAlign, setValign ] = useFormMeta( '_kad_form_vAlign' );
-	const [ hAlign, setHalign ] = useFormMeta( '_kad_form_hAlign' );
+	const [ vAlign ] = useFormMeta( '_kad_form_vAlign' );
+	const [ hAlign ] = useFormMeta( '_kad_form_hAlign' );
 
-	const [ padding, setPadding ] = useFormMeta( '_kad_form_padding' );
-	const [ tabletPadding, setTabletPadding ] = useFormMeta( '_kad_form_tabletPadding' );
-	const [ mobilePadding, setMobilePadding ] = useFormMeta( '_kad_form_mobilePadding' );
-	const [ paddingUnit, setPaddingUnit ] = useFormMeta( '_kad_form_paddingUnit' );
+	const [ padding ] = useFormMeta( '_kad_form_padding' );
+	const [ tabletPadding ] = useFormMeta( '_kad_form_tabletPadding' );
+	const [ mobilePadding ] = useFormMeta( '_kad_form_mobilePadding' );
+	const [ paddingUnit ] = useFormMeta( '_kad_form_paddingUnit' );
 
-	const [ margin, setMargin ] = useFormMeta( '_kad_form_margin' );
-	const [ tabletMargin, setTabletMargin ] = useFormMeta( '_kad_form_tabletMargin' );
-	const [ mobileMargin, setMobileMargin ] = useFormMeta( '_kad_form_mobileMargin' );
-	const [ marginUnit, setMarginUnit ] = useFormMeta( '_kad_form_marginUnit' );
+	const [ margin ] = useFormMeta( '_kad_form_margin' );
+	const [ tabletMargin ] = useFormMeta( '_kad_form_tabletMargin' );
+	const [ mobileMargin ] = useFormMeta( '_kad_form_mobileMargin' );
+	const [ marginUnit ] = useFormMeta( '_kad_form_marginUnit' );
 
-	console.log( margin );
-	console.log( padding );
-	console.log( '---------' );
+	const [ style ] = useFormMeta( '_kad_form_style' );
+	const [ helpFont ] = useFormMeta( '_kad_form_helpFont' );
+	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
+	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 
-	const [ style, setStyle ] = useFormMeta( '_kad_form_style' );
-	const [ helpFont, setHelpFont ] = useFormMeta( '_kad_form_helpFont' );
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
@@ -166,8 +165,6 @@ export function EditInner( props ) {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
-	console.log(' previewPaddingTop: ' + getSpacingOptionOutput( previewPaddingTop, marginUnit ));
-	console.log(' PReview: ' + getSpacingOptionOutput( previewMarginTop, marginUnit ));
 
 	const previewHorizontalAlign = getPreviewSize( previewDevice, ( undefined !== hAlign?.[0] ? hAlign[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign[2] : '' ) );
 	const previewVerticalAlign = getPreviewSize( previewDevice, ( undefined !== vAlign?.[0] ? vAlign[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign[2] : '' ) );
@@ -194,8 +191,7 @@ export function EditInner( props ) {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
 			let currentFields = getFormFields( formInnerBlocks );
 			if ( ! isEqual( fields, currentFields ) ) {
-				//setMetaAttribute( currentFields, 'fields' );
-				setFields( currentFields );
+				setMetaAttribute( currentFields, 'fields' );
 			}
 		}
 	}, [formInnerBlocks] );
@@ -290,11 +286,11 @@ export function EditInner( props ) {
 						value={ previewHorizontalAlign }
 						onChange={ value => {
 							if ( previewDevice === 'Mobile' ) {
-								setHalign( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ] );
+								setMetaAttribute( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ], 'hAlign' );
 							} else if ( previewDevice === 'Tablet' ) {
-								setHalign( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] );
+								setMetaAttribute( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ], 'hAlign' );
 							} else {
-								setHalign( [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ] );
+								setMetaAttribute( [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ], 'hAlign' );
 							}
 						} }
 					/>
@@ -302,11 +298,11 @@ export function EditInner( props ) {
 						value={ previewVerticalAlign }
 						onChange={ value => {
 							if ( previewDevice === 'Mobile' ) {
-								setValign(  [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ] );
+								setMetaAttribute(  [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ], 'vAlign' );
 							} else if ( previewDevice === 'Tablet' ) {
-								setValign( [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] );
+								setMetaAttribute( [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ], 'vAlign' );
 							} else {
-								setValign( [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ] );
+								setMetaAttribute( [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ], 'vAlign' );
 							}
 						}}
 					/>
@@ -532,7 +528,7 @@ export function EditInner( props ) {
 							initialOpen={false}
 							panelName={'kb-form-message'}
 						>
-							<MessageStyling setAttributes={ setAttributes } attributes={ attributes } />
+							<MessageStyling setMetaAttribute={setMetaAttribute} useFormMeta={ useFormMeta } />
 						</KadencePanelBody>
 					</>
 				}
@@ -546,20 +542,20 @@ export function EditInner( props ) {
 								tabletValue={tabletPadding}
 								mobileValue={mobilePadding}
 								onChange={(value) => {
-									setPadding( value );
+									setMetaAttribute( value, 'padding' );
 								}}
 								onChangeTablet={(value) => {
-									setTabletPadding( value );
+									setMetaAttribute( value, 'tabletPadding' );
 								}}
 								onChangeMobile={(value) => {
-									setMobilePadding( value );
+									setMetaAttribute( value, 'mobilePadding' );
 								}}
 								min={0}
 								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
 								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setPaddingUnit( value )}
+								onUnit={(value) => setMetaAttribute( value, 'paddingUnit' )}
 								onMouseOver={paddingMouseOver.onMouseOver}
 								onMouseOut={paddingMouseOver.onMouseOut}
 							/>
@@ -569,25 +565,54 @@ export function EditInner( props ) {
 								tabletValue={tabletMargin}
 								mobileValue={mobileMargin}
 								onChange={(value) => {
-									setMargin( value );
+									setMetaAttribute( value, 'margin' );
 								}}
 								onChangeTablet={(value) => {
-									setTabletMargin( value );
+									setMetaAttribute( value, 'tabletMargin' );
 								}}
 								onChangeMobile={(value) => {
-									setMobileMargin( value );
+									setMetaAttribute( value, 'mobileMargin' );
 								}}
 								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
 								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
 								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}
-								onUnit={(value) => setMarginUnit( value )}
+								onUnit={(value) => setMetaAttribute( value, 'marginUnit' )}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							title={__( 'Field Width', 'kadence-blocks' )}
+							initialOpen={true}
+							panelName={ 'kb-adv-form-text-width' }
+						>
+							<ResponsiveRangeControls
+								label={__( 'Max Width', 'kadence-blocks' )}
+								value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
+								onChange={value => {
+									setMetaAttribute( [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ], 'maxWidth' );
+								}}
+								tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
+								onChangeTablet={( value ) => {
+									setMetaAttribute( [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ], 'maxWidth' );
+								}}
+								mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
+								onChangeMobile={( value ) => {
+									setMetaAttribute( [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ], 'maxWidth' );
+								}}
+								min={0}
+								max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+								step={1}
+								unit={maxWidthUnit ? maxWidthUnit : '%'}
+								onUnit={( value ) => {
+									setMetaAttribute( value, 'maxWidthUnit' );
+								}}
+								units={[ 'px', '%', 'vw' ]}
+							/>
+						</KadencePanelBody>
 					</>
 				}
 

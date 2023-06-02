@@ -23,14 +23,14 @@ import {
 
 export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {
 
-	const [ fieldBorderRadius, setFieldBorderRadius ] = useFormMeta( '_kad_form_fieldBorderRadius' );
-	const [ tabletFieldBorderRadius, setTabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
-	const [ mobileFieldBorderRadius, setMobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
-	const [ fieldBorderRadiusUnit, setFieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
+	const [ fieldBorderRadius ] = useFormMeta( '_kad_form_fieldBorderRadius' );
+	const [ tabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
+	const [ mobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
+	const [ fieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
 
-	const [ fieldBorderStyle, setFieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
-	const [ tabletFieldBorderStyle, setTabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
-	const [ mobileFieldBorderStyle, setMobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
+	const [ fieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
+	const [ tabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
+	const [ mobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
 
 	const saveStyle = ( value ) => {
 		setMetaAttribute( { ...style, ...value }, 'style');
@@ -100,7 +100,13 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 							isSmall
 							isPrimary={style.size === key}
 							aria-pressed={style.size === key}
-							onClick={() => saveStyle( { size: key } )}
+							onClick={ () => {
+								if( style.size === key ) {
+									saveStyle( { size: '' } )
+								} else {
+									saveStyle( { size: key } )
+								}
+							} }
 						>
 							{name}
 						</Button>
@@ -202,7 +208,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 											label={__( 'Input Focus Color', 'kadence-blocks' )}
 											value={( inputFont.colorActive ? inputFont.colorActive : '' )}
 											default={''}
-											onChange={value => {
+											onChange={( value ) => {
 												saveInputFont( { colorActive: value } );
 											}}
 										/>
@@ -229,11 +235,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 													label={__( 'Input Focus Background', 'kadence-blocks' )}
 													value={( style.backgroundActive ? style.backgroundActive : '' )}
 													default={''}
-													onChange={value => {
+													onChange={( value ) => {
 														saveStyle( { backgroundActive: value } );
 													}}
 													opacityValue={style.backgroundActiveOpacity}
-													onOpacityChange={value => saveStyle( { backgroundActiveOpacity: value } )}
+													onOpacityChange={( value ) => saveStyle( { backgroundActiveOpacity: value } )}
 													onArrayChange={( color, opacity ) => saveStyle( { backgroundActive: color, backgroundActiveOpacity: opacity } )}
 												/>
 											</div>
@@ -258,28 +264,28 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 											blur={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 5 ] ? style.boxShadowActive[ 5 ] : 3 )}
 											spread={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 6 ] ? style.boxShadowActive[ 6 ] : 0 )}
 											inset={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 7 ] ? style.boxShadowActive[ 7 ] : false )}
-											onEnableChange={value => {
+											onEnableChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 0 );
 											}}
-											onColorChange={value => {
+											onColorChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 1 );
 											}}
-											onOpacityChange={value => {
+											onOpacityChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 2 );
 											}}
-											onHOffsetChange={value => {
+											onHOffsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 3 );
 											}}
-											onVOffsetChange={value => {
+											onVOffsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 4 );
 											}}
-											onBlurChange={value => {
+											onBlurChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 5 );
 											}}
-											onSpreadChange={value => {
+											onSpreadChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 6 );
 											}}
-											onInsetChange={value => {
+											onInsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 7 );
 											}}
 										/>
@@ -287,11 +293,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 											label={__( 'Input Focus Border', 'kadence-blocks' )}
 											value={( style.borderActive ? style.borderActive : '' )}
 											default={''}
-											onChange={value => {
+											onChange={ ( value ) => {
 												saveStyle( { borderActive: value } );
 											}}
 											opacityValue={style.borderActiveOpacity}
-											onOpacityChange={value => saveStyle( { borderActiveOpacity: value } )}
+											onOpacityChange={ ( value ) => saveStyle( { borderActiveOpacity: value } )}
 											onArrayChange={( color, opacity ) => saveStyle( { borderActive: color, borderActiveOpacity: opacity } )}
 										/>
 									</>
@@ -303,7 +309,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 											label={__( 'Input Color', 'kadence-blocks' )}
 											value={( style.color ? style.color : '' )}
 											default={''}
-											onChange={value => {
+											onChange={ ( value ) => {
 												saveStyle( { color: value } );
 											}}
 										/>
@@ -330,11 +336,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 													label={__( 'Input Background', 'kadence-blocks' )}
 													value={( style.background ? style.background : '' )}
 													default={''}
-													onChange={value => {
+													onChange={ ( value ) => {
 														saveStyle( { background: value } );
 													}}
 													opacityValue={style.backgroundOpacity}
-													onOpacityChange={value => saveStyle( { backgroundOpacity: value } )}
+													onOpacityChange={ ( value ) => saveStyle( { backgroundOpacity: value } )}
 													onArrayChange={( color, opacity ) => saveStyle( { background: color, backgroundOpacity: opacity } )}
 												/>
 											</div>
@@ -359,28 +365,28 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 											blur={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 5 ] ? style.boxShadow[ 5 ] : 3 )}
 											spread={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 6 ] ? style.boxShadow[ 6 ] : 0 )}
 											inset={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 7 ] ? style.boxShadow[ 7 ] : false )}
-											onEnableChange={value => {
+											onEnableChange={ ( value ) => {
 												saveStyleBoxShadow( value, 0 );
 											}}
-											onColorChange={value => {
+											onColorChange={ ( value ) => {
 												saveStyleBoxShadow( value, 1 );
 											}}
-											onOpacityChange={value => {
+											onOpacityChange={ ( value ) => {
 												saveStyleBoxShadow( value, 2 );
 											}}
-											onHOffsetChange={value => {
+											onHOffsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 3 );
 											}}
-											onVOffsetChange={value => {
+											onVOffsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 4 );
 											}}
-											onBlurChange={value => {
+											onBlurChange={ ( value ) => {
 												saveStyleBoxShadow( value, 5 );
 											}}
-											onSpreadChange={value => {
+											onSpreadChange={ ( value ) => {
 												saveStyleBoxShadow( value, 6 );
 											}}
-											onInsetChange={value => {
+											onInsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 7 );
 											}}
 										/>
@@ -398,21 +404,21 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				value={ [ fieldBorderStyle ] }
 				tabletValue={tabletFieldBorderStyle}
 				mobileValue={mobileFieldBorderStyle}
-				onChange={( value ) => setFieldBorderStyle( value[0] ) }
-				onChangeTablet={( value ) => setTabletFieldBorderStyle( value[0] )}
-				onChangeMobile={( value ) => setMobileFieldBorderStyle( value[0] )}
+				onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
+				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
+				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}
 			/>
 			<ResponsiveMeasurementControls
 				label={__( 'Border Radius', 'kadence-blocks' )}
 				value={fieldBorderRadius}
 				tabletValue={tabletFieldBorderRadius}
 				mobileValue={mobileFieldBorderRadius}
-				onChange={( value ) => setFieldBorderRadius( value )}
-				onChangeTablet={( value ) => setTabletFieldBorderRadius( value )}
-				onChangeMobile={( value ) => setMobileFieldBorderRadius( value )}
+				onChange={( value ) => setMetaAttribute( value, 'fieldBorderRadius')}
+				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletFieldBorderRadius' )}
+				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileFieldBorderRadius' )}
 				unit={fieldBorderRadiusUnit}
 				units={[ 'px', 'em', 'rem', '%' ]}
-				onUnit={( value ) => setFieldBorderRadiusUnit( value ) }
+				onUnit={( value ) => setMetaAttribute( value, 'fieldBorderRadiusUnit' ) }
 				max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
 				step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
 				min={ 0 }
@@ -422,15 +428,15 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 			<ResponsiveRangeControls
 				label={__( 'Field Row Gap', 'kadence-blocks' )}
 				value={( undefined !== style.rowGap ? style.rowGap : '' )}
-				onChange={value => {
+				onChange={ ( value ) => {
 					saveStyle( { rowGap: value.toString() } );
 				}}
 				tabletValue={( undefined !== style.tabletRowGap ? style.tabletRowGap : '' )}
-				onChangeTablet={value => {
+				onChangeTablet={ ( value ) => {
 					saveStyle( { tabletRowGap: value.toString() } );
 				}}
 				mobileValue={( undefined !== style.mobileRowGap ? style.mobileRowGap : '' )}
-				onChangeMobile={value => {
+				onChangeMobile={ ( value ) => {
 					saveStyle( { mobileRowGap: value.toString() } );
 				}}
 				min={0}
@@ -446,7 +452,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				label={__( 'Placeholder Color', 'kadence-blocks' )}
 				value={( style.placeholderColor ? style.placeholderColor : '' )}
 				default={''}
-				onChange={value => {
+				onChange={ ( value ) => {
 					saveStyle( { placeholderColor: value } );
 				}}
 			/>

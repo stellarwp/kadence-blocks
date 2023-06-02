@@ -9,19 +9,39 @@ import {
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
 
-export default function MessageOptions( { setAttributes, attributes } ) {
-	const { messageFont, messageColor, messageColorError, messageBackground, messageBackgroundError, messageBorderRadius, messageBorderRadiusUnit, tabletMessageBorderRadius, mobileMessageBorderRadius, messageBorderSuccess, tabletMessageBorderSuccess, mobileMessageBorderSuccess, messageBorderError, tabletMessageBorderError, mobileMessageBorderError, messagePadding, messagePaddingUnit, tabletMessagePadding, mobileMessagePadding, messageMargin, messageMarginUnit, tabletMessageMargin, mobileMessageMargin } = attributes;
+export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
+
+	const [ messageBorderRadius ] = useFormMeta( '_kad_form_messageBorderRadius' );
+	const [ tabletMessageBorderRadius ] = useFormMeta( '_kad_form_tabletMessageBorderRadius' );
+	const [ mobileMessageBorderRadius ] = useFormMeta( '_kad_form_mobileMessageBorderRadius' );
+	const [ messageBorderRadiusUnit ] = useFormMeta( '_kad_form_messageBorderRadiusUnit' );
+
+	const [ messagePadding ] = useFormMeta( '_kad_form_messagePadding' );
+	const [ tabletMessagePadding ] = useFormMeta( '_kad_form_tabletMessagePadding' );
+	const [ mobileMessagePadding ] = useFormMeta( '_kad_form_mobileMessagePadding' );
+	const [ messagePaddingUnit ] = useFormMeta( '_kad_form_messagePaddingUnit' );
+
+	const [ messageMargin ] = useFormMeta( '_kad_form_messageMargin' );
+	const [ tabletMessageMargin ] = useFormMeta( '_kad_form_tabletMessageMargin' );
+	const [ mobileMessageMargin ] = useFormMeta( '_kad_form_mobileMessageMargin' );
+	const [ messageMarginUnit ] = useFormMeta( '_kad_form_messageMarginUnit' );
+
+	const [ messageColor ] = useFormMeta( '_kad_form_messageColor' );
+	const [ messageBackground ] = useFormMeta( '_kad_form_messageBackground' );
+	const [ messageColorError ] = useFormMeta( '_kad_form_messageColorError' );
+	const [ messageBackgroundError ] = useFormMeta( '_kad_form_messageBackgroundError' );
+
+	const [ messageBorderSuccess ] = useFormMeta( '_kad_form_messageBorderSuccess' );
+	const [ tabletMessageBorderSuccess ] = useFormMeta( '_kad_form_tabletMessageBorderSuccess' );
+	const [ mobileMessageBorderSuccess ] = useFormMeta( '_kad_form_mobileMessageBorderSuccess' );
+
+	const [ messageBorderError ] = useFormMeta( '_kad_form_messageBorderError' );
+	const [ tabletMessageBorderError ] = useFormMeta( '_kad_form_tabletMessageBorderError' );
+	const [ mobileMessageBorderError ] = useFormMeta( '_kad_form_mobileMessageBorderError' );
+	const [ messageFont ] = useFormMeta( '_kad_form_messageFont' );
 
 	const saveMessageFont = ( value ) => {
-		const newUpdate = messageFont.map( ( item, index ) => {
-			if ( 0 === index ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-		setAttributes( {
-			messageFont: newUpdate,
-		} );
+		setMetaAttribute( [ { ...messageFont[0], ...value } ], 'messageFont' );
 	};
 
 	return (
@@ -31,16 +51,16 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 					label={__( 'Text Color', 'kadence-blocks' )}
 					value={( messageColor ? messageColor : '' )}
 					default={''}
-					onChange={value => {
-						setAttributes( { messageColor: value } );
+					onChange={ ( value ) => {
+						setMetaAttribute( value, 'messageColor' );
 					}}
 				/>
 				<PopColorControl
 					label={__( 'Background Color', 'kadence-blocks' )}
 					value={( messageBackground ? messageBackground : '' )}
 					default={''}
-					onChange={value => {
-						setAttributes( { messageBackground: value } );
+					onChange={ ( value ) => {
+						setMetaAttribute( value, 'messageBackground' );
 					}}
 				/>
 				<ResponsiveBorderControl
@@ -48,9 +68,9 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 					value={messageBorderSuccess}
 					tabletValue={tabletMessageBorderSuccess}
 					mobileValue={mobileMessageBorderSuccess}
-					onChange={( value ) => setAttributes( { messageBorderSuccess: value } )}
-					onChangeTablet={( value ) => setAttributes( { tabletMessageBorderSuccess: value } )}
-					onChangeMobile={( value ) => setAttributes( { mobileMessageBorderSuccess: value } )}
+					onChange={( value ) => setMetaAttribute( value, 'messageBorderSuccess' ) }
+					onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderSuccess' ) }
+					onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderSuccess' ) }
 				/>
 			</ColorGroup>
 			<ColorGroup label={ __( 'Error Message Colors', 'kadence-blocks' ) }>
@@ -58,16 +78,16 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 					label={__( 'Error Message Color', 'kadence-blocks' )}
 					value={( messageColorError ? messageColorError : '' )}
 					default={''}
-					onChange={value => {
-						setAttributes( { messageColorError: value } );
+					onChange={ ( value ) => {
+						setMetaAttribute( value, 'messageColorError' );
 					}}
 				/>
 				<PopColorControl
 					label={__( 'Error Message Background', 'kadence-blocks' )}
 					value={( messageBackgroundError ? messageBackgroundError : '' )}
 					default={''}
-					onChange={value => {
-						setAttributes( { messageBackgroundError: value } );
+					onChange={ ( value ) => {
+						setMetaAttribute( value, 'messageBackgroundError' );
 					}}
 				/>
 				<ResponsiveBorderControl
@@ -75,9 +95,9 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 					value={messageBorderError}
 					tabletValue={tabletMessageBorderError}
 					mobileValue={mobileMessageBorderError}
-					onChange={( value ) => setAttributes( { messageBorderError: value } )}
-					onChangeTablet={( value ) => setAttributes( { tabletMessageBorderError: value } )}
-					onChangeMobile={( value ) => setAttributes( { mobileMessageBorderError: value } )}
+					onChange={( value ) => setMetaAttribute( value, 'messageBorderError' )}
+					onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderError')}
+					onChangeMobile={( value ) => setMetaAttribute( value, 'setMetaAttribute' )}
 				/>
 			</ColorGroup>
 			<TypographyControls
@@ -97,12 +117,12 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 				value={messageBorderRadius}
 				tabletValue={tabletMessageBorderRadius}
 				mobileValue={mobileMessageBorderRadius}
-				onChange={( value ) => setAttributes( { messageBorderRadius: value } )}
-				onChangeTablet={( value ) => setAttributes( { tabletMessageBorderRadius: value } )}
-				onChangeMobile={( value ) => setAttributes( { mobileMessageBorderRadius: value } )}
+				onChange={( value ) => setMetaAttribute( value.map(String), 'messageBorderRadius' )}
+				onChangeTablet={( value ) => setMetaAttribute( value.map(String), 'tabletMessageBorderRadius' )}
+				onChangeMobile={( value ) => setMetaAttribute( value.map(String), 'mobileMessageBorderRadius' )}
 				unit={messageBorderRadiusUnit}
 				units={[ 'px', 'em', 'rem', '%' ]}
-				onUnit={( value ) => setAttributes( { messageBorderRadiusUnit: value } )}
+				onUnit={( value ) => setMetaAttribute( value, 'messageBorderRadiusUnit' )}
 				max={(messageBorderRadiusUnit === 'em' || messageBorderRadiusUnit === 'rem' ? 24 : 500)}
 				step={(messageBorderRadiusUnit === 'em' || messageBorderRadiusUnit === 'rem' ? 0.1 : 1)}
 				min={ 0 }
@@ -146,20 +166,20 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 				tabletValue={tabletMessagePadding}
 				mobileValue={mobileMessagePadding}
 				onChange={( value ) => {
-					setAttributes( { messagePadding: value } );
+					setMetaAttribute( value.map(String), 'messagePadding' );
 				}}
 				onChangeTablet={( value ) => {
-					setAttributes( { tabletMessagePadding: value } );
+					setMetaAttribute( value.map(String), 'tabletMessagePadding' );
 				}}
 				onChangeMobile={( value ) => {
-					setAttributes( { mobileMessagePadding: value } );
+					setMetaAttribute( value.map(String), 'mobileMessagePadding' );
 				}}
 				min={ 0 }
 				max={ ( messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 24 : 500 ) }
 				step={ ( messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 0.1 : 1 ) }
 				unit={ messagePaddingUnit }
 				units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-				onUnit={( value ) => setAttributes( { messagePaddingUnit: value } )}
+				onUnit={( value ) => setMetaAttribute( value, 'messagePaddingUnit' )}
 			/>
 			<ResponsiveMeasureRangeControl
 				label={__( 'Margin', 'kadence-blocks' )}
@@ -167,20 +187,20 @@ export default function MessageOptions( { setAttributes, attributes } ) {
 				tabletValue={tabletMessageMargin}
 				mobileValue={mobileMessageMargin}
 				onChange={( value ) => {
-					setAttributes( { messageMargin: value } );
+					setMetaAttribute( value.map(String), 'messageMargin' );
 				}}
 				onChangeTablet={( value ) => {
-					setAttributes( { tabletMessageMargin: value } );
+					setMetaAttribute( value.map(String), 'tabletMessageMargin' );
 				}}
 				onChangeMobile={( value ) => {
-					setAttributes( { mobileMessageMargin: value } );
+					setMetaAttribute( value.map(String), 'mobileMessageMargin' );
 				}}
 				min={ ( messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? -24 : -500 ) }
 				max={ ( messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 24 : 500 ) }
 				step={ ( messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 0.1 : 1 ) }
 				unit={ messageMarginUnit }
 				units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
-				onUnit={ ( value ) => setAttributes( { messageMarginUnit: value } ) }
+				onUnit={ ( value ) => setMetaAttribute( value, 'messageMarginUnit' ) }
 			/>
 		</>
 	);
