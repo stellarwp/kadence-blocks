@@ -26,7 +26,7 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl, SpacingVisualizer } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, getPostOrFseId } from '@kadence/helpers';
 
 /* global wp */
 
@@ -98,18 +98,20 @@ function hasDefaultSize( image, defaultSize ) {
 	);
 }
 
-export function ImageEdit( {
-	attributes,
-	setAttributes,
-	isSelected,
-	className,
-	noticeUI,
-	insertBlocksAfter,
-	noticeOperations,
-	onReplace,
-	context,
-	clientId,
-} ) {
+export function ImageEdit( props ) {
+
+	const {
+		attributes,
+		setAttributes,
+		isSelected,
+		className,
+		noticeUI,
+		insertBlocksAfter,
+		noticeOperations,
+		onReplace,
+		context,
+		clientId,
+	} = props;
 	const {
 		url = '',
 		alt,
@@ -155,12 +157,18 @@ export function ImageEdit( {
 	}
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -169,7 +177,8 @@ export function ImageEdit( {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/image', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -181,7 +190,7 @@ export function ImageEdit( {
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -208,7 +217,7 @@ export function ImageEdit( {
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -223,7 +232,7 @@ export function ImageEdit( {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes( { tabletBorderStyle: tempTabBorderWidth, borderWidthTablet:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],

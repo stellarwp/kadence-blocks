@@ -15,43 +15,45 @@ import {
 	useEffect,
 } from '@wordpress/element';
 
-import { 
-	useSelect, 
-	useDispatch 
+import {
+	useSelect,
+	useDispatch
 } from '@wordpress/data';
 
 import {
 	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
-
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kbTimerUniqueIDs = [];
 
 /**
  * Build the spacer edit
  */
-function KadenceCoundownTimer( { attributes, setAttributes, clientId, parentBlock } ) {
-	const {
-		uniqueID
-	} = attributes;
+function KadenceCoundownTimer( props ) {
+	const { attributes, setAttributes, clientId, parentBlock } = props;
+	const { uniqueID } = attributes;
 
 	const parentID = ( undefined !== parentBlock[ 0 ].attributes.uniqueID ? parentBlock[ 0 ].attributes.uniqueID : rootID );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
