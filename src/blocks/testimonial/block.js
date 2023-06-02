@@ -1,5 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
-
+import { get } from 'lodash';
 /**
  * Internal dependencies
  */

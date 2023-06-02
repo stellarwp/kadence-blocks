@@ -395,9 +395,10 @@ function KadenceAdvancedHeading( props ) {
 	const previewBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
 	const previewBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
 	const previewBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
-
-
-
+	let backgroundIgnoreClass = backgroundColorClass ? false : true;
+	if ( ! backgroundIgnoreClass && ! kadence_blocks_params.isKadenceT && background && background.startsWith( 'palette' ) ) {
+		backgroundIgnoreClass = true;
+	}
 	const headingOptions = [
 		[
 			{
@@ -510,7 +511,7 @@ function KadenceAdvancedHeading( props ) {
 					gap: icon ? '0.25em' : undefined,
 					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 					textAlign: previewAlign ? previewAlign : undefined,
-					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
+					backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput( background ) : undefined,
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
 					fontStyle      : fontStyle,
@@ -547,7 +548,7 @@ function KadenceAdvancedHeading( props ) {
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
-				backgroundColor: background ? KadenceColorOutput(background) : undefined,
+				backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput(background) : undefined,
 				paddingTop: ('' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined),
 				paddingRight: ('' !== previewPaddingRight ? getSpacingOptionOutput(previewPaddingRight, paddingType) : undefined),
 				paddingBottom: ('' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingType) : undefined),
@@ -654,13 +655,22 @@ function KadenceAdvancedHeading( props ) {
 					shuffle: typedElement.getAttribute( 'data-shuffle' ) === 'true',
 				};
 
-				typed.current = new Typed( '.kt-adv-heading' + uniqueID + ' .kt-typed-text', options );
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				const typedElementHtml = selector.getElementById( 'adv-heading' + uniqueID ).querySelector( '.kt-typed-text' );
+
+				typed.current = new Typed( typedElementHtml, options );
 			}
 
 			return function cleanup() {
 				// Destroy the typed instance and reset richtext content
 				typed.current.destroy();
-				document.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+
+				const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+				const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+				if ( selector.getElementById( 'adv-heading' + uniqueID) ) {
+					selector.getElementById( 'adv-heading' + uniqueID).innerHTML = attributes.content;
+				}
 			}
 		}
 

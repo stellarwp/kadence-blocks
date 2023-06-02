@@ -26,6 +26,7 @@ import {
     InspectorControlTabs,
     KadenceBlockDefaults,
     CopyPasteAttributes,
+    SelectParentBlock,
 } from '@kadence/components';
 
 import {
@@ -558,7 +559,9 @@ function KadenceTestimonials( props ) {
                             />
                         </BlockControls>
                         <InspectorControls>
-
+                            <SelectParentBlock
+                                clientId={ clientId }
+                            />
                             <InspectorControlTabs
                                 panelName={'icon'}
                                 allowedTabs={[ 'general', 'advanced' ]}

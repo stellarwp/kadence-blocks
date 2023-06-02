@@ -185,6 +185,23 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
+	 * Loop through panes in an accordion and render the FAQ schema
+	 *
+	 * @param $accorion array
+	 *
+	 * @return void
+	 */
+	public function render_accordion_scheme_head( $accorion ) {
+		if( !empty( $accorion['innerBlocks'] ) && is_array( $accorion['innerBlocks'] ) ) {
+			foreach( $accorion['innerBlocks'] as $key => $block ) {
+				if( isset( $block['blockName'] ) && $block['blockName'] === 'kadence/pane' ) {
+					$this->render_pane_scheme_head( $block );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Render Pane Schema in Head
 	 *
 	 * @param array $block the blocks object.
@@ -391,10 +408,10 @@ class Kadence_Blocks_Frontend {
 						$block_class_instance->output_head_data( $block );
 					}
 					/** !!!! Needs to stay to build schema !!! **/
-					if ( 'kadence/pane' === $block['blockName'] ) {
+					if ( 'kadence/accordion' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							if ( isset( $block['attrs']['faqSchema'] ) && $block['attrs']['faqSchema'] ) {
-								$this->render_pane_scheme_head( $block );
+								$this->render_accordion_scheme_head( $block );
 							}
 						}
 					}
@@ -432,10 +449,10 @@ class Kadence_Blocks_Frontend {
 					$block_class_instance->output_head_data( $inner_block );
 				}
 				/** !!!! Needs to stay to build schema !!! **/
-				if ( 'kadence/pane' === $inner_block['blockName'] ) {
+				if ( 'kadence/accordion' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						if ( isset( $inner_block['attrs']['faqSchema'] ) && $inner_block['attrs']['faqSchema'] ) {
-							$this->render_pane_scheme_head( $inner_block );
+							$this->render_accordion_scheme_head( $inner_block );
 						}
 					}
 				}

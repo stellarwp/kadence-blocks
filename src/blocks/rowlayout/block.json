@@ -274,6 +274,10 @@
 	  "type": "number",
 	  "default": ""
 	},
+	"topSepHeightUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"bottomSep": {
 	  "type": "string",
 	  "default": "none"
@@ -301,6 +305,10 @@
 	"bottomSepWidthMobile": {
 	  "type": "number",
 	  "default": ""
+	},
+	"bottomSepHeightUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"bottomSepHeightTab": {
 	  "type": "number",
@@ -722,7 +730,7 @@
 	},
 	"borderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -732,7 +740,7 @@
 	},
 	"tabletBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -742,7 +750,7 @@
 	},
 	"mobileBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -774,6 +782,7 @@
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

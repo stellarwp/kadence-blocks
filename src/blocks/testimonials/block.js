@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { get } from 'lodash';
 
 /**
  * Register sub blocks.

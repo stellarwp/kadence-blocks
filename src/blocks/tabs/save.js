@@ -29,7 +29,7 @@ function KadenceTabsSave( { attributes } ) {
 	const accordionClass = ( ( mobileLayout && 'accordion' === mobileLayout ) || ( tabletLayout && 'accordion' === tabletLayout ) ? 'kt-create-accordion' : '' );
 	const classId = ( !uniqueID ? 'notset' : uniqueID );
 	const theTabAlignment = ( tabAlignment ? tabAlignment : 'left' );
-	const classes = classnames( `align${blockAlignment}` );
+	const classes = classnames( `align${ ( blockAlignment ? blockAlignment : 'none' ) }` );
 	const activeTab = ( startTab ? startTab : currentTab );
 	const innerClasses = classnames( `kt-tabs-wrap kt-tabs-id${classId} kt-tabs-has-${tabCount}-tabs kt-active-tab-${activeTab} kt-tabs-layout-${layoutClass} kt-tabs-tablet-layout-${tabLayoutClass} kt-tabs-mobile-layout-${mobileLayoutClass} kt-tab-alignment-${theTabAlignment} ${accordionClass}` );
 

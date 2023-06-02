@@ -19,6 +19,7 @@ import {
     KadencePanelBody,
     URLInputControl,
     InspectorControlTabs,
+    SelectParentBlock,
 } from '@kadence/components';
 
 import metadata from './block.json';
@@ -95,7 +96,7 @@ function KadenceListItem( props ) {
 		[ clientId ]
 	);
 	useEffect( () => {
-		setBlockDefaults( 'kadence/listitem', attributes);
+		setBlockDefaults( 'kadence/listitem', attributes );
 
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
@@ -144,6 +145,9 @@ function KadenceListItem( props ) {
                 </Toolbar>
             </BlockControls>
             <InspectorControls>
+                <SelectParentBlock
+                    clientId={ clientId }
+                />
                 <InspectorControlTabs
                     panelName={ 'listitem' }
                     setActiveTab={ ( value ) => setActiveTab( value ) }

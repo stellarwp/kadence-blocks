@@ -541,18 +541,14 @@ function KadenceConfig() {
 															   label: __('Show Design Library Button For', 'kadence-blocks')
 														   },
 														   {
-															   key: 'wire',
-															   label: __('Show Wireframe Library For', 'kadence-blocks')
-														   },
-														   {
 															   key: 'section',
-															   label: __('Show Sections Library For', 'kadence-blocks'),
+															   label: __('Show Kadence Library For', 'kadence-blocks'),
 															   requiresPro: true
 														   },
 														   {
 															   key: 'templates',
 															   label: __('Show Starter Packs Library For', 'kadence-blocks'),
-															   requiresPro: true
+															   initial:'none',
 														   },
 													   ]}/>
 

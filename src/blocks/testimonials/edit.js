@@ -823,10 +823,10 @@ function KadenceTestimonials( props ) {
 						${ previewMediaBorderRight ? 'border-right: ' + previewMediaBorderRight + ';' : '' }
 						${ previewMediaBorderBottom ? 'border-bottom: ' + previewMediaBorderBottom + ';' : '' }
 						${ previewMediaBorderLeft ? 'border-left: ' + previewMediaBorderLeft + ';' : '' }
-						${ previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
 						${ previewMediaMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewMediaMarginTop, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewMediaMarginRight, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewMediaMarginBottom, mediaMarginUnit ) + ';' : '' }
@@ -1220,7 +1220,7 @@ function KadenceTestimonials( props ) {
                                                         label={__('Autoplay Speed', 'kadence-blocks')}
                                                         value={autoSpeed}
                                                         onChange={(value) => setAttributes({autoSpeed: value})}
-                                                        min={500}
+                                                        min={0}
                                                         max={15000}
                                                         step={10}
                                                     />
@@ -1230,7 +1230,7 @@ function KadenceTestimonials( props ) {
                                                     value={transSpeed}
                                                     onChange={(value) => setAttributes({transSpeed: value})}
                                                     min={100}
-                                                    max={2000}
+                                                    max={15000}
                                                     step={10}
                                                 />
                                                 <SelectControl

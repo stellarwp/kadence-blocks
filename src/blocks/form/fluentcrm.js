@@ -9,8 +9,8 @@
  * Imports
  */
 import Select from 'react-select';
-const { addQueryArgs } = wp.url;
-const { apiFetch } = wp;
+import { addQueryArgs } from '@wordpress/url';
+import apiFetch from '@wordpress/api-fetch';
 import { KadencePanelBody } from '@kadence/components';
 /**
  * Internal block libraries

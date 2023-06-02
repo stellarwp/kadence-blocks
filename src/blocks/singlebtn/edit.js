@@ -306,10 +306,10 @@ export default function KadenceButtonEdit( props ) {
 	const previewBorderHoverRightStyle = getBorderStyle( previewDevice, 'right', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
 	const previewBorderHoverBottomStyle = getBorderStyle( previewDevice, 'bottom', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
 	const previewBorderHoverLeftStyle = getBorderStyle( previewDevice, 'left', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
-	const previewBorderHoverTopColor = getBorderColor( previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
-	const previewBorderHoverRightColor = getBorderColor( previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
-	const previewBorderHoverBottomColor = getBorderColor( previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
-	const previewBorderHoverLeftColor = getBorderColor( previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle, inheritBorder );
+	const previewBorderHoverTopColor = getBorderColor( previewDevice, 'top', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
+	const previewBorderHoverRightColor = getBorderColor( previewDevice, 'right', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
+	const previewBorderHoverBottomColor = getBorderColor( previewDevice, 'bottom', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
+	const previewBorderHoverLeftColor = getBorderColor( previewDevice, 'left', borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, inheritBorder );
 
 	const previewHoverRadiusTop = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 0 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 0 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 0 ] : '' ) );
 	const previewHoverRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 1 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 1 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 1 ] : '' ) );
@@ -1061,22 +1061,22 @@ export default function KadenceButtonEdit( props ) {
 				<span
 					className={btnClassName}
 					style={{
-						paddingTop	   : ( previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit) : undefined ),
-						paddingRight	   : ( previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit) : undefined ),
-						paddingBottom	   : ( previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit) : undefined ),
-						paddingLeft	   : ( previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit) : undefined ),
-						marginTop      : ( previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
-						marginRight    : ( previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
-						marginBottom   : ( previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
-						marginLeft     : ( previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
+						paddingTop	   : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit) : undefined ),
+						paddingRight	   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit) : undefined ),
+						paddingBottom	   : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit) : undefined ),
+						paddingLeft	   : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit) : undefined ),
+						marginTop      : ('' !==  previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginUnit ) : undefined ),
+						marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginUnit ) : undefined ),
+						marginBottom   : ('' !==  previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginUnit ) : undefined ),
+						marginLeft     : ('' !==  previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginUnit ) : undefined ),
 						borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
 						borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 						borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
 						borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
-						borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderTopLeftRadius: ( '' !== previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderTopRightRadius: ( '' !== previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderBottomRightRadius: ( '' !== previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderBottomLeftRadius: ( '' !== previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 						boxShadow      : ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color ? ( undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '' ) + ( undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0 ) + 'px ' + ( undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0 ) + 'px ' + ( undefined !== shadow[0].blur ? shadow[0].blur : 14 ) + 'px ' + ( undefined !== shadow[0].spread ? shadow[0].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[0].color ? shadow[0].color : '#000000' ), ( undefined !== shadow[0].opacity ? shadow[0].opacity : 1 ) ) : undefined ),
 
 						background   : ( undefined !== btnbg ? btnbg : undefined ),

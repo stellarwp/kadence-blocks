@@ -34,3 +34,32 @@
 .kb-active-control-wrap {
     box-shadow: inset 0 0 0 5px #b7d7f7;
 }
+.components-panel__body .kb-hover-toggle-control-tab-ui .kt-hover-tabs .components-tab-panel__tabs {
+    margin-bottom: 12px;
+    margin-left: -16px;
+    margin-right: -16px;
+}
+.components-panel__body .components-panel__body-title + .kb-hover-toggle-control-tab-ui .kt-hover-tabs .components-tab-panel__tabs {
+    margin-top: -5px;
+}
+.components-panel__body .kb-hover-toggle-control-tab-ui .kt-hover-tabs .components-tab-panel__tabs button {
+    border: 0;
+    border-bottom: 2px solid transparent;
+    height: 40px;
+    padding: 4px 5px 4px;
+    font-weight: normal;
+    margin: 0;
+    width: 50%;
+    background: #EDF2F7;
+    box-shadow: none !important;
+    border-top: 1px solid #CBD5E0;
+    color: #4A5568;
+}
+.components-panel__body .kb-hover-toggle-control-tab-ui .kt-hover-tabs .components-tab-panel__tabs button.active-tab {
+    box-shadow: none !important;
+    color: #2D3748;
+    border-color: white;
+    background: white;
+    border-bottom-color: var(--wp-admin-theme-color, #00669b);
+    border-top: 1px solid #CBD5E0;
+}
