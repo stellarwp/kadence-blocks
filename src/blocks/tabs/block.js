@@ -41,6 +41,8 @@ import save from './save';
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 
+import { get } from 'lodash';
+
 /**
  * Register: a Gutenberg Block.
  *

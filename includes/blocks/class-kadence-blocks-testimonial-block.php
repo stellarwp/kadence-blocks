@@ -183,15 +183,23 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	private function render_media( $attributes, $mediaStyles, $style, $containerMaxWidth ) {
+		$css_class = Kadence_Blocks_CSS::get_instance();
 		$urlOutput = $this->get_media_url( $attributes, $mediaStyles, $style, $containerMaxWidth );
+		$type = substr($attributes['icon'], 0, 2 );
+		$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
+		$fill = ( $line_icon ? 'none' : 'currentColor' );
+		$stroke_width = false;
+		if ( $line_icon ) {
+			$stroke_width = ( ! empty( $attributes['istroke'] ) ? $attributes['istroke'] : 2 );
+		}
 
 		$media = '<div class="kt-testimonial-media-wrap">';
 		$media .= '<div class="kt-testimonial-media-inner-wrap">';
 		$media .= '<div class="kadence-testimonial-image-intrisic">';
 
 		if( $attributes['media'] === 'icon' && $attributes['icon']) {
-			$extras = ' height="'.$attributes['isize'].'" width="'.$attributes['isize'].'" style="color: ' . ( isset( $attributes['color'] ) ? $attributes['color'] : 'undefined' ) . '"';
-			$svg = Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'currentColor', $attributes['istroke'], $attributes['ititle'], false, $extras);
+			$extras = ' height="'.$attributes['isize'].'" width="'.$attributes['isize'].'" style="color: ' . ( isset( $attributes['color'] ) ? $css_class->render_color( $attributes['color'] ) : 'undefined' ) . '"';
+			$svg = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $attributes['ititle'], false, $extras);
 
 			$media .= '<div class="kt-svg-testimonial-icon kt-svg-testimonial-icon-'. $attributes['icon'] .'">';
 			$media .= $svg;

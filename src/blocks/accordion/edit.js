@@ -110,7 +110,7 @@ const getPanesTemplate = memoize( ( panes ) => {
  * Build the row edit
  */
 function KadenceAccordionComponent( props ) {
-	const { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, updateFaqSchema, insertPane, getPreviewDevice } = props;
+	const { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } = props;
 	const {
 		uniqueID,
 		paneCount,
@@ -1516,7 +1516,6 @@ function KadenceAccordionComponent( props ) {
 											label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
 											checked={faqSchema}
 											onChange={( value ) => {
-												updateFaqSchema( value );
 												setAttributes( { faqSchema: value } );
 											}}
 										/>
@@ -1627,13 +1626,6 @@ export default compose( [
 				times( block.innerBlocks.length, n => {
 					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
 						titleTag: value,
-					} );
-				} );
-			},
-			updateFaqSchema( value ) {
-				times( block.innerBlocks.length, n => {
-					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
-						faqSchema: value,
 					} );
 				} );
 			},

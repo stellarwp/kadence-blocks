@@ -38,10 +38,6 @@
 	"uniqueID": {
 	  "type": "string",
 	  "default": ""
-	},
-	"faqSchema": {
-	  "type": "boolean",
-	  "default": false
 	}
   },
   "supports": {
@@ -49,6 +45,8 @@
 	"reusable": false,
 	"html": false,
 	"anchor": true,
-	"lock":false
+	"lock":false,
+	"kbMetadata": true,
+	"kbContentLabel": "title"
   }
 }

@@ -228,6 +228,10 @@
 	  "type": "string",
 	  "default": "1"
 	},
+	"slideType": {
+	  "type": "string",
+	  "default": "fade"
+	},
 	"arrowStyle": {
 	  "type": "string",
 	  "default": "whiteondark"
@@ -413,7 +417,8 @@
 	  "right"
 	],
 	"html": false,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",

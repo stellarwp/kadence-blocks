@@ -123,7 +123,7 @@ const getPanesTemplate = memoize( ( panes ) => {
  * Build the row edit
  */
 function KadenceTabs( props ) {
-	const { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
+	const { attributes, clientId, className, isSelected, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
 	const {
 		uniqueID,
 		showPresets,
@@ -766,51 +766,53 @@ function KadenceTabs( props ) {
 								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! previewIconSize ? '14' : previewIconSize ) } htmltag="span" />
 							) }
 						</div>
-						<div className="kadence-blocks-tab-item__control-menu">
-							{ index !== 0 && (
-								<Button
-									icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
-									onClick={ index === 0 ? undefined : onMoveBack( index ) }
-									className="kadence-blocks-tab-item__move-back"
-									label={ ( 'vtabs' === layout ? __( 'Move Item Up', 'kadence-blocks' ) : __( 'Move Item Back', 'kadence-blocks' ) ) }
-									aria-disabled={ index === 0 }
-									disabled={ index === 0 }
-								/>
-							) }
-							{ ( index + 1 ) !== tabCount && (
-								<Button
-									icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
-									onClick={ ( index + 1 ) === tabCount ? undefined : onMoveForward( index ) }
-									className="kadence-blocks-tab-item__move-forward"
-									label={ ( 'vtabs' === layout ? __( 'Move Item Down', 'kadence-blocks' ) : __( 'Move Item Forward', 'kadence-blocks' ) ) }
-									aria-disabled={ ( index + 1 ) === tabCount }
-									disabled={ ( index + 1 ) === tabCount }
-								/>
-							) }
-							{ tabCount > 1 && (
-								<Button
-									icon="no-alt"
-									onClick={ () => {
-										const currentItems = filter( titles, ( item, i ) => index !== i );
-										const newCount = tabCount - 1;
-										let newStartTab;
-										if ( startTab === ( index + 1 ) ) {
-											newStartTab = '';
-										} else if ( startTab > ( index + 1 ) ) {
-											newStartTab = startTab - 1;
-										} else {
-											newStartTab = startTab;
-										}
-										removeTab( index );
-										setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
-										resetOrder();
-									} }
-									className="kadence-blocks-tab-item__remove"
-									label={ __( 'Remove Item', 'kadence-blocks' ) }
-									disabled={ ! currentTab === ( index + 1 ) }
-								/>
-							) }
-						</div>
+						{ isSelected && (
+							<div className="kadence-blocks-tab-item__control-menu">
+								{ index !== 0 && (
+									<Button
+										icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
+										onClick={ index === 0 ? undefined : onMoveBack( index ) }
+										className="kadence-blocks-tab-item__move-back"
+										label={ ( 'vtabs' === layout ? __( 'Move Item Up', 'kadence-blocks' ) : __( 'Move Item Back', 'kadence-blocks' ) ) }
+										aria-disabled={ index === 0 }
+										disabled={ index === 0 }
+									/>
+								) }
+								{ ( index + 1 ) !== tabCount && (
+									<Button
+										icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
+										onClick={ ( index + 1 ) === tabCount ? undefined : onMoveForward( index ) }
+										className="kadence-blocks-tab-item__move-forward"
+										label={ ( 'vtabs' === layout ? __( 'Move Item Down', 'kadence-blocks' ) : __( 'Move Item Forward', 'kadence-blocks' ) ) }
+										aria-disabled={ ( index + 1 ) === tabCount }
+										disabled={ ( index + 1 ) === tabCount }
+									/>
+								) }
+								{ tabCount > 1 && (
+									<Button
+										icon="no-alt"
+										onClick={ () => {
+											const currentItems = filter( titles, ( item, i ) => index !== i );
+											const newCount = tabCount - 1;
+											let newStartTab;
+											if ( startTab === ( index + 1 ) ) {
+												newStartTab = '';
+											} else if ( startTab > ( index + 1 ) ) {
+												newStartTab = startTab - 1;
+											} else {
+												newStartTab = startTab;
+											}
+											removeTab( index );
+											setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
+											resetOrder();
+										} }
+										className="kadence-blocks-tab-item__remove"
+										label={ __( 'Remove Item', 'kadence-blocks' ) }
+										disabled={ ! currentTab === ( index + 1 ) }
+									/>
+								) }
+							</div>
+						) }
 					</li>
 				</Fragment>
 			);

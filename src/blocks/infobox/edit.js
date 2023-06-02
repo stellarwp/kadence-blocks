@@ -1130,7 +1130,7 @@ function KadenceInfoBox( props ) {
 			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
 
 
-			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBackground ) } !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}

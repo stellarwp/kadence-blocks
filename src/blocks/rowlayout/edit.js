@@ -142,7 +142,14 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		isSelected,
 		clientId,
 	} = props;
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit } = attributes;
+	const { isPreviewMode } = useSelect( ( _select ) => {
+		const { __unstableIsPreviewMode } =
+			_select( blockEditorStore ).getSettings();
+		return {
+			isPreviewMode: __unstableIsPreviewMode,
+		};
+	}, [] );
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -202,8 +209,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes( { inQueryBlock: isInQueryBlock } );
 		}
-
-		debounce( getDynamic, 200 );
+		if ( ! isPreviewMode ) {
+			debounce( getDynamic, 200 );
+		}
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
 			setAttributes( { columnGutter: 'custom', customGutter: [ 40, ( customGutter && customGutter[1] ? customGutter[1] : '' ), ( customGutter && customGutter[2] ? customGutter[2] : '' ) ] } );
@@ -583,7 +591,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 	const marginMouseOver = mouseOverVisualizer();
 	return (
 		<>
-			{ 'contentOnly' !== templateLock && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
+			{ 'contentOnly' !== templateLock && ! isPreviewMode && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ align }
@@ -678,7 +686,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					/>
 				</BlockControls>
 			)}
-			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
+			{ ! isPreviewMode && showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<>
 					<InspectorControls>
 						<InspectorControlTabs
@@ -972,8 +980,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					) }
 					{ columns && columns === 2 && inheritMaxWidth && (breakoutLeft || breakoutRight ) && 'row' !== previewLayout && 'full' === align && 'Desktop' === previewDevice && (
 						<>
-							{ ( breakoutRight ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingRightBreakout } *2 ) ) ) /2 ) *-1) ) !important; }` : '' ) }
-							{ ( breakoutLeft ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingLeftBreakout } *2 ) ) ) /2 ) *-1) ) !important; }` : '' ) }
+							{ ( breakoutRight ? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingRightBreakout } *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${ paddingRightBreakout } * -1 ) !important; }}` : '' ) }
+							{ ( breakoutLeft ? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${ paddingLeftBreakout } *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${ uniqueID } > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${ paddingRightBreakout } * -1 ) !important; }}` : '' ) }
 						</>
 					) }
 					{ columns && columns === 2 && inheritMaxWidth && (breakoutLeft || breakoutRight ) && 'row' !== previewLayout && 'full' === align && 'Tablet' === previewDevice && tabLayoutClass !== 'row' && (
@@ -1060,16 +1068,14 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 								/>
 							) ) }
 						</ButtonGroup>
-						<PrebuiltModal
-							clientId={ clientId }
-							open={ isPrebuiltModal ? true : false }
-							onlyModal={ isPrebuiltModal ? true : false }
-						/>
+						<Button className="kt-prebuilt" onClick={ () => setAttributes( { isPrebuiltModal: true } ) }>
+							{ __( 'Design Library', 'kadence-blocks' ) }
+						</Button>
 					</div>
 				) }
 				{ colLayout && 'none' !== topSep && '' !== topSep && (
 					<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ {
-						height: previewTopSepHeight + 'px',
+						height: previewTopSepHeight + topSepHeightUnit,
 						color:  KadenceColorOutput( topSepColor ),
 					} }>
 						{ renderSVGDivider( topSep, 'top', previewTopSepWidth + '%' ) }
@@ -1079,6 +1085,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					<PaddingResizer
 						previewDevice={ previewDevice }
 						edge={ 'top' }
+						isPreviewMode={ isPreviewMode }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }
@@ -1114,6 +1121,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 					<PaddingResizer
 						previewDevice={ previewDevice }
 						edge={ 'bottom' }
+						isPreviewMode={ isPreviewMode }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						toggleSelection={ toggleSelection }
@@ -1128,7 +1136,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				) }
 				{ colLayout && 'none' !== bottomSep && '' !== bottomSep && (
 					<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ {
-						height: previewBottomSepHeight + 'px',
+						height: previewBottomSepHeight + bottomSepHeightUnit,
 						color: KadenceColorOutput( bottomSepColor ),
 					} }>
 						{ renderSVGDivider( bottomSep, 'bottom', previewBottomSepWidth + '%' ) }

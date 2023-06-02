@@ -36,7 +36,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 *
 	 * @var string
 	 */
-	protected $has_script = true;
+	protected $has_script = false;
 
 	/**
 	 * Instance Control
@@ -155,8 +155,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
-						$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
-					}
+					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
+				}
 			} else if ( strpos( $attributes['background'], 'palette' ) === 0 ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
@@ -362,7 +362,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		if ( strpos( $content, 'kt-typed-text') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
-			$this->enqueue_script( 'kadence-blocks-typed-js' );
 		}
 		if ( ! empty( $attributes['icon'] ) ) {
 			$tag_name     = $this->get_tag_name( $attributes );
@@ -411,8 +410,11 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$content = sprintf( '<%1$s %2$s>%3$s<span class="kb-adv-text-inner">%4$s</span>%5$s</%1$s>', $tag_name, $inner_content_attributes, $icon_left, $text_content, $icon_right );
 			if ( ! empty( $attributes['link'] ) ) {
 				$link_classes = array( 'kb-advanced-heading-link', 'kt-adv-heading-link' . $unique_id );
-				if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
+				if ( ! empty( $attributes['linkStyle'] ) ) {
 					$link_classes[] = 'hls-' . $attributes['linkStyle'];
+				}
+				if( ! $wrapper && !empty( $attributes['className'] ) ){
+					$link_classes[] = $attributes['className'];
 				}
 				if ( ! empty( $attributes['class'] ) && ! $wrapper ) {
 					$link_classes[] = $attributes['class'];
@@ -495,8 +497,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
 		}
 		wp_add_inline_style( 'kadence-blocks-' . $this->block_name, $heading_css );
-		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array( 'kadence-blocks-' . $this->block_name ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array( 'kadence-blocks-typed-js' ), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
 	 * Get the text content.

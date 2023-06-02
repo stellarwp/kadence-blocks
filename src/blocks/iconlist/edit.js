@@ -420,35 +420,33 @@ function KadenceIconLists( props ) {
 										}}
 									/>
 									{style === 'stacked' && (
-										<PopColorControl
-											label={ __( 'Icon Background', 'kadence-blocks' ) }
-											value={ ( background ? background : '' ) }
-											default={ '' }
-											onChange={ value => {
-												setAttributes( { background: value } );
-											} }
-										/>
-									)}
-									{style === 'stacked' && (
-										<PopColorControl
-											label={ __( 'Border Color', 'kadence-blocks' ) }
-											value={ ( border ? border : '' ) }
-											default={''}
-											onChange={ value => {
-												setAttributes( { border: value } );
-											} }
-										/>
-									)}
-									{style === 'stacked' && (
-										<RangeControl
-											label={ __( 'Border Size (px)', 'kadence-blocks' ) }
-											value={borderWidth}
-											onChange={value => {
-												setAttributes({ borderWidth: value });
-											}}
-											min={0}
-											max={20}
-										/>
+										<>
+											<PopColorControl
+												label={ __( 'Icon Background', 'kadence-blocks' ) }
+												value={ ( background ? background : '' ) }
+												default={ '' }
+												onChange={ value => {
+													setAttributes( { background: value } );
+												} }
+											/>
+											<PopColorControl
+												label={ __( 'Border Color', 'kadence-blocks' ) }
+												value={ ( border ? border : '' ) }
+												default={''}
+												onChange={ value => {
+													setAttributes( { border: value } );
+												} }
+											/>
+											<RangeControl
+												label={ __( 'Border Size (px)', 'kadence-blocks' ) }
+												value={borderWidth}
+												onChange={value => {
+													setAttributes({ borderWidth: value });
+												}}
+												min={0}
+												max={20}
+											/>
+										</>
 									)}
 									{style === 'stacked' && (
 										<RangeControl
@@ -688,7 +686,6 @@ function KadenceIconLists( props ) {
 					</InspectorControls>
 				) }
 				<style>
-					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap { margin-bottom: ${ previewListGap }px; }` }
 					{ `body:not(.rtl) .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
 					{ `body.rtl .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-left: ${ listLabelGap }px; }` }
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
@@ -702,7 +699,7 @@ function KadenceIconLists( props ) {
 						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
 					}` }
 
-					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) }
+					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; row-gap: ${ previewListGap }px; }` : '' ) }
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
 					{ ( color ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${ KadenceColorOutput( color ) }; }` : '' ) }
 					{ ( background ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${ KadenceColorOutput( background ) }; }` : '' ) }

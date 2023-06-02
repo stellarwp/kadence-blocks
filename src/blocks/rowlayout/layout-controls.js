@@ -125,7 +125,7 @@ import { __ } from '@wordpress/i18n';
 	widthString,
 	previewDevice,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, breakoutLeft, breakoutRight } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit  } = attributes;
 
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	let layoutOptions;
@@ -427,7 +427,7 @@ import { __ } from '@wordpress/i18n';
 									units={ [ 'px', '%', 'vw' ] }
 								/>
 							) }
-							{ align === 'full' && inheritMaxWidth === true && (
+							{ align === 'full' && 2 === columns && inheritMaxWidth === true && (
 								<>
 									<ToggleControl
 										label={ __( 'Break Left Section Full Width?', 'kadence-blocks' ) }
@@ -506,10 +506,13 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { topSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
-							unit={ 'px' }
-							units={ ['px'] }
+							max={'em' === topSepHeightUnit ? 100 : 500 }
+							step={ 'em' === topSepHeightUnit ? 0.01 : 1 }
+							unit={ topSepHeightUnit }
+							onUnit={ ( value ) => {
+								setAttributes( { topSepHeightUnit: value } );
+							} }
+							units={ [ 'px', 'em', 'vh' ] }
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
@@ -592,10 +595,13 @@ import { __ } from '@wordpress/i18n';
 								setAttributes( { bottomSepHeightMobile: value } );
 							} }
 							min={ 0 }
-							max={ 500 }
-							step={ 1 }
-							unit={ 'px' }
-							units={ ['px'] }
+							max={'em' === bottomSepHeightUnit ? 100 : 500 }
+							step={ 'em' === bottomSepHeightUnit ? 0.01 : 1 }
+							unit={ bottomSepHeightUnit }
+							onUnit={ ( value ) => {
+								setAttributes( { bottomSepHeightUnit: value } );
+							} }
+							units={ [ 'px', 'em', 'vh' ]}
 							showUnit={ true }
 						/>
 						<ResponsiveRangeControls
