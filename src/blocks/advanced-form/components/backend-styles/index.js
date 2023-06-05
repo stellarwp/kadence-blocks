@@ -14,7 +14,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 			{`
 
 			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-field {
-				margin-bottom: ${( previewRowGap ? previewRowGap : undefined )};
+				${ previewRowGap ? 'margin-bottom:' + previewRowGap + ';' : '' }
 			}
 
 			.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles),
@@ -34,41 +34,41 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${ fieldStyles.paddingBottom ? 'padding-bottom:' + fieldStyles.paddingBottom + ';' : '' }
 				${ fieldStyles.paddingLeft ? 'padding-left:' + fieldStyles.paddingLeft + ';' : '' }
 
-				background: ${fieldStyles.background};
+				${ fieldStyles.background ? 'background: ' + fieldStyles.background + ';' : '' }
 
-				border-top-left-radius: ${fieldStyles.borderRadiusTop}${fieldStyles.borderRadiusUnit};
-				border-top-right-radius: ${fieldStyles.borderRadiusRight}${fieldStyles.borderRadiusUnit};
-				border-bottom-right-radius: ${fieldStyles.borderRadiusBottom}${fieldStyles.borderRadiusUnit};
-				border-bottom-left-radius: ${fieldStyles.borderRadiusLeft}${fieldStyles.borderRadiusUnit};
+				${ fieldStyles.borderRadiusTop ? 'border-top-left-radius: ' + fieldStyles.borderRadiusTop + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusRight ? 'border-top-right-radius: ' + fieldStyles.borderRadiusRight + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusBottom ? 'border-bottom-right-radius: ' + fieldStyles.borderRadiusBottom + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusLeft ? 'border-bottom-left-radius: ' + fieldStyles.borderRadiusLeft + fieldStyles.borderRadiusUnit + ';' : '' }
 
-				border-top: ${fieldStyles.borderTop};
-				border-right: ${fieldStyles.borderRight};
-				border-bottom: ${fieldStyles.borderBottom};
-				border-left: ${fieldStyles.borderLeft};
+				${ fieldStyles.borderTop ? 'border-top: ' + fieldStyles.borderTop + ';' : '' }
+				${ fieldStyles.borderRight ? 'border-right: ' + fieldStyles.borderRight + ';' : '' }
+				${ fieldStyles.borderBottom ? 'border-bottom: ' + fieldStyles.borderBottom + ';' : '' }
+				${ fieldStyles.borderLeft ? 'border-left: ' + fieldStyles.borderLeft + ';' : '' }
 
-				border-top-color: ${fieldStyles.borderTopColor};
-				border-right-color: ${fieldStyles.borderRightColor};
-				border-bottom-color: ${fieldStyles.borderBottomColor};
-				border-left-color: ${fieldStyles.borderLeftColor};
+				${ fieldStyles.borderTopColor ? 'border-top-color: ' + fieldStyles.borderTopColor + ';' : '' }
+				${ fieldStyles.borderRightColor ? 'border-right-color: ' + fieldStyles.borderRightColor + ';' : '' }
+				${ fieldStyles.borderBottomColor ? 'border-bottom-color: ' + fieldStyles.borderBottomColor + ';' : '' }
+				${ fieldStyles.borderLeftColor ? 'border-left-color: ' + fieldStyles.borderLeftColor + ';' : '' }
 
-				color: ${fieldStyles.color};
-				box-shadow: ${fieldStyles.boxShadow};
+				${ fieldStyles.color ? 'color:' + fieldStyles.color + ';' : '' }
+				${ fieldStyles.boxShadow ? 'box-shadow: ' + fieldStyles.boxShadow + ';' : '' }
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} select:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} textarea:focus {
-				background: ${fieldStyles.backgroundActive};
+			${ fieldStyles.backgroundActive ? 'background: ' + fieldStyles.backgroundActive + ';' : '' }
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input::placeholder,
 		.wp-block-kadence-advanced-form${uniqueID} select::placeholder,
 		.wp-block-kadence-advanced-form${uniqueID} textarea::placeholder {
-			color: ${fieldStyles.placeholderColor};
+			${ fieldStyles.placeholderColor ? 'color: ' + fieldStyles.placeholderColor + ';' : '' }
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input[type="radio"]{
-			border-color: ${fieldStyles.borderColor};
+			${ fieldStyles.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input[type="file"]{
@@ -76,7 +76,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 		}
 
 		.wp-block-kadence-advanced-form${uniqueID} input[type="checkbox"]{
-			border-color: ${fieldStyles.borderColor};
+			${ fieldStyles.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
 
 		`}
@@ -88,33 +88,29 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form-label {
-				font-size: ${labelStyles.fontSize};
-				line-height: ${labelStyles.lineHeight};
-				font-weight: ${labelStyles.fontWeight};
+			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-label {
+				${labelStyles.fontStyle ? 'font-style:' + labelStyles.fontStyle + ';' : '' }
+				${labelStyles.lineHeight ? 'line-height:' + labelStyles.lineHeight + ';' : '' }
+				${labelStyles.fontWeight ? 'font-weight:' + labelStyles.fontWeight + ';' : '' }
+				${labelStyles.letterSpacing ? 'letter-spacing:' + labelStyles.letterSpacing + 'px;' : '' }
+				${labelStyles.textTransform ? 'text-transform:' + labelStyles.textTransform + ';' : '' }
+				${labelStyles.fontFamily ? 'font-family:' + labelStyles.fontFamily + ';' : '' }
 
-				text-transform: ${labelStyles.textTransform};
-				font-family: ${labelStyles.fontFamily};
-				font-style: ${labelStyles.fontStyle};
-				letter-spacing: ${labelStyles.letterSpacing};
+				${labelStyles.color ? 'color:' + labelStyles.color + ';' : '' }
 
+				${labelStyles.paddingTop ? 'padding-top:' + labelStyles.paddingTop + ';' : '' }
+				${labelStyles.paddingRight ? 'padding-right:' + labelStyles.paddingRight + ';' : '' }
+				${labelStyles.paddingBottom ? 'padding-bottom:' + labelStyles.paddingBottom + ';' : '' }
+				${labelStyles.paddingLeft ? 'padding-left:' + labelStyles.paddingLeft + ';' : '' }
 
-				padding-top: ${labelStyles.paddingTop};
-				padding-right: ${labelStyles.paddingRight};
-				padding-bottom: ${labelStyles.paddingBottom};
-				padding-left: ${labelStyles.paddingLeft};
-
-				margin-top: ${labelStyles.marginTop};
-				margin-right: ${labelStyles.marginRight};
-				margin-bottom: ${labelStyles.marginBottom};
-				margin-left: ${labelStyles.marginLeft};
-
-				color: ${labelStyles.color};
-
+				${labelStyles.marginTop ? 'margin-top:' + labelStyles.marginTop + ';' : '' }
+				${labelStyles.marginRight ? 'margin-right:' + labelStyles.marginRight + ';' : '' }
+				${labelStyles.marginBottom ? 'margin-bottom:' + labelStyles.marginBottom + ';' : '' }
+				${labelStyles.marginLeft ? 'margin-left:' + labelStyles.marginLeft + ';' : '' }
 			}
 
-			.wp-block-kadence-advanced-form${uniqueID} .kadence-label .required {
-				color: ${fieldStyle?.requiredColor};
+			.wp-block-kadence-advanced-form${uniqueID} .kadence-label .required {;
+				${fieldStyle?.requiredColor ? 'color:' + fieldStyle.requiredColor + ';' : '' }
 			}
 
 			`}
@@ -127,26 +123,25 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 
 			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-help {
 				${helpStyles.fontSize ? 'font-size: ' + helpStyles.fontSize + ';' : ''}
-				line-height: ${helpStyles.lineHeight};
-				font-weight: ${helpStyles.fontWeight};
+				${helpStyles.lineHeight ? 'line-height: ' + helpStyles.lineHeight + ';' : ''}
+				${helpStyles.fontWeight ? 'font-weight: ' + helpStyles.fontWeight + ';' : ''}
 
-				text-transform: ${helpStyles.textTransform};
-				font-family: ${helpStyles.fontFamily};
-				font-style: ${helpStyles.fontStyle};
-				letter-spacing: ${helpStyles.letterSpacing};
+				${helpStyles.textTransform ? 'text-transform: ' + helpStyles.textTransform + ';' : ''}
+				${helpStyles.fontFamily ? 'font-family: ' + helpStyles.fontFamily + ';' : ''}
+				${helpStyles.fontStyle ? 'font-style: ' + helpStyles.fontStyle + ';' : ''}
+				${helpStyles.letterSpacing ? 'letter-spacing: ' + helpStyles.letterSpacing + ';' : ''}
 
+				${helpStyles.paddingTop ? 'padding-top: ' + helpStyles.paddingTop + ';' : ''}
+				${helpStyles.paddingRight ? 'padding-right: ' + helpStyles.paddingRight + ';' : ''}
+				${helpStyles.paddingBottom ? 'padding-bottom: ' + helpStyles.paddingBottom + ';' : ''}
+				${helpStyles.paddingLeft ? 'padding-left: ' + helpStyles.paddingLeft + ';' : ''}
 
-				padding-top: ${helpStyles.paddingTop};
-				padding-right: ${helpStyles.paddingRight};
-				padding-bottom: ${helpStyles.paddingBottom};
-				padding-left: ${helpStyles.paddingLeft};
+				${helpStyles.marginTop ? 'margin-top: ' + helpStyles.marginTop + ';' : ''}
+				${helpStyles.marginRight ? 'margin-right: ' + helpStyles.marginRight + ';' : ''}
+				${helpStyles.marginBottom ? 'margin-bottom: ' + helpStyles.marginBottom + ';' : ''}
+				${helpStyles.marginLeft ? 'margin-left: ' + helpStyles.marginLeft + ';' : ''}
 
-				margin-top: ${helpStyles.marginTop};
-				margin-right: ${helpStyles.marginRight};
-				margin-bottom: ${helpStyles.marginBottom};
-				margin-left: ${helpStyles.marginLeft};
-
-				color: ${helpStyles.color};
+				${helpStyles.color ? 'color: ' + helpStyles.color + ';' : ''}
 			}
 
 			`}
