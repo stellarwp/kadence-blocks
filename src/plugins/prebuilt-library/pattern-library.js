@@ -20,6 +20,7 @@ import {
 	withSelect,
 	useSelect,
 	withDispatch,
+	useDispatch,
 } from '@wordpress/data';
 /**
  * WordPress dependencies
@@ -69,7 +70,7 @@ import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
-import { PAGE_CATEGORIES, NEEDED_CONTEXTS, PATTERN_CONTEXTS, PATTERN_CATEGORIES, LOADING_CONTEXTS } from './data-fetch/constants';
+import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
 /**
  * Prebuilt Sections.
@@ -95,6 +96,7 @@ function PatternLibrary( {
 	const [ categories, setCategories ] = useState( PATTERN_CATEGORIES );
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
 	const [ contextOptions, setContextOptions ] = useState( PATTERN_CONTEXTS );
+	const [ contextStatesRef, setContextStatesRef ] = useState( false );
 	const [ contextListOptions, setContextListOptions ] = useState( [] );
 	const [ pagesCategories, setPagesCategories ] = useState( PAGE_CATEGORIES );
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
@@ -102,8 +104,6 @@ function PatternLibrary( {
 	const [ previewMode, setPreviewMode ] = useState();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
-	const [ isLoadingAI, setIsLoadingAI ] = useState( LOADING_CONTEXTS );
-	const [ isAINeeded, setIsAINeeded ] = useState( NEEDED_CONTEXTS );
 	const [ hasInitialAI, setHasInitialAI ] = useState( false );
 	const [ wizardState, setWizardState ] = useState( {
 		visible: false,
@@ -119,6 +119,18 @@ function PatternLibrary( {
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
+	const { updateContextState, updateMassContextState, updateContext, updateMassContext } = useDispatch( 'kadence/library' );
+	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect(
+		( select ) => {
+			return {
+				getContextState: ( value ) => select( 'kadence/library' ).getContextState( value ),
+				isContextRunning: ( value ) => select( 'kadence/library' ).isContextRunning( value ),
+				getContextContent: ( value ) => select( 'kadence/library' ).getContextContent( value ),
+				hasContextContent: ( value ) => select( 'kadence/library' ).hasContextContent( value ),
+			};
+		},
+		[]
+	);
     const toggleVisible = () => {
         setIsVisible( ( state ) => ! state );
     };
@@ -174,7 +186,7 @@ function PatternLibrary( {
 			return { value: key, label: contextOptions[key] }
 		} ) );
 	}, [] );
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
@@ -214,7 +226,6 @@ function PatternLibrary( {
 							} ) }
 						}
 					} ) }
-					console.log( pageCats );
 					setPages( o );
 					setPagesCategories( JSON.parse(JSON.stringify( pageCats ) ) );
 				} else {
@@ -263,73 +274,44 @@ function PatternLibrary( {
 	}
 	async function getAIContent( tempContext, checking = false ) {
 		if ( ! checking ) {
-			if ( 'loading' !== isLoadingAI?.[tempContext] ) {
-				let tempIsLoadingAI = JSON.parse(JSON.stringify( isLoadingAI ) );
-				tempIsLoadingAI[tempContext] = 'loading';
-				setIsLoadingAI( tempIsLoadingAI );
-			}
-			if ( isAINeeded?.[tempContext] ) {
-				let tempIsAINeeded = JSON.parse(JSON.stringify( isAINeeded ) );
-				tempIsAINeeded[tempContext] = false;
-				setIsAINeeded( tempIsAINeeded );
+			if ( 'loading' !== getContextState( tempContext ) ) {
+				updateContextState( tempContext, 'loading' );
 			}
 		}
 		const response = await getAIContentData( tempContext );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
-			if ( 'processing' !== isLoadingAI?.[tempContext] ) {
-				let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-				tempIsLoadingAIResponse[tempContext] = 'processing';
-				setIsLoadingAI( tempIsLoadingAIResponse );
+			if ( 'processing' !== getContextState( tempContext ) ) {
+				updateContextState( tempContext, 'processing' );
 			}
 			setTimeout( () => {
 				getAIContent( tempContext, true );
 			}, 1000 );
 		} else if ( response === 'Failed' ) {
 			console.log( 'Permissions Error getting AI Content.' );
-			const newAiContent = { ...aiContent };
-			newAiContent[tempContext] = 'failedReload';
-			setAIContent( newAiContent );
+			updateContext( tempContext, 'failedReload' );
 			setTimeout( () => {
 				forceRefreshLibrary();
 			}, 500 );
-			let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-			tempIsLoadingAIResponse[tempContext] = false;
-			setIsLoadingAI( tempIsLoadingAIResponse );
+			updateContextState( tempContext, false );
 		} else if ( response === 'error' ) {
 			console.log( 'Error getting AI Content.' );
-			const newAiContent = { ...aiContent };
-			newAiContent[tempContext] = 'failed';
-			setAIContent( newAiContent );
+			updateContext( tempContext, 'failed' );
 			setTimeout( () => {
 				forceRefreshLibrary();
 			}, 500 );
-			let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-			tempIsLoadingAIResponse[tempContext] = false;
-			setIsLoadingAI( tempIsLoadingAIResponse );
+			updateContextState( tempContext, false );
 		} else {
 			const o = SafeParseJSON( response, false );
-			const newAiContent = { ...aiContent };
-			newAiContent[tempContext] = o;
-			console.log( newAiContent );
-			setAIContent( newAiContent );
+			updateContext( tempContext, o );
 			setTimeout( () => {
 				forceRefreshLibrary();
 			}, 500 );
-			let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-			tempIsLoadingAIResponse[tempContext] = false;
-			setIsLoadingAI( tempIsLoadingAIResponse );
+			updateContextState( tempContext, true );
 		}
 	}
 	async function reloadAI( tempContext ) {
-		let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-		tempIsLoadingAIResponse[tempContext] = 'processing';
-		setIsLoadingAI( tempIsLoadingAIResponse );
-		if ( isAINeeded?.[tempContext] ) {
-			let tempIsAINeeded = JSON.parse(JSON.stringify( isAINeeded ) );
-			tempIsAINeeded[tempContext] = false;
-			setIsAINeeded( tempIsAINeeded );
-		}
+		updateContextState( tempContext, 'processing' );
 		if ( false === localContexts ) {
 			localContexts = [];
 		}
@@ -337,7 +319,7 @@ function PatternLibrary( {
 			localContexts.push( tempContext );
 		}
 		setLocalContexts( localContexts );
-		const response = await getAIContentDataReload( tempContext, aiContent );
+		const response = await getAIContentDataReload( tempContext );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
 			setTimeout( () => {
@@ -345,41 +327,26 @@ function PatternLibrary( {
 			}, 1000 );
 		} else if ( response === 'credits' ) {
 			console.log( 'Error not enough credits to reload.' );
-			let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-			tempIsLoadingAIResponse[tempContext] = false;
-			setIsLoadingAI( tempIsLoadingAIResponse );
+			updateContextState( tempContext, false );
 		} else {
 			console.log( 'Error getting New AI Job.' );
-			const newAiContent = { ...aiContent };
-			newAiContent[tempContext] = 'failed';
-			setAIContent( newAiContent );
+			updateContext( tempContext, 'failed' );
 			setTimeout( () => {
 				forceRefreshLibrary();
 			}, 500 );
-			let tempIsLoadingAIResponse = JSON.parse(JSON.stringify( isLoadingAI ) );
-			tempIsLoadingAIResponse[tempContext] = false;
-			setIsLoadingAI( tempIsLoadingAIResponse );
+			updateContextState( tempContext, false );
 		}
 	}
 
 	useEffect( () => {
 		if ( hasInitialAI ) {
-			if ( aiContent && aiContent?.[selectedContext] ) {
-				if ( isAINeeded?.[selectedContext] ) {
-					let tempIsAINeeded = JSON.parse(JSON.stringify( isAINeeded ) );
-					tempIsAINeeded[selectedContext] = false;
-					setIsAINeeded( tempIsAINeeded );
-				}
+			if ( hasContextContent( selectedContext ) ) {
 				forceRefreshLibrary();
 			} else if ( localContexts && localContexts.includes( selectedContext ) ) {
+				console.log( selectedContext);
 				getAIContent( selectedContext );
 			} else {
 				forceRefreshLibrary();
-				if ( isAINeeded?.[selectedContext] ) {
-					let tempIsAINeeded = JSON.parse(JSON.stringify( isAINeeded ) );
-					tempIsAINeeded[selectedContext] = true;
-					setIsAINeeded( tempIsAINeeded );
-				}
 			}
 			console.log( 'Selected', selectedContext );
 		}
@@ -388,6 +355,20 @@ function PatternLibrary( {
 		const response = await getAIWizardData();
 		const data = response ? SafeParseJSON(response) : {};
 		setAIUserData(data);
+	}
+	async function getAllNewData() {
+		setIsLoading( true );
+		const response = await getAIContentRemaining( true );
+		if ( response === 'error' || response === 'failed' ) {
+			console.log( 'Error getting AI Content.' );
+		} else {
+			const tempContextStates = [];
+			response.forEach( key => {
+				tempContextStates.push(key);
+			});
+			updateMassContextState( tempContextStates, 'processing' );
+			setIsLoading( false );
+		}
 	}
 	async function getImageCollection() {
 		const response = await getCollectionByIndustry( aIUserData );
@@ -399,22 +380,34 @@ function PatternLibrary( {
 	}
 	async function getAILocalData() {
 		const localContent = await getLocalAIContentData();
+		const localPrompts = await getLocalAIContexts();
+		const tempContextStates = [];
 		if ( 'empty' === localContent ) {
 			console.log( 'No Local AI Content' );
+			setHasInitialAI( true );
 		} else if ( 'failed' === localContent ) {
 			console.log( 'Failed to load Local' );
+			setHasInitialAI( true );
 		} else {
-			setAIContent( localContent );
-			let tempIsAINeeded = JSON.parse(JSON.stringify( isAINeeded ) );
 			Object.keys( localContent ).forEach( key => {
-				console.log( key );
-				tempIsAINeeded[key] = false;
+				if ( localContent?.[key]?.content?.length > 0 ) {
+					tempContextStates.push(key);
+				}
 			});
-			setIsAINeeded( tempIsAINeeded );
+			if ( tempContextStates.length > 0 ) {
+				updateMassContext( tempContextStates, localContent )
+				updateMassContextState( tempContextStates, true );
+			}
 			forceRefreshLibrary();
 			setHasInitialAI( true );
 		}
-		const localPrompts = await getLocalAIContexts();
+		if ( localPrompts && localContent ) {
+			localPrompts.forEach( key => {
+				if ( tempContextStates.indexOf( key ) === -1 ) {
+					getAIContent( key );
+				}
+			});
+		}
 		setLocalContexts( localPrompts );
 	}
 	useEffect(() => {
@@ -430,13 +423,6 @@ function PatternLibrary( {
 			getImageCollection();
 		}
 	}, [aIUserData]);
-	// useEffect(() => {
-	// 	if ( localContexts ) {
-	// 		localContexts.forEach(tempCont => {
-	// 			getAIContentQuite( tempCont );
-	// 		});
-	// 	}
-	// }, [localContexts]);
 	async function onInsertContent( pattern ) {
 		setIsImporting( true );
 		const response = await getPattern( ( pattern?.type === 'page' ? 'pages' : 'section' ), ( pattern?.type ? pattern.type : 'pattern' ), ( pattern?.id ? pattern.id : '' ), ( pattern?.style ? pattern.style : 'light' ) );
@@ -512,6 +498,15 @@ function PatternLibrary( {
 												visible: true,
 												photographyOnly: false
 											} );
+										}}
+									/>
+									<Button
+										className='kadence-ai-wizard-button'
+										iconPosition='right'
+										icon={ aiIcon }
+										text={ __('Get All new AI Data', 'kadence-blocks') }
+										onClick={ () => {
+											getAllNewData();
 										}}
 									/>
 									{ selectedReplaceImages !== 'none' && (
@@ -594,6 +589,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'design';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									forceRefreshLibrary();
 									setContextTab( 'design' );
 								}}
 							>
@@ -610,6 +606,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'context';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+									forceRefreshLibrary();
 									setContextTab( 'context' );
 								}}
 							/>
@@ -623,7 +620,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'design';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									setPatterns( JSON.parse(JSON.stringify(patterns)) );
+									forceRefreshLibrary();
 									setContextTab( 'design' );
 								}}
 							>
@@ -640,7 +637,7 @@ function PatternLibrary( {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'context';
 									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									setPatterns( JSON.parse(JSON.stringify(patterns)) );
+									forceRefreshLibrary();
 									setContextTab( 'context' );
 								}}
 							/>
@@ -739,7 +736,7 @@ function PatternLibrary( {
 															setContext( contextCategory.value );
 														}}
 													>
-														{ isLoadingAI?.[contextCategory.value] ? <Spinner /> : ''}
+														{ isContextRunning( contextCategory.value ) ? <Spinner /> : ''}
 														{ contextCategory.label }
 													</Button>
 													{ selectedContext === contextCategory.value && (
@@ -765,7 +762,7 @@ function PatternLibrary( {
 																		variant='primary'
 																		icon={ aiIcon }
 																		iconSize={ 16 }
-																		disabled={ isLoadingAI?.[contextCategory.value] }
+																		disabled={ isContextRunning( contextCategory.value ) }
 																		iconPosition='right'
 																		text={ __( 'Regenerate AI Content', 'kadence-blocks' ) }
 																		className={ 'kb-reload-context-confirm' }
@@ -943,9 +940,8 @@ function PatternLibrary( {
 							previewMode={ savedPreviewMode }
 							imageCollection={ imageCollection }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
-							isLoadingAI={ isLoadingAI }
+							contextStatesRef={ contextStatesRef }
 							useImageReplace={ selectedReplaceImages }
-							isAINeeded={ isAINeeded }
 							generateContext={ ( tempCon ) => {
 								setIsContextReloadVisible(false);
 								reloadAI( tempCon );

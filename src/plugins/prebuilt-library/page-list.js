@@ -53,10 +53,10 @@ import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { speak } from '@wordpress/a11y';
 import { searchItems } from './search-items';
-import replaceColors from './block-preview/replace-colors';
-import replaceImages from './block-preview/replace-images';
-import replaceContent from './block-preview/replace-content';
-import deleteContent from './block-preview/remove-content';
+import replaceColors from './replace/replace-colors';
+import replaceImages from './replace/replace-images';
+import replaceContent from './replace/replace-content';
+import deleteContent from './replace/remove-content';
 import KadenceBlockPatternList from './block-pattern-list';
 import {
 	//BlockPreview,
@@ -83,6 +83,18 @@ function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 				filteredBlockPatternsLength,
 				filterValue
 			) }
+		</Heading>
+	);
+}
+function PageListNotice( { type } ) {
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice kb-page-notice-above"
+		>
+			<Spinner />
+			{ 'processing' === type ? __( 'Generating AI Content.', 'kadence Blocks' ) : __( 'Content still generating, some pages will not have AI Content.', 'kadence Blocks' ) }
 		</Heading>
 	);
 }
@@ -156,9 +168,7 @@ function PageList( {
 	selectedStyle = 'light',
 	breakpointCols,
 	imageCollection,
-	aiContext,
 	contextTab,
-	aiContent,
 	useImageReplace,
 	onSelect
 } ) {
@@ -182,6 +192,15 @@ function PageList( {
 		// 	onSelect( newInfo );
 		// }
 	}
+	const { getAllContext, hasAllPageContext } = useSelect(
+		( select ) => {
+			return {
+				getAllContext: () => select( 'kadence/library' ).getAllContext(),
+				hasAllPageContext: () => select( 'kadence/library' ).hasAllPageContext(),
+			};
+		},
+		[]
+	);
 	const thePages = useMemo( () => {
 		let allPatterns = [];
 		let variation = 0;
@@ -202,7 +221,8 @@ function PageList( {
 			temp['keywords'] = pages[key].keywords ? pages[key].keywords : [];
 			temp['content'] = BuildPageContent( pages[key].rows );
 			if ( pages[key]?.rows?.[0]?.pattern_html) {
-				temp['html'] = BuildHTMLPageContent( pages[key].rows, useImageReplace, imageCollection, contextTab, aiContent );
+				const allContext = getAllContext();
+				temp['html'] = BuildHTMLPageContent( pages[key].rows, useImageReplace, imageCollection, contextTab, allContext );
 			} else if ( pages[key]?.rows_html) {
 				temp['html'] = pages[key].rows_html;
 			}
@@ -405,6 +425,7 @@ function PageList( {
 		return newStyles;
 	}, [ selectedStyle ] );
 	const hasItems = !! filteredBlockPatterns?.length;
+	const allPageContext = hasAllPageContext();
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
 			<div className="block-editor-block-patterns-explorer__list">
@@ -414,6 +435,9 @@ function PageList( {
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
 					/>
 				) }
+				{ contextTab === 'context' && ! allPageContext && (
+					<PageListNotice type={ 'mising-context' } />
+				)}
 				{ hasItems && (
 					<KadenceBlockPatternList
 						selectedCategory={ selectedCategory }

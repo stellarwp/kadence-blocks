@@ -508,30 +508,31 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			break;
 		case "pricing-table":
-			const pricingTableContent = contextAI.find( x => x.id === context );
+			const pricingTableContent = contextAI.find( x => x.id === 'pricing-' + context );
+			// Headline.
+			if ( pricingTableContent?.heading?.short ) {
+				content = content.replace( /Write a short headline/g, pricingTableContent?.heading?.short );
+			}
 			// Headline.
 			if ( pricingTableContent?.heading?.short ) {
 				content = content.replace( /Add a compelling title for your section to engage your audience./g, pricingTableContent?.heading?.short );
-			} else if ( baseContent?.heading?.short ) {
-				content = content.replace( /Add a compelling title for your section to engage your audience./g, baseContent?.heading?.short );
 			}
 			// Paragraph short
 			if ( pricingTableContent?.sentence?.short ) {
 				content = content.replace( /Add a gripping description for this featured plan/g, pricingTableContent?.sentence?.short );
-			} else if ( baseContent?.sentence?.short ) {
-				content = content.replace( /Add a gripping description for this featured plan/g, baseContent?.sentence?.short );
-			}
-			// Paragraph medium
-			if ( pricingTableContent?.sentence?.medium ) {
-				content = content.replace( /A pricing table assists users in selecting a suitable plan by simply and clearly differentiating product\/service features and prices. Use this as supporting text for your plans./g, pricingTableContent?.sentence?.medium );
-			} else if ( baseContent?.sentence?.medium ) {
-				content = content.replace( /A pricing table assists users in selecting a suitable plan by simply and clearly differentiating product\/service features and prices. Use this as supporting text for your plans./g, baseContent?.sentence?.medium );
 			}
 			// Paragraph long
+			if ( pricingTableContent?.sentence?.medium ) {
+				content = content.replace( /Let your user know what to expect when choosing this plan. Inform users of plan benefits, not features./g, pricingTableContent?.sentence?.medium );
+			}
+			// Paragraph medium
 			if ( pricingTableContent?.sentence?.long ) {
-				content = content.replace( /Let your user know what to expect when choosing this plan. Inform users of plan benefits, not features./g, pricingTableContent?.sentence?.long );
-			} else if ( baseContent?.sentence?.long ) {
-				content = content.replace( /Let your user know what to expect when choosing this plan. Inform users of plan benefits, not features./g, baseContent?.sentence?.long );
+				content = content.replace( /A pricing table assists users in selecting a suitable plan by simply and clearly differentiating product\/service features and prices. Use this as supporting text for your plans./g, pricingTableContent?.sentence?.long );
+			}
+			// overline
+			if ( pricingTableContent?.overline?.short ) {
+				content = content.replace( /add an overline text/g, pricingTableContent?.overline?.short );
+				content = content.replace( /Add an overline text/g, pricingTableContent?.overline?.short );
 			}
 			if ( pricingTableContent?.plans ) {
 				for (let index = 0; index < pricingTableContent?.plans.length; index++) {
