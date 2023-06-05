@@ -7,7 +7,7 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 
 function Save( { attributes, className } ) {
-	const { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number, kadenceDynamic, imageRatio, linkTitle, titleTagType } = attributes;
+	const { uniqueID, link, linkProperty, target, altText, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number, kadenceDynamic, imageRatio, linkTitle, titleTagType } = attributes;
 	const titleTagName = ( titleTagType && titleTagType !== 'heading' ) ? titleTagType : 'h' + titleFont[ 0 ].level;
 	let relAttr;
 	if ( '_blank' === target ) {
@@ -26,7 +26,7 @@ function Save( { attributes, className } ) {
 				<div className="kadence-info-box-image-inner-intrisic">
 					<img
 						src={ mediaImage[ 0 ].url }
-						alt={ mediaImage[ 0 ].alt }
+						alt={ mediaImage[ 0 ].altOverride ? mediaImage[ 0 ].altOverride : mediaImage[ 0 ].alt }
 						width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
 						height={ mediaImage[ 0 ].height }
 						className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) }${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
@@ -34,7 +34,7 @@ function Save( { attributes, className } ) {
 					{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
 						<img
 							src={ mediaImage[ 0 ].flipUrl }
-							alt={ mediaImage[ 0 ].flipAlt }
+							alt={ mediaImage[ 0 ].flipAltOverride ? mediaImage[ 0 ].flipAltOverride : mediaImage[ 0 ].flipAlt }
 							width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
 							height={ mediaImage[ 0 ].flipHeight }
 							className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) }${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }

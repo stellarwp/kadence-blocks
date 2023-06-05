@@ -94,6 +94,7 @@ import {
 	TextControl,
 	ToggleControl,
 	SelectControl,
+	TextareaControl,
 } from '@wordpress/components';
 import {
 	applyFilters,
@@ -1629,6 +1630,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 												max={800}
 												step={1}
 											/>
+											<TextareaControl
+												label={ __( 'Alt text' ) }
+												value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].altOverride ? mediaImage[ 0 ].altOverride : '' }
+												onChange={ value => saveMediaImage( { altOverride: value } ) }
+												help={ 'override this images default alt text' }
+											/>
 											<SelectControl
 												label={__( 'Image ratio', 'kadence-blocks' )}
 												options={[
@@ -1701,6 +1708,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 														disableMediaButtons={( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipUrl ? true : false )}
 														setAttributes={setAttributes}
 														{...attributes}
+													/>
+													<TextareaControl
+														label={ __( 'Alt text' ) }
+														value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAltOverride ? mediaImage[ 0 ].flipAltOverride : '' }
+														onChange={ value => saveMediaImage( { flipAltOverride: value } ) }
+														help={ 'override this images default alt text' }
 													/>
 													{mediaImage[ 0 ].flipId && 'svg+xml' !== mediaImage[ 0 ].flipSubtype && (
 														<ImageSizeControl
@@ -2537,7 +2550,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 										<div className="kadence-info-box-image-inner-intrisic">
 											<img
 												src={mediaImage[ 0 ].url}
-												alt={mediaImage[ 0 ].alt}
+												alt={mediaImage[ 0 ].altOverride ? mediaImage[ 0 ].altOverride : mediaImage[ 0 ].alt}
 												width={( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width )}
 												height={mediaImage[ 0 ].height}
 												className={`${( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${mediaImage[ 0 ].id}` : 'kt-info-box-image wp-image-offsite' )} ${( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' )}`}
@@ -2545,7 +2558,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 											{mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
 												<img
 													src={mediaImage[ 0 ].flipUrl}
-													alt={mediaImage[ 0 ].flipAlt}
+													alt={mediaImage[ 0 ].flipAltOverride ? mediaImage[ 0 ].flipAltOverride : mediaImage[ 0 ].flipAlt}
 													width={( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth )}
 													height={mediaImage[ 0 ].flipHeight}
 													className={`${( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${mediaImage[ 0 ].flipId}` : 'kt-info-box-image-flip wp-image-offsite' )} ${( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' )}`}
