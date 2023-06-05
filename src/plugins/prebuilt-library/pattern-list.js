@@ -35,11 +35,12 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
 import { speak } from '@wordpress/a11y';
 import { searchItems } from './search-items';
-import replaceColors from './block-preview/replace-colors';
-import replaceImages from './block-preview/replace-images';
-import replaceContent from './block-preview/replace-content';
-import deleteContent from './block-preview/remove-content';
+import replaceColors from './replace/replace-colors';
+import replaceImages from './replace/replace-images';
+import replaceContent from './replace/replace-content';
+import deleteContent from './replace/remove-content';
 import KadenceBlockPatternList from './block-pattern-list';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -166,7 +167,7 @@ function PatternList( {
 	aiContent,
 	contextTab,
 	imageCollection,
-	contextStates,
+	contextStatesRef,
 	useImageReplace,
 	generateContext,
 	contextLabel,
@@ -174,6 +175,16 @@ function PatternList( {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const debouncedSpeak = useDebounce( speak, 500 );
+	const { getContextState, getContextContent, getAllContext } = useSelect(
+		( select ) => {
+			return {
+				getContextState: ( value ) => select( 'kadence/library' ).getContextState( value ),
+				getContextContent: ( value ) => select( 'kadence/library' ).getContextContent( value ),
+				getAllContext: () => select( 'kadence/library' ).getAllContext(),
+			};
+		},
+		[]
+	);
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
 			id: info.id,
@@ -225,22 +236,22 @@ function PatternList( {
 		contextTax = 'subscribe-form' === contextTax ? 'subscribe' : contextTax;
 		contextTax = 'pricing-table' === contextTax ? 'pricing' : contextTax;
 		if ( contextTab === 'context' ) {
-			if ( ! contextStates?.[aiContext] ) {
+			if ( ! getContextState(aiContext) ) {
 				console.log( 'AI Needed' );
 				return [];
-			} else if ( contextStates?.[aiContext] && 'loading' === contextStates?.[aiContext] ) {
+			} else if ( 'loading' === getContextState(aiContext) ) {
 				console.log( 'Loading AI Content' );
 				setFailedAI( false );
 				return [];
-			} else if ( contextStates?.[aiContext] && 'processing' === contextStates?.[aiContext] ) {
+			} else if ( 'processing' === getContextState(aiContext) ) {
 				console.log( 'Generating AI Content' );
 				setFailedAI( false );
 				return [];
-			} else if ( aiContent?.[aiContext] === 'failed' ){
+			} else if ( getContextContent(aiContext) === 'failed' ){
 				console.log( 'AI Content has failed' );
 				setFailedAI( true );
 				setFailedAIType( 'general' );
-			}else if ( aiContent?.[aiContext] === 'failedReload' ){
+			}else if ( getContextContent(aiContext) === 'failedReload' ){
 				console.log( 'AI Content has failed, reload page required.' );
 				setFailedAI( true );
 				setFailedAIType( 'reload' );
@@ -277,23 +288,24 @@ function PatternList( {
 			} );
 		}
 		if ( contextTab === 'context' ) {
+			const allContext = getAllContext();
 			let variation = 0;
 			allPatterns = allPatterns.map( ( item, index ) => {
 				if ( variation === 11 ) {
 					variation = 0;
 				}
 				if ( item?.html) {
-					item['html'] = replaceContent( item.html, aiContent, item.categories, aiContext, variation );
-					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
+					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, variation );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
 				} else {
-					item['content'] = replaceContent( item.content, aiContent, item.categories, aiContext, variation );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
 				}
 				variation ++;
 				return item;
 			} );
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, thePatterns, aiContent, aiContext, contextTab, imageCollection, contextStates, useImageReplace ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );
@@ -443,10 +455,10 @@ function PatternList( {
 				{ contextTab === 'context' && failedAI && (
 					<LoadingFailedHeader type={ failedAIType } />
 				) }
-				{ contextTab === 'context' && contextStates?.[aiContext] && ( 'processing' === contextStates?.[aiContext] || 'loading' === contextStates?.[aiContext] ) && (
-					<LoadingHeader type={contextStates?.[aiContext]} />
+				{ contextTab === 'context' && ( 'processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext) ) && (
+					<LoadingHeader type={getContextState(aiContext)} />
 				) }
-				{ contextTab === 'context' && ! contextStates?.[aiContext] && (
+				{ contextTab === 'context' && ! getContextState(aiContext) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
 				{ hasItems && (

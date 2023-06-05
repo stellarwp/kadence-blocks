@@ -808,6 +808,7 @@ position: relative;
     margin: 0;
 	max-height: 100%;
 	padding: 0;
+	position: relative;
 	.block-editor-block-patterns-list {
 		height: 100%;
 		overflow: auto;
@@ -1151,6 +1152,13 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
     max-width: 550px;
     text-align: center;
     margin: 0 auto;
+}
+h2.components-heading.kb-patterns-banner-notice.kb-page-notice-above {
+	position: absolute;
+	top: 0;
+	left:0;
+	right:0;
+	margin:0 !important;
 }
 .kb-patterns-banner-generate-notice h2.components-heading {
     margin: 1rem 0;

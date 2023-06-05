@@ -47,6 +47,7 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
+import './stores';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
