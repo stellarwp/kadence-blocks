@@ -5,18 +5,6 @@
 
 import metadata from './block.json';
 import TestimonialItemWrap from './carousel-item-wrap';
-/**
- * Import Icons
- */
-import {
-    testimonialBubbleIcon,
-    alignTopIcon,
-    alignMiddleIcon,
-    alignBottomIcon,
-    testimonialBasicIcon,
-    testimonialCardIcon,
-    testimonialInLineIcon,
-} from '@kadence/icons';
 
 /**
  * Import External
@@ -29,18 +17,14 @@ import {has} from 'lodash';
 
 import {
     PopColorControl,
-    TypographyControls,
-    ResponsiveMeasurementControls,
     ResponsiveRangeControls,
     KadencePanelBody,
     WebfontLoader,
     KadenceIconPicker,
     IconRender,
     KadenceMediaPlaceholder,
-    MeasurementControls,
     InspectorControlTabs,
     KadenceBlockDefaults,
-    ResponsiveMeasureRangeControl,
     CopyPasteAttributes,
     SelectParentBlock,
 } from '@kadence/components';
@@ -50,6 +34,8 @@ import {
     KadenceColorOutput,
     showSettings,
     setBlockDefaults,
+	getPostOrFseId,
+	getUniqueId
 } from '@kadence/helpers';
 
 /**
@@ -71,10 +57,7 @@ import {useSelect, useDispatch} from '@wordpress/data';
 
 import {
     Button,
-    ButtonGroup,
-    Dashicon,
     RangeControl,
-    ToggleControl,
     SelectControl,
     Tooltip,
 } from '@wordpress/components';
@@ -83,20 +66,20 @@ import {
     closeSmall,
     image,
 } from '@wordpress/icons';
-import classnames from 'classnames';
 
 /**
  * Build the overlay edit
  */
-function KadenceTestimonials({
-        attributes,
-        setAttributes,
-        className,
-        clientId,
-        isSelected,
-        context,
-    }) {
+function KadenceTestimonials( props ) {
 
+	const {
+		attributes,
+		setAttributes,
+		className,
+		clientId,
+		isSelected,
+		context,
+	} = props;
     const {
         uniqueID,
         url,
@@ -137,12 +120,18 @@ function KadenceTestimonials({
     const [activeTab, setActiveTab] = useState('general');
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
-    const {isUniqueID, isUniqueBlock, previewDevice} = useSelect(
+    const {isUniqueID, isUniqueBlock, previewDevice, parentData} = useSelect(
         (select) => {
             return {
                 isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
                 isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
             };
         },
         [clientId],
@@ -150,26 +139,15 @@ function KadenceTestimonials({
 
     useEffect(() => {
 
-        let smallID = '_' + clientId.substr(2, 9);
-        if (!uniqueID) {
-            attributes = setBlockDefaults( 'kadence/testimonial', attributes);
-
-            setAttributes({
-                uniqueID: smallID,
-            });
-            addUniqueID(smallID, clientId);
-        } else if (!isUniqueID(uniqueID)) {
-            // This checks if we are just switching views, client ID the same means we don't need to update.
-            if (!isUniqueBlock(uniqueID, clientId)) {
-                attributes.uniqueID = smallID;
-                setAttributes({
-                    uniqueID: smallID,
-                });
-                addUniqueID(smallID, clientId);
-            }
-        } else {
-            addUniqueID(uniqueID, clientId);
-        }
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
         if (context && context.queryId && context.postId) {
             if (context.queryId !== inQueryBlock) {

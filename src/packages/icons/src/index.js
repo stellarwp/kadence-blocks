@@ -165,6 +165,13 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+export { default as captchaIcon } from './captcha'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
+export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'
 
 // Pro Block Icons
 export { default as dynamicHTMLIcon } from './block-icons/dynamic-html'
@@ -191,4 +198,3 @@ export { default as tagsIcon } from './tags'
 export { default as userIcon } from './user'
 export { default as commentsIcon } from './comments'
 export { default as linkIcon } from './link'
-export { default as captchaIcon } from './captcha'

@@ -1,0 +1,153 @@
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/blocks/icon-list/style.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+.wp-block-kadence-iconlist ul.kt-svg-icon-list:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+  list-style: none;
+  padding: 0;
+}
+
+.wp-block-kadence-iconlist ul.kt-svg-icon-list li.kt-svg-icon-list-item-wrap:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+  display: flex;
+}
+
+.wp-block-kadence-iconlist ul.kt-svg-icon-list {
+  padding: 0;
+  list-style: none;
+  margin: 0 0 10px 0;
+  text-align: left;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0 0 5px 0;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {
+  margin-right: 10px;
+  padding: 4px 0;
+  display: inline-block;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-link {
+  display: flex;
+  align-items: center;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:last-child {
+  margin-bottom: 0;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-0 {
+  padding-left: 0rem;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-1 {
+  padding-left: 2rem;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-2 {
+  padding-left: 4rem;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-3 {
+  padding-left: 6rem;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-4 {
+  padding-left: 8rem;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-level-5 {
+  padding-left: 10rem;
+}
+
+.rtl .wp-block-kadence-iconlist ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {
+  align-items: flex-start;
+}
+
+.wp-block-kadence-iconlist.kt-list-icon-alignbottom ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {
+  align-items: flex-end;
+}
+
+.wp-block-kadence-iconlist.aligncenter .kt-svg-icon-list-item-wrap {
+  justify-content: center;
+}
+
+.kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
+  border: 0px solid transparent;
+}
+
+.kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
+  -ms-grid-columns: 50% auto;
+  grid-template-columns: 50% auto;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+  display: -ms-grid;
+  display: grid;
+  gap: 5px 1em;
+}
+
+.kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
+  -ms-grid-columns: 33% 33% auto;
+  grid-template-columns: 33% 33% auto;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+  display: -ms-grid;
+  display: grid;
+  gap: 5px 1em;
+}
+
+.wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
+  align-items: flex-start;
+}
+
+.wp-block-kadence-iconlist.kt-list-icon-alignbottom ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
+  align-items: flex-end;
+}
+
+@media (max-width: 1024px) {
+  .kt-tablet-svg-icon-list-columns-1 ul.kt-svg-icon-list {
+    display: block;
+  }
+  .kt-tablet-svg-icon-list-columns-2 ul.kt-svg-icon-list {
+    -ms-grid-columns: 50% auto;
+    grid-template-columns: 50% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+  .kt-tablet-svg-icon-list-columns-3 ul.kt-svg-icon-list {
+    -ms-grid-columns: 33% 33% auto;
+    grid-template-columns: 33% 33% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+}
+@media (max-width: 767px) {
+  .kt-mobile-svg-icon-list-columns-1 ul.kt-svg-icon-list {
+    display: block;
+  }
+  .kt-mobile-svg-icon-list-columns-2 ul.kt-svg-icon-list {
+    -ms-grid-columns: 50% auto;
+    grid-template-columns: 50% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+  .kt-mobile-svg-icon-list-columns-3 ul.kt-svg-icon-list {
+    -ms-grid-columns: 33% 33% auto;
+    grid-template-columns: 33% 33% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+}
+
+/*# sourceMappingURL=style-blocks-icon-list.css.map*/

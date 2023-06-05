@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Icon",
+  "name": "kadence/icon",
+  "category": "kadence-blocks",
+  "attributes": {
+    "icons": {
+      "type": "array",
+      "default": [
+        {
+          "icon": "fe_aperture",
+          "link": "",
+          "target": "_self",
+          "size": 50,
+          "width": 2,
+          "title": "",
+          "color": "#444444",
+          "background": "transparent",
+          "border": "#444444",
+          "borderRadius": 0,
+          "borderWidth": 2,
+          "padding": 20,
+          "style": "default",
+          "marginTop": 0,
+          "marginRight": 0,
+          "marginBottom": 0,
+          "marginLeft": 0,
+          "hColor": "",
+          "hBackground": "",
+          "hBorder": "",
+          "linkTitle": ""
+        }
+      ]
+    },
+    "iconCount": {
+      "type": "number",
+      "default": 1
+    },
+    "uniqueID": {
+      "type": "string",
+      "default": ""
+    },
+    "blockAlignment": {
+      "type": "string",
+      "default": ""
+    },
+    "textAlignment": {
+      "type": "string",
+      "default": "center"
+    },
+    "tabletTextAlignment": {
+      "type": "string"
+    },
+    "mobileTextAlignment": {
+      "type": "string"
+    },
+    "verticalAlignment": {
+      "type": "string"
+    },
+    "inQueryBlock": {
+      "type": "bool",
+      "default": false
+    }
+  },
+  "supports": {
+    "ktdynamic": true
+  },
+  "usesContext": [
+    "postId",
+    "queryId"
+  ]
+}

@@ -50,7 +50,8 @@ import {
 	getUniqueId,
 	setBlockDefaults,
 	getBorderColor,
-	getBorderStyle
+	getBorderStyle,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -108,7 +109,8 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } ) {
+function KadenceAccordionComponent( props ) {
+	const { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } = props;
 	const {
 		uniqueID,
 		paneCount,
@@ -154,7 +156,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		mobileContentBorderRadius,
 		contentBorderRadiusUnit,
 		textColor,
-		linkColor, 
+		linkColor,
 		linkHoverColor
 	} = attributes;
 
@@ -163,11 +165,17 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -209,7 +217,8 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			}
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -225,7 +234,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			setTitleTag( accordionBlock.innerBlocks[ 0 ].attributes.titleTag );
 		}
 		// Update from old border settings.
-		let tempContentBorderStyle = JSON.parse( JSON.stringify( attributes.contentBorderStyle ? attributes.contentBorderStyle : [{ 
+		let tempContentBorderStyle = JSON.parse( JSON.stringify( attributes.contentBorderStyle ? attributes.contentBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -253,7 +262,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			setAttributes( { contentBorderStyle: tempContentBorderStyle } );
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorder ? attributes.titleBorder : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.titleBorder ? attributes.titleBorder : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -261,7 +270,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			unit: 'px'
 		}] ) );
 		// Update from old border settings.
-		let tempBorderHoverStyle = JSON.parse( JSON.stringify( attributes.titleBorderHover ? attributes.titleBorderHover : [{ 
+		let tempBorderHoverStyle = JSON.parse( JSON.stringify( attributes.titleBorderHover ? attributes.titleBorderHover : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -269,7 +278,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 			unit: 'px'
 		}] ) );
 		// Update from old border settings.
-		let tempBorderActiveStyle = JSON.parse( JSON.stringify( attributes.titleBorderActive ? attributes.titleBorderActive : [{ 
+		let tempBorderActiveStyle = JSON.parse( JSON.stringify( attributes.titleBorderActive ? attributes.titleBorderActive : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -824,11 +833,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				.kt-accordion-${uniqueID} .kt-accordion-panel-inner p:last-of-type{
 					margin-bottom: 0;
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.standard ? KadenceColorOutput( iconColor.standard ) : KadenceColorOutput( titleStyles[ 0 ].color )};
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].background )};
 				}
@@ -847,11 +856,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${ ! previewTitleBorderHoverLeft && previewTitleBorderColorHoverLeft ? 'border-left-color:' + previewTitleBorderColorHoverLeft : '' };
 					${titleStyles?.[ 0 ]?.backgroundHover ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].backgroundHover ) : '' };
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane:not(.kt-accordion-panel-active) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
 				}
@@ -870,18 +879,18 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					${ ! previewTitleBorderActiveLeft && previewTitleBorderColorActiveLeft ? 'border-left-color:' + previewTitleBorderColorActiveLeft : '' };
 					${titleStyles?.[ 0 ]?.backgroundActive ? 'background-color:' + KadenceColorOutput( titleStyles[ 0 ].backgroundActive ) : '' };
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${ '' !== iconColor.active ? KadenceColorOutput(iconColor.active) : KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
-				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before, 
+				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before,
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundActive )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-panel-active .kt-blocks-accordion-icon-trigger {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
-				
+
 				`}
 		</style>
 	);
@@ -921,8 +930,8 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 				/>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
