@@ -85,23 +85,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$form_attributes = json_decode( json_encode( $form_attributes ), true );
 
-		$field_style  = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array(
-			'lineHeight' => '',
-			'fontSize'   => ''
-		);
-		$label_style  = isset( $form_attributes['labelFont'] ) ? $form_attributes['labelFont'] : array(
-			'lineHeight' => '',
-			'size'       => ''
-		);
-		$help_style   = isset( $form_attributes['helpFont'] ) ? $form_attributes['helpFont'] : array(
-			'lineHeight' => '',
-			'size'       => ''
-		);
+		$field_style  = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array();
+		$label_style  = isset( $form_attributes['labelFont'] ) ? $form_attributes['labelFont'] : array();
+		$input_font  = isset( $form_attributes['inputFont'] ) ? $form_attributes['inputFont'] : array();
+		$help_style   = isset( $form_attributes['helpFont'] ) ? $form_attributes['helpFont'] : array();
 		$submit_style = isset( $form_attributes['submit'] ) ? $form_attributes['submit'] : array();
-		$submit_font  = isset( $form_attributes['submitFont'] ) ? $form_attributes['submitFont'] : array(
-			'lineHeight' => '',
-			'size'       => ''
-		);
+		$submit_font  = isset( $form_attributes['submitFont'] ) ? $form_attributes['submitFont'] : array();
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
@@ -157,22 +146,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $field_style, 'padding', 'padding', [ 'desktop_key' => 'deskPadding' ] );
 
-		$css->set_selector(
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=text]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=tel]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=number]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=date]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=time]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' select:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea:focus'
-		);
-
-		if ( isset( $field_style['backgroundActiveType'] ) && $field_style['backgroundActiveType'] === 'gradient' ) {
-			$css->add_property( 'background', $field_style['gradientActive'] );
-		} else {
-			$css->render_color_output( $field_style, 'background', 'backgroundActive', 'backgroundActiveOpacity' );
-		}
 		/*
 		 * Field Placeholder text
 		 */
@@ -203,7 +176,20 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'.wp-block-kadence-advanced-form' . $unique_id . ' select:focus,' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea:focus'
 		);
-		$css->render_color_output( $field_style, 'colorActive', 'color' );
+
+		$css->render_color_output( $input_font, 'colorActive', 'color' );
+
+		if ( ! empty( $field_style['boxShadowActive'][0] ) && $field_style['boxShadowActive'][0] === true ) {
+			$css->add_property( 'box-shadow', ( isset( $field_style['boxShadowActive'][7] ) && true === $field_style['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $field_style['boxShadowActive'][3] ) && is_numeric( $field_style['boxShadowActive'][3] ) ? $field_style['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][4] ) && is_numeric( $field_style['boxShadowActive'][4] ) ? $field_style['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][5] ) && is_numeric( $field_style['boxShadowActive'][5] ) ? $field_style['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $field_style['boxShadowActive'][6] ) && is_numeric( $field_style['boxShadowActive'][6] ) ? $field_style['boxShadowActive'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $field_style['boxShadowActive'][1] ) && ! empty( $field_style['boxShadowActive'][1] ) ? $field_style['boxShadowActive'][1] : '#000000' ), ( isset( $field_style['boxShadowActive'][2] ) && is_numeric( $field_style['boxShadowActive'][2] ) ? $field_style['boxShadowActive'][2] : 0.4 ) ) );
+		}
+
+
+		if ( isset( $field_style['backgroundActiveType'] ) && $field_style['backgroundActiveType'] === 'gradient' ) {
+			$css->add_property( 'background', $field_style['gradientActive'] );
+		} else {
+			$css->render_color_output( $field_style, 'background', 'backgroundActive', 'backgroundActiveOpacity' );
+		}
+
 		if ( isset( $field_style['backgroundActiveType'] ) && $field_style['backgroundActiveType'] === 'gradient' ) {
 			$bg1 = ( ! isset( $field_style['backgroundActive'] ) || 'transparent' === $field_style['backgroundActive'] ? 'rgba(255,255,255,0)' : $css->render_color( $field_style['backgroundActive'], ( isset( $field_style['backgroundOpacity'] ) && is_numeric( $field_style['backgroundOpacity'] ) ? $field_style['backgroundOpacity'] : 1 ) ) );
 			$bg2 = ( isset( $field_style['gradientActive'][0] ) && ! empty( $field_style['gradientActive'][0] ) ? $css->render_color( $field_style['gradientActive'][0], ( isset( $field_style['gradientActive'][1] ) && is_numeric( $field_style['gradientActive'][1] ) ? $field_style['gradientActive'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $field_style['gradientActive'][1] ) && is_numeric( $field_style['gradientActive'][1] ) ? $field_style['gradientActive'][1] : 1 ) ) );
@@ -223,37 +209,20 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 * Labels
 		 *
 		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form-label' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label' );
 
-		$css->render_color_output( $label_style, 'color', 'color' );
-		$css->render_responsive_size( $label_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
-		$css->render_responsive_size( $label_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
-		$css->render_range( $label_style, 'letterSpacing', 'letter-spacing' );
 		$css->render_measure_output( $label_style, 'padding', 'padding' );
 		$css->render_measure_output( $label_style, 'margin', 'margin' );
 
-		if ( isset( $label_style['textTransform'] ) && ! empty( $label_style['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $label_style['textTransform'] );
-		}
-
-		if ( isset( $label_style['family'] ) && ! empty( $label_style['family'] ) ) {
-			$google = isset( $label_style['google'] ) && $label_style['google'] ? true : false;
-			$google = $google && ( isset( $label_style['loadGoogle'] ) && $label_style['loadGoogle'] || ! isset( $label_style['loadGoogle'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $label_style['family'], $google, ( isset( $label_style['variant'] ) ? $label_style['variant'] : '' ), ( isset( $label_style['subset'] ) ? $label_style['subset'] : '' ) ) );
-		}
-		if ( isset( $label_style['style'] ) && ! empty( $label_style['style'] ) ) {
-			$css->add_property( 'font-style', $label_style['style'] );
-		}
-		if ( isset( $label_style['weight'] ) && ! empty( $label_style['weight'] ) && 'regular' !== $label_style['weight'] ) {
-			$css->add_property( 'font-weight', $label_style['weight'] );
-		}
+		$tmp_label_style = array( 'typography' => $label_style );
+		$css->render_typography( $tmp_label_style, 'typography');
 
 		/*
 		 *
 		 * Label Required
 		 *
 		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form-label .kb-advanced-form-required' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label .kb-advanced-form-required' );
 		$css->render_color_output( $field_style, 'requiredColor', 'color' );
 
 
@@ -263,8 +232,15 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-form-field-help' );
-		$css->render_responsive_size( $help_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
-		$css->render_responsive_size( $help_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
+
+		if( isset( $help_style['lineHeight']) ) {
+			$css->render_responsive_size( $help_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
+		}
+
+		if( isset( $help_style['size'] ) ) {
+			$css->render_responsive_size( $help_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
+		}
+
 		$css->render_color_output( $help_style, 'color', 'color' );
 		$css->render_measure_output( $help_style, 'padding', 'padding' );
 		$css->render_measure_output( $help_style, 'margin', 'margin' );
@@ -311,9 +287,16 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'box-shadow', ( isset( $submit_style['boxShadow'][7] ) && true === $submit_style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $submit_style['boxShadow'][3] ) && is_numeric( $submit_style['boxShadow'][3] ) ? $submit_style['boxShadow'][3] : '2' ) . 'px ' . ( isset( $submit_style['boxShadow'][4] ) && is_numeric( $submit_style['boxShadow'][4] ) ? $submit_style['boxShadow'][4] : '2' ) . 'px ' . ( isset( $submit_style['boxShadow'][5] ) && is_numeric( $submit_style['boxShadow'][5] ) ? $submit_style['boxShadow'][5] : '3' ) . 'px ' . ( isset( $submit_style['boxShadow'][6] ) && is_numeric( $submit_style['boxShadow'][6] ) ? $submit_style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit_style['boxShadow'][1] ) && ! empty( $submit_style['boxShadow'][1] ) ? $submit_style['boxShadow'][1] : '#000000' ), ( isset( $submit_style['boxShadow'][2] ) && is_numeric( $submit_style['boxShadow'][2] ) ? $submit_style['boxShadow'][2] : 0.4 ) ) );
 		}
 
-		$css->render_responsive_size( $submit_font['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
+		if( isset( $submit_font['lineHeight'] ) ) {
+			$css->render_responsive_size( $submit_font['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
+		}
+
 		$css->render_range( $submit_font, 'letterSpacing', 'letter-spacing' );
-		$css->render_responsive_size( $submit_font['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
+
+		if( isset( $submit_font['size'] ) ){
+			$css->render_responsive_size( $submit_font['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
+		}
+
 		if ( isset( $submit_font['textTransform'] ) && ! empty( $submit_font['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $submit_font['textTransform'] );
 		}
