@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { SafeParseJSON } from '@kadence/helpers';
 import { KadenceAiProvider } from './context/kadence-ai-provider';
 import { KadenceAiWizard } from './kadence-ai-wizard';
 import { useDatabase } from './hooks/use-database';
@@ -24,10 +25,9 @@ export function AiWizard( {
 	const { setCollections } = collectionsHelper();
 
 	async function getPreviousData() {
-		const response = await getAiWizardData();
-		const data = response ? JSON.parse(response) : {};
+		const response = SafeParseJSON(await getAiWizardData());
 
-		setWizardData(data);
+		setWizardData(response);
 	}
 	useEffect(() => {
 		// Set verticals data in session storage.
