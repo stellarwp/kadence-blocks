@@ -417,7 +417,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function get_industry_verticals( $request ) {
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
 		if ( file_exists( $this->get_local_data_path( 'industry_verticals' ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'industry_verticals' ) ) );
 		} else {
@@ -1427,18 +1426,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$site_url = get_bloginfo( 'url' );
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => 'prep.local', //$site_url
-			'key'    => $this->api_key,
-		);
 		$api_url  = $this->remote_ai_url . 'verticals';
 		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
-				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
-				),
 			)
 		);
 		// Early exit if there was an error.
