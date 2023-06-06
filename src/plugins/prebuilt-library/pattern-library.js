@@ -138,12 +138,15 @@ function PatternLibrary( {
 	const toggleReloadVisible = () => {
         setIsContextReloadVisible( ( state ) => ! state );
     };
-	const closeAIWizard = () => {
+	const closeAIWizard = ( rebuild ) => {
 		setWizardState( {
 			visible: false,
 			photographyOnly: false
 		} );
 		triggerAIDataReload( ( state ) => ! state );
+		if ( rebuild ) {
+			getAllNewData();
+		}
 	};
 	const hasCorrectUserData = ( tempData ) => {
 		const parsedUserData = SafeParseJSON( tempData, true );
@@ -302,9 +305,7 @@ function PatternLibrary( {
 		}
 	}, [reload, selectedSubTab] );
 	const forceRefreshLibrary = () => {
-		console.log( 'Force Refresh Library start');
 		if ( ! isLoading && patterns ) {
-			console.log( 'Force Refresh Library');
 			setPatterns( JSON.parse(JSON.stringify(patterns)) );
 		}
 		if ( ! isLoading && pages ) {
@@ -351,13 +352,14 @@ function PatternLibrary( {
 	}
 	async function reloadAI( tempContext ) {
 		updateContextState( tempContext, 'processing' );
-		if ( false === localContexts ) {
-			localContexts = [];
+		let tempLocalContexts = [];
+		if ( false !== localContexts ) {
+			tempLocalContexts = localContexts;
 		}
 		if ( localContexts.indexOf( tempContext ) !== -1 ) {
-			localContexts.push( tempContext );
+			tempLocalContexts.push( tempContext );
+			setLocalContexts( tempLocalContexts );
 		}
-		setLocalContexts( localContexts );
 		const response = await getAIContentDataReload( tempContext );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
@@ -387,7 +389,6 @@ function PatternLibrary( {
 			} else {
 				forceRefreshLibrary();
 			}
-			console.log( 'Selected', selectedContext );
 		}
 	}, [selectedContext, hasInitialAI] );
 	async function getAIUserData() {
@@ -465,7 +466,7 @@ function PatternLibrary( {
 		if ( aIUserData && ! hasInitialAI ) {
 			getAILocalData();
 		}
-	}, [aiDataState]);
+	}, [aIUserData]);
 	useEffect(() => {
 		if ( aIUserData ) {
 			getImageCollection();
@@ -548,14 +549,17 @@ function PatternLibrary( {
 											} );
 										}}
 									/>
-									<Button
-										className='kadence-ai-wizard-button'
-										iconPosition='right'
-										icon={ aiIcon }
-										text={ __('Get All new AI Data', 'kadence-blocks') }
-										onClick={ () => {
-											setIsVisible( false );
-											getAllNewData();
+									<ToggleControl
+										className='kb-toggle-align-right'
+										label={__( 'Custom Image Selection', 'kadence-blocks' )}
+										checked={selectedReplaceImages !== 'none'}
+										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
+										onChange={( value ) => {
+											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+											setPatterns( JSON.parse(JSON.stringify(patterns)) );
+											setReplaceImages( ( value ? 'all' : 'none' ) );
 										}}
 									/>
 									{ selectedReplaceImages !== 'none' && (
@@ -571,19 +575,6 @@ function PatternLibrary( {
 											}}
 										/>
 									) }
-									<ToggleControl
-										className='kb-toggle-align-right'
-										label={__( 'Custom Image Selection', 'kadence-blocks' )}
-										checked={selectedReplaceImages !== 'none'}
-										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
-										onChange={( value ) => {
-											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
-											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setPatterns( JSON.parse(JSON.stringify(patterns)) );
-											setReplaceImages( ( value ? 'all' : 'none' ) );
-										}}
-									/>
 									<ToggleControl
 										className='kb-toggle-align-right'
 										label={__( 'Live Preview', 'kadence-blocks' )}

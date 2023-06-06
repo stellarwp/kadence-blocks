@@ -51,7 +51,7 @@
 
 	.components-wizard__back-button,
 	.components-wizard__forward-button,
-	.components-wizard__finish-button {
+	.components-wizard__finish-button-container {
 		position: absolute;
 	}
 
@@ -60,8 +60,12 @@
 	}
 
 	.components-wizard__forward-button,
-	.components-wizard__finish-button {
+	.components-wizard__finish-button-container {
 		right: 32px;
+	}
+	.components-wizard__finish-button-container {
+		display: flex;
+		gap: 10px;
 	}
 
 	/* Page Control (Stepper) */
