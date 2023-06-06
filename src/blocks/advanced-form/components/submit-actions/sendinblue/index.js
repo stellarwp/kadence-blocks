@@ -36,7 +36,7 @@ const HELP_URL = 'https://help.brevo.com/hc/en-us/articles/209467485-What-s-an-A
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function SendInBlueControls( { parentClientId, settings, save } ) {
+function SendInBlueOptions( { parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
@@ -323,4 +323,4 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 	);
 }
 
-export default ( SendInBlueControls );
+export default ( SendInBlueOptions );
