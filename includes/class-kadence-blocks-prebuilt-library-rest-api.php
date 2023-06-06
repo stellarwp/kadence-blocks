@@ -417,7 +417,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function get_industry_verticals( $request ) {
 		$context = $request->get_param( self::PROP_CONTEXT );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		if ( file_exists( $this->get_local_data_path( 'industry_verticals' ) ) && ! $reload ) {
+		if ( file_exists( $this->get_local_data_path( 'industry_verticals' . gmdate( 'W' ) ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'industry_verticals' ) ) );
 		} else {
 			// Check if we have a remote file.
@@ -426,7 +426,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			if ( $response === 'error' ) {
 				return rest_ensure_response( 'error' );
 			} else {
-				$this->create_data_file( $response, 'industry_verticals' );
+				$this->create_data_file( $response, 'industry_verticals' . gmdate( 'W' ) );
 				return rest_ensure_response( $response );
 			}
 		}
