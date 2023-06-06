@@ -233,12 +233,21 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "group" => array(), "map" => array() ),
+				'default'       => array(
+					'group' => array(),
+					'map' => array(),
+				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'group' => array( 'type' => 'array' ),
+							'group' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
 							'map'   => array( 'type' => 'array' ),
 						),
 					),

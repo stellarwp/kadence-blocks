@@ -37,7 +37,7 @@ export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 
 	const [ isActive, setIsActive ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ list, setList ] = useState( false );
+	const [ lists, setLists ] = useState( false );
 	const [ listTags, setListTags ] = useState( false );
 	const [ tagsLoaded, setTagsLoaded ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
@@ -90,12 +90,12 @@ export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 					theLists.push( { value: item.id, label: item.title } );
 				} );
 
-				setList( theLists );
+				setLists( theLists );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( () => {
-				setList( [] );
+				setLists( [] );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} );
@@ -160,9 +160,9 @@ export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 			} );
 	};
 
-	const hasList = Array.isArray( list ) && list.length;
-	const hasFields = Array.isArray( listFields ) && listFields.length;
-	const hasTags = Array.isArray( listTags ) && listTags.length;
+	const hasLists = Array.isArray( lists ) && lists.length > 0;
+	const hasFields = Array.isArray( listFields ) && listFields.length > 0;
+	const hasTags = Array.isArray( listTags ) && listTags.length > 0;
 
 	return (
 		<KadencePanelBody
@@ -177,17 +177,17 @@ export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasList && (
+					{!isFetching && !hasLists && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
 							{( !listsLoaded ? getLists() : '' )}
-							{!Array.isArray( list ) ?
+							{!Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No lists found.', 'kadence-blocks-pro' )}
 						</>
 
 					)}
-					{!isFetching && hasList && (
+					{!isFetching && hasLists && (
 						<>
 							<h2 className="kb-heading-fln-list-title">{__( 'Select List', 'kadence-blocks' )}</h2>
 							<Select
@@ -196,7 +196,7 @@ export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 									save( { lists: ( value ? value : [] ) } );
 								}}
 								id={'fln-list-selection'}
-								options={list}
+								options={lists}
 								isMulti={true}
 								maxMenuHeight={200}
 								placeholder={__( 'Select List' )}

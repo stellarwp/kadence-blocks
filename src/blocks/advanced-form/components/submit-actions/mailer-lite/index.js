@@ -40,7 +40,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 	const [ api, setAPI ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ group, setGroup ] = useState( false );
+	const [ groups, setGroups ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ groupsLoaded, setGroupsLoaded ] = useState( false );
 	const [ isFetchingFields, setIsFetchingFields ] = useState( false );
@@ -80,9 +80,10 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		save( { map: newItems } );
 	};
 
-	const getMailerLiteGroup = () => {
+	const getMailerLiteGroups = () => {
+		console.log('getting groups')
 		if ( !api ) {
-			setGroup( [] );
+			setGroups( [] );
 			setGroupsLoaded( true );
 			return;
 		}
@@ -96,17 +97,19 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 			),
 		} )
 			.then( ( groups ) => {
+				console.log('groups: ', groups)
 				const theGroups = [];
-				groups.map( ( item ) => {
+				groups.data.map( ( item ) => {
 					theGroups.push( { value: item.id, label: item.name } );
 				} );
 
-				setGroup( theGroups );
+				setGroups( theGroups );
 				setGroupsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( () => {
-				setGroup( [] );
+				console.log('err')
+				setGroups( [] );
 				setGroupsLoaded( true );
 				setIsFetching( false );
 			} );
@@ -183,7 +186,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		} );
 	};
 
-	const hasGroup = Array.isArray( group ) && group.length;
+	const hasGroups = Array.isArray( groups ) && groups.length;
 	const hasFields = Array.isArray( groupFields ) && groupFields.length;
 
 	return (
@@ -229,28 +232,29 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasGroup && (
+					{!isFetching && !hasGroups && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select a Group', 'kadence-blocks' )}</h2>
-							{( !groupsLoaded ? getMailerLiteGroup() : '' )}
-							{!Array.isArray( group ) ?
+							{( !groupsLoaded ? getMailerLiteGroups() : '' )}
+							{!Array.isArray( groups ) ?
 								<Spinner/> :
 								__( 'No group found.', 'kadence-blocks-pro' )}
 						</>
 
 					)}
-					{!isFetching && hasGroup && (
+					{!isFetching && hasGroups && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select Group', 'kadence-blocks' )}</h2>
 							<div className="mailerlite-select-form-row">
 								<Select
-									value={( group ? group.filter( ( { value } ) => value.toString() === ( undefined !== settings.group && settings.group[ 0 ] ? settings.group[ 0 ].toString() : '' ) ) : '' )}
+									value={( undefined !== settings && undefined !== settings && undefined !== settings.group ? settings.group : '' )}
 									onChange={( value ) => {
-										save( { group: ( value.value ? [ value.value ] : [] ) } );
+										save( { group: ( value ? value : {} ) } );
 									}}
 									placeholder={__( 'Select a Group', 'kadence-blocks' )}
 									maxMenuHeight={300}
-									options={group}
+									options={groups}
+									isMulti={false}
 								/>
 							</div>
 							{!settings.group && (

@@ -118,7 +118,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		);
 
 		$mailerlite_args = ( isset( $this->form_args['attributes']['mailerlite'] ) && is_array( $this->form_args['attributes']['mailerlite'] ) && isset( $this->form_args['attributes']['mailerlite'] ) ? $this->form_args['attributes']['mailerlite'] : $mailerlite_default );
-		$groups          = ( isset( $mailerlite_args['group'] ) ? $mailerlite_args['group'] : array() );
+		$group           = ( isset( $mailerlite_args['group'] ) ? $mailerlite_args['group'] : '' );
 		$map             = ( isset( $mailerlite_args['map'] ) && is_array( $mailerlite_args['map'] ) ? $mailerlite_args['map'] : array() );
 		$body            = array( 'fields' => array() );
 		$email           = false;
@@ -148,8 +148,12 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			unset( $body['fields'] );
 		}
 
-		if ( ! empty( $groups ) && is_array( $groups ) && isset( $groups[0] ) && ! empty( $groups[0] ) ) {
-			$group_id = $groups[0];
+		$group_id = '';
+		if ( ! empty( $group ) && is_array( $group ) ) {
+			$group_id = ( isset( $group['value'] ) && ! empty( $group['value'] ) ? $group['value'] : '' );
+		}
+		if ( ! $group_id ) {
+			return;
 		}
 
 		$body['resubscribe'] = true;

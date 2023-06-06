@@ -179,8 +179,8 @@ function SendInBlueOptions( { parentClientId, settings, save } ) {
 		save( { map: newItems } );
 	};
 
-	const hasLists = Array.isArray( lists ) && lists.length;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length;
+	const hasLists = Array.isArray( lists ) && lists.length > 0;
+	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
 
 	return (
 		<KadencePanelBody
