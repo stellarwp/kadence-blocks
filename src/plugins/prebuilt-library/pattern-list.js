@@ -104,6 +104,8 @@ function LoadingHeader( { type } ) {
 	);
 }
 function GenerateHeader( { context, contextLabel, generateContext } ) {
+	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -127,16 +129,29 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 				contextLabel,
 				) }
 			</p>
-			<Button
-				className='kadence-generate-copy-button'
-				iconPosition='right'
-				icon={ aiIcon }
-				text={ __('Generate Copy', 'kadence-blocks') }
-				onClick={ () => {
-					generateContext( context );
-				}}
-			/>
-
+			{ ! hasPro && ! data_key && (
+				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+			)}
+			{ hasPro && ! data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+					disabled={ true }
+				/>
+			)}
+			{ hasPro && data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Generate Copy', 'kadence-blocks') }
+					onClick={ () => {
+						generateContext( context );
+					}}
+				/>
+			)}
 		</div>
 	);
 }

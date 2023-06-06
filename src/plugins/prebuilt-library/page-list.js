@@ -31,6 +31,7 @@ import {
 	VisuallyHidden,
 	ExternalLink,
 	Spinner,
+	Icon,
 	Tooltip,
 	__experimentalHeading as Heading,
 	__unstableComposite as Composite,
@@ -52,6 +53,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { speak } from '@wordpress/a11y';
+import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { searchItems } from './search-items';
 import replaceColors from './replace/replace-colors';
 import replaceImages from './replace/replace-images';
@@ -96,6 +98,34 @@ function PageListNotice( { type } ) {
 			<Spinner />
 			{ 'processing' === type ? __( 'Generating AI Content.', 'kadence Blocks' ) : __( 'Content still generating, some pages will not have AI Content.', 'kadence Blocks' ) }
 		</Heading>
+	);
+}
+function ProOnlyHeader() {
+	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	return (
+		<div className="kb-patterns-banner-generate-notice">
+			<Icon className='kadence-generate-icons' icon={ aiIcon } />
+			<Heading
+				level={ 2 }
+				lineHeight={ '1.2' }
+				className="kb-patterns-heading-notice"
+			>
+				{ __( 'Drop in professionally designed pages with AI Generated Content', 'kadence Blocks' ) }
+			</Heading>
+			{ ! hasPro && ! data_key && (
+				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+			)}
+			{ hasPro && ! data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+					disabled={ true }
+				/>
+			)}
+		</div>
 	);
 }
 function BuildPageContent( rows ) {
@@ -173,6 +203,8 @@ function PageList( {
 	onSelect
 } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
+	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	const onSelectBlockPattern = ( info ) => {
 		const pageSend = {
 			id: info.id,
@@ -238,6 +270,9 @@ function PageList( {
 	}, [ pages, imageCollection, useImageReplace, contextTab ] );
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = thePages;
+		if ( contextTab === 'context' && ( !hasPro || ! data_key ) ) {
+			return [];
+		}
 		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
@@ -435,8 +470,11 @@ function PageList( {
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
 					/>
 				) }
-				{ contextTab === 'context' && ! allPageContext && (
+				{ contextTab === 'context' && hasPro && data_key && ! allPageContext && (
 					<PageListNotice type={ 'mising-context' } />
+				)}
+				{ contextTab === 'context' && ( ! hasPro || ! data_key ) && (
+					<ProOnlyHeader />
 				)}
 				{ hasItems && (
 					<KadenceBlockPatternList

@@ -77,7 +77,16 @@ const styles = {
 
 export function PhotosCurated({ loading, collection, collectionLink }) {
 	const images = (collection && collection?.data?.length) ? collection.data[0].images.slice(0, 3) : ['','',''];
-
+	if ( ! images?.[1] ||  '' === images?.[1] ) {
+		return (
+			<div
+				className={ 'stellarwp-body' }
+				style={ styles.wrapper }
+			>
+				<h2 className='kb-error-loading-images' style={{ textAlign: 'center'}}>{__( 'Error Loading Images', 'kadence-blocks' )}</h2>
+			</div>
+		);
+	}
 	return (
 		<div
 			className={ 'stellarwp-body' }
