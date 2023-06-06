@@ -36,7 +36,8 @@ const styles = {
 		backgroundColor: 'rgba(255,255,255,0.95)',
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		zIndex: 1,
 	},
 	icon: {
 		transition: ''
@@ -61,7 +62,9 @@ const styles = {
 		objectFit: 'cover',
 		objectPosition: 'center',
 		height: 400,
-		width: '100%'
+		width: '100%',
+		position: 'relative',
+		zIndex: 2,
 	},
 	contentWrapper: {
 		marginTop: 16,
@@ -77,7 +80,7 @@ const styles = {
 
 export function PhotosCurated({ loading, collection, collectionLink }) {
 	const images = (collection && collection?.data?.length) ? collection.data[0].images.slice(0, 3) : ['','',''];
-	if ( ! images?.[1] ||  '' === images?.[1] ) {
+	if ( ! loading && ! collection?.data?.length ) {
 		return (
 			<div
 				className={ 'stellarwp-body' }
@@ -98,16 +101,14 @@ export function PhotosCurated({ loading, collection, collectionLink }) {
 						const baseStyle = (index % 2 === 1) ? styles.wide : styles.narrow;
 						return (
 							<FlexBlock style={ baseStyle }>
+								<FlexBlock className="loading-behind-image" style={ styles.loading }>
+									<Spinner />
+								</FlexBlock>
 								{
-									image?.sizes && (
+									! loading && image?.sizes && (
 										<img style={ styles.img } src={image.sizes[index % 2].src } />
 									)
 								}
-								{ loading && (
-									<FlexBlock style={ styles.loading }>
-										<Spinner />
-									</FlexBlock>
-								) }
 							</FlexBlock>
 						)
 					})
