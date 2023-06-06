@@ -303,11 +303,11 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					"list" => array(),
-					"map" => array(),
-					"groups" => array(),
-					"tags" => array(),
-					"doubleOptin" => false
+					'list' => array(),
+					'map' => array(),
+					'groups' => array(),
+					'tags' => array(),
+					'doubleOptin' => false,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -318,7 +318,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 								'properties' => array(
 									'value' => array( 'type' => 'string' ),
 									'label' => array( 'type' => 'string' ),
-								)
+								),
 							),
 							'map'  => array( 'type' => 'array' ),
 							'groups'  => array( 'type' => 'array' ),
@@ -337,7 +337,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "form" => array(), "sequence" => array(), "tags" => array(), "map" => array() ),
+				'default'       => array( 'form' => array(), 'sequence' => array(), 'tags' => array(), 'map' => array() ),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
@@ -359,19 +359,37 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "lists" => array(), "map" => array() ),
+				'default'       => array(
+					'list' => array(),
+					'automation' => array(),
+					'tags' => array(),
+					'map' => array(),
+				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'lists' => array( 'type' => 'array' ),
-							'map'   => array( 'type' => 'array' )
+							'list' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
+							'automation' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
+							'tags'  => array( 'type' => 'array' ),
+							'map'   => array( 'type' => 'array' ),
 						),
 					),
 				),
 			)
 		);
-
 
 		register_post_meta(
 			'kadence_form',

@@ -602,34 +602,40 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		$activeCampaignSettings = $this->form_args['attributes']['activecampaign'];
 
-		if ( empty( $api_key ) || empty( $api_base ) || empty( $activeCampaignSettings['map'] ) ) {
+		if ( empty( $api_key ) || empty( $api_base ) ) {
 			return;
 		}
 
-		$fieldMap = array();
+		$field_map = array();
 
-		foreach ( $activeCampaignSettings['map'] as $response_key => $field_name ) {
+		if ( ! empty( $activeCampaignSettings['map'] ) ) {
+			foreach ( $activeCampaignSettings['map'] as $response_key => $field_name ) {
 
-			if ( $field_name === 'None' ) {
-				continue;
+				if ( $field_name === 'None' ) {
+					continue;
+				}
+
+				if ( in_array( $field_name, [ 'firstName', 'phone', 'lastName', 'email' ] ) ) {
+					$field_map[ $field_name ] = $this->responses[ $response_key ]['value'];
+				} else {
+					$field_map['fieldValues'][] = array(
+						'field' => $field_name,
+						'value' => $this->responses[ $response_key ]['value'],
+					);
+				}
 			}
-
-			if ( in_array( $field_name, [ 'firstName', 'phone', 'lastName', 'email' ] ) ) {
-				$fieldMap[ $field_name ] = $this->responses[ $response_key ]['value'];
-			} else {
-				$fieldMap['fieldValues'][] = array(
-					'field' => $field_name,
-					'value' => $this->responses[ $response_key ]['value'],
-				);
+		} else {
+			foreach ( $this->responses as $key => $data ) {
+				if ( 'email' === $data['type'] ) {
+					$field_map['email'] = $data['value'];
+					break;
+				}
 			}
-
 		}
 
-		$email_key = array_search( 'email', $activeCampaignSettings['map'] );
-
-
-		// Missing or invalid email address
-		if ( empty( $this->responses[ $email_key ]['value'] ) || ! filter_var( $this->responses[ $email_key ]['value'], FILTER_VALIDATE_EMAIL ) ) {
+		// By the end of mapping (or not mapping), we must have a valid email address.
+		$email = isset( $field_map['email'] ) ? $field_map['email'] : '';
+		if ( ! $email || ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
 			return;
 		}
 
@@ -637,7 +643,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			'headers' => array(
 				'Api-Token'    => $api_key,
 				'Content-Type' => 'application/json',
-			)
+			),
 		);
 
 		// Create / Update Contact
@@ -646,9 +652,9 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			array(
 				'body' => json_encode(
 					array(
-						'contact' => $fieldMap
+						'contact' => $field_map
 					)
-				)
+				),
 			)
 		) );
 
@@ -683,7 +689,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 
 		// Add to automation
-		if ( ! empty( $activeCampaignSettings['groups']['value'] ) && is_numeric( $activeCampaignSettings['groups']['value'] ) ) {
+		if ( ! empty( $activeCampaignSettings['automation']['value'] ) && is_numeric( $activeCampaignSettings['automation']['value'] ) ) {
 			$response = wp_remote_post( $base_url . '/contactAutomations', array_merge(
 				$request_args,
 				array(
@@ -691,7 +697,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 						array(
 							'contactAutomation' => array(
 								'contact'    => $contactId,
-								'automation' => $activeCampaignSettings['groups']['value']
+								'automation' => $activeCampaignSettings['automation']['value']
 							)
 						)
 					)
