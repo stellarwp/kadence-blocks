@@ -927,7 +927,7 @@ function KadenceAdvancedHeading( props ) {
 											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
-											step={( sizeType === 'px' ? 1 : 0.1 )}
+											step={( sizeType === 'px' ? 1 : 0.001 )}
 											unit={ sizeType ? sizeType : 'px' }
 											onUnit={( value ) => {
 												setAttributes( { sizeType: value } );

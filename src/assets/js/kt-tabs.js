@@ -18,6 +18,7 @@
 					var parentId = parentListItem.getAttribute("id");
 					var isActive = parentListItem.classList.contains('kt-tab-title-active');
 
+					parentListItem.setAttribute('role', 'presentation');
 					subElem.setAttribute('role', 'tab');
 					// subElem.setAttribute('aria-controls', parentId);
 					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');

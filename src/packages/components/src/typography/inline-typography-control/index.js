@@ -544,7 +544,7 @@ class InlineTypographyControls extends Component {
 													onChangeMobile={ ( value ) => onMobileSize( value ) }
 													min={ 0 }
 													max={ fontSizeType !== 'px' ? 12 : 300 }
-													step={ fontSizeType !== 'px' ? 0.01 : 1 }
+													step={ fontSizeType !== 'px' ? 0.001 : 1 }
 													unit={ ( fontSizeType ? fontSizeType : 'px' ) }
 													onUnit={ ( value ) => onFontSizeType( value ) }
 													units={[ 'px', 'em', 'rem', 'vw' ]}
