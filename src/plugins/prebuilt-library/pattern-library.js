@@ -145,6 +145,44 @@ function PatternLibrary( {
 		} );
 		triggerAIDataReload( ( state ) => ! state );
 	};
+	const hasCorrectUserData = ( tempData ) => {
+		const parsedUserData = SafeParseJSON( tempData, true );
+		if ( ! parsedUserData ) {
+			return false;
+		}
+		// Check for CompanyName, Location, Industry, MissionStatement, Keywords, PrivacyAgreement, 
+		if ( ! parsedUserData?.companyName || '' === parsedUserData?.companyName ) {
+			return false;
+		}
+		if ( ! parsedUserData?.location || '' === parsedUserData?.location ) {
+			return false;
+		}
+		if ( ! parsedUserData?.industry || '' === parsedUserData?.industry ) {
+			return false;
+		}
+		if ( 'Other' === parsedUserData?.industry && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
+			return false;
+		}
+		if ( 'Other' !== parsedUserData?.industry && ( ! parsedUserData?.industrySpecific || '' === parsedUserData?.industrySpecific ) ) {
+			return false;
+		}
+		if ( 'Other' === parsedUserData?.industrySpecific && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
+			return false;
+		}
+		if ( ! parsedUserData?.missionStatement || '' === parsedUserData?.missionStatement ) {
+			return false;
+		}
+		if ( ! parsedUserData?.keywords?.length || parsedUserData?.keywords?.length < 5 ) {
+			return false;
+		}
+		if ( ! parsedUserData?.privacyAgreement || true !== parsedUserData?.privacyAgreement ) {
+			return false;
+		}
+		if ( ! parsedUserData?.tone || '' === parsedUserData?.tone ) {
+			return false;
+		}
+		return true;
+	}
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
@@ -356,8 +394,10 @@ function PatternLibrary( {
 		const response = await getAIWizardData();
 		if ( ! response ) {
 			setAINeedsData( true );
+		} else if ( ! hasCorrectUserData( response ) ) {
+			console.log( 'User Data is not correct' );
+			setAINeedsData( true );
 		} else {
-			console.log( response );
 			const data = response ? SafeParseJSON(response) : {};
 			setAIUserData(data);
 		}
