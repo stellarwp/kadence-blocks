@@ -67,15 +67,19 @@ class Kadence_Blocks_Svg_Render {
 					$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
 					$args = array( 'title' => '' );
 					foreach ( $options as $key => $value ) {
-						$value = trim($value);
+						$value = trim( $value );
 						if ( empty( $value ) ) {
 							continue;
 						}
 						$data_split = explode( '=', $value, 2 );
-						if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
-							$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+						if ( ! empty( $data_split[0] ) && ( $data_split[0] === 'title' || $data_split[0] === 'class' ) ) {
+							if ( ! empty( $data_split[1] ) ) {
+								$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+							}
 						}
-						$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
+						if ( ! empty( $data_split[1] ) ) {
+							$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
+						}
 					}
 					$type = substr( $args['name'] , 0, 2 );
 					$type_fas = ( 'fas' === substr( $args['name'] , 0, 3 ) ? true : false );
