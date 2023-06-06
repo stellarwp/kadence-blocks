@@ -19,6 +19,7 @@ export function SelectControl(props) {
 		className = '',
 		onFocus = () => {},
 		onBlur = () => {},
+		error = false,
 		...rest
 	} = props;
 
@@ -41,7 +42,8 @@ export function SelectControl(props) {
 	};
 
 	const classes = classnames( 'stellarwp', className, {
-		'is-focused': isFocused
+		'is-focused': isFocused,
+		'has-error': error
 	} );
 	
 	return (

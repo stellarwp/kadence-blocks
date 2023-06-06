@@ -1,34 +1,52 @@
-import {
-	VERTICALS_SESSION_KEY,
-	API_ROUTE_GET_VERTICALS
-} from '../constants';
-
+import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { SafeParseJSON } from '@kadence/helpers';
 
+import {
+	VERTICALS_SESSION_KEY,
+	API_MAX_ATTEMPTS,
+	API_ROUTE_GET_VERTICALS
+} from '../constants';
+
 export function verticalsHelper() {
+	const [ loading, setLoading ] = useState(false);
+
 	/**
 	 * Get verticals data from Prophecy endpoint.
 	 *
 	 * @return {Promise<array>}
 	 */
 	async function getVerticalsFromProphecy() {
-		try {
-			let verticals = [];
-			const response = await apiFetch({
-				path: API_ROUTE_GET_VERTICALS
-			});
-			const responseData = SafeParseJSON( response, false );
-			if ( responseData?.data ) {
-				verticals = formatVerticals(responseData.data);
-				// Save verticals object to session storage.
-				saveVerticalsToSession(verticals);
+		let verticals = {};
+
+		setLoading(true);
+
+		// Attempt to query verticals 3 times.
+		for (let tries = 0; tries < API_MAX_ATTEMPTS; tries++) {
+			try {
+				const response = await apiFetch({
+					path: API_ROUTE_GET_VERTICALS
+				});
+				const responseData = SafeParseJSON(response, false);
+
+				setLoading(false);
+
+				if (responseData && responseData?.data) {
+					verticals = formatVerticals(responseData.data);
+					// Save verticals object to session storage.
+					saveVerticalsToSession(verticals);
+
+					return verticals;
+				}
+			} catch (error) {
+				const message = error?.message ? error.message : error;
+				console.log(`ERROR: ${message}`);
+
+				setLoading(false);
 			}
-			return verticals;
-		} catch (error) {
-			console.log(`Error: ${ error }`);
 		}
 
+		setLoading(false);
 	}
 
 	/**
@@ -72,7 +90,6 @@ export function verticalsHelper() {
 	 * Check session storage for existing data.
 	 *
 	 * @return {boolean}
-	 *
 	 */
 	function verticalsSessionHasData() {
 		if (! sessionStorage.getItem(VERTICALS_SESSION_KEY)) {
@@ -80,9 +97,9 @@ export function verticalsHelper() {
 		}
 
 		try {
-			const verticals = JSON.parse(sessionStorage.getItem(VERTICALS_SESSION_KEY));
+			const verticals = SafeParseJSON(sessionStorage.getItem(VERTICALS_SESSION_KEY), false);
 
-			if (Object.keys(verticals).length === 0) {
+			if (! verticals || Object.keys(verticals).length === 0) {
 				return false;
 			}
 		} catch (error) {
@@ -110,13 +127,14 @@ export function verticalsHelper() {
 	 */
 	async function getVerticals() {
 		if (verticalsSessionHasData()) {
-			return JSON.parse(sessionStorage.getItem(VERTICALS_SESSION_KEY));
+			return SafeParseJSON(sessionStorage.getItem(VERTICALS_SESSION_KEY));
 		}
 
 		return getVerticalsFromProphecy();
 	}
 
 	return {
+		loading,
 		setVerticals,
 		getVerticals
 	}

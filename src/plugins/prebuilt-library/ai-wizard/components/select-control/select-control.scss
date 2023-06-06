@@ -35,4 +35,18 @@
 	&.is-focused .components-input-control__backdrop {
 		border-color: $color-black;
 	}
+
+	.components-select-control__refresh {
+		position: absolute;
+		right: 0;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		padding: 10px;
+		cursor: pointer;
+
+		&.is-loading {
+			cursor: default;
+		}
+	}
 }

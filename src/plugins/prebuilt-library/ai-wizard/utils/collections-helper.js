@@ -25,14 +25,18 @@ export function collectionsHelper() {
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
+
 			if ( responseData?.data?.collections ) {
 				collections = responseData.data.collections;
 				// Save collections object to session storage.
 				saveCollections(collections);
 			}
+
 			return collections;
 		} catch (error) {
-			console.log(`Error: ${ error }`);
+			const message = error?.message ? error.message : error;
+
+			console.log(`ERROR: ${ message }`);
 		}
 	}
 

@@ -31,7 +31,10 @@ export function useDatabase() {
 				return true;
 			}
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+
+			console.log(`ERROR: ${ message }`);
+
 			setLoading(false);
 			setError(true);
 
@@ -62,7 +65,10 @@ export function useDatabase() {
 				}
 			}
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+
+			console.log(`ERROR: ${ message }`);
+
 			setLoading(false);
 			setError(true);
 
