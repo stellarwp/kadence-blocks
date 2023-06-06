@@ -448,10 +448,10 @@ class TypographyControls extends Component {
 		];
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
 		const fontMax = ( fontSizeType !== 'px' ? 12 : 300 );
-		const fontStep = ( fontSizeType !== 'px' ? 0.01 : 1 );
+		const fontStep = ( fontSizeType !== 'px' ? 0.001 : 1 );
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
-		const lineStep = ( lineHeightType !== 'px' ? 0.01 : 1 );
+		const lineStep = ( lineHeightType !== 'px' ? 0.001 : 1 );
 		const usingReg = typographyWeights.some(function(el) {
 			return el.value === 'regular';
 		});
