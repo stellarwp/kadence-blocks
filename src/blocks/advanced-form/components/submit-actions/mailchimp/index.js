@@ -324,7 +324,7 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 							<Select
 								value={( undefined !== settings && undefined !== settings && undefined !== settings.list ? settings.list : '' )}
 								onChange={( value ) => {
-									save( { list: ( value ? value : [] ) } );
+									save( { list: ( value ? value : {} ) } );
 								}}
 								id={'mc-list-selection'}
 								isClearable={true}
