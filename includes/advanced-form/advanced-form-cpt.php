@@ -275,13 +275,20 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "lists" => array(), "map" => array() ),
+				'default'       => array(
+					'lists' => array(),
+					'map' => array(),
+				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'lists' => array( 'type' => 'array' ),
-							'map'   => array( 'type' => 'array' )
+							'lists' => array(
+								'type' => 'array',
+							),
+							'map'  => array(
+								'type' => 'array',
+							),
 						),
 					),
 				),

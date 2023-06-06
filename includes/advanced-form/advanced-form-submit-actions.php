@@ -117,7 +117,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			'group' => '',
 		);
 
-		$mailerlite_args = ( isset( $this->form_args['attributes']['mailerlite'] ) && is_array( $this->form_args['attributes']['mailerlite'] ) && isset( $this->form_args['attributes']['mailerlite'] ) && is_array( $this->form_args['attributes']['mailerlite'] ) ? $this->form_args['attributes']['mailerlite'] : $mailerlite_default );
+		$mailerlite_args = ( isset( $this->form_args['attributes']['mailerlite'] ) && is_array( $this->form_args['attributes']['mailerlite'] ) && isset( $this->form_args['attributes']['mailerlite'] ) ? $this->form_args['attributes']['mailerlite'] : $mailerlite_default );
 		$groups          = ( isset( $mailerlite_args['group'] ) ? $mailerlite_args['group'] : array() );
 		$map             = ( isset( $mailerlite_args['map'] ) && is_array( $mailerlite_args['map'] ) ? $mailerlite_args['map'] : array() );
 		$body            = array( 'fields' => array() );
@@ -197,7 +197,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			'doubleOptin' => false,
 		);
 
-		$fluentcrm_args = ( isset( $this->form_args['attributes']['fluentcrm'] ) && is_array( $this->form_args['attributes']['fluentcrm'] ) && isset( $this->form_args['attributes']['fluentcrm'] ) && is_array( $this->form_args['attributes']['fluentcrm'] ) ? $this->form_args['attributes']['fluentcrm'] : $fluentcrm_default );
+		$fluentcrm_args = ( isset( $this->form_args['attributes']['fluentcrm'] ) && is_array( $this->form_args['attributes']['fluentcrm'] ) && isset( $this->form_args['attributes']['fluentcrm'] ) ? $this->form_args['attributes']['fluentcrm'] : $fluentcrm_default );
 		$map            = ( isset( $fluentcrm_args['map'] ) && is_array( $fluentcrm_args['map'] ) ? $fluentcrm_args['map'] : array() );
 		$double_optin   = ( isset( $fluentcrm_args['doubleOptin'] ) ? $fluentcrm_args['doubleOptin'] : false );
 		$fluent_data    = array();
@@ -259,15 +259,15 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			return;
 		}
 		$sendinblue_default = array(
-			'list'           => array(),
+			'lists'           => array(),
 			'map'            => array(),
 			'doubleOptin'    => false,
 			'templateId'     => '',
 			'redirectionUrl' => '',
 		);
-		//error_log( print_r( $this->form_args, true ) );
-		$sendinblue_args = ( isset( $this->form_args['sendinblue'] ) && is_array( $this->form_args['sendinblue'] ) && isset( $this->form_args['sendinblue'][0] ) && is_array( $this->form_args['sendinblue'][0] ) ? $this->form_args['sendinblue'][0] : $sendinblue_default );
-		$list            = ( isset( $sendinblue_args['list'] ) ? $sendinblue_args['list'] : '' );
+
+		$sendinblue_args = ( isset( $this->form_args['attributes']['sendinblue'] ) && is_array( $this->form_args['attributes']['sendinblue'] ) && isset( $this->form_args['attributes']['sendinblue'] ) ? $this->form_args['attributes']['sendinblue'] : $sendinblue_default );
+		$lists           = ( isset( $sendinblue_args['lists'] ) ? $sendinblue_args['lists'] : '' );
 		$map             = ( isset( $sendinblue_args['map'] ) && is_array( $sendinblue_args['map'] ) ? $sendinblue_args['map'] : array() );
 		$templateId      = ( isset( $sendinblue_args['templateId'] ) && ! empty( $sendinblue_args['templateId'] ) ? $sendinblue_args['templateId'] : false );
 		if ( $templateId ) {
@@ -319,22 +319,22 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		if ( empty( $body['attributes'] ) ) {
 			unset( $body['attributes'] );
 		}
-		if ( ! empty( $list ) ) {
-			$lists = array(
+		if ( ! empty( $lists ) ) {
+			$lists_ids = array(
 				'listIds' => array(),
 			);
-			foreach ( $list as $key => $value ) {
-				$lists['listIds'][] = $value['value'];
+			foreach ( $lists as $key => $value ) {
+				$lists_ids['listIds'][] = $value['value'];
 			}
 		} else {
-			$lists = array(
+			$lists_ids = array(
 				'listIds' => array(),
 			);
 		}
 		if ( $doubleOptin ) {
-			$body['includeListIds'] = $lists['listIds'];
+			$body['includeListIds'] = $lists_ids['listIds'];
 		} else {
-			$body['listIds'] = $lists['listIds'];
+			$body['listIds'] = $lists_ids['listIds'];
 		}
 		//error_log( print_r( $body, true ) );
 		if ( isset( $body['email'] ) ) {
@@ -386,7 +386,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			'doubleOptin' => false,
 		);
 
-		$mailchimp_args = ( isset( $this->form_args['attributes']['mailchimp'] ) && is_array( $this->form_args['attributes']['mailchimp'] ) && isset( $this->form_args['attributes']['mailchimp'] ) && is_array( $this->form_args['attributes']['mailchimp'] ) ? $this->form_args['attributes']['mailchimp'] : $mailchimp_default );
+		$mailchimp_args = ( isset( $this->form_args['attributes']['mailchimp'] ) && is_array( $this->form_args['attributes']['mailchimp'] ) && isset( $this->form_args['attributes']['mailchimp'] ) ? $this->form_args['attributes']['mailchimp'] : $mailchimp_default );
 		$list           = ( isset( $mailchimp_args['list'] ) ? $mailchimp_args['list'] : '' );
 		$groups         = ( isset( $mailchimp_args['groups'] ) && is_array( $mailchimp_args['groups'] ) ? $mailchimp_args['groups'] : array() );
 		$tags           = ( isset( $mailchimp_args['tags'] ) && is_array( $mailchimp_args['tags'] ) ? $mailchimp_args['tags'] : array() );

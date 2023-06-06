@@ -90,7 +90,7 @@ const actionOptionsList = [
 	{ value: 'fluentCRM', label: __( 'FluentCRM', 'kadence-blocks' ), help: __( 'Add User to FluentCRM list', 'kadence-blocks' ), isDisabled: false },
 	{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true },
-	{ value: 'sendinblue', label: __( 'SendInBlue (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to SendInBlue list', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'sendinblue', label: __( 'Brevo (SendInBlue) (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to Brevo list', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 ];
