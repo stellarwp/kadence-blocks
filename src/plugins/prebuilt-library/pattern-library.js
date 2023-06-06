@@ -105,6 +105,7 @@ function PatternLibrary( {
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ isImporting, setIsImporting ] = useState( false );
 	const [ hasInitialAI, setHasInitialAI ] = useState( false );
+	const [ aINeedsData, setAINeedsData ] = useState( false );
 	const [ wizardState, setWizardState ] = useState( {
 		visible: false,
 		photographyOnly: false
@@ -144,6 +145,44 @@ function PatternLibrary( {
 		} );
 		triggerAIDataReload( ( state ) => ! state );
 	};
+	const hasCorrectUserData = ( tempData ) => {
+		const parsedUserData = SafeParseJSON( tempData, true );
+		if ( ! parsedUserData ) {
+			return false;
+		}
+		// Check for CompanyName, Location, Industry, MissionStatement, Keywords, PrivacyAgreement, 
+		if ( ! parsedUserData?.companyName || '' === parsedUserData?.companyName ) {
+			return false;
+		}
+		if ( ! parsedUserData?.location || '' === parsedUserData?.location ) {
+			return false;
+		}
+		if ( ! parsedUserData?.industry || '' === parsedUserData?.industry ) {
+			return false;
+		}
+		if ( 'Other' === parsedUserData?.industry && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
+			return false;
+		}
+		if ( 'Other' !== parsedUserData?.industry && ( ! parsedUserData?.industrySpecific || '' === parsedUserData?.industrySpecific ) ) {
+			return false;
+		}
+		if ( 'Other' === parsedUserData?.industrySpecific && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
+			return false;
+		}
+		if ( ! parsedUserData?.missionStatement || '' === parsedUserData?.missionStatement ) {
+			return false;
+		}
+		if ( ! parsedUserData?.keywords?.length || parsedUserData?.keywords?.length < 5 ) {
+			return false;
+		}
+		if ( ! parsedUserData?.privacyAgreement || true !== parsedUserData?.privacyAgreement ) {
+			return false;
+		}
+		if ( ! parsedUserData?.tone || '' === parsedUserData?.tone ) {
+			return false;
+		}
+		return true;
+	}
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
@@ -353,8 +392,15 @@ function PatternLibrary( {
 	}, [selectedContext, hasInitialAI] );
 	async function getAIUserData() {
 		const response = await getAIWizardData();
-		const data = response ? SafeParseJSON(response) : {};
-		setAIUserData(data);
+		if ( ! response ) {
+			setAINeedsData( true );
+		} else if ( ! hasCorrectUserData( response ) ) {
+			console.log( 'User Data is not correct' );
+			setAINeedsData( true );
+		} else {
+			const data = response ? SafeParseJSON(response) : {};
+			setAIUserData(data);
+		}
 	}
 	async function getAllNewData() {
 		setIsLoading( true );
@@ -401,25 +447,27 @@ function PatternLibrary( {
 			forceRefreshLibrary();
 			setHasInitialAI( true );
 		}
-		if ( localPrompts && localContent ) {
+		if ( 'failed' === localPrompts ) {
+			console.log( 'No Local Prompts' );
+		} else if ( localPrompts && localPrompts.length > 0 && localContent ) {
 			localPrompts.forEach( key => {
 				if ( tempContextStates.indexOf( key ) === -1 ) {
 					getAIContent( key );
 				}
 			});
+			setLocalContexts( localPrompts );
 		}
-		setLocalContexts( localPrompts );
 	}
 	useEffect(() => {
-		console.log( 'triggered recheck' );
 		getAIUserData();
 	}, [aiDataState]);
 	useEffect(() => {
-		getAILocalData();
-	}, []);
+		if ( aIUserData && ! hasInitialAI ) {
+			getAILocalData();
+		}
+	}, [aiDataState]);
 	useEffect(() => {
 		if ( aIUserData ) {
-			console.log( 'triggered data update recheck' );
 			getImageCollection();
 		}
 	}, [aIUserData]);
@@ -506,6 +554,7 @@ function PatternLibrary( {
 										icon={ aiIcon }
 										text={ __('Get All new AI Data', 'kadence-blocks') }
 										onClick={ () => {
+											setIsVisible( false );
 											getAllNewData();
 										}}
 									/>
@@ -934,7 +983,7 @@ function PatternLibrary( {
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
 							contextTab={ selectedContextTab }
-							aiContent={ aiContent }
+							aINeedsData={ aINeedsData }
 							aiContext={ selectedContext }
 							contextLabel={ selectedContextLabel }
 							previewMode={ savedPreviewMode }
@@ -945,6 +994,12 @@ function PatternLibrary( {
 							generateContext={ ( tempCon ) => {
 								setIsContextReloadVisible(false);
 								reloadAI( tempCon );
+							} }
+							launchWizard={ () => {
+								setWizardState( {
+									visible: true,
+									photographyOnly: false
+								} );
 							} }
 						/>
 					) }

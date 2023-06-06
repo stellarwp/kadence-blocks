@@ -16,15 +16,17 @@ import { focus } from '@wordpress/dom';
  */
 import { Button } from '../button';
 import { StepperIcon } from './stepper-icon';
+import { useDatabase } from '../../hooks/use-database';
+import { useKadenceAi } from '../../context/kadence-ai-provider';
 import './wizard.scss';
 
 export function Wizard({
 	className,
 	contentLabel,
 	logo,
-	finishButtonText = __( 'Finish' ),
-	backButtonText = __( 'Back' ),
-	forwardButtonText = __( 'Next' ),
+	finishButtonText = __( 'Finish', 'kadence-blocks' ),
+	backButtonText = __( 'Back', 'kadence-blocks' ),
+	forwardButtonText = __( 'Next', 'kadence-blocks' ),
 	finishButtonDisabled = false,
 	backButtonDisabled = false,
 	forwardButtonDisabled = false,
@@ -35,6 +37,7 @@ export function Wizard({
 	const guideContainer = useRef(null);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [completed, setCompleted] = useState(new Set());
+	const { saveAiWizardData } = useDatabase();
 
 	useEffect( () => {
 		// Communicate current page index.
@@ -67,21 +70,35 @@ export function Wizard({
 			setCurrentPage( currentPage - 1 );
 		}
 	};
-
-	const goForward = () => {
+	const { state, dispatch } = useKadenceAi();
+	async function goForward() {
 		if (! canGoForward) {
 			return;
 		}
+		dispatch({ type: 'SET_SAVING', payload: true });
 
-		setCurrentPage( currentPage + 1 );
-		setCompleted((prevCompleted) => {
-			const newCompleted = new Set(prevCompleted.values());
-			newCompleted.add(currentPage);
+		const {
+			firstTime,
+			saving,
+			saveError,
+			...rest
+		} = state;
 
-			return newCompleted;
+		const saveStatus = await saveAiWizardData({
+			firstTime: false,
+			...rest
 		});
-	};
+		if (saveStatus) {
+			dispatch({ type: 'SET_SAVING', payload: false });
+			setCurrentPage( currentPage + 1 );
+			setCompleted((prevCompleted) => {
+				const newCompleted = new Set(prevCompleted.values());
+				newCompleted.add(currentPage);
 
+				return newCompleted;
+			});
+		}
+	}
 	if ( pages.length === 0 ) {
 		return null;
 	}
@@ -113,7 +130,7 @@ export function Wizard({
 					{ pages.length > 1 && (
 						<ul
 							className="components-guide__page-control"
-							aria-label={ __( 'Guide controls' ) }
+							aria-label={ __( 'Guide controls', 'kadence-blocks' ) }
 						>
 							{ pages.map( ( page, index ) => (
 								<li
@@ -135,7 +152,7 @@ export function Wizard({
 										}
 										aria-label={ sprintf(
 											/* translators: 1: current page number 2: total number of pages */
-											__( 'Page %1$d of %2$d' ),
+											__( 'Page %1$d of %2$d', 'kadence-blocks' ),
 											index + 1,
 											pages.length
 										) }

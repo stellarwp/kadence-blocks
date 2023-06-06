@@ -104,6 +104,8 @@ function LoadingHeader( { type } ) {
 	);
 }
 function GenerateHeader( { context, contextLabel, generateContext } ) {
+	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -127,20 +129,59 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 				contextLabel,
 				) }
 			</p>
+			{ ! hasPro && ! data_key && (
+				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+			)}
+			{ hasPro && ! data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+					disabled={ true }
+				/>
+			)}
+			{ hasPro && data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Generate Copy', 'kadence-blocks') }
+					onClick={ () => {
+						generateContext( context );
+					}}
+				/>
+			)}
+		</div>
+	);
+}
+function LaunchWizard( { launchWizard } ) {
+	return (
+		<div className="kb-patterns-banner-generate-notice">
+			<Icon className='kadence-generate-icons' icon={ aiIcon } />
+			<Heading
+				level={ 2 }
+				lineHeight={ '1.2' }
+				className="kb-patterns-heading-notice"
+			>
+				{ __( 'To generate content via Kadence AI you must activate your account.', 'kadence Blocks' ) }
+			</Heading>
+			<p>
+				{ __( 'In the Kadence AI start wizard you will be able to provide detailed information about your website so that we can generate content that matches you and helps you launch content quicker.', 'kadence Blocks' ) }
+			</p>
 			<Button
 				className='kadence-generate-copy-button'
 				iconPosition='right'
 				icon={ aiIcon }
-				text={ __('Generate Copy', 'kadence-blocks') }
+				text={ __('Launch AI Startup', 'kadence-blocks') }
 				onClick={ () => {
-					generateContext( context );
+					launchWizard();
 				}}
 			/>
 
 		</div>
 	);
 }
-
 function LoadingFailedHeader( { type } ) {
 	return (
 		<Heading
@@ -164,13 +205,14 @@ function PatternList( {
 	previewMode = 'iframe',
 	selectedFontSize,
 	aiContext,
-	aiContent,
+	aINeedsData,
 	contextTab,
 	imageCollection,
 	contextStatesRef,
 	useImageReplace,
 	generateContext,
 	contextLabel,
+	launchWizard,
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
@@ -236,7 +278,10 @@ function PatternList( {
 		contextTax = 'subscribe-form' === contextTax ? 'subscribe' : contextTax;
 		contextTax = 'pricing-table' === contextTax ? 'pricing' : contextTax;
 		if ( contextTab === 'context' ) {
-			if ( ! getContextState(aiContext) ) {
+			if ( aINeedsData ) {
+				console.log( 'AI Needed' );
+				return [];
+			} else if ( ! getContextState(aiContext) ) {
 				console.log( 'AI Needed' );
 				return [];
 			} else if ( 'loading' === getContextState(aiContext) ) {
@@ -452,13 +497,16 @@ function PatternList( {
 						selectedCategory={ selectedCategory }
 					/>
 				) } */}
+				{ contextTab === 'context' && aINeedsData && (
+					<LaunchWizard launchWizard={ () => launchWizard() } />
+				) }
 				{ contextTab === 'context' && failedAI && (
 					<LoadingFailedHeader type={ failedAIType } />
 				) }
-				{ contextTab === 'context' && ( 'processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext) ) && (
+				{ contextTab === 'context' && ! aINeedsData && ( 'processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext) ) && (
 					<LoadingHeader type={getContextState(aiContext)} />
 				) }
-				{ contextTab === 'context' && ! getContextState(aiContext) && (
+				{ contextTab === 'context' && ! aINeedsData && ! getContextState(aiContext) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
 				{ hasItems && (

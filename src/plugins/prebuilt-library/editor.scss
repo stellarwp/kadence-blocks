@@ -1351,3 +1351,10 @@ h2.components-heading.kb-patterns-banner-notice.ai-failed-loading {
 		box-shadow: none;
 	}
 }
+a.components-external-link.kadence-upgrade-to-pro-btn {
+    background: var( --kadence-ui-color, #0073E6 );
+    color: white;
+    padding: 8px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+}
