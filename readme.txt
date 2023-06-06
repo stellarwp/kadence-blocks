@@ -83,6 +83,7 @@ Release Date: June 6th, 2023
 * Update: Tabs to use presentation role.
 * Fix: Issue with safari button text.
 * Fix: Issue with possible php notice.
+* Fix: Issue with nested accordions and accordion spacing.
 
 = 3.0.40 =
 Release Date: May 31st, 2023
