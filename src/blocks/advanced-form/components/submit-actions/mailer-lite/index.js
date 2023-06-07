@@ -81,7 +81,6 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 	};
 
 	const getMailerLiteGroups = () => {
-		console.log('getting groups')
 		if ( !api ) {
 			setGroups( [] );
 			setGroupsLoaded( true );
@@ -97,7 +96,6 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 			),
 		} )
 			.then( ( groups ) => {
-				console.log('groups: ', groups)
 				const theGroups = [];
 				groups.data.map( ( item ) => {
 					theGroups.push( { value: item.id, label: item.name } );
