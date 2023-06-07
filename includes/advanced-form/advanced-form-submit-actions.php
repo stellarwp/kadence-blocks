@@ -791,7 +791,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 	public function entry( $post_id ) {
 		$entry_defaults = array(
-			'name'       => '',
+			'formName'       => '',
 			'userIP'     => true,
 			'userDevice' => true,
 		);
@@ -799,10 +799,10 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$entry_args = ( isset( $this->form_args['attributes']['entry'] ) && is_array( $this->form_args['attributes']['entry'] ) ) ? $this->form_args['attributes']['entry'] : $entry_defaults;
 		$user_ip    = ( ! isset( $entry_args['userIP'] ) || ( isset( $entry_args['userIP'] ) && $entry_args['userIP'] ) ? $this->get_client_ip() : ip2long( '0.0.0.0' ) );
 		$browser    = ( ! isset( $entry_args['userDevice'] ) || ( isset( $entry_args['userDevice'] ) && $entry_args['userDevice'] ) ? $this->get_browser() : false );
-		$name       = ( isset( $entry_args['name'] ) && ! empty( trim( $entry_args['name'] ) ) ? trim( $entry_args['name'] ) : esc_attr( strip_tags( get_the_title( $this->post_id ) ) ) . ' ' . esc_attr__( 'submission', 'kadence-blocks-pro' ) );
+		$form_name       = ( isset( $entry_args['formName'] ) && ! empty( trim( $entry_args['formName'] ) ) ? trim( $entry_args['formName'] ) : esc_attr( strip_tags( get_the_title( $this->post_id ) ) ) . ' ' . esc_attr__( 'submission', 'kadence-blocks-pro' ) );
 
 		$data = array(
-			'name'         => $name,
+			'name'         => $form_name,
 			'form_id'      => $post_id,
 			'post_id'      => $this->post_id,
 			'user_id'      => get_current_user_id(),

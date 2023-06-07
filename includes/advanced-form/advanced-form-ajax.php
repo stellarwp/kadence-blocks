@@ -55,6 +55,7 @@ class KB_Ajax_Advanced_Form {
 	 * Process the form submit.
 	 */
 	public function process_ajax() {
+		$final_data = array();
 
 		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
 			$this->start_buffer();
@@ -108,6 +109,10 @@ class KB_Ajax_Advanced_Form {
 
 			$this->after_submit_actions( $form_args, $processed_fields, $post_id );
 
+			if ( self::$redirect ) {
+				$final_data['redirect'] = self::$redirect;
+			}
+
 			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args, $processed_fields, $post_id );
 			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id );
 
@@ -117,7 +122,6 @@ class KB_Ajax_Advanced_Form {
 				$final_data['html'] = '<div class="kb-adv-form-message kb-adv-form-success">' . $messages['success'] . '</div>';
 				$this->send_json( $final_data );
 			}
-
 		} else {
 			$this->process_bail( __( 'Submission failed', 'kadence-blocks' ), __( 'No Data', 'kadence-blocks' ) );
 		}
@@ -216,10 +220,6 @@ class KB_Ajax_Advanced_Form {
 					$submit_actions->autoEmail();
 					break;
 			}
-		}
-
-		if( self::$redirect ){
-			// Return the redirect URL.
 		}
 
 		return $success;

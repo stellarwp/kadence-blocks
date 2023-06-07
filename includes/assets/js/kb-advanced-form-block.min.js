@@ -328,7 +328,7 @@
 							// Dispatch the event.
 							window.document.body.dispatchEvent(event);
 							if ( response.redirect ) {
-								window.location = response.redirect;
+								window.location.replace(response.redirect);
 							} else {
 								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
 								if ( form.querySelector('.g-recaptcha') ) {
