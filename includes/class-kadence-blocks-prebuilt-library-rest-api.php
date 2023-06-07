@@ -927,7 +927,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'prep.local', //$site_url
+			'domain' => 'stellar.beta', //$site_url
 			'key'    => $this->api_key,
 		);
 		$prophecy_data = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
@@ -1224,7 +1224,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'prep.local', //$site_url
+			'domain' => 'stellar.beta', //$site_url
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
@@ -1323,7 +1323,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'prep.local', //$site_url,
+			'domain' => 'stellar.beta', //$site_url,
 			'key'    => $this->api_key,
 		);
 		if ( empty( $industries ) ) {
@@ -1386,7 +1386,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'prep.local', //$site_url
+			'domain' => 'stellar.beta', //$site_url
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'images/collections';

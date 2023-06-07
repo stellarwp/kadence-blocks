@@ -356,7 +356,7 @@ function PatternLibrary( {
 		if ( false !== localContexts ) {
 			tempLocalContexts = localContexts;
 		}
-		if ( localContexts.indexOf( tempContext ) !== -1 ) {
+		if ( tempLocalContexts.indexOf( tempContext ) !== -1 ) {
 			tempLocalContexts.push( tempContext );
 			setLocalContexts( tempLocalContexts );
 		}
@@ -408,12 +408,18 @@ function PatternLibrary( {
 		const response = await getAIContentRemaining( true );
 		if ( response === 'error' || response === 'failed' ) {
 			console.log( 'Error getting AI Content.' );
+			setIsLoading( false );
 		} else {
 			const tempContextStates = [];
 			response.forEach( key => {
 				tempContextStates.push(key);
 			});
 			updateMassContextState( tempContextStates, 'processing' );
+			response.forEach( ( key, index ) => {
+				setTimeout( () => {
+					getAIContent( key, true );
+				}, 1000 + ( index * 50 ) );
+			});
 			setIsLoading( false );
 		}
 	}
