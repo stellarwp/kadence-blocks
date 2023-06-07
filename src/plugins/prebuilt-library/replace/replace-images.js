@@ -24,6 +24,7 @@ export default function replaceImages( content, images, categories, context, var
 	const aRoll = images.data?.[0]?.images;
 	const bRoll = images.data?.[1]?.images || images.data?.[0]?.images;
 	const pRoll = images.data?.[2]?.images || images.data?.[1]?.images || images.data?.[0]?.images;
+	const resetVariation = 0;
 	let bvariation = variation;
 	if ( bvariation > bRoll.length ) {
 		bvariation = bvariation - bRoll.length;
@@ -40,10 +41,10 @@ export default function replaceImages( content, images, categories, context, var
 	}
 	const imgs = {
 		a1:aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
-		a2:aRoll?.[variation + 1]?.sizes?.[0]?.src || aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
-		a3:aRoll?.[variation + 2]?.sizes?.[0]?.src || aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
-		a4:aRoll?.[variation + 3]?.sizes?.[0]?.src || aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
-		a5:aRoll?.[variation + 4]?.sizes?.[0]?.src || aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
+		a2:aRoll?.[variation + 1]?.sizes?.[0]?.src || aRoll?.[resetVariation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
+		a3:aRoll?.[variation + 2]?.sizes?.[0]?.src || aRoll?.[resetVariation + 1]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
+		a4:aRoll?.[variation + 3]?.sizes?.[0]?.src || aRoll?.[resetVariation + 2]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
+		a5:aRoll?.[variation + 4]?.sizes?.[0]?.src || aRoll?.[resetVariation + 3]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
 		b1:bRoll?.[bvariation]?.sizes?.[0]?.src || bRoll?.[0]?.sizes?.[0]?.src,
 		b2:bRoll?.[bvariation + 1]?.sizes?.[0]?.src || bRoll?.[1]?.sizes?.[0]?.src || bRoll?.[0]?.sizes?.[0]?.src,
 		b3:bRoll?.[bvariation + 2]?.sizes?.[0]?.src || bRoll?.[2]?.sizes?.[0]?.src || bRoll?.[1]?.sizes?.[0]?.src || bRoll?.[0]?.sizes?.[0]?.src,
@@ -59,6 +60,8 @@ export default function replaceImages( content, images, categories, context, var
 	};
 	// Background.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a1'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a2'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a3'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/03/Example-A-Roll-Image-scaled-1.jpg", imgs['a1'] );
 	// Image Block.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a1'] );
@@ -66,6 +69,7 @@ export default function replaceImages( content, images, categories, context, var
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a3'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a4'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a5'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a3'] );
 	// Background.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Background-Image.jpg", imgs['a5'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Background-Image-1024x672.jpg", imgs['a4'] );
@@ -85,6 +89,8 @@ export default function replaceImages( content, images, categories, context, var
 
 	// Portrait ratio
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-scaled.jpg", imgs['b1'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-scaled.jpg", imgs['b2'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-scaled.jpg", imgs['b3'] );
 	// Smaller file.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-819x1024.jpg", imgs['b1'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-819x1024.jpg", imgs['b2'] );
@@ -121,6 +127,8 @@ export default function replaceImages( content, images, categories, context, var
 	// // People.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled-1-1224x683.jpg", imgs['p1'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p1'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p2'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p3'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p1'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p2'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p3'] );

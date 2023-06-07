@@ -39,6 +39,7 @@ import replaceColors from './replace/replace-colors';
 import replaceImages from './replace/replace-images';
 import replaceContent from './replace/replace-content';
 import deleteContent from './replace/remove-content';
+import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
 import { useSelect, useDispatch } from '@wordpress/data';
 
@@ -262,7 +263,7 @@ function PatternList( {
 			temp['hpcontexts'] = patterns[key].hpcontexts ? Object.keys( patterns[key].hpcontexts ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
 			if ( patterns[key]?.html) {
-				temp['html'] = patterns[key].html;
+				temp['html'] = replaceMasks( patterns[key].html );
 			}
 			temp['content'] = patterns[key]?.content || '';
 			temp['pro'] = patterns[key].pro;
@@ -323,8 +324,8 @@ function PatternList( {
 					variation = 0;
 				}
 				if ( item?.html ) {
-					item['html'] = replaceImages( item.html, imageCollection, item.categories, aiContext, variation);
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.name, variation);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.name, variation);
 				} else {
 					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
 				}
@@ -340,8 +341,8 @@ function PatternList( {
 					variation = 0;
 				}
 				if ( item?.html) {
-					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, variation );
-					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
+					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, item.name, true );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.name );
 				} else {
 					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
 				}

@@ -1,6 +1,10 @@
 /**
  * WordPress dependencies
  */
+const stripStringRender = ( string ) => {
+	return string.toLowerCase().replace( /[^0-9a-z-]/g, '' );
+};
+
 export default function replaceContent( content, aiContent, categories, context, variation, isHTML = false ) {
 	if ( ! content ) {
 		return content;
@@ -52,18 +56,19 @@ export default function replaceContent( content, aiContent, categories, context,
 			if ( baseContent?.heading?.medium ) {
 				content = content.replace( /Briefly and concisely explain what you do for your audience./g, baseContent?.heading?.medium );
 			}
-			// Paragraph
-			if ( baseContent?.sentence?.short ) {
-				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. /g, baseContent?.sentence?.short );
-				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging./g, baseContent?.sentence?.short );
+			// Paragraph long
+			if ( baseContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.long );
 			}
 			// Paragraph Medium
 			if ( baseContent?.sentence?.medium ) {
 				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors. /g, baseContent?.sentence?.medium );
 			}
-			// Paragraph long
-			if ( baseContent?.sentence?.long ) {
-				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.long );
+
+			// Paragraph
+			if ( baseContent?.sentence?.short ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. /g, baseContent?.sentence?.short );
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging./g, baseContent?.sentence?.short );
 			}
 			// overline
 			if ( baseContent?.overline?.short ) {
@@ -133,9 +138,9 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			// Secondary Button
 			if ( heroContent?.['secondary-button']?.short ) {
-				content = content.replace( /Secondary Button/g, heroContent?.button?.short );
+				content = content.replace( /Secondary Button/g, heroContent?.['secondary-button']?.short );
 			} else if ( baseContent?.['secondary-button']?.short ) {
-				content = content.replace( /Secondary Button/g, baseContent?.button?.short );
+				content = content.replace( /Secondary Button/g, baseContent?.['secondary-button']?.short );
 			}
 			// Cards 
 			if ( heroContent?.cards ) {
@@ -154,8 +159,8 @@ export default function replaceContent( content, aiContent, categories, context,
 					}
 					// Button.
 					if ( heroContent?.cards?.[index]?.['button-short'] ) {
-						content = content.replace( "Call to Action", heroContent?.cards?.[index]?.['button-short']);
-						content = content.replace( "Call To Action", heroContent?.cards?.[index]?.['button-short']);
+						content = content.replace( "CTA", heroContent?.cards?.[index]?.['button-short']);
+						content = content.replace( "CTA", heroContent?.cards?.[index]?.['button-short']);
 					}
 				}
 			}
@@ -321,14 +326,16 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Title.
 					if ( tabsContent?.tabs?.[index]?.['title-short'] ) {
 						content = content.replace( "Tab name", tabsContent?.tabs?.[index]?.['title-short']);
+						content = content.replace( "tab-tabname", `tab-${ stripStringRender( tabsContent?.tabs?.[index]?.['title-short'].toString() )}`);
+						content = content.replace( "tab-tabname", `tab-${ stripStringRender( tabsContent?.tabs?.[index]?.['title-short'].toString() )}`);
 						content = content.replace( "Add a brief title", tabsContent?.tabs?.[index]?.['title-short']);
 						content = content.replace( "Short title", tabsContent?.tabs?.[index]?.['title-short']);
 					}
 					// Title Medium.
 					if ( tabsContent?.tabs?.[index]?.['title-medium'] ) {
-						content = content.replace( "Add a brief title here", tabsContent?.tabs?.[index]?.['title-medium']);
+						content = content.replace( "Scribe a concise title", tabsContent?.tabs?.[index]?.['title-medium']);
 						content = content.replace( "Give this tab a concise name", tabsContent?.tabs?.[index]?.['title-medium']);
-						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['title-medium']);
+						//content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['title-medium']);
 					}
 					// Title Long.
 					if ( tabsContent?.tabs?.[index]?.['title-long'] ) {
@@ -352,13 +359,15 @@ export default function replaceContent( content, aiContent, categories, context,
 						if ( ! isHTML ) {
 							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-1']);
 						}
+						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-1']);
 					}
 					// List Item 2.
 					if ( tabsContent?.tabs?.[index]?.['list-item-2'] ) {
-						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-2']);
+						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-2']);
 						if ( ! isHTML ) {
-							content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-2']);
+							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-2']);
 						}
+						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-2']);
 					}
 					// List Item 3.
 					if ( tabsContent?.tabs?.[index]?.['list-item-3'] ) {
@@ -366,6 +375,7 @@ export default function replaceContent( content, aiContent, categories, context,
 						if ( ! isHTML ) {
 							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-3']);
 						}
+						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-3']);
 					}
 					// Description 1.
 					if ( tabsContent?.tabs?.[index]?.['description-1'] ) {
@@ -374,14 +384,15 @@ export default function replaceContent( content, aiContent, categories, context,
 						content = content.replace( "Write a short text about your tab that will help users find what they are looking for and get access to content without further exploration.", tabsContent?.tabs?.[index]?.['description-1']);
 					}
 					// Description 2.
-					if ( tabsContent?.tabs?.[index]?.['description-1'] ) {
-						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", tabsContent?.tabs?.[index]?.['description-1']);
-						content = content.replace( "This panel is hidden by default and revealed when a user clicks on the tab title. Fill it in with relevant information about its title. You can use paragraphs or bullet points to add your content here.", tabsContent?.tabs?.[index]?.['description-1']);
+					if ( tabsContent?.tabs?.[index]?.['description-2'] ) {
+						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", tabsContent?.tabs?.[index]?.['description-2']);
+
+						content = content.replace( "This panel is hidden by default and revealed when a user clicks on the tab title. Fill it in with relevant information about its title. You can use paragraphs or bullet points to add your content here.", tabsContent?.tabs?.[index]?.['description-2']);
 					}
 					// Description 3.
-					if ( tabsContent?.tabs?.[index]?.['description-1'] ) {
-						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", tabsContent?.tabs?.[index]?.['description-1']);
-						content = content.replace( "Tabs help users navigate through grouped content giving them control over what to read. Use them to connect related information and as a tool to save space.", tabsContent?.tabs?.[index]?.['description-1']);
+					if ( tabsContent?.tabs?.[index]?.['description-3'] ) {
+						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", tabsContent?.tabs?.[index]?.['description-3']);
+						content = content.replace( "Tabs help users navigate through grouped content giving them control over what to read. Use them to connect related information and as a tool to save space.", tabsContent?.tabs?.[index]?.['description-3']);
 					}
 				}
 			}
@@ -434,8 +445,8 @@ export default function replaceContent( content, aiContent, categories, context,
 				content = content.replace( /A short and sweet title for this section./g, baseContent?.heading?.medium );
 			}
 			// Paragraph
-			if ( baseContent?.paragraph?.medium ) {
-				content = content.replace( /Use a clear and attention-grabbing short paragraph to engage your audience and draw them into reading the rest of your content./g, baseContent?.paragraph?.medium );
+			if ( baseContent?.sentence?.medium ) {
+				content = content.replace( /Use a clear and attention-grabbing short paragraph to engage your audience and draw them into reading the rest of your content./g, baseContent?.sentence?.medium );
 			}
 			// overline
 			if ( baseContent?.overline?.short ) {
@@ -466,7 +477,7 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Paragraph.
 					if ( columnsContent?.columns?.[index]?.['sentence-short'] ) {
 						content = content.replace( "Use this space to add a short description. It gives enough info to earn a click.", columnsContent?.columns?.[index]?.['sentence-short'] );
-						content = content.replace( "Add a brief description to your card. ", columnsContent?.columns?.[index]?.['sentence-short'] );
+						content = content.replace( "Add a brief description to your card.", columnsContent?.columns?.[index]?.['sentence-short'] );
 					}
 					// Paragraph.
 					if ( columnsContent?.columns?.[index]?.['sentence-medium'] ) {
@@ -487,11 +498,15 @@ export default function replaceContent( content, aiContent, categories, context,
 		case "testimonials":
 			const testimonialContent = contextAI.find( x => x.id === context + '-testimonials' );
 			// Headline.
-			if ( baseContent?.heading?.medium ) {
+			if ( testimonialContent?.heading?.medium ) {
+				content = content.replace( /Add a compelling title for your section to engage your audience./g, testimonialContent?.heading?.medium );
+			} else if ( baseContent?.heading?.medium ) {
 				content = content.replace( /Add a compelling title for your section to engage your audience./g, baseContent?.heading?.medium );
 			}
 			// Paragraph long
-			if ( baseContent?.sentence?.long ) {
+			if ( testimonialContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Consider writing about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style./g, testimonialContent?.sentence?.long );
+			} else if ( baseContent?.sentence?.long ) {
 				content = content.replace( /Use this paragraph section to get your website visitors to know you. Consider writing about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style./g, baseContent?.sentence?.long );
 			}
 			if ( testimonialContent?.testimonials ) {
@@ -523,7 +538,7 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			// Paragraph long
 			if ( pricingTableContent?.sentence?.medium ) {
-				content = content.replace( /Let your user know what to expect when choosing this plan. Inform users of plan benefits, not features./g, pricingTableContent?.sentence?.medium );
+				content = content.replace( /A pricing table assists users in selecting a suitable plan by simply and clearly differentiating product\/service features and prices. Use this as supporting text for your plans./g, pricingTableContent?.sentence?.medium );
 			}
 			// Paragraph medium
 			if ( pricingTableContent?.sentence?.long ) {
@@ -539,22 +554,37 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Title.
 					if ( pricingTableContent?.plans?.[index]?.['title-short'] ) {
 						content = content.replace( "Tab Title", pricingTableContent?.plans?.[index]?.['title-short'] );
-						content = content.replace( "Name your plan", pricingTableContent?.plans?.[index]?.['title-short'] );
+						//content = content.replace( "Name your plan", pricingTableContent?.plans?.[index]?.['title-short'] );
+					}
+					// Title.
+					if ( pricingTableContent?.plans?.[index]?.['title-medium'] ) {
+						content = content.replace( "Name your plan", pricingTableContent?.plans?.[index]?.['title-medium'] );
 					}
 					// Title.
 					if ( pricingTableContent?.plans?.[index]?.['title-medium'] ) {
 						content = content.replace( "Add a descriptive title for your plan.", pricingTableContent?.plans?.[index]?.['title-medium'] );
 					}
+					// Price.
+					if ( 0 === index ) {
+
+					}
+					if ( pricingTableContent?.plans?.[index]?.['price'] ) {
+						// Remove monthyl, yearly, etc.
+						let pricingTablePrice = pricingTableContent?.plans?.[index]?.['price'].replace( "/month", '' );
+						pricingTablePrice = pricingTablePrice.replace( "/year", '' );
+						if ( 0 === index ) {
+							content = content.replace( "$60", pricingTablePrice );
+						} else if ( 1 === index ) {
+							content = content.replace( "$80", pricingTablePrice );
+						} else if ( 2 === index ) {
+							content = content.replace( "$120", pricingTablePrice );
+						} else if ( 3 === index ) {
+							content = content.replace( "$200", pricingTablePrice );
+						}
+					}
 					// Sentence Short.
 					if ( pricingTableContent?.plans?.[index]?.['sentence-short'] ) {
 						content = content.replace( "Let your user know what to expect when choosing this plan. Inform users of plan benefits, not features.", pricingTableContent?.plans?.[index]?.['sentence-short'] );
-					}
-					// Price.
-					if ( pricingTableContent?.plans?.[index]?.['price'] ) {
-						content = content.replace( "$60", pricingTableContent?.plans?.[index]?.['price'] );
-						content = content.replace( "$80", pricingTableContent?.plans?.[index]?.['price'] );
-						content = content.replace( "$200", pricingTableContent?.plans?.[index]?.['price'] );
-						content = content.replace( "$120", pricingTableContent?.plans?.[index]?.['price'] );
 					}
 					// Buttons.
 					if ( pricingTableContent?.plans?.[index]?.['button-short'] ) {
@@ -563,23 +593,30 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Feature 1.
 					if ( pricingTableContent?.plans?.[index]?.['feature-1'] ) {
 						content = content.replace( "Focus on the differences", pricingTableContent?.plans?.[index]?.['feature-1'] );
-						content = content.replace( "Focus on the differences", pricingTableContent?.plans?.[index]?.['feature-1'] );
+						if ( ! isHTML ) {
+							content = content.replace( "Focus on the differences", pricingTableContent?.plans?.[index]?.['feature-1'] );
+						}
 					}
 					// Feature 2.
 					if ( pricingTableContent?.plans?.[index]?.['feature-2'] ) {
 						content = content.replace( "Use a consistent language", pricingTableContent?.plans?.[index]?.['feature-2'] );
-						content = content.replace( "Use a consistent language", pricingTableContent?.plans?.[index]?.['feature-2'] );
+						if ( ! isHTML ) {
+							content = content.replace( "Use a consistent language", pricingTableContent?.plans?.[index]?.['feature-2'] );
+						}
 					}
 					// Feature 2.
 					if ( pricingTableContent?.plans?.[index]?.['feature-3'] ) {
 						content = content.replace( "Transmit benefits clearly", pricingTableContent?.plans?.[index]?.['feature-3'] );
-						content = content.replace( "Transmit benefits clearly", pricingTableContent?.plans?.[index]?.['feature-3'] );
+						if ( ! isHTML ) {
+							content = content.replace( "Transmit benefits clearly", pricingTableContent?.plans?.[index]?.['feature-3'] );
+						}
 					}
 				}
 			}
 			break;
 		case "counter-or-stats":
 			const counterContent = contextAI.find( x => x.id === context + '-counter-stats' );
+			console.log( counterContent );
 			// Headline.
 			if ( counterContent?.heading?.medium ) {
 				content = content.replace( /Tell your story in numbers, and give your visitors useful insights./g, counterContent?.heading?.medium );
@@ -615,15 +652,21 @@ export default function replaceContent( content, aiContent, categories, context,
 				for (let index = 0; index < counterContent?.metrics.length; index++) {
 					// Title.
 					if ( counterContent?.metrics?.[index]?.['title-short'] ) {
-						content = content.replace( "Stat Title", counterContent?.metrics?.[index]?.['title-short'] );
+						content = content.replace( "Stat title", counterContent?.metrics?.[index]?.['title-short'] );
 					}
 					// Price.
 					if ( counterContent?.metrics?.[index]?.['value-short'] ) {
-						content = content.replace( "50%", counterContent?.metrics?.[index]?.['value-short'] );
-						content = content.replace( "98", counterContent?.metrics?.[index]?.['value-short'] );
-						content = content.replace( "8/mo", counterContent?.metrics?.[index]?.['value-short'] );
-						content = content.replace( "100,110", counterContent?.metrics?.[index]?.['value-short'] );
-						content = content.replace( "20yr", counterContent?.metrics?.[index]?.['value-short'] );
+						if ( 0 === index ) {
+							content = content.replace( "50%", counterContent?.metrics?.[index]?.['value-short'] );
+						} else if ( 1 === index ) {
+							content = content.replace( "98%", counterContent?.metrics?.[index]?.['value-short'] );
+						} else if ( 2 === index ) {
+							content = content.replace( "100,110", counterContent?.metrics?.[index]?.['value-short'] );
+						} else if ( 3 === index ) {
+							content = content.replace( "8/mo", counterContent?.metrics?.[index]?.['value-short'] );
+						} else if ( 4 === index ) {
+							content = content.replace( "20yr", counterContent?.metrics?.[index]?.['value-short'] );
+						}
 					}
 				}
 			}
@@ -768,7 +811,7 @@ export default function replaceContent( content, aiContent, categories, context,
 				content = content.replace( /Call to Action/g, baseContent?.button?.short );
 			}
 			break;
-		case "people":
+		case "team":
 			const peopleContent = contextAI.find( x => x.id === context + '-people' );
 			// Headline.
 			if ( peopleContent?.heading?.medium ) {
@@ -816,6 +859,7 @@ export default function replaceContent( content, aiContent, categories, context,
 					// sentence.
 					if ( peopleContent?.people?.[index]?.['sentence-short'] ) {
 						content = content.replace( "Brief profile bio for this person will live here. Add an overview of this person's role or any key information.", peopleContent?.people?.[index]?.['sentence-short'] );
+						content = content.replace( "Brief profile bio for this person will live here. Add an overview of this person’s role or any key information.", peopleContent?.people?.[index]?.['sentence-short'] );
 					}
 				}
 			}

@@ -1025,6 +1025,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'get-started-accordion',
 					'get-started-columns',
 					'get-started-list',
+					'get-started-accordion',
 				);
 				break;
 			case 'history':
@@ -1042,6 +1043,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'industries-list',
 					'industries-columns',
 					'industries-tabs',
+					'industries-accordion',
 				);
 				break;
 			case 'location':
@@ -1095,6 +1097,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'products-services-single',
 					'products-services-tabs',
 					'products-services-videos',
+					'product-details-accordion',
 				);
 				break;
 			case 'profile':
