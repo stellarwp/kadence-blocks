@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { times } from 'lodash';
-import { SelectControl, CheckboxControl } from '@wordpress/components';
+import Select from 'react-select';
 import { applyFilters } from '@wordpress/hooks';
 
 export default function SubmitActionOptions( { setAttributes, selectedActions } ) {
@@ -13,24 +12,27 @@ export default function SubmitActionOptions( { setAttributes, selectedActions } 
 		{ value: 'convertkit', label: __( 'ConvertKit (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to ConvertKit', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'activecampaign', label: __( 'ActiveCampaign (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to ActiveCampaign', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
-		{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true  }, // isDisabled: true },
+		{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true  },
 		{ value: 'sendinblue', label: __( 'Brevo (SendInBlue) (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to Brevo list', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
-		{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: false }, // isDisabled: true },
+		{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 	];
 
 	const filteredOptions = applyFilters( 'kadence.actionOptions', actionOptionsList );
-	const actionOptions = filteredOptions.map(o => ({ ...o, disabled: o.isDisabled }));
+	const selectedOptions = filteredOptions.filter( ( item ) => selectedActions.includes( item.value ) );
 
 	return (
-		<SelectControl
+		<Select
 			className={ 'kb-adv-form-actions' }
-			multiple
-			value={ selectedActions }
-			onChange={ ( selected ) => {
-				setAttributes( selected, 'actions' );
+			isMulti={true}
+			value={ selectedOptions }
+			onChange={ ( selections ) => {
+				const valuesOnly = selections.map( ( item ) => {
+					return item.value
+				} );
+				setAttributes( valuesOnly, 'actions' );
 			} }
-			options={ actionOptions }
+			options={ filteredOptions }
 		/>
 	);
 

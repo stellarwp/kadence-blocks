@@ -461,7 +461,6 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			}
 		}
 
-
 		$list_id = ( isset( $list['value'] ) && ! empty( $list['value'] ) ? $list['value'] : '' );
 		if ( empty( $list_id ) ) {
 			return;
