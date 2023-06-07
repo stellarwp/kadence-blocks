@@ -36,7 +36,7 @@ const HELP_URL = 'https://help.brevo.com/hc/en-us/articles/209467485-What-s-an-A
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function SendInBlueOptions( { parentClientId, settings, save } ) {
+function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
@@ -48,7 +48,7 @@ function SendInBlueOptions( { parentClientId, settings, save } ) {
 	const [ listAttr, setListAttr ] = useState( false );
 	const [ listAttrLoaded, setListAttrLoaded ] = useState( false );
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 
 	useEffect( () => {
 		apiFetch( {

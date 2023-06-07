@@ -410,6 +410,7 @@ export function EditInner( props ) {
 						{actions.includes( 'mailerlite' ) && (
 							<MailerLiteOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={mailerlite}
 								save={( value ) => { setMetaAttribute({ ...mailerlite, ...value }, 'mailerlite' ); }}
 							/>
@@ -418,6 +419,7 @@ export function EditInner( props ) {
 						{actions.includes( 'fluentCRM' ) && (
 							<FluentCrmOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={fluentcrm}
 								save={( value ) => setMetaAttribute( { ...fluentcrm, ...value }, 'fluentcrm' )}
 							/>
@@ -426,6 +428,7 @@ export function EditInner( props ) {
 						{actions.includes( 'sendinblue' ) && (
 							<SendinBlueOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={sendinblue}
 								save={( value ) => setMetaAttribute( { ...sendinblue, ...value }, 'sendinblue' )}
 							/>
@@ -434,6 +437,7 @@ export function EditInner( props ) {
 						{actions.includes( 'mailchimp' ) && (
 							<MailchimpOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={mailchimp}
 								save={( value ) => setMetaAttribute( { ...mailchimp, ...value }, 'mailchimp' )}
 							/>
@@ -442,6 +446,7 @@ export function EditInner( props ) {
 						{actions.includes( 'convertkit' ) && (
 							<ConvertKitOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={convertkit}
 								save={( value ) => setMetaAttribute( { ...convertkit, ...value }, 'convertkit' )}
 							/>
@@ -450,6 +455,7 @@ export function EditInner( props ) {
 						{actions.includes( 'activecampaign' ) && (
 							<ActiveCampaignOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={activecampaign}
 								save={( value ) => setMetaAttribute( { ...activecampaign, ...value }, 'activecampaign' )}
 							/>
@@ -458,6 +464,7 @@ export function EditInner( props ) {
 						{actions.includes( 'webhook' ) && (
 							<WebhookOptions
 								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
 								settings={webhook}
 								save={( value ) => setMetaAttribute( { ...webhook, ...value }, 'webhook' )}
 							/>
