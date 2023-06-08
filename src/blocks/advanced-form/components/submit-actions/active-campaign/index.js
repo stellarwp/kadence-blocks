@@ -37,7 +37,7 @@ const HELP_URL = 'https://ithemes92330.activehosted.com/app/settings/developer';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function ActiveCampaignOptions( { settings, save, parentClientId } ) {
+function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
@@ -73,22 +73,12 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 
 	}, [] );
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 
-	const saveMap = ( value, index ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	const getLists = () => {
@@ -409,9 +399,9 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 														<SelectControl
 															label={__( 'Select Field:' )}
 															options={listAttr}
-															value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+															value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 															onChange={( value ) => {
-																saveMap( value, index );
+																saveMap( value, item.uniqueID );
 															}}
 														/>
 													</div>

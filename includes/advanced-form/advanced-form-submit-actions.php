@@ -17,6 +17,8 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
 					if ( $no_email && 'email' === $map[ $unique_id ] ) {
 						continue;
+					} else if ( 'none' === $map[ $unique_id ] ) {
+						continue;
 					} else if ( 'OPT_IN' === $map[ $unique_id ] ) {
 						if ( $data['value'] ) {
 							$mapped_attributes[ $map[ $unique_id ] ] = true;
@@ -600,6 +602,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$base_url = $api_base . '/api/3';
 
 		$activeCampaignSettings = $this->form_args['attributes']['activecampaign'];
+		$map = $activeCampaignSettings['map'];
 
 		if ( empty( $api_key ) || empty( $api_base ) ) {
 			return;
@@ -607,27 +610,28 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		$field_map = array();
 
-		if ( ! empty( $activeCampaignSettings['map'] ) ) {
-			foreach ( $activeCampaignSettings['map'] as $response_key => $field_name ) {
-
-				if ( $field_name === 'None' ) {
-					continue;
-				}
-
-				if ( in_array( $field_name, [ 'firstName', 'phone', 'lastName', 'email' ] ) ) {
-					$field_map[ $field_name ] = $this->responses[ $response_key ]['value'];
-				} else {
-					$field_map['fieldValues'][] = array(
-						'field' => $field_name,
-						'value' => $this->responses[ $response_key ]['value'],
-					);
-				}
-			}
-		} else {
+		if ( ! empty( $map ) ) {
 			foreach ( $this->responses as $key => $data ) {
-				if ( 'email' === $data['type'] ) {
-					$field_map['email'] = $data['value'];
-					break;
+				$unique_id = $data['uniqueID'];
+				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
+					if ( $no_email && 'email' === $map[ $unique_id ] ) {
+						continue;
+					} else if ( 'none' === $map[ $unique_id ] ) {
+						continue;
+					} else if ( 'OPT_IN' === $map[ $unique_id ] ) {
+						if ( $data['value'] ) {
+							$mapped_attributes[ $map[ $unique_id ] ] = true;
+						} else {
+							$mapped_attributes[ $map[ $unique_id ] ] = false;
+						}
+					} else if ( in_array( $map[ $unique_id ], [ 'firstName', 'phone', 'lastName', 'email' ] ) ) {
+						$field_map[ $map[ $unique_id ] ] = $data['value'];
+					} else {
+						$field_map['fieldValues'][] = array(
+							'field' => $map[ $unique_id ],
+							'value' => $data['value'],
+						);
+					}
 				}
 			}
 		}
