@@ -313,11 +313,11 @@ class KB_Ajax_Advanced_Form {
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
 				'value'    => $value,
+				'uniqueID' => $field['uniqueID'],
 			);
 		}
 
 		return $processed_fields;
-
 	}
 
 	/**

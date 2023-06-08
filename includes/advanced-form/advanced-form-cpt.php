@@ -296,7 +296,10 @@ class Kadence_Blocks_Form_CPT_Controller {
 								'type' => 'array',
 							),
 							'map'  => array(
-								'type' => 'array',
+								'type' => 'object',
+								'additionalProperties' => array(
+									'type' => 'string',
+								),
 							),
 						),
 					),
@@ -332,7 +335,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 							'map'  => array( 'type' => 'array' ),
 							'groups'  => array( 'type' => 'array' ),
 							'tags'  => array( 'type' => 'array' ),
-							'doubleOptin'  => array( 'type' => 'boolean' )
+							'doubleOptin'  => array( 'type' => 'boolean' ),
 						),
 					),
 				),

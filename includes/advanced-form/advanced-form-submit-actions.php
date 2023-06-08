@@ -296,18 +296,19 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$email = false;
 		if ( ! empty( $map ) ) {
 			foreach ( $this->responses as $key => $data ) {
-				if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
-					if ( 'email' === $map[ $key ] && ! $email ) {
+				$unique_id = $data['uniqueID'];
+				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
+					if ( 'email' === $map[ $unique_id ] && ! $email ) {
 						$email         = $data['value'];
 						$body['email'] = $data['value'];
-					} elseif ( 'OPT_IN' === $map[ $key ] ) {
+					} elseif ( 'OPT_IN' === $map[ $unique_id ] ) {
 						if ( $data['value'] ) {
-							$body['attributes'][ $map[ $key ] ] = true;
+							$body['attributes'][ $map[ $unique_id ] ] = true;
 						} else {
-							$body['attributes'][ $map[ $key ] ] = false;
+							$body['attributes'][ $map[ $unique_id ] ] = false;
 						}
 					} else {
-						$body['attributes'][ $map[ $key ] ] = $data['value'];
+						$body['attributes'][ $map[ $unique_id ] ] = $data['value'];
 					}
 				}
 			}

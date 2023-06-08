@@ -163,20 +163,10 @@ function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } 
 		} );
 	};
 
-	const saveMap = ( value, index ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	const hasLists = Array.isArray( lists ) && lists.length > 0;
@@ -280,9 +270,9 @@ function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } 
 															<SelectControl
 																label={__( 'Select Field:' )}
 																options={listAttr}
-																value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 																onChange={( value ) => {
-																	saveMap( value, index );
+																	saveMap( value, item.uniqueID );
 																}}
 															/>
 														</div>
