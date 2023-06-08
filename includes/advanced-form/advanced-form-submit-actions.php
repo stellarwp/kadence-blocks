@@ -401,6 +401,43 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 	}
 
+	public function mailchimp_rest_call( $api_url, $method, $body ) {
+		$api_key = get_option( 'kadence_blocks_mail_chimp_api' );
+		if ( empty( $api_key ) ) {
+			return false;
+		}
+
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'method'  => $method,
+				'timeout' => 10,
+				'headers' => array(
+					'accept'        => 'application/json',
+					'content-type'  => 'application/json',
+					'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
+				),
+				'body'    => json_encode( $body ),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			error_log( "Something went wrong: $error_message" );
+			return false;
+		} else {
+			if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
+				error_log( __( 'Failed to Connect to MailChimp', 'kadence-blocks-pro' ) );
+				return false;
+			}
+			if ( 400 === $response['response']['code'] || 404 === $response['response']['code'] ) {
+				error_log( $response['response']['message'] );
+				return false;
+			}
+		}
+		return $response;
+	}
+
 	public function mailchimp() {
 		$api_key = get_option( 'kadence_blocks_mail_chimp_api' );
 		if ( empty( $api_key ) ) {
@@ -461,29 +498,12 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				);
 			}
 		}
-		if ( ! empty( $map ) ) {
-			foreach ( $this->responses as $key => $data ) {
-				if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
-					if ( 'email' === $map[ $key ] && ! $email ) {
-						$email                 = $data['value'];
-						$body['email_address'] = $data['value'];
-					} else {
-						if ( ! isset( $body['merge_fields'] ) ) {
-							$body['merge_fields'] = array();
-						}
-						$body['merge_fields'][ $map[ $key ] ] = $data['value'];
-					}
-				}
-			}
-		} else {
-			foreach ( $this->responses as $key => $data ) {
-				if ( 'email' === $data['type'] ) {
-					$email                 = $data['value'];
-					$body['email_address'] = $data['value'];
-					break;
-				}
-			}
-		}
+
+		$mapped_attributes = $this->get_mapped_attributes_from_responses( $map );
+		$email = $this->get_email_from_responses( $map );
+
+		$body['merge_fields'] = $mapped_attributes;
+		$body['email_address'] = $email;
 
 		$list_id = ( isset( $list['value'] ) && ! empty( $list['value'] ) ? $list['value'] : '' );
 		if ( empty( $list_id ) ) {
@@ -493,79 +513,31 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$subscriber_hash = md5( strtolower( $body['email_address'] ) );
 			$api_url         = $base_url . 'lists/' . $list_id . '/members/' . $subscriber_hash;
 			//error_log( $api_url );
-			$response = wp_remote_post(
-				$api_url,
-				array(
-					'method'  => 'PUT',
-					'timeout' => 10,
-					'headers' => array(
-						'accept'        => 'application/json',
-						'content-type'  => 'application/json',
-						'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
-					),
-					'body'    => json_encode( $body ),
-				)
-			);
-			if ( is_wp_error( $response ) ) {
-				$error_message = $response->get_error_message();
-				//error_log( "Something went wrong: $error_message" );
 
-			} else {
+			$response = $this->mailchimp_rest_call( $api_url, 'PUT', $body );
 
-				if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
-					//error_log( __('Failed to Connect to MailChimp', 'kadence-blocks-pro' ) );
-					return;
+			if ( $response && 200 === $response['response']['code'] ) {
+				// need to check if tags were added.
+				$needs_update = false;
+				$body         = json_decode( wp_remote_retrieve_body( $response ), true );
+				if ( ! empty( $tags_array ) && empty( $body['tags'] ) ) {
+					$needs_update = true;
+				} elseif ( ! empty( $tags_array ) && ! empty( $body['tags'] ) && is_array( $body['tags'] ) ) {
+					$current_tags = array();
+					foreach ( $body['tags'] as $key => $data ) {
+						$current_tags[] = $data['name'];
+					}
+					foreach ( $tags_array as $key => $data ) {
+						if ( ! in_array( $data['name'], $current_tags ) ) {
+							$needs_update = true;
+							break;
+						}
+					}
 				}
-				if ( 400 === $response['response']['code'] || 404 === $response['response']['code'] ) {
-					//error_log( $response['response']['message'] );
-					return;
-				} elseif ( 200 === $response['response']['code'] ) {
-					// need to check if tags were added.
-					$needs_update = false;
-					$body         = json_decode( wp_remote_retrieve_body( $response ), true );
-					if ( ! empty( $tags_array ) && empty( $body['tags'] ) ) {
-						$needs_update = true;
-					} elseif ( ! empty( $tags_array ) && ! empty( $body['tags'] ) && is_array( $body['tags'] ) ) {
-						$current_tags = array();
-						foreach ( $body['tags'] as $key => $data ) {
-							$current_tags[] = $data['name'];
-						}
-						foreach ( $tags_array as $key => $data ) {
-							if ( ! in_array( $data['name'], $current_tags ) ) {
-								$needs_update = true;
-								break;
-							}
-						}
-					}
-					if ( $needs_update ) {
-						$tag_url      = $base_url . 'lists/' . $list_id . '/members/' . $subscriber_hash . '/tags';
-						$tag_response = wp_remote_post(
-							$tag_url,
-							array(
-								'method'  => 'POST',
-								'timeout' => 10,
-								'headers' => array(
-									'accept'        => 'application/json',
-									'content-type'  => 'application/json',
-									'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
-								),
-								'body'    => json_encode( array( 'tags' => $tags_array ) ),
-							)
-						);
-						if ( is_wp_error( $tag_response ) ) {
-							$error_message = $tag_response->get_error_message();
-							//error_log( "Something went wrong: $error_message" );
-						} else {
-							if ( ! isset( $tag_response['response'] ) || ! isset( $tag_response['response']['code'] ) ) {
-								//error_log( __('Failed to Connect to MailChimp', 'kadence-blocks-pro' ) );
-								return;
-							}
-							if ( 204 === $tag_response['response']['code'] ) {
-								//error_log( 'success' );
-								return;
-							}
-						}
-					}
+				if ( $needs_update ) {
+					$tag_url      = $base_url . 'lists/' . $list_id . '/members/' . $subscriber_hash . '/tags';
+
+					$tag_response = $this->mailchimp_rest_call( $tag_url, 'POST', array( 'tags' => $tags_array ) );
 				}
 			}
 		}
