@@ -265,25 +265,11 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		$email = false;
 
-		if ( ! empty( $map ) ) {
-			foreach ( $this->responses as $key => $data ) {
-				if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
-					if ( 'email' === $map[ $key ] && ! $email ) {
-						$email                = $data['value'];
-						$fluent_data['email'] = $data['value'];
-					} else {
-						$fluent_data[ $map[ $key ] ] = $data['value'];
-					}
-				}
-			}
-		} else {
-			foreach ( $this->responses as $key => $data ) {
-				if ( 'email' === $data['type'] ) {
-					$fluent_data['email'] = $data['value'];
-					break;
-				}
-			}
-		}
+		$mapped_attributes = $this->get_mapped_attributes_from_responses( $map );
+		$email = $this->get_email_from_responses( $map );
+
+		$fluent_data = array_merge( $fluent_data, $mapped_attributes );
+		$fluent_data['email'] = $email;
 
 		if ( isset( $fluent_data['email'] ) && ! empty( $fluent_data['email'] ) && function_exists( 'FluentCrmApi' ) ) {
 			$contact_api = FluentCrmApi( 'contacts' );

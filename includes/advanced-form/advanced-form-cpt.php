@@ -274,7 +274,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 						'properties' => array(
 							'lists'       => array( 'type' => 'array' ),
 							'tags'        => array( 'type' => 'array' ),
-							'map'         => array( 'type' => 'array' ),
+							'map'  => array(
+								'type' => 'object',
+								'additionalProperties' => array(
+									'type' => 'string',
+								),
+							),
 							'doubleOptin' => array( 'type' => 'boolean' ),
 						),
 					),
