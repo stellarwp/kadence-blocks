@@ -8,13 +8,13 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$this->post_id   = $post_id;
 	}
 
-	public function get_mapped_attributes_from_responses( $map, $no_email = true ) {
+	public function get_mapped_attributes_from_responses( $map, $no_email = true, $auto_map = false ) {
 		$mapped_attributes = array();
 
 		if ( ! empty( $map ) ) {
 			foreach ( $this->responses as $key => $data ) {
 				$unique_id = $data['uniqueID'];
-				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
+				if ( isset( $map[ $unique_id ] ) && ( ! empty( $map[ $unique_id ] ) || $auto_map ) ) {
 					if ( $no_email && 'email' === $map[ $unique_id ] ) {
 						continue;
 					} else if ( 'none' === $map[ $unique_id ] ) {
@@ -25,6 +25,8 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 						} else {
 							$mapped_attributes[ $map[ $unique_id ] ] = false;
 						}
+					} else if ( $auto_map ) {
+						$mapped_attributes[ $data['label'] ] = $data['value'];
 					} else {
 						$mapped_attributes[ $map[ $unique_id ] ] = $data['value'];
 					}
@@ -766,19 +768,9 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			'time_created' => date_i18n( get_option( 'time_format' ) ),
 		);
 
-		if ( ! empty( $map ) ) {
-			foreach ( $this->responses as $key => $data ) {
-				if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
-					$body[ $map[ $key ] ] = $data['value'];
-				} else {
-					$body[ $data['label'] ] = $data['value'];
-				}
-			}
-		} else {
-			foreach ( $this->responses as $key => $data ) {
-				$body[ $data['label'] ] = $data['value'];
-			}
-		}
+		$mapped_attributes = $this->get_mapped_attributes_from_responses( $map, false, true );
+
+		$body = array_merge( $body, $mapped_attributes );
 
 		$args     = apply_filters( 'kadence_blocks_pro_webhook_args', array( 'body' => $body ) );
 		$response = wp_remote_post( $webhook_args['url'], $args );
