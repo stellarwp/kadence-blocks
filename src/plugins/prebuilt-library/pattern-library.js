@@ -401,6 +401,7 @@ function PatternLibrary( {
 		} else {
 			const data = response ? SafeParseJSON(response) : {};
 			setAIUserData(data);
+			setAINeedsData( false );
 		}
 	}
 	async function getAllNewData() {
@@ -459,7 +460,7 @@ function PatternLibrary( {
 		} else if ( localPrompts && localPrompts.length > 0 && localContent ) {
 			localPrompts.forEach( key => {
 				if ( tempContextStates.indexOf( key ) === -1 ) {
-					getAIContent( key );
+					getAIContent( key, true );
 				}
 			});
 			setLocalContexts( localPrompts );

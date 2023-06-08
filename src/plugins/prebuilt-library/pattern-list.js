@@ -313,6 +313,8 @@ function PatternList( {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.contexts?.includes( contextTax )
 			);
+			//allPatterns.reverse();
+
 			allPatterns = allPatterns.sort( ( pattern ) =>
 				pattern?.hpcontexts?.includes( contextTax + '-hp' ) ? -1 : 1
 			);
@@ -351,7 +353,7 @@ function PatternList( {
 			} );
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );

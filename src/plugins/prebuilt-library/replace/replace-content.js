@@ -275,15 +275,21 @@ export default function replaceContent( content, aiContent, categories, context,
 			break;
 		case "accordion":
 			// Headline short.
-			if ( baseContent?.heading?.short ) {
+			if ( accordionContent?.heading?.short ) {
+				content = content.replace( /Add a short headline/g, accordionContent?.heading?.short );
+			} else if ( baseContent?.heading?.short ) {
 				content = content.replace( /Add a short headline/g, baseContent?.heading?.short );
 			}
 			// Headline.
-			if ( baseContent?.heading?.medium ) {
+			if ( accordionContent?.heading?.medium ) {
+				content = content.replace( /A brief headline here will add context for the section/g, accordionContent?.heading?.medium );
+			} else if ( baseContent?.heading?.medium ) {
 				content = content.replace( /A brief headline here will add context for the section/g, baseContent?.heading?.medium );
 			}
 			// Paragraph
-			if ( baseContent?.sentence?.medium ) {
+			if ( accordionContent?.sentence?.medium ) {
+				content = content.replace( /Use this space to provide your website visitors with a brief description on what to expect before clicking on a section title./g, accordionContent?.sentence?.medium );
+			} else if ( baseContent?.sentence?.medium ) {
 				content = content.replace( /Use this space to provide your website visitors with a brief description on what to expect before clicking on a section title./g, baseContent?.sentence?.medium );
 			}
 			// Accordion
@@ -291,7 +297,17 @@ export default function replaceContent( content, aiContent, categories, context,
 				for (let index = 0; index < accordionContent?.accordion.length; index++) {
 					// Title.
 					if ( accordionContent?.accordion?.[index]?.['title-medium'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a section title that is relevant for your readers."`, `"text":"${ accordionContent?.accordion?.[index]?.['title-medium'] }"` );
+						}
+					}
+				}
+				for (let index = 0; index < accordionContent?.accordion.length; index++) {
+					// Title.
+					if ( accordionContent?.accordion?.[index]?.['title-medium'] ) {
 						content = content.replace( "Add a section title that is relevant for your readers.", accordionContent?.accordion?.[index]?.['title-medium']);
+						content = content.replace( "tab-addasectiontitlethatisrelevantforyourreaders", `tab-${ stripStringRender( accordionContent?.accordion?.[index]?.['title-medium'].toString() )}`);
+						content = content.replace( "tab-addasectiontitlethatisrelevantforyourreaders", `tab-${ stripStringRender( accordionContent?.accordion?.[index]?.['title-medium'].toString() )}`);
 					}
 					// Paragraph.
 					if ( accordionContent?.accordion?.[index]?.['paragraph-medium'] ) {
@@ -322,6 +338,14 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			// Tabs
 			if ( tabsContent?.tabs ) {
+				for (let index = 0; index < tabsContent?.tabs.length; index++) {
+					// Title.
+					if ( tabsContent?.tabs?.[index]?.['title-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Tab name"`, `"text":"${ tabsContent?.tabs?.[index]?.['title-short'] }"` );
+						}
+					}
+				}
 				for (let index = 0; index < tabsContent?.tabs.length; index++) {
 					// Title.
 					if ( tabsContent?.tabs?.[index]?.['title-short'] ) {
@@ -518,6 +542,7 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Testimonial.
 					if ( testimonialContent?.testimonials?.[index]?.['testimonial'] ) {
 						content = content.replace( "Testimonials are a social proof, a powerful way to inspire trust.", testimonialContent?.testimonials?.[index]?.['testimonial'] );
+						content = content.replace( "Testimonials, as authentic endorsements from satisfied customers, serve as potent social proof, significantly inspiring trust in potential consumers.", testimonialContent?.testimonials?.[index]?.['testimonial'] );
 					}
 				}
 			}
@@ -616,7 +641,6 @@ export default function replaceContent( content, aiContent, categories, context,
 			break;
 		case "counter-or-stats":
 			const counterContent = contextAI.find( x => x.id === context + '-counter-stats' );
-			console.log( counterContent );
 			// Headline.
 			if ( counterContent?.heading?.medium ) {
 				content = content.replace( /Tell your story in numbers, and give your visitors useful insights./g, counterContent?.heading?.medium );
