@@ -8,6 +8,47 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$this->post_id   = $post_id;
 	}
 
+	public function get_mapped_attributes_from_responses( $map, $no_email = true ) {
+		$mapped_attributes = array();
+
+		if ( ! empty( $map ) ) {
+			foreach ( $this->responses as $key => $data ) {
+				$unique_id = $data['uniqueID'];
+				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
+					if ( $no_email && 'email' === $map[ $unique_id ] ) {
+						continue;
+					} else if ( 'OPT_IN' === $map[ $unique_id ] ) {
+						if ( $data['value'] ) {
+							$mapped_attributes[ $map[ $unique_id ] ] = true;
+						} else {
+							$mapped_attributes[ $map[ $unique_id ] ] = false;
+						}
+					} else {
+						$mapped_attributes[ $map[ $unique_id ] ] = $data['value'];
+					}
+				}
+			}
+		}
+
+		return $mapped_attributes;
+	}
+
+	public function get_email_from_responses( $map ) {
+		$email = '';
+		$mapped_email = '';
+
+		foreach ( $this->responses as $key => $data ) {
+			$unique_id = $data['uniqueID'];
+			if ( $map && isset( $map[ $unique_id ] ) && 'email' === $map[ $unique_id ] && ! $email ) {
+				$mapped_email = $data['value'];
+			} else if ( 'email' === $data['type'] ) {
+				$email = $data['value'];
+			}
+		}
+
+		return $mapped_email ? $mapped_email : $email;
+	}
+
 	public function email() {
 
 		$to      = isset( $this->form_args['attributes']['email']['emailTo'] ) && ! empty( trim( $this->form_args['attributes']['email']['emailTo'] ) ) ? trim( $this->form_args['attributes']['email']['emailTo'] ) : get_option( 'admin_email' );
@@ -257,6 +298,46 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 	}
 
+	public function sib_rest_call( $api_url, $method, $body ) {
+		$api_key = get_option( 'kadence_blocks_send_in_blue_api' );
+		if ( empty( $api_key ) ) {
+			return false;
+		}
+
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'method'  => $method,
+				'timeout' => 10,
+				'headers' => array(
+					'accept'       => 'application/json',
+					'content-type' => 'application/json',
+					'api-key'      => $api_key,
+				),
+				'body'    => json_encode( $body ),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			error_log( "Something went wrong: $error_message" );
+
+			return false;
+		} else {
+			if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
+				error_log( __( 'No Response from SendInBlue', 'kadence-blocks-pro' ) );
+
+				return false;
+			}
+			if ( 400 === $response['response']['code'] ) {
+				error_log( $response['response']['message'] );
+
+				return false;
+			}
+		}
+		return $response;
+	}
+
 	public function sendInBlue() {
 		$api_key = get_option( 'kadence_blocks_send_in_blue_api' );
 		if ( empty( $api_key ) ) {
@@ -284,46 +365,18 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		} else {
 			$doubleOptin = false;
 		}
-		$body = array(
-			'attributes' => array(),
-		);
+		$body = array();
 		if ( $doubleOptin ) {
 			$body['templateId']     = $templateId;
 			$body['redirectionUrl'] = $redirectionUrl;
-		} else {
-			$body['updateEnabled'] = true;
 		}
 		$email = false;
-		if ( ! empty( $map ) ) {
-			foreach ( $this->responses as $key => $data ) {
-				$unique_id = $data['uniqueID'];
-				if ( isset( $map[ $unique_id ] ) && ! empty( $map[ $unique_id ] ) ) {
-					if ( 'email' === $map[ $unique_id ] && ! $email ) {
-						$email         = $data['value'];
-						$body['email'] = $data['value'];
-					} elseif ( 'OPT_IN' === $map[ $unique_id ] ) {
-						if ( $data['value'] ) {
-							$body['attributes'][ $map[ $unique_id ] ] = true;
-						} else {
-							$body['attributes'][ $map[ $unique_id ] ] = false;
-						}
-					} else {
-						$body['attributes'][ $map[ $unique_id ] ] = $data['value'];
-					}
-				}
-			}
-		} else {
-			foreach ( $this->responses as $key => $data ) {
-				if ( 'email' === $data['type'] ) {
-					$email         = $data['value'];
-					$body['email'] = $data['value'];
-					break;
-				}
-			}
-		}
-		if ( empty( $body['attributes'] ) ) {
-			unset( $body['attributes'] );
-		}
+
+		$mapped_attributes = $this->get_mapped_attributes_from_responses( $map );
+		$email = $this->get_email_from_responses( $map );
+
+		$body['email'] = $email;
+
 		if ( ! empty( $lists ) ) {
 			$lists_ids = array(
 				'listIds' => array(),
@@ -341,38 +394,27 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		} else {
 			$body['listIds'] = $lists_ids['listIds'];
 		}
-		//error_log( print_r( $body, true ) );
+
 		if ( isset( $body['email'] ) ) {
-			$api_url  = ( $doubleOptin ? 'https://api.sendinblue.com/v3/contacts/doubleOptinConfirmation' : 'https://api.sendinblue.com/v3/contacts' );
-			$response = wp_remote_post(
-				$api_url,
-				array(
-					'method'  => 'POST',
-					'timeout' => 10,
-					'headers' => array(
-						'accept'       => 'application/json',
-						'content-type' => 'application/json',
-						'api-key'      => $api_key,
-					),
-					'body'    => json_encode( $body ),
-				)
-			);
+			// Create contact.
+			$api_url = ( $doubleOptin ? 'https://api.brevo.com/v3/contacts/doubleOptinConfirmation' : 'https://api.brevo.com/v3/contacts' );
+			$method = 'POST';
 
-			if ( is_wp_error( $response ) ) {
-				$error_message = $response->get_error_message();
-				error_log( "Something went wrong: $error_message" );
-			} else {
-				if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
-					error_log( __( 'No Response from SendInBlue', 'kadence-blocks-pro' ) );
+			$response = $this->sib_rest_call( $api_url, $method, $body );
 
-					return;
-				}
-				if ( 400 === $response['response']['code'] ) {
-					error_log( $response['response']['message'] );
+			if ( $response && $mapped_attributes ) {
+				// Update contact.
+				$update_api_url  = 'https://api.brevo.com/v3/contacts/' . urlencode( $email );
+				$update_method = 'PUT';
 
-					return;
-				}
+				$update_body = array(
+					'attributes' => array(),
+				);
 
+				$update_body['attributes'] = $mapped_attributes;
+
+				$update_response = $this->sib_rest_call( $update_api_url, $update_method, $update_body );
+				$temp = 1;
 			}
 		}
 	}
@@ -406,7 +448,6 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$body['status_if_new'] = 'pending';
 			$body['double_optin']  = true;
 		}
-
 
 		if ( empty( $list ) || ! is_array( $list ) ) {
 			return;
