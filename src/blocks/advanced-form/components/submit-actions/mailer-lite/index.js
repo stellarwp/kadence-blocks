@@ -35,7 +35,7 @@ const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-fin
  * @returns {object} Measure settings.
  */
 
-export default function MailerLiteOptions( { settings, save, parentClientId } ) {
+export default function MailerLiteOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setAPI ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
@@ -60,24 +60,12 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		});
 	}, [] );
 
-	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);
+	const fields = useMemo(() => getFormFields( formInnerBlocks ), [ parentClientId ]);
 
-	const saveMailerliteMap = ( value, index ) => {
-
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	const getMailerLiteGroups = () => {
@@ -136,9 +124,9 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 				const theFields = [];
 				theFields.push( { value: null, label: 'None' } );
 				theFields.push( { value: 'email', label: 'Email *' } );
-				fields.map( ( item, index ) => {
+				fields.data.map( ( item, index ) => {
 					if ( item.key !== 'email' ) {
-						theFields.push( { value: item.key, label: item.title } );
+						theFields.push( { value: item.key, label: item.name } );
 					}
 				} );
 
@@ -146,7 +134,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 				setGroupFieldsLoaded( true );
 				setIsFetchingFields( false );
 			} )
-			.catch( () => {
+			.catch( ( err ) => {
 				const theFields = [];
 				theFields.push( { value: null, label: 'None' } );
 				theFields.push( { value: 'email', label: 'Email *' } );
@@ -287,9 +275,9 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 															<SelectControl
 																label={__( 'Select Field:' )}
 																options={groupFields}
-																value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 																onChange={( value ) => {
-																	saveMailerliteMap( value, index );
+																	saveMap( value, item.uniqueID );
 																}}
 															/>
 														</div>

@@ -146,12 +146,46 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 	}
 
-	public function mailerlite() {
+	public function mailerlite_rest_call( $api_url, $method, $body ) {
 		$api_key = get_option( 'kadence_blocks_mailerlite_api' );
 
 		if ( empty( $api_key ) ) {
 			return;
 		}
+
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'method'  => $method,
+				'timeout' => 10,
+				'headers' => array(
+					'accept'              => 'application/json',
+					'content-type'        => 'application/json',
+					'X-MailerLite-ApiKey' => $api_key,
+				),
+				'body'    => json_encode( $body ),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			error_log( "Something went wrong: $error_message" );
+			return false;
+		} else {
+			if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
+				error_log( __( 'No Response from MailerLite', 'kadence-blocks' ) );
+				return false;
+			}
+			if ( 400 === $response['response']['code'] ) {
+				error_log( print_r( $response['response'], true ) );
+				$this->process_bail( $response['response']['message'] . ' ' . __( 'MailerLite Misconfiguration', 'kadence-blocks' ), __( 'MailerLite Failed', 'kadence-blocks' ) );
+				return false;
+			}
+		}
+		return $response;
+	}
+
+	public function mailerlite() {
 
 		$mailerlite_default = array(
 			'map'   => array(),
@@ -164,26 +198,11 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$body            = array( 'fields' => array() );
 		$email           = false;
 
-		if ( ! empty( $map ) ) {
-			foreach ( $this->responses as $key => $data ) {
-				if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
-					if ( 'email' === $map[ $key ] && ! $email ) {
-						$email         = $data['value'];
-						$body['email'] = $data['value'];
-					} else {
-						$body['fields'][ $map[ $key ] ] = $data['value'];
-					}
-				}
-			}
-		} else {
-			foreach ( $this->responses as $key => $data ) {
-				if ( 'email' === $data['type'] ) {
-					$email         = $data['value'];
-					$body['email'] = $data['value'];
-					break;
-				}
-			}
-		}
+		$mapped_attributes = $this->get_mapped_attributes_from_responses( $map );
+		$email = $this->get_email_from_responses( $map );
+
+		$body['fields'] = $mapped_attributes;
+		$body['email'] = $email;
 
 		if ( empty( $body['fields'] ) ) {
 			unset( $body['fields'] );
@@ -205,32 +224,9 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			} else {
 				$api_url = 'https://api.mailerlite.com/api/v2/subscribers';
 			}
-			$response = wp_remote_post(
-				$api_url,
-				array(
-					'method'  => 'POST',
-					'timeout' => 10,
-					'headers' => array(
-						'accept'              => 'application/json',
-						'content-type'        => 'application/json',
-						'X-MailerLite-ApiKey' => $api_key,
-					),
-					'body'    => json_encode( $body ),
-				)
-			);
 
-			if ( is_wp_error( $response ) ) {
-				$error_message = $response->get_error_message();
-				error_log( "Something went wrong: $error_message" );
-			} else {
-				if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
-					error_log( __( 'No Response from MailerLite', 'kadence-blocks' ) );
-				}
-				if ( 400 === $response['response']['code'] ) {
-					error_log( print_r( $response['response'], true ) );
-					$this->process_bail( $response['response']['message'] . ' ' . __( 'MailerLite Misconfiguration', 'kadence-blocks' ), __( 'MailerLite Failed', 'kadence-blocks' ) );
-				}
-			}
+			$response = $this->mailerlite_rest_call( $api_url, 'POST', $body );
+			$temp = 1;
 		}
 	}
 
