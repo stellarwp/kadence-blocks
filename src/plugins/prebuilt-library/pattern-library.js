@@ -509,16 +509,45 @@ function PatternLibrary( {
 		}
 		processImportContent( patternBlocks );
 	}
+	const ajaxImportProcess = ( blockcode ) => {
+		var data = new FormData();
+		data.append( 'action', 'kadence_import_process_image_data' );
+		data.append( 'security', kadence_blocks_params.ajax_nonce );
+		data.append( 'import_content', blockcode );
+		data.append( 'image_library', JSON.stringify( imageCollection ) );
+		jQuery.ajax( {
+			method:      'POST',
+			url:         kadence_blocks_params.ajax_url,
+			data:        data,
+			contentType: false,
+			processData: false,
+		} )
+		.done( function( response, status, stately ) {
+			if ( response ) {
+				importContent( response, clientId );
+			} else {
+				setIsError( true );
+				setIsErrorType( 'reload' );
+			}
+			setIsImporting( false );
+		})
+		.fail( function( error ) {
+			console.log( error );
+			setIsError( true );
+			setIsErrorType( 'reload' );
+			setIsImporting( false );
+		});
+	}
 	async function processImportContent( blockCode ) {
 		const response = await processPattern( blockCode, imageCollection );
 		if ( response === 'failed' ) {
-			console.log( 'Import Process Failed when processing data.' );
-			setIsError( true );
-			setIsErrorType( 'reload' );
+			// It could fail because cloudflare is blocking the request. Lets try with ajax.
+			ajaxImportProcess( blockCode, imageCollection );
+			console.log( 'Import Process Failed when processing data through rest api... Trying ajax.' );
 		} else {
 			importContent( response, clientId );
+			setIsImporting( false );
 		}
-		setIsImporting( false );
 	}
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
