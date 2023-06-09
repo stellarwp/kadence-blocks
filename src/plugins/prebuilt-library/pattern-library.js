@@ -43,6 +43,7 @@ import {
 	VisuallyHidden,
 	ExternalLink,
 	Spinner,
+	Icon
 } from '@wordpress/components';
 import {
 	arrowLeft,
@@ -72,6 +73,9 @@ import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
+// @todo: Get page style terms dynamically.
+const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
+
 /**
  * Prebuilt Sections.
  */
@@ -83,6 +87,7 @@ function PatternLibrary( {
  } ) {
 	const [ category, setCategory ] = useState( '' );
 	const [ pageCategory, setPageCategory ] = useState( '' );
+	const [ pageStyles, setPageStyles ] = useState( styleTerms );
 	const [ search, setSearch ] = useState( null );
 	const [ subTab, setSubTab ] = useState( '' );
 	const [ patterns, setPatterns ] = useState( false );
@@ -117,9 +122,14 @@ function PatternLibrary( {
 	const [ fontSize, setFontSize ] = useState( '' );
 	const [ aiDataState, triggerAIDataReload ] = useState( false );
 	const [ isVisible, setIsVisible ] = useState( false );
+	const [ isFilterVisible, setIsFilterVisible ] = useState( false );
+	const [ filterChoices, setFilterChoices ] = useState(
+		new Array(styleTerms.length).fill(true)
+	);
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
+	const [ filterPopoverAnchor, setFilterPopoverAnchor ] = useState();
 	const { updateContextState, updateMassContextState, updateContext, updateMassContext } = useDispatch( 'kadence/library' );
 	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect(
 		( select ) => {
@@ -132,12 +142,21 @@ function PatternLibrary( {
 		},
 		[]
 	);
-    const toggleVisible = () => {
-        setIsVisible( ( state ) => ! state );
-    };
+  const toggleVisible = () => {
+    setIsVisible( ( state ) => ! state );
+  };
+  const toggleFilterVisible = () => {
+    setIsFilterVisible( ( state ) => ! state );
+  };
+  const handleFilterToggle = ( position ) => {
+		const updatedChoices = filterChoices.map((item, index) => (
+			index === position ? !item : item
+		));
+		setFilterChoices(updatedChoices);
+  };
 	const toggleReloadVisible = () => {
-        setIsContextReloadVisible( ( state ) => ! state );
-    };
+    setIsContextReloadVisible( ( state ) => ! state );
+  };
 	const closeAIWizard = () => {
 		setWizardState( {
 			visible: false,
@@ -188,6 +207,7 @@ function PatternLibrary( {
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
 	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
 	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
+	const savedSelectedPageStyles = ( undefined !== activeStorage?.kbPageStyles && '' !== activeStorage?.kbPageStyles ? activeStorage.kbPageStyles : 'all' ); // @todo: Should probably be an array of all available styles
 	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
 	const savedReplaceImages = ( undefined !== activeStorage?.replaceImages && '' !== activeStorage?.replaceImages ? activeStorage.replaceImages : 'all' );
 	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
@@ -195,6 +215,7 @@ function PatternLibrary( {
 	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'value-prop' );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
 	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
+	const selectedPageStyles = ( pageStyles ? pageStyles : savedSelectedPageStyles );
 	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
 	const selectedStyle = ( style ? style : savedStyle );
 	const selectedReplaceImages = ( replaceImages ? replaceImages : savedReplaceImages );
@@ -225,6 +246,14 @@ function PatternLibrary( {
 			return { value: key, label: contextOptions[key] }
 		} ) );
 	}, [] );
+	useEffect(() => {
+		const activePageStyles = styleTerms.filter((style, index) => filterChoices[index] && style);
+		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		tempActiveStorage['kbPageStyles'] = activePageStyles;
+		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+
+		setPageStyles( activePageStyles );
+	}, [ filterChoices ])
 	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
@@ -572,7 +601,7 @@ function PatternLibrary( {
 										/>
 									) }
 									<ToggleControl
-										className='kb-toggle-align-right'
+										className='kb-toggle-align-right small'
 										label={__( 'Custom Image Selection', 'kadence-blocks' )}
 										checked={selectedReplaceImages !== 'none'}
 										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
@@ -585,7 +614,7 @@ function PatternLibrary( {
 										}}
 									/>
 									<ToggleControl
-										className='kb-toggle-align-right'
+										className='kb-toggle-align-right small'
 										label={__( 'Live Preview', 'kadence-blocks' )}
 										checked={selectedPreviewMode !== 'image'}
 										help={__('If disabled you will not see a live preview of how the patterns will look on your site.', 'kadence-blocks')}
@@ -877,6 +906,41 @@ function PatternLibrary( {
 								</Button>
 							) }
 						</div>
+						{ styleTerms && styleTerms.length ? (
+							<div className="kb-styles-filter-popover">
+								<Button
+									className={ 'kb-trigger-filter-settings' }
+									icon={ settings }
+									ref={ setFilterPopoverAnchor }
+									isPressed={ isFilterVisible }
+									disabled={ isFilterVisible }
+									onClick={ toggleFilterVisible }
+								/>
+								{ isFilterVisible && (
+									<Popover
+										className="kb-library-filter-settings"
+										placement="top-end"
+										onClose={ debounce( toggleFilterVisible, 100 ) }
+										anchor={ filterPopoverAnchor }
+									>
+										{
+											styleTerms.map((term, index) => {
+												return (
+													<ToggleControl
+														key={ index }
+														className={ 'kb-toggle-align-right small' }
+														label={ term }
+														checked={ filterChoices[index] }
+														onChange={ () => handleFilterToggle(index) }
+													/>
+												)
+												}
+											)
+										}
+									</Popover>
+								) }
+							</div>
+						) : null }
 					</div>
 				) }
 			</div>
@@ -926,6 +990,7 @@ function PatternLibrary( {
 							filterValue={ search }
 							selectedCategory={ selectedPageCategory }
 							selectedStyle={ selectedStyle }
+							selectedPageStyles={ selectedPageStyles }
 							selectedFontSize={ selectedFontSize }
 							breakpointCols={ breakpointColumnsObj }
 							aiContent={ aiContent }

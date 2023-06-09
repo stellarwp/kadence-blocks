@@ -195,6 +195,7 @@ function PageList( {
 	pages,
 	filterValue,
 	selectedCategory,
+	selectedPageStyles,
 	selectedStyle = 'light',
 	breakpointCols,
 	imageCollection,
@@ -243,11 +244,13 @@ function PageList( {
 			}
 			temp['title'] = pages[key].name;
 			temp['name'] = pages[key].name;
+			temp['description'] = pages[key].description;
 			temp['image'] = pages[key].image;
 			temp['imageWidth'] = pages[key].imageW;
 			temp['imageHeight'] = pages[key].imageH;
 			temp['id'] = pages[key].id;
 			temp['slug'] = pages[key].slug;
+			temp['pageStyles'] = pages[key].page_styles ? Object.values( pages[key].page_styles ) : [];
 			temp['categories'] = pages[key].categories ? Object.keys( pages[key].categories ) : [];
 			temp['contexts'] = pages[key].contexts ? Object.keys( pages[key].contexts ) : [];
 			temp['keywords'] = pages[key].keywords ? pages[key].keywords : [];
@@ -277,6 +280,11 @@ function PageList( {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
 			);
+		}
+		if ( selectedPageStyles && selectedPageStyles.length ) {
+			allPatterns = allPatterns.filter( ( pattern ) =>
+				pattern.pageStyles.find( ( style ) => selectedPageStyles.includes( style ) )
+			)
 		}
 		// if ( useImageReplace === 'all' && imageCollection ) {
 		// 	let variation = 0;
@@ -315,7 +323,7 @@ function PageList( {
 		// 	allPatterns = allPatterns.slice(0, 30);
 		// }
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, pages, useImageReplace, imageCollection ] );
+	}, [ filterValue, selectedCategory, selectedPageStyles, pages, useImageReplace, imageCollection ] );
 
 	// Announce search results on change.
 	useEffect( () => {
@@ -479,6 +487,7 @@ function PageList( {
 				{ hasItems && (
 					<KadenceBlockPatternList
 						selectedCategory={ selectedCategory }
+						selectedPageStyles={ selectedPageStyles }
 						blockPatterns={ filteredBlockPatterns }
 						onClickPattern={ onSelectBlockPattern }
 						showTitlesAsTooltip={ false }
