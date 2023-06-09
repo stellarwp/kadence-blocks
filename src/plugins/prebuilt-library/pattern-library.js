@@ -605,7 +605,7 @@ function PatternLibrary( {
 										}}
 									/>
 									<ToggleControl
-										className='kb-toggle-align-right'
+										className='kb-toggle-align-right small'
 										label={__( 'Custom Image Selection', 'kadence-blocks' )}
 										checked={selectedReplaceImages !== 'none'}
 										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
