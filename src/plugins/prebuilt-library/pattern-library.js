@@ -56,6 +56,7 @@ import {
 	settings,
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
 import PatternList from './pattern-list';
 import PageList from './page-list';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -206,6 +207,9 @@ function PatternLibrary( {
 	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
 	const selectedContext = ( context ? context : savedContext );
 	const selectedContextLabel = contextOptions?.[selectedContext];
+	const { createErrorNotice } = useDispatch(
+		noticesStore
+	);
 	useEffect( () => {
 		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
@@ -408,7 +412,22 @@ function PatternLibrary( {
 		setIsLoading( true );
 		const response = await getAIContentRemaining( true );
 		if ( response === 'error' || response === 'failed' ) {
+			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
 			console.log( 'Error getting AI Content.' );
+			setIsLoading( false );
+		} else if ( response?.error && response?.context ) {
+			createErrorNotice( __('Error, Some AI Contexts could not be started, Please Retry'), { type: 'snackbar' } );
+			console.log( 'Error getting all new AI Content.' );
+			const tempContextStates = [];
+			response?.context.forEach( key => {
+				tempContextStates.push(key);
+			});
+			updateMassContextState( tempContextStates, 'processing' );
+			response?.context.forEach( ( key, index ) => {
+				setTimeout( () => {
+					getAIContent( key, true );
+				}, 1000 + ( index * 50 ) );
+			});
 			setIsLoading( false );
 		} else {
 			const tempContextStates = [];

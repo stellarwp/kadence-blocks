@@ -783,6 +783,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'work',
 		);
 		$contexts_available = array();
+		$has_error = false;
 		foreach ( $contexts as $context ) {
 			// Check if we have captured prompt.
 			if ( empty( $available_prompts[ $context ] ) || $reload ) {
@@ -790,19 +791,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$response = $this->get_new_remote_contents( $context );
 				$data = json_decode( $response, true );
 				if ( $response === 'error' ) {
-					return wp_send_json( 'error' );
+					$has_error = true;
 				} else if ( isset( $data['data']['job_id'] ) ) {
-					$current_prompts = get_option( 'kb_design_library_prompts', array() );
-					$current_prompts[ $context ] = $data['data']['job_id'];
-					update_option( 'kb_design_library_prompts', $current_prompts );
+					$available_prompts[ $context ] = $data['data']['job_id'];
 					$contexts_available[] = $context;
 				} else {
-					return wp_send_json( 'error' );
+					$has_error = true;
 				}
 			}
 		}
-		if ( ! empty( $contexts_available ) ) {
+		update_option( 'kb_design_library_prompts', $available_prompts );
+		if ( ! empty( $contexts_available && ! $has_error ) ) {
 			return rest_ensure_response( $contexts_available );
+		} elseif ( ! empty( $contexts_available && $has_error ) ) {
+			return rest_ensure_response( array( 'context' => $contexts_available, 'error' => true ) );
 		} else {
 			return rest_ensure_response( 'failed' );
 		}
@@ -1025,7 +1027,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'get-started-accordion',
 					'get-started-columns',
 					'get-started-list',
-					'get-started-accordion',
 				);
 				break;
 			case 'history':
@@ -1043,7 +1044,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'industries-list',
 					'industries-columns',
 					'industries-tabs',
-					'industries-accordion',
 				);
 				break;
 			case 'location':
@@ -1173,7 +1173,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				);
 				break;
 		}
-		//error_log( print_r( $body, true ));
 		$response = wp_remote_post(
 			$this->remote_ai_url . 'content/create',
 			array(
