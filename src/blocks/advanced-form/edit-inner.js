@@ -80,7 +80,7 @@ import {
  */
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
-const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
+const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 
 export function EditInner( props ) {
 
@@ -203,22 +203,84 @@ export function EditInner( props ) {
 			const response = await addNew();
 			if ( response.id ) {
 				switch ( template ) {
-					case 'simple':
+					case 'contact':
 						insertBlocks(
-							[ createBlock( 'kadence/advanced-form-text', {} ), createBlock( 'kadence/advanced-form-email', {} ), createBlock( 'kadence/advanced-form-textarea', {} ), createBlock( 'kadence/advanced-form-submit', {} ) ],
+							[
+								createBlock( 'kadence/advancedheading', { content: 'Contact Us' } ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
+									] ) 
+								] ),
+								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
+							],
 							0,
 							clientId,
 							false
 						);
-					break;
+						break;
+					case 'contactAdvanced':
+						insertBlocks(
+							[
+								createBlock( 'kadence/advancedheading', { content: 'Contact Us' } ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-text', { label: 'First Name' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-text', { label: 'Last Name' } )
+									] ) 
+								] ),
+								createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-select', { label: 'Option 1' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-select', { label: 'Option 2' } )
+									] ) 
+								] ),
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
+							],
+							0,
+							clientId,
+							false
+						);
+						break;
+					case 'subscribe':
+						insertBlocks(
+							[
+								createBlock( 'kadence/advancedheading', { content: 'Subscribe' } ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
+									] ) 
+								] ),
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
+							],
+							0,
+							clientId,
+							false
+						);
+						break;
 					default:
 						insertBlocks(
-							[ createBlock( 'kadence/advanced-form-submit', {} ) ],
+							[ 
+								createBlock( 'core/paragraph', {} ),
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ),
+							],
 							0,
 							clientId,
 							false
 						);
-					break;
+						break;
 				}
 				setTitle(title);
 			}

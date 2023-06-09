@@ -15,6 +15,35 @@
 	margin-top: 0;
 	margin-bottom: 0;
 	padding: 0 3px;
+
+	.kt-select-starter-style-tabs {
+		border: none;
+
+		.kt-inital-tabs-style-btn {
+			color: #1e1e1e;
+			font-size: 16px;
+			flex-direction: column;
+			gap: 5px;
+
+			&:first-child {
+				margin-bottom: 20px;
+
+				&:hover {
+					border: none;
+				}
+			}
+		
+			&.is-pressed {
+				border: 2px solid var(--wp-admin-theme-color);
+			}
+
+			&:hover {
+				color: #1e1e1e;
+				border: 2px solid #aaa;
+				background: none;
+			}
+		}
+	}
 }
 .wp-block-kadence-advanced-form .kb-advanced-form {
 	.wp-block {

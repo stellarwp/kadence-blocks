@@ -166,6 +166,13 @@ export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
 export { default as captchaIcon } from './captcha'
+export { 
+    formTemplateContactIcon,
+    formTemplateContactAdvancedIcon,
+    formTemplateSubscribeIcon,
+    formTemplateSubscribeAdvancedIcon,
+    formTemplateFeedbackIcon,
+} from './block-icons/advanced-form/templates'
 
 // Progress Bar Icons
 export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
