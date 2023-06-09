@@ -59,6 +59,7 @@ import replaceColors from './replace/replace-colors';
 import replaceImages from './replace/replace-images';
 import replaceContent from './replace/replace-content';
 import deleteContent from './replace/remove-content';
+import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
 import {
 	//BlockPreview,
@@ -157,7 +158,7 @@ function BuildHTMLPageContent( rows, useImageReplace, imageCollection, contextTa
 		let theContent = '';
 		const categories = rows?.[key]?.['pattern_category'] ? Object.keys( rows[key]['pattern_category'] ) : [];
 		const context = rows[key]['pattern_context'];
-		theContent = rows[key]['pattern_html'];
+		theContent = replaceMasks( rows[key]['pattern_html'] );
 		if ( useImageReplace === 'all' && imageCollection ) {
 			theContent = replaceImages( theContent, imageCollection, categories, context, variation );
 		}
@@ -259,7 +260,7 @@ function PageList( {
 				const allContext = getAllContext();
 				temp['html'] = BuildHTMLPageContent( pages[key].rows, useImageReplace, imageCollection, contextTab, allContext );
 			} else if ( pages[key]?.rows_html) {
-				temp['html'] = pages[key].rows_html;
+				temp['html'] = replaceMasks( pages[key].rows_html );
 			}
 			temp['rows'] = pages[key].rows;
 			temp['pro'] = pages[key].pro;

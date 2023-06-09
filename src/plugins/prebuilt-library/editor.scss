@@ -1051,6 +1051,7 @@ button.components-button.kadence-ai-wizard-button {
 	font-weight: 500;
 	width: 100%;
 	justify-content: space-between;
+	padding:6px;
 }
 button.components-button.kadence-ai-wizard-button.has-icon svg {
 	font-size: 16px;
@@ -1229,6 +1230,7 @@ h2.components-heading.kb-patterns-banner-notice.kb-page-notice-above {
 	left:0;
 	right:0;
 	margin:0 !important;
+	z-index: 11;
 }
 .kb-patterns-banner-generate-notice h2.components-heading {
     margin: 1rem 0;

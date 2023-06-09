@@ -80,6 +80,27 @@ export function KadenceAiWizard({ loading, handleWizardClose, photographyOnly })
 
 				return;
 			}
+		} else if (event.type === 'click' && event.target.classList.contains('components-wizard__finish-build-button')) {
+			dispatch({ type: 'SET_SAVING', payload: true });
+
+			const {
+				firstTime,
+				saving,
+				saveError,
+				...rest
+			} = state;
+
+			const saveStatus = await saveAiWizardData({
+				firstTime: false,
+				...rest
+			});
+
+			if (saveStatus) {
+				dispatch({ type: 'SET_SAVING', payload: false });
+				handleWizardClose(true);
+
+				return;
+			}
 		}
 	
 		// Close wizard.

@@ -57,6 +57,7 @@ import {
 	settings,
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
 import PatternList from './pattern-list';
 import PageList from './page-list';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -142,27 +143,30 @@ function PatternLibrary( {
 		},
 		[]
 	);
-  const toggleVisible = () => {
-    setIsVisible( ( state ) => ! state );
-  };
-  const toggleFilterVisible = () => {
-    setIsFilterVisible( ( state ) => ! state );
-  };
-  const handleFilterToggle = ( position ) => {
+	const toggleVisible = () => {
+		setIsVisible( ( state ) => ! state );
+	};
+	const toggleFilterVisible = () => {
+		setIsFilterVisible( ( state ) => ! state );
+	};
+	const handleFilterToggle = ( position ) => {
 		const updatedChoices = filterChoices.map((item, index) => (
 			index === position ? !item : item
 		));
 		setFilterChoices(updatedChoices);
-  };
+	};
 	const toggleReloadVisible = () => {
-    setIsContextReloadVisible( ( state ) => ! state );
-  };
-	const closeAIWizard = () => {
+		setIsContextReloadVisible( ( state ) => ! state );
+	};
+	const closeAIWizard = ( rebuild ) => {
 		setWizardState( {
 			visible: false,
 			photographyOnly: false
 		} );
 		triggerAIDataReload( ( state ) => ! state );
+		if ( rebuild ) {
+			getAllNewData();
+		}
 	};
 	const hasCorrectUserData = ( tempData ) => {
 		const parsedUserData = SafeParseJSON( tempData, true );
@@ -224,6 +228,9 @@ function PatternLibrary( {
 	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
 	const selectedContext = ( context ? context : savedContext );
 	const selectedContextLabel = contextOptions?.[selectedContext];
+	const { createErrorNotice } = useDispatch(
+		noticesStore
+	);
 	useEffect( () => {
 		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
@@ -331,9 +338,7 @@ function PatternLibrary( {
 		}
 	}, [reload, selectedSubTab] );
 	const forceRefreshLibrary = () => {
-		console.log( 'Force Refresh Library start');
 		if ( ! isLoading && patterns ) {
-			console.log( 'Force Refresh Library');
 			setPatterns( JSON.parse(JSON.stringify(patterns)) );
 		}
 		if ( ! isLoading && pages ) {
@@ -380,13 +385,14 @@ function PatternLibrary( {
 	}
 	async function reloadAI( tempContext ) {
 		updateContextState( tempContext, 'processing' );
-		if ( false === localContexts ) {
-			localContexts = [];
+		let tempLocalContexts = [];
+		if ( false !== localContexts ) {
+			tempLocalContexts = localContexts;
 		}
-		if ( localContexts.indexOf( tempContext ) !== -1 ) {
-			localContexts.push( tempContext );
+		if ( tempLocalContexts.indexOf( tempContext ) !== -1 ) {
+			tempLocalContexts.push( tempContext );
+			setLocalContexts( tempLocalContexts );
 		}
-		setLocalContexts( localContexts );
 		const response = await getAIContentDataReload( tempContext );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
@@ -416,7 +422,6 @@ function PatternLibrary( {
 			} else {
 				forceRefreshLibrary();
 			}
-			console.log( 'Selected', selectedContext );
 		}
 	}, [selectedContext, hasInitialAI] );
 	async function getAIUserData() {
@@ -429,19 +434,41 @@ function PatternLibrary( {
 		} else {
 			const data = response ? SafeParseJSON(response) : {};
 			setAIUserData(data);
+			setAINeedsData( false );
 		}
 	}
 	async function getAllNewData() {
 		setIsLoading( true );
 		const response = await getAIContentRemaining( true );
 		if ( response === 'error' || response === 'failed' ) {
+			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
 			console.log( 'Error getting AI Content.' );
+			setIsLoading( false );
+		} else if ( response?.error && response?.context ) {
+			createErrorNotice( __('Error, Some AI Contexts could not be started, Please Retry'), { type: 'snackbar' } );
+			console.log( 'Error getting all new AI Content.' );
+			const tempContextStates = [];
+			response?.context.forEach( key => {
+				tempContextStates.push(key);
+			});
+			updateMassContextState( tempContextStates, 'processing' );
+			response?.context.forEach( ( key, index ) => {
+				setTimeout( () => {
+					getAIContent( key, true );
+				}, 1000 + ( index * 50 ) );
+			});
+			setIsLoading( false );
 		} else {
 			const tempContextStates = [];
 			response.forEach( key => {
 				tempContextStates.push(key);
 			});
 			updateMassContextState( tempContextStates, 'processing' );
+			response.forEach( ( key, index ) => {
+				setTimeout( () => {
+					getAIContent( key, true );
+				}, 1000 + ( index * 50 ) );
+			});
 			setIsLoading( false );
 		}
 	}
@@ -481,7 +508,7 @@ function PatternLibrary( {
 		} else if ( localPrompts && localPrompts.length > 0 && localContent ) {
 			localPrompts.forEach( key => {
 				if ( tempContextStates.indexOf( key ) === -1 ) {
-					getAIContent( key );
+					getAIContent( key, true );
 				}
 			});
 			setLocalContexts( localPrompts );
@@ -494,7 +521,7 @@ function PatternLibrary( {
 		if ( aIUserData && ! hasInitialAI ) {
 			getAILocalData();
 		}
-	}, [aiDataState]);
+	}, [aIUserData]);
 	useEffect(() => {
 		if ( aIUserData ) {
 			getImageCollection();
@@ -577,14 +604,17 @@ function PatternLibrary( {
 											} );
 										}}
 									/>
-									<Button
-										className='kadence-ai-wizard-button'
-										iconPosition='right'
-										icon={ aiIcon }
-										text={ __('Get All new AI Data', 'kadence-blocks') }
-										onClick={ () => {
-											setIsVisible( false );
-											getAllNewData();
+									<ToggleControl
+										className='kb-toggle-align-right'
+										label={__( 'Custom Image Selection', 'kadence-blocks' )}
+										checked={selectedReplaceImages !== 'none'}
+										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
+										onChange={( value ) => {
+											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
+											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+											setPatterns( JSON.parse(JSON.stringify(patterns)) );
+											setReplaceImages( ( value ? 'all' : 'none' ) );
 										}}
 									/>
 									{ selectedReplaceImages !== 'none' && (
@@ -600,19 +630,6 @@ function PatternLibrary( {
 											}}
 										/>
 									) }
-									<ToggleControl
-										className='kb-toggle-align-right small'
-										label={__( 'Custom Image Selection', 'kadence-blocks' )}
-										checked={selectedReplaceImages !== 'none'}
-										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
-										onChange={( value ) => {
-											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
-											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setPatterns( JSON.parse(JSON.stringify(patterns)) );
-											setReplaceImages( ( value ? 'all' : 'none' ) );
-										}}
-									/>
 									<ToggleControl
 										className='kb-toggle-align-right small'
 										label={__( 'Live Preview', 'kadence-blocks' )}

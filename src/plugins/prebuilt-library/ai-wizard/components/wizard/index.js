@@ -24,7 +24,7 @@ export function Wizard({
 	className,
 	contentLabel,
 	logo,
-	finishButtonText = __( 'Finish', 'kadence-blocks' ),
+	finishButtonText = __( 'Save', 'kadence-blocks' ),
 	backButtonText = __( 'Back', 'kadence-blocks' ),
 	forwardButtonText = __( 'Next', 'kadence-blocks' ),
 	finishButtonDisabled = false,
@@ -174,14 +174,24 @@ export function Wizard({
 						</Button>
 					) }
 					{ ! canGoForward && (
-						<Button
-						 	variant="primary"
-							className={ 'components-wizard__finish-button' }
-							disabled={ finishButtonDisabled }
-							onClick={ onFinish }
-						>
-							{ finishButtonText }
-						</Button>
+						<div className='components-wizard__finish-button-container'>
+							<Button
+								variant="secondary"
+								className={ 'components-wizard__finish-button' }
+								disabled={ finishButtonDisabled }
+								onClick={ onFinish }
+							>
+								{ finishButtonText }
+							</Button>
+							<Button
+								variant="primary"
+								className={ 'components-wizard__finish-build-button' }
+								disabled={ finishButtonDisabled }
+								onClick={ onFinish }
+							>
+								{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
+							</Button>
+						</div>
 					) }
 				</div>
 			</div>
