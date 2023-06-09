@@ -361,7 +361,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! is_array( $industries ) ) {
 			return rest_ensure_response( 'error' );
 		}
-		$identifier = 'imageCollection' . json_encode( $industries );
+		$identifier = 'imageCollection' . json_encode( $industries ) . KADENCE_BLOCKS_VERSION;
 		if ( ! empty( $image_type ) ) {
 			$identifier .= '_' . $image_type;
 		}
@@ -416,7 +416,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_industry_verticals( $request ) {
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$identifier = 'industry_verticals' . gmdate( 'W' );
+		$identifier = 'industry_verticals' . KADENCE_BLOCKS_VERSION;
 		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
 		} else {
@@ -1709,14 +1709,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param string $target_src the image url.
 	 */
 	public function get_image_info( $images, $target_src ) {
-		foreach ($images['data'] as $image_group) {
-			foreach ($image_group['images'] as $image) {
-				foreach ($image['sizes'] as $size) {
-					if ($size['src'] === $target_src) {
+		foreach ( $images['data'] as $image_group ) {
+			foreach ( $image_group['images'] as $image ) {
+				foreach ( $image['sizes'] as $size ) {
+					if ( $size['src'] === $target_src ) {
 						return array(
 							'alt' => $image['alt'],
 							'photographer' => $image['photographer'],
-							'photographer_url' => $image['photographer_url']
+							'photographer_url' => $image['photographer_url'],
 						);
 						break;
 					}
