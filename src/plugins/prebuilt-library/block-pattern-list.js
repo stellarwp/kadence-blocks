@@ -63,6 +63,40 @@ function KadenceBlockPattern( {
 	const { content, viewportWidth, pro, locked, proRender, image, imageHeight, imageWidth, html } = pattern;
 	const instanceId = useInstanceId( KadenceBlockPattern );
 	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
+
+	function getFooter() {
+		if ('page' === patternType) {
+			return (
+				<div className="block-editor-block-patterns-list__item-title kb-pattern-type-page">
+					<div className="kb-pattern-footer-top">
+						<span className="kb-pattern-title">
+							{ pattern.title }
+						</span>
+						{ ( pattern?.pageStyles && pattern.pageStyles.length ) &&
+							Object.values(pattern.pageStyles).map((style) =>
+								<span className="kb-pattern-style-tag">{ style }</span>
+							)
+						}
+					</div>
+					{ pattern.description ? (
+						<div className="kb-pattern-description">
+							{ pattern.description }
+						</div>
+					) : null }
+				</div>
+			)
+		} else {
+			return (
+				<div className="block-editor-block-patterns-list__item-title">
+					{ pattern.title }
+					{ undefined !== pro && pro && (
+						<span className="kb-pattern-pro-item">{ __( 'Pro', 'kadence-blocks' ) }</span>
+					) }
+				</div>
+			)
+		}
+	}
+
 	return (
 		<div key={ instanceId } className={ `block-editor-block-patterns-list__list-item kb-pattern-style-${selectedStyle}`}>
 			<WithToolTip
@@ -130,14 +164,7 @@ function KadenceBlockPattern( {
 							<span className="kb-pattern-requires-active-pro-item"><ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=patterns' }>{ __( 'Requires Kadence Blocks Pro', 'kadence-blocks' ) }</ExternalLink></span>
 						</div>
 					) }
-					{ ! showTooltip && (
-						<div className="block-editor-block-patterns-list__item-title">
-							{ pattern.title }
-							{ undefined !== pro && pro && (
-								<span className="kb-pattern-pro-item">{ __( 'Pro', 'kadence-blocks' ) }</span>
-							) }
-						</div>
-					) }
+					{ ! showTooltip && getFooter() }
 					{ !! pattern.description && (
 						<VisuallyHidden id={ descriptionId }>
 							{ pattern.description }
@@ -261,6 +288,7 @@ function KadenceBlockPatternListIframe( {
 function KadenceBlockPatternList( {
 	blockPatterns,
 	selectedCategory,
+	selectedPageStyles,
 	filterValue,
 	onClickPattern,
 	label = __( 'Block Patterns', 'kadence-blocks' ),
@@ -352,7 +380,8 @@ function KadenceBlockPatternList( {
 	useEffect( () => {
 		setHasMoreShadow(true);
 		setShadowRecords(30);
-	}, [ selectedCategory, filterValue, blockPatterns ] );
+	}, [ selectedCategory, selectedPageStyles, filterValue, blockPatterns ] );
+
 	const loadMoreShadow = () => {
 		if ( shadowRecords >= blockPatterns.length ) {
 			setHasMoreShadow(false);

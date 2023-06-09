@@ -901,6 +901,7 @@ button.components-button.kb-trigger-ai.has-icon {
 	   box-shadow: none;
 		border-color:#000;
 	}
+
 	.block-editor-block-patterns-list__item .block-editor-block-patterns-list__item-title {
 		font-size: 12px;
 		padding-top: 8px;
@@ -910,9 +911,78 @@ button.components-button.kb-trigger-ai.has-icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		&.kb-pattern-type-page {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.kb-pattern-footer-top {
+			display: flex;
+			width: 100%;
+			justify-content: space-between;
+			overflow: hidden;
+
+			.kb-pattern-title {
+				flex-grow: 1;
+				transition: flex-grow 0.2s ease-in;
+			}
+
+			.kb-pattern-description {
+				width: 0;
+				font-size: 10px;
+			}
+		}
+
+		.kb-pattern-style-tag {
+			flex: 0 1 0;
+			width: 0;
+		}
+
+		.kb-pattern-style-tag,
+		.kb-pattern-description {
+			opacity: 0;
+    	transition: opacity 0.2s ease-in;
+		}
 	}
+
 	.block-editor-block-patterns-list__item:hover .block-editor-block-patterns-list__item-title {
 		color: #000;
+	}
+
+	.block-editor-block-patterns-list__item:hover .block-editor-block-patterns-list__item-title.kb-pattern-type-page {
+	
+		.kb-pattern-footer-top {
+			justify-content: space-between;
+		}
+		
+		.kb-pattern-title {
+			flex-grow: 0;
+		}
+
+		.kb-pattern-style-tag {
+			flex: 0 1 auto;
+			width: auto;
+		}
+		
+		.kb-pattern-style-tag,
+		.kb-pattern-description {
+			opacity: 1;
+		}
+	}
+
+	.kb-pattern-style-tag {
+		padding: 4px 6px;
+		background: #F5F5F5;
+		font-style: normal;
+		font-weight: 700;
+		font-size: 8px;
+		line-height: 100%;
+		text-align: center;
+		color: #757575;
+	}
+	.kb-pattern-description {
+		font-size: 10px;
 	}
 	.kb-pattern-pro-item {
 		background: #1B8F6D;
@@ -1359,4 +1429,42 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
     padding: 8px 18px;
     border-radius: 3px;
     text-decoration: none;
+}
+
+// Style Filter Popover
+.components-popover.kb-library-filter-settings .components-popover__content {
+  min-width: 240px;
+  padding: 1.2em;
+
+  label {
+  	font-weight: bold;
+  }
+}
+
+// Toggle Control Small Styles
+.components-toggle-control.small {
+	.components-form-toggle {
+		height: 14px;
+	}
+	.components-form-toggle__track {
+		height: 14px;
+		width: 28px;
+	}
+
+	.components-form-toggle__thumb {
+		top: 3px;
+		width: 8px;
+		height: 8px;
+		border-width: 0;
+	}
+
+	.components-form-toggle.is-checked {
+		.components-form-toggle__thumb {
+			transform: translateX(13px);
+		}
+
+		.components-form-toggle__track {
+			border-width: 0;
+		}
+	}
 }
