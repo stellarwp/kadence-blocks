@@ -255,6 +255,9 @@ export default function replaceContent( content, aiContent, categories, context,
 				for (let index = 0; index < listContent?.list.length; index++) {
 					// List Item.
 					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
 						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
 					}
 				}
@@ -345,6 +348,11 @@ export default function replaceContent( content, aiContent, categories, context,
 							content = content.replace( `"text":"Tab name"`, `"text":"${ tabsContent?.tabs?.[index]?.['title-short'] }"` );
 						}
 					}
+					if ( tabsContent?.tabs?.[index]?.['title-medium'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Give this tab a concise name"`, `"text":"${ tabsContent?.tabs?.[index]?.['title-medium'] }"` );
+						}
+					}
 				}
 				for (let index = 0; index < tabsContent?.tabs.length; index++) {
 					// Title.
@@ -359,6 +367,8 @@ export default function replaceContent( content, aiContent, categories, context,
 					if ( tabsContent?.tabs?.[index]?.['title-medium'] ) {
 						content = content.replace( "Scribe a concise title", tabsContent?.tabs?.[index]?.['title-medium']);
 						content = content.replace( "Give this tab a concise name", tabsContent?.tabs?.[index]?.['title-medium']);
+						content = content.replace( "tab-givethistabaconcisename", `tab-${ stripStringRender( tabsContent?.tabs?.[index]?.['title-medium'].toString() )}`);
+						content = content.replace( "tab-givethistabaconcisename", `tab-${ stripStringRender( tabsContent?.tabs?.[index]?.['title-medium'].toString() )}`);
 						//content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['title-medium']);
 					}
 					// Title Long.
@@ -379,26 +389,26 @@ export default function replaceContent( content, aiContent, categories, context,
 					}
 					// List Item 1.
 					if ( tabsContent?.tabs?.[index]?.['list-item-1'] ) {
-						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-1']);
 						if ( ! isHTML ) {
-							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-1']);
+							content = content.replace( `"text":"Add a single and succinct list item"`, `"text":"${ tabsContent?.tabs?.[index]?.['list-item-1'] }"` );
 						}
+						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-1']);
 						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-1']);
 					}
 					// List Item 2.
 					if ( tabsContent?.tabs?.[index]?.['list-item-2'] ) {
-						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-2']);
 						if ( ! isHTML ) {
-							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-2']);
+							content = content.replace( `"text":"Add a single and succinct list item"`, `"text":"${ tabsContent?.tabs?.[index]?.['list-item-2'] }"` );
 						}
+						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-2']);
 						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-2']);
 					}
 					// List Item 3.
 					if ( tabsContent?.tabs?.[index]?.['list-item-3'] ) {
-						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-3']);
 						if ( ! isHTML ) {
-							content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-3']);
+							content = content.replace( `"text":"Add a single and succinct list item"`, `"text":"${ tabsContent?.tabs?.[index]?.['list-item-3'] }"` );
 						}
+						content = content.replace( "Add a single and succinct list item", tabsContent?.tabs?.[index]?.['list-item-3']);
 						content = content.replace( "Add a descriptive title for the column.", tabsContent?.tabs?.[index]?.['list-item-3']);
 					}
 					// Description 1.
