@@ -2,6 +2,9 @@
  * WordPress dependencies
  */
 import { Flex, FlexBlock } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+
+import AiModalIntro from '../../../../../includes/assets/images/ai-modal-intro.png';
 
 const styles = {
 	background: {
@@ -24,6 +27,9 @@ const styles = {
 	}
 }
 
+const headline = __('Take your website creation to the next level with Kadence AI.', 'kadence');
+const content = __('Kadence AI creates a website building experience no other builder can offer. Our powerful technology generates content in fully designed Kadence patterns to meet your mission and goals in a seamless, intuitive experience. Say goodbye to generic placeholder text and blank screen anxiety. Welcome to elegant and effective content that represents your brand and connects with your audience.', 'kadence');
+
 export function HowItWorks() {
 	return (
 		<Flex style={ styles.background }>
@@ -35,35 +41,17 @@ export function HowItWorks() {
 					>
 						<FlexBlock style={ styles.content } className={ 'stellarwp-body' }>
 							<h1 className="stellarwp-h1" style={ styles.headline }>
-								Create Stunning & Unique Designs with the Kadence Pattern Design Library
+								{ headline }
 							</h1>
 							<p>
-								Explaining why you dont wanna skip this: Lorem ipsum dolor sit amet, 
-								consectetur adipiscing elit. Phasellus vulputate, metus et iaculis tincidunt, 
-								nibh ante sollicitudin libero, in varius elit velit sed nibh. Cras dapibus, nulla 
-								vitae hendrerit consequat, lectus nulla blandit eros, sed malesuada lorem lectus 
-								eu lacus. Vivamus et suscipit lacus.
+								{ content }
 							</p>
-							<h5 className="stellarwp-overline">
-								Benefits
-							</h5>
-							<ul className="stellarwp-ul">
-								<li>
-									Something something about AI
-								</li>
-								<li>
-									Something about Pexels imagery
-								</li>
-								<li>
-									I dont even know if we need a benefits list
-								</li>
-							</ul>
 						</FlexBlock>
 				</Flex>
 				</FlexBlock>
 				<FlexBlock style={ styles.imageWrapper }>
 					<img
-						src="https://placehold.co/2000x1400"
+						src={ AiModalIntro }
 						style={ styles.image }
 					/>
 				</FlexBlock>
