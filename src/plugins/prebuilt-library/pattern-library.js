@@ -125,7 +125,7 @@ function PatternLibrary( {
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ isFilterVisible, setIsFilterVisible ] = useState( false );
 	const [ filterChoices, setFilterChoices ] = useState(
-		new Array(styleTerms.length).fill(true)
+		new Array( styleTerms.length ).fill( false )
 	);
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
