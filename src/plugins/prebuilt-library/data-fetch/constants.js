@@ -54,6 +54,9 @@ export const PATTERN_CATEGORIES = {
 	'donate': __( 'Donate', 'kadence-blocks' ),
 	'events': __( 'Events', 'kadence-blocks' ),
 	'partners': __( 'Partners', 'kadence-blocks' ),
+	'industries': __( 'Industries', 'kadence-blocks' ),
+	'volunteer': __( 'Volunteer', 'kadence-blocks' ),
+	'support': __( 'Support', 'kadence-blocks' ),
  };
  export const CONTEXTS_STATES = {
 	'value-prop': false,
@@ -80,7 +83,9 @@ export const PATTERN_CATEGORIES = {
 	'donate': false,
 	'events': false,
 	'partners': false,
-	'podcast': false,
+	'industries': false,
+	'volunteer': false,
+	'support': false,
  };
  export const CONTEXTS_IN_PAGES = {
 	'value-prop': false,
@@ -107,6 +112,9 @@ export const PATTERN_CATEGORIES = {
 	'donate': false,
 	'events': false,
 	'partners': false,
+	'industries': false,
+	'volunteer': false,
+	'support': false,
  };
  export const PAGE_CATEGORIES = { 
 	'category': __( 'Category', 'kadence-blocks' ),
