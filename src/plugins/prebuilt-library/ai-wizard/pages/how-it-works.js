@@ -4,6 +4,8 @@
 import { Flex, FlexBlock } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
+import AiModalIntro from '../../../../../includes/assets/images/ai-modal-intro.png';
+
 const styles = {
 	background: {
 		flexGrow: 1,
@@ -49,7 +51,7 @@ export function HowItWorks() {
 				</FlexBlock>
 				<FlexBlock style={ styles.imageWrapper }>
 					<img
-						src="https://placehold.co/2000x1400"
+						src={ AiModalIntro }
 						style={ styles.image }
 					/>
 				</FlexBlock>

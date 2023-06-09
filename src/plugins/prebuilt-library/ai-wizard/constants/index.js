@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 
-// const BASE_URL = 'https://content.startertemplatecloud.com';
 const BASE_URL = 'http://prophecywp.lndo.site'; // @todo Remove local BASE_URL.
 
 export const PROPHECY_ROUTE_GET_COLLECTIONS = `${ BASE_URL }/wp-json/prophecy/v1/images/collections`;
