@@ -53,30 +53,45 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		return $mapped_email ? $mapped_email : $email;
 	}
 
-	public function email() {
+	public function get_response_field_by_name( $name ) {
+		foreach ( $this->responses as $response ) {
+			if ( isset( $response['name'] ) && $response['name'] == $name ) {
+				return $response;
+			}
+		}
+		return '';
+	}
 
-		$to      = isset( $this->form_args['attributes']['email']['emailTo'] ) && ! empty( trim( $this->form_args['attributes']['email']['emailTo'] ) ) ? trim( $this->form_args['attributes']['email']['emailTo'] ) : get_option( 'admin_email' );
-		$subject = isset( $this->form_args['attributes']['email']['subject'] ) && ! empty( trim( $this->form_args['attributes']['email']['subject'] ) ) ? $this->form_args['attributes']['email']['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
-
-		if ( strpos( $subject, '{field_' ) !== false ) {
-			preg_match_all( '/{field_(.*?)}/', $subject, $match );
+	public function do_field_replacements( $text ) {
+		if ( strpos( $text, '{' ) !== false && strpos( $text, '}' ) !== false ) {
+			preg_match_all( '/{(.*?)}/', $text, $match );
 			if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
-				foreach ( $match[1] as $field_id ) {
-					if ( isset( $field_id ) ) {
-						$real_id = absint( $field_id ) - 1;
-						if ( isset( $this->responses[ $real_id ] ) && is_array( $this->responses[ $real_id ] ) && isset( $this->responses[ $real_id ]['value'] ) ) {
-							$subject = str_replace( '{field_' . $field_id . '}', $this->responses[ $real_id ]['value'], $subject );
+				foreach ( $match[1] as $field_name ) {
+					if ( isset( $field_name ) ) {
+						$field_to_insert = $this->get_response_field_by_name( $field_name );
+						if ( $field_to_insert && isset( $field_to_insert['value'] ) ) {
+							$text = str_replace( '{' . $field_name . '}', $field_to_insert['value'], $text );
 						}
 					}
 				}
 			}
 		}
 
-		if ( strpos( $subject, '{page_title}' ) !== false ) {
+		if ( strpos( $text, '{page_title}' ) !== false ) {
 			global $post;
 			$refer_id = is_object( $post ) ? $post->ID : url_to_postid( wp_get_referer() );
-			$subject  = str_replace( '{page_title}', get_the_title( $refer_id ), $subject );
+			$text  = str_replace( '{page_title}', get_the_title( $refer_id ), $text );
 		}
+
+		return $text;
+	}
+
+	public function email() {
+
+		$to      = isset( $this->form_args['attributes']['email']['emailTo'] ) && ! empty( trim( $this->form_args['attributes']['email']['emailTo'] ) ) ? trim( $this->form_args['attributes']['email']['emailTo'] ) : get_option( 'admin_email' );
+		$subject = isset( $this->form_args['attributes']['email']['subject'] ) && ! empty( trim( $this->form_args['attributes']['email']['subject'] ) ) ? $this->form_args['attributes']['email']['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
+
+		$subject = $this->do_field_replacements( $subject );
 
 		$email_content = '';
 		$reply_email   = false;
@@ -831,33 +846,8 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$reply_email     = isset( $auto_email_args['replyTo'] ) && ! empty( trim( $auto_email_args['replyTo'] ) ) ? sanitize_email( trim( $auto_email_args['replyTo'] ) ) : false;
 		$to              = isset( $auto_email_args['emailTo'] ) && ! empty( trim( $auto_email_args['emailTo'] ) ) ? $auto_email_args['emailTo'] : false;
 
-		if ( strpos( $subject, '{field_' ) !== false ) {
-			preg_match_all( '/{field_(.*?)}/', $subject, $match );
-			if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
-				foreach ( $match[1] as $field_id ) {
-					if ( isset( $field_id ) ) {
-						$real_id = absint( $field_id ) - 1;
-						if ( isset( $this->responses[ $real_id ] ) && is_array( $this->responses[ $real_id ] ) && isset( $this->responses[ $real_id ]['value'] ) ) {
-							$subject = str_replace( '{field_' . $field_id . '}', $this->responses[ $real_id ]['value'], $subject );
-						}
-					}
-				}
-			}
-		}
-
-		if ( strpos( $message, '{field_' ) !== false ) {
-			preg_match_all( '/{field_(.*?)}/', $message, $match );
-			if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
-				foreach ( $match[1] as $field_id ) {
-					if ( isset( $field_id ) ) {
-						$real_id = absint( $field_id ) - 1;
-						if ( isset( $this->responses[ $real_id ] ) && is_array( $this->responses[ $real_id ] ) && isset( $this->responses[ $real_id ]['value'] ) ) {
-							$message = str_replace( '{field_' . $field_id . '}', $this->responses[ $real_id ]['value'], $message );
-						}
-					}
-				}
-			}
-		}
+		$subject = $this->do_field_replacements( $subject );
+		$message = $this->do_field_replacements( $message );
 
 		if ( ! $to ) {
 			foreach ( $this->responses as $key => $data ) {

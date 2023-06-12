@@ -230,7 +230,7 @@ class KB_Ajax_Advanced_Form {
 		$processed_fields = array();
 
 		foreach ( $fields as $index => $field ) {
-			$expected_field = ! empty( $field['name'] ) ? $field['name'] : 'field' . $field['uniqueID'];
+			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
 
 			// Fail if required field is missing
 			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
@@ -314,6 +314,7 @@ class KB_Ajax_Advanced_Form {
 				'required' => empty( $field['required'] ) ? false : $field['required'],
 				'value'    => $value,
 				'uniqueID' => $field['uniqueID'],
+				'name' => $expected_field,
 			);
 		}
 
