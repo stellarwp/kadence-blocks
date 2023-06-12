@@ -1,1 +1,0 @@
-{"version":3,"file":"blocks-lottie.css","mappings":";;;AAAA;;;;;EAAA;AAMA;EACC;AACD,C","sources":["webpack://kadence/./src/blocks/lottie/editor.scss"],"sourcesContent":["/**\n * #.# Editor Styles\n *\n * CSS for just Backend enqueued after style.scss\n * which makes it higher in priority.\n */\n.kb-lottie-container {\n\tmin-height: 20px;\n}"],"names":[],"sourceRoot":""}
