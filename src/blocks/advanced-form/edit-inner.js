@@ -152,11 +152,8 @@ export function EditInner( props ) {
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
-		console.log(5)
 		setMeta( { ...meta, ['_kad_form_' + key]: value } );
 	};
-
-	console.log(3)
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
@@ -338,7 +335,6 @@ export function EditInner( props ) {
 	}
 	return (
 		<>
-		{console.log(4)}
 			<style>
 				{ isSelected && (
 					<>
@@ -638,7 +634,6 @@ export function EditInner( props ) {
 								tabletValue={tabletMargin}
 								mobileValue={mobileMargin}
 								onChange={(value) => {
-									console.log(11)
 									setMetaAttribute( value, 'margin' );
 								}}
 								onChangeTablet={(value) => {
@@ -717,12 +712,10 @@ export function EditInner( props ) {
 export default ( EditInner );
 
 function useFormProp( prop ) {
-	console.log(7)
 	return useEntityProp( 'postType', 'kadence_form', prop );
 }
 
 function useFormMeta( key ) {
-	console.log(6)
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	return [
