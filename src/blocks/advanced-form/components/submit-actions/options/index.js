@@ -5,8 +5,8 @@ import { applyFilters } from '@wordpress/hooks';
 export default function SubmitActionOptions( { setAttributes, selectedActions } ) {
 
 	const actionOptionsList = [
-		{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: true },
-		{ value: 'redirect', label: __( 'Redirect', 'kadence-blocks' ), help: '', isDisabled: true },
+		{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
+		{ value: 'redirect', label: __( 'Redirect', 'kadence-blocks' ), help: '', isDisabled: false },
 		{ value: 'mailerlite', label: __( 'Mailerlite', 'kadence-blocks' ), help: __( 'Add User to MailerLite list', 'kadence-blocks' ), isDisabled: false },
 		{ value: 'fluentCRM', label: __( 'FluentCRM', 'kadence-blocks' ), help: __( 'Add User to FluentCRM list', 'kadence-blocks' ), isDisabled: false },
 		{ value: 'convertkit', label: __( 'ConvertKit (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to ConvertKit', 'kadence-blocks' ), isDisabled: true },
@@ -18,7 +18,7 @@ export default function SubmitActionOptions( { setAttributes, selectedActions } 
 		{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 	];
 
-	const filteredOptions = applyFilters( 'kadence.actionOptions', actionOptionsList );
+	const filteredOptions = applyFilters( 'kadence.actionOptionsAdvancedForm', actionOptionsList );
 	const selectedOptions = filteredOptions.filter( ( item ) => selectedActions.includes( item.value ) );
 
 	return (

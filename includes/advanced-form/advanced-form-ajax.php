@@ -199,28 +199,9 @@ class KB_Ajax_Advanced_Form {
 				case 'fluentCRM':
 					$submit_actions->fluentCRM();
 					break;
-				case 'sendinblue':
-					$submit_actions->sendinblue();
-					break;
-				case 'mailchimp':
-					$submit_actions->mailchimp();
-					break;
-				case 'convertkit':
-					$submit_actions->convertkit();
-					break;
-				case 'activecampaign':
-					$submit_actions->activecampaign();
-					break;
-				case 'webhook':
-					$submit_actions->webhook();
-				case 'entry':
-					$submit_actions->entry($post_id);
-					break;
-				case 'autoEmail':
-					$submit_actions->autoEmail();
-					break;
 			}
 		}
+		$success = apply_filters( 'kadence_advanced_form_actions', $success, $actions, $form_args, $processed_fields, $post_id );
 
 		return $success;
 	}
