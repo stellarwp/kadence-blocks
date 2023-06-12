@@ -60,7 +60,14 @@ import {
 	HelpTextOptions,
 	MailerLiteOptions,
 	FluentCrmOptions,
+	SendinBlueOptions,
+	MailchimpOptions,
+	ConvertKitOptions,
+	ActiveCampaignOptions,
 	FormTitle,
+	WebhookOptions,
+	AutoEmailOptions,
+	DbEntryOptions,
 	BackendStyles,
 	MessageOptions,
 	MessageStyling,
@@ -109,8 +116,17 @@ export function EditInner( props ) {
 	const [ actions ] = useFormMeta( '_kad_form_actions' );
 	const [ mailerlite ] = useFormMeta( '_kad_form_mailerlite' );
 	const [ fluentcrm ] = useFormMeta( '_kad_form_fluentcrm' );
-	const [ messages ] = useFormMeta( '_kad_form_messages' );
+	const [ sendinblue ] = useFormMeta( '_kad_form_sendinblue' );
+	const [ mailchimp ] = useFormMeta( '_kad_form_mailchimp' );
+	const [ convertkit ] = useFormMeta( '_kad_form_convertkit' );
+	const [ activecampaign ] = useFormMeta( '_kad_form_activecampaign' );
+
 	const [ redirect ] = useFormMeta( '_kad_form_redirect' );
+
+	const [ webhook ] = useFormMeta( '_kad_form_webhook' );
+	const [ autoEmail ] = useFormMeta( '_kad_form_autoEmail' );
+	const [ entry ] = useFormMeta( '_kad_form_entry' );
+	const [ messages ] = useFormMeta( '_kad_form_messages' );
 
 	const [ labelFont ] = useFormMeta( '_kad_form_labelFont' );
 	const [ inputFont ] = useFormMeta( '_kad_form_inputFont' );
@@ -136,8 +152,11 @@ export function EditInner( props ) {
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
+		console.log(5)
 		setMeta( { ...meta, ['_kad_form_' + key]: value } );
 	};
+
+	console.log(3)
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
@@ -319,6 +338,7 @@ export function EditInner( props ) {
 	}
 	return (
 		<>
+		{console.log(4)}
 			<style>
 				{ isSelected && (
 					<>
@@ -437,21 +457,6 @@ export function EditInner( props ) {
 								/>
 							</KadencePanelBody>
 						)}
-						{/*<KadencePanelBody*/}
-						{/*	panelName={'kb-advanced-form-spam'}*/}
-						{/*	title={__( 'Spam Prevention', 'kadence-blocks' )}*/}
-						{/*	initialOpen={false}*/}
-						{/*>*/}
-						{/*	*/}
-						{/*</KadencePanelBody>*/}
-						<div className="kt-sidebar-settings-spacer"></div>
-						<KadencePanelBody
-							title={__( 'Message Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-form-message'}
-						>
-							<MessageOptions setAttributes={setMetaAttribute} messages={ messages } />
-						</KadencePanelBody>
 
 						{actions.includes( 'redirect' ) && (
 							<KadencePanelBody
@@ -485,6 +490,80 @@ export function EditInner( props ) {
 								save={( value ) => setMetaAttribute( { ...fluentcrm, ...value }, 'fluentcrm' )}
 							/>
 						)}
+
+						{actions.includes( 'sendinblue' ) && (
+							<SendinBlueOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={sendinblue}
+								save={( value ) => setMetaAttribute( { ...sendinblue, ...value }, 'sendinblue' )}
+							/>
+						)}
+
+						{actions.includes( 'mailchimp' ) && (
+							<MailchimpOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={mailchimp}
+								save={( value ) => setMetaAttribute( { ...mailchimp, ...value }, 'mailchimp' )}
+							/>
+						)}
+
+						{actions.includes( 'convertkit' ) && (
+							<ConvertKitOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={convertkit}
+								save={( value ) => setMetaAttribute( { ...convertkit, ...value }, 'convertkit' )}
+							/>
+						)}
+
+						{actions.includes( 'activecampaign' ) && (
+							<ActiveCampaignOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={activecampaign}
+								save={( value ) => setMetaAttribute( { ...activecampaign, ...value }, 'activecampaign' )}
+							/>
+						)}
+
+						{actions.includes( 'webhook' ) && (
+							<WebhookOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={webhook}
+								save={( value ) => setMetaAttribute( { ...webhook, ...value }, 'webhook' )}
+							/>
+						)}
+
+						{actions.includes( 'autoEmail' ) && (
+							<AutoEmailOptions
+								settings={autoEmail}
+								save={( value ) => setMetaAttribute( { ...autoEmail, ...value }, 'autoEmail' )}
+							/>
+						)}
+
+						{actions.includes( 'entry' ) && (
+							<DbEntryOptions
+								settings={entry}
+								save={( value ) => setMetaAttribute( { ...entry, ...value }, 'entry' )}
+							/>
+						)}
+						<div className="kt-sidebar-settings-spacer"></div>
+						{/*<KadencePanelBody*/}
+						{/*	panelName={'kb-advanced-form-spam'}*/}
+						{/*	title={__( 'Spam Prevention', 'kadence-blocks' )}*/}
+						{/*	initialOpen={false}*/}
+						{/*>*/}
+						{/*	*/}
+						{/*</KadencePanelBody>*/}
+						<KadencePanelBody
+							title={__( 'Message Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-message'}
+						>
+							<MessageOptions setAttributes={setMetaAttribute} messages={ messages } />
+						</KadencePanelBody>
 					</>
 				}
 
@@ -559,6 +638,7 @@ export function EditInner( props ) {
 								tabletValue={tabletMargin}
 								mobileValue={mobileMargin}
 								onChange={(value) => {
+									console.log(11)
 									setMetaAttribute( value, 'margin' );
 								}}
 								onChangeTablet={(value) => {
@@ -637,10 +717,12 @@ export function EditInner( props ) {
 export default ( EditInner );
 
 function useFormProp( prop ) {
+	console.log(7)
 	return useEntityProp( 'postType', 'kadence_form', prop );
 }
 
 function useFormMeta( key ) {
+	console.log(6)
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	return [
