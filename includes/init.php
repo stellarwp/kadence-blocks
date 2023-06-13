@@ -76,6 +76,7 @@ function kadence_gutenberg_editor_assets() {
 		'lottie',
 		'posts',
 		'rowlayout',
+		'progress-bar',
 		'show-more',
 		'spacer',
 		'tableofcontents',
