@@ -80,6 +80,7 @@ import {
 	ToolbarGroup,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+const FORM_ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
@@ -277,19 +278,23 @@ function SectionEdit( props ) {
 		}
 		debounce( getDynamic, 200 );
 	}, [] );
-	const { hasInnerBlocks, inRowBlock } = useSelect(
+	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
 			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
 			const rootID = getBlockRootClientId( clientId );
 			let inRowBlock = false;
+			let inFormBlock = false;
 			if ( rootID ) {
+				const hasForm = getBlockParentsByBlockName( clientId, 'kadence/advanced-form' );
 				const parentBlock = getBlocksByClientId( rootID );
+				inFormBlock = ( undefined !== hasForm && hasForm.length ? true : false );
 				inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
 			}
 			return {
 				inRowBlock: inRowBlock,
 				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+				inFormBlock: inFormBlock,
 			};
 		},
 		[ clientId ]
@@ -484,6 +489,7 @@ function SectionEdit( props ) {
 			renderAppender: hasInnerBlocks
 				? undefined
 				: InnerBlocks.ButtonBlockAppender,
+			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined
 		}
 	);
 	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
