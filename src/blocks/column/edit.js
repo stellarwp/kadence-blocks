@@ -280,7 +280,7 @@ function SectionEdit( props ) {
 	}, [] );
 	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
-			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
+			const { getBlock, getBlockRootClientId, getBlockParentsByBlockName, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
 			const rootID = getBlockRootClientId( clientId );
 			let inRowBlock = false;
