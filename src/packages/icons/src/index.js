@@ -189,3 +189,9 @@ export { default as tagsIcon } from './tags'
 export { default as userIcon } from './user'
 export { default as commentsIcon } from './comments'
 export { default as linkIcon } from './link'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
+export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'
