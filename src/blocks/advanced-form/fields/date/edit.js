@@ -8,6 +8,7 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, TextareaControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { dateI18n } from '@wordpress/date';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl } from '@kadence/components';
@@ -56,6 +57,9 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 		}
 	} );
 	const defaultPreview = useMemo( () => {
+		if( defaultValue === "today"){
+			return dateI18n( 'Y-m-d', new Date() );
+		}
 		if ( undefined !== kadenceDynamic && undefined !== kadenceDynamic['defaultValue'] && undefined !== kadenceDynamic['defaultValue']?.enable && '' !== kadenceDynamic['defaultValue'].enable && true === kadenceDynamic['defaultValue'].enable ) {
 			return kadenceDynamic?.['defaultValue']?.field ? '{' + kadenceDynamic['defaultValue'].field + '}' : '';
 		}
@@ -130,6 +134,7 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 									clientId={ clientId }
 									context={ context }
 								/>
+								<em>{ __( 'Set to "today" to fill with the current date', 'kadence-blocks') }</em>
 							</KadencePanelBody>
 						</>
 					}
