@@ -16,6 +16,7 @@ import {
 	getBorderColor,
 	getUniqueId,
 	getInQueryBlock,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -201,7 +202,8 @@ import {
 } from '@wordpress/hooks';
 
 
-export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId, name } ) {
+export default function KadenceButtonEdit( props ) {
+	const { attributes, setAttributes, className, isSelected, context, clientId, name } = props;
 	const {
 		uniqueID,
 		text,
@@ -285,12 +287,18 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		updateBlockAttributes( rootID, { [key]: value } );
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -300,7 +308,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
