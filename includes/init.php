@@ -81,6 +81,7 @@ function kadence_gutenberg_editor_assets() {
 		'tableofcontents',
 		'tabs',
 		'testimonials',
+		'advanced-form',
 	);
 	foreach ( $blocks as $block ) {
 		$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );

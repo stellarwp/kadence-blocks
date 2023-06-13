@@ -2,14 +2,15 @@ export { default as getFormFields } from './get-form-fields';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';
 export { default as FormTitle } from './form-title';
-export { default as SpamOptions } from './spam-options';
 export { default as MessageOptions } from './messages';
+export { default as MessageStyling } from './message-styles';
 
 export { default as GetLabelStyles } from './get-styles/label-styles';
 export { default as GetHelpStyles } from './get-styles/help-styles';
 export { default as GetInputStyles } from './get-styles/input-styles';
 
 export { default as ColumnWidth } from './column-width';
+export { default as DuplicateField } from './duplicate-field';
 
 export { default as FieldStyles } from './style-options/field';
 export { default as LabelOptions } from './style-options/label';
@@ -28,3 +29,4 @@ export { default as WebhookOptions } from './submit-actions/webhook';
 export { default as AutoEmailOptions } from './submit-actions/auto-email';
 export { default as DbEntryOptions } from './submit-actions/db-entry';
 export { default as BackendStyles } from './backend-styles';
+export { default as FieldBlockAppender } from './add-field';

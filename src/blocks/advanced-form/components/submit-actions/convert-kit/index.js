@@ -37,7 +37,7 @@ const HELP_URL = 'https://app.convertkit.com/account_settings/advanced_settings'
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function ConvertKitControls( { settings, save, parentClientId } ) {
+function ConvertKitOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
@@ -68,22 +68,12 @@ function ConvertKitControls( { settings, save, parentClientId } ) {
 		});
 	}, [] );
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 
-	const saveMap = ( value, index ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	const getConvertKitForms = () => {
@@ -212,10 +202,10 @@ function ConvertKitControls( { settings, save, parentClientId } ) {
 		} );
 	};
 
-	const hasList = Array.isArray( list ) && list.length;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length;
-	const hasGroups = Array.isArray( listGroups ) && listGroups.length;
-	const hasTags = Array.isArray( listTags ) && listTags.length;
+	const hasList = Array.isArray( list ) && list.length > 0;
+	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
+	const hasGroups = Array.isArray( listGroups ) && listGroups.length > 0;
+	const hasTags = Array.isArray( listTags ) && listTags.length > 0;
 
 	return (
 		<KadencePanelBody
@@ -369,9 +359,9 @@ function ConvertKitControls( { settings, save, parentClientId } ) {
 														<SelectControl
 															label={__( 'Select Field:' )}
 															options={listAttr}
-															value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+															value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 															onChange={( value ) => {
-																saveMap( value, index );
+																saveMap( value, item.uniqueID );
 															}}
 														/>
 													</div>
@@ -389,4 +379,4 @@ function ConvertKitControls( { settings, save, parentClientId } ) {
 	);
 }
 
-export default ( ConvertKitControls );
+export default ( ConvertKitOptions );

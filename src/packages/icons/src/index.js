@@ -45,11 +45,13 @@ export { default as video } from './video'
 export { default as gradient } from './gradient'
 export { default as brush } from './brush'
 export { default as hoverToggle } from './hover'
+export { default as duplicate } from './duplicate'
 export { default as copy } from './copy'
 export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
 export { default as dynamicIcon } from './dynamic'
+export { default as dynamic } from './dynamic'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
@@ -163,6 +165,15 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+export { default as captchaIcon } from './captcha'
+export { 
+    formTemplateContactIcon,
+    formTemplateContactAdvancedIcon,
+    formTemplateSubscribeIcon,
+    formTemplateSubscribeAdvancedIcon,
+    formTemplateFeedbackIcon,
+} from './block-icons/advanced-form/templates'
+
 
 // Pro Block Icons
 export { default as dynamicHTMLIcon } from './block-icons/dynamic-html'

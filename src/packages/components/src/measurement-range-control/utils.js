@@ -84,7 +84,7 @@ export function getOptionFromSize( optionsArray, value, unit ) {
 	if ( unit !== 'px' ) {
 		return '';
 	}
-	const found = optionsArray.find( ( option ) => option.size === value );
+	const found = optionsArray.find( ( option ) => option.size.toString() === value.toString() );
 	if ( ! found ) {
 		return '';
 	}

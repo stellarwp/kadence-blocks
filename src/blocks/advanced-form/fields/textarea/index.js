@@ -23,7 +23,6 @@ registerBlockType('kadence/advanced-form-textarea', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: textareaInputIcon,
 	},
