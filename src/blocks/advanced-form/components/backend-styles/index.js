@@ -1,60 +1,82 @@
 import { GetHelpStyles, GetInputStyles, GetLabelStyles } from '../';
 import { getPreviewSize } from '@kadence/helpers';
 
-export default function BackendStyles( { id, previewDevice, fieldStyle, labelStyle, helpStyle } ) {
+export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, labelStyle, helpStyle, inputFont, useFormMeta } ) {
 
-	const previewStyles = GetInputStyles( previewDevice, fieldStyle );
+	const fieldStyles = GetInputStyles( previewDevice, fieldStyle, inputFont, useFormMeta );
 	const labelStyles = GetLabelStyles( previewDevice, labelStyle );
 	const helpStyles = GetHelpStyles( previewDevice, helpStyle );
 
-	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle.rowGap && '' !== fieldStyle.rowGap ? fieldStyle.rowGap + 'px' : '' ), ( undefined !== fieldStyle.tabletRowGap && '' !== fieldStyle.tabletRowGap ? fieldStyle.tabletRowGap + 'px' : '' ), ( undefined !== fieldStyle.mobileRowGap && '' !== fieldStyle.mobileRowGap ? fieldStyle.mobileRowGap + 'px' : '' ) );
+	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.rowGap && '' !== fieldStyle?.rowGap ? fieldStyle?.rowGap + 'px' : '' ), ( undefined !== fieldStyle?.tabletRowGap && '' !== fieldStyle?.tabletRowGap ? fieldStyle?.tabletRowGap + 'px' : '' ), ( undefined !== fieldStyle?.mobileRowGap && '' !== fieldStyle?.mobileRowGap ? fieldStyle?.mobileRowGap + 'px' : '' ) );
 
 	const fieldCss = (
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-field {
-				margin-bottom: ${( previewRowGap ? previewRowGap : undefined )};
+			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-field {
+				${ previewRowGap ? 'margin-bottom:' + previewRowGap + ';' : '' }
 			}
 
-			.wp-block-kadence-advanced-form_${id} input:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form_${id} select:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form_${id} textarea {
-				line-height: ${previewStyles.lineHeight};
-				font-size: ${previewStyles.fontSize};
-				padding-top: ${previewStyles.paddingTop};
-				padding-right: ${previewStyles.paddingRight};
-				padding-bottom: ${previewStyles.paddingBottom};
-				padding-left: ${previewStyles.paddingLeft};
-				background: ${previewStyles.background};
+			.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${uniqueID} select:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${uniqueID} textarea {
 
-				border-radius: ${previewStyles.borderRadius};
-				border-top-width: ${previewStyles.borderTopWidth};
-				border-right-width: ${previewStyles.borderRightWidth};
-				border-bottom-width: ${previewStyles.borderBottomWidth};
-				border-left-width: ${previewStyles.borderLeftWidth};
-				border-color: ${previewStyles.borderColor};
+				${ fieldStyles.fontSize ? 'font-size:' + fieldStyles.fontSize + ';' : ''}
+				${ fieldStyles.lineHeight ? 'line-height:' + fieldStyles.lineHeight + ';' : '' }
+				${ fieldStyles.fieldFont?.letterSpacing ? 'letter-spacing:' + fieldStyles.fieldFont.letterSpacing + 'px;' : '' }
+				${ fieldStyles.fieldFont?.textTransform ? 'text-transform:' + fieldStyles.fieldFont.textTransform + ';' : '' }
+				${ fieldStyles.fieldFont?.family ? 'font-family:' + fieldStyles.fieldFont.family + ';' : '' }
+				${ fieldStyles.fieldFont?.style ? 'font-style:' + fieldStyles.fieldFont.style + ';' : '' }
+				${ fieldStyles.fieldFont?.weight ? 'font-weight:' + fieldStyles.fieldFont.weight + ';' : '' }
 
-				color: ${previewStyles.color};
-				box-shadow: ${previewStyles.boxShadow};
+				${ fieldStyles.paddingTop ? 'padding-top:' + fieldStyles.paddingTop + ';' : '' }
+				${ fieldStyles.paddingRight ? 'padding-right:' + fieldStyles.paddingRight + ';' : '' }
+				${ fieldStyles.paddingBottom ? 'padding-bottom:' + fieldStyles.paddingBottom + ';' : '' }
+				${ fieldStyles.paddingLeft ? 'padding-left:' + fieldStyles.paddingLeft + ';' : '' }
+
+				${ fieldStyles.background ? 'background: ' + fieldStyles.background + ';' : '' }
+
+				${ fieldStyles.borderRadiusTop ? 'border-top-left-radius: ' + fieldStyles.borderRadiusTop + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusRight ? 'border-top-right-radius: ' + fieldStyles.borderRadiusRight + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusBottom ? 'border-bottom-right-radius: ' + fieldStyles.borderRadiusBottom + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles.borderRadiusLeft ? 'border-bottom-left-radius: ' + fieldStyles.borderRadiusLeft + fieldStyles.borderRadiusUnit + ';' : '' }
+
+				${ fieldStyles.borderTop ? 'border-top: ' + fieldStyles.borderTop + ';' : '' }
+				${ fieldStyles.borderRight ? 'border-right: ' + fieldStyles.borderRight + ';' : '' }
+				${ fieldStyles.borderBottom ? 'border-bottom: ' + fieldStyles.borderBottom + ';' : '' }
+				${ fieldStyles.borderLeft ? 'border-left: ' + fieldStyles.borderLeft + ';' : '' }
+
+				${ fieldStyles.borderTopColor ? 'border-top-color: ' + fieldStyles.borderTopColor + ';' : '' }
+				${ fieldStyles.borderRightColor ? 'border-right-color: ' + fieldStyles.borderRightColor + ';' : '' }
+				${ fieldStyles.borderBottomColor ? 'border-bottom-color: ' + fieldStyles.borderBottomColor + ';' : '' }
+				${ fieldStyles.borderLeftColor ? 'border-left-color: ' + fieldStyles.borderLeftColor + ';' : '' }
+
+				${ fieldStyles.color ? 'color:' + fieldStyles.color + ';' : '' }
+				${ fieldStyles.boxShadow ? 'box-shadow: ' + fieldStyles.boxShadow + ';' : '' }
 		}
-		
-		.wp-block-kadence-advanced-form_${id} input::placeholder,
-		.wp-block-kadence-advanced-form_${id} select::placeholder,
-		.wp-block-kadence-advanced-form_${id} textarea::placeholder {
-			color: ${previewStyles.placeholderColor};
+
+		.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} select:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} textarea:focus {
+			${ fieldStyles.backgroundActive ? 'background: ' + fieldStyles.backgroundActive + ';' : '' }
 		}
 
-		.wp-block-kadence-advanced-form_${id} input[type="radio"]{
-			border-color: ${previewStyles.borderColor};
+		.wp-block-kadence-advanced-form${uniqueID} input::placeholder,
+		.wp-block-kadence-advanced-form${uniqueID} select::placeholder,
+		.wp-block-kadence-advanced-form${uniqueID} textarea::placeholder {
+			${ fieldStyles.placeholderColor ? 'color: ' + fieldStyles.placeholderColor + ';' : '' }
 		}
 
-		.wp-block-kadence-advanced-form_${id} input[type="file"]{
+		.wp-block-kadence-advanced-form${uniqueID} input[type="radio"]{
+			${ fieldStyles.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
+		}
+
+		.wp-block-kadence-advanced-form${uniqueID} input[type="file"]{
 			display: block
 		}
 
-		.wp-block-kadence-advanced-form_${id} input[type="checkbox"]{
-			border-color: ${previewStyles.borderColor};
+		.wp-block-kadence-advanced-form${uniqueID} input[type="checkbox"]{
+			${ fieldStyles.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
 
 		`}
@@ -66,33 +88,29 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-label{
-				font-size: ${labelStyles.fontSize};
-				line-height: ${labelStyles.lineHeight};
-				font-weight: ${labelStyles.fontWeight};
+			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-label {
+				${labelStyles.fontStyle ? 'font-style:' + labelStyles.fontStyle + ';' : '' }
+				${labelStyles.lineHeight ? 'line-height:' + labelStyles.lineHeight + ';' : '' }
+				${labelStyles.fontWeight ? 'font-weight:' + labelStyles.fontWeight + ';' : '' }
+				${labelStyles.letterSpacing ? 'letter-spacing:' + labelStyles.letterSpacing + 'px;' : '' }
+				${labelStyles.textTransform ? 'text-transform:' + labelStyles.textTransform + ';' : '' }
+				${labelStyles.fontFamily ? 'font-family:' + labelStyles.fontFamily + ';' : '' }
 
-				text-transform: ${labelStyles.textTransform};
-				font-family: ${labelStyles.fontFamily};
-				font-style: ${labelStyles.fontStyle};
-				letter-spacing: ${labelStyles.letterSpacing};
+				${labelStyles.color ? 'color:' + labelStyles.color + ';' : '' }
 
+				${labelStyles.paddingTop ? 'padding-top:' + labelStyles.paddingTop + ';' : '' }
+				${labelStyles.paddingRight ? 'padding-right:' + labelStyles.paddingRight + ';' : '' }
+				${labelStyles.paddingBottom ? 'padding-bottom:' + labelStyles.paddingBottom + ';' : '' }
+				${labelStyles.paddingLeft ? 'padding-left:' + labelStyles.paddingLeft + ';' : '' }
 
-				padding-top: ${labelStyles.paddingTop};
-				padding-right: ${labelStyles.paddingRight};
-				padding-bottom: ${labelStyles.paddingBottom};
-				padding-left: ${labelStyles.paddingLeft};
-
-				margin-top: ${labelStyles.marginTop};
-				margin-right: ${labelStyles.marginRight};
-				margin-bottom: ${labelStyles.marginBottom};
-				margin-left: ${labelStyles.marginLeft};
-
-				color: ${labelStyles.color};
-
+				${labelStyles.marginTop ? 'margin-top:' + labelStyles.marginTop + ';' : '' }
+				${labelStyles.marginRight ? 'margin-right:' + labelStyles.marginRight + ';' : '' }
+				${labelStyles.marginBottom ? 'margin-bottom:' + labelStyles.marginBottom + ';' : '' }
+				${labelStyles.marginLeft ? 'margin-left:' + labelStyles.marginLeft + ';' : '' }
 			}
 
-			.wp-block-kadence-advanced-form_${id} .kadence-label .required {
-				color: ${fieldStyle.requiredColor};
+			.wp-block-kadence-advanced-form${uniqueID} .kadence-label .required {;
+				${fieldStyle?.requiredColor ? 'color:' + fieldStyle.requiredColor + ';' : '' }
 			}
 
 			`}
@@ -103,40 +121,27 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 		<style>
 			{`
 
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-help {
-				font-size: ${helpStyles.fontSize};
-				line-height: ${helpStyles.lineHeight};
-				font-weight: ${helpStyles.fontWeight};
+			.wp-block-kadence-advanced-form${uniqueID} .kb-adv-form-help {
+				${helpStyles.fontSize ? 'font-size: ' + helpStyles.fontSize + ';' : ''}
+				${helpStyles.lineHeight ? 'line-height: ' + helpStyles.lineHeight + ';' : ''}
+				${helpStyles.fontWeight ? 'font-weight: ' + helpStyles.fontWeight + ';' : ''}
 
-				text-transform: ${helpStyles.textTransform};
-				font-family: ${helpStyles.fontFamily};
-				font-style: ${helpStyles.fontStyle};
-				letter-spacing: ${helpStyles.letterSpacing};
+				${helpStyles.textTransform ? 'text-transform: ' + helpStyles.textTransform + ';' : ''}
+				${helpStyles.fontFamily ? 'font-family: ' + helpStyles.fontFamily + ';' : ''}
+				${helpStyles.fontStyle ? 'font-style: ' + helpStyles.fontStyle + ';' : ''}
+				${helpStyles.letterSpacing ? 'letter-spacing: ' + helpStyles.letterSpacing + ';' : ''}
 
+				${helpStyles.paddingTop ? 'padding-top: ' + helpStyles.paddingTop + ';' : ''}
+				${helpStyles.paddingRight ? 'padding-right: ' + helpStyles.paddingRight + ';' : ''}
+				${helpStyles.paddingBottom ? 'padding-bottom: ' + helpStyles.paddingBottom + ';' : ''}
+				${helpStyles.paddingLeft ? 'padding-left: ' + helpStyles.paddingLeft + ';' : ''}
 
-				padding-top: ${helpStyles.paddingTop};
-				padding-right: ${helpStyles.paddingRight};
-				padding-bottom: ${helpStyles.paddingBottom};
-				padding-left: ${helpStyles.paddingLeft};
+				${helpStyles.marginTop ? 'margin-top: ' + helpStyles.marginTop + ';' : ''}
+				${helpStyles.marginRight ? 'margin-right: ' + helpStyles.marginRight + ';' : ''}
+				${helpStyles.marginBottom ? 'margin-bottom: ' + helpStyles.marginBottom + ';' : ''}
+				${helpStyles.marginLeft ? 'margin-left: ' + helpStyles.marginLeft + ';' : ''}
 
-				margin-top: ${helpStyles.marginTop};
-				margin-right: ${helpStyles.marginRight};
-				margin-bottom: ${helpStyles.marginBottom};
-				margin-left: ${helpStyles.marginLeft};
-
-				color: ${helpStyles.color};
-			}
-
-			`}
-		</style>
-	);
-
-	const submitCss = (
-		<style>
-			{`
-
-			.wp-block-kadence-advanced-form_${id} .kb-advanced-form-submit {
-
+				${helpStyles.color ? 'color: ' + helpStyles.color + ';' : ''}
 			}
 
 			`}
@@ -148,7 +153,6 @@ export default function BackendStyles( { id, previewDevice, fieldStyle, labelSty
 			{fieldCss}
 			{labelCss}
 			{helpCss}
-			{submitCss}
 		</>
 	);
 

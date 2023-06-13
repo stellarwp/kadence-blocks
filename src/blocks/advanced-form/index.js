@@ -1,9 +1,10 @@
-import { advancedFormIcon } from '@kadence/icons';
-
 import { registerBlockType } from '@wordpress/blocks';
+
+import { formBlockIcon } from '@kadence/icons';
 
 import './style.scss';
 import './fields/accept/index';
+import './fields/captcha/index';
 import './fields/checkbox/index';
 import './fields/date/index';
 import './fields/email/index';
@@ -12,6 +13,7 @@ import './fields/hidden/index';
 import './fields/number/index';
 import './fields/radio/index';
 import './fields/select/index';
+import './fields/submit/index';
 import './fields/telephone/index';
 import './fields/text/index';
 import './fields/textarea/index';
@@ -30,9 +32,11 @@ import transforms from './transforms';
 registerBlockType('kadence/advanced-form', {
 	...metadata,
 	icon: {
-		src: advancedFormIcon,
+		src: formBlockIcon,
 	},
 	transforms,
 	edit,
-	save: InnerBlocks.Content
+	save:() => {
+		return <InnerBlocks.Content />;
+	}
 });

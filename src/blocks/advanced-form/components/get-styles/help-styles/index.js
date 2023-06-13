@@ -1,4 +1,4 @@
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, getFontSizeOptionOutput } from '@kadence/helpers';
 import { get, isEmpty } from 'lodash';
 
 export default ( previewDevice, parentHelpStyle ) => {
@@ -11,7 +11,7 @@ export default ( previewDevice, parentHelpStyle ) => {
 		styles.color = 'undefined';
 	}
 
-	styles.fontSize = getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ) + get( parentHelpStyle, 'sizeType', 'px');
+	styles.fontSize = getFontSizeOptionOutput( getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ), get( parentHelpStyle, 'sizeType', 'px') );
 	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
 	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
 	styles.fontWeight = parentHelpStyle.weight ? parentHelpStyle.weight : undefined;

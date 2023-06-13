@@ -98,9 +98,7 @@ class Kadence_ActiveCampaign_REST_Controller extends WP_REST_Controller {
 			return array();
 		}
 
-
 		return $body;
-
 	}
 
 	/**

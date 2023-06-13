@@ -31,7 +31,6 @@ registerBlockType('kadence/advanced-form-email', {
 		reusable: false,
 		html: false,
 	},
-	parent: [ 'kadence/advanced-form' ],
 	edit,
 	save: () => null,
 

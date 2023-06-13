@@ -1,0 +1,29 @@
+.preview-captcha {
+	background-color: #f9f9f9;
+	border: 1px solid #d3d3d3;
+	border-radius: 3px;
+	box-shadow: 0 0 4px 1px rgba(0, 0, 0, .08);
+	text-align: center;
+
+	svg {
+		display: block;
+		margin: 0 auto;
+	}
+}
+
+.preview-captcha-normal {
+	width: 300px;
+	height: 75px;
+	padding-top: 15px;
+}
+
+.preview-captcha-compact {
+	width: 165px;
+	height: 145px;
+	padding-top: 35px;
+}
+
+.preview-captcha-dark {
+	background: #222222;
+	color: #fff;
+}

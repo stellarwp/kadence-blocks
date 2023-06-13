@@ -1,51 +1,86 @@
 {
-  "name": "kadence/advanced-form-text",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"label": {
-	  "type": "string",
-	  "default": ""
+	"apiVersion": 2,
+	"name": "kadence/advanced-form-text",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		},
+		"placeholder": {
+			"type": "string"
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"defaultParameter": {
+			"type": "string"
+		},
+		"ariaDescription": {
+			"type": "string"
+		},
+		"maxWidth": {
+			"type": "array",
+			"default": [
+			"",
+			"",
+			""
+			]
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "%"
+		},
+		"minWidth": {
+			"type": "array",
+			"default": [
+			"",
+			"",
+			""
+			]
+		},
+		"minWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"helpText": {
+			"type": "string"
+		},
+		"inputName": {
+			"type": "string"
+		},
+		"auto": {
+			"type": "string"
+		},
+		"errorMessage": {
+			"type": "string"
+		},
+		"requiredMessage": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		}
 	},
-	"placeholder": {
-	  "type": "string",
-	  "default": ""
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"ktdynamic": true,
+		"reusable": false,
+		"kbMetadata": true,
+		"kbContentLabel": "label"
 	},
-	"showLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"required": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"value": {
-	  "type": "string",
-	  "default": ""
-	},
-	"ariaDescription": {
-	  "type": "string",
-	  "default": ""
-	},
-	"width": {
-	  "type": "array",
-	  "default": [
-		"100",
-		"",
-		""
-	  ]
-	},
-	"helpText": {
-	  "type": "string",
-	  "default": ""
-	},
-	"name": {
-	  "type": "string",
-	  "default": ""
-	}
-  },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+	"ancestor": [ "kadence/advanced-form" ],
+	"parent": [ "kadence/advanced-form", "kadence/column" ]
 }
