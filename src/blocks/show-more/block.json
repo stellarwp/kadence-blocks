@@ -118,12 +118,9 @@
 	  "type": "string",
 	  "default": "px"
 	},
-	"inQueryBlock": {
-	  "type": "boolean",
-	  "default": false
-	}
-  },
-  "supports": {
-	  "kbMetadata": true
+	  "inQueryBlock": {
+		  "type": "boolean",
+		  "default": false
+	  }
   }
 }

@@ -12,8 +12,7 @@ import {
 	setBlockDefaults,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
-	getUniqueId,
-	getPostOrFseId
+	getUniqueId
 } from '@kadence/helpers';
 import {
 	WebfontLoader,
@@ -97,18 +96,12 @@ function KadenceCounterUp( props ) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
 			};
 		},
 		[ clientId ]
@@ -117,8 +110,7 @@ function KadenceCounterUp( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countup', attributes);
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );

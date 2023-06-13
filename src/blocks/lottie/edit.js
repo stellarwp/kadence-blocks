@@ -54,13 +54,14 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getUniqueId,
-	getPostOrFseId,
-	getPreviewSize
 } from '@kadence/helpers';
 
-export function Edit( props ) {
-
-	const { attributes, setAttributes, className, clientId } = props;
+export function Edit( {
+	attributes,
+	setAttributes,
+	className,
+	clientId,
+} ) {
 
 	const {
 		fileUrl,
@@ -101,22 +102,31 @@ export function Edit( props ) {
 	const marginMouseOver = mouseOverVisualizer();
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
 			};
 		},
 	 [ clientId ]
 	);
+
+	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	};
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -140,8 +150,7 @@ export function Edit( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/lottie', attributes);
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -627,14 +636,14 @@ export function Edit( props ) {
 				maxWidth: useRatio ? previewMaxWidth : null,
 				margin: useRatio ? '0 auto' : null,
 			} }>
-				{ ( useRatio ) &&
+				{ ( useRatio ) && 
 					<div class="kb-is-ratio-animation" style={ {
 						paddingBottom: ratio ? ratio + '%' : '100%',
 					} }>
 						{ animationContent }
 					</div>
 				}
-				{ ( ! useRatio ) &&
+				{ ( ! useRatio ) && 
 					<>
 						{ animationContent }
 					</>

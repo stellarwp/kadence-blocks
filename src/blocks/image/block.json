@@ -327,7 +327,6 @@
 		"ktanimate": true,
 		"ktanimateadd": true,
 		"ktanimatepreview": true,
-		"ktdynamic": true,
-		"kbMetadata": true
+		"ktdynamic": true
 	}
 }

@@ -10,8 +10,7 @@ import {
 	showSettings,
 	getPreviewSize,
 	setBlockDefaults,
-	getUniqueId,
-	getPostOrFseId
+	getUniqueId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -58,9 +57,8 @@ import {
 /**
  * Build the spacer edit
  */
-function KadenceSpacerDivider( props ) {
+function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSelection } ) {
 
-	const { attributes, clientId, setAttributes, toggleSelection } = props;
 	const {
 		className,
 		blockAlignment,
@@ -92,18 +90,12 @@ function KadenceSpacerDivider( props ) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
 			};
 		},
 		[ clientId ]
@@ -112,8 +104,7 @@ function KadenceSpacerDivider( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/spacer', attributes);
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );

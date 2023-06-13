@@ -45,8 +45,6 @@
 	"reusable": false,
 	"html": false,
 	"anchor": true,
-	"lock":false,
-	"kbMetadata": true,
-	"kbContentLabel": "title"
+	"lock":false
   }
 }

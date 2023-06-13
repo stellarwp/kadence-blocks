@@ -301,8 +301,7 @@
 	}
   },
   "supports": {
-	"anchor": true,
-	"kbMetadata": true
+	"anchor": true
   },
   "providesContext": {
 	"kadence/accordion-icon-color": "iconColor"

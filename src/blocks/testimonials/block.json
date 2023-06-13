@@ -810,7 +810,6 @@
   ],
   "supports": {
 	"anchor": true,
-	"html": false,
-    "kbMetadata": true
+	"html": false
   }
 }

@@ -41,7 +41,6 @@ module.exports = {
 		'blocks-testimonials': './src/blocks/testimonials/block.js',
 		'blocks-advanced-form': './src/blocks/advanced-form/index.js',
 		'plugin-kadence-control': './src/plugin.js',
-		'early-filters': './src/early-filters.js',
 		'extension-kadence-base': './src/extension/kadence-base/index.js',
 		'extension-stores': './src/extension/stores/index.js',
 		'extension-block-css': './src/extension/block-css/index.js',
