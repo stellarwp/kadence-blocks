@@ -6,8 +6,6 @@
  * @package Kadence Blocks
  */
 
-include 'advanced-form/advanced-form-frontend.php';
-
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
