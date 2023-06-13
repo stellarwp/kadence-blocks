@@ -119,8 +119,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'.wp-block-kadence-advanced-form' . $unique_id . ' select,' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea'
 		);
-		$css->render_responsive_size( $field_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
-		$css->render_responsive_size( $field_style['fontSize'], array( 0, 1, 2 ), 'font-size', 'fontSizeType' );
+		if( isset( $field_style['lineHeight'] ) ) {
+			$css->render_responsive_size( $field_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
+		}
+		if( isset( $field_style['fontSize'] ) ){
+			$css->render_responsive_size( $field_style['fontSize'], array( 0, 1, 2 ), 'font-size', 'fontSizeType' );
+		}
 		$css->render_color_output( $field_style, 'border', 'border-color' );
 		$css->render_measure_range( $field_style, 'borderWidth', 'border-width' );
 		$css->render_range( $field_style, 'borderRadius', 'border-radius' );
