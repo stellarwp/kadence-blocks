@@ -3,6 +3,7 @@
  */
 import { __, _x } from '@wordpress/i18n';
 import { imageIcon } from '@kadence/icons';
+import { get } from 'lodash';
 
 import { registerBlockType } from '@wordpress/blocks';
 /**
@@ -36,6 +37,8 @@ export const settings = {
 		},
 	},
 	__experimentalLabel( attributes, { context } ) {
+		const { metadata } = attributes;
+
 		if ( context === 'accessibility' ) {
 			const { caption, alt, url } = attributes;
 
@@ -50,6 +53,10 @@ export const settings = {
 			// This is intended to be read by a screen reader.
 			// A period simply means a pause, no need to translate it.
 			return alt + ( caption ? '. ' + caption : '' );
+		}
+
+		if ( context === 'list-view' && get( metadata, 'name', '' ) !== '' ) {
+			return metadata.name;
 		}
 	},
 	getEditWrapperProps( attributes ) {

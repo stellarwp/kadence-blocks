@@ -177,6 +177,7 @@
 	"kadence/listIconWidth": "width"
   },
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   }
 }

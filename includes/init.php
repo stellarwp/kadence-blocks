@@ -291,6 +291,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
 			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
+			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
+			'adminUrl' => get_admin_url(),
 		)
 	);
 	wp_localize_script(
@@ -319,6 +321,10 @@ function kadence_blocks_gutenberg_editor_plugin_enqueue() {
 		wp_enqueue_script( 'kadence-blocks-plugin-js' );
 		wp_enqueue_style( 'kadence-blocks-plugin-css' );
 	}
+
+	$asset_meta = kadence_blocks_get_asset_file( 'dist/early-filters' );
+	//wp_register_script( 'kadence-blocks-pro-early-filters-vendor-js', KBP_URL . 'includes/assets/js/vendors/blocks_early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
+	wp_enqueue_script( 'kadence-blocks-early-filters-js', KADENCE_BLOCKS_URL . 'dist/early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );
 /**
