@@ -289,7 +289,7 @@ export function EditInner( props ) {
 		}
 	};
 	const useFieldBlockAppender = () => {
-		if ( ! isSelected ) {
+		if ( isSelected ) {
 			return null;
 		}
 		return (
