@@ -149,8 +149,7 @@ export function Edit( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/progress-bar', attributes );
 
-		// const postOrFseId = getPostOrFseId( props, parentData );
-		const postOrFseId = '';
+		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
