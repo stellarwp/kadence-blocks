@@ -1171,7 +1171,7 @@ function KadenceAdvancedHeading( props ) {
 							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
-									title={__( 'Highlight Settings', 'kadence-blocks' )}
+									title={__( 'Advanced Highlight Settings', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
