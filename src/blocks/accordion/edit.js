@@ -109,7 +109,8 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceAccordionComponent( { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } ) {
+function KadenceAccordionComponent( props ) {
+	const { attributes, className, setAttributes, clientId, realPaneCount, isSelected, accordionBlock, removePane, updatePaneTag, insertPane, getPreviewDevice } = props;
 	const {
 		uniqueID,
 		paneCount,
