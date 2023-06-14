@@ -56,6 +56,9 @@
 			display: block;
 		}
 
+		&.kb-submit-field {
+			flex-direction: initial;
+		}
 	}
 
 	.kb-form-multi {
