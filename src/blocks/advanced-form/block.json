@@ -4,7 +4,7 @@
   "name": "kadence/advanced-form",
   "title": "Advanced Form",
   "category": "kadence-blocks",
-  "description": "Kadence advanced form",
+  "description": "Create an advanced contact or marketing form for your website.",
   "supports": {
 	"html": false,
 	"className": true,

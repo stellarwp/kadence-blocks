@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 import { formBlockIcon } from '@kadence/icons';
 
@@ -29,8 +30,15 @@ import { InnerBlocks } from '@wordpress/block-editor';
 import transforms from './transforms';
 
 
-registerBlockType('kadence/advanced-form', {
+registerBlockType( 'kadence/advanced-form', {
 	...metadata,
+	title: __( 'Advanced Form', 'kadence-blocks' ),
+	description: __( 'Create an advanced contact or marketing form for your website.', 'kadence-blocks' ),
+	keywords: [
+		__( 'contact', 'kadence-blocks' ),
+		__( 'form', 'kadence-blocks' ),
+		'kb',
+	],
 	icon: {
 		src: formBlockIcon,
 	},
