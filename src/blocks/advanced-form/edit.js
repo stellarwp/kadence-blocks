@@ -102,7 +102,6 @@ export function Edit( props ) {
 		if ( currentPostType === 'kadence_form' ) {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.
 			window.wp.data.dispatch( 'core/block-editor' ).setTemplateValidity( true );
-			window.wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'kadence/advanced-form' ] );
 		}
 	}, [] );
 
