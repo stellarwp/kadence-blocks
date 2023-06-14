@@ -23,7 +23,7 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-	title: _x( 'Advanced Image', 'block title', 'kadence-blocks' ),
+	title: _x( 'Image (Adv)', 'block title', 'kadence-blocks' ),
 	description: _x( 'Image block with greater controls and advanced features', 'block description', 'kadence-blocks' ),
 	icon: {
 		src: imageIcon,
