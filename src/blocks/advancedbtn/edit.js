@@ -36,6 +36,7 @@ import {
 	getGapSizeOptionOutput,
 	getUniqueId,
 	getInQueryBlock,
+	getPostOrFseId
 } from '@kadence/helpers';
 import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -87,7 +88,8 @@ const DEFAULT_BLOCK = {
 		'widthType',
 	],
 };
-function KadenceButtons( { attributes, className, setAttributes, isSelected, buttonsBlock, insertButton, insertButtons, clientId, context } ) {
+function KadenceButtons( props ) {
+	const { attributes, className, setAttributes, buttonsBlock, insertButton, insertButtons, clientId, context } = props;
 	const {
 		uniqueID,
 		hAlign,
@@ -115,13 +117,19 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { removeBlock } = useDispatch( 'core/block-editor' );
-	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				childBlocks: select( 'core/block-editor' ).getBlockOrder( clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -130,7 +138,8 @@ function KadenceButtons( { attributes, className, setAttributes, isSelected, but
 	useEffect( () => {
 		setBlockDefaults( 'kadence/advancedbtn', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
