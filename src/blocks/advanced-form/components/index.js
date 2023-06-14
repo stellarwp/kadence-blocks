@@ -1,7 +1,9 @@
 export { default as getFormFields } from './get-form-fields';
+export { default as verifyUniqueFieldName } from './verify-unique-field-name';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';
 export { default as FormTitle } from './form-title';
+export { default as FieldName } from './field-name';
 export { default as MessageOptions } from './messages';
 export { default as MessageStyling } from './message-styles';
 

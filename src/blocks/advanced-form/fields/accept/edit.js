@@ -21,7 +21,7 @@ import {
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
-import { DuplicateField, FieldBlockAppender } from '../../components';
+import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 
 function FieldAccept( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 	const {
@@ -211,10 +211,9 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 								initialOpen={false}
 								panelName={ 'kb-adv-form-text-extra-settings' }
 							>
-								<TextControl
-									label={__( 'Field Name', 'kadence-blocks' )}
-									help={ __( 'This is the name attribute that is applied to the html input tag. Names must be unique', 'kadence-blocks' ) }
+								<FieldName
 									value={inputName}
+									uniqueID={uniqueID}
 									onChange={( value ) => setAttributes( { inputName: value.replace(/[^a-z0-9-_]/gi, '') } ) }
 								/>
 								<TextControl

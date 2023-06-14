@@ -6,7 +6,7 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, TextareaControl, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
+import { TextControl, TextareaControl, SelectControl, ToggleControl, RangeControl, Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -21,7 +21,7 @@ import {
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
-import { DuplicateField, FieldBlockAppender } from '../../components';
+import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 
 function FieldText( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 	const { uniqueID, rows, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
@@ -97,7 +97,6 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 									min={2}
 									max={50}
 								/>
-
 								<ToggleControl
 									label={__( 'Required', 'kadence-blocks' )}
 									checked={required}
@@ -200,10 +199,9 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 								initialOpen={false}
 								panelName={ 'kb-adv-form-text-extra-settings' }
 							>
-								<TextControl
-									label={__( 'Field Name', 'kadence-blocks' )}
-									help={ __( 'This is the name attribute that is applied to the html input tag. Names must be unique', 'kadence-blocks' ) }
+								<FieldName
 									value={inputName}
+									uniqueID={uniqueID}
 									onChange={( value ) => setAttributes( { inputName: value.replace(/[^a-z0-9-_]/gi, '') } ) }
 								/>
 								<SelectControl

@@ -35,7 +35,7 @@ export default function DuplicateField( { clientId, name, attributes } ) {
 					onClick={ () => {
 						const latestAttributes = attributes;
 						latestAttributes.uniqueID = '';
-						latestAttributes.name = '';
+						latestAttributes.inputName = '';
 						const newBlock = createBlock( name, latestAttributes );
 						insertBlock( newBlock, blockIndex + 1, rootClientId );
 					} }

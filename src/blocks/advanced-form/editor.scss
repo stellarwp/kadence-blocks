@@ -11,6 +11,13 @@
 .components-toolbar.kb-add-block .block-editor-button-block-appender.components-button.components-button {
     box-shadow: none;
 }
+.kb-form-field-name-wrap .components-notice.is-error {
+    margin: -10px 0px 24px;
+}
+.kb-form-field-name-wrap.kb-field-has-warning .components-base-control {
+	padding-left:12px;
+	border-left: 4px solid #cc1818;
+}
 .wp-block-kadence-advanced-form {
 	margin-top: 0;
 	margin-bottom: 0;
