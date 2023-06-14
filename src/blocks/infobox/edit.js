@@ -63,7 +63,8 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
