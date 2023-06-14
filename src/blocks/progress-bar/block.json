@@ -99,7 +99,7 @@
 		},
 		"barBackground": {
 			"type": "string",
-			"default": "#EDF2F7"
+			"default": ""
 		},
 		"barBackgroundOpacity": {
 			"type": "number",
@@ -119,7 +119,7 @@
 		},
 		"progressColor": {
 			"type": "string",
-			"default": "#2B6CB0"
+			"default": ""
 		},
 		"progressOpacity": {
 			"type": "number",

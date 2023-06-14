@@ -240,12 +240,12 @@ export function Edit( props ) {
 	};
 
 	const progressAttributes = {
-		color      : KadenceColorOutput( progressColor, progressOpacity ),
+		color      :  progressColor ? KadenceColorOutput( progressColor, progressOpacity ) : 'var(--global-palette1, #2B6CB0)',
 		strokeWidth: previewProgressWidth,
 		duration   : ( duration === 0 ? 1 : duration * 1000 ),
 		easing     : easing,
 		trailWidth : previewProgressWidth,
-		trailColor : KadenceColorOutput( barBackground, barBackgroundOpacity ),
+		trailColor : barBackground ? KadenceColorOutput( barBackground, barBackgroundOpacity ) : 'var(--global-palette7, #EDF2F7)',
 		svgStyle   : {
 			borderRadius: ( barType === 'line' ? previewProgressBorderRadius + 'px' : '' ),
 		},
@@ -620,6 +620,27 @@ export function Edit( props ) {
 							/>
 						</KadencePanelBody>
 
+						<KadencePanelBody
+							title={__( 'Progress Color', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-progress-number-settings'}
+						>
+							<PopColorControl
+								label={__( 'Progress Background', 'kadence-blocks' )}
+								colorValue={ barBackground }
+								opacityValue={barBackgroundOpacity}
+								onColorChange={value => setAttributes( { barBackground: value } )}
+								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
+							/>
+							<PopColorControl
+								label={__( 'Progress Color', 'kadence-blocks' )}
+								colorValue={ progressColor }
+								opacityValue={progressOpacity}
+								onColorChange={value => setAttributes( { progressColor: value } )}
+								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
+							/>
+						</KadencePanelBody>
+
 						{displayPercent || displayLabel ? (
 								<KadencePanelBody
 									title={__( 'Text Styling', 'kadence-blocks' )}
@@ -767,51 +788,12 @@ export function Edit( props ) {
 								// onMouseOut={ labelPaddingMouseOver.onMouseOut }
 							/>
 						</KadencePanelBody> )}
-
-						<KadencePanelBody
-							title={__( 'Progress Color', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-progress-number-settings'}
-						>
-							<PopColorControl
-								label={__( 'Progress Background', 'kadence-blocks' )}
-								colorValue={( barBackground ? barBackground : '#4A5568' )}
-								colorDefault={'#4A5568'}
-								opacityValue={barBackgroundOpacity}
-								onColorChange={value => setAttributes( { barBackground: value } )}
-								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
-							/>
-							<PopColorControl
-								label={__( 'Progress Color', 'kadence-blocks' )}
-								colorValue={( progressColor ? progressColor : '#4A5568' )}
-								colorDefault={'#4A5568'}
-								opacityValue={progressOpacity}
-								onColorChange={value => setAttributes( { progressColor: value } )}
-								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
-							/>
-						</KadencePanelBody>
 					</Fragment>
 
 				)}
 
 				{activeTab === 'advanced' && (
 					<KadencePanelBody>
-						<ResponsiveRangeControls
-							label={__( 'Width', 'kadence-blocks' )}
-							value={containerMaxWidth}
-							onChange={value => setAttributes( { containerMaxWidth: value } )}
-							tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
-							onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
-							mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
-							onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
-							min={0}
-							max={( containerMaxWidthUnits === 'px' ? 3000 : 100 )}
-							step={1}
-							unit={containerMaxWidthUnits}
-							onUnit={( value ) => setAttributes( { containerMaxWidthUnits: value } )}
-							reset={() => setAttributes( { containerMaxWidth: 0, tabletContainerMaxWidth: '', mobileContainerMaxWidth: '' } )}
-							units={[ 'px', 'vh', '%' ]}
-						/>
 						<ResponsiveMeasureRangeControl
 							label={__( 'Margin', 'kadence-blocks' )}
 							value={margin}
@@ -830,6 +812,22 @@ export function Edit( props ) {
 							onUnit={( value ) => setAttributes( { marginType: value } )}
 							// onMouseOver={ marginMouseOver.onMouseOver }
 							// onMouseOut={ marginMouseOver.onMouseOut }
+						/>
+						<ResponsiveRangeControls
+							label={__( 'Max Width', 'kadence-blocks' )}
+							value={containerMaxWidth}
+							onChange={value => setAttributes( { containerMaxWidth: value } )}
+							tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
+							onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
+							mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
+							onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
+							min={0}
+							max={( containerMaxWidthUnits === 'px' ? 3000 : 100 )}
+							step={1}
+							unit={containerMaxWidthUnits}
+							onUnit={( value ) => setAttributes( { containerMaxWidthUnits: value } )}
+							reset={() => setAttributes( { containerMaxWidth: 0, tabletContainerMaxWidth: '', mobileContainerMaxWidth: '' } )}
+							units={[ 'px', 'vh', '%' ]}
 						/>
 					</KadencePanelBody>
 				)}

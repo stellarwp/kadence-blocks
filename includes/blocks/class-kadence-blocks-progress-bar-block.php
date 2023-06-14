@@ -165,8 +165,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= '</div>';
 
 
-		$progress_color = $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] );
-		$bar_background = $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] );
+		$progress_color = !empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
+		$bar_background = !empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
 		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
 		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
