@@ -123,7 +123,7 @@ const getPanesTemplate = memoize( ( panes ) => {
  * Build the row edit
  */
 function KadenceTabs( props ) {
-	const { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
+	const { attributes, clientId, className, isSelected, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
 	const {
 		uniqueID,
 		showPresets,
