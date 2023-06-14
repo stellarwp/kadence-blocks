@@ -164,14 +164,36 @@ function ConvertKitOptions( { formInnerBlocks, parentClientId, settings, save } 
 	};
 
 	const getConvertKitAttributes = () => {
+		setIsFetchingAttributes( true );
 
-		setListAttr( [
-			{ value: null, label: 'None' },
-			{ value: 'email', label: 'Email *' }
-		] );
-		setListAttrLoaded( true );
-		setIsFetchingAttributes( false );
+		apiFetch( {
+			path: addQueryArgs(
+				'/kb-convertkit/v1/get',
+				{ endpoint: 'custom_fields' },
+			),
+		} )
+			.then( ( list ) => {
+				const theAttributes = [];
+				theAttributes.push( { value: null, label: 'None' } );
+				theAttributes.push( { value: 'email', label: 'Email *' } );
+				theAttributes.push( { value: 'first_name', label: 'First Name' } );
 
+				if ( list.custom_fields ) {
+					list.custom_fields.map( ( item ) => {
+						theAttributes.push( { value: item.key, label: item.label } );
+					} );
+				}
+
+				setListAttr( theAttributes );
+				setListAttrLoaded( true );
+				setIsFetchingAttributes( false );
+		
+			} )
+			.catch( (err) => {
+				setListAttr( [] );
+				setListAttrLoaded( true );
+				setIsFetchingAttributes( false );
+			} );
 	};
 
 	const removeAPI = () => {
