@@ -9,7 +9,6 @@ import {
     KadenceColorOutput,
 	setBlockDefaults,
 	getUniqueId,
-	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -55,8 +54,8 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import {formatIndent, formatOutdent} from "@wordpress/icons";
 
-function KadenceListItem( props ) {
-	const {attributes, className, setAttributes, clientId, isSelected, name, onReplace, onRemove, mergeBlocks, context} = props;
+function KadenceListItem({attributes, className, setAttributes, clientId, isSelected, name, onReplace, onRemove, mergeBlocks, context}) {
+
     const {
         uniqueID,
         icon,
@@ -81,17 +80,11 @@ function KadenceListItem( props ) {
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 
     const textRef = useRef( clientId );
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
-				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
 			};
 		},
 		[ clientId ]
@@ -99,8 +92,7 @@ function KadenceListItem( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/listitem', attributes );
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );

@@ -128,8 +128,5 @@
 	  "type": "number",
 	  "default": ""
 	}
-  },
-  "supports": {
-	  "kbMetadata": true
   }
 }

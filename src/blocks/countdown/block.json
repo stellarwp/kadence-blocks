@@ -313,7 +313,6 @@
 	"anchor": true,
 	"align": [ "wide", "full" ],
 	"reusable": false,
-	"html": false,
-	"kbMetadata": true
+	"html": false
   }
 }

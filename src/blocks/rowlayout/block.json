@@ -782,7 +782,6 @@
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true,
-	"html": false,
-	"kbMetadata": true
+	"html": false
   }
 }

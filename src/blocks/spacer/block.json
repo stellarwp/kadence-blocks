@@ -107,7 +107,6 @@
 	}
   },
   "supports": {
-	"anchor": true,
-	"kbMetadata": true
+	"anchor": true
   }
 }

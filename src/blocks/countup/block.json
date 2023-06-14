@@ -190,8 +190,5 @@
 	  "type": "number",
 	  "default": 2
 	}
-  },
-  "supports": {
-    "kbMetadata": true
   }
 }

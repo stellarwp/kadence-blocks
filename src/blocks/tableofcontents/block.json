@@ -7,8 +7,7 @@
   "textdomain": "kadence-blocks",
   "icon": "smile",
   "supports": {
-	"html": false,
-	"kbMetadata": true
+	"html": false
   },
   "attributes": {
 	"uniqueID": {

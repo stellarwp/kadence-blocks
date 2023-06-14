@@ -615,8 +615,7 @@
 		"ktanimatepreview": true,
 		"ktanimateswipe": true,
 		"ktdynamic": true,
-		"kbcss": true,
-		"kbMetadata": true
+		"kbcss": true
 	},
 	"editorStyle": "kadence-blocks-column",
 	"style": "kadence-blocks-column"

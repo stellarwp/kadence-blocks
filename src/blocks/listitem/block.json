@@ -83,8 +83,6 @@
   "supports": {
     "ktdynamic": true,
     "html": false,
-    "reusable": false,
-    "kbMetadata": true,
-    "kbContentLabel": "text"
+    "reusable": false
   }
 }

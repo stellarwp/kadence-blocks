@@ -42,7 +42,6 @@ module.exports = {
 		'blocks-advanced-form': './src/blocks/advanced-form/index.js',
 		'blocks-progress-bar': './src/blocks/progress-bar/index.js',
 		'plugin-kadence-control': './src/plugin.js',
-		'early-filters': './src/early-filters.js',
 		'extension-kadence-base': './src/extension/kadence-base/index.js',
 		'extension-stores': './src/extension/stores/index.js',
 		'extension-block-css': './src/extension/block-css/index.js',

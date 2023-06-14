@@ -153,8 +153,5 @@
 	  "type": "string",
 	  "default": "px"
 	}
-  },
-  "supports": {
-    "kbMetadata": true
   }
 }
