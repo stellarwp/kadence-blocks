@@ -90,7 +90,7 @@ import {
 	ButtonGroup,
 	TabPanel,
 	Dashicon,
-	Toolbar,
+	ToolbarGroup,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -1229,7 +1229,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType', 'mediaImage', 'mediaIcon' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
@@ -1242,7 +1242,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			{renderCSS}
 			<BlockControls key="controls">
 				{showImageToolbar && (
-					<Toolbar>
+					<ToolbarGroup group="change-image">
 						<MediaUpload
 							onSelect={onSelectImage}
 							type="image"
@@ -1257,13 +1257,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 								/>
 							)}
 						/>
-					</Toolbar>
+					</ToolbarGroup>
 				)}
 				{'icon' === mediaType && (
 					<Dropdown
 						className="kb-popover-inline-icon-container components-dropdown-menu components-toolbar"
 						contentClassName="kb-popover-inline-icon"
-						position="top center"
+						placement="top"
 						renderToggle={( { isOpen, onToggle } ) => (
 							<Button className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon" label={__( 'Icon Settings', 'kadence-blocks' )} icon={starFilled} onClick={onToggle}
 									aria-expanded={isOpen}/>

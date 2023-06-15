@@ -90,6 +90,7 @@ import {
 	ToolbarGroup,
 	Spinner,
 	SelectControl,
+	ToolbarDropdownMenu,
 	TextControl,
 } from '@wordpress/components';
 
@@ -621,7 +622,7 @@ function KadenceAdvancedHeading( props ) {
 
 	const typed = useRef(null);
 	useEffect( () => {
-		if ( !isSelected && undefined !== attributes.content && attributes.content.includes( "kt-typed-text" ) ) {
+		if ( ! isSelected && undefined !== attributes.content && attributes.content.includes( "kt-typed-text" ) ) {
 			const parser = new DOMParser();
 			const contentHtml = parser.parseFromString( attributes.content, 'text/html' );
 
@@ -711,12 +712,13 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
-				<ToolbarGroup
-					isCollapsed={true}
-					icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
-					label={__( 'Change heading tag', 'kadence-blocks' )}
-					controls={headingOptions}
-				/>
+				<ToolbarGroup group="tag">
+					<ToolbarDropdownMenu
+						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
+						label={__( 'Change heading tag', 'kadence-blocks' )}
+						controls={headingOptions}
+					/>
+				</ToolbarGroup>
 				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarTypography', 'kadence/advancedheading', false ) && (
 					<InlineTypographyControls
 						uniqueID={uniqueID}
@@ -925,7 +927,7 @@ function KadenceAdvancedHeading( props ) {
 											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
-											step={( sizeType === 'px' ? 1 : 0.1 )}
+											step={( sizeType === 'px' ? 1 : 0.001 )}
 											unit={ sizeType ? sizeType : 'px' }
 											onUnit={( value ) => {
 												setAttributes( { sizeType: value } );

@@ -4,6 +4,21 @@
  * CSS for both Frontend+Backend.
  */
 // Item
+ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
+    .kt-tabs-title-list {
+        margin:0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        li {
+            list-style: none;
+            a.kt-tab-title {
+                width: auto;
+            }
+        }
+    }
+}
 .wp-block-kadence-tabs {
     .kt-tabs-title-list {
         margin:0;

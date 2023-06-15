@@ -74,7 +74,6 @@ import {
 	Tooltip,
 	SelectControl,
 	ToggleControl,
-	Toolbar,
 	ToolbarGroup,
 	TabPanel,
 	Dashicon,

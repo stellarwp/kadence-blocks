@@ -4,18 +4,23 @@
 		setupTabs: function() {
 			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
-				thisElem.setAttribute('role', 'tablist');
+
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
+					subElem.setAttribute('role', 'tablist');
+				});
 				thisElem.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content').forEach((subElem) => {
 					subElem.setAttribute('role', 'tabpanel');
 					subElem.setAttribute('aria-hidden', 'true');
 				});
 
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
-					var parentId = subElem.parentElement.getAttribute("id");
-					var isActive = subElem.parentElement.classList.contains('kt-tab-title-active');
+					var parentListItem = subElem.parentElement;
+					var parentId = parentListItem.getAttribute("id");
+					var isActive = parentListItem.classList.contains('kt-tab-title-active');
 
+					parentListItem.setAttribute('role', 'presentation');
 					subElem.setAttribute('role', 'tab');
-					subElem.setAttribute('aria-controls', parentId);
+					// subElem.setAttribute('aria-controls', parentId);
 					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');
 					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 
@@ -30,20 +35,18 @@
 					}
 				});
 
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list a').forEach((anchor) => {
-					anchor.addEventListener('keydown', function(evt) {
-						const listItem = this.parentElement;
+				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li').forEach((listItem) => {
+					listItem.addEventListener('keydown', function(evt) {
+						//const listItem = this.parentElement;
 						switch ( evt.which ) {
 							case 37:
-							case 38:
-								if (listItem.previousElementSibling) {
+								if ( listItem.previousElementSibling ) {
 									listItem.previousElementSibling.querySelector('a').click();
 								} else {
 									listItem.parentElement.querySelector('li:last-of-type > a' ).click();
 								}
 								break;
 							case 39:
-							case 40:
 								if (listItem.nextElementSibling) {
 									listItem.nextElementSibling.querySelector('a').click();
 								} else {
@@ -87,7 +90,8 @@
 
 					ktContentWrap.insertBefore(newElem, ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId));
 
-					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('role')
+					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('role');
+					ktContentWrap.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a').removeAttribute('tabindex');
 				});
 			});
 
@@ -151,13 +155,15 @@
 		setActiveTab: function( wrapper, tabNumber, moveFocus = true ) {
 
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
-			prevActiveAnchor.parentElement.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
+			const prevActiveListItem= wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
+			prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive')
 			prevActiveAnchor.setAttribute('tabindex', '-1');
 			prevActiveAnchor.setAttribute('aria-selected', 'false');
 
 			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
 			const newActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' a');
-			newActiveAnchor.parentElement.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+			const newActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber);
+			newActiveListItem.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
 			newActiveAnchor.setAttribute('tabindex', '0');
 			newActiveAnchor.setAttribute('aria-selected', 'true');
 

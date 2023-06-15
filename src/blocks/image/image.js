@@ -42,13 +42,29 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 //import ImageEditor, { ImageEditingProvider } from './image-editing';
-import { KadenceColorOutput, getPreviewSize, getFontSizeOptionOutput, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize,showSettings, getFontSizeOptionOutput, getSpacingOptionOutput, getBorderStyle } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 import metadata from './block.json';
 /**
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
+const BLEND_OPTIONS = [
+	{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+	{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
+	{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
+	{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
+	{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
+	{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
+	{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
+	{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
+	{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
+	{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
+	{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
+	{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
+	{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
+	{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
+];
 import {
 	PopColorControl,
 	TypographyControls,
@@ -66,7 +82,10 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	ResponsiveBorderControl,
+	SmallResponsiveControl,
 	CopyPasteAttributes,
+	GradientControl,
+	BackgroundTypeControl,
 } from '@kadence/components';
 
 export default function Image( {
@@ -143,6 +162,11 @@ export default function Image( {
 		tabletBorderStyle,
 		mobileBorderStyle,
 		preventLazyLoad,
+		overlayType,
+		overlay,
+		overlayGradient,
+		overlayOpacity,
+		overlayBlendMode,
 	} = attributes;
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
@@ -406,6 +430,8 @@ export default function Image( {
 	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
 	const nonTransAttrs = [ 'url', 'id', 'caption', 'alt' ];
+	const previewOverlay = overlayType === 'gradient' ? overlayGradient : KadenceColorOutput( overlay );
+	
 	const controls = (
 		<>
 			<BlockControls group="block">
@@ -656,11 +682,47 @@ export default function Image( {
 								context={ context }
 							/>
 						</KadencePanelBody>
+					</>
+				}
+				{ ( activeTab === 'style' ) &&
+					<>
 						<KadencePanelBody
-							title={ __('Shadow Settings', 'kadence-blocks') }
-							initialOpen={ false }
-							panelTitle={ 'kb-image-shadow-settings' }
+							panelName={ 'kb-image-border-settings' }
 						>
+							<PopColorControl
+								label={ __( 'Background Color', 'kadence-blocks' ) }
+								value={ ( backgroundColor ? backgroundColor : '' ) }
+								default={ '' }
+								onChange={ value => {
+									setAttributes( { backgroundColor: value } );
+								} }
+							/>
+							<ResponsiveBorderControl
+								label={__( 'Border', 'kadence-blocks' )}
+								value={borderStyle}
+								tabletValue={tabletBorderStyle}
+								mobileValue={mobileBorderStyle}
+								onChange={( value ) => setAttributes( { borderStyle: value } )}
+								onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
+								onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
+							/>
+							<ResponsiveMeasurementControls
+								label={ __( 'Border Radius', 'kadence-blocks' ) }
+								value={ borderRadius }
+								tabletValue={ tabletBorderRadius }
+								mobileValue={ mobileBorderRadius }
+								onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+								onChangeTablet={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
+								onChangeMobile={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
+								min={ 0 }
+								max={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 200 ) }
+								step={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1 ) }
+								unit={ borderRadiusUnit }
+								units={ [ 'px', 'em', 'rem', '%' ] }
+								onUnit={ ( value ) => setAttributes( { borderRadiusUnit: value } ) }
+								isBorderRadius={ true }
+								allowEmpty={true}
+							/>
 							<BoxShadowControl
 								label={ __( 'Box Shadow', 'kadence-blocks' ) }
 								enable={ ( undefined !== displayBoxShadow ? displayBoxShadow : false ) }
@@ -873,12 +935,6 @@ export default function Image( {
 										default={ '' }
 										onChange={ value => saveCaptionFont( { color: value } ) }
 									/>
-									{/* <PopColorControl
-								label={ __( 'Caption Background', 'kadence-blocks' ) }
-								value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-								default={ '' }
-								onChange={ value => saveCaptionFont( { background: value } ) }
-							/> */}
 									<TypographyControls
 										fontSize={ captionStyles[ 0 ].size }
 										onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
@@ -963,125 +1019,56 @@ export default function Image( {
 								onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
 							/>
 						</KadencePanelBody>
-					</>
-				}
-				{ ( activeTab === 'style' ) &&
-					<>
-						<KadencePanelBody
-							panelName={ 'kb-image-border-settings' }
-						>
-							<PopColorControl
-								label={ __( 'Background Color', 'kadence-blocks' ) }
-								value={ ( backgroundColor ? backgroundColor : '' ) }
-								default={ '' }
-								onChange={ value => {
-									setAttributes( { backgroundColor: value } );
-								} }
-							/>
-							<ResponsiveBorderControl
-								label={__( 'Border', 'kadence-blocks' )}
-								value={borderStyle}
-								tabletValue={tabletBorderStyle}
-								mobileValue={mobileBorderStyle}
-								onChange={( value ) => setAttributes( { borderStyle: value } )}
-								onChangeTablet={( value ) => setAttributes( { tabletBorderStyle: value } )}
-								onChangeMobile={( value ) => setAttributes( { mobileBorderStyle: value } )}
-							/>
-							<ResponsiveMeasurementControls
-								label={ __( 'Border Radius', 'kadence-blocks' ) }
-								value={ borderRadius }
-								tabletValue={ tabletBorderRadius }
-								mobileValue={ mobileBorderRadius }
-								onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-								onChangeTablet={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
-								min={ 0 }
-								max={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 200 ) }
-								step={ ( borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ borderRadiusUnit }
-								units={ [ 'px', 'em', 'rem', '%' ] }
-								onUnit={ ( value ) => setAttributes( { borderRadiusUnit: value } ) }
-								isBorderRadius={ true }
-								allowEmpty={true}
-							/>
-							<BoxShadowControl
-								label={ __( 'Box Shadow', 'kadence-blocks' ) }
-								enable={ ( undefined !== displayBoxShadow ? displayBoxShadow : false ) }
-								color={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].color ? boxShadow[ 0 ].color : '#000000' ) }
-								colorDefault={ '#000000' }
-								onArrayChange={ ( color, opacity ) => saveBoxShadow( { color: color, opacity: opacity } ) }
-								opacity={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].opacity ? boxShadow[ 0 ].opacity : 0.2 ) }
-								hOffset={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].hOffset ? boxShadow[ 0 ].hOffset : 0 ) }
-								vOffset={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].vOffset ? boxShadow[ 0 ].vOffset : 0 ) }
-								blur={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].blur ? boxShadow[ 0 ].blur : 14 ) }
-								spread={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].spread ? boxShadow[ 0 ].spread : 0 ) }
-								inset={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].inset ? boxShadow[ 0 ].inset : false ) }
-								onEnableChange={ value => {
-									setAttributes( {
-										displayBoxShadow: value,
-									} );
-								} }
-								onColorChange={ value => {
-									saveBoxShadow( { color: value } );
-								} }
-								onOpacityChange={ value => {
-									saveBoxShadow( { opacity: value } );
-								} }
-								onHOffsetChange={ value => {
-									saveBoxShadow( { hOffset: value } );
-								} }
-								onVOffsetChange={ value => {
-									saveBoxShadow( { vOffset: value } );
-								} }
-								onBlurChange={ value => {
-									saveBoxShadow( { blur: value } );
-								} }
-								onSpreadChange={ value => {
-									saveBoxShadow( { spread: value } );
-								} }
-								onInsetChange={ value => {
-									saveBoxShadow( { inset: value } );
-								} }
-							/>
-							<DropShadowControl
-								label={ __( 'Drop Shadow', 'kadence-blocks' ) }
-								enable={ ( undefined !== displayDropShadow ? displayDropShadow : false ) }
-								color={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].color ? dropShadow[ 0 ].color : '#000000' ) }
-								colorDefault={ '#000000' }
-								onArrayChange={ ( color, opacity ) => saveDropShadow( { color: color, opacity: opacity } ) }
-								opacity={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].opacity ? dropShadow[ 0 ].opacity : 0.2 ) }
-								hOffset={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].hOffset ? dropShadow[ 0 ].hOffset : 0 ) }
-								vOffset={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].vOffset ? dropShadow[ 0 ].vOffset : 0 ) }
-								blur={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].blur ? dropShadow[ 0 ].blur : 14 ) }
-								onEnableChange={ value => {
-									setAttributes( {
-										displayDropShadow: value,
-									} );
-								} }
-								onColorChange={ value => {
-									saveDropShadow( { color: value } );
-								} }
-								onOpacityChange={ value => {
-									saveDropShadow( { opacity: value } );
-								} }
-								onHOffsetChange={ value => {
-									saveDropShadow( { hOffset: value } );
-								} }
-								onVOffsetChange={ value => {
-									saveDropShadow( { vOffset: value } );
-								} }
-								onBlurChange={ value => {
-									saveDropShadow( { blur: value } );
-								} }
-							/>
-							<p className="kb-sidebar-help">
-								{ __( 'Learn about the differences:', 'kadence-blocks' ) }
-								<br></br>
-								<ExternalLink href="https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/">
-									{ __( 'Box Shadow vs. Drop Shadow', 'kadence-blocks' ) }
-								</ExternalLink>
-							</p>
-						</KadencePanelBody>
+						{ showSettings( 'overlay', 'kadence/image' ) && (
+							<KadencePanelBody
+								title={ __( 'Overlay Color', 'kadence-blocks' ) }
+								initialOpen={ false }
+								panelName={ 'kb-image-overlay-settings' }
+							>
+								<BackgroundTypeControl
+									label={ __( 'Type', 'kadence-blocks' ) }
+									type={ overlayType ? overlayType : 'normal' }
+									onChange={ value => setAttributes( { overlayType: value } ) }
+									allowedTypes={ [ 'normal', 'gradient' ] }
+								/>
+								<RangeControl
+									label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+									value={ overlayOpacity }
+									onChange={ ( value ) => {
+										setAttributes( {
+											overlayOpacity: value,
+										} );
+									} }
+									step={ 0.01 }
+									min={ 0 }
+									max={ 1 }
+								/>
+								{ 'gradient' === overlayType && (
+									<GradientControl
+										value={ overlayGradient }
+										onChange={ value => setAttributes( { overlayGradient: value } ) }
+										gradients={ [] }
+									/>
+								) }
+								{ 'gradient' !== overlayType && (
+									<>
+										<PopColorControl
+											label={ __( 'Color', 'kadence-blocks' ) }
+											value={ ( overlay ? overlay : '' ) }
+											default={ '' }
+											onChange={ value => setAttributes( { overlay: value } ) }
+										/>
+									</>
+								)}
+								<SelectControl
+									label={ __( 'Blend Mode' ) }
+									value={ ( overlayBlendMode ? overlayBlendMode : 'none' ) }
+									options={ BLEND_OPTIONS }
+									onChange={ value => setAttributes( { overlayBlendMode: value } ) }
+								/>
+								<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
+							</KadencePanelBody>
+						) }
 					</>
 				}
 
@@ -1155,7 +1142,12 @@ export default function Image( {
 			</InspectorAdvancedControls>
 		</>
 	);
-
+	let useOverlay = false;
+	if ( overlayOpacity && overlay && overlayType && overlayType !== 'gradient' ) {
+		useOverlay = true;
+	} else if ( overlayOpacity && overlayGradient && overlayType && overlayType === 'gradient' ) {
+		useOverlay = true;
+	}
 	const getFilename = ( url ) => {
 		let filename;
 		try {
@@ -1201,7 +1193,7 @@ export default function Image( {
 			// Disable reason: Image itself is not meant to be interactive, but
 			// should direct focus to block.
 			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
-		<div>
+		<div className={ `${ ( ! useRatio && useOverlay ? 'kb-image-has-overlay' : '' ) }` }>
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
@@ -1260,7 +1252,7 @@ export default function Image( {
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
 	if ( useRatio ){
-		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ img }</div>;
+		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>{ img }</div>;
 	}
 	let imageWidthWithinContainer;
 	let imageHeightWithinContainer;
@@ -1419,6 +1411,11 @@ export default function Image( {
 
 	return (
 		<>
+			<style>
+				{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { opacity: ${ overlayOpacity } }` : '' ) }
+				{ ( overlayBlendMode ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { mix-blend-mode: ${overlayBlendMode}; }` : '' ) }
+				{ ( previewOverlay ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { background:${ previewOverlay }; }` : '' ) }
+			</style>
 			{ /* Hide controls during upload to avoid component remount,
 				which causes duplicated image upload. */ }
 			{ ! temporaryURL && controls }

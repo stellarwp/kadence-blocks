@@ -17,7 +17,7 @@
 .splide.is-initialized:not(.is-active) .splide__list {
     display: block;
 }
-.splide__pagination {
+.splide__pagination, ul.menu ul.splide__pagination.splide__pagination {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
@@ -196,7 +196,8 @@
 		border-radius: 3px;
 		cursor: pointer;
 		display: flex;
-		height: 3em;
+		height: 3rem;
+		width: 2rem;
 		justify-content: center;
 		opacity: 0.25;
 		padding: 0;
@@ -204,7 +205,6 @@
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
-		width: 2em;
 		z-index: 1;
 		transition: opacity .4s ease-in-out;
 	}
@@ -236,7 +236,7 @@
 	.splide__arrow--next {
 		right: 1em;
 	}
-	.splide__pagination {
+	.splide__pagination, ul.splide__pagination.splide__pagination {
 		bottom: -25px;
 		left: 0;
 		padding: 0 1em;

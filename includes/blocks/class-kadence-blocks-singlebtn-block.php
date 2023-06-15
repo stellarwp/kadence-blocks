@@ -84,11 +84,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$width_type = ! empty( $attributes['widthType'] ) ? $attributes['widthType'] : 'auto';
 		if ( 'fixed' === $width_type ) {
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button, ul.menu .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 			$css->render_responsive_range( $attributes, 'width', 'width', 'widthUnit' );
+		} else {
+			$css->set_selector( 'ul.menu .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
+			$css->add_property( 'width', 'initial' );
 		}
+		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
 		if ( ! empty( $attributes['color'] ) ) {
@@ -146,12 +150,17 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		// Hover before.
-		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		if ( 'gradient' === $bg_hover_type && ! empty( $attributes['gradientHover'] ) ) {
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 			$css->add_property( 'background', $attributes['gradientHover'] );
+			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		// Only Icon.
 		if ( isset( $attributes['onlyIcon'][0] ) && '' !== $attributes['onlyIcon'][0] && true == $attributes['onlyIcon'][0] ) {
@@ -255,11 +264,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$aos_args = array();
 		$aos_args = kadence_apply_aos_wrapper_args( $attributes, $aos_args );
 		if ( ! empty( $aos_args ) ) {
+			$aos_classes = array( 'kb-blocks-button-aos' );
+			$aos_classes[] = ! empty( $attributes['widthType'] ) ? 'kb-btn-width-type-' . $attributes['widthType'] : 'kb-btn-width-type-auto';
+			$aos_args['class'] = implode( ' ', $aos_classes );
 			$normalized_attributes = array();
 			foreach ( $aos_args as $key => $value ) {
 				$normalized_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 			}
-
 			$content = sprintf( '<div %1$s>%2$s</div>', implode( ' ', $normalized_attributes ), $content );
 		}
 

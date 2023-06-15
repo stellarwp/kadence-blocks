@@ -183,6 +183,7 @@ class Kadence_Blocks_Prebuilt_Library {
 
 		// Add a cleanup routine.
 		$this->schedule_cleanup();
+		add_filter( 'cron_schedules', array( $this, 'add_monthly_to_cron_schedule' ), 10, 1 );
 		add_action( 'delete_block_library_folder', array( $this, 'delete_block_library_folder' ) );
 	}
 	/**
@@ -1023,6 +1024,22 @@ class Kadence_Blocks_Prebuilt_Library {
 				wp_schedule_event( time(), self::CLEANUP_FREQUENCY, 'delete_block_library_folder' );
 			}
 		}
+	}
+	/**
+	 * Add Monthly to Schedule.
+	 *
+	 * @param array $schedules the current schedules.
+	 * @access public
+	 */
+	public function add_monthly_to_cron_schedule( $schedules ) {
+		// Adds once monthly to the existing schedules.
+		if ( ! isset( $schedules[ self::CLEANUP_FREQUENCY ] ) ) {
+			$schedules[ self::CLEANUP_FREQUENCY ] = array(
+				'interval' => MONTH_IN_SECONDS,
+				'display' => __( 'Once Monthly', 'kadence-blocks' ),
+			);
+		}
+		return $schedules;
 	}
 	/**
 	 * Delete the fonts folder.

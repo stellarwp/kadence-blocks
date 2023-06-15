@@ -31,6 +31,10 @@ export default function save( { attributes } ) {
 		useRatio,
 		ratio,
 		preventLazyLoad,
+		overlay,
+		overlayOpacity,
+		overlayGradient,
+		overlayType,
 	} = attributes;
 
 	const classes = classnames( {
@@ -64,7 +68,12 @@ export default function save( { attributes } ) {
 		[ `skip-lazy` ]: preventLazyLoad,
 		[ `kb-skip-lazy` ]: preventLazyLoad,
 	} );
-
+	let useOverlay = false;
+	if ( overlayOpacity && overlay && overlayType && overlayType !== 'gradient' ) {
+		useOverlay = true;
+	} else if ( overlayOpacity && overlayGradient && overlayType && overlayType === 'gradient' ) {
+		useOverlay = true;
+	}
 	let relAttr;
 	if ( linkTarget ) {
 		relAttr = 'noopener noreferrer';
@@ -86,7 +95,9 @@ export default function save( { attributes } ) {
 		/>
 	);
 	if ( useRatio ){
-		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ image }</div>;
+		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>{ image }</div>;
+	} else if ( useOverlay ) {
+		image = <div className={ `kb-image-has-overlay` }>{ image }</div>;
 	}
 
 	const figure = (
