@@ -322,6 +322,18 @@
 	  "noCustomDefaults": {
 		  "type": "boolean",
 		  "default": false
+	  },
+	  "hAlign": {
+		"type": "string",
+		"default": "center"
+	  },
+	  "thAlign": {
+		"type": "string",
+		"default": ""
+	  },
+	  "mhAlign": {
+		"type": "string",
+		"default": ""
 	  }
 	},
   "supports": {

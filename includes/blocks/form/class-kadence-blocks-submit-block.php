@@ -227,6 +227,27 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			}
 		}
 		$css->set_media_state( 'desktop' );
+		$css->set_selector( '.kb-submit-field.kb-field' . $unique_id );
+		$hAlignKeys = array( 'hAlign' => 'desktop', 'thAlign' => 'tablet', 'mhAlign' => 'mobile' );
+		foreach( $hAlignKeys as $alignKey => $device ) {
+			if ( ! empty( $attributes[$alignKey]) ) {
+				$css->set_media_state( $device );
+				switch ( $attributes[$alignKey] ) {
+					case 'left':
+						$css->add_property( 'justify-content', 'flex-start' );
+						break;
+					case 'center':
+						$css->add_property( 'justify-content', 'center' );
+						break;
+					case 'right':
+						$css->add_property( 'justify-content', 'flex-end' );
+						break;
+				}
+
+				$css->set_media_state( 'desktop' );
+			}
+		}
+
 		return $css->css_output();
 	}
 }

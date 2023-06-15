@@ -51,18 +51,8 @@ import metadata from './block.json';
  */
 import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
+import './editor.scss';
 
-import {
-	cog,
-	pages,
-	chevronRight,
-	chevronLeft,
-	plus,
-	close,
-	code,
-	link as linkIcon,
-} from '@wordpress/icons';
-import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
 import {
 	Fragment,
 	useEffect,
@@ -72,29 +62,13 @@ import {
 	RichText,
 	InspectorControls,
 	BlockControls,
-	AlignmentToolbar,
-	InspectorAdvancedControls,
 	JustifyContentControl,
-	BlockVerticalAlignmentControl,
 	useBlockProps,
-	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
-	Dashicon,
-	TabPanel,
-	Button,
-	PanelRow,
-	RangeControl,
 	TextControl,
 	ToolbarGroup,
-	ButtonGroup,
 	SelectControl,
-	ToggleControl,
-	DropdownMenu,
-	MenuGroup,
-	MenuItem,
-	ToolbarButton,
-	Icon,
 } from '@wordpress/components';
 import {
 	applyFilters,
@@ -158,23 +132,11 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		iconSizeUnit,
 		tabletMargin,
 		mobileMargin,
+		hAlign,
+		thAlign,
+		mhAlign
 	} = attributes;
-	const { updateBlockAttributes } = useDispatch( blockEditorStore );
-	const { btnsBlock, rootID } = useSelect(
-		( select ) => {
-			const { getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
-			const rootID = getBlockRootClientId( clientId );
-			const btnsBlock = getBlocksByClientId( rootID );
-			return {
-				btnsBlock: ( undefined !== btnsBlock ? btnsBlock : '' ),
-				rootID: ( undefined !== rootID ? rootID : '' ),
-			};
-		},
-		[ clientId ]
-	);
-	const updateParentBlock = ( key, value ) => {
-		updateBlockAttributes( rootID, { [key]: value } );
-	}
+
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
 		( select ) => {
@@ -197,16 +159,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const [ isEditingURL, setIsEditingURL ] = useState( false );
-	useEffect( () => {
-		if ( ! isSelected ) {
-			setIsEditingURL( false );
-		}
-	}, [ isSelected ] );
-	function startEditing( event ) {
-		event.preventDefault();
-		setIsEditingURL( true );
-	}
+
 	const saveTypography = ( value ) => {
 		const newUpdate = typography.map( ( item, index ) => {
 			if ( 0 === index ) {
@@ -252,21 +205,13 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
 		{ value: 'full', label: __( 'Full', 'kadence-blocks' ) },
 	];
-	const defineWidthType = ( type ) => {
-		if ( 'full' === type ) {
-			//updateParentBlock( 'forceFullwidth', true );
-			setAttributes( { widthType: type } );
-		} else {
-			//updateParentBlock( 'forceFullwidth', false );
-			setAttributes( { widthType: type } );
-		}
-	};
+
 	const buttonStyleOptions = [
 		{ value: 'fill', label: __( 'Fill', 'kadence-blocks' ) },
 		{ value: 'outline', label: __( 'Outline', 'kadence-blocks' ) },
 		{ value: 'inherit', label: __( 'Theme', 'kadence-blocks' ) },
 	];
-	
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin?.[0] ? margin[0] : '' ), ( undefined !== tabletMargin?.[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin?.[0] ? mobileMargin[0] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin?.[1] ? margin[1] : '' ), ( undefined !== tabletMargin?.[1] ? tabletMargin[1] : '' ), ( undefined !== mobileMargin?.[1] ? mobileMargin[1] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin?.[2] ? margin[2] : '' ), ( undefined !== tabletMargin?.[2] ? tabletMargin[2] : '' ), ( undefined !== mobileMargin?.[2] ? mobileMargin[2] : '' ) );
@@ -314,8 +259,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
 	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
 
-	const previewAlign = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.hAlign ? btnsBlock?.[0]?.attributes?.hAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.thAlign ? btnsBlock?.[0]?.attributes?.thAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mhAlign ? btnsBlock?.[0]?.attributes?.mhAlign : '' ) );
-	const previewVertical = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.vAlign ? btnsBlock?.[0]?.attributes?.vAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.tvAlign ? btnsBlock?.[0]?.attributes?.tvAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mvAlign ? btnsBlock?.[0]?.attributes?.mvAlign : '' ) );
+	const previewAlign = getPreviewSize( previewDevice, ( undefined !== hAlign ? hAlign : '' ), ( undefined !== thAlign ? thAlign : '' ), ( undefined !== mhAlign ? mhAlign : '' ) );
 	const previewOnlyIcon = getPreviewSize( previewDevice, ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : undefined ), ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : undefined ) );
 	let btnbg;
 	// let btnGrad;
@@ -347,6 +291,10 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		className                  : className,
 		[ `kb-single-btn-${uniqueID}` ]  : true,
 		[ `kt-btn-width-type-${( widthType ? widthType : 'auto' )}` ]   : true,
+	} );
+	const wrapperClasses = classnames( {
+		'btn-inner-wrap'                   : true,
+		[ `kt-btn-align-${previewAlign}` ]  : previewAlign
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -411,22 +359,23 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				<ToolbarGroup>
 					<JustifyContentControl
 						value={ previewAlign }
+						allowedControls={ ['left', 'center', 'right'] }
 						onChange={ value => {
 							if ( previewDevice === 'Mobile' ) {
-								updateParentBlock( 'mhAlign', ( value ? value : '' ) );
+								setAttributes( { mhAlign: ( value ? value : '' ) } );
 							} else if ( previewDevice === 'Tablet' ) {
-								updateParentBlock( 'thAlign', ( value ? value : '' ) );
+								setAttributes( { thAlign: ( value ? value : '' ) } );
 							} else {
-								updateParentBlock( 'hAlign', ( value ? value : 'center' ) );
+								setAttributes( { hAlign: ( value ? value : 'center' ) } );
 							}
 						} }
 					/>
 				</ToolbarGroup>
 				<CopyPasteAttributes
 					attributes={ attributes }
-					excludedAttrs={ nonTransAttrs } 
-					defaultAttributes={ metadata['attributes'] } 
-					blockSlug={ metadata['name'] } 
+					excludedAttrs={ nonTransAttrs }
+					defaultAttributes={ metadata['attributes'] }
+					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
@@ -957,8 +906,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 					</InspectorControls>
 				</>
 			)}
-			<div className={'btn-inner-wrap'}>
-				<span 
+			<div className={ wrapperClasses }>
+				<span
 					className={btnClassName}
 					style={{
 						paddingTop	   : ( previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingUnit) : undefined ),
