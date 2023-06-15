@@ -663,19 +663,23 @@ export function EditInner( props ) {
 								label={__( 'Max Width', 'kadence-blocks' )}
 								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
 								onChange={ ( value ) => {
+									value = value ? value : '';
 									setMetaAttribute( [ value.toString(), maxWidth[ 1 ], maxWidth[ 2 ] ], 'maxWidth' );
 								}}
 								tabletValue={ ( maxWidth[ 1 ] !== '' ? parseInt( maxWidth[ 1 ] ) : '' ) }
 								onChangeTablet={( value ) => {
+									value = value ? value : '';
 									setMetaAttribute( [ maxWidth[ 0 ], value.toString(), maxWidth[ 2 ] ], 'maxWidth' );
 								}}
 								mobileValue={ ( maxWidth[ 2 ] !== '' ? parseInt( maxWidth[ 2 ] ) : '' ) }
 								onChangeMobile={( value ) => {
+									value = value ? value : '';
 									setMetaAttribute( [ maxWidth[ 0 ], maxWidth[ 1 ], value.toString() ], 'maxWidth' );
 								}}
 								min={0}
 								max={( maxWidthUnit === 'px' ? 2000 : 100 )}
 								step={1}
+								reset={ () => setMetaAttribute( [ '', '', '' ], 'maxWidth' ) }
 								unit={maxWidthUnit ? maxWidthUnit : '%'}
 								onUnit={( value ) => {
 									setMetaAttribute( value, 'maxWidthUnit' );
