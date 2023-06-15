@@ -6,8 +6,6 @@
  * @package Kadence Blocks
  */
 
-include 'advanced-form/advanced-form-frontend.php';
-
 use function KadenceWP\KadenceBlocks\get_webfont_url;
 
 // Exit if accessed directly.

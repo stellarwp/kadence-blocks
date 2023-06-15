@@ -4,37 +4,87 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ // Fix Bug with appender not working.
+ .wp-block-kadence-advanced-form .kadence-inner-column-inner.kb-section-only-appender .block-list-appender.wp-block, .wp-block-kadence-advanced-form .kadence-inner-column-inner.kb-section-only-appender .block-list-appender.wp-block>.block-editor-inserter {
+    pointer-events: all !important;
+}
+.components-toolbar.kb-add-block .block-editor-button-block-appender.components-button.components-button {
+    box-shadow: none;
+}
+.kb-form-field-name-wrap .components-notice.is-error {
+    margin: -10px 0px 24px;
+}
+.kb-form-field-name-wrap.kb-field-has-warning .components-base-control {
+	padding-left:12px;
+	border-left: 4px solid #cc1818;
+}
 .wp-block-kadence-advanced-form {
-	display: flex;
-	flex-direction: column;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 0 3px;
 
-	div[data-type="kadence/advanced-form-textarea"],
-	div[data-type="kadence/advanced-form-text"],
-	div[data-type="kadence/advanced-form-radio"],
-	div[data-type="kadence/advanced-form-file"],
-	div[data-type="kadence/advanced-form-accept"],
-	div[data-type="kadence/advanced-form-email"],
-	div[data-type="kadence/advanced-form-number"],
-	div[data-type="kadence/advanced-form-phone"],
-	div[data-type="kadence/advanced-form-date"],
-	div[data-type="kadence/advanced-form-hidden"],
-	div[data-type="kadence/advanced-form-select"],
-	div[data-type="kadence/advanced-form-checkbox"]{
+	.kt-select-starter-style-tabs {
+		border: none;
+
+		.kt-inital-tabs-style-btn {
+			color: #1e1e1e;
+			font-size: 16px;
+			flex-direction: column;
+			gap: 5px;
+
+			&:first-child {
+				margin-bottom: 20px;
+
+				&:hover {
+					border: none;
+				}
+			}
+		
+			&.is-pressed {
+				border: 2px solid var(--wp-admin-theme-color);
+			}
+
+			&:hover {
+				color: #1e1e1e;
+				border: 2px solid #aaa;
+				background: none;
+			}
+		}
+	}
+}
+.wp-block-kadence-advanced-form .kb-advanced-form {
+	.wp-block {
+		margin-left:0;
+		margin-right: 0;
 		margin-top: 0px;
 		margin-bottom: 0px;
 	}
-
+}
+.kb-form-hide-while-setting-up {
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	opacity: 0;
+}
+.kb-advanced-form {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	gap:1.6em;
 	select {
 		max-width: unset;
 	}
-
-	.required {
-		margin-left: 2px;
+	input, select {
+		margin: 0;
 	}
-
-	.kb-advanced-form-field {
+	.kb-adv-form-required {
+		margin-left: 2px;
+		color: #b32d2e;
+	}
+	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		flex: 0 1 100%;
 
 		.kb-checkbox-style, .kb-radio-style {
 			padding: 0;
@@ -130,7 +180,7 @@
 	align-items: flex-start;
 }
 
-.kb-advanced-form-field .kb-text-style-field.has-error:not(.missingclass) {
+.kb-adv-form-field .kb-text-style-field.has-error:not(.missingclass) {
 	border-color: #c53030;
 }
 
@@ -142,146 +192,6 @@
 	border: 1px solid #4299e1;
 	color: #2b6cb0;
 	font-weight: bold;
-}
-
-.kb-field-desk-width-20 {
-	width: 20%;
-}
-
-.kb-field-desk-width-25 {
-	width: 25%;
-}
-
-.kb-field-desk-width-33 {
-	width: 33.33%;
-}
-
-.kb-field-desk-width-40 {
-	width: 40%;
-}
-
-.kb-field-desk-width-50 {
-	width: 50%;
-}
-
-.kb-field-desk-width-60 {
-	width: 60%;
-}
-
-.kb-field-desk-width-66 {
-	width: 66.66%;
-}
-
-.kb-field-desk-width-75 {
-	width: 75%;
-}
-
-.kb-field-desk-width-80 {
-	width: 80%;
-}
-
-.kb-field-desk-width-100 {
-	width: 100%;
-}
-
-.kb-field-desk-width-unset {
-	width: auto;
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-	.kb-advanced-form-field {
-		.kb-field-tablet-width-20 {
-			width: 20%;
-		}
-
-		.kb-field-tablet-width-25 {
-			width: 25%;
-		}
-
-		.kb-field-tablet-width-33 {
-			width: 33.33%;
-		}
-
-		.kb-field-tablet-width-40 {
-			width: 40%;
-		}
-
-		.kb-field-tablet-width-50 {
-			width: 50%;
-		}
-
-		.kb-field-tablet-width-60 {
-			width: 60%;
-		}
-
-		.kb-field-tablet-width-66 {
-			width: 66.66%;
-		}
-
-		.kb-field-tablet-width-75 {
-			width: 75%;
-		}
-
-		.kb-field-tablet-width-80 {
-			width: 80%;
-		}
-
-		.kb-field-tablet-width-100 {
-			width: 100%;
-		}
-
-		.kb-field-tablet-width-unset {
-			width: auto;
-		}
-	}
-}
-
-@media (max-width: 767px) {
-	.kb-advanced-form-field {
-		.kb-field-mobile-width-20 {
-			width: 20%;
-		}
-
-		.kb-field-mobile-width-25 {
-			width: 25%;
-		}
-
-		.kb-field-mobile-width-33 {
-			width: 33.33%;
-		}
-
-		.kb-field-mobile-width-40 {
-			width: 40%;
-		}
-
-		.kb-field-mobile-width-50 {
-			width: 50%;
-		}
-
-		.kb-field-mobile-width-60 {
-			width: 60%;
-		}
-
-		.kb-field-mobile-width-66 {
-			width: 66.66%;
-		}
-
-		.kb-field-mobile-width-75 {
-			width: 75%;
-		}
-
-		.kb-field-mobile-width-80 {
-			width: 80%;
-		}
-
-		.kb-field-mobile-width-100 {
-			width: 100%;
-		}
-
-		.kb-field-mobile-width-unset {
-			width: auto;
-		}
-	}
 }
 
 .kb-advanced-form-submit-container {
@@ -350,6 +260,17 @@
 		.components-button {
 
 		}
+	}
+}
+
+.kb-adv-form-actions select.components-select-control__input {
+	height: 280px;
+	font-size: 14px;
+
+	option {
+		padding-top: 5px;
+		padding-bottom: 5px;
+		padding-left: 3px;
 	}
 }
 

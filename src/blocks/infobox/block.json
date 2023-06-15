@@ -12,7 +12,8 @@
 	"icon"
   ],
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",

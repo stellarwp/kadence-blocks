@@ -6,6 +6,10 @@
  * Import Css
  */
 import './editor.scss';
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
 
 /**
  * Internal block libraries
@@ -28,7 +32,7 @@ import {
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
-import { getUniqueId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 
 /**
@@ -47,8 +51,13 @@ export function Edit( props ) {
 
 	const { id, uniqueID } = attributes;
 
-	const blockProps = useBlockProps();
-
+	const blockClasses = classnames( {
+		'wp-block-kadence-advanced-form'             : true,
+		[ `wp-block-kadence-advanced-form${uniqueID}` ]   : uniqueID,
+	} );
+	const blockProps = useBlockProps( {
+		className: blockClasses
+	} );
 	const { post, currentPostType } = useSelect(
 		( select ) => ( {
 			post:
@@ -64,24 +73,35 @@ export function Edit( props ) {
 	);
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
 		} else {
 			addUniqueID( uniqueId, clientId );
+		}
+		if ( currentPostType === 'kadence_form' ) {
+			// Lame workaround for gutenberg to prevent showing the block Validity error.
+			window.wp.data.dispatch( 'core/block-editor' ).setTemplateValidity( true );
 		}
 	}, [] );
 
@@ -154,7 +174,7 @@ function Chooser( { id, post, commit } ) {
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_form"
-			label={__( 'Kadence Form', 'kadence-blocks' )}
+			label={__( 'Advanced Form', 'kadence-blocks' )}
 			instructions={__(
 				'Select an existing form or create a new one.',
 				'kadence-blocks',

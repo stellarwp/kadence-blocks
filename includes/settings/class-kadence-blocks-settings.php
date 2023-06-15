@@ -675,6 +675,50 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
+			'kadence_blocks_turnstile_site_key',
+			'kadence_blocks_turnstile_site_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Cloudflare Turnstile Site Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_turnstile_secret_key',
+			'kadence_blocks_turnstile_secret_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Cloudflare Turnstile Secret Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_hcaptcha_site_key',
+			'kadence_blocks_hcaptcha_site_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'hCaptcha Turnstile Site Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_hcaptcha_secret_key',
+			'kadence_blocks_hcaptcha_secret_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'hCaptcha Secret Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
 			'kadence_blocks_mailerlite_api',
 			'kadence_blocks_mailerlite_api',
 			array(

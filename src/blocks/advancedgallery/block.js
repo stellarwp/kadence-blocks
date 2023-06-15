@@ -36,7 +36,7 @@ import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } fro
  */
 registerBlockType( 'kadence/advancedgallery', {
 	...metadata,
-	title: __( 'Advanced Gallery', 'kadence-blocks' ),
+	title: __( 'Gallery (Adv)', 'kadence-blocks' ),
 	description: __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more.', 'kadence-blocks' ),
 	keywords: [
 		__( 'gallery', 'kadence-blocks' ),

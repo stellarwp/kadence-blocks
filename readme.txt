@@ -77,6 +77,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.0 =
+Release Date: TBD, 2023
+* Add: Advanced Form Block
+* Add: Progress Bar Block
+* Add: Dynamic block labels in list view.
+* Add: Ability to set custom names for Kadence blocks in list view
+
 = 3.0.41 =
 Release Date: June 6th, 2023
 * Update: Typography custom sizes to support three decimals.
