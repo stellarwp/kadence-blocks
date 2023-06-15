@@ -1350,18 +1350,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		$register_meta = array(
 			array(
-				'key'           => '_kad_form_vAlign',
-				'default'       => array( '', '', '' ),
-				'type'          => 'array',
-				'children_type' => 'string'
-			),
-			array(
-				'key'           => '_kad_form_hAlign',
-				'default'       => array( '', '', '' ),
-				'type'          => 'array',
-				'children_type' => 'string'
-			),
-			array(
 				'key'           => '_kad_form_actions',
 				'default'       => array(),
 				'type'          => 'array',
