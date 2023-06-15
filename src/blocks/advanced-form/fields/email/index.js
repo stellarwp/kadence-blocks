@@ -27,10 +27,6 @@ registerBlockType('kadence/advanced-form-email', {
 	keywords: [
 		'kadence',
 	],
-	supports: {
-		reusable: false,
-		html: false,
-	},
 	edit,
 	save: () => null,
 
