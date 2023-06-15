@@ -157,13 +157,16 @@ function BuildHTMLPageContent( rows, useImageReplace, imageCollection, contextTa
 		}
 		let theContent = '';
 		const categories = rows?.[key]?.['pattern_category'] ? Object.keys( rows[key]['pattern_category'] ) : [];
-		const context = rows[key]['pattern_context'];
+		let context = rows[key]['pattern_context'];
+		context = 'contact' === context ? 'contact-form' : context;
+		context = 'subscribe' === context ? 'subscribe-form' : context;
+		context = 'pricing' === context ? 'pricing-table' : context;
 		theContent = replaceMasks( rows[key]['pattern_html'] );
 		if ( useImageReplace === 'all' && imageCollection ) {
 			theContent = replaceImages( theContent, imageCollection, categories, context, variation );
 		}
 		if ( contextTab === 'context' ) {
-			theContent = replaceContent( theContent, aiContent, categories, context, variation );
+			theContent = replaceContent( theContent, aiContent, categories, context, variation, true );
 		}
 		variation ++;
 		return theContent;
@@ -173,23 +176,66 @@ function BuildHTMLPageContent( rows, useImageReplace, imageCollection, contextTa
 	} );
 	return tempContent;
 }
-function BuildPageImportContent( rows ) {
+function BuildPageImportContent( rows, useImageReplace, imageCollection, contextTab, aiContent, selectedStyle ) {
 	if ( ! rows ) {
 		return '';
 	}
+	let tempArray = [];
 	let tempContent = '';
-	Object.keys( rows ).map( function( key, index ) {
+	let variation = 0;
+	//console.log( rows );
+	tempArray = Object.keys( rows ).map( function( key, index ) {
+		if ( variation === 11 ) {
+			variation = 0;
+		}
+		let theContent = '';
 		const rowStyle = rows[key]['pattern_style'];
 		let rowContent = rows[key]['pattern_content'];
 		rowContent = deleteContent( rowContent );
-		if ( 'dark' === rowStyle ) {
-			rowContent = replaceColors( rowContent, 'dark' );
-		} else if ( 'highlight' === rowStyle ) {
-			rowContent = replaceColors( rowContent, 'highlight' );
+		if ( selectedStyle === 'dark' ) {
+			if ( 'light' === rowStyle ) {
+				rowContent = replaceColors( rowContent, 'dark' );
+			} else if ( 'highlight' === rowStyle ) {
+				rowContent = replaceColors( rowContent, 'highlight' );
+			}
+		} else {
+			if ( 'dark' === rowStyle ) {
+				rowContent = replaceColors( rowContent, 'dark' );
+			} else if ( 'highlight' === rowStyle ) {
+				rowContent = replaceColors( rowContent, 'highlight' );
+			}
 		}
-		tempContent = tempContent.concat( rowContent );
+		const categories = rows?.[key]?.['pattern_category'] ? Object.keys( rows[key]['pattern_category'] ) : [];
+		let context = rows[key]['pattern_context'];
+		context = 'contact' === context ? 'contact-form' : context;
+		context = 'subscribe' === context ? 'subscribe-form' : context;
+		context = 'pricing' === context ? 'pricing-table' : context;
+		if ( useImageReplace === 'all' && imageCollection ) {
+			rowContent = replaceImages( rowContent, imageCollection, categories, context, variation );
+		}
+		if ( contextTab === 'context' ) {
+			rowContent = replaceContent( rowContent, aiContent, categories, context, variation );
+		}
+		variation ++;
+		return rowContent;
+	} );
+	Object.keys( tempArray ).map( function( key, index ) {
+		tempContent = tempContent.concat( tempArray[key] );
 	} );
 	return tempContent;
+	// let tempContent = '';
+	// Object.keys( rows ).map( function( key, index ) {
+	// 	const rowStyle = rows[key]['pattern_style'];
+	// 	let rowContent = rows[key]['pattern_content'];
+	// 	rowContent = deleteContent( rowContent );
+	// 	if ( 'dark' === rowStyle ) {
+	// 		rowContent = replaceColors( rowContent, 'dark' );
+	// 	} else if ( 'highlight' === rowStyle ) {
+	// 		rowContent = replaceColors( rowContent, 'highlight' );
+	// 	}
+	// 	tempContent = tempContent.concat( rowContent );
+	// } );
+	// return tempContent;
 }
 
 function PageList( {
@@ -214,7 +260,8 @@ function PageList( {
 			type: 'page',
 			style: 'light',
 		}
-		pageSend.content = BuildPageImportContent( info.rows );
+		const allContext = getAllContext();
+		pageSend.content = BuildPageImportContent( info.rows, useImageReplace, imageCollection, contextTab, allContext, selectedStyle );
 		onSelect( pageSend );
 		// if ( ! selectedStyle || 'light' === selectedStyle ) {
 		// 	onSelect( newInfo );

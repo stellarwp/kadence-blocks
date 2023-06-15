@@ -316,7 +316,7 @@ function PatternLibrary( {
 						}
 					} ) }
 					setPatterns( o );
-					setCategories( cats );
+					setCategories( JSON.parse(JSON.stringify( cats ) ) );
 				}
 			} else {
 				if ( tempSubTab === 'pages' ) {
