@@ -1667,7 +1667,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'key'           => '_kad_form_maxWidth',
 				'default'       => array( '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'string'
 			),
 		);
 

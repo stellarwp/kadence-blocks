@@ -165,7 +165,7 @@ export function EditInner( props ) {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
-
+	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth?.[0] ? maxWidth[0] : '' ), ( undefined !== maxWidth?.[1] ? maxWidth[1] : '' ), ( undefined !== maxWidth?.[2] ? maxWidth[2] : '' ) );
 	const previewHorizontalAlign = getPreviewSize( previewDevice, ( undefined !== hAlign?.[0] ? hAlign[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign[2] : '' ) );
 	const previewVerticalAlign = getPreviewSize( previewDevice, ( undefined !== vAlign?.[0] ? vAlign[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign[2] : '' ) );
 
@@ -309,6 +309,8 @@ export function EditInner( props ) {
 				paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
 				paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
 				paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
+
+				maxWidth: ( '' !== previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined ),
 			}
 		},
 		{
@@ -654,23 +656,22 @@ export function EditInner( props ) {
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody
-							title={__( 'Field Width', 'kadence-blocks' )}
 							initialOpen={true}
-							panelName={ 'kb-adv-form-text-width' }
+							panelName={ 'kb-adv-form-max-width' }
 						>
 							<ResponsiveRangeControls
 								label={__( 'Max Width', 'kadence-blocks' )}
-								value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
-								onChange={value => {
-									setMetaAttribute( [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ], 'maxWidth' );
+								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
+								onChange={ ( value ) => {
+									setMetaAttribute( [ value.toString(), maxWidth[ 1 ], maxWidth[ 2 ] ], 'maxWidth' );
 								}}
-								tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
+								tabletValue={ ( maxWidth[ 1 ] !== '' ? parseInt( maxWidth[ 1 ] ) : '' ) }
 								onChangeTablet={( value ) => {
-									setMetaAttribute( [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ], 'maxWidth' );
+									setMetaAttribute( [ maxWidth[ 0 ], value.toString(), maxWidth[ 2 ] ], 'maxWidth' );
 								}}
-								mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
+								mobileValue={ ( maxWidth[ 2 ] !== '' ? parseInt( maxWidth[ 2 ] ) : '' ) }
 								onChangeMobile={( value ) => {
-									setMetaAttribute( [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ], 'maxWidth' );
+									setMetaAttribute( [ maxWidth[ 0 ], maxWidth[ 1 ], value.toString() ], 'maxWidth' );
 								}}
 								min={0}
 								max={( maxWidthUnit === 'px' ? 2000 : 100 )}
