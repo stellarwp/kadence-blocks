@@ -67,7 +67,6 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$type          = 'checkbox';
 		$is_required   = $this->is_required( $attributes );
 		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
@@ -88,7 +87,7 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 			$is_checked = ! empty( $option['selected'] );
 
 			$inner_content .= '<div>';
-			$inner_content .= '<input class="kb-radio-style" type="checkbox" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $is_required . '>';
+			$inner_content .= '<input class="kb-radio-style" type="checkbox" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $this->a11y_helpers($attributes) . '>';
 
 			$inner_content .= '<label for="' . $id . '">' . $option['label'] . '</label>';
 

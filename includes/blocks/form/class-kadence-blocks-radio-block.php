@@ -88,7 +88,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 			$is_checked = ! empty( $option['selected'] );
 
 			$inner_content .= '<div>';
-			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $is_required . '>';
+			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $this->a11y_helpers($attributes) . '>';
 
 			$inner_content .= '<label for="' . $id . '">' . $option['label'] . '</label>';
 

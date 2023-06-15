@@ -83,7 +83,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<select ' . $is_multiselect . ' name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $is_required . '>';
+		$inner_content .= '<select ' . $is_multiselect . ' name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $this->a11y_helpers($attributes) . '>';
 
 		foreach ( $attributes['options'] as $option ) {
 			$inner_content .= '<option value="' . $this->get_option_value( $option ) . '">' . $option['label'] . '</option>';

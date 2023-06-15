@@ -63,7 +63,9 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function field_help_text( $attributes ) {
 		if ( ! empty( $attributes['helpText'] ) ) {
-			return '<div class="' . self::HELP_CLASS_NAME . '">' . $attributes['helpText'] . '</div>';
+			return '<div class="' . self::HELP_CLASS_NAME . '">' . $attributes['helpText'] . '</div>
+					<span id="aria-describe' . $attributes['uniqueID'] . '" class="kb-form-aria-describe screen-reader-text">' . $attributes['helpText'] . '</span>';
+
 		}
 		return '';
 	}
@@ -76,10 +78,10 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function field_label( $attributes ) {
 		$html = '';
-		if ( ! empty( $this->get_label( $attributes ) ) ) {
+		if ( ! empty( $this->get_label( $attributes ) ) && ( !isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
 			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . $this->field_name( $attributes ) . '">' . $this->get_label( $attributes );
 
-			if ( ! empty( $attributes['required'] ) && $attributes['required'] == 1 ) {
+			if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
 				$html .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
 			}
 
@@ -160,7 +162,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	}
 
 	/**
-	 * Generate the aria-describedby attribute
+	 * Get the auto complete value
 	 *
 	 * @param $block
 	 *
@@ -183,13 +185,33 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return string
 	 */
 	public function is_required( $attributes, $true = 'yes', $false = 'no' ) {
-		if ( ! empty( $attributes['required'] ) && $attributes['required'] === 1 ) {
+		if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
 			return $true;
 		}
 
 		return $false;
 	}
 
+	/**
+	 * @param $attributes
+	 *
+	 * @return string
+	 */
+	public function a11y_helpers( $attributes ) {
+		$response = '';
+
+		$is_required_bool = $this->is_required( $attributes, true, false );
+		if( $is_required_bool ){
+			$response .= 'required aria-required="true" ';
+		}
+
+		// if label is hidden and not empty, add as aria-label to input
+		if( isset( $attributes['showLabel'] ) && !$attributes['showLabel'] && !empty( $attributes['label'] ) ){
+			$response .= 'aria-label="' . $attributes['label'] . '" ';
+		}
+
+		return $response;
+	}
 	/**
 	 * Get placeholder text for a given input field
 	 *
