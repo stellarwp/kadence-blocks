@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.41
+Stable tag: 3.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,12 +77,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.0 =
-Release Date: TBD, 2023
-* Add: Advanced Form Block
-* Add: Progress Bar Block
+= 3.1.0 Alpha Version 1 =
+Release Date: June 15th, 2023
+* Add: Advanced Form Block.
+* Add: Progress Bar Block.
 * Add: Dynamic block labels in list view.
 * Add: Ability to set custom names for Kadence blocks in list view
+* Add: Option for local google fonts.
+* Update: Unique Ids are now set site wide.
+* Update: Block names for easier searching.
 
 = 3.0.41 =
 Release Date: June 6th, 2023
