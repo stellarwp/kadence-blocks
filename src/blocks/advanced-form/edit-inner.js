@@ -345,32 +345,6 @@ export function EditInner( props ) {
 				)}
 			</style>
 			<BlockControls>
-				<ToolbarGroup group="align-block">
-					<JustifyContentControl
-						value={ previewHorizontalAlign }
-						onChange={ value => {
-							if ( previewDevice === 'Mobile' ) {
-								setMetaAttribute( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( value ? value : '' ) ], 'hAlign' );
-							} else if ( previewDevice === 'Tablet' ) {
-								setMetaAttribute( [ ( undefined !== hAlign?.[0] ? hAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ], 'hAlign' );
-							} else {
-								setMetaAttribute( [ ( value ? value : '' ), ( undefined !== hAlign?.[1] ? hAlign?.[1] : '' ), ( undefined !== hAlign?.[2] ? hAlign?.[2] : '' ) ], 'hAlign' );
-							}
-						} }
-					/>
-					<BlockVerticalAlignmentControl
-						value={ previewVerticalAlign }
-						onChange={ value => {
-							if ( previewDevice === 'Mobile' ) {
-								setMetaAttribute(  [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( value ? value : '' ) ], 'vAlign' );
-							} else if ( previewDevice === 'Tablet' ) {
-								setMetaAttribute( [ ( undefined !== vAlign?.[0] ? vAlign?.[0] : '' ), ( value ? value : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ], 'vAlign' );
-							} else {
-								setMetaAttribute( [ ( value ? value : '' ), ( undefined !== vAlign?.[1] ? vAlign?.[1] : '' ), ( undefined !== vAlign?.[2] ? vAlign?.[2] : '' ) ], 'vAlign' );
-							}
-						}}
-					/>
-				</ToolbarGroup>
 				<ToolbarGroup group="add-block" className="kb-add-block">
 					<FieldBlockAppender rootClientId={clientId} />
 				</ToolbarGroup>
