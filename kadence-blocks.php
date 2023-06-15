@@ -88,6 +88,8 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-local-gfonts.php';
+
 	/**
 	 * Site Health
 	 */
