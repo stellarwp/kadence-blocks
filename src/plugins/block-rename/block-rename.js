@@ -1,5 +1,5 @@
 import { get, startsWith } from 'lodash';
-import { registerPlugin } from '@wordpress/plugins';
+import { registerPlugin, getPlugin } from '@wordpress/plugins';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -100,6 +100,8 @@ const RenameBlockMenuItem = () => {
 
 };
 
-registerPlugin( 'kadence-block-rename', {
-	render: RenameBlockMenuItem,
-} );
+if ( ! getPlugin( 'kadence-block-rename' ) ) {
+	registerPlugin( 'kadence-block-rename', {
+		render: RenameBlockMenuItem,
+	} );
+}
