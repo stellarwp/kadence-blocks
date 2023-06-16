@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.0.37
+Stable tag: 3.0.41
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,9 +77,38 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.41 =
+Release Date: June 6th, 2023
+* Update: Typography custom sizes to support three decimals.
+* Update: Tabs to use presentation role.
+* Fix: Issue with safari button text.
+* Fix: Issue with possible php notice.
+* Fix: Issue with nested accordions and accordion spacing.
+
+= 3.0.40 =
+Release Date: May 31st, 2023
+* Add: Overlay color to advanced image block.
+* Fix: Issue with tabs accessibility.
+* Fix: Possible issue with countUp start trigger.
+* Fix: Issue with icon list stroke width.
+
+= 3.0.39 =
+Release Date: May 30th, 2023
+* Fix: Issue with tabs keyboard navigation.
+* Fix: Issue with row alignment in editor.
+* FIx: Issue with single icon custom class.
+* Fix: Issue with css for Lottie Block.
+* Fix: Issue with left and right margin in image block when aligned left or right.
+* Fix: Issue with wpml and title for info box when using a div or span tag.
+* Fix: Spacing issue with icon list in editor.
+* Fix: RTL gallery slider issues.
+
 = 3.0.38 =
-Release Date: May 4th, 2023
+Release Date: May 16th, 2023
+* Add: Ratio option to lottie block.
+* Update: Deprecated toolbar controls.
 * Fix: Issue with tabs and mega menu.
+* Fix: Possible issue with scheduling monthly library cleanup.
 
 = 3.0.37 =
 Release Date: May 2nd, 2023

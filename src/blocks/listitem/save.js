@@ -46,8 +46,10 @@ function Save( props ) {
 
     const iconName = icon ? icon : 'USE_PARENT_DEFAULT_ICON';
 
+    const iconWidth = icon && width ? width : 'USE_PARENT_DEFAULT_WIDTH';
+
 	const iconSpan = (
-		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ ( 'fe' === icon.substring( 0, 2 ) ? width : undefined ) } ariaHidden={ 'true' } />
+		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ iconWidth } ariaHidden={ 'true' } />
 	);
 
 	const emptyIcon = ( size === 0 ?
@@ -58,7 +60,6 @@ function Save( props ) {
 				</svg>
 			</div>
 	);
-
     return (
         <li {...blockProps}>
             { link && (

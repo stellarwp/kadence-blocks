@@ -106,6 +106,7 @@ import {
 	InspectorAdvancedControls,
 	useBlockProps,
 	useInnerBlocksProps,
+	BlockVerticalAlignmentControl,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
@@ -527,32 +528,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: sixColIcon },
 		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
 	];
-	const verticalAlignOptions = [
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
-				title: __( 'Align Top', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'top' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'top' } ),
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
-				title: __( 'Align Middle', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'middle' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'middle' } ),
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
-				title: __( 'Align Bottom', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'bottom' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'bottom' } ),
-			},
-		],
-	];
 	const innerClasses = classnames( {
 		'innerblocks-wrap': true,
 		'kb-theme-content-width': inheritMaxWidth,
@@ -566,7 +541,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				minHeight: previewMinHeight ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
+				minHeight: previewMinHeight && paddingUnit && '%' !== paddingUnit ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
 				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},
@@ -589,7 +564,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						controls={ [ 'center', 'wide', 'full' ] }
 						onChange={ value => setAttributes( { align: value } ) }
 					/>
-					<ToolbarGroup>
+					<ToolbarGroup group="content-width">
 						<ToolbarButton
 							className="kb-content-width"
 							icon={ inheritMaxWidth ? <ContentWidthIcon value='theme' /> : <ContentWidthIcon value='normal' /> }
@@ -651,13 +626,21 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 							</Popover>
 						) }
 					</ToolbarGroup>
-					<ToolbarGroup
-						isCollapsed={ true }
-						icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
-						label={ __( 'Vertical Align', 'kadence-blocks' )  }
-						controls={ verticalAlignOptions }
-					/>
-					<ToolbarGroup>
+					<ToolbarGroup group="align">
+						<BlockVerticalAlignmentControl
+							value={verticalAlignment === 'middle' ? 'center' : verticalAlignment }
+							onChange={ value => {
+								if ( value === 'center' ) {
+									setAttributes( { verticalAlignment: 'middle' } );
+								} else if ( value === 'bottom' ) {
+									setAttributes( { verticalAlignment: 'bottom' } );
+								}  else {
+									setAttributes( { verticalAlignment: 'top' } );
+								}
+							}}
+						/>
+					</ToolbarGroup>
+					<ToolbarGroup group="add-block">
 						<ToolbarButton
 							className="kb-row-add-section"
 							icon={ plusCircle }

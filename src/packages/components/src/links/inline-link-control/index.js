@@ -103,8 +103,8 @@ class URLInputInline extends Component {
 									label={ __( 'Link Target', 'kadence-blocks-pro' ) }
 									value={ opensInNewTab }
 									options={ [
-										{ value: '_self', label: __( 'Same Window', 'kadence-blocks-pro' ) },
-										{ value: '_blank', label: __( 'New Window', 'kadence-blocks-pro' ) },
+										{ value: '_self', label: __( 'Same Tab/Window', 'kadence-blocks' ) },
+										{ value: '_blank', label: __( 'Open in New Tab', 'kadence-blocks' ) },
 										{ value: 'video', label: __( 'Video Popup', 'kadence-blocks-pro' ) },
 									] }
 									onChange={ onSetNewTab }

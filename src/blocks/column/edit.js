@@ -66,6 +66,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
 	BlockAlignmentToolbar,
+	BlockVerticalAlignmentControl,
 	BlockControls,
 	InnerBlocks,
 	InspectorControls,
@@ -439,50 +440,6 @@ function SectionEdit( {
 	const hasHoverOverlayImage = ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? true : false );
 	const previewHoverOverlayImg = hasHoverOverlayImage ? `url( ${ overlayImgHover[ 0 ].bgImg } )` : '';
 	const previewHoverOverlay = overlayHoverType === 'gradient' ? overlayGradientHover : previewHoverOverlayImg;
-	const verticalAlignOptions = [
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
-				title: __( 'Align Top', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'top' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'top' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'top' } );
-					}
-				}
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
-				title: __( 'Align Middle', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'middle' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'middle' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'middle' } );
-					}
-				}
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
-				title: __( 'Align Bottom', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'bottom' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'bottom' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'bottom' } );
-					}
-				}
-			},
-		],
-	];
 	const nonTransAttrs = [ 'images', 'imagesDynamic' ];
 	const innerClasses = classnames( {
 		'kadence-inner-column-inner': true,
@@ -513,6 +470,7 @@ function SectionEdit( {
 				: InnerBlocks.ButtonBlockAppender,
 		}
 	);
+	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
 	return (
 		<div { ...blockProps }>
 			<style>
@@ -580,13 +538,13 @@ function SectionEdit( {
 
 				{ ( displayHoverShadow && undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { box-shadow:${ ( undefined !== shadowHover[ 0 ].inset && shadowHover[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ), ( undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 1 ) ) } !important; }` : '' ) }
 				{ kadenceBlockCSS && (
-					<Fragment>
+					<>
 						{ kadenceBlockCSS.replace( /selector/g, `.kadence-column-${ uniqueID }` ) }
-					</Fragment>
+					</>
 				) }
 			</style>
 			{ showSettings( 'allSettings', 'kadence/column' ) && (
-				<Fragment>
+				<>
 					<BlockControls>
 						{ ! inRowBlock && (
 							<BlockAlignmentToolbar
@@ -595,13 +553,22 @@ function SectionEdit( {
 								onChange={ value => setAttributes( { align: value } ) }
 							/>
 						) }
-						<ToolbarGroup
-							className='kb-vertical-align'
-							isCollapsed={ true }
-							icon={ <VerticalAlignmentIcon value={ ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) ) } /> }
-							label={ __( 'Vertical Align', 'kadence-blocks' )  }
-							controls={ verticalAlignOptions }
-						/>
+						<ToolbarGroup group="align">
+							<BlockVerticalAlignmentControl
+								value={previewVerticalAlign === 'middle' ? 'center' : previewVerticalAlign }
+								onChange={ value => {
+									if ( value === 'center' ) {
+										setAttributes( { verticalAlignment: 'middle' } );
+									} else if ( value === 'bottom' ) {
+										setAttributes( { verticalAlignment: 'bottom' } );
+									}  else if ( value === 'top' ) {
+										setAttributes( { verticalAlignment: 'top' } );
+									}  else {
+										setAttributes( { verticalAlignment: '' } );
+									}
+								}}
+							/>
+						</ToolbarGroup>
 						<CopyPasteAttributes
 							attributes={ attributes }
 							excludedAttrs={ nonTransAttrs }
@@ -654,7 +621,7 @@ function SectionEdit( {
 											/>}
 										/>
 										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
-											<Fragment>
+											<>
 												<ResponsiveRangeControls
 													label={__( 'Gutter', 'kadence-blocks' )}
 													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
@@ -751,7 +718,7 @@ function SectionEdit( {
 														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } )}
 													/>}
 												/>
-											</Fragment>
+											</>
 										)}
 										<ResponsiveAlignControls
 											label={__( 'Text Alignment', 'kadence-blocks' )}
@@ -1538,7 +1505,7 @@ function SectionEdit( {
 							</>
 						}
 					</InspectorControls>
-				</Fragment>
+				</>
 			) }
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),

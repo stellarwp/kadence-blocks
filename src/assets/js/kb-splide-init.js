@@ -128,6 +128,7 @@
 					mainSliderOptions.type = ( mainSliderParsedData.sliderFade ||  undefined == mainSliderParsedData.sliderFade ) ? "fade" : "slide";
 					mainSliderOptions.rewind = true;
 					mainSliderOptions.pagination = false;
+					mainSliderOptions.direction = navSliderOptions.direction;
 
 					navSlider.classList.add("slick-initialized");
 					navSlider.classList.add("slick-slider");

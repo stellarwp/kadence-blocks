@@ -440,13 +440,21 @@
 	content:'';
 }
 .kb-blocks-fluid-carousel:not( .splide-initialized ):not(.tns-slider) {
+	display: flex;
+	&[data-slider-center-mode="true"] {
+		.kb-slide-item:nth-last-child(2) {
+			order: -11;
+			margin-left:-100px;
+		}
+		.kb-slide-item:nth-last-child(1) {
+			order: -10;
+		}
+	}
 	.kb-slide-item {
 		max-width:80%;
-		margin: 0 auto;
-		display:none;
-		&:nth-child(-n+1) {
-			display:block;
-		}
+		margin: 0 10px 0 0;
+		flex-basis: fit-content;
+		flex-shrink: 0;
 	}
 }
 .kt-blocks-carousel-init:not( .splide-initialized ):not(.tns-slider) {

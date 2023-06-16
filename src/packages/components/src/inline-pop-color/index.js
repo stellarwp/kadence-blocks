@@ -219,7 +219,7 @@ import {
 	};
 	return (
 		<Dropdown
-			position="top right"
+			placement="top"
 			className="kb-colors-selector components-dropdown-menu components-toolbar new-kadence-advanced-colors"
 			contentClassName="block-library-colors-selector__popover kt-popover-color kadence-pop-color-popover"
 			//renderToggle={ renderToggleComponent() }

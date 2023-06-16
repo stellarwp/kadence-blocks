@@ -309,6 +309,25 @@
 				"left": [ "", "", "" ],
 				"unit": "px"
 			} ]
+		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 0.3
+		},
+		"overlay": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"overlayGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayBlendMode": {
+			"type": "string"
 		}
 	},
 	"supports": {

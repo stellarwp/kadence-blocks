@@ -19,7 +19,8 @@
 		</gutenberg-block>
 		<gutenberg-block type="kadence/infobox" translate="1">
 			<xpath>//div/a/@href</xpath>
-			<xpath>//div[@class="kt-infobox-textcontent"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
+			<xpath>//*[@class="kt-blocks-info-box-title"]</xpath>
+			<xpath>//div[@class="kt-infobox-textcontent"]</xpath>
 			<xpath>//span[@class="kt-blocks-info-box-learnmore"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/pane" translate="1">
