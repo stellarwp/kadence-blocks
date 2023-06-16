@@ -100,8 +100,6 @@ const RenameBlockMenuItem = () => {
 
 };
 
-if ( ! getPlugin( 'kadence-block-rename' ) ) {
-	registerPlugin( 'kadence-block-rename', {
-		render: RenameBlockMenuItem,
-	} );
-}
+registerPlugin( 'kadence-block-rename', {
+	render: RenameBlockMenuItem,
+} );
