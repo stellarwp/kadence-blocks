@@ -360,11 +360,9 @@ function RowLayoutEditContainer( props ) {
 			updateColumns( innerItemCount, defaults.columns );
 		}
 	}, [ innerItemCount, columns ] );
+
 	useEffect( () => {
-		console.log(2)
-		if ( ! isPreviewMode ) {
-			debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, setDynamicBackgroundImg, context, bgImg ? false : true );
-		}
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, setDynamicBackgroundImg, context, bgImg ? false : true );
 	}, [ 'bgImg' ] );
 
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
