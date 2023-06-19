@@ -59,7 +59,7 @@ export function AboutYourSite() {
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
 						<VStack spacing={ 6 } style={{ margin: '0 auto' }}>
 							<TextareaControl
-								label={ __('Your Mission Statement', 'kadence-blocks') }
+								label={ __('About Me/My Organization/My Project', 'kadence-blocks') }
 								placeholder="..."
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
