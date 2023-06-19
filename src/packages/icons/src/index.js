@@ -191,3 +191,6 @@ export { default as tagsIcon } from './tags'
 export { default as userIcon } from './user'
 export { default as commentsIcon } from './comments'
 export { default as linkIcon } from './link'
+
+// Sidebar Icons
+export * from './sidebar';

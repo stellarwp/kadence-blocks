@@ -60,7 +60,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import PatternList from './pattern-list';
 import PageList from './page-list';
-import { useMemo, useEffect, useState } from '@wordpress/element';
+import { useMemo, useEffect, useState, useRef } from '@wordpress/element';
 import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
@@ -72,6 +72,10 @@ import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
+
+import { Sidebar } from './sidebar';
+import { menuPanels } from './sidebar/constants';
+
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
 // @todo: Get page style terms dynamically.
@@ -103,6 +107,11 @@ function PatternLibrary( {
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
 	const [ contextOptions, setContextOptions ] = useState( PATTERN_CONTEXTS );
 	const [ contextStatesRef, setContextStatesRef ] = useState( false );
+	
+	const sidebarRef = useRef(null);
+	const [ sidebarHeight, setSidebarHeight ] = useState(0);
+	const [ sidebarResizing, setSidebarResizing ] = useState(false);
+	
 	const [ contextListOptions, setContextListOptions ] = useState( [] );
 	const [ pagesCategories, setPagesCategories ] = useState( PAGE_CATEGORIES );
 	const [ pageCategoryListOptions, setPageCategoryListOptions ] = useState( [] );
@@ -260,7 +269,39 @@ function PatternLibrary( {
 		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 
 		setPageStyles( activePageStyles );
-	}, [ filterChoices ])
+	}, [ filterChoices ]);
+
+	useEffect(() => {
+		let timeoutId;
+
+		function handleResize() {
+			console.log('PatternLibrary -> handleResize');
+			if (sidebarRef?.current?.clientHeight) {
+				clearTimeout(timeoutId);
+
+				timeoutId = setTimeout(() => {
+					setSidebarHeight(sidebarRef.current.clientHeight);
+					setSidebarResizing(true);
+				
+					// Delay needed to allow accurate height measurement from sidebar.
+					setTimeout(() => {
+						setSidebarResizing(false);
+					}, 5);
+				}, 100);
+			}
+		}
+
+		window.addEventListener('resize', handleResize);
+
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	useEffect(() => {
+		if (sidebarRef?.current?.clientHeight) {
+			setSidebarHeight(sidebarRef.current.clientHeight);
+		}
+	}, [ sidebarRef?.current?.clientHeight ]);
+
 	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
@@ -304,17 +345,26 @@ function PatternLibrary( {
 					setPages( o );
 					setPagesCategories( JSON.parse(JSON.stringify( pageCats ) ) );
 				} else {
+
 					const cats = PATTERN_CATEGORIES;
 					kadence_blocks_params.library_sections = o;
+					
+					console.log(cats);
+					console.log(o);
+
 					{ Object.keys( o ).map( function( key, index ) {
 						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
 							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
 								if ( ! cats.hasOwnProperty( ckey ) ) {
+									console.log('PATTERN_CATEGORIES does not have category key, so add it now: (',ckey,')');
 									cats[ ckey ] = o[ key ].categories[ ckey ];
 								}
 							} ) }
 						}
 					} ) }
+
+					console.log(cats);
+
 					setPatterns( o );
 					setCategories( cats );
 				}
@@ -776,7 +826,7 @@ function PatternLibrary( {
 							onChange={ value => setSearch( value ) }
 						/>
 					</div>
-					<div className="kb-library-sidebar-bottom-wrap">
+					<div ref={ sidebarRef } className="kb-library-sidebar-bottom-wrap">
 						<div className={ `kb-library-sidebar-bottom ${ selectedContextTab === 'context' ? 'kb-context-library-categories' : 'kb-design-library-categories' }`}>
 							{ selectedSubTab === 'pages' ? (
 								<>
@@ -826,25 +876,9 @@ function PatternLibrary( {
 								<>
 									{ selectedContextTab === 'design' ? (
 										<>
-											{ ! search && (
-												<>
-													{ categoryListOptions.map( ( category, index ) =>
-														<Button
-															key={ `${ category.value }-${ index }` }
-															className={ 'kb-category-button' + ( selectedCategory === category.value ? ' is-pressed' : '' ) }
-															aria-pressed={ selectedCategory === category.value }
-															onClick={ () => {
-																const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-																tempActiveStorage['kbCat'] = category.value;
-																localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-																setCategory( category.value );
-															}}
-														>
-															{ category.label }
-														</Button>
-													) }
-												</>
-											) }
+											{ (! search && sidebarHeight) ? (
+												<Sidebar panels={ menuPanels } resizing={ sidebarResizing } maxHeight={ sidebarHeight } /> // categoryListOptions
+											) : null }
 										</>
 									) : (
 										<>

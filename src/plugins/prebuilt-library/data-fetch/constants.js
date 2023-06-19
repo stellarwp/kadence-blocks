@@ -6,6 +6,13 @@ export const COLLECTION_SESSION_KEY = 'kadence_ai_current_collection';
 
 import { __, sprintf } from '@wordpress/i18n';
 
+export const SIDEBAR_GROUPS = {
+	'patterns': __( 'Patterns', 'kadence-blocks' ),
+	'events-calendar': __( 'The Events Calendar', 'kadence-blocks' ),
+	'givewp': __( 'GiveWP', 'kadence-blocks' ),
+	'learndash': __( 'LearnDash', 'kadence-blocks' ),
+	'woocommerce': __( 'WooCommerce', 'kadence-blocks' ),
+};
 export const PATTERN_CATEGORIES = { 
 	'category': __( 'Category', 'kadence-blocks' ),
 	'hero': __( 'Hero', 'kadence-blocks' ),
