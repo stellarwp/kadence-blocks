@@ -14,7 +14,6 @@ const initialState = {
 	industryOther: '',
 	missionStatement: '',
 	keywords: [],
-	prompts: ['about'], // @todo: Remove test value
 	tone: '',
 	privacyAgreement: false,
 	photoLibrary: 'Default',
