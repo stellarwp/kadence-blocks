@@ -284,30 +284,33 @@ export function Edit( props ) {
 		},
 	};
 
-	const container = document.createElement( 'div' );
-	const progress = useMemo( () => {
-		if ( barType === 'line' ) {
-			return new Line( container, progressAttributes );
-		} else if ( barType === 'circle' ) {
-			return new Circle( container, progressAttributes );
-		} else if ( barType === 'semicircle' ) {
-			return new SemiCircle( container, progressAttributes );
+	const container = '#progress-item';
+	const hasContainerDiv = document.querySelector( container );
+	let progressItem = null;
+
+	useEffect( () => {
+		if ( hasContainerDiv === null ) {
+			return;
 		}
-	}, [ progressAttributes, previewDevice ] );
 
-	const ProgressItem = () => {
-		const node = useCallback( node => {
-			if ( node ) {
-				node.appendChild( container );
+		if ( barType === 'line' ) {
+			progressItem = new Line( container, progressAttributes );
+		} else if ( barType === 'circle' ) {
+			progressItem = new Circle( container, progressAttributes );
+		} else if ( barType === 'semicircle' ) {
+			progressItem = new SemiCircle( container, progressAttributes );
+		}
+
+		if ( progressItem ) {
+			progressItem.animate( progressAmount / progressMax );
+		}
+
+		return function cleanup() {
+			if ( progressItem ) {
+				progressItem.destroy();
 			}
-		}, [] );
-
-		useEffect( () => {
-			progress.animate( progressAmount / progressMax );
-		}, [ previewDevice, progressAmount, progressMax ] );
-
-		return <div ref={node}/>;
-	};
+		};
+	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile ] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
@@ -846,7 +849,7 @@ export function Edit( props ) {
 
 				{RenderLabel( 'above' )}
 
-				<ProgressItem/>
+				<div id={'progress-item'}></div>
 
 				{RenderLabel( 'inside' )}
 
