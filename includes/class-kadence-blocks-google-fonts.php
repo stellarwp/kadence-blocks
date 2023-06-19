@@ -3,6 +3,8 @@
  * Outputs google fonts.
  */
 
+use function KadenceWP\KadenceBlocks\get_webfont_url;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -141,7 +143,13 @@ class Kadence_Blocks_Google_Fonts {
 		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
 			$link .= '&amp;display=swap';
 		}
-		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
+
+		$full_link = 'https://fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) );
+		$local_font_settings = get_option( 'kadence_blocks_font_settings' );
+		if ( $local_font_settings && isset( $local_font_settings['load_fonts_local'] ) && $local_font_settings['load_fonts_local'] == 'true' && function_exists( 'KadenceWP\KadenceBlocks\get_webfont_url' )) {
+			$full_link = get_webfont_url( htmlspecialchars_decode( $full_link ) );
+		}
+		echo '<link href="' . $full_link . '" rel="stylesheet">'; //phpcs:ignore
 	}
 	/**
 	 * Add gFonts.

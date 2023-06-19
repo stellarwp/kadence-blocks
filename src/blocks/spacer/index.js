@@ -26,7 +26,7 @@ registerBlockType('kadence/spacer', {
 		}
 	},
 	...metadata,
-	title: __( 'Spacer/Divider', 'kadence-blocks' ),
+	title: __( 'Spacer / Divider', 'kadence-blocks' ),
 	keywords: [
 		__( 'spacer', 'kadence-blocks' ),
 		__( 'divider', 'kadence-blocks' ),

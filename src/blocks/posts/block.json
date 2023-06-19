@@ -219,6 +219,7 @@
 	}
   },
   "supports": {
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

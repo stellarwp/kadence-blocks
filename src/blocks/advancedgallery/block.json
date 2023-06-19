@@ -417,7 +417,8 @@
 	  "right"
 	],
 	"html": false,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",

@@ -541,6 +541,8 @@
 	"ktanimate": true,
 	"ktanimatereveal": true,
 	"ktanimatepreview": true,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true,
+	"kbContentLabel": "content"
   }
 }

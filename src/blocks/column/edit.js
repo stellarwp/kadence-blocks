@@ -52,6 +52,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setDynamicState,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import './editor.scss';
@@ -79,18 +80,21 @@ import {
 	SelectControl,
 	ToolbarGroup,
 } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
+const FORM_ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
  */
-function SectionEdit( {
-	attributes,
-	setAttributes,
-	isSelected,
-	clientId,
-	context,
-	className,
-} ) {
+function SectionEdit( props ) {
+	const {
+		attributes,
+		setAttributes,
+		isSelected,
+		clientId,
+		context,
+		className,
+	} = props;
 	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -99,12 +103,18 @@ function SectionEdit( {
 	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -113,7 +123,8 @@ function SectionEdit( {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/column', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -258,22 +269,28 @@ function SectionEdit( {
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
 	}, [] );
+	
 	useEffect( () => {
 		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context, backgroundImg ? false : true );
 	}, [ 'backgroundImg' ] );
-	const { hasInnerBlocks, inRowBlock } = useSelect(
+	
+	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
-			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
+			const { getBlock, getBlockRootClientId, getBlockParentsByBlockName, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
 			const rootID = getBlockRootClientId( clientId );
 			let inRowBlock = false;
+			let inFormBlock = false;
 			if ( rootID ) {
+				const hasForm = getBlockParentsByBlockName( clientId, 'kadence/advanced-form' );
 				const parentBlock = getBlocksByClientId( rootID );
+				inFormBlock = ( undefined !== hasForm && hasForm.length ? true : false );
 				inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
 			}
 			return {
 				inRowBlock: inRowBlock,
 				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+				inFormBlock: inFormBlock,
 			};
 		},
 		[ clientId ]
@@ -468,6 +485,7 @@ function SectionEdit( {
 			renderAppender: hasInnerBlocks
 				? undefined
 				: InnerBlocks.ButtonBlockAppender,
+			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined
 		}
 	);
 	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
