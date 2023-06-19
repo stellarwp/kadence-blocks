@@ -24,7 +24,7 @@ const pages = [
 		id: 'about-your-site',
 		content: <AboutYourSite />,
 		step: 'About Your Site',
-		required: ['missionStatement', 'keywords', 'tone', 'privacyAgreement']
+		required: ['missionStatement', 'keywords', 'tone']
 	},
 	{
 		id: 'photography',
