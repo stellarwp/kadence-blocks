@@ -14,7 +14,7 @@ import { Button, PanelBody, PanelRow, Icon } from '@wordpress/components';
  */
 import * as kadenceIcons from '@kadence/icons';
 
-export function SidebarPanel({ panel, opened, onToggle, maxHeight }) {
+export function SidebarPanel({ panel, opened, onToggle, maxHeight, children }) {
   const [ panelRef, setPanelRef ] = useState();
   const [ panelHeight, setPanelHeight ] = useState();
   const [ hasOverflow, setHasOverflow ] = useState(false);
@@ -70,15 +70,7 @@ export function SidebarPanel({ panel, opened, onToggle, maxHeight }) {
             maxHeight: hasOverflow ? maxHeight : undefined,
           }}
         >
-          {
-            panel.options.map((option) => (
-              <Button
-								className={ 'kb-category-button' }
-                key={ option.value }>
-                { option.label }
-              </Button>
-            ))
-          }
+          { children }
         </div>
       </PanelRow>
     </PanelBody>

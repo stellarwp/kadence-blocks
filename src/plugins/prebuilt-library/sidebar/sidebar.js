@@ -6,7 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, forwardRef } from '@wordpress/element';
 import { Panel } from '@wordpress/components';
 
 /**
@@ -14,37 +14,38 @@ import { Panel } from '@wordpress/components';
  */
 import { SidebarPanel } from './sidebar-panel';
 
-export function Sidebar({ panels, maxHeight, resizing }) {
+export const Sidebar = forwardRef( function Sidebar(props, ref) {
+  const { panels, maxHeight, resizing } = props;
   const [ activePanel, setActivePanel ] = useState(0);
-  const [ sidebarRef, setSidebarRef ] = useState();
+  // const [ sidebarRef, setSidebarRef ] = useState();
   const [ toggleOffset, setToggleOffset ] = useState(0);
 
-  useEffect(() => {
-    let toggleHeight = 0;
-
-    if (sidebarRef) {
-      const panelToggles = sidebarRef.querySelectorAll('.components-panel__body-title');
-
-      panelToggles.forEach((toggle) => {
-        toggleHeight += toggle.clientHeight;
-      })
-    }
-
-    setToggleOffset(toggleHeight);
-  }, [ sidebarRef ])
+  // useEffect(() => {
+  //   let toggleHeight = 0;
+  //
+  //   if (ref) {
+  //     const panelToggles = ref.querySelectorAll('.components-panel__body-title');
+  //
+  //     panelToggles.forEach((toggle) => {
+  //       toggleHeight += toggle.clientHeight;
+  //     })
+  //   }
+  //
+  //   setToggleOffset(toggleHeight);
+  // }, [ ref ])
 
   useEffect(() => {
     // The resize event is used to ensure proper sidebar sizing.
     window.dispatchEvent(new Event('resize'));
   }, [ activePanel ])
 
-  const handlePanelToggle = (panelIndex) => {
-    setActivePanel(panelIndex);
-  }
+  // const handlePanelToggle = (panelIndex) => {
+  //   setActivePanel(panelIndex);
+  // }
 
-  if (! panels || panels.length === 0) {
-    return;
-  }
+  // if (! panels || panels.length === 0) {
+  //   return;
+  // }
 
   const classes = classnames('kb-library-sidebar', {
     'is-resizing': resizing,
@@ -52,22 +53,23 @@ export function Sidebar({ panels, maxHeight, resizing }) {
 
   return (
     <Panel
-      ref={ setSidebarRef }
+      ref={ ref }
       className={ classes }
     >
-      {
-        panels.map( ( panel, index ) => (
-          <SidebarPanel
-            key={ index }
-            panel={ panel }
-            panelCount={ panels.legth }
-            maxHeight={ maxHeight - toggleOffset }
-            opened={ activePanel === index }
-            onToggle={ () => handlePanelToggle(index) }
-          />
-        ))
-      }
+      { props.children }
+      {/* { */}
+      {/*   panels.map( ( panel, index ) => ( */}
+      {/*     <SidebarPanel */}
+      {/*       key={ index } */}
+      {/*       panel={ panel } */}
+      {/*       panelCount={ panels.legth } */}
+      {/*       maxHeight={ maxHeight - toggleOffset } */}
+      {/*       opened={ activePanel === index } */}
+      {/*       onToggle={ () => handlePanelToggle(index) } */}
+      {/*     /> */}
+      {/*   )) */}
+      {/* } */}
     </Panel>
   );
-}
+})
 

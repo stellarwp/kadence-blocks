@@ -73,8 +73,8 @@ import { SafeParseJSON } from '@kadence/helpers';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
 
-import { Sidebar } from './sidebar';
-import { menuPanels } from './sidebar/constants';
+import { SidebarDesign, SidebarDesignContext } from './sidebar';
+import { menuDesign, menuDesignContext } from './sidebar/constants';
 
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
@@ -246,15 +246,19 @@ function PatternLibrary( {
 		} ) );
 	}, [ categories ] );
 	useEffect( () => {
+		// Setting Page Category List
 		setPageCategoryListOptions( Object.keys( pagesCategories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
 		} ) );
+
 		let tempPageContexts = [];
 		Object.keys( pagesCategories ).map( function( key, index ) {
 			if ( 'category' !== key ) {
 				tempPageContexts.push( { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) } );
 			}
 		} );
+		
+		// Setting Page Context List
 		setPageContextListOptions( tempPageContexts );
 	}, [ pagesCategories ] );
 	useEffect( () => {
@@ -333,6 +337,10 @@ function PatternLibrary( {
 				if ( tempSubTab === 'pages' ) {
 					const pageCats = PAGE_CATEGORIES;
 					kadence_blocks_params.library_pages = o;
+					
+					console.log(pageCats);
+					console.log(o);
+					
 					{ Object.keys( o ).map( function( key, index ) {
 						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
 							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
@@ -628,6 +636,22 @@ function PatternLibrary( {
 			setIsImporting( false );
 		}
 	}
+	const handleSidebarDesignClick = (value) => {
+		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+
+		tempActiveStorage['kbCat'] = value;
+		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+
+		setCategory( value );
+	}
+	const handleSidebarDesignContextClick = (value) => {
+		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+
+		tempActiveStorage['context'] = value;
+		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+
+		setContext( value );
+	}
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
@@ -877,64 +901,31 @@ function PatternLibrary( {
 									{ selectedContextTab === 'design' ? (
 										<>
 											{ (! search && sidebarHeight) ? (
-												<Sidebar panels={ menuPanels } resizing={ sidebarResizing } maxHeight={ sidebarHeight } /> // categoryListOptions
+												<SidebarDesign
+													panels={ menuDesign } // @todo: Data to come from categoryListOptions
+													resizing={ sidebarResizing }
+													maxHeight={ sidebarHeight }
+													selected={ selectedCategory }
+													onSidebarClick={ handleSidebarDesignClick }
+												/>
 											) : null }
 										</>
 									) : (
 										<>
-											{ contextListOptions.map( ( contextCategory, index ) =>
-												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( localContexts && localContexts.includes( contextCategory.value ) ? ' has-content' : '' )}`}>
-													<Button
-														className={ `kb-category-button${ ( selectedContext === contextCategory.value ? ' is-pressed' : '' )}` }
-														aria-pressed={ selectedContext === contextCategory.value }
-														onClick={ () => {
-															const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-															tempActiveStorage['context'] = contextCategory.value;
-															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-															setContext( contextCategory.value );
-														}}
-													>
-														{ isContextRunning( contextCategory.value ) ? <Spinner /> : ''}
-														{ contextCategory.label }
-													</Button>
-													{ selectedContext === contextCategory.value && (
-														<>
-															<Button
-																className={ 'kb-reload-context-popover-toggle' + ( isContextReloadVisible ? ' is-pressed' : '' ) }
-																aria-pressed={ isContextReloadVisible }
-																ref={ setPopoverContextAnchor }
-																icon={ update }
-																disabled={ isContextReloadVisible }
-																onClick={ debounce( toggleReloadVisible, 100 ) }
-															>
-															</Button>
-															{ isContextReloadVisible && (
-																<Popover
-																	className="kb-library-extra-settings"
-																	placement="top-end"
-																	onClose={ debounce( toggleReloadVisible, 100 ) }
-																	anchor={ popoverContextAnchor }
-																>
-																	<p>{__('You can regenerate ai content for this context. This will use one credit and your current ai text will be forever lost. Would you like to regenerate ai content for this context?', 'kadence-blocks')}</p>
-																	<Button
-																		variant='primary'
-																		icon={ aiIcon }
-																		iconSize={ 16 }
-																		disabled={ isContextRunning( contextCategory.value ) }
-																		iconPosition='right'
-																		text={ __( 'Regenerate AI Content', 'kadence-blocks' ) }
-																		className={ 'kb-reload-context-confirm' }
-																		onClick={ () => {
-																			setIsContextReloadVisible(false);
-																			reloadAI( selectedContext );
-																		}}
-																	/>
-																</Popover>
-															) }
-														</>
-													)}
-												</div>
-											) }
+											{
+												<SidebarDesignContext
+													panels={ menuDesignContext } // @todo: Data to come from contextListOptions
+													resizing={ sidebarResizing }
+													maxHeight={ sidebarHeight }
+													selected={ selectedContext }
+													localContexts={ localContexts }
+													onSidebarClick={ handleSidebarDesignContextClick }
+													onSidebarAiReloadClick={ () => {
+														setIsContextReloadVisible(false);
+														reloadAI( selectedContext );
+													} }
+												/> 
+											}
 										</>
 									) }
 								</>
