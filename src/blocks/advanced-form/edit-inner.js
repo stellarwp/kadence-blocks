@@ -80,7 +80,7 @@ import {
  */
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
-const ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
+const ALLOWED_BLOCKS = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 
 export function EditInner( props ) {
 
