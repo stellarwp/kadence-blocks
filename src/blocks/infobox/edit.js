@@ -313,7 +313,7 @@ function KadenceInfoBox( props ) {
 			contextPost = context.postId;
 		}
 		if ( kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', contextPost );
+			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', context );
 		}
 	};
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );

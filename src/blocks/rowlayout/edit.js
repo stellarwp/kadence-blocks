@@ -362,7 +362,7 @@ function RowLayoutEditContainer( props ) {
 	}, [ innerItemCount, columns ] );
 
 	useEffect( () => {
-		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, setDynamicBackgroundImg, context, bgImg ? false : true );
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, context, setDynamicBackgroundImg, bgImg ? false : true );
 	}, [ 'bgImg' ] );
 
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );

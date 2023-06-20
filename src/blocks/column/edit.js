@@ -272,7 +272,7 @@ function SectionEdit( props ) {
 	
 	//set the dynamic image state
 	useEffect( () => {
-		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, setDynamicBackgroundImg, context, backgroundImg ? false : true );
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, context, setDynamicBackgroundImg, backgroundImg ? false : true );
 	}, [ 'backgroundImg' ] );
 	
 	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
