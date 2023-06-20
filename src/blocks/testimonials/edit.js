@@ -530,8 +530,10 @@ function KadenceTestimonials( props ) {
 
     }, []);
 
+    const innerBlockLength = testimonialBlock?.innerBlocks ? testimonialBlock.innerBlocks.length : 0;
+
     useEffect( () => {
-		if ( uniqueID && ! testimonialBlock.innerBlocks.length ) {
+		if ( uniqueID && ! innerBlockLength ) {
 			if ( testimonials?.length && testimonials.length && undefined !== metadata?.attributes?.testimonials?.default && !isEqual( metadata.attributes.testimonials.default, testimonials ) ) {
 				const migrateUpdate = migrateToInnerblocks( attributes );
 				setAttributes( migrateUpdate[0] );
@@ -541,7 +543,7 @@ function KadenceTestimonials( props ) {
 				onDelete();
 			}
 		}
-	}, [ testimonialBlock.innerBlocks.length ] );
+	}, [ innerBlockLength ] );
 
     const previewTitleFont = getPreviewSize(previewDevice, (undefined !== titleFont[0].size && undefined !== titleFont[0].size[0] && '' !== titleFont[0].size[0] ? titleFont[0].size[0] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[1] && '' !== titleFont[0].size[1] ? titleFont[0].size[1] : ''), (undefined !== titleFont[0].size && undefined !== titleFont[0].size[2] && '' !== titleFont[0].size[2] ? titleFont[0].size[2] : ''));
     const previewTitleFontSizeType = ( undefined !== titleFont?.[0]?.sizeType && '' !== titleFont?.[0]?.sizeType ? titleFont?.[0]?.sizeType : 'px' );
