@@ -398,10 +398,7 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 							</Button>
 						</div>
 						:
-						<select
-							multiple={multiSelect}
-							className={'ignore-field-styles'}
-						>
+						<select multiple={multiSelect} >
 							{times( options.length, n => (
 								<option key={n} value={n} selected={ isOptionSelected( options[ n ] ) } disabled={get( options[ n ], 'disabled', false )}>
 									{options[ n ].label}
