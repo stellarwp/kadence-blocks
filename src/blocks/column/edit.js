@@ -80,7 +80,7 @@ import {
 	ToolbarGroup,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-const FORM_ALLOWED_BLOCKS = [ 'kadence/advancedheading', 'core/paragraph', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden' ];
+const FORM_ALLOWED_BLOCKS = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
