@@ -31,91 +31,91 @@ export const COLLECTION_REQUEST_IMAGE_SIZES = [
 export const CONTENT_TONE = [
 	{
 		value: 'APPRECIATIVE',
-		label: __('Appreciative', 'kadence'),
+		label: __('Appreciative', 'kadence-blocks'),
 	},
 	{
 		value: 'ASSERTIVE',
-		label: __('Assertive', 'kadence'),
+		label: __('Assertive', 'kadence-blocks'),
 	},
 	{
 		value: 'AWESTRUCK',
-		label: __('Awestruck', 'kadence'),
+		label: __('Awestruck', 'kadence-blocks'),
 	},
 	{
 		value: 'CANDID',
-		label: __('Candid', 'kadence'),
+		label: __('Candid', 'kadence-blocks'),
 	},
 	{
 		value: 'CASUAL',
-		label: __('Casual', 'kadence'),
+		label: __('Casual', 'kadence-blocks'),
 	},
 	{
 		value: 'CAUTIONARY',
-		label: __('Cautionary', 'kadence'),
+		label: __('Cautionary', 'kadence-blocks'),
 	},
 	{
 		value: 'COMPASSIONATE',
-		label: __('Compassionate', 'kadence'),
+		label: __('Compassionate', 'kadence-blocks'),
 	},
 	{
 		value: 'CONVINCING',
-		label: __('Convincing', 'kadence'),
+		label: __('Convincing', 'kadence-blocks'),
 	},
 	{
 		value: 'CRITICAL',
-		label: __('Critical', 'kadence'),
+		label: __('Critical', 'kadence-blocks'),
 	},
 	{
 		value: 'EARNEST',
-		label: __('Earnest', 'kadence'),
+		label: __('Earnest', 'kadence-blocks'),
 	},
 	{
 		value: 'ENTHUSIASTIC',
-		label: __('Enthusiastic', 'kadence'),
+		label: __('Enthusiastic', 'kadence-blocks'),
 	},
 	{
 		value: 'FORMAL',
-		label: __('Formal', 'kadence'),
+		label: __('Formal', 'kadence-blocks'),
 	},
 	{
 		value: 'FUNNY',
-		label: __('Funny', 'kadence'),
+		label: __('Funny', 'kadence-blocks'),
 	},
 	{
 		value: 'HUMBLE',
-		label: __('Humble', 'kadence'),
+		label: __('Humble', 'kadence-blocks'),
 	},
 	{
 		value: 'HUMOROUS',
-		label: __('Humorous', 'kadence'),
+		label: __('Humorous', 'kadence-blocks'),
 	},
 	{
 		value: 'INFORMATIVE',
-		label: __('Informative', 'kadence'),
+		label: __('Informative', 'kadence-blocks'),
 	},
 	{
 		value: 'INSPIRATIONAL',
-		label: __('Inspirational', 'kadence'),
+		label: __('Inspirational', 'kadence-blocks'),
 	},
 	{
 		value: 'JOYFUL',
-		label: __('Joyful', 'kadence'),
+		label: __('Joyful', 'kadence-blocks'),
 	},
 	{
 		value: 'PASSIONATE',
-		label: __('Passionate', 'kadence'),
+		label: __('Passionate', 'kadence-blocks'),
 	},
 	{
 		value: 'THOUGHTFUL',
-		label: __('Thoughtful', 'kadence'),
+		label: __('Thoughtful', 'kadence-blocks'),
 	},
 	{
 		value: 'URGENT',
-		label: __('Urgent', 'kadence'),
+		label: __('Urgent', 'kadence-blocks'),
 	},
 	{
 		value: 'WORRIED',
-		label: __('Worried', 'kadence'),
+		label: __('Worried', 'kadence-blocks'),
 	},
 ];
 
@@ -138,5 +138,26 @@ export const COLLECTION_REQUEST_BODY = {
 			crop: true
 		}
 	]
+};
+
+export const ENTITY_TYPE = [
+	{
+		value: 'COMPANY',
+		label: __( 'A Company', 'kadence-blocks' ),
+	},
+	{
+		value: 'INDIVIDUAL',
+		label: __( 'An Individual', 'kadence-blocks' ),
+	},
+	{
+		value: 'ORGANIZATION',
+		label: __( 'An Organization', 'kadence-blocks' ),
+	},
+];
+
+export const ENTITY_TO_NAME = {
+	'COMPANY': __( 'Company Name', 'kadence-blocks' ),
+	'INDIVIDUAL': __( 'Name', 'kadence-blocks' ),
+	'ORGANIZATION': __( 'Organization Name', 'kadence-blocks' ),
 };
 

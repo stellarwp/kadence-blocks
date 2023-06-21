@@ -8,6 +8,7 @@ const initialState = {
 	context: 'kadence',
 	currentPageIndex: 0,
 	companyName: '',
+	entityType: 'COMPANY',
 	location: '',
 	industry: '',
 	industrySpecific: '',
@@ -37,6 +38,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				companyName: action.payload
+			}
+		case 'SET_ENTITY_TYPE':
+			return {
+				...state,
+				entityType: action.payload
 			}
 		case 'SET_LOCATION':
 			return {
