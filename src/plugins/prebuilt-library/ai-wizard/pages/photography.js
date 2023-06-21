@@ -83,7 +83,7 @@ export function Photography() {
 					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="column" style={ styles.alignCenter }>
 						<SelectControl
 							className={ 'stellarwp-ai-photography-control' }
-							label={ __('Photo library', 'kadence') }
+							label={ __('Photo library', 'kadence-blocks') }
 							value={ photoLibrary }
 							onChange={ handlePhotoLibraryChange }
 						>
@@ -98,12 +98,12 @@ export function Photography() {
 									))
 								)
 							}
-							<option value="My Images">{ __('My Images', 'kadence') }</option>
+							<option value="My Images">{ __('My Images', 'kadence-blocks') }</option>
 						</SelectControl>
 						{ photoLibrary !== 'My Images' && (
 							<Button
 								variant="link"
-								text={ __('I\'d like to use my own images', 'kadence') }
+								text={ __('I\'d like to use my own images', 'kadence-blocks') }
 								onClick={ () => dispatch({ type: 'SET_PHOTO_LIBRARY', payload: 'My Images' }) }
 							/>
 						) }

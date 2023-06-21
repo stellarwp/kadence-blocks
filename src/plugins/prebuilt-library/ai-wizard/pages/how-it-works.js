@@ -27,8 +27,8 @@ const styles = {
 	}
 }
 
-const headline = __('Take your website creation to the next level with Kadence AI.', 'kadence');
-const content = __('Kadence AI creates a website building experience no other builder can offer. Our powerful technology generates content in fully designed Kadence patterns to meet your mission and goals in a seamless, intuitive experience. Say goodbye to generic placeholder text and blank screen anxiety. Welcome to elegant and effective content that represents your brand and connects with your audience.', 'kadence');
+const headline = __('Take your website creation to the next level with Kadence AI.', 'kadence-blocks');
+const content = __('Kadence AI creates a website building experience no other builder can offer. Our powerful technology generates content in fully designed Kadence patterns to meet your mission and goals in a seamless, intuitive experience. Say goodbye to generic placeholder text and blank screen anxiety. Welcome to elegant and effective content that represents your brand and connects with your audience.', 'kadence-blocks');
 
 export function HowItWorks() {
 	return (
