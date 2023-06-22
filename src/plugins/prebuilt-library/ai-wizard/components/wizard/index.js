@@ -32,6 +32,7 @@ export function Wizard({
 	forwardButtonDisabled = false,
 	onPageChange = () => {},
 	onFinish,
+	photographyOnly,
 	pages = []
 }) {
 	const guideContainer = useRef(null);
@@ -175,22 +176,35 @@ export function Wizard({
 					) }
 					{ ! canGoForward && (
 						<div className='components-wizard__finish-button-container'>
-							<Button
-								variant="secondary"
-								className={ 'components-wizard__finish-button' }
-								disabled={ finishButtonDisabled }
-								onClick={ onFinish }
-							>
-								{ finishButtonText }
-							</Button>
-							<Button
-								variant="primary"
-								className={ 'components-wizard__finish-build-button' }
-								disabled={ finishButtonDisabled }
-								onClick={ onFinish }
-							>
-								{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
-							</Button>
+							{ photographyOnly ? (
+								<Button
+									variant="primary"
+									className={ 'components-wizard__finish-button' }
+									disabled={ finishButtonDisabled }
+									onClick={ onFinish }
+								>
+									{ finishButtonText }
+								</Button>
+							) : (
+								<>
+									<Button
+										variant="secondary"
+										className={ 'components-wizard__finish-button' }
+										disabled={ finishButtonDisabled }
+										onClick={ onFinish }
+									>
+										{ finishButtonText }
+									</Button>
+									<Button
+										variant="primary"
+										className={ 'components-wizard__finish-build-button' }
+										disabled={ finishButtonDisabled }
+										onClick={ onFinish }
+									>
+										{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
+									</Button>
+								</>
+							) }
 						</div>
 					) }
 				</div>

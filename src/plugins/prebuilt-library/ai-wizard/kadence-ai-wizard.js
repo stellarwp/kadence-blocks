@@ -119,6 +119,7 @@ export function KadenceAiWizard({ loading, handleWizardClose, photographyOnly })
 			finishButtonDisabled={ isFinishButtonDisabled() }
 			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
 			onFinish={ (event) => handleOnFinish(event) }
+			photographyOnly={ photographyOnly }
 		/>
 	)
 }
