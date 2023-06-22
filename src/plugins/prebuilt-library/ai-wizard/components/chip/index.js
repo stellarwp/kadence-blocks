@@ -41,7 +41,7 @@ export function Chip(props) {
 	if (onDelete) {
 		deleteButton = <CoreButton
 			icon="no-alt"
-			label={ __('Delete Selection', 'kadence')}
+			label={ __('Delete Selection', 'kadence-blocks')}
 			isSmall
 			onClick={ handleDeleteClick }
 		/>;

@@ -18,13 +18,13 @@ const pages = [
 		id: 'industry-information',
 		content: <IndustryInformation />,
 		step: 'Industry Information',
-		required: ['companyName', 'location', 'industry', 'industrySpecific', 'industryOther']
+		required: ['entityType', 'companyName', 'location', 'industry', 'industrySpecific', 'industryOther']
 	},
 	{
 		id: 'about-your-site',
 		content: <AboutYourSite />,
 		step: 'About Your Site',
-		required: ['missionStatement', 'keywords', 'tone', 'privacyAgreement']
+		required: ['missionStatement', 'keywords', 'tone']
 	},
 	{
 		id: 'photography',
