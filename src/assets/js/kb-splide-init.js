@@ -247,7 +247,7 @@
 						gap: dataSet.sliderGapMobile || 0,
 					},
 					991: {
-						perPage: dataSet.columnsXs || 1,
+						perPage: dataSet.columnsSm || 1,
 						perMove: scrollIsOne || dataSet.columnsSm,
 						gap: dataSet.sliderGapTablet || 0,
 					},
