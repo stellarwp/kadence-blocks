@@ -22,24 +22,24 @@ export function SidebarDesign(props) {
     selected
   } = props;
 
-  const sidebarRef = useRef(null);
-  const { hasPanels, getPanelToggleOffset } = useSidebar(panels, sidebarRef);
-  const [ toggleOffset, setToggleOffset ] = useState(0);
-  const [ activePanel, setActivePanel ] = useState(0);
+  const sidebarRef = useRef( null );
+  const { hasPanels, getPanelToggleOffset } = useSidebar( panels, sidebarRef );
+  const [ toggleOffset, setToggleOffset ] = useState( 0 );
+  const [ activePanel, setActivePanel ] = useState( 0 );
 
-  useEffect(() => {
+  useEffect( () => {
     if ( sidebarRef ) {
       const offset = getPanelToggleOffset();
 
       setToggleOffset(offset);
     }
-  }, [ sidebarRef ])
+  }, [ sidebarRef ] )
 
-  const handlePanelToggle = (panelIndex) => {
-    setActivePanel(panelIndex);
+  const handlePanelToggle = ( panelIndex ) => {
+    setActivePanel( panelIndex );
   }
 
-  if (! hasPanels) {
+  if ( ! hasPanels ) {
     return;
   }
 
@@ -48,7 +48,7 @@ export function SidebarDesign(props) {
       {
         panels.map( ( panel, index ) => {
           // If options are empty, skip current panel.
-          if (! panel?.options || panel.options.length === 0) {
+          if ( ! panel?.options || panel.options.length === 0 ) {
             return;
           }
 
@@ -59,10 +59,10 @@ export function SidebarDesign(props) {
               panelCount={ panels.legth }
               maxHeight={ maxHeight - toggleOffset }
               opened={ activePanel === index }
-              onToggle={ () => handlePanelToggle(index) }
+              onToggle={ () => handlePanelToggle( index ) }
             >
               {
-                panel.options.map((option) => {
+                panel.options.map( ( option ) => {
                   const buttonClasses = classnames('kb-category-button', {
                     'is-pressed': selected === option.value
                   });
@@ -71,12 +71,12 @@ export function SidebarDesign(props) {
                     <Button
                       key={ option.value }
                       aria-pressed={ selected === option.value }
-								      className={ buttonClasses }
-								      onClick={ () => onSidebarClick( option.value ) }
+                      className={ buttonClasses }
+                      onClick={ () => onSidebarClick( option.value ) }
                       text={ option.label }
                     />
                   )
-                })
+                } )
               }
             </SidebarPanel>
           )
