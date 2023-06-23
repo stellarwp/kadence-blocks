@@ -16,13 +16,20 @@ import { update } from '@wordpress/icons';
 import { aiIcon } from '@kadence/icons';
 import { Sidebar, SidebarPanel, useSidebar } from '.';
 
-export function SidebarDesignContext({ panels, maxHeight, onSidebarClick, onSidebarAiReloadClick, selected, localContexts }) {
-  const sidebarRef = useRef(null);
+export function SidebarContext( props ) {
+	const {
+		panels,
+		maxHeight,
+		onSidebarClick,
+		onSidebarAiReloadClick,
+		selected,
+		localContexts
+	} = props;
 
+  const sidebarRef = useRef(null);
   const { hasPanels, getPanelToggleOffset } = useSidebar(panels, sidebarRef);
   const [ toggleOffset, setToggleOffset ] = useState(0);
   const [ activePanel, setActivePanel ] = useState(0);
-
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 

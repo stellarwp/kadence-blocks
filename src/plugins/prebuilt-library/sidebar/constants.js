@@ -1,24 +1,67 @@
 import { __ } from '@wordpress/i18n';
 
-const SIDEBAR_GROUPS = [
-  {
+const SIDEBAR_GROUPS = {
+  'patterns': {
     label: __( 'Patterns', 'kadence-blocks' ),
     icon: 'patternsIcon'
   },
-  {
+  'events-calendar': {
     label: __( 'The Events Calendar', 'kadence-blocks' ),
     icon: 'eventsCalendarIcon'
   },
-  {
+  'givewp': {
     label: __( 'GiveWP', 'kadence-blocks' ),
     icon: 'giveWpIcon'
   },
-  {
+  'learndash': {
     label: __( 'LearnDash', 'kadence-blocks' ),
     icon: 'learndashIcon'
   },
-];
+};
 
+// @todo: Remove after dynamic source is setup.
+const PATTERN_CONTEXTS = {
+	'value-prop': __( 'Value Proposition', 'kadence-blocks' ),
+	'products-services': __( 'Products or Services', 'kadence-blocks' ),
+	'about': __( 'About', 'kadence-blocks' ),
+	'achievements': __( 'Achievements', 'kadence-blocks' ),
+	'call-to-action': __( 'Call to Action', 'kadence-blocks' ),
+	'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+	'get-started': __( 'Get Started', 'kadence-blocks' ),
+	'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
+	'location': __( 'Location', 'kadence-blocks' ),
+	'history': __( 'History', 'kadence-blocks' ),
+	'mission': __( 'Mission', 'kadence-blocks' ),
+	'profile': __( 'Profile', 'kadence-blocks' ),
+	'team': __( 'Team', 'kadence-blocks' ),
+	'work': __( 'Work', 'kadence-blocks' ),
+	'faq': __( 'FAQ', 'kadence-blocks' ),
+	'welcome': __( 'Welcome', 'kadence-blocks' ),
+	'news': __( 'News', 'kadence-blocks' ),
+	'blog': __( 'Blog', 'kadence-blocks' ),
+	'contact-form': __( 'Contact', 'kadence-blocks' ),
+	'subscribe-form': __( 'Subscribe', 'kadence-blocks' ),
+	'careers': __( 'Careers', 'kadence-blocks' ),
+	'donate': __( 'Donate', 'kadence-blocks' ),
+	'events': __( 'Events', 'kadence-blocks' ),
+	'partners': __( 'Partners', 'kadence-blocks' ),
+	'industries': __( 'Industries', 'kadence-blocks' ),
+	'volunteer': __( 'Volunteer', 'kadence-blocks' ),
+	'support': __( 'Support', 'kadence-blocks' ),
+};
+
+// @todo: Remove after dynamic source is setup.
+const PAGE_CATEGORIES = {
+	'category': __( 'Category', 'kadence-blocks' ),
+	'home': __( 'Home', 'kadence-blocks' ),
+	'about': __( 'About', 'kadence-blocks' ),
+	'contact': __( 'Contact', 'kadence-blocks' ),
+	'pricing': __( 'Pricing', 'kadence-blocks' ),
+	'services': __( 'Services', 'kadence-blocks' ),
+	'blog': __( 'Blog', 'kadence-blocks' ),
+};
+
+// @todo: Remove after dynamic source is setup.
 export const menuDesign = [
   {
     label: 'Patterns',
@@ -201,36 +244,7 @@ export const menuDesign = [
   }
 ];
 
-const PATTERN_CONTEXTS = {
-	'value-prop': __( 'Value Proposition', 'kadence-blocks' ),
-	'products-services': __( 'Products or Services', 'kadence-blocks' ),
-	'about': __( 'About', 'kadence-blocks' ),
-	'achievements': __( 'Achievements', 'kadence-blocks' ),
-	'call-to-action': __( 'Call to Action', 'kadence-blocks' ),
-	'testimonials': __( 'Testimonials', 'kadence-blocks' ),
-	'get-started': __( 'Get Started', 'kadence-blocks' ),
-	'pricing-table': __( 'Pricing Table', 'kadence-blocks' ),
-	'location': __( 'Location', 'kadence-blocks' ),
-	'history': __( 'History', 'kadence-blocks' ),
-	'mission': __( 'Mission', 'kadence-blocks' ),
-	'profile': __( 'Profile', 'kadence-blocks' ),
-	'team': __( 'Team', 'kadence-blocks' ),
-	'work': __( 'Work', 'kadence-blocks' ),
-	'faq': __( 'FAQ', 'kadence-blocks' ),
-	'welcome': __( 'Welcome', 'kadence-blocks' ),
-	'news': __( 'News', 'kadence-blocks' ),
-	'blog': __( 'Blog', 'kadence-blocks' ),
-	'contact-form': __( 'Contact', 'kadence-blocks' ),
-	'subscribe-form': __( 'Subscribe', 'kadence-blocks' ),
-	'careers': __( 'Careers', 'kadence-blocks' ),
-	'donate': __( 'Donate', 'kadence-blocks' ),
-	'events': __( 'Events', 'kadence-blocks' ),
-	'partners': __( 'Partners', 'kadence-blocks' ),
-	'industries': __( 'Industries', 'kadence-blocks' ),
-	'volunteer': __( 'Volunteer', 'kadence-blocks' ),
-	'support': __( 'Support', 'kadence-blocks' ),
-};
-
+// @todo: Remove after dynamic source is setup.
 export const menuDesignContext = [
   {
     label: 'Patterns',
@@ -342,3 +356,82 @@ export const menuDesignContext = [
   }
 ];
 
+// @todo: Remove after dynamic source is setup.
+export const menuPage = [
+  {
+    label: 'Patterns',
+    icon: 'patternsIcon',
+    options: [ ...Object.keys( PAGE_CATEGORIES ).map(( key ) => ({
+      value: key,
+      label: PAGE_CATEGORIES[ key ]
+    })) ],
+  },
+  {
+    label: 'The Events Calendar',
+    icon: 'eventsCalendarIcon',
+    options: [
+      {
+        value: 'one',
+        label: 'One'
+      },
+      {
+        value: 'two',
+        label: 'Two'
+      }
+    ]
+  },
+  {
+    label: 'GiveWP',
+    icon: 'giveWpIcon',
+    options: [
+      {
+        value: 'one',
+        label: 'One'
+      },
+      {
+        value: 'two',
+        label: 'Two'
+      }
+    ]
+  },
+  {
+    label: 'LearnDash',
+    icon: 'learndashIcon',
+    options: [
+      {
+        value: 'all',
+        label: 'All'
+      },
+      {
+        value: 'one',
+        label: 'One'
+      },
+      {
+        value: 'two',
+        label: 'Two'
+      }
+    ]
+  },
+  {
+    label: 'WooCommerce',
+    icon: 'wooCommerceIcon',
+    options: [
+      {
+        value: 'all',
+        label: 'All'
+      },
+      {
+        value: 'one',
+        label: 'One'
+      },
+      {
+        value: 'two',
+        label: 'Two'
+      },
+      {
+        value: 'three',
+        label: 'Three'
+      },
+    ]
+  }
+]

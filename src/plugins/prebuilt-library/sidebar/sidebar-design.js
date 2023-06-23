@@ -14,9 +14,15 @@ import { Button } from '@wordpress/components';
  */
 import { Sidebar, SidebarPanel, useSidebar } from '.';
 
-export function SidebarDesign({ panels, maxHeight, onSidebarClick, selected }) {
-  const sidebarRef = useRef(null);
+export function SidebarDesign(props) {
+  const {
+    panels,
+    maxHeight,
+    onSidebarClick,
+    selected
+  } = props;
 
+  const sidebarRef = useRef(null);
   const { hasPanels, getPanelToggleOffset } = useSidebar(panels, sidebarRef);
   const [ toggleOffset, setToggleOffset ] = useState(0);
   const [ activePanel, setActivePanel ] = useState(0);
@@ -64,6 +70,7 @@ export function SidebarDesign({ panels, maxHeight, onSidebarClick, selected }) {
                   return (
                     <Button
                       key={ option.value }
+                      aria-pressed={ selected === option.value }
 								      className={ buttonClasses }
 								      onClick={ () => onSidebarClick( option.value ) }
                       text={ option.label }

@@ -73,8 +73,8 @@ import { SafeParseJSON } from '@kadence/helpers';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
 
-import { SidebarDesign, SidebarDesignContext } from './sidebar';
-import { menuDesign, menuDesignContext } from './sidebar/constants';
+import { SidebarDesign, SidebarContext } from './sidebar';
+import { menuDesign, menuDesignContext, menuPage } from './sidebar/constants';
 
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
@@ -110,7 +110,6 @@ function PatternLibrary( {
 	
 	const sidebarRef = useRef(null);
 	const [ sidebarHeight, setSidebarHeight ] = useState(0);
-	const [ sidebarResizing, setSidebarResizing ] = useState(false);
 	
 	const [ contextListOptions, setContextListOptions ] = useState( [] );
 	const [ pagesCategories, setPagesCategories ] = useState( PAGE_CATEGORIES );
@@ -279,18 +278,11 @@ function PatternLibrary( {
 		let timeoutId;
 
 		function handleResize() {
-			console.log('PatternLibrary -> handleResize');
 			if (sidebarRef?.current?.clientHeight) {
 				clearTimeout(timeoutId);
 
 				timeoutId = setTimeout(() => {
 					setSidebarHeight(sidebarRef.current.clientHeight);
-					setSidebarResizing(true);
-				
-					// Delay needed to allow accurate height measurement from sidebar.
-					setTimeout(() => {
-						setSidebarResizing(false);
-					}, 5);
 				}, 100);
 			}
 		}
@@ -636,6 +628,17 @@ function PatternLibrary( {
 			setIsImporting( false );
 		}
 	}
+	const handleSidebarPageClick = (value) => {
+		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+
+		tempActiveStorage['kbPageCat'] = value;
+		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+
+		setPageCategory( value );
+	}
+	const handleSidebarPageContextClick = (value) => {
+
+	}
 	const handleSidebarDesignClick = (value) => {
 		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 
@@ -644,7 +647,7 @@ function PatternLibrary( {
 
 		setCategory( value );
 	}
-	const handleSidebarDesignContextClick = (value) => {
+	const handleSidebarContextClick = (value) => {
 		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 
 		tempActiveStorage['context'] = value;
@@ -858,41 +861,27 @@ function PatternLibrary( {
 										<>
 											{ ! search && (
 												<>
-													{ pageCategoryListOptions.map( ( category, index ) =>
-														<Button
-															key={ `${ category.value }-${ index }` }
-															className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
-															aria-pressed={ selectedPageCategory === category.value }
-															onClick={ () => {
-																const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-																tempActiveStorage['kbPageCat'] = category.value;
-																localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-																setPageCategory( category.value );
-															}}
-														>
-															{ category.label }
-														</Button>
-													) }
+													{
+														<SidebarDesign
+															panels={ menuPage } // @todo: Data to come from pageCategoryListOptions
+															maxHeight={ sidebarHeight }
+															selected={ selectedPageCategory }
+															onSidebarClick={ handleSidebarPageClick }
+														/>
+													}
 												</>
 											) }
 										</>
 									) : (
 										<>
-											{ pageContextListOptions.map( ( category, index ) =>
-												<Button
-													key={ `${ category.value }-${ index }` }
-													className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
-													aria-pressed={ selectedPageCategory === category.value }
-													onClick={ () => {
-														const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-														tempActiveStorage['kbPageCat'] = category.value;
-														localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-														setPageCategory( category.value );
-													}}
-												>
-													{ category.label }
-												</Button>
-											) }
+											{
+												<SidebarDesign
+													panels={ menuPage } // @todo: Data to come from pageContextListOptions
+													maxHeight={ sidebarHeight }
+													selected={ selectedPageCategory }
+													onSidebarClick={ handleSidebarPageClick }
+												/>
+											}
 										</>
 									) }
 								</>
@@ -903,7 +892,6 @@ function PatternLibrary( {
 											{ (! search && sidebarHeight) ? (
 												<SidebarDesign
 													panels={ menuDesign } // @todo: Data to come from categoryListOptions
-													resizing={ sidebarResizing }
 													maxHeight={ sidebarHeight }
 													selected={ selectedCategory }
 													onSidebarClick={ handleSidebarDesignClick }
@@ -913,13 +901,12 @@ function PatternLibrary( {
 									) : (
 										<>
 											{
-												<SidebarDesignContext
+												<SidebarContext
 													panels={ menuDesignContext } // @todo: Data to come from contextListOptions
-													resizing={ sidebarResizing }
 													maxHeight={ sidebarHeight }
 													selected={ selectedContext }
 													localContexts={ localContexts }
-													onSidebarClick={ handleSidebarDesignContextClick }
+													onSidebarClick={ handleSidebarContextClick }
 													onSidebarAiReloadClick={ () => {
 														setIsContextReloadVisible(false);
 														reloadAI( selectedContext );
