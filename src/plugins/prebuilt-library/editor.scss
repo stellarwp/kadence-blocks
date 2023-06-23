@@ -1180,6 +1180,10 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 	}
 	.context-category-wrap {
 		position: relative;
+
+		> button.kb-category-button {
+			width: 100%;
+		}
 	}
 	.context-category-wrap .components-button.kb-reload-context-popover-toggle.has-icon {
 		position: absolute;
