@@ -28,7 +28,9 @@ const DEFAULT_STATE = {
 		'donate': false,
 		'events': false,
 		'partners': false,
-		'podcast': false,
+		'industries': false,
+		'volunteer': false,
+		'support': false,
 	},
 	context: {
 		'value-prop': false,
@@ -55,7 +57,9 @@ const DEFAULT_STATE = {
 		'donate': false,
 		'events': false,
 		'partners': false,
-		'podcast': false,
+		'industries': false,
+		'volunteer': false,
+		'support': false,
 	},
 };
 const controls = {

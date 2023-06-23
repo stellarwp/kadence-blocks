@@ -157,6 +157,13 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 	);
 }
 function LaunchWizard( { launchWizard } ) {
+	const launchWizardHeadline = __( 'Supercharge your web design process with Kadence AI', 'kadence-blocks' );
+	const launchWizardBody = __(
+		`To fill your library with thoughtful, relevant, and unique content, simply enter your site goals and information into our prompt wizard. 
+		Our design library includes context-driven design patterns that are easy to use, saving you time and effort during the design process. It 
+		only takes a few minutes to get started.`,
+		'kadence-blocks'
+	);
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -165,16 +172,16 @@ function LaunchWizard( { launchWizard } ) {
 				lineHeight={ '1.2' }
 				className="kb-patterns-heading-notice"
 			>
-				{ __( 'To generate content via Kadence AI you must activate your account.', 'kadence Blocks' ) }
+				{ launchWizardHeadline }
 			</Heading>
 			<p>
-				{ __( 'In the Kadence AI start wizard you will be able to provide detailed information about your website so that we can generate content that matches you and helps you launch content quicker.', 'kadence Blocks' ) }
+				{ launchWizardBody }
 			</p>
 			<Button
 				className='kadence-generate-copy-button'
 				iconPosition='right'
 				icon={ aiIcon }
-				text={ __('Launch AI Startup', 'kadence-blocks') }
+				text={ __( 'Launch AI Startup', 'kadence-blocks' ) }
 				onClick={ () => {
 					launchWizard();
 				}}

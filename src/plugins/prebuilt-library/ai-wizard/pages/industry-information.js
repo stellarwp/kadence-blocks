@@ -13,11 +13,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { SafeParseJSON } from '@kadence/helpers';
 import { SelectControl, Slider, TextControl } from '../components';
 import { SelectControlRefresh } from '../components/select-control/refresh';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { verticalsHelper } from '../utils/verticals-helper';
-import { SafeParseJSON } from '@kadence/helpers';
+import { ENTITY_TYPE, ENTITY_TO_NAME } from '../constants';
 
 const styles = {
 	container: {
@@ -55,6 +56,7 @@ export function IndustryInformation() {
 	const { state, dispatch } = useKadenceAi();
 	const {
 		companyName,
+		entityType,
 		location,
 		industry,
 		industrySpecific,
@@ -94,9 +96,13 @@ export function IndustryInformation() {
 		})) : [];
 
 		setIndustriesSpecific(
-			formatSelectControlOptions(industriesSpecificOptions, __('Subindustry...', 'kadence'))
+			formatSelectControlOptions(industriesSpecificOptions, __('Subindustry...', 'kadence-blocks'))
 		);
 	}, [ verticals, industry ])
+
+	useEffect(() => {
+
+	}, [ entityType ])
 
 	async function setVerticalsData() {
 		let verticalsData = SafeParseJSON(await getVerticals(), false);
@@ -118,7 +124,7 @@ export function IndustryInformation() {
 		setVerticals(verticalsData);
 	}
 
-	function formatSelectControlOptions(data, placeholderLabel = __('Industry...', 'kadence')) {
+	function formatSelectControlOptions(data, placeholderLabel = __('Industry...', 'kadence-blocks')) {
 		if (! data || ! Array.isArray(data)) {
 			return [];
 		}
@@ -131,7 +137,7 @@ export function IndustryInformation() {
 			},
 			...data,
 			{
-				label: __('Other', 'kadence'),
+				label: __('Other', 'kadence-blocks'),
 				value: 'Other'
 			}
 		]
@@ -156,11 +162,15 @@ export function IndustryInformation() {
 		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: librarySelection })
 	}
 
+	function handleEntityTypeChange(value) {
+		dispatch({ type: 'SET_ENTITY_TYPE', payload: value });
+	}
+
 	function getErrorMessage() {
 		return (
 			<span style={ styles.inputError }>
-				{ __('We couldn\'t load other options, please ', 'kadence') }
-				<Button style={ styles.inputError } variant="link" onClick={ setVerticalsData }>{ __('refresh', 'kadence') }</Button>
+				{ __('We couldn\'t load other options, please ', 'kadence-blocks') }
+				<Button style={ styles.inputError } variant="link" onClick={ setVerticalsData }>{ __('refresh', 'kadence-blocks') }</Button>
 			</span>
 		)
 	}
@@ -174,8 +184,14 @@ export function IndustryInformation() {
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
 						<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
+						 	<SelectControl
+								label={ __('I am', 'kadence-blocks') }
+								value={ entityType }
+								onChange={ handleEntityTypeChange }
+								options={ ENTITY_TYPE }
+							/>
 							<TextControl
-								label={ __('Company Name', 'kadence') }
+								label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
 								autoFocus
 								placeholder="..."
 								value={ companyName }
@@ -188,7 +204,7 @@ export function IndustryInformation() {
 								onChange={ (value) => dispatch({ type: 'SET_LOCATION', payload: value }) }
 							/>
 						 	<SelectControl
-								label={ __('What Industry are you in?', 'kadence') }
+								label={ __('What Industry are you in?', 'kadence-blocks') }
 								value={ industry }
 								onChange={ handleIndustryChange }
 								disabled={ verticalsError || loading }
@@ -199,7 +215,7 @@ export function IndustryInformation() {
 							/>
 							{ (industry && industry !== 'Other') && (
 						 		<SelectControl
-									label={ __('Can you be more specific?', 'kadence') }
+									label={ __('Can you be more specific?', 'kadence-blocks') }
 									value={ industrySpecific }
 									onChange={ handleIndustrySpecificChange }
 									disabled={ loading || verticalsError }
@@ -208,7 +224,7 @@ export function IndustryInformation() {
 							) }
 							{ (industry === 'Other' || industrySpecific === 'Other') && (
 								<TextControl
-									label={ __('Your Industry', 'kadence') }
+									label={ __('Your Industry', 'kadence-blocks') }
 									placeholder="..."
 									autoFocus
 									value={ industryOther }

@@ -8,13 +8,13 @@ const initialState = {
 	context: 'kadence',
 	currentPageIndex: 0,
 	companyName: '',
+	entityType: 'COMPANY',
 	location: '',
 	industry: '',
 	industrySpecific: '',
 	industryOther: '',
 	missionStatement: '',
 	keywords: [],
-	prompts: ['about'], // @todo: Remove test value
 	tone: '',
 	privacyAgreement: false,
 	photoLibrary: 'Default',
@@ -38,6 +38,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				companyName: action.payload
+			}
+		case 'SET_ENTITY_TYPE':
+			return {
+				...state,
+				entityType: action.payload
 			}
 		case 'SET_LOCATION':
 			return {

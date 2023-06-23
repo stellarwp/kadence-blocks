@@ -181,7 +181,7 @@ function PatternLibrary( {
 		if ( ! parsedUserData ) {
 			return false;
 		}
-		// Check for CompanyName, Location, Industry, MissionStatement, Keywords, PrivacyAgreement, 
+		// Check for CompanyName, Location, Industry, MissionStatement, Keywords.
 		if ( ! parsedUserData?.companyName || '' === parsedUserData?.companyName ) {
 			return false;
 		}
@@ -204,9 +204,6 @@ function PatternLibrary( {
 			return false;
 		}
 		if ( ! parsedUserData?.keywords?.length || parsedUserData?.keywords?.length < 5 ) {
-			return false;
-		}
-		if ( ! parsedUserData?.privacyAgreement || true !== parsedUserData?.privacyAgreement ) {
 			return false;
 		}
 		if ( ! parsedUserData?.tone || '' === parsedUserData?.tone ) {
@@ -366,7 +363,7 @@ function PatternLibrary( {
 					console.log(cats);
 
 					setPatterns( o );
-					setCategories( cats );
+					setCategories( JSON.parse(JSON.stringify( cats ) ) );
 				}
 			} else {
 				if ( tempSubTab === 'pages' ) {

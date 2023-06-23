@@ -33,7 +33,9 @@ export const PATTERN_CATEGORIES = {
 	'slider': __( 'Slider', 'kadence-blocks' ),
 	'tabs': __( 'Tabs', 'kadence-blocks' ),
 	'testimonials': __( 'Testimonials', 'kadence-blocks' ),
+	'text': __( 'Text', 'kadence-blocks' ),
 	'title-or-header': __( 'Title or Header', 'kadence-blocks' ),
+	'menu': __( 'Menu', 'kadence-blocks' ),
 	'video': __( 'Video', 'kadence-blocks' ),
  };
  export const PATTERN_CONTEXTS = {

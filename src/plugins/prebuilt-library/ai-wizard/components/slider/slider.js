@@ -52,7 +52,7 @@ export function Slider() {
 	return (
 		<>
 			<Text align="center" style={ styles.sliderContent }>
-				{ __('Not sure where to start? Here\'s some real life examples!', 'kadence') }
+				{ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
 			</Text>
 			<ReactSlidy
 				infiniteLoop
