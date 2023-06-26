@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { useEffect, useState } from '@wordpress/element';
 import {
 	Flex,
 	FlexBlock,
@@ -38,6 +39,10 @@ const styles = {
 	rightContent: {
 		backgroundColor: '#000000',
 	},
+	keywordsLength: {
+		'good': 'green',
+		'poor': 'red',
+	}
 }
 
 export function AboutYourSite() {
@@ -48,6 +53,24 @@ export function AboutYourSite() {
 		keywords,
 		tone
 	} = state;
+
+	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
+
+	useEffect(() => {
+		if ( keywords.length > 0 && keywords.length < 5 ) {
+			setKeywordsLengthError( 'poor' );
+		} else if ( keywords.length >= 5 ) {
+			setKeywordsLengthError( 'good' );
+		}
+	}, [ keywords ])
+
+	function getKeywordsLengthStyle() {
+		if ( keywordsLengthError && styles.keywordsLength.hasOwnProperty( keywordsLengthError ) ) {
+			return styles.keywordsLength[ keywordsLengthError ];
+		}
+
+		return 'inherit';
+	}
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -76,7 +99,9 @@ export function AboutYourSite() {
 										<Flex>{ __('Separate with commas or the Enter key.', 'kadence-blocks') }</Flex>
 										<Flex>
 											<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
-											<FlexItem>{ `${ keywords.length }/${ maxTags }`}</FlexItem>
+											<FlexItem style={ { color: getKeywordsLengthStyle() } }>
+												{ `${ keywords.length }/${ maxTags }` }
+											</FlexItem>
 										</Flex>
 									</>
 								}
