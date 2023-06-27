@@ -6,13 +6,17 @@ import {
 	Button,
 	Flex,
 	FlexBlock,
+	Icon,
 	__experimentalVStack as VStack
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { search } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
+import { CreateableSelectControl } from '../components/combobox-control/react-select';
+
 import { SafeParseJSON } from '@kadence/helpers';
 import { SelectControl, Slider, TextControl } from '../components';
 import { SelectControlRefresh } from '../components/select-control/refresh';
@@ -159,7 +163,7 @@ export function IndustryInformation() {
 
 		// If 'Other' use the first sub-category w/in the choosen vertical.
 		const librarySelection = value === 'Other' ? verticals[industry][0] : value;
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: librarySelection })
+		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: librarySelection });
 	}
 
 	function handleEntityTypeChange(value) {
@@ -202,6 +206,11 @@ export function IndustryInformation() {
 								placeholder="..."
 								value={ location }
 								onChange={ (value) => dispatch({ type: 'SET_LOCATION', payload: value }) }
+							/>
+							<CreateableSelectControl
+								label={ __('What Industry are you in?', 'kadence-blocks') }
+								options={ industries }
+								prefix={ <Icon icon={ search } /> }
 							/>
 						 	<SelectControl
 								label={ __('What Industry are you in?', 'kadence-blocks') }

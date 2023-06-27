@@ -2,6 +2,7 @@ export * from './button';
 export * from './checkbox-control';
 export * from './chip';
 export * from './chips-input';
+// export * from './combobox-control';
 export * from './icons';
 export * from './image-carousel';
 export * from './image-select';
