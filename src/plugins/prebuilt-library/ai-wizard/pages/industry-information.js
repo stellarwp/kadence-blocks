@@ -147,19 +147,10 @@ export function IndustryInformation() {
 		dispatch({ type: 'SET_INDUSTRY', payload: value });
 		// Reset specific industry select on industry change.
 		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: '' });
-
-		// @todo: Remove guard and set photoLibrary to selected category value.
-		if (value === 'Other') {
-			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: 'Default' })
-		}
 	}
 
 	function handleIndustrySpecificChange(value) {
 		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: value });
-
-		// If 'Other' use the first sub-category w/in the choosen vertical.
-		const librarySelection = value === 'Other' ? verticals[industry][0] : value;
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: librarySelection })
 	}
 
 	function handleEntityTypeChange(value) {

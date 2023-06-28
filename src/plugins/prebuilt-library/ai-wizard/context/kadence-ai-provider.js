@@ -17,7 +17,7 @@ const initialState = {
 	keywords: [],
 	tone: '',
 	privacyAgreement: false,
-	photoLibrary: 'Default',
+	photoLibrary: 'My Images',
 	featuredImages: [],
 	backgroundImages: [],
 	saving: false,
