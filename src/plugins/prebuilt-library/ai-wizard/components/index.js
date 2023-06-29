@@ -14,5 +14,6 @@ export * from './slider';
 export * from './text-control';
 export * from './textarea-control';
 export * from './toggle-control';
+export * from './tone-select-control';
 export * from './wizard';
 

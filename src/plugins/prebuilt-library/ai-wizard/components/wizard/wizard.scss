@@ -6,6 +6,11 @@
 	max-height: 95%;
 	height: 100%;
 
+	.components-modal__content {
+		display: flex;
+		flex-direction: column;
+	}
+
 	/* Header */
 	.components-modal__header {
 		height: 68px;
@@ -30,7 +35,10 @@
 
 	/* Container */
 	.components-guide__container {
-		margin-top: -68px;
+		margin-top: 0;
+		margin-bottom: 69px;
+		flex-grow: 1;
+		min-height: auto;
 	}
 
 	/* Container: Page */
@@ -40,6 +48,11 @@
 
 	/* Footer */
 	.components-guide__footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: $color-white;
 		box-sizing: border-box;
 		display: flex;
 		align-items: center;
@@ -47,6 +60,7 @@
 		padding: 16px 32px;
 		height: 68px;
 		border-top: 1px solid $color-gray-400;
+		z-index: 10;
 	}
 
 	.components-wizard__back-button,

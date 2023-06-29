@@ -16,11 +16,14 @@ import { __ } from '@wordpress/i18n';
 import {
 	ChipsInput,
 	FormSection,
-	SelectControl,
-	Slider
+	Slider,
+	ToneSelectControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { CONTENT_TONE } from '../constants';
+import img1 from '../assets/sample-content-1.jpg';
+import img2 from '../assets/sample-content-2.jpg';
+import img3 from '../assets/sample-content-3.jpg';
 
 const styles = {
 	container: {
@@ -34,9 +37,6 @@ const styles = {
 		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
 	},
 	keywordsLength: {
 		'good': 'green',
@@ -52,7 +52,10 @@ export function TheDetails() {
 		tone
 	} = state;
 
+	console.log('tone:', tone);
+
 	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
+	const [ currentTone, setCurrentTone ] = useState( null );
 
 	useEffect(() => {
 		if ( keywords.length > 0 && keywords.length < 5 ) {
@@ -62,6 +65,13 @@ export function TheDetails() {
 		}
 	}, [ keywords ])
 
+	useEffect(() => {
+		const toneObject = CONTENT_TONE.filter((option) => option.value === tone);
+		if (toneObject.length) {
+			setCurrentTone(toneObject[0]);
+		}
+	}, [ tone ])
+
 	function getKeywordsLengthStyle() {
 		if ( keywordsLengthError && styles.keywordsLength.hasOwnProperty( keywordsLengthError ) ) {
 			return styles.keywordsLength[ keywordsLengthError ];
@@ -69,6 +79,8 @@ export function TheDetails() {
 
 		return 'inherit';
 	}
+
+	console.log('currentTone:', currentTone);
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -78,24 +90,23 @@ export function TheDetails() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<VStack spacing={ 6 } style={{ margin: '0 auto' }}>
+						<VStack spacing="8" style={{ margin: '0 auto' }}>
 						  <FormSection
-						    headline={ __( 'Add come keywords', 'kadence-blocks' ) }
+						    headline={ __( 'Add some keywords', 'kadence-blocks' ) }
 						    content={ __( 'Keywords assist the AI in identifying the most relevant topics to write about.', 'kadence-blocks' ) }
 						  >
 							  <ChipsInput
 								  id="2"
 								  label={ __('Keywords', 'kadence-blocks') }
 								  hideLabelFromVision
-								  placeholder={ __('Add Keyword', 'kadence-blocks') }
+								  placeholder={ __('Add Keyword...', 'kadence-blocks') }
 								  tags={ keywords }
 								  maxTags={ maxTags }
 								  selectedTags={ (selectedTags) => dispatch({ type: 'SET_KEYWORDS', payload: selectedTags }) }
 								  help={
 									  <>
-										  <Flex>{ __('Separate with commas or the Enter key.', 'kadence-blocks') }</Flex>
-										  <Flex>
-											  <FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
+										  <Flex align="flex-start">
+											  <FlexBlock>{ __('Separate with commas or the Enter key. Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
 											  <FlexItem style={ { color: getKeywordsLengthStyle() } }>
 												  { `${ keywords.length }/${ maxTags }` }
 											  </FlexItem>
@@ -108,29 +119,23 @@ export function TheDetails() {
 						    headline={ __( 'Choose your tone', 'kadence-blocks' ) }
 						    content={ __( 'The tone allows the AI to reflect your personality in its communication style. Select a tone that closely aligns with your own.', 'kadence-blocks' ) }
 						  >
-						 	  <SelectControl
-								  label={ __('Tone', 'kadence-blocks') }
-								  hideLabelFromVision
-								  value={ tone }
-								  onChange={ (value) => dispatch({ type: 'SET_TONE', payload: value }) }
-								  options={ [
-									  ...[{
-										  value: '',
-										  label: __('Select...', 'kadence-blocks'),
-										  disabled: true
-									  }],
-									  ...CONTENT_TONE
-								  ] }
-							  />
+						  	<ToneSelectControl
+						  		options={ CONTENT_TONE }
+								  value={ currentTone }
+						  		onChange={ (tone) => dispatch({ type: 'SET_TONE', payload: tone.value }) }
+						  	/>
 						  </FormSection>
 						</VStack>
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
+			<FlexBlock display="flex">
 				<Flex justify="center" align="center">
 					<FlexBlock>
-						<Slider />
+						<Slider
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							slides={[ img1, img2, img3 ]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>

@@ -77,7 +77,7 @@ export function useAiWizardHelper(state, pages) {
 				}
 
 				return missing.length > 0 ? true : false;
-			case 'about-your-site':
+			case 'the-details':
 				const missingKeywords = keywords.length >= 5 ? false : true;
 
 				return (missingKeywords || missing.length > 0) ? true : false;

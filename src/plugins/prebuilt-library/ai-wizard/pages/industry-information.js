@@ -32,6 +32,10 @@ import {
 	LOCATION_SERVICE_AREA,
 	LOCATION_ONLINE_ONLY
 } from '../constants';
+import bgImg from '../assets/spa-bg.jpg';
+import img1 from '../assets/sample-content-1.jpg';
+import img2 from '../assets/sample-content-2.jpg';
+import img3 from '../assets/sample-content-3.jpg';
 
 const styles = {
 	container: {
@@ -45,9 +49,6 @@ const styles = {
 		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
 	},
 	inputError: {
  		fontSize: 11,
@@ -91,8 +92,8 @@ export function IndustryInformation() {
 			case LOCATION_SERVICE_AREA:
 				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_SERVICE_AREA }: ${ locationInput }` });
 				return;
-			default:
-				dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
+			// case LOCATION_ONLINE_ONLY:
+			// 	dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
 		}
 	}, [ locationInput, locationType ])
 
@@ -184,6 +185,7 @@ export function IndustryInformation() {
 	function handleLocationTypeChange(value) {
 		if (value === LOCATION_ONLINE_ONLY) {
  			dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
+ 			dispatch({ type: 'SET_LOCATION_TYPE', payload: LOCATION_ONLINE_ONLY });
 		}
 
 		dispatch({ type: 'SET_LOCATION_TYPE', payload: value });
@@ -250,7 +252,7 @@ export function IndustryInformation() {
 						 			selected={ locationType }
 						 			onChange={ handleLocationTypeChange }
 						 		/>
-						 		{ locationType && locationType !== 'online-only' ? (
+						 		{ locationType && locationType !== LOCATION_ONLINE_ONLY ? (
 									<TextControl
 										label="Location"
 										placeholder={ getLocationPlaceholderText() }
@@ -292,10 +294,14 @@ export function IndustryInformation() {
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
-				<Flex justify="center" align="center">
+			<FlexBlock display="flex">
+				<Flex justify="center">
 					<FlexBlock>
-						<Slider />
+						<Slider
+							backgroundImage={ bgImg }
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							slides={[ img1, img2, img3 ]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>

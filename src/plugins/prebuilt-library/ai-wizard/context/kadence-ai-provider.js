@@ -17,7 +17,7 @@ const initialState = {
 	industryOther: '',
 	missionStatement: '',
 	keywords: [],
-	tone: '',
+	tone: 'NEUTRAL',
 	privacyAgreement: false,
 	photoLibrary: 'My Images',
 	featuredImages: [],

@@ -13,6 +13,9 @@ import {
 	TextareaControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
+import img1 from '../assets/sample-content-1.jpg';
+import img2 from '../assets/sample-content-2.jpg';
+import img3 from '../assets/sample-content-3.jpg';
 
 const styles = {
 	container: {
@@ -26,9 +29,6 @@ const styles = {
 		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
 	},
 	keywordsLength: {
 		'good': 'green',
@@ -56,6 +56,7 @@ export function AboutYourSite() {
 							content={ content }
 						>
 							<TextareaControl
+								style={{ height: 440 }}
 								label={ __('About Me/My Organization/My Project', 'kadence-blocks') }
 								hideLabelFromVision
 								placeholder="..."
@@ -66,10 +67,13 @@ export function AboutYourSite() {
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
+			<FlexBlock display="flex">
 				<Flex justify="center" align="center">
 					<FlexBlock>
-						<Slider />
+						<Slider
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							slides={[ img1, img2, img3 ]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>

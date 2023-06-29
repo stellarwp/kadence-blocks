@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import ReactSlidy from 'react-slidy'
+import ReactSlidy from 'react-slidy';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -12,9 +13,6 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import img1 from '../../assets/sample-content-1.jpg';
-import img2 from '../../assets/sample-content-2.jpg';
-import img3 from '../../assets/sample-content-3.jpg';
 import './slider.scss';
 
 const styles = {
@@ -48,22 +46,34 @@ function CustomArrowRight(props) {
   return <CustomArrow { ...props } icon="arrow-right-alt2" />
 }
 
-export function Slider() {
+export function Slider({ slides = [], text, backgroundImage }) {
+	if (! slides.length) {
+		return;
+	}
+
+	const sliderClasses = classnames('stellarwp-slider', {
+		'has-background': backgroundImage,
+	})
+
 	return (
-		<>
-			<Text align="center" style={ styles.sliderContent }>
-				{ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-			</Text>
+		<div className={ sliderClasses } style={{ backgroundImage: `url(${ backgroundImage })` }}>
+			{ text ? (
+				<Text className="stellarwp-slider__text" align="center" style={ styles.sliderContent }>
+					{ text }
+				</Text>
+			) : null }
 			<ReactSlidy
 				infiniteLoop
 				ArrowLeft={ CustomArrowLeft }
 				ArrowRight={ CustomArrowRight }
 			>
-				<img style={ styles.img } src={ img1 }	/>
-				<img style={ styles.img } src={ img2 }	/>
-				<img style={ styles.img } src={ img3 }	/>
+				{
+					slides.map((slide) => (
+						<img style={ styles.img } src={ slide }	/>
+					))
+				}
 			</ReactSlidy>
-		</>
+		</div>
 	);
 }
 

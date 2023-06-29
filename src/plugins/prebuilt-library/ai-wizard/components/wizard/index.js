@@ -49,9 +49,9 @@ export function Wizard({
 		if ( guideContainer.current ) {
 			(
 				focus.tabbable.find( guideContainer.current )
-			)[ 0 ]?.focus();
+				)[ 0 ]?.focus();
 		}
-	}, [ currentPage ] );
+		}, [ currentPage ] );
 
 	const pageId = pages && pages?.[currentPage]?.id ? pages[currentPage].id : `page-${ currentPage }`;
 
@@ -83,7 +83,7 @@ export function Wizard({
 			saving,
 			saveError,
 			...rest
-		} = state;
+			} = state;
 
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
@@ -111,80 +111,80 @@ export function Wizard({
 			contentLabel={ contentLabel }
 			onRequestClose={ onFinish }
 			ref={ guideContainer }
-		>
+			>
 			<div className="components-guide__container">
 				<div className="components-guide__page">
 					{ pages[ currentPage ].image }
 					{ pages[ currentPage ].content }
 				</div>
-
-				<div className="components-guide__footer">
-					{ canGoBack && (
-						<Button
-							className="components-wizard__back-button"
-							disabled={ backButtonDisabled }
-							onClick={ goBack }
+			</div>
+			<div className="components-guide__footer">
+				{ canGoBack && (
+					<Button
+						className="components-wizard__back-button"
+						disabled={ backButtonDisabled }
+						onClick={ goBack }
 						>
-							{ backButtonText }
-						</Button>
-					) }
-					{ pages.length > 1 && (
-						<ul
-							className="components-guide__page-control"
-							aria-label={ __( 'Guide controls', 'kadence-blocks' ) }
+						{ backButtonText }
+					</Button>
+				) }
+				{ pages.length > 1 && (
+					<ul
+						className="components-guide__page-control"
+						aria-label={ __( 'Guide controls', 'kadence-blocks' ) }
 						>
-							{ pages.map( ( page, index ) => (
-								<li
-									key={ index }
-									// Set aria-current="step" on the active page, see https://www.w3.org/TR/wai-aria-1.1/#aria-current
-									aria-current={ index === currentPage ? 'step' : undefined }
+						{ pages.map( ( page, index ) => (
+							<li
+								key={ index }
+								// Set aria-current="step" on the active page, see https://www.w3.org/TR/wai-aria-1.1/#aria-current
+								aria-current={ index === currentPage ? 'step' : undefined }
 								>
-									<Button
-										key={ index }
-										className={ 'wizard-step' }
-										disabled={ isStepDisabled(index) }
-										// disabled={ isStepCompleted(index) ? null : true }
-										icon={
-											<StepperIcon
-												pageNumber={ index + 1 }
-												isComplete={ isStepCompleted(index) }
-												isSelected={ index === currentPage }
-											/>
-										}
-										aria-label={ sprintf(
-											/* translators: 1: current page number 2: total number of pages */
-											__( 'Page %1$d of %2$d', 'kadence-blocks' ),
-											index + 1,
-											pages.length
-										) }
-										text={ page.step }
-										onClick={ () => setCurrentPage( index ) }
-									/>
-								</li>
-							) ) }
-						</ul>
-					) }
-					{ canGoForward && (
-						<Button
-							variant="primary"
-							className={ 'components-wizard__forward-button' }
-							disabled={ forwardButtonDisabled }
-							onClick={ goForward }
-						>
-							{ forwardButtonText }
-						</Button>
-					) }
-					{ ! canGoForward && (
-						<div className='components-wizard__finish-button-container'>
-							{ photographyOnly ? (
 								<Button
-									variant="primary"
-									className={ 'components-wizard__finish-button' }
-									disabled={ finishButtonDisabled }
-									onClick={ onFinish }
+									key={ index }
+									className={ 'wizard-step' }
+									disabled={ isStepDisabled(index) }
+									// disabled={ isStepCompleted(index) ? null : true }
+									icon={
+										<StepperIcon
+											pageNumber={ index + 1 }
+											isComplete={ isStepCompleted(index) }
+											isSelected={ index === currentPage }
+										/>
+									}
+									aria-label={ sprintf(
+										/* translators: 1: current page number 2: total number of pages */
+										__( 'Page %1$d of %2$d', 'kadence-blocks' ),
+										index + 1,
+										pages.length
+									) }
+									text={ page.step }
+									onClick={ () => setCurrentPage( index ) }
+								/>
+							</li>
+						) ) }
+					</ul>
+				) }
+				{ canGoForward && (
+					<Button
+						variant="primary"
+						className={ 'components-wizard__forward-button' }
+						disabled={ forwardButtonDisabled }
+						onClick={ goForward }
+						>
+						{ forwardButtonText }
+					</Button>
+				) }
+				{ ! canGoForward && (
+					<div className='components-wizard__finish-button-container'>
+						{ photographyOnly ? (
+							<Button
+								variant="primary"
+								className={ 'components-wizard__finish-button' }
+								disabled={ finishButtonDisabled }
+								onClick={ onFinish }
 								>
-									{ finishButtonText }
-								</Button>
+								{ finishButtonText }
+							</Button>
 							) : (
 								<>
 									<Button
@@ -192,7 +192,7 @@ export function Wizard({
 										className={ 'components-wizard__finish-button' }
 										disabled={ finishButtonDisabled }
 										onClick={ onFinish }
-									>
+										>
 										{ finishButtonText }
 									</Button>
 									<Button
@@ -200,16 +200,15 @@ export function Wizard({
 										className={ 'components-wizard__finish-build-button' }
 										disabled={ finishButtonDisabled }
 										onClick={ onFinish }
-									>
+										>
 										{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
 									</Button>
 								</>
-							) }
-						</div>
-					) }
-				</div>
+						) }
+					</div>
+				) }
 			</div>
 		</Modal>
-	);
+		);
 }
 

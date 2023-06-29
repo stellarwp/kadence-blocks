@@ -1,3 +1,5 @@
+@import '../../scss/variables.scss';
+
 $react-slidy-c-background: transparent !default;
 $react-slidy-c-nav-background: rgba(255, 255, 255, 0.8) !default;
 $react-slidy-c-nav-color: #aaaaaa !default;
@@ -181,3 +183,17 @@ $react-slidy-mh: 50px !default;
   }
 }
 
+.stellarwp-slider {
+  border-radius: 20px;
+
+  &:not(.has-background) {
+    background: $color-gray-500;
+  }
+}
+
+.stellarwp-slider__text {
+  background: $color-black;
+  color: $color-white;
+  border-radius: 20px;
+  padding: 8px;
+}

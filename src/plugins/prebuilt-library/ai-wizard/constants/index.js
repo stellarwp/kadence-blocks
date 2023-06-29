@@ -31,92 +31,59 @@ export const COLLECTION_REQUEST_IMAGE_SIZES = [
 
 export const CONTENT_TONE = [
 	{
-		value: 'APPRECIATIVE',
-		label: __('Appreciative', 'kadence-blocks'),
+		value: 'NEUTRAL',
+		label: __('Neutral', 'kadence-blocks'),
+		description: __('Provides balanced and unbiased information without any specific emotional tone.', 'kadence-blocks'),
 	},
 	{
-		value: 'ASSERTIVE',
-		label: __('Assertive', 'kadence-blocks'),
+		value: 'PROFESSIONAL',
+		label: __('Professional', 'kadence-blocks'),
+		description: __('Conveys expertise, reliability, and competence. Suitable for businesses and professional services.', 'kadence-blocks'),
 	},
 	{
-		value: 'AWESTRUCK',
-		label: __('Awestruck', 'kadence-blocks'),
-	},
-	{
-		value: 'CANDID',
-		label: __('Candid', 'kadence-blocks'),
-	},
-	{
-		value: 'CASUAL',
-		label: __('Casual', 'kadence-blocks'),
-	},
-	{
-		value: 'CAUTIONARY',
-		label: __('Cautionary', 'kadence-blocks'),
-	},
-	{
-		value: 'COMPASSIONATE',
-		label: __('Compassionate', 'kadence-blocks'),
-	},
-	{
-		value: 'CONVINCING',
-		label: __('Convincing', 'kadence-blocks'),
-	},
-	{
-		value: 'CRITICAL',
-		label: __('Critical', 'kadence-blocks'),
-	},
-	{
-		value: 'EARNEST',
-		label: __('Earnest', 'kadence-blocks'),
-	},
-	{
-		value: 'ENTHUSIASTIC',
-		label: __('Enthusiastic', 'kadence-blocks'),
-	},
-	{
-		value: 'FORMAL',
-		label: __('Formal', 'kadence-blocks'),
-	},
-	{
-		value: 'FUNNY',
-		label: __('Funny', 'kadence-blocks'),
-	},
-	{
-		value: 'HUMBLE',
-		label: __('Humble', 'kadence-blocks'),
-	},
-	{
-		value: 'HUMOROUS',
-		label: __('Humorous', 'kadence-blocks'),
+		value: 'FRIENDLY',
+		label: __('Friendly', 'kadence-blocks'),
+		description: __('Creates a warm and approachable atmosphere, fostering a personal connection with the audience.', 'kadence-blocks'),
 	},
 	{
 		value: 'INFORMATIVE',
 		label: __('Informative', 'kadence-blocks'),
+		description: __('Focuses on providing clear and helpful information about products, services, or topics of interest.', 'kadence-blocks'),
+	},
+	{
+		value: 'ENGAGING',
+		label: __('Engaging', 'kadence-blocks'),
+		description: __('Captivates and holds the attention of the audience through compelling and interactive content.', 'kadence-blocks'),
+	},
+	{
+		value: 'TRUSTWORTHY',
+		label: __('Trustworthy', 'kadence-blocks'),
+		description: __('Establishes credibility, reliability, and trust, essential for building strong relationships with customers.', 'kadence-blocks'),
+	},
+	{
+		value: 'CONVERSATIONAL',
+		label: __('Conversational', 'kadence-blocks'),
+		description: __('Mimics natural conversation, making the content relatable and easy to understand.', 'kadence-blocks'),
+	},
+	{
+		value: 'PERSUASIVE',
+		label: __('Persuasive', 'kadence-blocks'),
+		description: __('Influences and convinces the audience to take action through compelling and convincing language.', 'kadence-blocks'),
+	},
+	{
+		value: 'UPBEAT',
+		label: __('Upbeat', 'kadence-blocks'),
+		description: __('Infuses content with positivity, energy, and enthusiasm, leaving a lasting impression on visitors.', 'kadence-blocks'),
+	},
+	{
+		value: 'FUNNY',
+		label: __('Funny', 'kadence-blocks'),
+		description: __('Adds humor and entertainment to the content, aiming to create a lighthearted and amusing experience for the audience.', 'kadence-blocks'),
 	},
 	{
 		value: 'INSPIRATIONAL',
 		label: __('Inspirational', 'kadence-blocks'),
-	},
-	{
-		value: 'JOYFUL',
-		label: __('Joyful', 'kadence-blocks'),
-	},
-	{
-		value: 'PASSIONATE',
-		label: __('Passionate', 'kadence-blocks'),
-	},
-	{
-		value: 'THOUGHTFUL',
-		label: __('Thoughtful', 'kadence-blocks'),
-	},
-	{
-		value: 'URGENT',
-		label: __('Urgent', 'kadence-blocks'),
-	},
-	{
-		value: 'WORRIED',
-		label: __('Worried', 'kadence-blocks'),
+		description: __('Motivates and inspires the audience, encouraging them to pursue their goals and aspirations.', 'kadence-blocks'),
 	},
 ];
 
@@ -171,7 +138,6 @@ export const LOCATION_TYPES = [
 		icon: store,
 		text: __( 'Business Address', 'kadence-blocks' ),
 		value: LOCATION_BUSINESS_ADDRESS,
-		zvalue: 'business-address',
 		help: __( 'E.g.: 1234 Street #1, Chicago, IL 60076, USA', 'kadence-blocks' ),
 		placeholder: __( 'Street Adress, City, State, Zipcode, Country', 'kadence-blocks' ),
 	},
@@ -179,15 +145,13 @@ export const LOCATION_TYPES = [
 		icon: mapMarker,
 		text: __( 'Service Area', 'kadence-blocks' ),
 		value: LOCATION_SERVICE_AREA,
-		zvalue: 'service-area',
 		help: __( 'E.g.: Chicago, USA', 'kadence-blocks' ),
 		placeholder: __( 'District, City, State, Zipcode, Country', 'kadence-blocks' ),
 	},
 	{
 		icon: desktop,
 		text: __( 'Online Only', 'kadence-blocks' ),
-		Value: LOCATION_ONLINE_ONLY,
-		zvalue: 'online-only',
+		value: LOCATION_ONLINE_ONLY,
 		help: '',
 		placeholder: '',
 	},

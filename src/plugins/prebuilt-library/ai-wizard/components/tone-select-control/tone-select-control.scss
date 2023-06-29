@@ -1,0 +1,44 @@
+@import '../../scss/variables.scss';
+
+div.stellarwp-tone__control {
+  min-height: 80px;
+  font-size: 16px;
+
+  .stellarwp-tone__value-container {
+    padding-left: 16px;
+    overflow: visible;
+  }
+
+  .stellarwp-tone__single-value {
+    position: static;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    transform: initial;
+    white-space: normal;
+    text-overflow: initial;
+    overflow: visible;
+  }
+
+  .stellarwp-tone__input {
+    position: absolute;
+    left: 16px;
+
+    > input {
+      transform: translateY(-50%);
+    }
+  }
+
+  .stellarwp-tone__indicator-separator {
+    display: none;
+  }
+
+  .stellarwp-tone__dropdown-indicator {
+    padding: 16px;
+
+    svg {
+      width: 18px;
+      fill: $color-black;
+    }
+  }
+}
+

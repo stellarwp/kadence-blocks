@@ -4,6 +4,7 @@
 .components-chips-input-control {
 	@include input_base;
 
+	min-height: 88px;
 	padding-top: 7px;
 	padding-bottom: 7px;
 	display: flex;
