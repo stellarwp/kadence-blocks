@@ -93,7 +93,7 @@ export function ChipsInput(props) {
 						onKeyUp={ handleKeyDown }
 						onBlur={ handleOnBlur }
 						onChange={ (e) => handleInputChange(e.target.value) }
-						placeholder={ (placeholder && tags.length === 0) ? placeholder : '' }
+						placeholder={ (placeholder && tags.length < maxTags) ? placeholder : '' }
 					/>
 				) }
 			</div>
