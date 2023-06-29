@@ -97,5 +97,10 @@
 			margin: 2px;
 		}
 	}
+
+	/* Form Style Overrides */
+	.components-base-control.stellarwp .components-base-control__field + .components-base-control__help {
+		margin-bottom: 8px;
+	}
 }
 

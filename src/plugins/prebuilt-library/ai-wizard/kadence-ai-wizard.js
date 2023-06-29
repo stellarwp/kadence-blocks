@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { Wizard, KadenceK } from './components';
-import { HowItWorks, IndustryInformation, AboutYourSite, Photography } from './pages';
+import { HowItWorks, IndustryInformation, AboutYourSite, TheDetails, Photography } from './pages';
 import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
 import { useDatabase } from './hooks/use-database';
@@ -24,7 +24,13 @@ const pages = [
 		id: 'about-your-site',
 		content: <AboutYourSite />,
 		step: 'About Your Site',
-		required: ['missionStatement', 'keywords', 'tone']
+		required: ['missionStatement']
+	},
+	{
+		id: 'the-details',
+		content: <TheDetails />,
+		step: 'The Details',
+		required: ['keywords', 'tone']
 	},
 	{
 		id: 'photography',

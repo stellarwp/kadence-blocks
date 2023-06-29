@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { store, mapMarker, desktop } from '@wordpress/icons';
 
 const BASE_URL = 'http://prophecywp.lndo.site'; // @todo Remove local BASE_URL.
 
@@ -160,4 +161,35 @@ export const ENTITY_TO_NAME = {
 	'INDIVIDUAL': __( 'Name', 'kadence-blocks' ),
 	'ORGANIZATION': __( 'Organization Name', 'kadence-blocks' ),
 };
+
+export const LOCATION_BUSINESS_ADDRESS = 'Business Address';
+export const LOCATION_SERVICE_AREA = 'Service Area';
+export const LOCATION_ONLINE_ONLY = 'Online Only';
+
+export const LOCATION_TYPES = [
+	{
+		icon: store,
+		text: __( 'Business Address', 'kadence-blocks' ),
+		value: LOCATION_BUSINESS_ADDRESS,
+		zvalue: 'business-address',
+		help: __( 'E.g.: 1234 Street #1, Chicago, IL 60076, USA', 'kadence-blocks' ),
+		placeholder: __( 'Street Adress, City, State, Zipcode, Country', 'kadence-blocks' ),
+	},
+	{
+		icon: mapMarker,
+		text: __( 'Service Area', 'kadence-blocks' ),
+		value: LOCATION_SERVICE_AREA,
+		zvalue: 'service-area',
+		help: __( 'E.g.: Chicago, USA', 'kadence-blocks' ),
+		placeholder: __( 'District, City, State, Zipcode, Country', 'kadence-blocks' ),
+	},
+	{
+		icon: desktop,
+		text: __( 'Online Only', 'kadence-blocks' ),
+		Value: LOCATION_ONLINE_ONLY,
+		zvalue: 'online-only',
+		help: '',
+		placeholder: '',
+	},
+];
 

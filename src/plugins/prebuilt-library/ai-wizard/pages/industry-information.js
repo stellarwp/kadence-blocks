@@ -14,11 +14,24 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { SafeParseJSON } from '@kadence/helpers';
-import { SelectControl, Slider, TextControl } from '../components';
+import {
+	FormSection,
+	SelectControl,
+	Slider,
+	TextControl,
+	LocationSelectControl
+} from '../components';
 import { SelectControlRefresh } from '../components/select-control/refresh';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { verticalsHelper } from '../utils/verticals-helper';
-import { ENTITY_TYPE, ENTITY_TO_NAME } from '../constants';
+import {
+	ENTITY_TYPE,
+	ENTITY_TO_NAME,
+	LOCATION_TYPES,
+	LOCATION_BUSINESS_ADDRESS,
+	LOCATION_SERVICE_AREA,
+	LOCATION_ONLINE_ONLY
+} from '../constants';
 
 const styles = {
 	container: {
@@ -29,7 +42,7 @@ const styles = {
 		marginLeft: 'auto'
 	},
 	formWrapper: {
-		maxWidth: 380,
+		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
 	},
@@ -41,7 +54,9 @@ const styles = {
  		color: 'red' 
 	}
 }
-	
+
+const headline = __( 'Your Information', 'kadence-blocks' );
+const content = __( 'Please provide detailed information about yourself, your company, or your organization to enhance the quality of our results.', 'kadence-blocks' );	
 
 export function IndustryInformation() {
 	const [ verticals, setVerticals ] = useState([]);
@@ -57,7 +72,8 @@ export function IndustryInformation() {
 	const {
 		companyName,
 		entityType,
-		location,
+		locationInput,
+		locationType,
 		industry,
 		industrySpecific,
 		industryOther
@@ -66,6 +82,19 @@ export function IndustryInformation() {
 	useEffect(() => {
 		setVerticalsData();
 	}, []);
+	
+	useEffect(() => {
+		switch (locationType) {
+			case LOCATION_BUSINESS_ADDRESS:
+				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_BUSINESS_ADDRESS }: ${ locationInput }` });
+				return;
+			case LOCATION_SERVICE_AREA:
+				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_SERVICE_AREA }: ${ locationInput }` });
+				return;
+			default:
+				dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
+		}
+	}, [ locationInput, locationType ])
 
 	useEffect(() => {
 		if (! verticalsError) {
@@ -100,16 +129,11 @@ export function IndustryInformation() {
 		);
 	}, [ verticals, industry ])
 
-	useEffect(() => {
-
-	}, [ entityType ])
-
 	async function setVerticalsData() {
 		let verticalsData = SafeParseJSON(await getVerticals(), false);
 
 		// If data is not what we're expecting, set error.
 		if (! verticalsData) {
-			console.log('1. Verticals Error Set');
 			setVerticalsError(true);
 			return;
 		}
@@ -157,6 +181,14 @@ export function IndustryInformation() {
 		dispatch({ type: 'SET_ENTITY_TYPE', payload: value });
 	}
 
+	function handleLocationTypeChange(value) {
+		if (value === LOCATION_ONLINE_ONLY) {
+ 			dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
+		}
+
+		dispatch({ type: 'SET_LOCATION_TYPE', payload: value });
+	}
+
 	function getErrorMessage() {
 		return (
 			<span style={ styles.inputError }>
@@ -164,6 +196,26 @@ export function IndustryInformation() {
 				<Button style={ styles.inputError } variant="link" onClick={ setVerticalsData }>{ __('refresh', 'kadence-blocks') }</Button>
 			</span>
 		)
+	}
+
+	function getLocationPlaceholderText() {
+		if (locationType !== LOCATION_ONLINE_ONLY) {
+			const currentLocation = LOCATION_TYPES.filter((location) => location.value === locationType);
+
+			return currentLocation.length && currentLocation[0]?.placeholder ? currentLocation[0].placeholder : '...';
+		}
+
+		return '...';
+	}
+
+	function getLocationHelpText() {
+		if (locationType !== LOCATION_ONLINE_ONLY) {
+			const currentLocation = LOCATION_TYPES.filter((location) => location.value === locationType);
+
+			return currentLocation.length && currentLocation[0]?.help ? currentLocation[0].help : '';
+		}
+
+		return '';
 	}
 
 	return (
@@ -174,55 +226,69 @@ export function IndustryInformation() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
-						 	<SelectControl
-								label={ __('I am', 'kadence-blocks') }
-								value={ entityType }
-								onChange={ handleEntityTypeChange }
-								options={ ENTITY_TYPE }
-							/>
-							<TextControl
-								label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
-								autoFocus
-								placeholder="..."
-								value={ companyName }
-								onChange={ (value) => dispatch({ type: 'SET_COMPANY_NAME', payload: value }) }
-							/>
-							<TextControl
-								label="Location"
-								placeholder="..."
-								value={ location }
-								onChange={ (value) => dispatch({ type: 'SET_LOCATION', payload: value }) }
-							/>
-						 	<SelectControl
-								label={ __('What Industry are you in?', 'kadence-blocks') }
-								value={ industry }
-								onChange={ handleIndustryChange }
-								disabled={ verticalsError || loading }
-								options={ industries }
-								suffix={ (verticalsError || loading) ? <SelectControlRefresh loading={ loading }  onClick={ setVerticalsData } /> : null }
-								error={ verticalsError }
-								help={ verticalsError ? getErrorMessage() : null }
-							/>
-							{ (industry && industry !== 'Other') && (
+						<FormSection
+							headline={ headline }
+							content={ content }
+						>
+							<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
 						 		<SelectControl
-									label={ __('Can you be more specific?', 'kadence-blocks') }
-									value={ industrySpecific }
-									onChange={ handleIndustrySpecificChange }
-									disabled={ loading || verticalsError }
-									options={ industriesSpecific }
+									label={ __('I am', 'kadence-blocks') }
+									value={ entityType }
+									onChange={ handleEntityTypeChange }
+									options={ ENTITY_TYPE }
 								/>
-							) }
-							{ (industry === 'Other' || industrySpecific === 'Other') && (
 								<TextControl
-									label={ __('Your Industry', 'kadence-blocks') }
-									placeholder="..."
+									label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
 									autoFocus
-									value={ industryOther }
-									onChange={ (value) => dispatch({ type: 'SET_INDUSTRY_OTHER', payload: value }) }
+									placeholder="..."
+									value={ companyName }
+									onChange={ (value) => dispatch({ type: 'SET_COMPANY_NAME', payload: value }) }
 								/>
-							) }
-						</VStack>
+						 		<LocationSelectControl
+						 			label={ __('Where are you based?', 'kadence-blocks') }
+						 			locations={ LOCATION_TYPES }
+						 			selected={ locationType }
+						 			onChange={ handleLocationTypeChange }
+						 		/>
+						 		{ locationType && locationType !== 'online-only' ? (
+									<TextControl
+										label="Location"
+										placeholder={ getLocationPlaceholderText() }
+										value={ locationInput }
+										onChange={ (value) => dispatch({ type: 'SET_LOCATION_INPUT', payload: value }) }
+										help={ getLocationHelpText() }
+									/>
+						 		) : null }
+						 		<SelectControl
+									label={ __('What Industry are you in?', 'kadence-blocks') }
+									value={ industry }
+									onChange={ handleIndustryChange }
+									disabled={ verticalsError || loading }
+									options={ industries }
+									suffix={ (verticalsError || loading) ? <SelectControlRefresh loading={ loading }  onClick={ setVerticalsData } /> : null }
+									error={ verticalsError }
+									help={ verticalsError ? getErrorMessage() : null }
+								/>
+								{ (industry && industry !== 'Other') && (
+						 			<SelectControl
+										label={ __('Can you be more specific?', 'kadence-blocks') }
+										value={ industrySpecific }
+										onChange={ handleIndustrySpecificChange }
+										disabled={ loading || verticalsError }
+										options={ industriesSpecific }
+									/>
+								) }
+								{ (industry === 'Other' || industrySpecific === 'Other') && (
+									<TextControl
+										label={ __('Your Industry', 'kadence-blocks') }
+										placeholder="..."
+										autoFocus
+										value={ industryOther }
+										onChange={ (value) => dispatch({ type: 'SET_INDUSTRY_OTHER', payload: value }) }
+									/>
+								) }
+							</VStack>
+						</FormSection>
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>

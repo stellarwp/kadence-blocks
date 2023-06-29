@@ -4,6 +4,9 @@
 import { Flex, FlexBlock } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import AiModalIntro from '../../../../../includes/assets/images/ai-modal-intro.png';
 
 const styles = {

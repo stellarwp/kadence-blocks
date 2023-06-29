@@ -9,6 +9,8 @@ const initialState = {
 	currentPageIndex: 0,
 	companyName: '',
 	entityType: 'COMPANY',
+	locationType: '',
+	locationInput: '',
 	location: '',
 	industry: '',
 	industrySpecific: '',
@@ -48,6 +50,16 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				location: action.payload
+			}
+		case 'SET_LOCATION_INPUT':
+			return {
+				...state,
+				locationInput: action.payload
+			}
+		case 'SET_LOCATION_TYPE':
+			return {
+				...state,
+				locationType: action.payload
 			}
 		case 'SET_INDUSTRY':
 			return {
