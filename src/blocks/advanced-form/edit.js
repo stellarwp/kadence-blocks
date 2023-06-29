@@ -129,7 +129,7 @@ export function Edit( props ) {
 			{id > 0 && isEmpty( post ) && (
 				<Placeholder
 					className="kb-select-or-create-placeholder"
-					label={__( 'Kadence Form', 'kadence-form' )}
+					label={__( 'Kadence Form', 'kadence-blocks' )}
 					icon={ advancedFormIcon }
 				>
 					<Spinner/>
