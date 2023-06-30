@@ -1,5 +1,11 @@
+/**
+ * Wordpress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import { Chip } from '../../components/chip';
 import './slide-card-row.scss';
 

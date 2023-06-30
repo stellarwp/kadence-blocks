@@ -1,5 +1,11 @@
+/**
+ * Wordpress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import { SlideCard } from '../slide-card';
 import { SlideCardRow } from '../slide-card-row';
 

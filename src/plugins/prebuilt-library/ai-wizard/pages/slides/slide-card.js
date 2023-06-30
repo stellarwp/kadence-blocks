@@ -1,5 +1,11 @@
+/**
+ * Wordpress dependencies
+ */
 import { Card, CardBody } from '@wordpress/components';
 
+/**
+ * Internal dependencies
+ */
 import './slide-card.scss';
 
 export function SlideCard({ children }) {

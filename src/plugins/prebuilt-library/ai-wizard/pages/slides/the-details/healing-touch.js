@@ -1,6 +1,12 @@
+/**
+ * Wordpress dependencies
+ */
 import { __experimentalVStack as VStack } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import { SlideCard } from '../slide-card';
 import { SlideCardToneRow } from '../slide-card-tone-row';
 

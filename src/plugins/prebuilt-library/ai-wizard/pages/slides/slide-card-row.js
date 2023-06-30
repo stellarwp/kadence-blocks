@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import './slide-card-row.scss';
 
 export function SlideCardRow({ headline, content }) {
