@@ -23,6 +23,7 @@ export function ChipsInput(props) {
 
 	const internalId = id ? `inspector-chips-input-control-${ id }` : '';
 	const [ inputValue, setInputValue ] = useState('');
+	const [ inputRef, setInputRef ] = useState();
 
 	function handleTagDelete(tag) {
     const newSelectedTags = [...tags];
@@ -76,7 +77,10 @@ export function ChipsInput(props) {
 			id={ internalId }
 			{ ...baseProps }
 		>
-			<div className="components-chips-input-control">
+			<div
+				className="components-chips-input-control"
+				onClick={ () => inputRef && inputRef.focus() }
+			>
 				{ Array.isArray(tags) && tags.map( (tag, index) => (
 					<Chip
 						key={ index }
@@ -87,6 +91,7 @@ export function ChipsInput(props) {
 				{ (Array.isArray(tags) && tags.length < maxTags) && (
 					<input
 						id={ internalId }
+						ref={ setInputRef }
 						className="components-chips-input-control__input"
 						type="text"
 						value={ inputValue }
