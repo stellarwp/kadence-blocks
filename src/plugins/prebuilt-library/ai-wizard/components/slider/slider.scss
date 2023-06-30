@@ -31,6 +31,8 @@ $react-slidy-mh: 50px !default;
   min-height: $react-slidy-mh;
   position: relative;
   user-select: none;
+  max-width: 440px;
+  margin: 0 auto;
 
   &-arrow {
     align-items: center;
@@ -63,11 +65,11 @@ $react-slidy-mh: 50px !default;
     }
 
     &Left {
-      left: 32px;
+      left: -42px;
     }
 
     &Right {
-      right: 32px;
+      right: -42px;
     }
 
     @media screen and (max-width: 850px) {
@@ -184,16 +186,28 @@ $react-slidy-mh: 50px !default;
 }
 
 .stellarwp-slider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 100px 32px 32px 32px;
   border-radius: 20px;
 
   &:not(.has-background) {
     background: $color-gray-500;
   }
-}
 
-.stellarwp-slider__text {
-  background: $color-black;
-  color: $color-white;
-  border-radius: 20px;
-  padding: 8px;
+  &__text {
+    position: absolute;
+    top: 32px;
+    margin: 0 auto 32px auto;
+    padding: 8px;
+    border-radius: 18px;
+    background: $color-black;
+    color: $color-white;
+    font-size: 13px;
+    z-index: 10;
+  }
 }

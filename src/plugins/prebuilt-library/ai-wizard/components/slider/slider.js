@@ -7,26 +7,13 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { Dashicon, __experimentalText as Text } from '@wordpress/components';
+import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import './slider.scss';
-
-const styles = {
-	img: {
-		height: 'clamp(400px, 600px, 60vh)',
-		width: 'auto',
-		aspectRation: '11/15'
-	},
-	sliderContent: {
-		color: '#FFFFFF',
-		display: 'block',
-		marginBottom: 24
-	}
-}
 
 function CustomArrow({icon, ...props}) {
   return (
@@ -58,9 +45,9 @@ export function Slider({ slides = [], text, backgroundImage }) {
 	return (
 		<div className={ sliderClasses } style={{ backgroundImage: `url(${ backgroundImage })` }}>
 			{ text ? (
-				<Text className="stellarwp-slider__text" align="center" style={ styles.sliderContent }>
+				<span className="stellarwp-slider__text" align="center">
 					{ text }
-				</Text>
+				</span>
 			) : null }
 			<ReactSlidy
 				infiniteLoop
@@ -68,9 +55,7 @@ export function Slider({ slides = [], text, backgroundImage }) {
 				ArrowRight={ CustomArrowRight }
 			>
 				{
-					slides.map((slide) => (
-						<img style={ styles.img } src={ slide }	/>
-					))
+					slides.map((slide) => slide )
 				}
 			</ReactSlidy>
 		</div>
