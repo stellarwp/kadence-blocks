@@ -13,9 +13,8 @@ import {
 	TextareaControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import img1 from '../assets/sample-content-1.jpg';
-import img2 from '../assets/sample-content-2.jpg';
-import img3 from '../assets/sample-content-3.jpg';
+import { Education4All,  HealingTouch, Prospera, SpencerSharp } from './slides/about-your-site';
+import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -24,6 +23,12 @@ const styles = {
 	leftContent: {
 		maxWidth: 640,
 		marginLeft: 'auto' 
+	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 	formWrapper: {
 		maxWidth: 504,
@@ -68,11 +73,17 @@ export function AboutYourSite() {
 			</Flex>
 			</FlexBlock>
 			<FlexBlock display="flex">
-				<Flex justify="center" align="center">
-					<FlexBlock>
+				<Flex justify="center">
+					<FlexBlock style={ styles.rightContent }>
 						<Slider
+							backgroundImage={ backgroundImage }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-							slides={[ img1, img2, img3 ]}
+							slides={[
+								<HealingTouch />,
+								<SpencerSharp />,
+								<Prospera />,
+								<Education4All />
+							]}
 						/>
 					</FlexBlock>
 				</Flex>

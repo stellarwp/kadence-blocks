@@ -32,10 +32,13 @@ import {
 	LOCATION_SERVICE_AREA,
 	LOCATION_ONLINE_ONLY
 } from '../constants';
-import bgImg from '../assets/spa-bg.jpg';
-import img1 from '../assets/sample-content-1.jpg';
-import img2 from '../assets/sample-content-2.jpg';
-import img3 from '../assets/sample-content-3.jpg';
+import {
+	Education4All,
+	HealingTouch,
+	Prospera,
+	SpencerSharp
+} from './slides/industry-information';
+import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -44,6 +47,12 @@ const styles = {
 	leftContent: {
 		maxWidth: 640,
 		marginLeft: 'auto'
+	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 	formWrapper: {
 		maxWidth: 504,
@@ -92,8 +101,6 @@ export function IndustryInformation() {
 			case LOCATION_SERVICE_AREA:
 				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_SERVICE_AREA }: ${ locationInput }` });
 				return;
-			// case LOCATION_ONLINE_ONLY:
-			// 	dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
 		}
 	}, [ locationInput, locationType ])
 
@@ -296,11 +303,16 @@ export function IndustryInformation() {
 			</FlexBlock>
 			<FlexBlock display="flex">
 				<Flex justify="center">
-					<FlexBlock>
+					<FlexBlock style={ styles.rightContent }>
 						<Slider
-							backgroundImage={ bgImg }
+							backgroundImage={ backgroundImage }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-							slides={[ img1, img2, img3 ]}
+							slides={[
+								<HealingTouch />,
+								<SpencerSharp />,
+								<Prospera />,
+								<Education4All />
+							]}
 						/>
 					</FlexBlock>
 				</Flex>

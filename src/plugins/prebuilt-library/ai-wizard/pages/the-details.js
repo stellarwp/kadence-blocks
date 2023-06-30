@@ -21,9 +21,8 @@ import {
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { CONTENT_TONE } from '../constants';
-import img1 from '../assets/sample-content-1.jpg';
-import img2 from '../assets/sample-content-2.jpg';
-import img3 from '../assets/sample-content-3.jpg';
+import { HealingTouch } from './slides/the-details';
+import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -32,6 +31,12 @@ const styles = {
 	leftContent: {
 		maxWidth: 640,
 		marginLeft: 'auto' 
+	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 	formWrapper: {
 		maxWidth: 504,
@@ -51,8 +56,6 @@ export function TheDetails() {
 		keywords,
 		tone
 	} = state;
-
-	console.log('tone:', tone);
 
 	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
 	const [ currentTone, setCurrentTone ] = useState( null );
@@ -79,8 +82,6 @@ export function TheDetails() {
 
 		return 'inherit';
 	}
-
-	console.log('currentTone:', currentTone);
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -130,11 +131,14 @@ export function TheDetails() {
 			</Flex>
 			</FlexBlock>
 			<FlexBlock display="flex">
-				<Flex justify="center" align="center">
-					<FlexBlock>
+				<Flex justify="center">
+					<FlexBlock style={ styles.rightContent }>
 						<Slider
+							backgroundImage={ backgroundImage }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-							slides={[ img1, img2, img3 ]}
+							slides={[
+								<HealingTouch />
+							]}
 						/>
 					</FlexBlock>
 				</Flex>
