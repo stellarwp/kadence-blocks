@@ -3,15 +3,6 @@
 @import './scss/global.scss';
 
 .stellarwp.components-modal__frame.components-guide {
- 
-  /* Page Style Overrides */
-	&.how-it-works,
-	&.industry-information,
-	&.about-your-site {
-		.components-modal__header .components-button {
-			color: $color-white;
-		}
-	}
 
 	/* Photography Page Style Overrides */
 	&.photography {
