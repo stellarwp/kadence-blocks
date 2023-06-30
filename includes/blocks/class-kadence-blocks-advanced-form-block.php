@@ -93,14 +93,13 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$submit_font  = isset( $form_attributes['submitFont'] ) ? $form_attributes['submitFont'] : array();
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-
 		// Container
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
-		$css->render_measure_output( $form_attributes, 'padding', 'padding', [ 'desktop_key' => 'paddingDesktop', 'tablet_key' => 'paddingTablet', 'mobile_key' => 'paddingMobile' ] );
-		$css->render_measure_output( $form_attributes, 'margin', 'margin', [ 'desktop_key' => 'marginDesktop', 'tablet_key' => 'marginTablet', 'mobile_key' => 'marginMobile' ] );
+		$css->render_measure_output( $form_attributes, 'padding', 'padding', array( 'desktop_key' => 'padding', 'tablet_key' => 'tabletPadding', 'mobile_key' => 'mobilePadding' ) );
+		$css->render_measure_output( $form_attributes, 'margin', 'margin', array( 'desktop_key' => 'margin', 'tablet_key' => 'tabletMargin', 'mobile_key' => 'mobileMargin' ) );
 
-		$maxWidthUnit = !empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit']  : 'px';
-		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $maxWidthUnit);
+		$maxWidthUnit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit']  : 'px';
+		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $maxWidthUnit );
 
 		// Input Styles
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-field' );
@@ -373,8 +372,14 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$content = do_blocks( $content );
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
-
+		$form_attributes = $this->get_form_attributes( $attributes['id'] );
+		$form_attributes = json_decode( json_encode( $form_attributes ), true );
+		$field_style  = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array();
 		$outer_classes = array( 'wp-block-kadence-advanced-form', 'wp-block-kadence-advanced-form' . $unique_id );
+		//print_r( $field_style );
+		if ( ! empty( $field_style['labelStyle'] ) ) {
+			$outer_classes[] = 'kb-adv-form-label-style-' . $field_style['labelStyle'];
+		}
 		$inner_classes = array( 'kb-advanced-form' );
 		$wrapper_args = array(
 			'class' => implode( ' ', $outer_classes ),
