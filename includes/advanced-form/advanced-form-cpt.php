@@ -484,169 +484,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
-			'_kad_form_submitLabel',
-			array(
-				'show_in_rest'  => true,
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'string',
-				'default'       => ''
-			)
-		);
-
-		register_post_meta(
-			'kadence_form',
-			'_kad_form_submit',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					"label"                  => "Submit",
-					"width"                  => array(
-						"100",
-						"",
-						""
-					),
-					"size"                   => "standard",
-					"widthType"              => "auto",
-					"fixedWidth"             => array(
-						"",
-						"",
-						""
-					),
-					"align"                  => array(
-						"",
-						"",
-						""
-					),
-					"deskPadding"            => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"tabletPadding"          => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"mobilePadding"          => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"color"                  => "",
-					"background"             => "",
-					"border"                 => "",
-					"backgroundOpacity"      => 1,
-					"borderOpacity"          => 1,
-					"borderRadius"           => "",
-					"borderWidth"            => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"colorHover"             => "",
-					"backgroundHover"        => "",
-					"borderHover"            => "",
-					"backgroundHoverOpacity" => 1,
-					"borderHoverOpacity"     => 1,
-					"icon"                   => "",
-					"iconSide"               => "right",
-					"iconHover"              => false,
-					"cssClass"               => "",
-					"gradient"               => array(
-						"#999999",
-						1,
-						0,
-						100,
-						"linear",
-						180,
-						"center center"
-					),
-					"gradientHover"          => array(
-						"#777777",
-						1,
-						0,
-						100,
-						"linear",
-						180,
-						"center center"
-					),
-					"btnStyle"               => "basic",
-					"btnSize"                => "standard",
-					"backgroundType"         => "solid",
-					"backgroundHoverType"    => "solid",
-					"boxShadow"              => array(
-						false,
-						"#000000",
-						0.2,
-						1,
-						1,
-						2,
-						0,
-						false
-					),
-					"boxShadowHover"         => array(
-						false,
-						"#000000",
-						0.4,
-						2,
-						2,
-						3,
-						0,
-						false
-					)
-				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							"label"                  => array( 'type' => 'string' ),
-							"width"                  => array( 'type' => 'array' ),
-							"size"                   => array( 'type' => 'string' ),
-							"widthType"              => array( 'type' => 'string' ),
-							"fixedWidth"             => array( 'type' => 'array' ),
-							"align"                  => array( 'type' => 'array' ),
-							"deskPadding"            => array( 'type' => 'array' ),
-							"tabletPadding"          => array( 'type' => 'array' ),
-							"mobilePadding"          => array( 'type' => 'array' ),
-							"color"                  => array( 'type' => 'string' ),
-							"background"             => array( 'type' => 'string' ),
-							"border"                 => array( 'type' => 'string' ),
-							"backgroundOpacity"      => array( 'type' => 'number' ),
-							"borderOpacity"          => array( 'type' => 'number' ),
-							"borderRadius"           => array( 'type' => 'string' ),
-							"borderWidth"            => array( 'type' => 'array' ),
-							"colorHover"             => array( 'type' => 'string' ),
-							"backgroundHover"        => array( 'type' => 'string' ),
-							"borderHover"            => array( 'type' => 'string' ),
-							"backgroundHoverOpacity" => array( 'type' => 'number' ),
-							"borderHoverOpacity"     => array( 'type' => 'number' ),
-							"icon"                   => array( 'type' => 'string' ),
-							"iconSide"               => array( 'type' => 'string' ),
-							"iconHover"              => array( 'type' => 'boolean' ),
-							"cssClass"               => array( 'type' => 'string' ),
-							"gradient"               => array( 'type' => 'array' ),
-							"gradientHover"          => array( 'type' => 'array' ),
-							"btnStyle"               => array( 'type' => 'string' ),
-							"btnSize"                => array( 'type' => 'string' ),
-							"backgroundType"         => array( 'type' => 'string' ),
-							"backgroundHoverType"    => array( 'type' => 'string' ),
-							"boxShadow"              => array( 'type' => 'array' ),
-							"boxShadowHover"         => array( 'type' => 'array' )
-						),
-					),
-				),
-			)
-		);
-
-		register_post_meta(
-			'kadence_form',
 			'_kad_form_webhook',
 			array(
 				'single'        => true,
@@ -924,104 +761,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
-			'_kad_form_submitFont',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					"size"          => array(
-						"",
-						"",
-						""
-					),
-					"sizeType"      => "px",
-					"lineHeight"    => array(
-						"",
-						"",
-						""
-					),
-					"lineType"      => "px",
-					"letterSpacing" => "",
-					"textTransform" => "",
-					"family"        => "",
-					"google"        => "",
-					"style"         => "",
-					"weight"        => "",
-					"variant"       => "",
-					"subset"        => "",
-					"loadGoogle"    => true
-				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'size'          => array( 'type' => 'array' ),
-							'sizeType'      => array( 'type' => 'string' ),
-							'lineHeight'    => array( 'type' => 'array' ),
-							'lineType'      => array( 'type' => 'string' ),
-							'letterSpacing' => array( 'type' => 'string' ),
-							'textTransform' => array( 'type' => 'string' ),
-							'family'        => array( 'type' => 'string' ),
-							'google'        => array( 'type' => 'string' ),
-							'style'         => array( 'type' => 'string' ),
-							'weight'        => array( 'type' => 'string' ),
-							'variant'       => array( 'type' => 'string' ),
-							'subset'        => array( 'type' => 'string' ),
-							'loadGoogle'    => array( 'type' => 'boolean' ),
-						),
-					),
-				),
-			)
-		);
-
-		register_post_meta(
-			'kadence_form',
-			'_kad_form_submitMargin',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					"desk"    => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"tablet"  => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"mobile"  => array(
-						"",
-						"",
-						"",
-						""
-					),
-					"unit"    => "px",
-					"control" => "linked"
-				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'desk'    => array( 'type' => 'array' ),
-							'tablet'  => array( 'type' => 'array' ),
-							'mobile'  => array( 'type' => 'array' ),
-							'unit'    => array( 'type' => 'string' ),
-							'control' => array( 'type' => 'string' ),
-
-						),
-					),
-				),
-			)
-		);
-
-		register_post_meta(
-			'kadence_form',
 			'_kad_form_inputFont',
 			array(
 				'single'        => true,
@@ -1161,7 +900,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 					"tabletRowGap"            => "",
 					"mobileRowGap"            => "",
 					"tabletGutter"            => "",
-					"mobileGutter"            => ""
+					"mobileGutter"            => "",
+					"labelStyle"            => ""
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -1204,6 +944,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 							'mobileRowGap'            => array( 'type' => 'string' ),
 							'tabletGutter'            => array( 'type' => 'string' ),
 							'mobileGutter'            => array( 'type' => 'string' ),
+							'labelStyle'            => array( 'type' => 'string' ),
 						),
 					),
 				),
@@ -1351,7 +1092,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 		$register_meta = array(
 			array(
 				'key'           => '_kad_form_actions',
-				'default'       => array(),
+				'default'       => array( 'email' ),
 				'type'          => 'array',
 				'children_type' => 'string'
 			),
