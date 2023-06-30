@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 
 import { formBlockIcon } from '@kadence/icons';
 
+import './fields/submit/style.scss';
 import './style.scss';
 import './fields/accept/index';
 import './fields/captcha/index';
