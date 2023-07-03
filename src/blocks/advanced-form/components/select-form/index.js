@@ -12,6 +12,7 @@ export default function SelectForm( {
 	onChange,
 	value,
 	postType = 'post',
+	hideLabelFromVision = false,
 } ) {
 	const { posts } = useSelect(
 		( selectData ) => ( {
@@ -33,13 +34,20 @@ export default function SelectForm( {
 			value: post.id,
 		} ) ),
 	];
-
+	const hasSelected = value && options.some( ( option ) => option.value === value );
+	if ( ! hasSelected && value ) {
+		options.push( {
+			label: __( 'Unknown Form', 'kadence-blocks' ),
+			value,
+		} );
+	}
 	return (
 		<SelectControl
 			label={ label }
 			options={ options }
 			onChange={ onChange }
 			value={ value }
+			hideLabelFromVision={ hideLabelFromVision }
 		/>
 	);
 }

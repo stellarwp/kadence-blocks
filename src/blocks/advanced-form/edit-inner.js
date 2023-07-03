@@ -39,6 +39,7 @@ import {
 	useBlockProps,
 	RichText,
 	BlockAlignmentControl,
+	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	useInnerBlocksProps,
@@ -73,7 +74,7 @@ import {
 	MessageStyling,
 	getFormFields,
 	FieldBlockAppender,
-	SelectFrom,
+	SelectForm,
 } from './components';
 
 /**
@@ -280,6 +281,7 @@ export function EditInner( props ) {
 						break;
 				}
 				setTitle(title);
+				await wp.data.dispatch( 'core' ).saveEditedEntityRecord( 'postType', 'kadence_form', id );
 			}
 		} catch ( error ) {
 			console.error( error );
@@ -291,6 +293,11 @@ export function EditInner( props ) {
 		}
 		return (
 			<FieldBlockAppender inline={ true } rootClientId={ clientId } />
+		);
+	};
+	const useFieldBlockAppenderBase = () => {
+		return (
+			<FieldBlockAppender inline={ false } rootClientId={ clientId } />
 		);
 	};
 	const innerBlocksProps = useInnerBlocksProps(
@@ -316,7 +323,7 @@ export function EditInner( props ) {
 			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			templateLock: false,
-			renderAppender: useFieldBlockAppender
+			renderAppender: formInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
 	if ( title === '' ) {
@@ -359,12 +366,18 @@ export function EditInner( props ) {
 
 					<>
 						{ ! direct && (
-							<SelectForm
-								postType="kadence_form"
-								label={__( 'Selected Form', 'kadence-blocks' )}
-								onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
-								value={ id }
-							/>
+							<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Selected Form', 'kadence-blocks' ) }
+							>
+								<SelectForm
+									postType="kadence_form"
+									label={__( 'Selected Form', 'kadence-blocks' )}
+									hideLabelFromVision={ true }
+									onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
+									value={ id }
+								/>
+							</KadencePanelBody>
 						) }
 						<KadencePanelBody
 							panelName={'kb-advanced-form-submit-actions'}

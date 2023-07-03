@@ -19,7 +19,9 @@ import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { advancedFormIcon } from '@kadence/icons';
-
+import {
+	KadencePanelBody,
+} from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -109,7 +111,6 @@ export function Edit( props ) {
 			</div>
 		);
 	}
-	console.log( 'post', post );
 	return (
 		<div {...blockProps}>
 			{/* No form selected, display chooser */}
@@ -132,12 +133,21 @@ export function Edit( props ) {
 						<Spinner/>
 					</Placeholder>
 					<InspectorControls>
-						<SelectForm
-							postType="kadence_form"
-							label={__( 'Selected Form', 'kadence-blocks' )}
-							onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
-							value={ id }
-						/>
+						<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Selected Form', 'kadence-blocks' ) }
+							>
+							<SelectForm
+								postType="kadence_form"
+								label={__( 'Selected Form', 'kadence-blocks' )}
+								hideLabelFromVision={ true }
+								onChange={ ( nextId ) => {
+									console.log( nextId );
+									setAttributes( { id: nextId } ) 
+								} }
+								value={ id }
+							/>
+						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			)}
@@ -158,12 +168,20 @@ export function Edit( props ) {
 						{ __( 'The selected from is in the trash.', 'kadence-blocks' ) }
 					</Placeholder>
 					<InspectorControls>
-						<SelectForm
-							postType="kadence_form"
-							label={__( 'Selected Form', 'kadence-blocks' )}
-							onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
-							value={ id }
-						/>
+						<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Selected Form', 'kadence-blocks' ) }
+							>
+							<SelectForm
+								postType="kadence_form"
+								label={__( 'Selected Form', 'kadence-blocks' )}
+								hideLabelFromVision={ true }
+								onChange={ ( nextId ) => {
+									setAttributes( { id: nextId } ) 
+								} }
+								value={ id }
+							/>
+						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			)}

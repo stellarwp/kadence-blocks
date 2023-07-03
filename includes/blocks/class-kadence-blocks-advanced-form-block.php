@@ -374,6 +374,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		unset( self::$seen_refs[ $attributes['id'] ] );
 		$form_attributes = $this->get_form_attributes( $attributes['id'] );
 		$form_attributes = json_decode( json_encode( $form_attributes ), true );
+		//print_r( $form_attributes );
 		$field_style  = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array();
 		$outer_classes = array( 'wp-block-kadence-advanced-form', 'wp-block-kadence-advanced-form' . $unique_id );
 		//print_r( $field_style );
@@ -431,8 +432,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 	private function get_form_attributes( $post_id ) {
 
-		if ( ! empty( $this->form_attributes ) ) {
-			return $this->form_attributes;
+		if ( ! empty( $this->form_attributes[ $post_id ] ) ) {
+			return $this->form_attributes[ $post_id ];
 		}
 
 		$post_meta = get_post_meta( $post_id );
@@ -445,8 +446,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if ( $this->form_attributes = $form_meta ) {
-			return $this->form_attributes;
+		if ( $this->form_attributes[ $post_id ] = $form_meta ) {
+			return $this->form_attributes[ $post_id ];
 		}
 
 		return array();

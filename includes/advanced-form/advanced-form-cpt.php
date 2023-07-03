@@ -901,7 +901,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 					"mobileRowGap"            => "",
 					"tabletGutter"            => "",
 					"mobileGutter"            => "",
-					"labelStyle"            => ""
+					"labelStyle"            => "normal"
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
