@@ -11,6 +11,10 @@
 .components-toolbar.kb-add-block .block-editor-button-block-appender.components-button.components-button {
     box-shadow: none;
 }
+// Form title validation.
+.kadence-input-required-warning .components-text-control__input[type="text"]:not(:focus) {
+    border-color: #dc3545;
+}
 .kb-form-field-name-wrap .components-notice.is-error {
     margin: -10px 0px 24px;
 }
@@ -22,9 +26,45 @@
 	margin-top: 0;
 	margin-bottom: 0;
 	padding: 0 3px;
-
-	.kt-select-starter-style-tabs {
+	.kb-form-block-title label {
+		font-size: 16px;
+		text-transform: none;
+		font-weight: 500;
+	}
+	.kt-select-starter-style-forms {
 		border: none;
+		padding: 30px 0;
+		.kt-select-starter-style-forms-title {
+			font-size: 16px;
+			font-weight: 500;
+		}
+		.kt-inital-tabs-style-btn {
+			height: auto;
+			width: 320px;
+			background: white;
+			-webkit-box-shadow: none;
+			box-shadow: none;
+			border: 2px solid transparent;
+			padding: 2px;
+			margin-right: 15px;
+			margin-bottom: 5px;
+		}
+		
+		.kt-inital-tabs-style-btn svg {
+			width: 100%;
+		}
+		.kt-init-tabs-btn-group .kt-inital-tabs-style-btn:first-child {
+			width: 100%;
+			text-align: left;
+			justify-content: center;
+			border: 0;
+			padding: 2px;
+			margin-right: 0;
+			margin-bottom: 15px;
+		}
+		.kt-init-tabs-btn-group .kt-inital-tabs-style-btn:first-child:hover {
+			text-decoration: underline;
+		}
 
 		.kt-inital-tabs-style-btn {
 			color: #1e1e1e;
@@ -273,4 +313,3 @@
 		padding-left: 3px;
 	}
 }
-

@@ -193,3 +193,20 @@
     border: 1px solid #4299e1;
     color: #2b6cb0;
 }
+// Styles of infield label.
+.wp-block-kadence-advanced-form {
+	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], textarea, select {
+		padding-top: calc(16px + 0.4rem);
+	}
+	label.kb-adv-form-label {
+		position: absolute;
+		line-height: 16px;
+		font-size: 14px;
+		left: 0;
+		top: 0;
+		padding: 0.4em 0.5em 0;
+	}
+	.kb-adv-form-field {
+		position: relative;
+	}
+}

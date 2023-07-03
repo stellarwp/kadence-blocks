@@ -47,6 +47,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 		{ key: 'solid', name: __( 'Solid', 'kadence-blocks' ) },
 		{ key: 'gradient', name: __( 'Gradient', 'kadence-blocks' ) },
 	];
+	const labelStyles = [
+		{ key: 'normal', name: __( 'Normal', 'kadence-blocks' ) },
+		{ key: 'infield', name: __( 'In Field Label', 'kadence-blocks' ) },
+		{ key: 'float', name: __( 'Float Label', 'kadence-blocks' ) },
+	];
 
 	const saveStyleBoxShadow = ( value, index ) => {
 
@@ -79,6 +84,29 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 
 	return (
 		<>
+			<div className="kt-btn-size-settings-container">
+				<h2 className="kt-beside-btn-group">{__( 'Label Style' )}</h2>
+				<ButtonGroup className="kt-button-size-type-options" aria-label={__( 'Label Style', 'kadence-blocks' )}>
+					{map( labelStyles, ( { name, key } ) => (
+						<Button
+							key={key}
+							className="kt-btn-size-btn"
+							isSmall
+							isPrimary={style.labelStyle === key}
+							aria-pressed={style.labelStyle === key}
+							onClick={ () => {
+								if( style.labelStyle === key ) {
+									saveStyle( { labelStyle: '' } )
+								} else {
+									saveStyle( { labelStyle: key } )
+								}
+							} }
+						>
+							{name}
+						</Button>
+					) )}
+				</ButtonGroup>
+			</div>
 			<TypographyControls
 				fontSize={inputFont.size}
 				onFontSize={( value ) => saveInputFont( { size: value } )}

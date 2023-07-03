@@ -55,10 +55,12 @@ export default function FormTitle( {
 		>
 			<div className="kb-select-or-create-placeholder__actions">
 				<TextControl
+					className={ `kb-form-block-title${ ! tmpTitle ? ' kadence-input-required-warning' : '' }` }
 					label={__( 'Give your form a title (required)', 'kadence-blocks' )}
 					placeholder={__( 'Contact Us', 'kadence-blocks' )}
 					value={tmpTitle}
 					onChange={setTmpTitle}
+					autoFocus
 				/>
 				{/* <KadenceRadioButtons
 					value={ tmpTemplate  }
@@ -74,8 +76,8 @@ export default function FormTitle( {
 
 
 
-				<div className="kt-select-starter-style-tabs">
-					<div className="kt-select-starter-style-tabs-title">
+				<div className="kt-select-starter-style-forms">
+					<div className="kt-select-starter-style-forms-title">
 						{ __( 'Select Initial Style' ) }
 					</div>
 					<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style', 'kadence-blocks' ) }>
