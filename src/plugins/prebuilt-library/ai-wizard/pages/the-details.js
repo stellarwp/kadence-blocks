@@ -59,6 +59,10 @@ export function TheDetails() {
 
 	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
 	const [ currentTone, setCurrentTone ] = useState( null );
+	const [ menuHeight, setMenuHeight ] = useState( 300 );
+	const [ menuPlacement, setMenuPlacement ] = useState( 'auto' );
+	const [ pageRef, setPageRef ] = useState( null );
+	const [ controlRef, setControlRef ] = useState( null );
 
 	useEffect(() => {
 		if ( keywords.length > 0 && keywords.length < 5 ) {
@@ -75,6 +79,24 @@ export function TheDetails() {
 		}
 	}, [ tone ])
 
+	useEffect(() => {
+		function handleResize() {
+			if ( pageRef && controlRef ) {
+				const pageRectangle = pageRef.getBoundingClientRect();
+				const controlRectangle = controlRef.getBoundingClientRect();
+				const proposedHeight = pageRectangle.bottom - (controlRectangle.bottom + 30);
+
+				setMenuPlacement( proposedHeight < 150 ? 'top' : 'auto' );
+				setMenuHeight( proposedHeight < 150 ? 300 : proposedHeight );
+			}
+		}
+
+		window.addEventListener('resize', handleResize);
+
+		return () => window.removeEventListener('resize', handleResize);
+
+	}, [ pageRef, controlRef ])
+
 	function getKeywordsLengthStyle() {
 		if ( keywordsLengthError && styles.keywordsLength.hasOwnProperty( keywordsLengthError ) ) {
 			return styles.keywordsLength[ keywordsLengthError ];
@@ -84,7 +106,7 @@ export function TheDetails() {
 	}
 
 	return (
-		<Flex gap={ 0 } align="normal" style={ styles.container }>
+		<Flex gap={ 0 } align="normal" style={ styles.container } ref={ setPageRef }>
 			<FlexBlock style={{ alignSelf: 'center' }}>
 				<Flex
 					justify="center"
@@ -120,11 +142,15 @@ export function TheDetails() {
 						    headline={ __( 'Choose your tone', 'kadence-blocks' ) }
 						    content={ __( 'The tone allows the AI to reflect your personality in its communication style. Select a tone that closely aligns with your own.', 'kadence-blocks' ) }
 						  >
-						  	<ToneSelectControl
-						  		options={ CONTENT_TONE }
-								  value={ currentTone }
-						  		onChange={ (tone) => dispatch({ type: 'SET_TONE', payload: tone.value }) }
-						  	/>
+						  	<div ref={ setControlRef }>
+						  		<ToneSelectControl
+						  			maxMenuHeight={ menuHeight }
+						  			menuPlacement={ menuPlacement }
+						  			options={ CONTENT_TONE }
+								  	value={ currentTone }
+						  			onChange={ (tone) => dispatch({ type: 'SET_TONE', payload: tone.value }) }
+						  		/>
+						  	</div>
 						  </FormSection>
 						</VStack>
 					</FlexBlock>

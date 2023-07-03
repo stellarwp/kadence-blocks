@@ -11,6 +11,8 @@ import './tone-select-control.scss';
 
 export function ToneSelectControl(props) {
   const {
+    maxMenuHeight,
+    menuPlacement,
     options = [],
     value,
     ...rest
@@ -19,23 +21,15 @@ export function ToneSelectControl(props) {
   if (! options.length) {
     return;
   }
-
-  function formattedValue(obj) {
-    if (obj && obj?.value && obj?.label) {
-      return ({
-        value: obj.value,
-        label: <ToneSelectLabel { ...obj } />
-      })
-    }
-
-    return;
-  }
   
   return (
     <Select
+      maxMenuHeight={ maxMenuHeight }
+      menuPlacement={ menuPlacement }
       classNamePrefix="stellarwp-tone"
-      value={ formattedValue(value) }
-			options={ options.map((tone) => formattedValue(tone) ) }
+      value={ value }
+      options={ options }
+      getOptionLabel={ (option) => <ToneSelectLabel { ...option } /> }
 			{ ...rest }
     />
   )
