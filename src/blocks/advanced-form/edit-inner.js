@@ -73,6 +73,7 @@ import {
 	MessageStyling,
 	getFormFields,
 	FieldBlockAppender,
+	SelectFrom,
 } from './components';
 
 /**
@@ -169,6 +170,7 @@ export function EditInner( props ) {
 		'kb-advanced-form'          : true,
 		[ `kb-advanced-form-${id}` ]: true,
 		[ `kb-form${uniqueID}` ]: uniqueID,
+		[ `kb-form-label-style-${style?.labelStyle}` ]: style?.labelStyle,
 	} );
 
 	const [ title, setTitle ] = useFormProp( 'title' );
@@ -356,6 +358,14 @@ export function EditInner( props ) {
 				{( activeTab === 'general' ) &&
 
 					<>
+						{ ! direct && (
+							<SelectForm
+								postType="kadence_form"
+								label={__( 'Selected Form', 'kadence-blocks' )}
+								onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
+								value={ id }
+							/>
+						) }
 						<KadencePanelBody
 							panelName={'kb-advanced-form-submit-actions'}
 							title={__( 'Submit Actions', 'kadence-blocks' )}
