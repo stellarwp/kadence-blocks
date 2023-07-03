@@ -9,15 +9,17 @@ const initialState = {
 	currentPageIndex: 0,
 	companyName: '',
 	entityType: 'COMPANY',
+	locationType: '',
+	locationInput: '',
 	location: '',
 	industry: '',
 	industrySpecific: '',
 	industryOther: '',
 	missionStatement: '',
 	keywords: [],
-	tone: '',
+	tone: 'NEUTRAL',
 	privacyAgreement: false,
-	photoLibrary: 'Default',
+	photoLibrary: 'My Images',
 	featuredImages: [],
 	backgroundImages: [],
 	saving: false,
@@ -48,6 +50,16 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				location: action.payload
+			}
+		case 'SET_LOCATION_INPUT':
+			return {
+				...state,
+				locationInput: action.payload
+			}
+		case 'SET_LOCATION_TYPE':
+			return {
+				...state,
+				locationType: action.payload
 			}
 		case 'SET_INDUSTRY':
 			return {

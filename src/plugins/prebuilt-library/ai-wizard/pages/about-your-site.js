@@ -1,27 +1,20 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
-import {
-	Flex,
-	FlexBlock,
-	FlexItem,
-	__experimentalVStack as VStack,
-	__experimentalDivider as Divider
-} from '@wordpress/components';
+import { Flex, FlexBlock } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import {
-	ChipsInput,
-	SelectControl,
+  FormSection,
 	Slider,
 	TextareaControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import { CONTENT_TONE } from '../constants';
+import { Education4All,  HealingTouch, Prospera, SpencerSharp } from './slides/about-your-site';
+import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -31,13 +24,16 @@ const styles = {
 		maxWidth: 640,
 		marginLeft: 'auto' 
 	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
+	},
 	formWrapper: {
-		maxWidth: 380,
+		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
 	},
 	keywordsLength: {
 		'good': 'green',
@@ -45,32 +41,12 @@ const styles = {
 	}
 }
 
+const title = __( 'Tell us about your [self/business/org]?', 'kadence-blocks' );
+const content = __( 'Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.', 'kadence-blocks' );
+
 export function AboutYourSite() {
 	const { state, dispatch } = useKadenceAi();
-	const maxTags = 10;
-	const {
-		missionStatement,
-		keywords,
-		tone
-	} = state;
-
-	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
-
-	useEffect(() => {
-		if ( keywords.length > 0 && keywords.length < 5 ) {
-			setKeywordsLengthError( 'poor' );
-		} else if ( keywords.length >= 5 ) {
-			setKeywordsLengthError( 'good' );
-		}
-	}, [ keywords ])
-
-	function getKeywordsLengthStyle() {
-		if ( keywordsLengthError && styles.keywordsLength.hasOwnProperty( keywordsLengthError ) ) {
-			return styles.keywordsLength[ keywordsLengthError ];
-		}
-
-		return 'inherit';
-	}
+	const { missionStatement } = state;
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -80,59 +56,35 @@ export function AboutYourSite() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<VStack spacing={ 6 } style={{ margin: '0 auto' }}>
+						<FormSection
+							headline={ title }
+							content={ content }
+						>
 							<TextareaControl
+								style={{ height: 440 }}
 								label={ __('About Me/My Organization/My Project', 'kadence-blocks') }
+								hideLabelFromVision
 								placeholder="..."
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
 							/>
-							<ChipsInput
-								id="2"
-								label={ __('Keywords', 'kadence-blocks') }
-								placeholder="..."
-								tags={ keywords }
-								maxTags={ maxTags }
-								selectedTags={ (selectedTags) => dispatch({ type: 'SET_KEYWORDS', payload: selectedTags }) }
-								help={
-									<>
-										<Flex>{ __('Separate with commas or the Enter key.', 'kadence-blocks') }</Flex>
-										<Flex>
-											<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
-											<FlexItem style={ { color: getKeywordsLengthStyle() } }>
-												{ `${ keywords.length }/${ maxTags }` }
-											</FlexItem>
-										</Flex>
-									</>
-								}
-							/>
-						 	<SelectControl
-								label={ __('Tone', 'kadence-blocks') }
-								value={ tone }
-								onChange={ (value) => dispatch({ type: 'SET_TONE', payload: value }) }
-								options={ [
-									...[{
-										value: '',
-										label: __('Select...', 'kadence-blocks'),
-										disabled: true
-									}],
-									...CONTENT_TONE
-								] }
-							/>
-							<Divider style={ { borderBottomColor: '#DFDFDF', marginBottom: 10 } } />
-							<p>
-								{
-									__( 'Our content is generated using a custom integration with OpenAI. Please double-check everything before publishing to avoid any unintended language. Happy creating!', 'kadence-blocks' )
-								}
-							</p>
-						</VStack>
+						</FormSection>
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
-				<Flex justify="center" align="center">
-					<FlexBlock>
-						<Slider />
+			<FlexBlock display="flex">
+				<Flex justify="center">
+					<FlexBlock style={ styles.rightContent }>
+						<Slider
+							backgroundImage={ backgroundImage }
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							slides={[
+								<HealingTouch />,
+								<SpencerSharp />,
+								<Prospera />,
+								<Education4All />
+							]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>

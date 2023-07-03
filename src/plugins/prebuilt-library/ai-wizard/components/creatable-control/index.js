@@ -1,9 +1,15 @@
+/**
+ * External dependencies
+ */
 import { Creatable } from 'react-select';
 import classnames from 'classnames';
 
-import './combobox-control.scss';
+/**
+ * Internal dependencies
+ */
+import './creatable-control.scss';
 
-export function CreateableSelectControl( props ) {
+export function CreatableControl( props ) {
   const {
     label,
     options,
@@ -16,7 +22,7 @@ export function CreateableSelectControl( props ) {
   });
 
   return (
-		<div className="stellarwp components-creatable-select-control">
+		<div className="stellarwp components-creatable-control">
 		  { label ? (
 			  <label className="components-input-control__label">
 				  { label }
@@ -25,7 +31,7 @@ export function CreateableSelectControl( props ) {
 			<div className={ containerClasses }>
 			  { prefix ? prefix : null }
 				<Creatable
-				  classNamePrefix="stellarwp"
+				  classNamePrefix="stellarwp-creatable"
 				  styles={{
 				    control: (baseStyles, state) => ({
               ...baseStyles,

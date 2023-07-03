@@ -15,14 +15,32 @@ import { search } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { CreateableSelectControl } from '../components/combobox-control/react-select';
-
 import { SafeParseJSON } from '@kadence/helpers';
-import { SelectControl, Slider, TextControl } from '../components';
-import { SelectControlRefresh } from '../components/select-control/refresh';
+import {
+	FormSection,
+	CreatableControl,
+	SelectControl,
+	Slider,
+	TextControl,
+	LocationSelectControl
+} from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { verticalsHelper } from '../utils/verticals-helper';
-import { ENTITY_TYPE, ENTITY_TO_NAME } from '../constants';
+import {
+	ENTITY_TYPE,
+	ENTITY_TO_NAME,
+	LOCATION_TYPES,
+	LOCATION_BUSINESS_ADDRESS,
+	LOCATION_SERVICE_AREA,
+	LOCATION_ONLINE_ONLY
+} from '../constants';
+import {
+	Education4All,
+	HealingTouch,
+	Prospera,
+	SpencerSharp
+} from './slides/industry-information';
+import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -32,20 +50,25 @@ const styles = {
 		maxWidth: 640,
 		marginLeft: 'auto'
 	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
+	},
 	formWrapper: {
-		maxWidth: 380,
+		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
 	},
 	inputError: {
  		fontSize: 11,
  		color: 'red' 
 	}
 }
-	
+
+const headline = __( 'Your Information', 'kadence-blocks' );
+const content = __( 'Please provide detailed information about yourself, your company, or your organization to enhance the quality of our results.', 'kadence-blocks' );	
 
 export function IndustryInformation() {
 	const [ verticals, setVerticals ] = useState([]);
@@ -61,7 +84,8 @@ export function IndustryInformation() {
 	const {
 		companyName,
 		entityType,
-		location,
+		locationInput,
+		locationType,
 		industry,
 		industrySpecific,
 		industryOther
@@ -70,6 +94,17 @@ export function IndustryInformation() {
 	useEffect(() => {
 		setVerticalsData();
 	}, []);
+	
+	useEffect(() => {
+		switch (locationType) {
+			case LOCATION_BUSINESS_ADDRESS:
+				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_BUSINESS_ADDRESS }: ${ locationInput }` });
+				return;
+			case LOCATION_SERVICE_AREA:
+				dispatch({ type: 'SET_LOCATION', payload: `${ LOCATION_SERVICE_AREA }: ${ locationInput }` });
+				return;
+		}
+	}, [ locationInput, locationType ])
 
 	useEffect(() => {
 		if (! verticalsError) {
@@ -104,16 +139,11 @@ export function IndustryInformation() {
 		);
 	}, [ verticals, industry ])
 
-	useEffect(() => {
-
-	}, [ entityType ])
-
 	async function setVerticalsData() {
 		let verticalsData = SafeParseJSON(await getVerticals(), false);
 
 		// If data is not what we're expecting, set error.
 		if (! verticalsData) {
-			console.log('1. Verticals Error Set');
 			setVerticalsError(true);
 			return;
 		}
@@ -151,23 +181,23 @@ export function IndustryInformation() {
 		dispatch({ type: 'SET_INDUSTRY', payload: value });
 		// Reset specific industry select on industry change.
 		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: '' });
-
-		// @todo: Remove guard and set photoLibrary to selected category value.
-		if (value === 'Other') {
-			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: 'Default' })
-		}
 	}
 
 	function handleIndustrySpecificChange(value) {
 		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: value });
-
-		// If 'Other' use the first sub-category w/in the choosen vertical.
-		const librarySelection = value === 'Other' ? verticals[industry][0] : value;
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: librarySelection });
 	}
 
 	function handleEntityTypeChange(value) {
 		dispatch({ type: 'SET_ENTITY_TYPE', payload: value });
+	}
+
+	function handleLocationTypeChange(value) {
+		if (value === LOCATION_ONLINE_ONLY) {
+ 			dispatch({ type: 'SET_LOCATION', payload: LOCATION_ONLINE_ONLY });
+ 			dispatch({ type: 'SET_LOCATION_TYPE', payload: LOCATION_ONLINE_ONLY });
+		}
+
+		dispatch({ type: 'SET_LOCATION_TYPE', payload: value });
 	}
 
 	function getErrorMessage() {
@@ -179,6 +209,26 @@ export function IndustryInformation() {
 		)
 	}
 
+	function getLocationPlaceholderText() {
+		if (locationType !== LOCATION_ONLINE_ONLY) {
+			const currentLocation = LOCATION_TYPES.filter((location) => location.value === locationType);
+
+			return currentLocation.length && currentLocation[0]?.placeholder ? currentLocation[0].placeholder : '...';
+		}
+
+		return '...';
+	}
+
+	function getLocationHelpText() {
+		if (locationType !== LOCATION_ONLINE_ONLY) {
+			const currentLocation = LOCATION_TYPES.filter((location) => location.value === locationType);
+
+			return currentLocation.length && currentLocation[0]?.help ? currentLocation[0].help : '';
+		}
+
+		return '';
+	}
+
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
 			<FlexBlock style={{ alignSelf: 'center' }}>
@@ -187,67 +237,62 @@ export function IndustryInformation() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
-						 	<SelectControl
-								label={ __('I am', 'kadence-blocks') }
-								value={ entityType }
-								onChange={ handleEntityTypeChange }
-								options={ ENTITY_TYPE }
-							/>
-							<TextControl
-								label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
-								autoFocus
-								placeholder="..."
-								value={ companyName }
-								onChange={ (value) => dispatch({ type: 'SET_COMPANY_NAME', payload: value }) }
-							/>
-							<TextControl
-								label="Location"
-								placeholder="..."
-								value={ location }
-								onChange={ (value) => dispatch({ type: 'SET_LOCATION', payload: value }) }
-							/>
-							<CreateableSelectControl
-								label={ __('What Industry are you in?', 'kadence-blocks') }
-								options={ industries }
-								prefix={ <Icon icon={ search } /> }
-							/>
-						 	<SelectControl
-								label={ __('What Industry are you in?', 'kadence-blocks') }
-								value={ industry }
-								onChange={ handleIndustryChange }
-								disabled={ verticalsError || loading }
-								options={ industries }
-								suffix={ (verticalsError || loading) ? <SelectControlRefresh loading={ loading }  onClick={ setVerticalsData } /> : null }
-								error={ verticalsError }
-								help={ verticalsError ? getErrorMessage() : null }
-							/>
-							{ (industry && industry !== 'Other') && (
+						<FormSection
+							headline={ headline }
+							content={ content }
+						>
+							<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
 						 		<SelectControl
-									label={ __('Can you be more specific?', 'kadence-blocks') }
-									value={ industrySpecific }
-									onChange={ handleIndustrySpecificChange }
-									disabled={ loading || verticalsError }
-									options={ industriesSpecific }
+									label={ __('I am', 'kadence-blocks') }
+									value={ entityType }
+									onChange={ handleEntityTypeChange }
+									options={ ENTITY_TYPE }
 								/>
-							) }
-							{ (industry === 'Other' || industrySpecific === 'Other') && (
 								<TextControl
-									label={ __('Your Industry', 'kadence-blocks') }
-									placeholder="..."
+									label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
 									autoFocus
-									value={ industryOther }
-									onChange={ (value) => dispatch({ type: 'SET_INDUSTRY_OTHER', payload: value }) }
+									placeholder="..."
+									value={ companyName }
+									onChange={ (value) => dispatch({ type: 'SET_COMPANY_NAME', payload: value }) }
 								/>
-							) }
-						</VStack>
+						 		<LocationSelectControl
+						 			label={ __('Where are you based?', 'kadence-blocks') }
+						 			locations={ LOCATION_TYPES }
+						 			selected={ locationType }
+						 			onChange={ handleLocationTypeChange }
+						 		/>
+						 		{ locationType && locationType !== LOCATION_ONLINE_ONLY ? (
+									<TextControl
+										label="Location"
+										placeholder={ getLocationPlaceholderText() }
+										value={ locationInput }
+										onChange={ (value) => dispatch({ type: 'SET_LOCATION_INPUT', payload: value }) }
+										help={ getLocationHelpText() }
+									/>
+						 		) : null }
+								<CreatableControl
+									label={ __('What Industry are you in?', 'kadence-blocks') }
+									options={ industries }
+									prefix={ <Icon icon={ search } /> }
+								/>
+							</VStack>
+						</FormSection>
 					</FlexBlock>
 			</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
-				<Flex justify="center" align="center">
-					<FlexBlock>
-						<Slider />
+			<FlexBlock display="flex">
+				<Flex justify="center">
+					<FlexBlock style={ styles.rightContent }>
+						<Slider
+							backgroundImage={ backgroundImage }
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							slides={[
+								<HealingTouch />,
+								<SpencerSharp />,
+								<Prospera />,
+								<Education4All />
+							]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>
