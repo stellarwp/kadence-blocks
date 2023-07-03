@@ -21,7 +21,7 @@ export function Education4All() {
   return (
     <SlideCard>
       <SlideCardRow
-        headline={ __('Tell us about your company', 'kadence-blocks') }
+        headline={ __('Tell us about your organization', 'kadence-blocks') }
         content={ __(content, 'kadence-blocks') }
       />
     </SlideCard>

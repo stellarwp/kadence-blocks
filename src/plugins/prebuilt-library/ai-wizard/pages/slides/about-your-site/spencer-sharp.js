@@ -23,7 +23,7 @@ export function SpencerSharp() {
   return (
     <SlideCard>
       <SlideCardRow
-        headline={ __('Tell us about your company', 'kadence-blocks') }
+        headline={ __('Tell us about yourself', 'kadence-blocks') }
         content={ __(content, 'kadence-blocks') }
       />
     </SlideCard>

@@ -108,17 +108,21 @@ export const COLLECTION_REQUEST_BODY = {
 	]
 };
 
+export const ENTITY_TYPE_COMPANY = 'COMPANY';
+export const ENTITY_TYPE_INDIVIDUAL = 'INDIVIDUAL';
+export const ENTITY_TYPE_ORGANIZATION = 'ORGANIZATION';
+
 export const ENTITY_TYPE = [
 	{
-		value: 'COMPANY',
+		value: ENTITY_TYPE_COMPANY,
 		label: __( 'A Company', 'kadence-blocks' ),
 	},
 	{
-		value: 'INDIVIDUAL',
+		value: ENTITY_TYPE_INDIVIDUAL,
 		label: __( 'An Individual', 'kadence-blocks' ),
 	},
 	{
-		value: 'ORGANIZATION',
+		value: ENTITY_TYPE_ORGANIZATION,
 		label: __( 'An Organization', 'kadence-blocks' ),
 	},
 ];

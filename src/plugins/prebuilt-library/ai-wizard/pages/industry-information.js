@@ -77,7 +77,7 @@ export function IndustryInformation() {
 		label: '...',
 		disabled: true
 	}]);
-	const [ verticalsError, setVerticalsError ] = useState(false);
+	const [ verticalsError, setVerticalsError ] = useState( false );
 	const [ industriesSpecific, setIndustriesSpecific ] = useState([]);
 	const { loading, getVerticals } = verticalsHelper();
 	const { state, dispatch } = useKadenceAi();

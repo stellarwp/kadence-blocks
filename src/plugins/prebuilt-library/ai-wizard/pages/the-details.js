@@ -86,15 +86,17 @@ export function TheDetails() {
 				const controlRectangle = controlRef.getBoundingClientRect();
 				const proposedHeight = pageRectangle.bottom - (controlRectangle.bottom + 30);
 
+				// Determine how react-select menu list should display.
 				setMenuPlacement( proposedHeight < 150 ? 'top' : 'auto' );
 				setMenuHeight( proposedHeight < 150 ? 300 : proposedHeight );
 			}
 		}
 
+		handleResize();
+
 		window.addEventListener('resize', handleResize);
 
 		return () => window.removeEventListener('resize', handleResize);
-
 	}, [ pageRef, controlRef ])
 
 	function getKeywordsLengthStyle() {

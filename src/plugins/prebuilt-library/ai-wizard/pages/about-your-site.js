@@ -12,8 +12,14 @@ import {
 	Slider,
 	TextareaControl
 } from '../components';
+import {
+	Education4All,
+	HealingTouch,
+	Prospera,
+	SpencerSharp
+} from './slides/about-your-site';
+import { ENTITY_TYPE_INDIVIDUAL } from '../constants';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import { Education4All,  HealingTouch, Prospera, SpencerSharp } from './slides/about-your-site';
 import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
@@ -41,12 +47,19 @@ const styles = {
 	}
 }
 
-const title = __( 'Tell us about your [self/business/org]?', 'kadence-blocks' );
+const title = __( 'Tell us about your', 'kadence-blocks' );
 const content = __( 'Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.', 'kadence-blocks' );
+const entityToTitle = {
+	'COMPANY': __( 'business', 'kadence-blocks' ),
+	'INDIVIDUAL': __( 'self', 'kadence-blocks' ),
+	'ORGANIZATION': __( 'organization', 'kadence-blocks' ),
+};
 
 export function AboutYourSite() {
 	const { state, dispatch } = useKadenceAi();
-	const { missionStatement } = state;
+	const { missionStatement, entityType } = state;
+	// Compose title based on entityType value.
+	const customTitle = `${ title }${ entityType === ENTITY_TYPE_INDIVIDUAL ? '' : ' '}${ entityToTitle[ entityType ] }`
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -57,7 +70,7 @@ export function AboutYourSite() {
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
 						<FormSection
-							headline={ title }
+							headline={ customTitle }
 							content={ content }
 						>
 							<TextareaControl

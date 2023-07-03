@@ -24,7 +24,7 @@ export function HealingTouch() {
   return (
     <SlideCard>
       <SlideCardRow
-        headline={ __('Tell us about your company', 'kadence-blocks') }
+        headline={ __('Tell us about your business', 'kadence-blocks') }
         content={ __(content, 'kadence-blocks') }
       />
     </SlideCard>
