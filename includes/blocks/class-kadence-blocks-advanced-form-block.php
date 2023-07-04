@@ -127,12 +127,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_typography( $form_attributes, 'inputFont');
 
-		$borderStyle = array(
-			'fieldBorderStyle' => array( !empty( $form_attributes['fieldBorderStyle'] ) ? $form_attributes['fieldBorderStyle'] : array() ),
-			'tabletFieldBorderStyle' => array( !empty( $form_attributes['tabletFieldBorderStyle'] ) ? $form_attributes['tabletFieldBorderStyle'] : array() ),
-			'mobileFieldBorderStyle' => array( !empty( $form_attributes['mobileFieldBorderStyle'] ) ? $form_attributes['mobileFieldBorderStyle'] : array()  ),
+		$border_style = array(
+			'fieldBorderStyle' => array( ! empty( $form_attributes['fieldBorderStyle'] ) ? $form_attributes['fieldBorderStyle'] : array() ),
+			'tabletFieldBorderStyle' => array( ! empty( $form_attributes['tabletFieldBorderStyle'] ) ? $form_attributes['tabletFieldBorderStyle'] : array() ),
+			'mobileFieldBorderStyle' => array( ! empty( $form_attributes['mobileFieldBorderStyle'] ) ? $form_attributes['mobileFieldBorderStyle'] : array()  ),
 		);
-		$css->render_border_styles( $borderStyle, 'fieldBorderStyle' );
+		$css->render_border_styles( $border_style, 'fieldBorderStyle' );
 		$css->render_measure_output( $form_attributes, 'fieldBorderRadius', 'border-radius' );
 		$css->render_color_output( $field_style, 'color', 'color' );
 
@@ -235,11 +235,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-form-field-help' );
 
-		if( isset( $help_style['lineHeight']) ) {
+		if ( isset( $help_style['lineHeight'] ) ) {
 			$css->render_responsive_size( $help_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
 		}
 
-		if( isset( $help_style['size'] ) ) {
+		if ( isset( $help_style['size'] ) ) {
 			$css->render_responsive_size( $help_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
 		}
 
@@ -289,13 +289,13 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'box-shadow', ( isset( $submit_style['boxShadow'][7] ) && true === $submit_style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $submit_style['boxShadow'][3] ) && is_numeric( $submit_style['boxShadow'][3] ) ? $submit_style['boxShadow'][3] : '2' ) . 'px ' . ( isset( $submit_style['boxShadow'][4] ) && is_numeric( $submit_style['boxShadow'][4] ) ? $submit_style['boxShadow'][4] : '2' ) . 'px ' . ( isset( $submit_style['boxShadow'][5] ) && is_numeric( $submit_style['boxShadow'][5] ) ? $submit_style['boxShadow'][5] : '3' ) . 'px ' . ( isset( $submit_style['boxShadow'][6] ) && is_numeric( $submit_style['boxShadow'][6] ) ? $submit_style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit_style['boxShadow'][1] ) && ! empty( $submit_style['boxShadow'][1] ) ? $submit_style['boxShadow'][1] : '#000000' ), ( isset( $submit_style['boxShadow'][2] ) && is_numeric( $submit_style['boxShadow'][2] ) ? $submit_style['boxShadow'][2] : 0.4 ) ) );
 		}
 
-		if( isset( $submit_font['lineHeight'] ) ) {
+		if ( isset( $submit_font['lineHeight'] ) ) {
 			$css->render_responsive_size( $submit_font['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
 		}
 
 		$css->render_range( $submit_font, 'letterSpacing', 'letter-spacing' );
 
-		if( isset( $submit_font['size'] ) ){
+		if ( isset( $submit_font['size'] ) ){
 			$css->render_responsive_size( $submit_font['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
 		}
 
@@ -316,7 +316,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( isset( $submit_style['widthType'] ) && 'fixed' === $submit_style['widthType'] && isset( $submit_style['fixedWidth'] ) && is_array( $submit_style['fixedWidth'] ) && isset( $submit_style['fixedWidth'][0] ) && ! empty( $submit_style['fixedWidth'][0] ) ) {
 			$css->render_responsive_size( $submit_style['fixedWidth'], array( 0, 1, 2 ), 'width', 'px' );
-		} else if ( isset( $submit_style['widthType'] ) && 'full' === $submit_style['widthType'] ) {
+		} elseif ( isset( $submit_style['widthType'] ) && 'full' === $submit_style['widthType'] ) {
 			$css->add_property( 'width', '100%' );
 		}
 
@@ -408,7 +408,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $content;
 	}
-
+	/**
+	 * Get form fields.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array
+	 */
 	private function get_form_fields( $post_id ) {
 
 		if ( ! empty( $this->form_fields ) ) {
@@ -429,7 +434,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $this->form_fields;
 	}
-
+	/**
+	 * Get form attributes.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array
+	 */
 	private function get_form_attributes( $post_id ) {
 
 		if ( ! empty( $this->form_attributes[ $post_id ] ) ) {

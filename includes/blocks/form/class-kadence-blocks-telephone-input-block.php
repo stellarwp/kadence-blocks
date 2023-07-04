@@ -69,7 +69,7 @@ class Kadence_Blocks_Telephone_Input_Block extends Kadence_Blocks_Advanced_Form_
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type = 'tel';
 		$is_required = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}

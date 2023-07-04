@@ -22,9 +22,9 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'mismatch' :
@@ -32,9 +32,9 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'validation' :
@@ -42,9 +42,9 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break
 				}
@@ -75,7 +75,7 @@
 		addErrorNotice( form ) {
 			var error_message = form.getAttribute('data-error-message');
 			if ( ! error_message || '' === error_message || undefined === error_message ) {
-				error_message = kadence_blocks_form_params.error_message;
+				error_message = kb_adv_form_params.error_message;
 			}
 			var el = document.createElement('div');
 			el.classList.add( 'kadence-blocks-form-message' );
@@ -286,10 +286,10 @@
 			}
 			//var form_data = self.serialize();
 			var form_data = new FormData(self);
-			form_data.set( '_kb_form_verify', kadence_blocks_form_params.nonce );
+			form_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
 			//form_data = window.kadenceAdvancedForm.serialize( form_data );
 			form_data = new URLSearchParams(form_data);
-			//form_data = form_data + '&_kb_form_verify=' + kadence_blocks_form_params.nonce;
+			//form_data = form_data + '&_kb_form_verify=' + kb_adv_form_params.nonce;
 			return form_data;
 		},
 		createElementFromHTML( htmlString ) {
@@ -314,7 +314,7 @@
 				submitButton.setAttribute( 'disabled', 'disabled' )
 				submitButton.classList.add( 'button-primary-disabled' );
 				var request = new XMLHttpRequest();
-				request.open( 'POST', kadence_blocks_form_params.ajaxurl, true );
+				request.open( 'POST', kb_adv_form_params.ajaxurl, true );
 				request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 				request.onload = function () {
 					if ( this.status >= 200 && this.status < 400 ) {
@@ -393,11 +393,37 @@
 				forms[n].addEventListener('submit', click_function( forms[n] ) );
 			}
 		},
+		initFloatingLabels() {
+			var inputs = document.querySelectorAll( '.kb-adv-form-label-style-float .kb-adv-form-text-type-input input, .kb-adv-form-label-style-float .kb-adv-form-text-type-input textarea' );
+			if ( ! inputs.length ) {
+				return;
+			}
+			var focus_function = function( input ) {
+				return function curried_func(e) {
+					input.parentNode.classList.add( 'kb-form-field-focus' );
+				}
+			}
+			var blur_function = function( input ) {
+				return function curried_func(e) {
+					if ( ! input.value ) {
+						input.parentNode.classList.remove( 'kb-form-field-focus' );
+					}
+				}
+			}
+			for ( var n = 0; n < inputs.length; n++ ) {
+				if ( inputs[n].value ) {
+					inputs[n].parentNode.classList.add( 'kb-form-field-focus' );
+				}
+				inputs[n].addEventListener('focus', focus_function( inputs[n] ) );
+				inputs[n].addEventListener('blur', blur_function( inputs[n] ) );
+			}
+		},
 		init: function() {
-			if ( typeof kadence_blocks_form_params === 'undefined' ) {
+			if ( typeof kb_adv_form_params === 'undefined' ) {
 				return false;
 			}
 			window.kadenceAdvancedForm.initForms();
+			window.kadenceAdvancedForm.initFloatingLabels();
 		}
 	}
 	if ( 'loading' === document.readyState ) {

@@ -25,7 +25,7 @@ import { DuplicateField, FieldBlockAppender, FieldName } from '../../components'
 import { times, get, filter } from 'lodash';
 
 function FieldSelect( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, options, multiSelect, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, placeholder, options, multiSelect, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 	const [ rerender, setRerender ] = useState( 0 );
 
@@ -252,6 +252,11 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 									help={ __( 'This will be displayed under the input and can be used to provide direction on how the field should be filled out.', 'kadence-blocks' )}
 									value={helpText}
 									onChange={( value ) => setAttributes( { helpText: value } )}
+								/>
+								<TextControl
+									label={__( 'Select Placeholder', 'kadence-blocks' )}
+									value={placeholder}
+									onChange={( value ) => setAttributes( { placeholder: value } )}
 								/>
 								<FormInputControl
 									label={__( 'Default Value', 'kadence-blocks' )}

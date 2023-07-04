@@ -10,6 +10,9 @@
 	  "type": "string",
 	  "default": ""
 	},
+	"placeholder": {
+		"type": "string"
+	},
 	"showLabel": {
 	  "type": "boolean",
 	  "default": true

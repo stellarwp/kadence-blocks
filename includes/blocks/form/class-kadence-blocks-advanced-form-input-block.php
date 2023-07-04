@@ -201,12 +201,12 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 		$response = '';
 
 		$is_required_bool = $this->is_required( $attributes, true, false );
-		if( $is_required_bool ){
+		if ( $is_required_bool ) {
 			$response .= 'required aria-required="true" ';
 		}
 
-		// if label is hidden and not empty, add as aria-label to input
-		if( isset( $attributes['showLabel'] ) && !$attributes['showLabel'] && !empty( $attributes['label'] ) ){
+		// if label is hidden and not empty, add as aria-label to input.
+		if ( isset( $attributes['showLabel'] ) && ! $attributes['showLabel'] && ! empty( $attributes['label'] ) ) {
 			$response .= 'aria-label="' . $attributes['label'] . '" ';
 		}
 
