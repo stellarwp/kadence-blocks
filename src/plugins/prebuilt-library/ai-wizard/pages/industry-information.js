@@ -34,6 +34,7 @@ import {
 	LOCATION_SERVICE_AREA,
 	LOCATION_ONLINE_ONLY
 } from '../constants';
+// import INDUSTRIES from '../constants/industries';
 import {
 	Education4All,
 	HealingTouch,
@@ -88,7 +89,6 @@ export function IndustryInformation() {
 		locationType,
 		industry,
 		industrySpecific,
-		industryOther
 	} = state;
 
 	useEffect(() => {
@@ -177,14 +177,8 @@ export function IndustryInformation() {
 		]
 	}
 
-	function handleIndustryChange(value) {
-		dispatch({ type: 'SET_INDUSTRY', payload: value });
-		// Reset specific industry select on industry change.
-		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: '' });
-	}
-
-	function handleIndustrySpecificChange(value) {
-		dispatch({ type: 'SET_INDUSTRY_SPECIFIC', payload: value });
+	function handleIndustryChange(industry) {
+		dispatch({ type: 'SET_INDUSTRY', payload: industry.value });
 	}
 
 	function handleEntityTypeChange(value) {
@@ -274,6 +268,7 @@ export function IndustryInformation() {
 									label={ __('What Industry are you in?', 'kadence-blocks') }
 									options={ industries }
 									prefix={ <Icon icon={ search } /> }
+									onChange={ handleIndustryChange }
 								/>
 							</VStack>
 						</FormSection>

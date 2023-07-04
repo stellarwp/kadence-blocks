@@ -14,7 +14,8 @@ export function CreatableControl( props ) {
     label,
     options,
     value,
-    prefix
+    prefix,
+    ...rest
   } = props;
 
   const containerClasses = classnames('components-input-control__container', {
@@ -54,6 +55,8 @@ export function CreatableControl( props ) {
 				  }}
 					isClearable
 					options={ options }
+					value={ value }
+					{ ...rest }
 				/>
 			</div>
 		</div>
