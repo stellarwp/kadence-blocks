@@ -219,8 +219,17 @@ div.kb-blocks-bg-video {
     background: #f9f9f9;
 }
 // Full height.
-.kt-inner-column-height-full>.innerblocks-wrap>.wp-block-kadence-column, .kt-inner-column-height-full>.innerblocks-wrap>.wp-block-kadence-column>.kadence-inner-column-inner {
-    height: 100%;
+.kt-inner-column-height-full {
+	&>.innerblocks-wrap>.wp-block-kadence-column, 
+	&>.innerblocks-wrap>.wp-block-kadence-column>.kadence-inner-column-inner {
+    	height: 100%;
+	}
+
+	//override core style to match frontend expectations for aligned blocks in full height columns
+	.wp-block[data-align=right],
+	.wp-block[data-align=left] {
+		height: initial;
+	}
 }
 .wp-block-kadence-rowlayout.kt-inner-column-height-full:not(.kt-row-layout-row) > .innerblocks-wrap {
 	/* autoprefixer: ignore next */
