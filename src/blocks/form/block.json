@@ -586,6 +586,10 @@
 	"submitLabel": {
 	  "type": "string",
 	  "default": ""
+	},
+	"hAlignFormFeilds": {
+		"type": "boolean",
+		"default": false
 	}
   },
   "supports": {
@@ -597,7 +601,8 @@
 	"ktanimate": true,
 	"ktanimateadd": true,
 	"ktanimatepreview": true,
-	"ktanimateswipe": true
+	"ktanimateswipe": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId"

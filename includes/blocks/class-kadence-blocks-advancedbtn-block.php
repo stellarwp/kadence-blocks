@@ -54,26 +54,29 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .wp-block-kadence-advancedbtn.kb-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
-		if ( isset( $attributes['margin'][0] ) ) {
+
+		//the margin attribute on this block is non standard and should be updated
+		if ( isset( $attributes['margin'][0] ) && is_array( $attributes['margin'][0] ) ) {
+			$margin_unit = ( !empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
 			$css->render_measure_output(
-				$attributes['margin'][0],
+				array_merge( $attributes['margin'][0], array( 'marginType' => $margin_unit) ),
 				'margin',
 				'margin',
 				array(
 					'desktop_key' => 'desk',
 					'tablet_key'  => 'tablet',
 					'mobile_key'  => 'mobile',
-					'unit_key'    => 'marginUnit',
 				)
 			);
 		}
 		$css->set_selector( '.wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
-		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
+		$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
 		$css->render_gap( $attributes );
 		$h_property = 'justify-content';
 		$v_property = 'align-items';
@@ -343,6 +346,7 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					if ( 'gradient' === $bgtype ) {
 						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before' );
+						$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 						if ( isset( $btnvalue['backgroundHoverType'] ) && 'gradient' === $btnvalue['backgroundHoverType'] ) {
 							$bg1 = ( ! isset( $btnvalue['backgroundHover'] ) ? $css->render_color( '#444444', ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) : $css->render_color( $btnvalue['backgroundHover'], ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) );
 							$bg2 = ( isset( $btnvalue['gradientHover'][0] ) && ! empty( $btnvalue['gradientHover'][0] ) ? $css->render_color( $btnvalue['gradientHover'][0], ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) );

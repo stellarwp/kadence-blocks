@@ -45,10 +45,13 @@ export { default as video } from './video'
 export { default as gradient } from './gradient'
 export { default as brush } from './brush'
 export { default as hoverToggle } from './hover'
+export { default as duplicate } from './duplicate'
 export { default as copy } from './copy'
 export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
+export { default as dynamicIcon } from './dynamic'
+export { default as dynamic } from './dynamic'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
@@ -162,3 +165,44 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+export { default as captchaIcon } from './captcha'
+export { 
+    formTemplateContactIcon,
+    formTemplateContactAdvancedIcon,
+    formTemplateSubscribeIcon,
+    formTemplateSubscribeAdvancedIcon,
+    formTemplateFeedbackIcon,
+} from './block-icons/advanced-form/templates'
+
+
+// Pro Block Icons
+export { default as dynamicHTMLIcon } from './block-icons/dynamic-html'
+export { default as dynamicListIcon } from './block-icons/dynamic-list'
+export { default as imageOverlayIcon } from './block-icons/image-overlay'
+export { default as modalIcon } from './block-icons/modal'
+export { default as portfolioGridIcon } from './block-icons/portfolio-grid'
+export { default as postGridIcon } from './block-icons/post-grid'
+export { default as productCarouselIcon } from './block-icons/product-carousel'
+export { default as sliderIcon } from './block-icons/slider'
+export { default as splitContentIcon } from './block-icons/split-content'
+export { default as userInfoIcon } from './block-icons/user-info'
+export { default as videoPopupIcon } from './block-icons/video-popup'
+
+// Post Grid Layout Icons
+export { default as postVirtueIcon } from './block-icons/post-grid/layout/virtue'
+export { default as postBoldIcon } from './block-icons/post-grid/layout/bold'
+export { default as postAscendIcon } from './block-icons/post-grid/layout/ascend'
+export { default as postListIcon } from './block-icons/post-grid/layout/list'
+
+// Pro Misc Icons
+export { default as categoriesIcon } from './categories'
+export { default as tagsIcon } from './tags'
+export { default as userIcon } from './user'
+export { default as commentsIcon } from './comments'
+export { default as linkIcon } from './link'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
+export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'

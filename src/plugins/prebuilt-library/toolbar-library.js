@@ -2,20 +2,14 @@
  * WordPress dependencies
  */
  import { registerPlugin } from '@wordpress/plugins';
- import {
-	withDispatch,
-} from '@wordpress/data';
 import {
-    useEffect,
-    useState,
 	render,
 } from '@wordpress/element';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect, subscribe } from '@wordpress/data';
 import { createBlock, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
 import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import {
 	Button,
@@ -30,8 +24,6 @@ import { kadenceBlocksIcon } from '@kadence/icons';
  * Add Prebuilt Library button to Gutenberg toolbar
  */
 function ToolbarLibrary() {
-	// const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
-	// const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
 	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect( blockEditorStore );
 	const {
 		replaceBlocks,
@@ -82,22 +74,24 @@ function ToolbarLibrary() {
 			{ __( 'Design Library', 'kadence-blocks' ) }
 		</Button>
 	);
-	const checkElement = async selector => {
-		while ( document.querySelector(selector) === null) {
-			await new Promise( resolve => requestAnimationFrame( resolve ) )
-		}
-		return document.querySelector(selector);
+	const renderButton = ( selector ) => {
+		const patternButton = document.createElement( 'div' );
+		patternButton.classList.add( 'kadence-toolbar-design-library' );
+		selector.appendChild( patternButton );
+		render( <LibraryButton />, patternButton );
 	}
 	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
-		checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
-			if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
-				const toolbarButton = document.createElement( 'div' );
-				toolbarButton.classList.add( 'kadence-toolbar-design-library' );
-
-				selector.appendChild( toolbarButton );
-				render( <LibraryButton />, toolbarButton );
+		// Watch for the toolbar to be visible and the design library button to be missing.
+		let unsubscribe = subscribe( () => {
+			const editToolbar = document.querySelector( '.edit-post-header-toolbar' )
+			if ( ! editToolbar ) {
+				return
+			}
+			if ( ! editToolbar.querySelector( '.kadence-toolbar-design-library' ) ) {
+				renderButton( editToolbar );
 			}
 		} );
+		
 	}
 
 	return null;

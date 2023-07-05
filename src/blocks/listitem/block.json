@@ -16,6 +16,10 @@
       "type": "string",
       "default": ""
     },
+	"showIcon": {
+	  "type": "boolean",
+	  "default": true
+	},
     "link": {
       "type": "string",
       "default": "",
@@ -78,6 +82,9 @@
   ],
   "supports": {
     "ktdynamic": true,
-    "html": false
+    "html": false,
+    "reusable": false,
+    "kbMetadata": true,
+    "kbContentLabel": "text"
   }
 }

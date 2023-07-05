@@ -2,7 +2,7 @@
  * Single Border Component
  *
  */
- import {
+import {
 	pxIcon,
 	emIcon,
 	remIcon,
@@ -24,6 +24,10 @@
 } from '@kadence/icons';
 import { settings, link, linkOff } from '@wordpress/icons';
 import { flow } from 'lodash';
+/**
+ * WordPress dependencies
+ */
+import { useInstanceId } from '@wordpress/compose';
 /**
  * Import Externals
  */
@@ -51,6 +55,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 	styles = ['solid', 'dashed', 'dotted', 'double'],
 	defaultLinked = true,
 } ) {
+	const instanceId = useInstanceId( SingleBorderControl );
 	const onChangeStyle = ( style ) => {
 		const newVal = value;
 		newVal[1] = style;
@@ -128,7 +133,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 	} ) );
 	return [
 		onChange && (
-			<div className={ `components-base-control kadence-single-border-control${ className ? ' ' + className : '' }` }>
+			<div className={ `components-base-control kadence-single-border-control kadence-single-border-control${ instanceId }${ className ? ' ' + className : '' }` }>
 				{ label && (
 					<Flex
 						justify="space-between"
@@ -152,7 +157,7 @@ import { __experimentalUnitControl as UnitControl, DropdownMenu, Flex, FlexItem,
 						label={ __( 'Border Style', 'kadence-blocks' ) }
 						popoverProps={ {
 							className: 'border-control-style-select__popover',
-							position: 'bottom left',
+							placement: 'bottom',
 						} }
 					>
 						{ ( { onClose } ) => (

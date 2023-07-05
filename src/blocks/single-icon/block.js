@@ -10,6 +10,7 @@ import metadata from './block.json';
 import { iconIcon } from '@kadence/icons';
 import edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 
 /**
  * Internal block libraries
@@ -47,5 +48,6 @@ registerBlockType( 'kadence/single-icon', {
     },
     edit,
     save,
+    deprecated,
 	example: {}
 } );

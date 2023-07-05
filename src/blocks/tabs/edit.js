@@ -29,7 +29,8 @@ import {
 	getFontSizeOptionOutput,
 	getBorderStyle,
 	setBlockDefaults,
-	getUniqueId
+	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -121,8 +122,8 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
-
+function KadenceTabs( props ) {
+	const { attributes, clientId, className, isSelected, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
 	const {
 		uniqueID,
 		showPresets,
@@ -214,11 +215,17 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -249,9 +256,15 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 			} );
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 	}, [] );
 
 	const previewInnerPaddingTop = getPreviewSize( previewDevice, ( undefined !== innerPadding ? innerPadding[0] : '' ), ( undefined !== tabletInnerPadding ? tabletInnerPadding[ 0 ] : '' ), ( undefined !== mobileInnerPadding ? mobileInnerPadding[ 0 ] : '' ) );
@@ -539,87 +552,79 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 
 		const classes = classnames( className, `wp-block-kadence-tabs kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 
-		const nonTransAttrs = ['currentTab', 'tabCount'];
+		const nonTransAttrs = ['currentTab', 'tabCount', 'titles'];
 
 		const isAccordionPreview = ( ( previewDevice == 'Tablet' && tabletLayout == 'accordion' ) || ( previewDevice == 'Mobile' && mobileLayout == 'accordion' ) );
 
 		const mLayoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
-			{ key: 'accordion', name: __( 'Accordion' ), icon: accordionIcon },
+			{ value: 'tabs', label: __( 'Tabs' ), icon: tabsIcon },
+			{ value: 'vtabs', label: __( 'Vertical Tabs' ), icon: vTabsIcon },
+			{ value: 'accordion', label: __( 'Accordion' ), icon: accordionIcon },
 		];
 		const layoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
+			{ value: 'tabs', label: __( 'Tabs' ), icon: tabsIcon },
+			{ value: 'vtabs', label: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 
-		const initialTabOptions = times( tabCount, ( n ) => {
+		const initialTabOptions = times( titles.length, ( n ) => {
 			return { value: ( n + 1), label: titles[n].text };
 		});
 
 		const mobileControls = (
-			<Fragment>
-				<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
-					{ map( mLayoutOptions, ( { name, key, icon } ) => (
-						<Tooltip text={ name }>
-							<Button
-								key={ key }
-								className="kt-layout-btn kt-tablayout"
-								isSmall
-								isPrimary={ mobileLayout === key }
-								aria-pressed={ mobileLayout === key }
-								onClick={ () => setAttributes( { mobileLayout: key } ) }
-							>
-								{ icon }
-							</Button>
-						</Tooltip>
-					) ) }
-				</ButtonGroup>
-			</Fragment>
+			<ButtonGroup className={ 'kb-tab-block-layout-select' } aria-label={ __( 'Mobile Layout', 'kadence-blocks' ) }>
+				{ map( mLayoutOptions, ( { label, value, icon } ) => (
+					<Button
+						key={ value }
+						className="kb-tab-block-layout-item"
+						isSmall
+						label={label}
+						isPrimary={ mobileLayout === value }
+						aria-pressed={ mobileLayout === value }
+						onClick={ () => setAttributes( { mobileLayout: value } ) }
+					>
+						{ icon }
+					</Button>
+				) ) }
+			</ButtonGroup>
 		);
 		const tabletControls = (
-			<Fragment>
-				<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
-					{ map( mLayoutOptions, ( { name, key, icon } ) => (
-						<Tooltip text={ name }>
-							<Button
-								key={ key }
-								className="kt-layout-btn kt-tablayout"
-								isSmall
-								isPrimary={ tabletLayout === key }
-								aria-pressed={ tabletLayout === key }
-								onClick={ () => setAttributes( { tabletLayout: key } ) }
-							>
-								{ icon }
-							</Button>
-						</Tooltip>
-					) ) }
-				</ButtonGroup>
-			</Fragment>
+			<ButtonGroup className={ 'kb-tab-block-layout-select' } aria-label={ __( 'Tablet Layout', 'kadence-blocks' ) }>
+				{ map( mLayoutOptions, ( { label, value, icon } ) => (
+					<Button
+						key={ value }
+						className="kb-tab-block-layout-item"
+						isSmall
+						label={label}
+						isPrimary={ tabletLayout === value }
+						aria-pressed={ tabletLayout === value }
+						onClick={ () => setAttributes( { tabletLayout: value } ) }
+					>
+						{ icon }
+					</Button>
+				) ) }
+			</ButtonGroup>
 		);
 		const deskControls = (
-			<Fragment>
-				<ButtonGroup aria-label={ __( 'Layout' ) }>
-					{ map( layoutOptions, ( { name, key, icon } ) => (
-						<Tooltip text={ name }>
-							<Button
-								key={ key }
-								className="kt-layout-btn kt-tablayout"
-								isSmall
-								isPrimary={ layout === key }
-								aria-pressed={ layout === key }
-								onClick={ () => {
-									setAttributes( {
-										layout: key,
-									} );
-								} }
-							>
-								{ icon }
-							</Button>
-						</Tooltip>
+			<>
+				<ButtonGroup className={ 'kb-tab-block-layout-select' } aria-label={ __( 'Layout', 'kadence-blocks' ) }>
+					{ map( layoutOptions, ( { label, value, icon } ) => (
+						<Button
+							key={ value }
+							className="kb-tab-block-layout-item"
+							isPrimary={ layout === value }
+							aria-pressed={ layout === value }
+							label={ label }
+							onClick={ () => {
+								setAttributes( {
+									layout: value,
+								} );
+							} }
+						>
+							{ icon }
+						</Button>
 					) ) }
 				</ButtonGroup>
-				<p class="kadence-control-title" style={{marginTop: "5px"}}>{ __( 'Set initial Open Tab') }</p>
+				<p className="kadence-control-title" style={{marginTop: "24px", marginBottom: "5px"}}>{ __( 'Set initial Open Tab') }</p>
 				<Select
 					value={initialTabOptions.filter(function(option) {
 						return option.value === startTab;
@@ -629,7 +634,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 					maxMenuHeight={ 300 }
 					placeholder={ __('Select an initial tab', 'kadence-blocks' ) }
 				/>
-			</Fragment>
+			</>
 		);
 
 		const saveFontAttribute = ( key, value ) => {
@@ -761,51 +766,53 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! previewIconSize ? '14' : previewIconSize ) } htmltag="span" />
 							) }
 						</div>
-						<div className="kadence-blocks-tab-item__control-menu">
-							{ index !== 0 && (
-								<Button
-									icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
-									onClick={ index === 0 ? undefined : onMoveBack( index ) }
-									className="kadence-blocks-tab-item__move-back"
-									label={ ( 'vtabs' === layout ? __( 'Move Item Up', 'kadence-blocks' ) : __( 'Move Item Back', 'kadence-blocks' ) ) }
-									aria-disabled={ index === 0 }
-									disabled={ index === 0 }
-								/>
-							) }
-							{ ( index + 1 ) !== tabCount && (
-								<Button
-									icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
-									onClick={ ( index + 1 ) === tabCount ? undefined : onMoveForward( index ) }
-									className="kadence-blocks-tab-item__move-forward"
-									label={ ( 'vtabs' === layout ? __( 'Move Item Down', 'kadence-blocks' ) : __( 'Move Item Forward', 'kadence-blocks' ) ) }
-									aria-disabled={ ( index + 1 ) === tabCount }
-									disabled={ ( index + 1 ) === tabCount }
-								/>
-							) }
-							{ tabCount > 1 && (
-								<Button
-									icon="no-alt"
-									onClick={ () => {
-										const currentItems = filter( titles, ( item, i ) => index !== i );
-										const newCount = tabCount - 1;
-										let newStartTab;
-										if ( startTab === ( index + 1 ) ) {
-											newStartTab = '';
-										} else if ( startTab > ( index + 1 ) ) {
-											newStartTab = startTab - 1;
-										} else {
-											newStartTab = startTab;
-										}
-										removeTab( index );
-										setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
-										resetOrder();
-									} }
-									className="kadence-blocks-tab-item__remove"
-									label={ __( 'Remove Item', 'kadence-blocks' ) }
-									disabled={ ! currentTab === ( index + 1 ) }
-								/>
-							) }
-						</div>
+						{ isSelected && (
+							<div className="kadence-blocks-tab-item__control-menu">
+								{ index !== 0 && (
+									<Button
+										icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
+										onClick={ index === 0 ? undefined : onMoveBack( index ) }
+										className="kadence-blocks-tab-item__move-back"
+										label={ ( 'vtabs' === layout ? __( 'Move Item Up', 'kadence-blocks' ) : __( 'Move Item Back', 'kadence-blocks' ) ) }
+										aria-disabled={ index === 0 }
+										disabled={ index === 0 }
+									/>
+								) }
+								{ ( index + 1 ) !== tabCount && (
+									<Button
+										icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
+										onClick={ ( index + 1 ) === tabCount ? undefined : onMoveForward( index ) }
+										className="kadence-blocks-tab-item__move-forward"
+										label={ ( 'vtabs' === layout ? __( 'Move Item Down', 'kadence-blocks' ) : __( 'Move Item Forward', 'kadence-blocks' ) ) }
+										aria-disabled={ ( index + 1 ) === tabCount }
+										disabled={ ( index + 1 ) === tabCount }
+									/>
+								) }
+								{ tabCount > 1 && (
+									<Button
+										icon="no-alt"
+										onClick={ () => {
+											const currentItems = filter( titles, ( item, i ) => index !== i );
+											const newCount = tabCount - 1;
+											let newStartTab;
+											if ( startTab === ( index + 1 ) ) {
+												newStartTab = '';
+											} else if ( startTab > ( index + 1 ) ) {
+												newStartTab = startTab - 1;
+											} else {
+												newStartTab = startTab;
+											}
+											removeTab( index );
+											setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
+											resetOrder();
+										} }
+										className="kadence-blocks-tab-item__remove"
+										label={ __( 'Remove Item', 'kadence-blocks' ) }
+										disabled={ ! currentTab === ( index + 1 ) }
+									/>
+								) }
+							</div>
+						) }
 					</li>
 				</Fragment>
 			);
@@ -1068,7 +1075,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 							icon={ plusCircle }
 							onClick={ () => {
 								const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
-								setAttributes( { tabCount: tabCount + 1 } );
 								insertTab( newBlock );
 								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 								const newtabs = titles;
@@ -1079,7 +1085,7 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									onlyIcon: titles[ 0 ].onlyIcon,
 									subText: '',
 								} );
-								setAttributes( { titles: newtabs } );
+								setAttributes( { titles: newtabs, tabCount: tabCount + 1 } );
 								saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 							} }
 							label={  __( 'Add Tab', 'kadence-blocks' ) }
@@ -1630,7 +1636,6 @@ function KadenceTabs( { attributes, clientId, className, setAttributes, tabsBloc
 									defaultAttributes={metadata['attributes']}
 									blockSlug={metadata['name']}
 									excludedAttrs={nonTransAttrs}
-									preventMultiple={['titles']}
 								/>
 
 							</>

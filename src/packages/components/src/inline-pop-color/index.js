@@ -8,97 +8,227 @@
  */
 import ColorPicker from '../color-picker';
 import { hexToRGBA } from '@kadence/helpers';
-import { map, get } from 'lodash';
-
-/**
- * Internal block libraries
- */
- import { useSetting } from '@wordpress/block-editor';
-import { __, sprintf } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { map }from 'lodash';
+import { useSetting } from '@wordpress/block-editor';
+import { useState } from '@wordpress/element';
+ 
+ /**
+  * Internal block libraries
+  */
+ import { __, sprintf } from '@wordpress/i18n';
 import {
 	Button,
+	ToolbarGroup,
 	Tooltip,
 	Dashicon,
-	Dropdown,
-	ToolbarGroup,
 	SVG,
+	Dropdown,
 	Path,
 } from '@wordpress/components';
-import { withSelect } from '@wordpress/data';
-import { DOWN } from '@wordpress/keycodes';
-
-/* global kadence_blocks_params */
-// eslint-disable-next-line camelcase
-const ColorSelectorSVGIcon = () => (
-	<SVG xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20">
-		<Path d="M7.434 5l3.18 9.16H8.538l-.692-2.184H4.628l-.705 2.184H2L5.18 5h2.254zm-1.13 1.904h-.115l-1.148 3.593H7.44L6.304 6.904zM14.348 7.006c1.853 0 2.9.876 2.9 2.374v4.78h-1.79v-.914h-.114c-.362.64-1.123 1.022-2.031 1.022-1.346 0-2.292-.826-2.292-2.108 0-1.27.972-2.006 2.71-2.107l1.696-.102V9.38c0-.584-.42-.914-1.18-.914-.667 0-1.112.228-1.264.647h-1.701c.12-1.295 1.307-2.107 3.066-2.107zm1.079 4.1l-1.416.09c-.793.056-1.18.342-1.18.844 0 .52.45.837 1.091.837.857 0 1.505-.545 1.505-1.256v-.515z" />
-	</SVG>
-);
-/**
- * Build the Measure controls
- * @returns {object} Measure settings.
- */
-class InlinePopColorControl extends Component {
-	constructor() {
-		super( ...arguments );
-		this.onChangeState = this.onChangeState.bind( this );
-		this.onChangeComplete = this.onChangeComplete.bind( this );
-		this.state = {
-			alpha: false === this.props.alpha ? false : true,
-			isVisible: false,
-			colors: [],
-			classSat: 'first',
-			currentColor: '',
-			inherit: false,
-			currentOpacity: this.props.opacityValue !== undefined ? this.props.opacityValue : 1,
-			isPalette: ( this.props.value && this.props.value.startsWith( 'palette' ) ? true : false ),
-		};
+ import { DOWN } from '@wordpress/keycodes';
+ /* global kadence_blocks_params */
+ // eslint-disable-next-line camelcase
+ const ColorSelectorSVGIcon = () => (
+	 <SVG xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20">
+		 <Path d="M7.434 5l3.18 9.16H8.538l-.692-2.184H4.628l-.705 2.184H2L5.18 5h2.254zm-1.13 1.904h-.115l-1.148 3.593H7.44L6.304 6.904zM14.348 7.006c1.853 0 2.9.876 2.9 2.374v4.78h-1.79v-.914h-.114c-.362.64-1.123 1.022-2.031 1.022-1.346 0-2.292-.826-2.292-2.108 0-1.27.972-2.006 2.71-2.107l1.696-.102V9.38c0-.584-.42-.914-1.18-.914-.667 0-1.112.228-1.264.647h-1.701c.12-1.295 1.307-2.107 3.066-2.107zm1.079 4.1l-1.416.09c-.793.056-1.18.342-1.18.844 0 .52.45.837 1.091.837.857 0 1.505-.545 1.505-1.256v-.515z" />
+	 </SVG>
+ );
+ export default function InlinePopColorControl( {
+	label,
+	opacityValue = '',
+	opacityUnit = '',
+	onOpacityChange = null,
+	value,
+	onChange,
+	reload,
+	reloaded,
+	defaultValue,
+	onClassChange,
+	onArrayChange = null,
+	disableCustomColors = false,
+} ) {
+	const [ isVisible, setIsVisible ] = useState( false );
+	const [ classSat, setClassSat ] = useState( 'first' );
+	const [ currentColor, setCurrentColor ] = useState( '' );
+	const [ currentOpacity, setCurrentOpacity ] = useState( opacityValue !== '' ? opacityValue : 1 );
+	const [ isPalette, setIsPalette ] = useState( value && value.startsWith( 'palette' ) ? true : false );
+	const colors = useSetting( 'color.palette' );
+	const toggleVisible = () => {
+		setIsVisible( true );
+	};
+	const toggleClose = () => {
+		if ( isVisible === true ) {
+			setIsVisible( false );
+		}
+	};
+	if ( reload ) {
+		reloaded( true );
+		setTimeout(() => {
+			setCurrentColor( '' );
+			setCurrentOpacity( '' );
+			setIsPalette( false );
+		}, 100);
 	}
-	render() {
-		if ( this.props.reload ) {
-			this.props.reloaded( true );
-			this.setState( { currentColor: '', currentOpacity: '', isPalette: ( this.props.value && this.props.value.startsWith( 'palette' ) ? true : false ) } );
+	const convertOpacity = ( value ) => {
+		let val = 1;
+		if ( value ) {
+			val = value / 100;
 		}
-		const convertOpacity = ( value ) => {
-			let val = 1;
-			if ( value ) {
-				val = value / 100;
-			}
-			return val;
-		};
-		const convertedOpacityValue = ( 100 === this.props.opacityUnit ? convertOpacity( this.state.currentOpacity ) : this.state.currentOpacity );
-		const colorVal = ( this.state.currentColor ? this.state.currentColor : this.props.value );
-		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
-		if ( currentColorString && currentColorString.startsWith( 'var(' ) ) {
-			currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( this.props.value.replace( 'var(', '' ).replace( ')', '' ) );
+		return val;
+	};
+	const convertedOpacityValue = ( 100 === opacityUnit ? convertOpacity( currentOpacity ) : currentOpacity );
+	const colorVal = ( currentColor ? currentColor : value );
+	let currentColorString = ( isPalette && colors && colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
+	if ( ! isPalette && currentColorString && currentColorString.startsWith( 'var(' ) ) {
+		currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).split(',')[0].replace( ')', '' ) );
+	}
+	if ( '' === currentColorString ) {
+		currentColorString = defaultValue;
+	}
+	// if ( '' !== currentColorString && this.props.onOpacityChange && ! this.state.isPalette ) {
+	// 	currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
+	// }
+	if ( onOpacityChange && ! isPalette ) {
+		if ( Number( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) !== 1 ) {
+			currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
 		}
-		if ( '' === currentColorString ) {
-			currentColorString = this.props.default;
-		}
-		if ( this.props.onOpacityChange && ! this.state.isPalette ) {
-			if ( Number( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) !== 1 ) {
-				currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
-			}
-		}
-		const renderToggleComponent = () => ( {
-												  onToggle,
-												  isOpen,
-											  } ) => {
-			const openOnArrowDown = ( event ) => {
-				if ( ! isOpen && event.keyCode === DOWN ) {
-					event.preventDefault();
-					event.stopPropagation();
-					onToggle();
+	}
+	let previewColorString = currentColorString;
+	if (isPalette && colorVal) {
+		 switch (colorVal) {
+			 case 'palette1':
+				 previewColorString = 'var(--global-palette1,#2B6CB0)';
+				 break;
+			 case 'palette2':
+				 previewColorString = 'var(--global-palette2,#215387)';
+				 break;
+			 case 'palette3':
+				 previewColorString = 'var(--global-palette3,#1A202C)';
+				 break;
+			 case 'palette4':
+				 previewColorString = 'var(--global-palette4,#2D3748)';
+				 break;
+			 case 'palette5':
+				 previewColorString = 'var(--global-palette5,#4A5568)';
+				 break;
+			 case 'palette6':
+				 previewColorString = 'var(--global-palette6,#718096)';
+				 break;
+			 case 'palette7':
+				 previewColorString = 'var(--global-palette7,#EDF2F7)';
+				 break;
+			 case 'palette8':
+				 previewColorString = 'var(--global-palette8,#F7FAFC)';
+				 break;
+			 case 'palette9':
+				 previewColorString = 'var(--global-palette9,#ffffff)';
+				 break;
+		 }
+	}
+	const onChangeState = ( tempColor, tempPalette ) => {
+		let newColor;
+		let opacity = ( 100 === opacityUnit ? 100 : 1 );
+		if ( tempPalette ) {
+			newColor = tempPalette;
+		} else if ( undefined !== tempColor.rgb && undefined !== tempColor.rgb.a && 1 !== tempColor.rgb.a ) {
+			if ( onOpacityChange ) {
+				if ( tempColor.hex === 'transparent' ) {
+					newColor = '#000000';
+				} else {
+					newColor = tempColor.hex;
 				}
-			};
-			return (
-				<ToolbarGroup>
+				opacity = ( 100 === opacityUnit ? unConvertOpacity( tempColor.rgb.a ) : tempColor.rgb.a );
+			} else {
+				newColor = 'rgba(' + tempColor.rgb.r + ',' + tempColor.rgb.g + ',' + tempColor.rgb.b + ',' + tempColor.rgb.a + ')';
+			}
+		} else if ( undefined !== tempColor.hex ) {
+			newColor = tempColor.hex;
+		} else {
+			newColor = tempColor;
+		}
+		setCurrentColor( newColor );
+		setCurrentOpacity( opacity );
+		setIsPalette( tempPalette ? true : false );
+	}
+	const onChangeComplete = ( tempColorCom, tempPalettCom ) => {
+		let newColor;
+		let opacity = ( 100 === opacityUnit ? 100 : 1 );
+		if ( tempPalettCom ) {
+			newColor = tempPalettCom;
+		} else if ( undefined !== tempColorCom.rgb && undefined !== tempColorCom.rgb.a && 1 !== tempColorCom.rgb.a ) {
+			if ( onOpacityChange ) {
+				if ( tempColorCom.hex === 'transparent' ) {
+					newColor = '#000000';
+				} else {
+					newColor = tempColorCom.hex;
+				}
+				opacity = ( 100 === opacityUnit ? unConvertOpacity( tempColorCom.rgb.a ) : tempColorCom.rgb.a );
+			} else {
+				newColor = 'rgba(' + tempColorCom.rgb.r + ',' + tempColorCom.rgb.g + ',' + tempColorCom.rgb.b + ',' + tempColorCom.rgb.a + ')';
+			}
+		} else if ( undefined !== tempColorCom.hex ) {
+			newColor = tempColorCom.hex;
+		} else {
+			newColor = tempColorCom;
+		}
+		setCurrentColor( newColor );
+		setCurrentOpacity( opacity );
+		setIsPalette( tempPalettCom ? true : false );
+		if ( null !== onArrayChange ) {
+			onArrayChange( newColor, opacity );
+		} else {
+			onChange( newColor );
+			if ( null !== onOpacityChange ) {
+				setTimeout( () => {
+					onOpacityChange( opacity );
+				}, 50 );
+			}
+		}
+	}
+	const renderToggleComponent = () => ( {
+		onToggle,
+		isOpen,
+	} ) => {
+		const openOnArrowDown = ( event ) => {
+			if ( ! isOpen && event.keyCode === DOWN ) {
+				event.preventDefault();
+				event.stopPropagation();
+				onToggle();
+			}
+		};
+		return (
+			<ToolbarGroup>
+				<Button
+					className="components-toolbar__control kb-colors-selector__toggle"
+					label={ label }
+					onClick={ onToggle }
+					onKeyDown={ openOnArrowDown }
+					icon={
+						<div className="kb-colors-selector__icon-container">
+							<div
+								className={ 'kb-colors-selector__state-selection' }
+								style={ { color: currentColorString } }
+							>
+								<ColorSelectorSVGIcon />
+							</div>
+						</div>
+					}
+				/>
+			</ToolbarGroup>
+		);
+	};
+	return (
+		<Dropdown
+			placement="top"
+			className="kb-colors-selector components-dropdown-menu components-toolbar new-kadence-advanced-colors"
+			contentClassName="block-library-colors-selector__popover kt-popover-color kadence-pop-color-popover"
+			//renderToggle={ renderToggleComponent() }
+			renderToggle={ ( { isOpen, onToggle } ) => (
+				<>
 					<Button
-						className="components-toolbar__control kb-colors-selector__toggle"
-						label={ this.props.label }
-						onClick={ onToggle }
-						onKeyDown={ openOnArrowDown }
+						className="components-toolbar__control components-dropdown-menu__toggle kb-colors-selector__toggle"
+						label={ label }
+						tooltip={ label }
 						icon={
 							<div className="kb-colors-selector__icon-container">
 								<div
@@ -109,179 +239,81 @@ class InlinePopColorControl extends Component {
 								</div>
 							</div>
 						}
-					/>
-				</ToolbarGroup>
-			);
-		};
-		return (
-			<Dropdown
-				position="top right"
-				className="kb-colors-selector components-dropdown-menu components-toolbar new-kadence-advanced-colors"
-				contentClassName="block-library-colors-selector__popover kt-popover-color kadence-pop-color-popover"
-				//renderToggle={ renderToggleComponent() }
-				renderToggle={ ( { isOpen, onToggle } ) => (
-					<Fragment>
-						<Button
-							className="components-toolbar__control components-dropdown-menu__toggle kb-colors-selector__toggle"
-							label={ this.props.label }
-							tooltip={ this.props.label }
-							icon={
-								<div className="kb-colors-selector__icon-container">
-									<div
-										className={ 'kb-colors-selector__state-selection' }
-										style={ { color: currentColorString } }
-									>
-										<ColorSelectorSVGIcon />
-									</div>
-								</div>
-							}
-							onClick={ onToggle }
-							aria-expanded={ isOpen }>
-						</Button>
-					</Fragment>
-				) }
-				renderContent={ () => (
-					<div className="inline-color-popup-inner-wrap block-editor-block-toolbar">
-						{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
-							<ColorPicker
-								color={ currentColorString }
-								onChange={ ( color ) => this.onChangeState( color, '' ) }
-								onChangeComplete={ ( color ) => {
-									this.onChangeComplete( color, '' );
-									if ( this.props.onClassChange ) {
-										this.props.onClassChange( '' );
-									}
-								} }
-							/>
-						) }
-						{ this.state.classSat !== 'first' && ! this.props.disableCustomColors && (
-							<ColorPicker
-								color={ currentColorString }
-								onChange={ ( color ) => this.onChangeState( color, '' ) }
-								onChangeComplete={ ( color ) => {
-									this.onChangeComplete( color, '' );
-									if ( this.props.onClassChange ) {
-										this.props.onClassChange( '' );
-									}
-								} }
-							/>
-						) }
-						{ this.props.colors && (
-							<div className="kadence-pop-color-palette-swatches">
-								{ map( this.props.colors, ( { color, slug, name } ) => {
-									const style = { color };
-									const palette = slug.replace( 'theme-', '' );
-									const isActive = ( ( palette === this.props.value ) || ( ! slug.startsWith( 'theme-palette' ) && this.props.value === color ) );
-									return (
-										<div key={ color } className="kadence-color-palette__item-wrapper">
-											<Tooltip
-												text={ name ||
+						onClick={ onToggle }
+						aria-expanded={ isOpen }>
+					</Button>
+				</>
+			) }
+			renderContent={ () => (
+				<div className="inline-color-popup-inner-wrap block-editor-block-toolbar">
+					{ classSat === 'first' && (
+						<ColorPicker
+							color={ currentColorString }
+							onChange={ ( color ) => onChangeState( color, '' ) }
+							onChangeComplete={ ( color ) => {
+								onChangeComplete( color, '' );
+								if ( onClassChange ) {
+									onClassChange( '' );
+								}
+							} }
+						/>
+					) }
+					{ classSat !== 'first' && (
+						<ColorPicker
+							color={ currentColorString }
+							onChange={ ( color ) => onChangeState( color, '' ) }
+							onChangeComplete={ ( color ) => {
+								onChangeComplete( color, '' );
+								if ( onClassChange ) {
+									onClassChange( '' );
+								}
+							} }
+						/>
+					) }
+					{ colors && (
+						<div className="kadence-pop-color-palette-swatches">
+							{ map( colors, ( { color, slug, name } ) => {
+								const style = { color };
+								const palette = slug.replace( 'theme-', '' );
+								const isActive = ( ( palette === value ) || ( ! slug.startsWith( 'theme-palette' ) && value === color ) );
+								return (
+									<div key={ color } className="kadence-color-palette__item-wrapper">
+										<Tooltip
+											text={ name ||
+												// translators: %s: color hex code e.g: "#f00".
+												sprintf( __( 'Color code: %s' ), color )
+											}>
+											<Button
+												type="button"
+												className={ `kadence-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
+												style={ style }
+												onClick={ () => {
+													if ( slug.startsWith( 'theme-palette' ) ) {
+														onChangeComplete( color, palette );
+													} else {
+														onChangeComplete( color, false );
+													}
+													if ( onClassChange ) {
+														onClassChange( slug );
+													}
+												} }
+												aria-label={ name ?
+													// translators: %s: The name of the color e.g: "vivid red".
+													sprintf( __( 'Color: %s', 'kadence-blocks' ), name ) :
 													// translators: %s: color hex code e.g: "#f00".
-													sprintf( __( 'Color code: %s' ), color )
-												}>
-												<Button
-													type="button"
-													className={ `kadence-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
-													style={ style }
-													onClick={ () => {
-														if ( slug.startsWith( 'theme-palette' ) ) {
-															this.onChangeComplete( color, palette );
-														} else {
-															this.onChangeComplete( color, false );
-														}
-														if ( this.props.onClassChange ) {
-															this.props.onClassChange( slug );
-														}
-													} }
-													aria-label={ name ?
-														// translators: %s: The name of the color e.g: "vivid red".
-														sprintf( __( 'Color: %s', 'kadence-blocks' ), name ) :
-														// translators: %s: color hex code e.g: "#f00".
-														sprintf( __( 'Color code: %s', 'kadence-blocks' ), color ) }
-													aria-pressed={ isActive }
-												/>
-											</Tooltip>
-											{ palette === this.props.value && <Dashicon icon="admin-site" /> }
-											{ ! slug.startsWith( 'theme-palette' ) && this.props.value === color && <Dashicon icon="saved" /> }
-										</div>
-									);
-								} ) }
-							</div>
-						) }
-					</div>
-				) }
-			/>
-		);
-	}
-	unConvertOpacity( value ) {
-		let val = 100;
-		if ( value ) {
-			val = value * 100;
-		}
-		return val;
-	}
-	onChangeState( color, palette ) {
-		let newColor;
-		let opacity = ( 100 === this.props.opacityUnit ? 100 : 1 );
-		if ( palette ) {
-			newColor = palette;
-		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
-			if ( this.props.onOpacityChange ) {
-				if ( color.hex === 'transparent' ) {
-					newColor = '#000000';
-				} else {
-					newColor = color.hex;
-				}
-				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
-			} else {
-				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
-			}
-		} else if ( undefined !== color.hex ) {
-			newColor = color.hex;
-		} else {
-			newColor = color;
-		}
-		this.setState( { currentColor: newColor, currentOpacity: opacity, isPalette: ( palette ? true : false ) } );
-	}
-	onChangeComplete( color, palette ) {
-		let newColor;
-		let opacity = ( 100 === this.props.opacityUnit ? 100 : 1 );
-		if ( palette ) {
-			newColor = palette;
-		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
-			if ( this.props.onOpacityChange ) {
-				if ( color.hex === 'transparent' ) {
-					newColor = '#000000';
-				} else {
-					newColor = color.hex;
-				}
-				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
-			} else {
-				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
-			}
-		} else if ( undefined !== color.hex ) {
-			newColor = color.hex;
-		} else {
-			newColor = color;
-		}
-		this.setState( { currentColor: newColor, currentOpacity: opacity, isPalette: ( palette ? true : false ) } );
-		if ( undefined !== this.props.onArrayChange ) {
-			this.props.onArrayChange( newColor, opacity );
-		} else {
-			this.props.onChange( newColor );
-			if ( undefined !== this.props.onOpacityChange ) {
-				setTimeout( () => {
-					this.props.onOpacityChange( opacity );
-				}, 50 );
-			}
-		}
-	}
- }
- export default withSelect( ( select, ownProps ) => {
-	const disableCustomColors = ownProps.disableCustomColors === undefined ? ! useSetting( 'color.custom' ) : ownProps.disableCustomColors;
-	return {
-		colors: useSetting( 'color.palette' ),
-		disableCustomColors,
-	};
- } )( InlinePopColorControl );
- 
+													sprintf( __( 'Color code: %s', 'kadence-blocks' ), color ) }
+												aria-pressed={ isActive }
+											/>
+										</Tooltip>
+										{ palette === value && <Dashicon icon="admin-site" /> }
+										{ ! slug.startsWith( 'theme-palette' ) && value === color && <Dashicon icon="saved" /> }
+									</div>
+								);
+							} ) }
+						</div>
+					) }
+				</div>
+			) }
+		/>
+	);
+}

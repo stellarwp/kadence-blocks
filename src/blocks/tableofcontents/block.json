@@ -7,7 +7,8 @@
   "textdomain": "kadence-blocks",
   "icon": "smile",
   "supports": {
-	"html": false
+	"html": false,
+	"kbMetadata": true
   },
   "attributes": {
 	"uniqueID": {
@@ -95,7 +96,7 @@
 	},
 	"title": {
 	  "type": "string",
-	  "default": "Table Of Contents"
+	  "default": "Table of Contents"
 	},
 	"titleColor": {
 	  "type": "string"
@@ -442,7 +443,7 @@
 	},
 	"borderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -452,7 +453,7 @@
 	},
 	"tabletBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -462,7 +463,7 @@
 	},
 	"mobileBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -472,7 +473,7 @@
 	},
 	"titleBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -482,7 +483,7 @@
 	},
 	"tabletTitleBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],
@@ -492,7 +493,7 @@
 	},
 	"mobileTitleBorderStyle": {
 		"type": "array",
-		"default": [ { 
+		"default": [ {
 		  "top": [ "", "", "" ],
 		  "right": [ "", "", "" ],
 		  "bottom": [ "", "", "" ],

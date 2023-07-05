@@ -6,7 +6,7 @@
  * @package Kadence Blocks
  */
 
-include 'advanced-form/advanced-form-frontend.php';
+use function KadenceWP\KadenceBlocks\get_webfont_url;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -69,7 +69,7 @@ class Kadence_Blocks_Frontend {
 		add_action( 'wp_footer', array( $this, 'frontend_footer_gfonts' ), 90 );
 		add_action( 'wp_head', array( $this, 'faq_schema' ), 91 );
 		if ( ! is_admin() ) {
-			add_action( 'render_block', array( $this, 'conditionally_render_block' ), 6, 2 );
+			add_action( 'render_block', array( $this, 'conditionally_render_block' ), 6, 3 );
 		}
 	}
 
@@ -78,10 +78,11 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param mixed $block_content The block content.
 	 * @param array $block The block data.
+	 * @param object $wp_block The block class object.
 	 *
 	 * @return mixed Returns the block content.
 	 */
-	public function conditionally_render_block( $block_content, $block ) {
+	public function conditionally_render_block( $block_content, $block, $wp_block ) {
 		if ( is_admin() ) {
 			return $block_content;
 		}
@@ -152,30 +153,9 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
-	 * Adds a filter to the head filter for compatibility with toolset.
-	 *
-	 * @param boolean $render_inline_css
-	 * @param string $block_name
-	 * @param array $attributes
-	 *
-	 * @return boolean
-	 */
-	public function add_toolset_depreciated_filter_compatibility( $render_css, $block_name, $attributes ) {
-		$unique_id = ( ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '' );
-
-		return apply_filters( 'kadence_blocks_render_inline_css', $render_css, $block_name, $unique_id );
-	}
-
-	/**
 	 * On init startup.
 	 */
 	public function on_init() {
-		if ( defined( 'TOOLSET_VERSION' ) ) {
-			add_filter( 'kadence_blocks_render_head_css', array(
-				$this,
-				'add_toolset_depreciated_filter_compatibility'
-			), 10, 3 );
-		}
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 		add_filter( 'excerpt_allowed_wrapper_blocks', array( $this, 'add_wrapper_blocks_to_excerpt' ), 20 );
 	}
@@ -202,6 +182,23 @@ class Kadence_Blocks_Frontend {
 			'kadence/column'
 		) ) );
 		return $allowed;
+	}
+
+	/**
+	 * Loop through panes in an accordion and render the FAQ schema
+	 *
+	 * @param $accorion array
+	 *
+	 * @return void
+	 */
+	public function render_accordion_scheme_head( $accorion ) {
+		if( !empty( $accorion['innerBlocks'] ) && is_array( $accorion['innerBlocks'] ) ) {
+			foreach( $accorion['innerBlocks'] as $key => $block ) {
+				if( isset( $block['blockName'] ) && $block['blockName'] === 'kadence/pane' ) {
+					$this->render_pane_scheme_head( $block );
+				}
+			}
+		}
 	}
 
 	/**
@@ -371,7 +368,13 @@ class Kadence_Blocks_Frontend {
 		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
 			$link .= '&amp;display=swap';
 		}
-		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
+
+		$full_link = 'https://fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) );
+		$local_font_settings = get_option( 'kadence_blocks_font_settings' );
+		if ( $local_font_settings && isset( $local_font_settings['load_fonts_local'] ) && $local_font_settings['load_fonts_local'] == 'true' && function_exists( 'KadenceWP\KadenceBlocks\get_webfont_url' )) {
+			$full_link = get_webfont_url( htmlspecialchars_decode( $full_link ) );
+		}
+		echo '<link href="' . $full_link . '" rel="stylesheet">'; //phpcs:ignore
 	}
 
 	/**
@@ -397,7 +400,8 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		if ( ! method_exists( $post_object, 'post_content' ) ) {
-			$blocks = parse_blocks( $post_object->post_content );
+			$post_content = apply_filters( 'as3cf_filter_post_local_to_provider', $post_object->post_content );
+			$blocks = parse_blocks( $post_content );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}
@@ -410,10 +414,10 @@ class Kadence_Blocks_Frontend {
 						$block_class_instance->output_head_data( $block );
 					}
 					/** !!!! Needs to stay to build schema !!! **/
-					if ( 'kadence/pane' === $block['blockName'] ) {
+					if ( 'kadence/accordion' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							if ( isset( $block['attrs']['faqSchema'] ) && $block['attrs']['faqSchema'] ) {
-								$this->render_pane_scheme_head( $block );
+								$this->render_accordion_scheme_head( $block );
 							}
 						}
 					}
@@ -451,10 +455,10 @@ class Kadence_Blocks_Frontend {
 					$block_class_instance->output_head_data( $inner_block );
 				}
 				/** !!!! Needs to stay to build schema !!! **/
-				if ( 'kadence/pane' === $inner_block['blockName'] ) {
+				if ( 'kadence/accordion' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						if ( isset( $inner_block['attrs']['faqSchema'] ) && $inner_block['attrs']['faqSchema'] ) {
-							$this->render_pane_scheme_head( $inner_block );
+							$this->render_accordion_scheme_head( $inner_block );
 						}
 					}
 				}

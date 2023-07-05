@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { times } from 'lodash';
-import { CheckboxControl } from '@wordpress/components';
+import Select from 'react-select';
 import { applyFilters } from '@wordpress/hooks';
 
 export default function SubmitActionOptions( { setAttributes, selectedActions } ) {
@@ -13,54 +12,28 @@ export default function SubmitActionOptions( { setAttributes, selectedActions } 
 		{ value: 'convertkit', label: __( 'ConvertKit (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to ConvertKit', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'activecampaign', label: __( 'ActiveCampaign (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to ActiveCampaign', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
-		{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: false  }, // isDisabled: true },
-		{ value: 'sendinblue', label: __( 'SendInBlue (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to SendInBlue list', 'kadence-blocks' ), isDisabled: true },
+		{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true  },
+		{ value: 'sendinblue', label: __( 'Brevo (SendInBlue) (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to Brevo list', 'kadence-blocks' ), isDisabled: true },
 		{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
-		{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: false }, // isDisabled: true },
+		{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 	];
 
-	const actionOptions = applyFilters( 'kadence.actionOptions', actionOptionsList );
-
-	const actionControls = ( index ) => {
-
-		return (
-			<CheckboxControl
-				key={'action-controls-' + index.toString()}
-				label={actionOptions[ index ].label}
-				help={( '' !== actionOptions[ index ].help ? actionOptions[ index ].help : undefined )}
-				checked={selectedActions.includes( actionOptions[ index ].value )}
-				disabled={actionOptions[ index ].isDisabled}
-				onChange={( isChecked ) => {
-					if ( isChecked && !actionOptions[ index ].isDisabled ) {
-						addAction( actionOptions[ index ].value );
-					} else {
-						removeAction( actionOptions[ index ].value );
-					}
-				}}
-			/>
-		);
-	};
-
-	const addAction = ( value ) => {
-		const newItems = selectedActions.map( ( item, thisIndex ) => {
-			return item;
-		} );
-
-		newItems.push( value );
-
-		setAttributes( newItems, 'actions' );
-	};
-
-	const removeAction = ( value ) => {
-		setAttributes( selectedActions.filter( item => item !== value ), 'actions' );
-	};
+	const filteredOptions = applyFilters( 'kadence.actionOptionsAdvancedForm', actionOptionsList );
+	const selectedOptions = filteredOptions.filter( ( item ) => selectedActions.includes( item.value ) );
 
 	return (
-		<>
-			{actionOptions &&
-				times( actionOptions.length, n => actionControls( n ) )
-			}
-		</>
+		<Select
+			className={ 'kb-adv-form-actions' }
+			isMulti={true}
+			value={ selectedOptions }
+			onChange={ ( selections ) => {
+				const valuesOnly = selections.map( ( item ) => {
+					return item.value
+				} );
+				setAttributes( valuesOnly, 'actions' );
+			} }
+			options={ filteredOptions }
+		/>
 	);
 
 }

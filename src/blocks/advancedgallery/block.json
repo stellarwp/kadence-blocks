@@ -228,6 +228,10 @@
 	  "type": "string",
 	  "default": "1"
 	},
+	"slideType": {
+	  "type": "string",
+	  "default": "fade"
+	},
 	"arrowStyle": {
 	  "type": "string",
 	  "default": "whiteondark"
@@ -342,6 +346,10 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"lazyLoad": {
+		"type": "boolean",
+		"default": false
+	},
 	"imagesData": {
 		"type": "array",
 		"default": [
@@ -361,6 +369,40 @@
 			}
 		]
 	},
+	"padding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"tabletPadding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"mobilePadding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"paddingUnit": {
+		"type": "string",
+		"default": "px"
+	},
+	"anchor": {
+		"type": "string"
+	},
 	"kbVersion": {
 		"type": "number",
 		"default": ""
@@ -374,7 +416,9 @@
 	  "left",
 	  "right"
 	],
-	"ktdynamic": true
+	"html": false,
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",

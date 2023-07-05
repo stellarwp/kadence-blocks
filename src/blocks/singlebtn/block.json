@@ -363,7 +363,10 @@
 	"ktanimateadd": true,
 	"ktanimatepreview": true,
 	"ktdynamic": true,
-	"html": false
+	"html": false,
+	"reusable": false,
+	"kbMetadata": true,
+	"kbContentLabel": "text"
   },
   "usesContext": [
 	"postId",

@@ -63,7 +63,8 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -90,7 +91,7 @@ import {
 	ButtonGroup,
 	TabPanel,
 	Dashicon,
-	Toolbar,
+	ToolbarGroup,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -110,8 +111,8 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId, name } ) {
-
+function KadenceInfoBox( props ) {
+	const { attributes, className, setAttributes, isSelected, context, clientId, name } = props;
 	const {
 		uniqueID,
 		link,
@@ -192,6 +193,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		tabletMaxWidth,
 		mobileMaxWidth,
 		kbVersion,
+		titleTagType
 	} = attributes;
 	const [ mediaBorderControl, setMediaBorderControl ] = useState( 'linked' );
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
@@ -201,12 +203,18 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -214,9 +222,15 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	useEffect( () => {
 		setBlockDefaults( 'kadence/infobox', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		if ( ! kbVersion || kbVersion < 2 ) {
@@ -832,7 +846,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const tconfig = ( textFont[ 0 ].google ? tgconfig : '' );
 	const lconfig = ( learnMoreStyles[ 0 ].google ? lgconfig : '' );
 	const nconfig = ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].google ? ngconfig : '' );
-	const titleTagName = 'h' + titleFont[ 0 ].level;
+	const titleTagName = ( titleTagType !== 'heading' ) ? titleTagType : 'h' + titleFont[ 0 ].level;
 	const ALLOWED_MEDIA_TYPES = [ 'image' ];
 	const onSelectImage = media => {
 		let url;
@@ -1116,7 +1130,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			{( displayShadow ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity )} !important; }` : '' )}
 
 
-			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${mediaStyle[ 0 ].hoverBackground} !important; }` : '' )}
+			{( mediaStyle[ 0 ].hoverBackground ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBackground ) } !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
 			{( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput( mediaStyle[ 0 ].hoverBorder )} !important; }` : '' )}
@@ -1223,7 +1237,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType', 'mediaImage', 'mediaIcon' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {
@@ -1236,7 +1250,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			{renderCSS}
 			<BlockControls key="controls">
 				{showImageToolbar && (
-					<Toolbar>
+					<ToolbarGroup group="change-image">
 						<MediaUpload
 							onSelect={onSelectImage}
 							type="image"
@@ -1251,13 +1265,13 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 								/>
 							)}
 						/>
-					</Toolbar>
+					</ToolbarGroup>
 				)}
 				{'icon' === mediaType && (
 					<Dropdown
 						className="kb-popover-inline-icon-container components-dropdown-menu components-toolbar"
 						contentClassName="kb-popover-inline-icon"
-						position="top center"
+						placement="top"
 						renderToggle={( { isOpen, onToggle } ) => (
 							<Button className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon" label={__( 'Icon Settings', 'kadence-blocks' )} icon={starFilled} onClick={onToggle}
 									aria-expanded={isOpen}/>
@@ -2129,6 +2143,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 											<TypographyControls
 												fontGroup={'heading'}
 												tagLevel={titleFont[ 0 ].level}
+												htmlTag={titleTagType}
+												onTagLevelHTML={ ( value, tag ) => { saveTitleFont( { level: value } ); setAttributes( { titleTagType: tag } ) } }
 												onTagLevel={( value ) => saveTitleFont( { level: value } )}
 												fontSize={titleFont[ 0 ].size}
 												onFontSize={( value ) => saveTitleFont( { size: value } )}

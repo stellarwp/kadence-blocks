@@ -2,14 +2,14 @@
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.0
-Tested up to: 6.1
-Stable tag: 3.0.5
+Requires at least: 6.1
+Tested up to: 6.2
+Stable tag: 3.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Custom Blocks for for Gutenberg to help extend the editing capabilities.
+Custom Blocks for Gutenberg to help extend the editing capabilities.
 
 == Description ==
 
@@ -77,8 +77,332 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.0.6 =
-Release Date: February 20th, 2023
+= 3.1.0 Alpha Version 1 =
+Release Date: June 15th, 2023
+* Add: Advanced Form Block.
+* Add: Progress Bar Block.
+* Add: Dynamic block labels in list view.
+* Add: Ability to set custom names for Kadence blocks in list view
+* Add: Option for local google fonts.
+* Update: Unique Ids are now set site wide.
+* Update: Block names for easier searching.
+
+= 3.0.41 =
+Release Date: June 6th, 2023
+* Update: Typography custom sizes to support three decimals.
+* Update: Tabs to use presentation role.
+* Fix: Issue with safari button text.
+* Fix: Issue with possible php notice.
+* Fix: Issue with nested accordions and accordion spacing.
+
+= 3.0.40 =
+Release Date: May 31st, 2023
+* Add: Overlay color to advanced image block.
+* Fix: Issue with tabs accessibility.
+* Fix: Possible issue with countUp start trigger.
+* Fix: Issue with icon list stroke width.
+
+= 3.0.39 =
+Release Date: May 30th, 2023
+* Fix: Issue with tabs keyboard navigation.
+* Fix: Issue with row alignment in editor.
+* FIx: Issue with single icon custom class.
+* Fix: Issue with css for Lottie Block.
+* Fix: Issue with left and right margin in image block when aligned left or right.
+* Fix: Issue with wpml and title for info box when using a div or span tag.
+* Fix: Spacing issue with icon list in editor.
+* Fix: RTL gallery slider issues.
+
+= 3.0.38 =
+Release Date: May 16th, 2023
+* Add: Ratio option to lottie block.
+* Update: Deprecated toolbar controls.
+* Fix: Issue with tabs and mega menu.
+* Fix: Possible issue with scheduling monthly library cleanup.
+
+= 3.0.37 =
+Release Date: May 2nd, 2023
+* Fix: Issue with icon list mobile column setting.
+* Fix: Issue with pasting styles changing icon in infobox.
+
+= 3.0.36 =
+Release Date: April 28th, 2023
+* Fix: Typo in image css.
+* Fix: Issue with icon list editor preview.
+* Fix: Issue with fullwidth button and aos.
+
+= 3.0.35 =
+Release Date: April 27th, 2023
+* Add: Option to set the gallery slider to slide transition.
+* Update: Icon list grid styles.
+* Fix: Outline button styles to maintain same size.
+* Fix: Issue with editor timeout on some servers with some plugin combinations.
+* Fix: Issue with fullwidth image.
+* Fix: Small issue with design library shadow dom styles.
+* Fix: Tweak the way highlight css is applied for better compatibility.
+
+= 3.0.34 =
+Release Date: April 24th, 2023
+* Update: Design library to use shadow dom. 
+* Update: Filter for custom palette.
+* Fix: Issue with image crop.
+* Fix: Issue with testimonial media border radius in admin.
+* Fix: Accordion output styles.
+* Fix: Possible max width issue with sections.
+* Fix: Issue with typed text script. 
+* Fix: Issue with row background override in editor on mobile.
+* Fix: Issue with some columns in gallery when using individual settings.
+
+= 3.0.33 =
+Release Date: April 12, 2023
+* Add: Option to set design library to use images instead of iframes.
+* Fix: Issue with typed text popover not showing correctly.
+* Fix: Aria label for mute button in row layout video background.
+* Fix: Possible issue with the info box when title and text are paragraph tags.
+* Fix: "Hide" button visibility setting on Show More block.
+* Fix: Lottie block max-width being applied as width.
+* Fix: Icon list gap on rtl sites
+* Fix: Issue with row padding in content only mode.
+* Fix: Issue with WPML and testimonials.
+* Fix: Fix AOS animation breaking hover transition on advanced button block.
+* Fix: Accordion FAQ Schema not always updating.
+
+= 3.0.32 =
+Release Date: April 6, 2023
+* Fix: Custom CSS class not applying to Advanced heading in some situations.
+* Fix: Issue accordion css specificity.
+* Fix: Issue with pattern library views on smaller screens.
+* Fix: Possible issue with design library when accessing through row layout.
+* Fix: Issue with advanced gallery sliding when it should fade.
+
+= 3.0.31 =
+Release Date: April 4, 2023
+* Fix: Issue design library if using 6.1
+
+= 3.0.30 =
+Release Date: April 4, 2023
+* Add: New Design library.
+* Add: Additional unit choices to top and bottom row dividers.
+* Fix: Border radius on row layout video backgrounds in Safari.
+* Fix: Testimonial icon colors not working when using color palette.
+* Fix: Testimonial icon display when using outline icons.
+* Fix: Typed text throwing error when previewing mobile & tablet.
+* Fix: Info box media background hover not showing in editor.
+* Fix: Fluid carousel galleries inside accordions not initializing.
+* Fix: Row Layout slider background "slide" transition style.
+* Fix: Prevent clones in fluid carousel when only one image.
+* Fix: Testimonial max-width not applying for basic layout.
+* Fix: Issue with gallery lightbox sometimes not initializing for carousels.
+
+= 3.0.27 =
+Release Date: March 23, 2023
+* Add: Title to iframe in Google Maps block.
+* Add: Option to skip lazy load for advanced image block.
+* Update: Row layout to allow 5 column to collapse into 2 and 3.
+* Update: Option to select parent block settings quickly from sidebar.
+* Update: Change hover styles toggle to tabs.
+* Fix: Issue with advanced text with icons and link wraps not opening in a new tab.
+* Fix: Design issues with testimonials and border radius.
+* Fix: Issue with section overlays in editor.
+* Fix: Issue with fluid carousel effecting others on mobile.
+* Fix: Issue with icon blocks not getting unique id in some situations.
+* Fix: Issue with mobile overlay applying to tablet.
+* Fix: Issue with submit alignment and label alignment in forms.
+* Fix: Advanced text icon hover color.
+* Fix: Issue with missing overlay opacity in tablet and mobile.
+* Fix: Issue with video poster select.
+* Fix: Gradient color picker when working with third party variables.
+
+= 3.0.26 =
+Release Date: March 15, 2023
+* Fix: Open animation when using nesting accordions.
+* Fix: Breakout columns css output.
+* Fix: Issue with TOC and multiplication symbol.
+* Fix: Issue with hiding design library sections.
+
+= 3.0.25 =
+Release Date: March 15, 2023
+* Fix: Breakout columns css output.
+
+= 3.0.24 =
+Release Date: March 14, 2023
+* Add: Breakout left column and right column options when fullwidth row.
+* Fix: Accordion title padding on tablet & mobile.
+* Fix: Unmute setting not applying on row layout background videos.
+* Fix: Row gutter not always showing in row layout.
+* Fix: Copying styles on CountUp block was copying content.
+* Fix: Advanced text not inheriting font color from section.
+* Fix: Possible spacing issue with single item carousel.
+* Fix: Mailerlite with hack to get around their firewall.
+* Fix: Possible PHP notice.
+* Fix: Issue with some icons not being centered.
+* Fix: Possible issue with zIndex in row layouts where z-index wasn't set.
+* Fix: Issue with possible border showing in tab when set to 0.
+
+= 3.0.23 =
+Release Date: March 8th, 2023
+* Update: MailerLite to work with new API.
+* Fix: Variable font sizes on Advanced Image captions.
+* Fix: Infobox borders no displaying on pre 3.0 blocks.
+* Fix: Infobox title margin top not applying on front end.
+* Fix: Issue with blocks showing broken in the editor in tablet.
+* Fix: Issue with testimonial fonts causing breakage in google font url.
+* Fix: Issue with some custom svg icons not rendering correctly.
+* Fix: Hover styles icon on RTL layouts
+
+= 3.0.22 =
+Release Date: March 6th, 2023
+* Fix: Issue with inner child blocks having options to be reusable.
+* Fix: Issue with tabs when using block defaults.
+* Fix: Issue with testimonials and variable font sizes.
+* Fix: Issue with lottie json files when using query parameters.
+* Fix: Issue with firefox flex area and svgs.
+
+= 3.0.21 =
+Release Date: March 2nd, 2023
+* Add: Image Lazy load option for slider and carousel galleries.
+* Fix: Issue where 3rd party lazy load plugins were breaking carousels.
+* Fix: Issue with max width in testimonial card style.
+* Fix: Missing icon.
+* Fix: Margin specificity in nested sections.
+* Fix: Issue with background type not selected in sections when initially imported from 2.4
+* Fix: Possible issue with svg icon rendering affecting certain blocks.
+* Fix: Issue with TOC not updating in the editor when allowed headers changes.
+* Fix: Frontend alignment of new icon in advanced text.
+* Fix: Issue with migrating tablet padding in section.
+* Fix: Issue with accordion not migrating with 0 border width.
+
+= 3.0.20 =
+Release Date: March 1st, 2023
+* Add: Option to not have an icon show on an icon list.
+* Fix: Issue with thumbnail gallery thumbnails align center.
+* Fix: Issue with toolset archive views.
+* Fix: Issue with show more while using infinite scroll.
+* Fix: Issue with sticky not showing when it technically works.
+* Fix: Issue with border radius and infobox border spin.
+* Fix: Issue with svg image align in image block.
+* Fix: Issue with infobox title.
+
+= 3.0.19 =
+Release Date: February 28th, 2023
+* Fix: Issue with gallery custom link target.
+* Fix: Issue with z index in previous row output.
+* Fix: Issue with column block defaults in row layout.
+* Fix: Possible issue with toolset.
+* Fix: Issue with posts block not selecting terms.
+* Fix: Issue with sizing getting cleared when switching to custom units.
+
+= 3.0.18 =
+Release Date: February 27th, 2023
+* Fix: Issue with fullwidth layout and custom bottom margin.
+* Fix: Issue with accordion title icon size.
+* Fix: Issue with TOC template order of headings.
+* Fix: Issue with border styles in duplicate block.
+
+= 3.0.17 =
+Release Date: February 27th, 2023
+* Update: Add option to set info box title to p or span tag.
+* Fix: Issue with duplicated blocks not getting a unique Id.
+* Fix: Editor view of vertical align.
+* Fix: Issue with height 100% when using min height.
+* Fix: Issue with typed text in editor.
+* Fix: Setting 0 border on tablet/mobile not overriding desktop.
+* Fix: Advanced gallery url field dropdown
+* Fix: Advanced text letter spacing always using px
+* Fix: Testimonial content font size when using variable size
+* Fix: Accordion "space between" when using heading title tags
+* Fix: Spacer block in reusable block.
+* Fix: Icon alignment issue with some themes.
+* Fix: Issue with row in surecart columns in editor.
+* Fix: Setting HTML Tag for Countup block title.
+
+= 3.0.16 =
+Release Date: February 23rd, 2023
+* Fix: Issue with reusable blocks
+
+= 3.0.15 =
+Release Date: February 23rd, 2023
+* Update: Include arrows in lightbox on mobile.
+* Update: Align for lottie render.
+* Fix: Possible gallery gutter issue.
+* Fix: Issue where migrated full width buttons were missing collapse on mobile.
+* Fix: Issue the advanced text and WP 6.0.
+* Fix: Issue where lots of full width buttons were not wrapping correctly.
+
+= 3.0.14 =
+Release Date: February 22nd, 2023
+* Update: Prevent custom CSS in row or section from breaking block css.
+* Update: TOC to better handle templates with core post content block.
+* Fix: Issue with collapsed columns set to full height.
+* Fix: Row backgrond slider sizeing not applying.
+* Fix: Issue where lightbox shows disable arrows that should be hidden.
+* Fix: Issue with fluentCRM and mailerlite.
+* Fix: Settings page link.
+
+= 3.0.13 =
+Release Date: February 22nd, 2023
+* Fix: Issue where custom gutter could be undefined.
+* Fix: Issue with icon list vertical spacing.
+* Fix: Issue with sliders that only have one slide rendering arrows.
+* Fix: Issue with custom classes and anchor not rendering in gallery.
+* Fix: Issue with inline row background.
+* Fix: Possible issue with video script error.
+* Fix: Issue with PSR conflict.
+
+= 3.0.12 =
+Release Date: February 21st, 2023
+* Fix: Possible PHP 7.2 bug.
+* Fix: Issue with multiple types of carousels on a page.
+
+= 3.0.11 =
+Release Date: February 21st, 2023
+* Fix: Possible PHP 7.2 bug.
+* Fix: Parallax issue in safari.
+* Fix: Missing Testimonial Background setting.
+* Fix: Border color issues in testimonial.
+* Fix: Icon size in icon list in the editor.
+* Fix: Section hover colors with link.
+* Fix: For rebuilding css in a query.
+* Fix: Divider rendering in safari.
+
+= 3.0.10 =
+Release Date: February 21st, 2023
+* Fix: Spacing issues when using generatepress
+* Fix: Three column layout issues with gap.
+* Fix: Min height of rows in editor.
+
+= 3.0.9 =
+Release Date: February 21st, 2023
+* Update: Add blend mode to section overlay settings.
+* Update: Accordion to have inner content colors.
+* Update: Add filter for TOC block render attributes.
+* Update: Row Padding visual editor to always override overlaping blocks.
+* Fix: Some block settings showing incorrect default.
+* Fix: Issue with the design library button not always rendering in 6.2
+
+= 3.0.8 RC Version 4 =
+Release Date: February 17th, 2023
+* Fix: Possible error in windows server.
+* Fix: Double Margin issue in multi-column icon list block.
+* Fix: Possible Google font error.
+
+= 3.0.7 RC Version 3 =
+Release Date: February 17th, 2023
+* Fix: Possible issue custom units.
+* Fix: Possible issue with stacked columns using full height.
+
+= 3.0.6 RC Version 2 =
+Release Date: February 16th, 2023
+* Update: Prevent TOC from rendering in feed.
+* Update: Border radius and border controls in advanced text.
+* Fix: Possible issue with buttons using icons.
+* Fix: Possible issue with buttons margin.
+* Fix: Possible issue with tablet padding in buttons.
+* Fix: Heading styles when applied in accordion.
+* Fix: Issue with gallery options.
+* Fix: Issue with carousel dots missing in gallery in the editor.
+* Fix: Issue with icon list gap.
+* Fix: Deprecated warning in PHP 8.1
 
 = 3.0.5 RC Version 1 =
 Release Date: February 13th, 2023
@@ -119,7 +443,8 @@ Release Date: January 31st, 2023
 * Fix: Issue with icon list fonts.
 * Fix: Issue with some gutter sizes.
 * Fix: Issue with zindex in rows.
-* Fix: Issue with heading block backward compatibility. 
+* Fix: Issue with heading block backward compatibility.
+* Fix: Issue with heading block backward compatibility.
 * Fix: Issue with gallery carousel missing option to set pagination to none.
 * Fix: Issue with facebook icon backward compatibility.
 * Fix: Issue with possible button border showing when it should not.
@@ -179,7 +504,7 @@ Release Date: January 4th, 2023
 * Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
 * Update: Improved CSS generation for blocks.
-* Update: Kadence Block defaults structure, new controls and management. 
+* Update: Kadence Block defaults structure, new controls and management.
 * Update: Inline SVGs removed from content html, all svgs load through filter.
 * Update: Sections can move freely in and out of rows.
 * Update: Rows can be content locked to preserve inner block settings and simplify updating.
@@ -1662,3 +1987,8 @@ You can also set the block defaults.
 
 = 1.0.0 =
 * Initial Release.
+
+== Upgrade Notice ==
+
+= 3.0.17 =
+Kadence Blocks 3.0+ is a large update, we suggest testing thoroughly after updating. [Learn about Kadence Blocks 3.0+](https://www.kadencewp.com/blog/introducing-blocks-3/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)

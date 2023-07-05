@@ -19,7 +19,8 @@
 	"kadence/testimonials-displayMedia": "displayMedia",
 	"kadence/testimonials-titleFont": "titleFont",
 	"kadence/testimonials-mediaStyles": "mediaStyles",
-	"kadence/testimonials-ratingStyles": "ratingStyles"
+	"kadence/testimonials-ratingStyles": "ratingStyles",
+	"kadence/testimonials-containerVAlign": "containerVAlign"
   },
   "attributes": {
 	"uniqueID": {
@@ -809,6 +810,7 @@
   ],
   "supports": {
 	"anchor": true,
-	"html": false
+	"html": false,
+    "kbMetadata": true
   }
 }

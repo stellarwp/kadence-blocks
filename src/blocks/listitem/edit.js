@@ -9,6 +9,7 @@ import {
     KadenceColorOutput,
 	setBlockDefaults,
 	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -18,6 +19,7 @@ import {
     KadencePanelBody,
     URLInputControl,
     InspectorControlTabs,
+    SelectParentBlock,
 } from '@kadence/components';
 
 import metadata from './block.json';
@@ -39,30 +41,22 @@ import {
 import {
     useEffect,
     useState,
-    useRef,
-    Fragment,
+    useRef
 } from '@wordpress/element';
 
 import {
     RangeControl,
-    ButtonGroup,
-    Tooltip,
-    Button,
+    ToggleControl,
     SelectControl,
-    Toolbar,
+    ToolbarGroup,
     ToolbarButton
 } from '@wordpress/components';
 
-import {compose} from '@wordpress/compose';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {formatIndent, formatOutdent} from "@wordpress/icons";
-/**
- * Internal dependencies
- */
-import useMerge from './merge';
 
-function KadenceListItem({attributes, className, setAttributes, clientId, isSelected, name, onReplace, onRemove, mergeBlocks, context}) {
-
+function KadenceListItem( props ) {
+	const {attributes, className, setAttributes, clientId, isSelected, name, onReplace, onRemove, mergeBlocks, context} = props;
     const {
         uniqueID,
         icon,
@@ -78,7 +72,8 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
         padding,
         borderWidth,
         style,
-        level
+        level,
+		showIcon
     } = attributes;
     const displayIcon = icon ? icon : context['kadence/listIcon'];
     const displayWidth = width ? width : context['kadence/listIconWidth'];
@@ -86,22 +81,33 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
     const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 
     const textRef = useRef( clientId );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 	useEffect( () => {
-		setBlockDefaults( 'kadence/listitem', attributes);
+		setBlockDefaults( 'kadence/listitem', attributes );
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 	}, [] );
 
     const blockProps = useBlockProps({
@@ -120,7 +126,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
     return (
         <div {...blockProps}>
             <BlockControls>
-                <Toolbar>
+                <ToolbarGroup group="add-indent">
 
                     <ToolbarButton
                         icon={formatOutdent}
@@ -137,9 +143,12 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                         onClick={() => onMoveRight()}
                     />
 
-                </Toolbar>
+                </ToolbarGroup>
             </BlockControls>
             <InspectorControls>
+                <SelectParentBlock
+                    clientId={ clientId }
+                />
                 <InspectorControlTabs
                     panelName={ 'listitem' }
                     setActiveTab={ ( value ) => setActiveTab( value ) }
@@ -147,7 +156,6 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                 />
                 { activeTab === 'general' && (
                     <KadencePanelBody
-                        title={__('Item Settings', 'kadence-blocks')}
                         initialOpen={true}
                         panelName={'kb-icon-item-settings'}
                     >
@@ -175,19 +183,27 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                             clientId={ clientId }
                             context={ context }
                         />
-                        <KadenceIconPicker
-                            value={icon}
-                            onChange={value => {
-                                setAttributes({icon: value});
-                            }}
-                            allowClear={ true }
-							placeholder={ __( 'Select Icon', 'kadence-blocks' ) }
-                        />
+
+						<ToggleControl
+							label={ __( 'Hide icon', 'kadence-blocks' ) }
+							checked={ !showIcon }
+							onChange={ ( value ) => { setAttributes( { showIcon: !value } ); } }
+						/>
+
+						{ showIcon && (
+							<KadenceIconPicker
+								value={icon}
+								onChange={value => {
+									setAttributes({icon: value});
+								}}
+								allowClear={ true }
+								placeholder={ __( 'Select Icon', 'kadence-blocks' ) }
+							/>
+						) }
                     </KadencePanelBody>
                 ) }
                 { activeTab === 'style' && (
                     <KadencePanelBody
-                        title={__('Style', 'kadence-blocks')}
                         initialOpen={true}
                         panelName={'kb-icon-item'}
                     >
@@ -197,7 +213,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                             onChange={value => {
                                 setAttributes({size: value});
                             }}
-                            min={5}
+                            min={0}
                             max={250}
                         />
                         {displayIcon && 'fe' === displayIcon.substring(0, 2) && (
@@ -291,7 +307,7 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
 
             <div
                 className={`kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${ style ? ' kt-svg-icon-list-style-' + style : '' }`}>
-                {displayIcon && (
+                {displayIcon && showIcon && (
                     <IconRender
                         className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}`}
                         name={displayIcon}
@@ -307,6 +323,16 @@ function KadenceListItem({attributes, className, setAttributes, clientId, isSele
                         } }
                     />
                 )}
+
+				{!showIcon && size !== 0 && (
+					<div style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }} className={'kt-svg-icon-list-single'}>
+						<svg style={{ display: 'inline-block', verticalAlign: 'middle' }} viewBox={'0 0 24 24'} height={ size ? size : '1em' } width={ size ? size : '1em' } fill={ 'none' }
+							 stroke={ displayWidth }
+							 preserveAspectRatio={( true ? 'xMinYMin meet' : undefined )}
+							 stroke-width={ displayWidth }>
+						</svg>
+					</div>
+				)}
 
                 <RichText
                     tagName="div"

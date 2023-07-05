@@ -55,6 +55,7 @@ class Kadence_Blocks_Settings {
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( $this, 'add_menu' ) );
 			add_filter( 'plugin_action_links_kadence-blocks/kadence-blocks.php', array( $this, 'add_settings_link' ) );
+			add_action( 'in_plugin_update_message-kadence-blocks/kadence-blocks.php', array( $this, 'plugin_update_message' ), 10, 2 );
 		}
 		add_action( 'wp_ajax_kadence_blocks_activate_deactivate', array( $this, 'ajax_blocks_activate_deactivate' ), 10, 0 );
 		add_action( 'wp_ajax_kadence_blocks_save_config', array( $this, 'ajax_blocks_save_config' ), 10, 0 );
@@ -70,6 +71,67 @@ class Kadence_Blocks_Settings {
 		add_action( 'kadence_blocks_dash_side_panel_pro', array( $this, 'admin_pro_kadence_notice' ), 10 );
 		add_filter( 'stellarwp/telemetry/kadence-blocks/optin_args', array( $this, 'optin_notice_args' ), 10 );
 		add_filter( 'stellarwp/telemetry/kadence-blocks/exit_interview_args', array( $this, 'exit_interview_args' ), 10 );
+	}
+	/**
+	 * Add an update message if in the readme.txt
+	 *
+	 * @param array $data An array of plugin metadata.
+	 * @param object $response An object of metadata about the available plugin update.
+	 */
+	public function plugin_update_message( $data, $response ) {
+		$upgrade_notice  = $this->get_upgrade_notice( '3.0.9' );
+		echo apply_filters( 'kadence_blocks_in_plugin_update_message', $upgrade_notice ? wp_kses_post( $upgrade_notice ) . '<p style="display:none" class="dummy">' : '' ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+	}
+	/**
+	 * Get the upgrade notice from WordPress.org.
+	 *
+	 * @param  string $version WooCommerce new version.
+	 * @return string
+	 */
+	protected function get_upgrade_notice( $version ) {
+		$transient_name = 'kb_upgrade_notice_' . $version;
+		$upgrade_notice = get_transient( $transient_name );
+
+		if ( false === $upgrade_notice ) {
+			$response = wp_safe_remote_get( 'https://plugins.svn.wordpress.org/kadence-blocks/trunk/readme.txt' );
+			if ( ! is_wp_error( $response ) && ! empty( $response['body'] ) ) {
+				$upgrade_notice = $this->parse_update_notice( $response['body'], $version );
+				set_transient( $transient_name, $upgrade_notice, DAY_IN_SECONDS );
+			}
+		}
+		return $upgrade_notice;
+	}
+	/**
+	 * Parse update notice from readme file.
+	 *
+	 * @param  string $content WooCommerce readme file content.
+	 * @param  string $new_version WooCommerce new version.
+	 * @return string
+	 */
+	private function parse_update_notice( $content, $new_version ) {
+		$version_parts = explode( '.', $new_version );
+		$check_for_notices = array(
+			$version_parts[0] . '.' . $version_parts[1] . '.0', // Major.
+			$version_parts[0] . '.' . $version_parts[1] . '.' . $version_parts[2], // Patch.
+		);
+		$upgrade_notice = '';
+		$notice_regexp  = '~==\s*Upgrade Notice\s*==\s*=\s*(.*)\s*=(.*)(=\s*' . preg_quote( $new_version ) . '\s*=|$)~Uis';
+		foreach ( $check_for_notices as $check_version ) {
+			if ( version_compare( KADENCE_BLOCKS_VERSION, $check_version, '>' ) ) {
+				continue;
+			}
+			$matches = null;
+			if ( preg_match( $notice_regexp, $content, $matches ) ) {
+				$notices = (array) preg_split( '~[\r\n]+~', trim( $matches[2] ) );
+				if ( ! empty( $notices[0] ) ) {
+					$upgrade_notice .= '<div class="update-message"><strong>';
+					$upgrade_notice .= preg_replace( '~\[([^\]]*)\]\(([^\)]*)\)~', '<a href="${2}">${1}</a>', $notices[0] );
+					$upgrade_notice .= '</strong></div>';
+					break;
+				}
+			}
+		}
+		return wp_kses_post( $upgrade_notice );
 	}
 	/**
 	 * Filter the exit_interview notice args.
@@ -135,7 +197,7 @@ class Kadence_Blocks_Settings {
 				esc_html__(
 					'Hi, %1$s! At KadenceWP, we\'re always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we\'ll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that\'s okay. Kadence Blocks will work just fine. We hope you love building with Kadence.', 'kadence-blocks'
 				),
-				$default_args['user_name'],
+				$default_args['user_name']
 			),
 		);
 		$args = wp_parse_args( $args, $default_args );
@@ -439,7 +501,7 @@ class Kadence_Blocks_Settings {
 	 */
 	public function add_menu() {
 		add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
-		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ) );
+		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ), 0 );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
@@ -613,6 +675,50 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
+			'kadence_blocks_turnstile_site_key',
+			'kadence_blocks_turnstile_site_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Cloudflare Turnstile Site Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_turnstile_secret_key',
+			'kadence_blocks_turnstile_secret_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Cloudflare Turnstile Secret Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_hcaptcha_site_key',
+			'kadence_blocks_hcaptcha_site_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'hCaptcha Turnstile Site Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_hcaptcha_secret_key',
+			'kadence_blocks_hcaptcha_secret_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'hCaptcha Secret Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
 			'kadence_blocks_mailerlite_api',
 			'kadence_blocks_mailerlite_api',
 			array(
@@ -707,6 +813,12 @@ class Kadence_Blocks_Settings {
 		//add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'enable_editor_width', __( 'Enable Editor Width', 'kadence-blocks' ), array( $this, 'enabled_editor_width_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 
+		$temp = get_registered_settings();
+		if ( ! defined( 'KADENCE_VERSION' ) ) {
+			register_setting( 'kadence_blocks_font_settings', 'kadence_blocks_font_settings', array( $this, 'validate_options' ) );
+			add_settings_section( 'kt_blocks_fonts_sec', '', array( $this, 'fonts_local_callback' ), 'kt_blocks_fonts_section' );
+			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Localy', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
+		}
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -733,6 +845,7 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default_limited ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+
 	/**
 	 * Outputs Sidebar number field
 	 */
@@ -742,6 +855,7 @@ class Kadence_Blocks_Settings {
 		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[sidebar]' size='25' type='number' value='" . ( isset( $data['sidebar'] ) ? esc_attr( $data['sidebar'] ) : esc_attr( $default ) ) . "' />";
 		echo '<span class="kt-sub-input-description">' . esc_html__( 'px', 'kadence-blocks' ) . '</span>';
 	}
+
 	/**
 	 * Outputs no sidebar number field
 	 */
@@ -764,6 +878,7 @@ class Kadence_Blocks_Settings {
 			echo '<option value="fullwidth" ' . ( 'fullwidth' === $default_post_type ? 'selected' : '' ) . '>' . esc_html__( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+
 	/**
 	 * Outputs post default select feild
 	 */
@@ -776,6 +891,19 @@ class Kadence_Blocks_Settings {
 			echo '<option value="fullwidth" ' . ( 'fullwidth' === $default_page_type ? 'selected' : '' ) . '>' . esc_html__( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+
+	/**
+	 * Outputs Limited Margins Field
+	 */
+	public function load_fonts_local_callback() {
+		$data = self::get_data_options( 'kadence_blocks_font_settings' );
+		$default = ( isset( $data['load_fonts_local'] ) ? $data['load_fonts_local'] : 'false' );
+		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_font_settings[load_fonts_local]">';
+			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
+	}
+
 	/**
 	 * Outputs title for content width.
 	 */
@@ -784,6 +912,13 @@ class Kadence_Blocks_Settings {
 		// echo '<h5 class="kt-main-subtitle">' . esc_html__( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
 		// echo '<div class="kt-main-description-notice">' . esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ) . 'px</div>';
 	}
+
+	/**
+	 * Outputs title for fonts local.
+	 */
+	public function fonts_local_callback() {
+	}
+
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
 	 *
@@ -792,6 +927,7 @@ class Kadence_Blocks_Settings {
 	public function validate_options( $input ) {
 		return $input;
 	}
+
 	/**
 	 * Checks for kadence classic themes when returning defualt.
 	 */
@@ -809,6 +945,7 @@ class Kadence_Blocks_Settings {
 		}
 		return self::$editor_width;
 	}
+
 	/**
 	 * Loads config page
 	 */
@@ -885,6 +1022,20 @@ class Kadence_Blocks_Settings {
 							</div>
 							<div class="kt-dashboard-spacer"></div>
 						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_local_fonts', ! defined( 'KADENCE_VERSION' ) ) ) { ?>
+							<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
+							<?php global $content_width; ?>
+								<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kadence_blocks_font_settings' );
+									do_settings_sections( 'kt_blocks_fonts_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
 					</div>
 					<div class="side-panel">
 						<?php do_action( 'kadence_blocks_dash_side_panel' ); ?>
@@ -919,6 +1070,7 @@ class Kadence_Blocks_Settings {
 		</div>
 		<?php
 	}
+
 	/**
 	 * Admin Pro Kadence Notice.
 	 */
@@ -1166,7 +1318,7 @@ class Kadence_Blocks_Settings {
 	 * Add settings link
 	 */
 	public function settings_link() {
-		return apply_filters( 'kadence-blocks-settings-url', admin_url( 'options-general.php?page=kadence_blocks' ) );
+		return apply_filters( 'kadence-blocks-settings-url', admin_url( 'admin.php?page=kadence-blocks' ) );
 	}
 	/**
 	 * Add settings link

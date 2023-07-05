@@ -1,0 +1,17 @@
+/.git
+/.github
+/bin
+/gulp
+/src
+/node_modules
+
+.distignore
+.gitignore
+.eslintignore
+.eslintrc.json
+composer.json
+composer.lock
+gulpfile.js
+package.json
+package-lock.json
+webpack.config.js

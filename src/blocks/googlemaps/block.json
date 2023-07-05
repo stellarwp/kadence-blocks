@@ -123,6 +123,13 @@
 	"textAlign": {
 		"type": "array",
 		"default":  [ "", "", "" ]
+	},
+	"kbVersion": {
+	  "type": "number",
+	  "default": ""
 	}
+  },
+  "supports": {
+	  "kbMetadata": true
   }
 }

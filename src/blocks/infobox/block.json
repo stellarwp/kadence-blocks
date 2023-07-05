@@ -12,7 +12,8 @@
 	"icon"
   ],
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",
@@ -211,7 +212,7 @@
 	"title": {
 	  "type": "array",
 	  "source": "children",
-	  "selector": "h1,h2,h3,h4,h5,h6",
+	  "selector": ".kt-blocks-info-box-title",
 	  "default": "Title"
 	},
 	"titleColor": {
@@ -229,6 +230,10 @@
 		"",
 		""
 	  ]
+	},
+	"titleTagType": {
+	  "type": "string",
+	  "default": "heading"
 	},
 	"titleFont": {
 	  "type": "array",
@@ -280,7 +285,7 @@
 	"contentText": {
 	  "type": "array",
 	  "source": "children",
-	  "selector": "p",
+	  "selector": ".kt-blocks-info-box-text",
 	  "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo."
 	},
 	"textColor": {

@@ -52,7 +52,7 @@ class KadenceVideoControl extends Component {
 				{ ! hasVideo && (
 					<Fragment>
 						{ label && (
-							<div class="components-kadence-video-background__label">{ label }</div>
+							<div className="components-kadence-video-background__label">{ label }</div>
 						) }
 						<KadenceMediaPlaceholder
 							labels={ '' }
@@ -69,7 +69,7 @@ class KadenceVideoControl extends Component {
 				{ hasVideo && (
 					<Fragment>
 						{ label && (
-							<div class="components-kadence-video-background__label">{ label }</div>
+							<div className="components-kadence-video-background__label">{ label }</div>
 						) }
 						<div className='components-kadence-video-btns'>
 							<MediaUpload

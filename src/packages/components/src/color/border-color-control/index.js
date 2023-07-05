@@ -89,8 +89,9 @@ export default function BorderColorControls( {
 	const [ localControl, setLocalControl ] = useState( 'individual' );
 	const realControl = control ? control : localControl;
 	const realOnChangeControl = onControl ? onControl : setLocalControl;
+	const containerRef = useRef();
 	return (
-		<div className={ `components-base-control kb-border-color-control ${ '' !== className ? ' ' + className : '' }` }>
+		<div ref={ containerRef } className={ `components-base-control kb-border-color-control ${ '' !== className ? ' ' + className : '' }` }>
 			<div className="kadence-title-bar">
 				{ label && (
 					<span className="kadence-control-title">{ label }</span>

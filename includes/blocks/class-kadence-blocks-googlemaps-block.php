@@ -62,10 +62,11 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kb-google-maps-container' . $unique_id );
 
 		/*
@@ -165,23 +166,44 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
-		// Replace API key with default or users set key.
-		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
-
-		if ( empty( $user_google_maps_key ) ) {
-			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
-		} else {
-			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
-		}
+		$updated_version = ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? true : false;
 
 		$style_id = 'kb-google-maps' . esc_attr( $unique_id );
 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'google_maps', $attributes ) ) {
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
 		}
+
 		if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
 			$this->enqueue_script( 'kadence-blocks-googlemaps-init-js' );
 			$this->enqueue_script( 'kadence-blocks-googlemaps-js' );
+		}
+
+		if ( $updated_version ) {
+			$wrapper_args = array(
+				'class' => 'kb-google-maps-container kb-google-maps-container' . $unique_id . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ),
+				'data-mapid' => $unique_id,
+			);
+			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+			$content = '<div ' . $wrapper_attributes . '>';
+
+			if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
+				$content .= '<div id="kb-google-map' . $unique_id . '" style="width: 100%; height: 100%"></div>';
+			} else {
+
+				$mapQueryParams = array(
+					'key'     => 'KADENCE_GOOGLE_MAPS_KEY',
+					'zoom'    => $attributes['zoom'],
+					'maptype' => $attributes['mapType'],
+					'q'       => $attributes['location']
+				);
+				$content .= '<iframe width="100%" height="100%"
+							style="border:0" loading="lazy"
+							src="https://www.google.com/maps/embed/v1/place?' . http_build_query( $mapQueryParams ) . '"
+							title="' . esc_attr( sprintf( __( 'Google map of %s', 'kadence-blocks' ), $attributes['location'] ) ) . '"></iframe>';
+			}
+			$content .= '</div>';
 		}
 
 		$snazzyStyles = [
@@ -195,6 +217,14 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'night_mode'             => '[{elementType:"geometry",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.fill",stylers:[{color:"#746855"}]},{featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi.park",elementType:"geometry",stylers:[{color:"#263c3f"}]},{featureType:"poi.park",elementType:"labels.text.fill",stylers:[{color:"#6b9a76"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#38414e"}]},{featureType:"road",elementType:"geometry.stroke",stylers:[{color:"#212a37"}]},{featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#9ca5b3"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#746855"}]},{featureType:"road.highway",elementType:"geometry.stroke",stylers:[{color:"#1f2835"}]},{featureType:"road.highway",elementType:"labels.text.fill",stylers:[{color:"#f3d19c"}]},{featureType:"transit",elementType:"geometry",stylers:[{color:"#2f3948"}]},{featureType:"transit.station",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#17263c"}]},{featureType:"water",elementType:"labels.text.fill",stylers:[{color:"#515c6d"}]},{featureType:"water",elementType:"labels.text.stroke",stylers:[{color:"#17263c"}]}]',
 			'custom'                 => isset( $attributes['customSnazzy'] ) ? $attributes['customSnazzy'] : '[]'
 		];
+
+		// Replace API key with default or users set key.
+		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
+		if ( empty( $user_google_maps_key ) ) {
+			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
+		} else {
+			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
+		}
 
 		$zoom    = empty( $attributes['zoom'] ) ? 11 : $attributes['zoom'];
 		$gMapLat = empty( $attributes['lat'] ) ? '37.8201' : $attributes['lat'];

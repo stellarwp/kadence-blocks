@@ -15,7 +15,7 @@ const FormFieldLabel = ( { setAttributes, label, showLabel, required } ) => {
 	}
 
 	return (
-		<div className={'kb-advanced-form-label'}>
+		<div className={'kb-adv-form-label'}>
 				<RichText
 					onChange={( value ) => {
 						setAttributes( { label: value } );
@@ -26,7 +26,7 @@ const FormFieldLabel = ( { setAttributes, label, showLabel, required } ) => {
 					value={label}
 					multiline={ false }
 				/>
-				{ showRequired && required && <span className={ 'required' }>*</span>}
+				{ showRequired && required && <span className={ 'kb-adv-form-required' }>*</span>}
 		</div>
 	);
 };

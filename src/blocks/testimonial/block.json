@@ -128,10 +128,13 @@
 	"kadence/testimonials-displayMedia",
 	"kadence/testimonials-titleFont",
 	"kadence/testimonials-ratingStyles",
-	"kadence/testimonials-mediaStyles"
+	"kadence/testimonials-mediaStyles",
+	"kadence/testimonials-containerVAlign"
   ],
   "supports": {
 	"anchor": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true,
+	"kbContentLabel": "title"
   }
 }

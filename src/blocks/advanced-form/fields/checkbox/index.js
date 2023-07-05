@@ -26,7 +26,6 @@ registerBlockType('kadence/advanced-form-checkbox', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: checkboxInputIcon,
 	},

@@ -332,25 +332,35 @@ class KB_Ajax_Form {
 							}
 							$body['resubscribe'] = true;
 							if ( isset( $body[ 'email' ] ) ) {
-								if ( ! empty( $group_id ) ) {
-									$api_url = 'https://api.mailerlite.com/api/v2/groups/' . $group_id . '/subscribers';
+								if ( strlen( $api_key ) > 100 ) {
+									// New connect API.
+									$api_url = 'https://connect.mailerlite.com/api/subscribers';
+									if ( ! empty( $group_id ) ) {
+										$body['groups'] = array( strval( $group_id ) );
+									}
+									$auth = 'Authorization';
+									$api_key = 'Bearer ' . $api_key;
 								} else {
-									$api_url = 'https://api.mailerlite.com/api/v2/subscribers';
+									if ( ! empty( $group_id ) ) {
+										$api_url = 'https://api.mailerlite.com/api/v2/groups/' . $group_id . '/subscribers';
+									} else {
+										$api_url = 'https://api.mailerlite.com/api/v2/subscribers';
+									}
+									$auth = 'X-MailerLite-ApiKey';
 								}
 								$response = wp_remote_post(
 									$api_url,
 									array(
 										'method'  => 'POST',
-										'timeout' => 10,
+										'timeout' => 15,
 										'headers' => array(
-											'accept'              => 'application/json',
-											'content-type'        => 'application/json',
-											'X-MailerLite-ApiKey' => $api_key,
+											'accept'       => 'application/json',
+											'content-type' => 'application/json',
+											$auth          => $api_key,
 										),
 										'body'    => json_encode( $body ),
 									)
 								);
-
 								if ( is_wp_error( $response ) ) {
 									$error_message = $response->get_error_message();
 									error_log( "Something went wrong: $error_message" );

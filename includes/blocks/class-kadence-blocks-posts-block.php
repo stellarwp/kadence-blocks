@@ -55,10 +55,11 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$title_font = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) ? $attributes['titleFont'][0] : array() );
 		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
@@ -262,6 +263,22 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $output . $content;
 
+	}
+	/**
+	 * Render for block scripts block.
+	 *
+	 * @param array   $attributes the blocks attributes.
+	 * @param boolean $inline true or false based on when called.
+	 */
+	public function render_scripts( $attributes, $inline = false ) {
+		if ( ! class_exists( 'Kadence\Theme' ) ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+				if ( $inline ) {
+					$this->should_render_inline_stylesheet( 'kadence-blocks-' . $this->block_name );
+				}
+			}
+		}
 	}
 
 }

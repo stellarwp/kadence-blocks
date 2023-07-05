@@ -22,7 +22,8 @@ import metadata from './block.json';
  */
 import {
 	getUniqueId,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -71,7 +72,8 @@ import { decodeEntities } from '@wordpress/html-entities';
 /**
  * Build Kadence Posts Block.
  */
-function KadencePosts( { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, getPreviewDevice, clientId } ) {
+function KadencePosts( props ) {
+	const { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, getPreviewDevice, clientId } = props;
 
 	const {
 		uniqueID,
@@ -129,12 +131,18 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	const [ activeTab, setActiveTab ] = useState( 'content' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -159,9 +167,15 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	};
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
 		getPosts();
 	}, [] );
@@ -1101,13 +1115,9 @@ export default withSelect( ( select, props ) => {
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
 	let taxonomyOptions = [];
-
 	if ( theType !== 'post' || postTax ) {
 		if ( 'undefined' !== typeof taxonomies[ theType ] ) {
 			if ( taxType ) {
-				if ( taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ] ) {
-					termQueryBase = ( ( taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ][ 'rest_base' ] == false || taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ][ 'rest_base' ] == null ) ? taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ].name : taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ].rest_base );
-				}
 				if ( taxonomies[ theType ].terms && taxonomies[ theType ].terms[ taxType ] ) {
 					taxonomyOptions = taxonomies[ theType ].terms[ taxType ];
 				}

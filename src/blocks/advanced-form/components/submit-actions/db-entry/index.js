@@ -37,8 +37,8 @@ function DbEntryOptions( { settings, save } ) {
 		>
 			<TextControl
 				label={__( 'Form Name', 'kadence-blocks' )}
-				value={( undefined !== settings.name ? settings.name : '' )}
-				onChange={( value ) => save( { name: value } )}
+				value={( undefined !== settings.formName ? settings.formName : '' )}
+				onChange={( value ) => save( { formName: value } )}
 			/>
 			<ToggleControl
 				label={__( 'Save User IP Address', 'kadence-blocks' )}

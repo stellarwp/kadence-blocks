@@ -34,7 +34,9 @@ import {
 	getSpacingOptionOutput,
 	getUniqueId,
 	setBlockDefaults,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrWidgetId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -88,7 +90,7 @@ const actionOptionsList = [
 	{ value: 'fluentCRM', label: __( 'FluentCRM', 'kadence-blocks' ), help: __( 'Add User to FluentCRM list', 'kadence-blocks' ), isDisabled: false },
 	{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true },
-	{ value: 'sendinblue', label: __( 'SendInBlue (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to SendInBlue list', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'sendinblue', label: __( 'Brevo (SendInBlue) (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to Brevo list', 'kadence-blocks' ), isDisabled: true },	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 ];
@@ -127,47 +129,23 @@ function KadenceForm( props ) {
 		mobileContainerMargin,
 		containerMarginType,
 		submitLabel,
+		postID,
+		hAlignFormFeilds,
 	} = attributes;
 
-	const getID = () => {
-		let postID;
-
-		if ( getWidgetIdFromBlock( props ) ) {
-			if ( !postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( props ),
-				} );
-			} else if ( getWidgetIdFromBlock( props ) !== postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( props ),
-				} );
-			}
-		} else if ( wp.data.select( 'core/editor' ) ) {
-			const { getCurrentPostId } = wp.data.select( 'core/editor' );
-			if ( !postID && getCurrentPostId() ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== postID ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			}
-		} else {
-			if ( !postID ) {
-				setAttributes( {
-					postID: 'block-unknown',
-				} );
-			}
-		}
-	};
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -176,9 +154,15 @@ function KadenceForm( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/form', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 	}, [] );
 	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
@@ -236,7 +220,12 @@ function KadenceForm( props ) {
 			}
 		}
 
-		getID();
+		const checkPostID = getPostOrWidgetId( props );
+		if ( checkPostID !== postID ) {
+			setAttributes( {
+				postID: checkPostID,
+			} );
+		}
 
 		/**
 		 * Get settings
@@ -1610,11 +1599,9 @@ function KadenceForm( props ) {
 				}`
 		);
 	};
-
 	const blockProps = useBlockProps( {
 		className: className,
 	} );
-
 	return (
 		<div {...blockProps}>
 			<style>
@@ -1631,6 +1618,7 @@ function KadenceForm( props ) {
 			<BlockControls key="controls">
 				<AlignmentToolbar
 					value={hAlign}
+					label={ __('Align Submit', 'kadence-blocks')}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
 				<CopyPasteAttributes
@@ -2025,6 +2013,22 @@ function KadenceForm( props ) {
 								/>
 							</KadencePanelBody>
 						</KadencePanelBody>
+						{actions.includes( 'mailerlite' ) && (
+							<MailerLiteControls
+								fields={fields}
+								settings={mailerlite}
+								save={( value ) => saveMailerlite( value )}
+								saveMap={( value, i ) => saveMailerliteMap( value, i )}
+							/>
+						)}
+						{actions.includes( 'fluentCRM' ) && (
+							<FluentCRMControls
+								fields={fields}
+								settings={fluentcrm}
+								save={( value ) => saveFluentCRM( value )}
+								saveMap={( value, i ) => saveFluentCRMMap( value, i )}
+							/>
+						)}
 					</>
 				}
 
@@ -3520,22 +3524,6 @@ function KadenceForm( props ) {
 								onChange={( value ) => setAttributes( { submitLabel: value } )}
 							/>
 						</KadencePanelBody>
-						{actions.includes( 'mailerlite' ) && (
-							<MailerLiteControls
-								fields={fields}
-								settings={mailerlite}
-								save={( value ) => saveMailerlite( value )}
-								saveMap={( value, i ) => saveMailerliteMap( value, i )}
-							/>
-						)}
-						{actions.includes( 'fluentCRM' ) && (
-							<FluentCRMControls
-								fields={fields}
-								settings={fluentcrm}
-								save={( value ) => saveFluentCRM( value )}
-								saveMap={( value, i ) => saveFluentCRMMap( value, i )}
-							/>
-						)}
 					</>
 				}
 
@@ -3567,6 +3555,11 @@ function KadenceForm( props ) {
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
 							/>
+							<ToggleControl
+								label={__( 'Align field labels with submit alignment?', 'kadence-blocks' )}
+								checked={( undefined !== hAlignFormFeilds ? hAlignFormFeilds : false )}
+								onChange={( value ) => setAttributes( { hAlignFormFeilds: value } )}
+							/>
 						</KadencePanelBody>
 
 						<div className="kt-sidebar-settings-spacer"></div>
@@ -3575,7 +3568,7 @@ function KadenceForm( props ) {
 					</>
 				)}
 			</KadenceInspectorControls>
-			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
+			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}${ ( hAlignFormFeilds ? ' kb-form-field-align' : '' ) }`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{
 				marginLeft  : ( undefined !== previewContainerMarginLeft ? getSpacingOptionOutput( previewContainerMarginLeft, previewContainerMarginType ) : undefined ),

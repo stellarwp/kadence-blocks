@@ -198,11 +198,22 @@ class Kadence_Blocks_Table_Of_Contents {
 						$kadence_pro = Kadence_Pro\Elements_Controller::get_instance();
 						$page_content = '';
 						if ( ! empty( $kadence_pro::$single_template ) ) {
+							$blocks = parse_blocks( $post->post_content );
+							self::$output_content = '';
+							$the_post_content = '';
+							foreach ( $blocks as $block ) {
+								$this->recursively_parse_blocks( $block );
+							}
+							if ( self::$output_content ) {
+								$the_post_content .= do_shortcode( self::$output_content );
+							} else {
+								$the_post_content .= do_shortcode( $post->post_content );
+							}
 							$template_post = get_post( $kadence_pro::$single_template );
 							$blocks = parse_blocks( $template_post->post_content );
 							self::$output_content = '';
 							foreach ( $blocks as $block ) {
-								$this->recursively_parse_blocks( $block );
+								$this->recursively_parse_blocks( $block, $the_post_content );
 							}
 							if ( self::$output_content ) {
 								$page_content .= do_shortcode( self::$output_content );
@@ -291,7 +302,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function get_ignore_list() {
 		if ( is_null( self::$ignore_list ) ) {
-			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal' ) );
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'core/post-content' ) );
 		}
 		return self::$ignore_list;
 	}
@@ -326,7 +337,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 *
 	 * @param string $block The page content content.
 	 */
-	private function recursively_parse_blocks( $block ) {
+	private function recursively_parse_blocks( $block, $the_post_content = '' ) {
 		if ( ! in_array( $block['blockName'], $this->get_ignore_list() ) ) {
 			if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 				// Can't link to inner blocks so ignore everything past.
@@ -340,6 +351,8 @@ class Kadence_Blocks_Table_Of_Contents {
 			} else {
 				self::$output_content .= render_block( $block );
 			}
+		} else if ( $block['blockName'] === 'core/post-content' ) {
+			self::$output_content .= $the_post_content;
 		}
 	}
 	/**
@@ -595,14 +608,16 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @return string The string converted.
 	 */
 	public function convert_smart_quotes( $string ) {
-		$search = array("’",
+		$search = array("×",
+						"’",
 						"‘",
 						"”",
 						"“",
 						"–",
 						"—",
 						"…");
-		$replace = array("'",
+		$replace = array("x",
+						"'",
 						 "'",
 						 '"',
 						 '"',
@@ -754,7 +769,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		return $wrap ? '<' . $list_tag . ' class="kb-table-of-contents-list-sub">' . implode( $child_nodes ) . '</' . $list_tag . '>' : implode( $child_nodes );
 	}
 	/**
-	 * Render Table Of Contents Block
+	 * Render Table of Contents Block
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
@@ -771,6 +786,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( ! $the_post ) {
 			return '';
 		}
+		$attributes = apply_filters( 'kadence_blocks_toc_block_build_only_attributes', $attributes );
 		$headings = $this->table_of_contents_get_headings(
 			$the_post,
 			$attributes
@@ -803,7 +819,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			$scroll_offset = ( isset( $attributes['smoothScrollOffset'] ) && is_numeric( $attributes['smoothScrollOffset'] ) ? $attributes['smoothScrollOffset'] : '40' );
 			$class .= ' kb-toc-smooth-scroll';
 		}
-		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . ( isset( $attributes['enableScrollSpy'] ) && true === $attributes['enableScrollSpy'] ? ' data-scroll-spy="true"' : '' ) . '>';
+		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . ( isset( $attributes['enableScrollSpy'] ) && true === $attributes['enableScrollSpy'] ? ' data-scroll-spy="true"' : '' ) . '>';
 		$output .= '<div class="kb-table-of-content-wrap">';
 		if ( ! isset( $attributes['enableTitle'] ) || isset( $attributes['enableTitle'] ) && $attributes['enableTitle'] ) {
 			$output .= '<div class="kb-table-of-contents-title-wrap kb-toggle-icon-style-' . ( $enable_toggle && isset( $attributes['toggleIcon'] ) && $attributes['toggleIcon'] ? $attributes['toggleIcon'] : 'arrow' ) . '">';
@@ -811,7 +827,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				$output .= '<button class="kb-table-of-contents-title-btn kb-table-of-contents-toggle" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '">';
 			}
 			$output .= '<span class="kb-table-of-contents-title">';
-			$output .= ( isset( $attributes['title'] ) ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
+			$output .= ( isset( $attributes['title'] ) && $attributes['title'] !== 'Table of Contents' ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
 			$output .= '</span>';
 			if ( $enable_toggle ) {
 				if ( $title_toggle ) {

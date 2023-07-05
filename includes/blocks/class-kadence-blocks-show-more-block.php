@@ -62,9 +62,10 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
 
 		/*
@@ -130,6 +131,11 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'display', 'inline-flex' );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .kt-btn-wrap:nth-child(2)' );
 		$css->add_property( 'display', 'block' );
+
+		if( isset( $attributes['showHideMore'] ) && !$attributes['showHideMore'] ) {
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-child(2)' );
+			$css->add_property( 'display', 'none' );
+		}
 
 		// Default expanded Desktop
 		if ( isset( $attributes['defaultExpandedDesktop'] ) && $attributes['defaultExpandedDesktop'] ) {

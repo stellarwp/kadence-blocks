@@ -1,10 +1,7 @@
 .wp-block-kadence-image:not(:last-child) {
-	margin: 0 0 1em 0;
+	margin-bottom: 1em;
 }
 .wp-block-kadence-image {
-	.image-is-svg {
-		width: 100%;
-	}
 	img {
 		max-width: 100%;
 		border: 0 solid currentColor;
@@ -208,4 +205,16 @@
 
 .wp-block-kadence-image figure {
 	margin: 0;
+}
+.kb-image-has-overlay {
+    position: relative;
+}
+.kb-image-has-overlay:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 9;
 }

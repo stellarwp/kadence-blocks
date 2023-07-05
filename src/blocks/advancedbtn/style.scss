@@ -17,9 +17,13 @@
 	align-items: center;
 	justify-content: center;
     &.kt-btn-width-type-full {
-        flex: 1;
+        flex: 1 0 fit-content;
         width: 100%;
     }
+}
+.kb-blocks-button-aos.kb-btn-width-type-full {
+    flex: 1 0 fit-content;
+    width: 100%;
 }
 .kb-button:not(.kb-btn-global-inherit) {
     border: 0 solid transparent;
@@ -47,6 +51,7 @@
     border: 2px solid var(--global-palette-btn-bg, #3633E1);
 	background:transparent;
 	color: var(--global-palette-btn-bg, #3633E1);
+    padding: calc( 0.4em - 2px ) calc( 1em - 2px );
     &:hover {
         border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
         background: transparent;
@@ -63,7 +68,7 @@
 	z-index: -1;
 	opacity: 0;
 	background:transparent;
-	transition: all .3s ease-in-out;
+	//transition: all .3s ease-in-out;
 }
 .kb-button:hover::before {
 	opacity: 1;
@@ -82,12 +87,15 @@
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-large {
     border-width: 3px;
+    padding: calc( 0.4em - 3px ) calc( 1em - 3px );
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-small {
     border-width: 1px;
+    padding: calc( 0.4em - 1px ) calc( 1em - 1px );
 }
-.kt-btn-has-svg-true {
+.kb-button.kt-btn-has-svg-true {
     gap: 0.5em;
+    display: inline-flex;
 }
 .wp-block-kadence-advancedbtn .kb-svg-icon-wrap {
 	display: inline-flex;

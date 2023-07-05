@@ -274,6 +274,10 @@
 	  "type": "number",
 	  "default": ""
 	},
+	"topSepHeightUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"bottomSep": {
 	  "type": "string",
 	  "default": "none"
@@ -301,6 +305,10 @@
 	"bottomSepWidthMobile": {
 	  "type": "number",
 	  "default": ""
+	},
+	"bottomSepHeightUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"bottomSepHeightTab": {
 	  "type": "number",
@@ -750,6 +758,14 @@
 		  "unit": "px"
 		} ]
 	},
+	"breakoutLeft": {
+		"type": "boolean",
+		"default": false
+	},
+	"breakoutRight": {
+		"type": "boolean",
+		"default": false
+	},
 	"anchor": {
 		"type": "string"
 	},
@@ -766,6 +782,7 @@
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

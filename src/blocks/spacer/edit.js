@@ -9,6 +9,9 @@ import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
+	setBlockDefaults,
+	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -44,21 +47,20 @@ import {
 	SelectControl,
 	ResizableBox,
 } from '@wordpress/components';
-import { withSelect, withDispatch } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { useSelect, useDispatch } from '@wordpress/data';
+
 import {
 	useEffect,
 	useState,
 	Fragment
 } from '@wordpress/element';
 
-const ktspacerUniqueIDs = [];
-
 /**
  * Build the spacer edit
  */
-function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSelection, getPreviewDevice } ) {
+function KadenceSpacerDivider( props ) {
 
+	const { attributes, clientId, setAttributes, toggleSelection } = props;
 	const {
 		className,
 		blockAlignment,
@@ -89,30 +91,35 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 		vsmobile,
 	} = attributes;
 
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
+			};
+		},
+		[ clientId ]
+	);
+
 	useEffect( () => {
-		if ( !uniqueID ) {
-			const oldBlockConfig = kadence_blocks_params.config && kadence_blocks_params.config[ 'kadence/spacer' ] ? kadence_blocks_params.config[ 'kadence/spacer' ] : undefined;
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/spacer' ] !== undefined && typeof blockConfigObject[ 'kadence/spacer' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/spacer' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/spacer' ][ attribute ];
-				} );
-			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
-				Object.keys( oldBlockConfig ).map( ( attribute ) => {
-					attributes[ attribute ] = oldBlockConfig[ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			ktspacerUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktspacerUniqueIDs.includes( uniqueID ) ) {
-			if( uniqueID !== '_' + clientId.substr( 2, 9 ) ) {
-				setAttributes( { uniqueID: '_' + clientId.substr( 2, 9 ) } );
-				ktspacerUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-			}
+		setBlockDefaults( 'kadence/spacer', attributes);
+
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
 		} else {
-			ktspacerUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
 
 	}, [] );
@@ -135,12 +142,12 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const dividerBorderColor = ( !dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
 
-	const previewHeight = getPreviewSize( getPreviewDevice, ( '' !== spacerHeight ? spacerHeight : 60 ), ( '' !== tabletSpacerHeight ? tabletSpacerHeight : '' ), ( '' !== mobileSpacerHeight ? mobileSpacerHeight : '' ) );
-	const previewHAlign = getPreviewSize( getPreviewDevice, ( '' !== hAlign ? hAlign : '' ), ( '' !== tabletHAlign ? tabletHAlign : '' ), ( '' !== mobileHAlign ? mobileHAlign : '' ) );
+	const previewHeight = getPreviewSize( previewDevice, ( '' !== spacerHeight ? spacerHeight : 60 ), ( '' !== tabletSpacerHeight ? tabletSpacerHeight : '' ), ( '' !== mobileSpacerHeight ? mobileSpacerHeight : '' ) );
+	const previewHAlign = getPreviewSize( previewDevice, ( '' !== hAlign ? hAlign : '' ), ( '' !== tabletHAlign ? tabletHAlign : '' ), ( '' !== mobileHAlign ? mobileHAlign : '' ) );
 	const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
 	const maxD = ( dividerStyle !== 'stripe' ? 400 : 60 );
-	const previewDividerHeight = getPreviewSize( getPreviewDevice, ( '' !== dividerHeight ? dividerHeight : 1 ), ( '' !== tabletDividerHeight ? tabletDividerHeight : '' ), ( '' !== mobileDividerHeight ? mobileDividerHeight : '' ) );
-	const previewDividerWidth = getPreviewSize( getPreviewDevice, ( '' !== dividerWidth ? dividerWidth : 1 ), ( '' !== tabletDividerWidth ? tabletDividerWidth : '' ), ( '' !== mobileDividerWidth ? mobileDividerWidth : '' ) );
+	const previewDividerHeight = getPreviewSize( previewDevice, ( '' !== dividerHeight ? dividerHeight : 1 ), ( '' !== tabletDividerHeight ? tabletDividerHeight : '' ), ( '' !== mobileDividerHeight ? mobileDividerHeight : '' ) );
+	const previewDividerWidth = getPreviewSize( previewDevice, ( '' !== dividerWidth ? dividerWidth : 1 ), ( '' !== tabletDividerWidth ? tabletDividerWidth : '' ), ( '' !== mobileDividerWidth ? mobileDividerWidth : '' ) );
 	return (
 		<div {...blockProps}>
 			{showSettings( 'spacerDivider', 'kadence/spacer' ) && (
@@ -157,8 +164,8 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 						/>
 						<CopyPasteAttributes
 							attributes={ attributes }
-							defaultAttributes={ metadata['attributes'] } 
-							blockSlug={ metadata['name'] } 
+							defaultAttributes={ metadata['attributes'] }
+							blockSlug={ metadata['name'] }
 							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
@@ -385,11 +392,11 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 						}}
 						onResizeStop={( event, direction, elt, delta ) => {
 							toggleSelection( true );
-							if ( 'Mobile' === getPreviewDevice ) {
+							if ( 'Mobile' === previewDevice ) {
 								setAttributes( {
 									mobileSpacerHeight: parseInt( previewHeight + delta.height, 10 ),
 								} );
-							} else if ( 'Tablet' === getPreviewDevice ) {
+							} else if ( 'Tablet' === previewDevice ) {
 								setAttributes( {
 									tabletSpacerHeight: parseInt( previewHeight + delta.height, 10 ),
 								} );
@@ -426,14 +433,4 @@ function KadenceSpacerDivider( { attributes, clientId, setAttributes, toggleSele
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			getUniqueIDs    : select( 'kadenceblocks/data' ).getUniqueIDs(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( KadenceSpacerDivider );
+export default KadenceSpacerDivider;

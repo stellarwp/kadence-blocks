@@ -268,6 +268,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"preventLazyLoad": {
+			"type": "boolean",
+			"default": false
+		},
 	  	"borderStyle": {
 			"type": "array",
 			"default": [ { 
@@ -297,6 +301,25 @@
 				"left": [ "", "", "" ],
 				"unit": "px"
 			} ]
+		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 0.3
+		},
+		"overlay": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"overlayGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayBlendMode": {
+			"type": "string"
 		}
 	},
 	"supports": {
@@ -304,6 +327,7 @@
 		"ktanimate": true,
 		"ktanimateadd": true,
 		"ktanimatepreview": true,
-		"ktdynamic": true
+		"ktdynamic": true,
+		"kbMetadata": true
 	}
 }

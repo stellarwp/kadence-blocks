@@ -23,6 +23,7 @@ function convertAlphaColors( hex, alpha ) {
 export function migrateToInnerblocks( attributes ) {
     const { btns, btnCount, typography, googleFont, loadGoogleFont, fontVariant, fontWeight, fontSubset, fontStyle, textTransform, letterSpacing, widthType, collapseFullwidth, kadenceAOSOptions, kadenceAnimation, kadenceDynamic, hideLink, lockBtnCount } = attributes;
 	const newGap = [ 'xs', '', '' ];
+	let newOrientation = [ '', '', '' ];
     let buttonInnerBlocks = [];
 	if ( btns?.length ) {
 		times( btnCount, n => {
@@ -221,11 +222,13 @@ export function migrateToInnerblocks( attributes ) {
 			if ( undefined !== newAttrs?.backgroundHoverType && 'gradient' === newAttrs.backgroundHoverType ) {
 				let btnbgHover = '';
 				const btnGradHover = ( undefined === newAttrs.backgroundHover ? KadenceColorOutput( '#444444', ( newAttrs.backgroundHoverOpacity !== undefined ? newAttrs.backgroundHoverOpacity : 1 ) ) : KadenceColorOutput( newAttrs.backgroundHover, ( newAttrs.backgroundHoverOpacity !== undefined ? newAttrs.backgroundHoverOpacity : 1 ) ) );
-				const btnGradHover2 = ( undefined === newAttrs.gradientHover[ 0 ] ? KadenceColorOutput( '#777777', ( newAttrs.gradientHover[ 1 ] !== undefined ? newAttrs.gradientHover[ 1 ] : 1 ) ) : KadenceColorOutput( newAttrs.gradientHover[ 0 ], ( newAttrs.gradientHover[ 1 ] !== undefined ? newAttrs.gradientHover[ 1 ] : 1 ) ) );
-				if ( undefined !== newAttrs.gradientHover && 'radial' === newAttrs.gradientHover[ 4 ] ) {
-					btnbgHover = `radial-gradient(at ${( undefined === newAttrs.gradientHover[ 6 ] ? 'center center' : newAttrs.gradientHover[ 6 ] )}, ${btnGradHover} ${( undefined === newAttrs.gradientHover[ 2 ] ? '0' : newAttrs.gradientHover[ 2 ] )}%, ${btnGradHover2} ${( undefined === newAttrs.gradientHover[ 3 ] ? '100' : newAttrs.gradientHover[ 3 ] )}%)`;
-				} else if ( undefined !== newAttrs.gradientHover && 'linear' === newAttrs.gradientHover[ 4 ] ) {
-					btnbgHover = `linear-gradient(${( undefined === newAttrs.gradientHover[ 5 ] ? '180' : newAttrs.gradientHover[ 5 ] )}deg, ${btnGradHover} ${( undefined === newAttrs.gradientHover[ 2 ] ? '0' : newAttrs.gradientHover[ 2 ] )}%, ${btnGradHover2} ${( undefined === newAttrs.gradientHover[ 3 ] ? '100' : newAttrs.gradientHover[ 3 ] )}%)`;
+				if( undefined !== newAttrs.gradientHover) {
+					const btnGradHover2 = ( undefined === newAttrs.gradientHover[ 0 ] ? KadenceColorOutput( '#777777', ( newAttrs.gradientHover[ 1 ] !== undefined ? newAttrs.gradientHover[ 1 ] : 1 ) ) : KadenceColorOutput( newAttrs.gradientHover[ 0 ], ( newAttrs.gradientHover[ 1 ] !== undefined ? newAttrs.gradientHover[ 1 ] : 1 ) ) );
+					if ( 'radial' === newAttrs.gradientHover[ 4 ] ) {
+						btnbgHover = `radial-gradient(at ${( undefined === newAttrs.gradientHover[ 6 ] ? 'center center' : newAttrs.gradientHover[ 6 ] )}, ${btnGradHover} ${( undefined === newAttrs.gradientHover[ 2 ] ? '0' : newAttrs.gradientHover[ 2 ] )}%, ${btnGradHover2} ${( undefined === newAttrs.gradientHover[ 3 ] ? '100' : newAttrs.gradientHover[ 3 ] )}%)`;
+					} else if ( 'linear' === newAttrs.gradientHover[ 4 ] ) {
+						btnbgHover = `linear-gradient(${( undefined === newAttrs.gradientHover[ 5 ] ? '180' : newAttrs.gradientHover[ 5 ] )}deg, ${btnGradHover} ${( undefined === newAttrs.gradientHover[ 2 ] ? '0' : newAttrs.gradientHover[ 2 ] )}%, ${btnGradHover2} ${( undefined === newAttrs.gradientHover[ 3 ] ? '100' : newAttrs.gradientHover[ 3 ] )}%)`;
+					}
 				}
 				newAttrs.gradientHover = btnbgHover;
 			} else if ( undefined !== newAttrs?.gradientHover ) {
@@ -355,7 +358,7 @@ export function migrateToInnerblocks( attributes ) {
 			if ( undefined !== widthType && widthType == 'full' ) {
 				newAttrs.widthType = 'full';
 				if ( collapseFullwidth ) {
-					newAttrs.orientation = [ '', '', 'column' ];
+					newOrientation = [ '', '', 'column' ];
 				}
 			} else if ( undefined !== widthType && widthType == 'fixed' ) {
 				newAttrs.widthType = 'fixed';
@@ -435,7 +438,7 @@ export function migrateToInnerblocks( attributes ) {
 	//// 	  "mobileMargin": [ "", "", "", "" ],
 	//// 	  "anchor": "",
 	//// 	  "borderStyle": ""
-    let buttonParentAttributes = { ...attributes, btns: [], btnCount: 1, typography: '', fontStyle: 'normal', googleFont:false, letterSpacing: '',loadGoogleFont: true, textTransform:'', fontSubset: '',fontWeight:'regular',fontVariant:'', widthType:'auto', widthUnit:'px', forceFullwidth:false, collapseFullwidth: false, gap: newGap, }
+    let buttonParentAttributes = { ...attributes, btns: [], btnCount: 1, typography: '', fontStyle: 'normal', googleFont:false, letterSpacing: '',loadGoogleFont: true, textTransform:'', fontSubset: '',fontWeight:'regular',fontVariant:'', widthType:'auto', widthUnit:'px', orientation:newOrientation, forceFullwidth:false, collapseFullwidth: false, gap: newGap, }
 
     return [ buttonParentAttributes, buttonInnerBlocks ];
 }

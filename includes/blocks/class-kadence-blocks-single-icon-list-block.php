@@ -62,10 +62,11 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-single' );
 
 		if ( ! empty( $attributes['size'] ) ) {
@@ -103,9 +104,20 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$parent_default = $block_instance->context['kadence/listIcon'];
+		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {
+			$parent_default = $block_instance->context['kadence/listIcon'];
 
-		return str_replace('USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+			$content = str_replace( 'USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+		}
+		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIconWidth'] ) ) {
+			$parent_default_width = $block_instance->context['kadence/listIconWidth'];
+			if ( empty( $parent_default_width ) ) {
+				$parent_default_width = 2;
+			}
+
+			$content = str_replace( 'USE_PARENT_DEFAULT_WIDTH', $parent_default_width, $content );
+		}
+		return $content;
 	}
 }
 

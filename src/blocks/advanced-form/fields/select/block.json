@@ -3,13 +3,15 @@
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
+	"uniqueID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
 	},
 	"placeholder": {
-	  "type": "string",
-	  "default": ""
+		"type": "string"
 	},
 	"showLabel": {
 	  "type": "boolean",
@@ -19,9 +21,11 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
-	  "type": "string",
-	  "default": ""
+	"defaultValue": {
+	  "type": "string"
+	},
+	"defaultParameter": {
+	  "type": "string"
 	},
 	"ariaDescription": {
 	  "type": "string",
@@ -30,6 +34,9 @@
 	"helpText": {
 	  "type": "string",
 	  "default": ""
+	},
+	"inputName": {
+	  "type": "string"
 	},
 	"options": {
 	  "type": "array",
@@ -41,17 +48,48 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"width": {
+	"maxWidth": {
 	  "type": "array",
 	  "default": [
-		"100",
-		"",
-		""
+		  "",
+		  "",
+		  ""
 	  ]
+	},
+	"maxWidthUnit": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"minWidth": {
+	  "type": "array",
+	  "default": [
+		  "",
+		  "",
+		  ""
+	  ]
+	},
+	"minWidthUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"errorMessage": {
+	  "type": "string"
+	},
+	"requiredMessage": {
+	  "type": "string"
+	},
+	"anchor": {
+	  "type": "string"
 	}
   },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"ktdynamic": true,
+	"reusable": false,
+    "kbMetadata": true,
+    "kbContentLabel": "label"
+  },
+  "ancestor": [ "kadence/advanced-form" ],
+  "parent": [ "kadence/advanced-form", "kadence/column" ]
 }

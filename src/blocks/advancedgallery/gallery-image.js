@@ -71,7 +71,7 @@ function GalleryImage( props ) {
 
 	const onSelectImage = () => {
 
-		if ( !isSelected ) {
+		if ( ! isSelected ) {
 			onSelect( index );
 		}
 
@@ -87,12 +87,6 @@ function GalleryImage( props ) {
 			onRemove();
 		}
 	};
-
-	const onSelectCustomLink = () => {
-		if ( ! isSelected ) {
-			onSelect();
-		}
-	}
 	const previewFont = getPreviewSize( previewDevice, ( undefined !== captionStyles?.[ 0 ]?.size?.[ 0 ] ? captionStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 1 ] ? captionStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== captionStyles?.[ 0 ]?.size?.[ 2 ] ? captionStyles[ 0 ].size[ 2 ] : '' ) );
 
 	// const componentDidUpdate = ( prevProps ) => {
@@ -206,6 +200,7 @@ function GalleryImage( props ) {
 			onChange={( newCaption ) => setAttributes( { caption: newCaption } )}
 			inlineToolbar
 			keepPlaceholderOnFocus
+			unstableOnFocus={ () => { onSelectImage(); }}
 			style={{
 				fontWeight   : '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,
 				fontStyle    : '' !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined,
@@ -236,7 +231,7 @@ function GalleryImage( props ) {
 	const capOutput = dynamicSource ? figcapDynamic : figcap;
 	const className = classnames( {
 		'kb-gallery-figure'                       : true,
-		'is-selected'                             : !thumbnail && isSelected,
+		'is-selected'                             : ! thumbnail && isSelected,
 		'is-transient'                            : isBlobURL( thumbUrl || url ),
 		'kadence-blocks-gallery-item-has-caption' : showCaption && caption,
 		'kadence-blocks-gallery-item-hide-caption': !showCaption,
@@ -255,17 +250,17 @@ function GalleryImage( props ) {
 					{thumbnail &&
 						thumbImg
 					}
-					{!thumbnail && ( 'below' !== captionStyle || !showCaption ) && (
+					{!thumbnail && ( 'below' !== captionStyle && showCaption ) && (
 						capOutput
 					)}
 				</div>
-				{!thumbnail && (
-					<Fragment>
+				{ ! thumbnail && (
+					<>
 						{'below' === captionStyle && showCaption && (
 							capOutput
 						)}
-						{!dynamicSource && (
-							<Fragment>
+						{ ! dynamicSource && (
+							<>
 								<div className="kadence-blocks-library-gallery-item__move-menu">
 									<Button
 										icon="arrow-left"
@@ -293,19 +288,19 @@ function GalleryImage( props ) {
 										disabled={!isSelected}
 									/>
 								</div>
-							</Fragment>
+							</>
 						)}
-					</Fragment>
+					</>
 				)}
 			</figure>
-			{!thumbnail && linkTo === 'custom' && isSelected && !dynamicSource && (
-				<Fragment>
-					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => onSelectCustomLink()}>
+			{! thumbnail && linkTo === 'custom' && isSelected && ! dynamicSource && (
+				<>
+					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => toggleSettingsVisibility()}>
 						<URLInput
 							aria-label={__( 'URL', 'kadence-blocks' )}
 							placeholder={__( 'Paste or type URL', 'kadence-blocks' )}
-							unstableOnFocus={ () => onSelectCustomLink() }
-							onClick={ () => onSelectCustomLink() }
+							unstableOnFocus={ () => toggleSettingsVisibility() }
+							onClick={ () => toggleSettingsVisibility() }
 							className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
 							value={customLink}
 							onChange={value => setLinkAttributes( { customLink: value } )}
@@ -332,7 +327,7 @@ function GalleryImage( props ) {
 							/>
 						</div>
 					)}
-				</Fragment>
+				</>
 			)}
 		</Fragment>
 	);

@@ -55,10 +55,11 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'tabs';
 		$tablet_layout = ! empty( $attributes['tabletLayout'] ) && 'inherit' !== $attributes['tabletLayout'] ? $attributes['tabletLayout'] : $layout;
@@ -89,7 +90,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab' );
 
-		if( isset( $attributes['contentBorder'] ) && array_filter( $attributes['contentBorder'] )  ) {
+		if ( ( isset( $attributes['contentBorder'][0] ) && $css->is_number( $attributes['contentBorder'][0] ) ) || ( isset( $attributes['contentBorder'][1] ) && $css->is_number( $attributes['contentBorder'][1] ) ) || ( isset( $attributes['contentBorder'][2] ) && $css->is_number( $attributes['contentBorder'][2] ) ) || ( isset( $attributes['contentBorder'][3] ) && $css->is_number( $attributes['contentBorder'][3] ) ) ) {
 			$css->render_measure_output( $attributes, 'contentBorder', 'border-width', array( 'tablet_key' => false, 'mobile_key' => false ) );
 			if ( ! empty( $attributes['contentBorderColor'] ) ) {
 				$css->add_property( 'border-color', $css->sanitize_color( $attributes['contentBorderColor'] ) );
@@ -127,6 +128,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( 'vtabs' === $layout && ! empty( $attributes['verticalTabWidth'][0] ) ) {
+			$css->set_media_state( 'desktopOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -138,7 +140,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'flex', '1' );
 		}
 		if ( 'vtabs' === $tablet_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) ) ) {
-			$css->set_media_state( 'tablet' );
+			$css->set_media_state( 'tabletOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -148,11 +150,10 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'float', 'none' );
 			$css->add_property( 'width', 'auto' );
 			$css->add_property( 'flex', '1' );
-			$css->set_media_state( 'desktop' );
 		}
 		if ( 'vtabs' === $mobile_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) || ! empty( $attributes['verticalTabWidth'][2] ) ) ) {
 			$mobile_width = ( ! empty( $attributes['verticalTabWidth'][2] ) ? $attributes['verticalTabWidth'][2] : $attributes['verticalTabWidth'][1] );
-			$css->set_media_state( 'mobile' );
+			$css->set_media_state( 'mobileOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -162,9 +163,8 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'float', 'none' );
 			$css->add_property( 'width', 'auto' );
 			$css->add_property( 'flex', '1' );
-			$css->set_media_state( 'desktop' );
 		}
-
+		$css->set_media_state( 'desktop' );
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
 			if ( isset( $attributes['gutter'] ) && ! empty( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) ) {

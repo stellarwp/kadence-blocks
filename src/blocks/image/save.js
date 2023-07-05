@@ -30,6 +30,11 @@ export default function save( { attributes } ) {
 		imageFilter,
 		useRatio,
 		ratio,
+		preventLazyLoad,
+		overlay,
+		overlayOpacity,
+		overlayGradient,
+		overlayType,
 	} = attributes;
 
 	const classes = classnames( {
@@ -57,6 +62,18 @@ export default function save( { attributes } ) {
 		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
 	} );
 
+	const imgClasses = classnames( {
+		'kb-img': true,
+		[ `wp-image-${ id }` ]: id,
+		[ `skip-lazy` ]: preventLazyLoad,
+		[ `kb-skip-lazy` ]: preventLazyLoad,
+	} );
+	let useOverlay = false;
+	if ( overlayOpacity && overlay && overlayType && overlayType !== 'gradient' ) {
+		useOverlay = true;
+	} else if ( overlayOpacity && overlayGradient && overlayType && overlayType === 'gradient' ) {
+		useOverlay = true;
+	}
 	let relAttr;
 	if ( linkTarget ) {
 		relAttr = 'noopener noreferrer';
@@ -71,14 +88,16 @@ export default function save( { attributes } ) {
 		<img
 			src={ url }
 			alt={ alt }
-			className={ id ? `kb-img wp-image-${ id }` : 'kb-img' }
+			className={ imgClasses }
 			width={ width }
 			height={ height }
 			title={ title }
 		/>
 	);
 	if ( useRatio ){
-		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ image }</div>;
+		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>{ image }</div>;
+	} else if ( useOverlay ) {
+		image = <div className={ `kb-image-has-overlay` }>{ image }</div>;
 	}
 
 	const figure = (

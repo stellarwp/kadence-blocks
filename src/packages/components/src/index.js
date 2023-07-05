@@ -52,6 +52,7 @@ export { default as TagSelect } from './tag-select';
 export { default as GapSizeControl } from './gap-controls';
 export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
 export { default as CopyPasteAttributes } from './copy-paste-attributes';
+export { default as FormInputControl } from './form-input-control';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';
@@ -96,3 +97,5 @@ export { default as BorderColorControls } from './color/border-color-control'
 export { default as KadenceBlockDefaults } from './block-defaults';
 
 export { default as KadenceIconPicker } from './icon-picker';
+
+export { default as SelectParentBlock } from './select-parent-block';

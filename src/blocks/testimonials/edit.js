@@ -25,8 +25,8 @@ import {
 /**
  * Import External
  */
-import { Splide, SplideTrack, SplideSlide } from '@splidejs/react-splide';
-import {map, isEqual} from 'lodash';
+import { Splide, SplideTrack } from '@splidejs/react-splide';
+import {map, isEqual, has} from 'lodash';
 /**
  * Import Components
  */
@@ -56,7 +56,10 @@ import {
     getGapSizeOptionOutput,
     getSpacingOptionOutput,
     getFontSizeOptionOutput,
-	getBorderStyle
+	getBorderStyle,
+	isRTL,
+	getPostOrFseId,
+	getUniqueId
 } from '@kadence/helpers';
 
 /**
@@ -88,7 +91,7 @@ import {
     Tooltip,
 } from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
-import { 
+import {
     plusCircle
 } from '@wordpress/icons';
 
@@ -98,18 +101,20 @@ import { migrateToInnerblocks } from './utils';
 /**
  * Build the overlay edit
  */
-function KadenceTestimonials({
-    attributes,
-    setAttributes,
-    className,
-    clientId,
-    isSelected,
-    context,
-    testimonialBlock,
-    insertTestimonial,
-    insertTestimonialItems,
-    onDelete,
-}) {
+function KadenceTestimonials( props ) {
+	const {
+		attributes,
+		setAttributes,
+		className,
+		clientId,
+		isSelected,
+		context,
+		testimonialBlock,
+		insertTestimonial,
+		insertTestimonialItems,
+		onDelete,
+	} = props;
+
     const {
         uniqueID,
         testimonials,
@@ -229,12 +234,18 @@ function KadenceTestimonials({
     const paddingMouseOver = mouseOverVisualizer();
 
     const {addUniqueID} = useDispatch('kadenceblocks/data');
-    const {isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+    const {isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
         (select) => {
             return {
                 isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
                 isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
             };
         },
         [clientId],
@@ -290,26 +301,16 @@ function KadenceTestimonials({
 
     useEffect(() => {
 
-        let smallID = '_' + clientId.substr(2, 9);
-        if (!uniqueID) {
-            attributes = setBlockDefaults( 'kadence/testimonials', attributes);
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
+		} else {
+			addUniqueID( uniqueID, clientId );
+		}
 
-            setAttributes({
-                uniqueID: smallID,
-            });
-            addUniqueID(smallID, clientId);
-        } else if (!isUniqueID(uniqueID)) {
-            // This checks if we are just switching views, client ID the same means we don't need to update.
-            if (!isUniqueBlock(uniqueID, clientId)) {
-                attributes.uniqueID = smallID;
-                setAttributes({
-                    uniqueID: smallID,
-                });
-                addUniqueID(smallID, clientId);
-            }
-        } else {
-            addUniqueID(uniqueID, clientId);
-        }
         // Update from old gutter settings.
         if ( columnGap !== '' ) {
             setAttributes( { gap: [ columnGap, '', '' ], columnGap: '' } );
@@ -734,28 +735,30 @@ function KadenceTestimonials({
                         ${ previewContainerPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewContainerPaddingLeft, (containerPaddingType ? containerPaddingType : 'px') ) + ';' : '' }
                         ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
                         ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
-						${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
-						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : '' }
 					}
 					.kt-blocks-testimonials-wrap${uniqueID} {
 						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
+                        ${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewWrapperMarginBottom, wrapperMarginUnit ) + ';' : '' }
+						${ previewWrapperMarginLeft ? 'margin-left: ' + getSpacingOptionOutput( previewWrapperMarginLeft, wrapperMarginUnit ) + ';' : '' }
                     }
 
-                    ${ containerVAlign === 'middle' || containerVAlign === 'bottom' ? '' : `
-                        .kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+                    ${ containerVAlign !== '' ?
+                        `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
                             display: flex;
                             flex-direction: column;
-                            justify-content: ${ containerVAlign === 'bottom' ? 'flex-end' : 'center' };
-                        }
-                    `}
+                            justify-content: ${ containerVAlign === 'middle' ? 'center' : ( containerVAlign === 'top' ? 'flex-start' : 'flex-end') };
+                        }`
+                        :
+                        ''
+                    }
 
-                    ${ 'bubble' === style || 'inlineimage' === style ? '' : `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
-                        ${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
+                    ${ `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-item-wrap {
+						${ containerMaxWidth ? 'max-width: ' + containerMaxWidth + 'px;' : '' }
                         ${ previewContainerMinHeight ? 'min-height: ' + previewContainerMinHeight + 'px;' : '' }
                         ${ undefined !== iconPadding?.[0] && '' !== iconPadding?.[0] ? 'padding-top: ' + iconPadding[0] + ';' : '' }
                     }` }
@@ -821,10 +824,10 @@ function KadenceTestimonials({
 						${ previewMediaBorderRight ? 'border-right: ' + previewMediaBorderRight + ';' : '' }
 						${ previewMediaBorderBottom ? 'border-bottom: ' + previewMediaBorderBottom + ';' : '' }
 						${ previewMediaBorderLeft ? 'border-left: ' + previewMediaBorderLeft + ';' : '' }
-						${ previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
-						${ previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusTop ? 'border-top-left-radius: ' + previewMediaBorderRadiusTop + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusRight ? 'border-top-right-radius: ' + previewMediaBorderRadiusRight + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusBottom ? 'border-bottom-right-radius: ' + previewMediaBorderRadiusBottom + mediaBorderRadiusUnit + ';' : '' }
+						${ '' !== previewMediaBorderRadiusLeft ? 'border-bottom-left-radius: ' + previewMediaBorderRadiusLeft + mediaBorderRadiusUnit + ';' : '' }
 						${ previewMediaMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewMediaMarginTop, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewMediaMarginRight, mediaMarginUnit ) + ';' : '' }
 						${ previewMediaMarginBottom ? 'margin-bottom: ' + getSpacingOptionOutput( previewMediaMarginBottom, mediaMarginUnit ) + ';' : '' }
@@ -1073,6 +1076,7 @@ function KadenceTestimonials({
 		autoplay      : autoPlay,
 		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ),
+		direction : ( isRTL ? 'rtl' : 'ltr' ),
 	};
     const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -1093,8 +1097,8 @@ function KadenceTestimonials({
         <div {...blockProps}>
             {containerStyles()}
             <style>
-                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${containerBorderWidth && undefined !== containerBorderWidth[2] ? containerBorderWidth[2] : '1'}px; }` : '')}
-                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${(containerBorder ? KadenceColorOutput(containerBorder, (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { margin-top: ${  has( borderStyle, [ 0, 'bottom', 2 ] ) ? borderStyle[0].bottom[2] : '1'}${ has( borderStyle, [ 0, 'unit' ] ) ? borderStyle[0].unit : 'px' }; }` : '')}
+                {(style === 'bubble' || style === 'inlineimage' ? `.kt-blocks-testimonials-wrap${uniqueID} .kt-testimonial-text-wrap:after { border-top-color: ${( has( borderStyle, [ 0, 'bottom', 0 ] ) ? KadenceColorOutput( borderStyle[0].bottom[0], (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)) : KadenceColorOutput('#eeeeee', (undefined !== containerBorderOpacity ? containerBorderOpacity : 1)))} }` : '')}
                 {(layout === 'grid' ) && (
                     `.kt-testimonial-grid-wrap .block-editor-inner-blocks .block-editor-block-list__layout {
                         gap: ${getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) )};
@@ -1217,7 +1221,7 @@ function KadenceTestimonials({
                                                         label={__('Autoplay Speed', 'kadence-blocks')}
                                                         value={autoSpeed}
                                                         onChange={(value) => setAttributes({autoSpeed: value})}
-                                                        min={500}
+                                                        min={0}
                                                         max={15000}
                                                         step={10}
                                                     />
@@ -1227,7 +1231,7 @@ function KadenceTestimonials({
                                                     value={transSpeed}
                                                     onChange={(value) => setAttributes({transSpeed: value})}
                                                     min={100}
-                                                    max={2000}
+                                                    max={15000}
                                                     step={10}
                                                 />
                                                 <SelectControl
@@ -1314,6 +1318,17 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-container-settings'}
                                     >
                                         <div className="kt-spacer-sidebar-15"></div>
+										<PopColorControl
+											label={__( 'Background', 'kadence-blocks' )}
+											value={( containerBackground ? containerBackground : '' )}
+											default={''}
+											onChange={value => {
+												setAttributes( { containerBackground: value } );
+											}}
+											opacityValue={containerBackgroundOpacity}
+											onOpacityChange={value => setAttributes( { containerBackgroundOpacity: value } )}
+											onArrayChange={( color, opacity ) => setAttributes( { containerBackground: color, containerBackgroundOpacity: opacity } )}
+										/>
 										<ResponsiveBorderControl
 											label={__( 'Border', 'kadence-blocks' )}
 											value={borderStyle}
@@ -2067,7 +2082,13 @@ function KadenceTestimonials({
                                                                 isSmall
                                                                 isPrimary={containerVAlign === key}
                                                                 aria-pressed={containerVAlign === key}
-                                                                onClick={() => setAttributes({containerVAlign: key})}
+                                                                onClick={() => {
+																	if( containerVAlign === key ) {
+																		setAttributes({containerVAlign: ''})
+																	} else {
+																		setAttributes({containerVAlign: key})
+																	}
+																} }
                                                             >
                                                                 {icon}
                                                             </Button>
@@ -2085,7 +2106,7 @@ function KadenceTestimonials({
                                         panelName={'kb-testimonials-wrapper-padding'}
                                     >
 										<ResponsiveMeasureRangeControl
-											label={__( 'Wrapper Padding', 'kadence-blocks' )}
+											label={__( 'Padding', 'kadence-blocks' )}
 											value={wrapperPadding}
 											onChange={( value ) => setAttributes( { wrapperPadding: value } )}
 											tabletValue={wrapperTabletPadding}
@@ -2100,7 +2121,7 @@ function KadenceTestimonials({
 											onUnit={( value ) => setAttributes( { wrapperPaddingType: value } )}
 										/>
 										<ResponsiveMeasureRangeControl
-											label={__( 'Media Margin', 'kadence-blocks' )}
+											label={__( 'Margin', 'kadence-blocks' )}
 											value={wrapperMargin}
 											onChange={( value ) => setAttributes( { wrapperMargin: value } )}
 											tabletValue={tabletWrapperMargin}
@@ -2158,11 +2179,8 @@ function KadenceTestimonials({
                             className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
                             hasTrack={ false }
                             >
-                            <SplideTrack { ...innerBlocksProps }>
-                            </SplideTrack>
+                            <SplideTrack { ...innerBlocksProps }></SplideTrack>
                         </Splide>
-
-
                     )}
                     {layout && layout === 'grid' && (
                         <div className={'kt-testimonial-grid-wrap'} style={{

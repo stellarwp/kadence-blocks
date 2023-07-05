@@ -43,7 +43,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_style = false;
+	protected $has_style = true;
 
 	/**
 	 * Instance Control
@@ -62,10 +62,11 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
+	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
-	public function build_css( $attributes, $css, $unique_id ) {
+	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kb-lottie-container' . $unique_id );
 
 		/*
@@ -90,6 +91,19 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		);
 		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
 
+		$width = ( !isset( $attributes['width'] ) || '0' === $attributes['width'] ) ? 'auto' : $attributes['width'] . 'px';
+
+		if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
+			$css->add_property( 'max-width', $width );
+			$css->add_property( 'margin', '0 auto' );
+			$css->set_selector( '.kb-lottie-container' . $unique_id . ' .kb-is-ratio-animation' );
+			$css->add_property( 'padding-bottom', isset( $attributes['ratio'] ) && is_numeric( $attributes['ratio'] ) ? $attributes['ratio'] . '%' : '100%' );
+		}
+
+		if ( ! isset( $attributes['useRatio'] ) || ! $attributes['useRatio'] ) {
+			$css->set_selector( '.kb-lottie-container' . $unique_id . ' dotlottie-player' );
+			$css->add_property( 'max-width', $width );
+		}
 		return $css->css_output();
 	}
 
@@ -192,9 +206,16 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 			if( $attributes['delay'] !== 0){
 				$playerProps['intermission'] = 1000 * $attributes['delay'];
 			}
-			$width = $attributes['width'] === '0' ? 'auto' : $attributes['width'] . 'px';
 
-			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . '">';
+			$align = '';
+			if( !empty( $attributes['align'] ) ) {
+				$align = 'align' . $attributes['align'];
+			}
+
+			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . ' '. $align .'">';
+				if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
+					$content .= '<div class="kb-is-ratio-animation">';
+				}
 				$content .= '<dotlottie-player ';
 
 					foreach( $playerProps as $key => $value ){
@@ -203,8 +224,10 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
 							id="kb-lottie-player' . $unique_id .'"
-							style="width: ' . $width . '; margin: 0 auto;"
 						></dotlottie-player>';
+				if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
+					$content .= '</div>';
+				}
 			$content .= '</div>';
 		}
 

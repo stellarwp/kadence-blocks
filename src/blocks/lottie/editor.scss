@@ -6,4 +6,22 @@
  */
 .kb-lottie-container {
 	min-height: 20px;
+
+	.kb-is-ratio-animation {
+		height: 0;
+		position: relative;
+
+		dotlottie-player {
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			top: 0;
+			left: 0;
+
+		}
+	}
+
+	dotlottie-player {
+		margin: 0 auto
+	}
 }

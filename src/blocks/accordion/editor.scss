@@ -128,6 +128,16 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
 			background-color: currentColor;
 		}
 	}
+	.kt-btn-svg-icon svg {
+		width: 1em;
+		height: 1em;
+	}
+	.kt-btn-side-left {
+		padding-right: .25em;
+	}
+	.kt-btn-side-right {
+		padding-left: .25em;
+	}
 }
 .kt-accordion-panel-active {
 	.kt-blocks-accordion-header {
