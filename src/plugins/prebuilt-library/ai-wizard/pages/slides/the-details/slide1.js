@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { SlideCard } from '../slide-card';
 import { SlideCardToneRow } from '../slide-card-tone-row';
 
-export function HealingTouch() {
+export function SlideOne() {
   return (
     <SlideCard>
       <VStack spacing="6">

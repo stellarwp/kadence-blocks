@@ -20,8 +20,9 @@ import {
 	ToneSelectControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
+import { useSelectPlacement } from '../hooks/use-select-placement';
 import { CONTENT_TONE } from '../constants';
-import { HealingTouch } from './slides/the-details';
+import { SlideOne, SlideTwo, SlideThree, SlideFour } from './slides/the-details';
 import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
@@ -52,17 +53,12 @@ const styles = {
 export function TheDetails() {
 	const { state, dispatch } = useKadenceAi();
 	const maxTags = 10;
-	const {
-		keywords,
-		tone
-	} = state;
-
+	const { keywords, tone } = state;
 	const [ keywordsLengthError, setKeywordsLengthError ] = useState( null );
 	const [ currentTone, setCurrentTone ] = useState( null );
-	const [ menuHeight, setMenuHeight ] = useState( 300 );
-	const [ menuPlacement, setMenuPlacement ] = useState( 'auto' );
 	const [ pageRef, setPageRef ] = useState( null );
 	const [ controlRef, setControlRef ] = useState( null );
+	const { menuHeight, menuPlacement } = useSelectPlacement( pageRef, controlRef );
 
 	useEffect(() => {
 		if ( keywords.length > 0 && keywords.length < 5 ) {
@@ -78,26 +74,6 @@ export function TheDetails() {
 			setCurrentTone(toneObject[0]);
 		}
 	}, [ tone ])
-
-	useEffect(() => {
-		function handleResize() {
-			if ( pageRef && controlRef ) {
-				const pageRectangle = pageRef.getBoundingClientRect();
-				const controlRectangle = controlRef.getBoundingClientRect();
-				const proposedHeight = pageRectangle.bottom - (controlRectangle.bottom + 30);
-
-				// Determine how react-select menu list should display.
-				setMenuPlacement( proposedHeight < 150 ? 'top' : 'auto' );
-				setMenuHeight( proposedHeight < 150 ? 300 : proposedHeight );
-			}
-		}
-
-		handleResize();
-
-		window.addEventListener('resize', handleResize);
-
-		return () => window.removeEventListener('resize', handleResize);
-	}, [ pageRef, controlRef ])
 
 	function getKeywordsLengthStyle() {
 		if ( keywordsLengthError && styles.keywordsLength.hasOwnProperty( keywordsLengthError ) ) {
@@ -144,15 +120,14 @@ export function TheDetails() {
 						    headline={ __( 'Choose your tone', 'kadence-blocks' ) }
 						    content={ __( 'The tone allows the AI to reflect your personality in its communication style. Select a tone that closely aligns with your own.', 'kadence-blocks' ) }
 						  >
-						  	<div ref={ setControlRef }>
-						  		<ToneSelectControl
-						  			maxMenuHeight={ menuHeight }
-						  			menuPlacement={ menuPlacement }
-						  			options={ CONTENT_TONE }
-								  	value={ currentTone }
-						  			onChange={ (tone) => dispatch({ type: 'SET_TONE', payload: tone.value }) }
-						  		/>
-						  	</div>
+						  	<ToneSelectControl
+						  		ref={ setControlRef }
+						  		maxMenuHeight={ menuHeight }
+						  		menuPlacement={ menuPlacement }
+						  		options={ CONTENT_TONE }
+								  value={ currentTone }
+						  		onChange={ (tone) => dispatch({ type: 'SET_TONE', payload: tone.value }) }
+						  	/>
 						  </FormSection>
 						</VStack>
 					</FlexBlock>
@@ -165,7 +140,10 @@ export function TheDetails() {
 							backgroundImage={ backgroundImage }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
 							slides={[
-								<HealingTouch />
+								<SlideOne />,
+								<SlideTwo />,
+								<SlideThree />,
+								<SlideFour />
 							]}
 						/>
 					</FlexBlock>

@@ -3,7 +3,6 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import {
-	Button,
 	Flex,
 	FlexBlock,
 	Icon,
@@ -15,7 +14,6 @@ import { search } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { SafeParseJSON } from '@kadence/helpers';
 import {
 	FormSection,
 	CreatableControl,
@@ -25,7 +23,7 @@ import {
 	LocationSelectControl
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import { verticalsHelper } from '../utils/verticals-helper';
+import { useSelectPlacement } from '../hooks/use-select-placement';
 import {
 	ENTITY_TYPE,
 	ENTITY_TO_NAME,
@@ -34,7 +32,7 @@ import {
 	LOCATION_SERVICE_AREA,
 	LOCATION_ONLINE_ONLY
 } from '../constants';
-// import INDUSTRIES from '../constants/industries';
+import INDUSTRIES from '../constants/industries-v1';
 import {
 	Education4All,
 	HealingTouch,
@@ -72,28 +70,39 @@ const headline = __( 'Your Information', 'kadence-blocks' );
 const content = __( 'Please provide detailed information about yourself, your company, or your organization to enhance the quality of our results.', 'kadence-blocks' );	
 
 export function IndustryInformation() {
-	const [ verticals, setVerticals ] = useState([]);
 	const [ industries, setIndustries ] = useState([{
 		value: '',
 		label: '...',
 		disabled: true
 	}]);
-	const [ verticalsError, setVerticalsError ] = useState( false );
-	const [ industriesSpecific, setIndustriesSpecific ] = useState([]);
-	const { loading, getVerticals } = verticalsHelper();
+	const [ pageRef, setPageRef ] = useState( null );
+	const [ controlRef, setControlRef ] = useState( null );
+	const [ currentIndustry, setCurrentIndustry ] = useState( null );
+	const { menuHeight, menuPlacement } = useSelectPlacement(pageRef, controlRef);
 	const { state, dispatch } = useKadenceAi();
 	const {
 		companyName,
 		entityType,
 		locationInput,
 		locationType,
-		industry,
-		industrySpecific,
+		industry
 	} = state;
 
 	useEffect(() => {
-		setVerticalsData();
+		setIndustries( INDUSTRIES.map((industry) => ({
+			label: industry,
+			value: industry
+		})) );
 	}, []);
+
+	useEffect(() => {
+		if (industry) {
+			setCurrentIndustry({
+				label: industry,
+				value: industry
+			});
+		}
+	}, [ industry ])
 	
 	useEffect(() => {
 		switch (locationType) {
@@ -105,77 +114,6 @@ export function IndustryInformation() {
 				return;
 		}
 	}, [ locationInput, locationType ])
-
-	useEffect(() => {
-		if (! verticalsError) {
-			return;
-		}
-
-		if (industry) {
-			setIndustries([{
-				label: industry,
-				value: industry,
-				disabled: true
-			}]);
-		}
-
-		if (industrySpecific) {
-			setIndustriesSpecific([{
-				label: industrySpecific,
-				value: industrySpecific,
-				disabled: true
-			}]);
-		}
-	}, [ verticalsError ])
-
-	useEffect(() => {
-		const industriesSpecificOptions = (verticals && industry && verticals?.[industry]) ? verticals[industry].map((subIndustry) => ({
-			label: subIndustry,
-			value: subIndustry
-		})) : [];
-
-		setIndustriesSpecific(
-			formatSelectControlOptions(industriesSpecificOptions, __('Subindustry...', 'kadence-blocks'))
-		);
-	}, [ verticals, industry ])
-
-	async function setVerticalsData() {
-		let verticalsData = SafeParseJSON(await getVerticals(), false);
-
-		// If data is not what we're expecting, set error.
-		if (! verticalsData) {
-			setVerticalsError(true);
-			return;
-		}
-
-		const industriesOptions = verticalsData ? Object.keys(verticalsData).map((industry) => ({
-			label: industry,
-			value: industry
-		})) : []
-
-		setVerticalsError(false);
-		setIndustries(formatSelectControlOptions(industriesOptions));
-		setVerticals(verticalsData);
-	}
-
-	function formatSelectControlOptions(data, placeholderLabel = __('Industry...', 'kadence-blocks')) {
-		if (! data || ! Array.isArray(data)) {
-			return [];
-		}
-
-		return [
-			{
-				value: '',
-				label: placeholderLabel,
-				disabled: true
-			},
-			...data,
-			{
-				label: __('Other', 'kadence-blocks'),
-				value: 'Other'
-			}
-		]
-	}
 
 	function handleIndustryChange(industry) {
 		dispatch({ type: 'SET_INDUSTRY', payload: industry.value });
@@ -192,15 +130,6 @@ export function IndustryInformation() {
 		}
 
 		dispatch({ type: 'SET_LOCATION_TYPE', payload: value });
-	}
-
-	function getErrorMessage() {
-		return (
-			<span style={ styles.inputError }>
-				{ __('We couldn\'t load other options, please ', 'kadence-blocks') }
-				<Button style={ styles.inputError } variant="link" onClick={ setVerticalsData }>{ __('refresh', 'kadence-blocks') }</Button>
-			</span>
-		)
 	}
 
 	function getLocationPlaceholderText() {
@@ -224,7 +153,7 @@ export function IndustryInformation() {
 	}
 
 	return (
-		<Flex gap={ 0 } align="normal" style={ styles.container }>
+		<Flex gap={ 0 } align="normal" style={ styles.container } ref={ setPageRef }>
 			<FlexBlock style={{ alignSelf: 'center' }}>
 				<Flex
 					justify="center"
@@ -265,7 +194,11 @@ export function IndustryInformation() {
 									/>
 						 		) : null }
 								<CreatableControl
+									ref={ setControlRef }
+									menuPlacement={ menuPlacement }
+									maxMenuHeight={ menuHeight }
 									label={ __('What Industry are you in?', 'kadence-blocks') }
+									value={ currentIndustry }
 									options={ industries }
 									prefix={ <Icon icon={ search } /> }
 									onChange={ handleIndustryChange }

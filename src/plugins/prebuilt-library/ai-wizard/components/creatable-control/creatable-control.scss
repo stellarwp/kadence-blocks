@@ -25,6 +25,7 @@
   flex-direction: column;
   gap: calc(8px);
 
+  .stellarwp-creatable__single-value + div,
   .stellarwp-creatable__placeholder + div {
     margin: 0 2px;
     padding-top: 1px;
