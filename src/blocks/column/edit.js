@@ -94,7 +94,7 @@ function SectionEdit( props ) {
 		context,
 		className,
 	} = props;
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode, rowGapUnit, rowGap, flexBasis, flexBasisUnit } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
@@ -428,10 +428,12 @@ function SectionEdit( props ) {
 
 	const previewAlign = getPreviewSize( previewDevice, ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) , ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) );
 	const previewGutter = getPreviewSize( previewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
+	const previewRowGap = getPreviewSize( previewDevice, ( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : '' ) , ( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' ) );
 	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : '' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
 	const previewJustify = getPreviewSize( previewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
 	const previewWrap = getPreviewSize( previewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 	const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
+	const previewFlexBasis = getPreviewSize( previewDevice, ( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( height && '' !== height[ 0 ] ? height[ 0 ] : '' ) , ( height && '' !== height[ 1 ] ? height[ 1 ] : '' ), ( height && '' !== height[ 2 ] ? height[ 2 ] : '' ) );
@@ -533,6 +535,8 @@ function SectionEdit( props ) {
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > div { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewRowGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { display: flex; flex-direction: column; row-gap: ${ previewRowGap + ( rowGapUnit ? rowGapUnit : 'px' )}; }` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-list-appender { display:none; }` : '' ) }
@@ -609,8 +613,8 @@ function SectionEdit( props ) {
 							<>
 								{showSettings( 'textAlign', 'kadence/column' ) && (
 									<KadencePanelBody
-										title={__( 'Flex Align Settings', 'kadence-blocks' )}
-										panelName={'kb-col-align-settings'}
+										title={__( 'Flex Settings', 'kadence-blocks' )}
+										panelName={'kb-col-flex-settings'}
 									>
 										<SmallResponsiveControl
 											label={__( 'Inner Block Direction', 'kadence-blocks' )}
@@ -642,10 +646,10 @@ function SectionEdit( props ) {
 												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } )}
 											/>}
 										/>
-										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
-											<>
+										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' ? (
+											<Fragment>
 												<ResponsiveRangeControls
-													label={__( 'Gutter', 'kadence-blocks' )}
+													label={__( 'Gap', 'kadence-blocks' )}
 													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
 													onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
 													tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
@@ -740,8 +744,56 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } )}
 													/>}
 												/>
-											</>
+
+												{ wrapContent !== 'nowrap' && wrapContent !== '' && (
+													<ResponsiveRangeControls
+														label={__( 'Flex Basis', 'kadence-blocks' )}
+														value={( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 )}
+														onChange={value => setAttributes( { flexBasis: [ value, ( flexBasis && flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
+														tabletValue={( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' )}
+														onChangeTablet={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), value, ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
+														mobileValue={( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' )}
+														onChangeMobile={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ), value ] } )}
+														min={0}
+														max={( flexBasisUnit === '%' ? 100 : 1000 )}
+														step={1}
+														unit={flexBasisUnit}
+														onUnit={( value ) => setAttributes( { flexBasisUnit: value } )}
+														units={[ '%', 'px' ]}
+													/>
+												)}
+											</Fragment>
+										) : (
+											<Fragment>
+												<ResponsiveRangeControls
+													label={__( 'Row Gap', 'kadence-blocks' )}
+													value={( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : 0 )}
+													onChange={value => setAttributes( { rowGap: [ value, ( rowGap && rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
+													tabletValue={( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' )}
+													onChangeTablet={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), value, ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
+													mobileValue={( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' )}
+													onChangeMobile={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ), value ] } )}
+													min={0}
+													max={ ( rowGapUnit !== 'px' ? 12 : 200 ) }
+													step={( rowGapUnit !== 'px' ? 0.1 : 1 )}
+													unit={rowGapUnit}
+													onUnit={( value ) => setAttributes( { rowGapUnit: value } )}
+													units={[ 'px', 'em', 'rem' ]}
+												/>
+
+											</Fragment>
 										)}
+										<SelectControl
+											label={__( 'Vertical Alignment', 'kadence-blocks' )}
+											value={( verticalAlignment ? verticalAlignment : '' )}
+											options={[
+												{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+												{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
+												{ value: 'middle', label: __( 'Middle', 'kadence-blocks' ) },
+												{ value: 'bottom', label: __( 'Bottom', 'kadence-blocks' ) },
+											]}
+											onChange={ ( value ) => setAttributes( { verticalAlignment: value } )}
+										/>
 										<ResponsiveAlignControls
 											label={__( 'Text Alignment', 'kadence-blocks' )}
 											value={( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' )}

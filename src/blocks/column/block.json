@@ -243,6 +243,22 @@
 			"type": "string",
 			"default": "px"
 		},
+		"rowGap": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"rowGapUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"flexBasis": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"flexBasisUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"verticalAlignment": {
 			"type": "string"
 		},
