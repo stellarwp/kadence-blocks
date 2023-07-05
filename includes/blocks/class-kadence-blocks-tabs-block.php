@@ -118,7 +118,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'background', $css->sanitize_color( $attributes['contentBgColor'] ) );
 		}
 		$widthType = isset( $attributes['widthType'] ) ? $attributes['widthType'] : 'normal';
-		if ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) {
+		if ( ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) || ( ! empty( $attributes['tabletTitleMargin'] ) && is_array( $attributes['tabletTitleMargin'] ) ) || ( ! empty( $attributes['mobileTitleMargin'] ) && is_array( $attributes['mobileTitleMargin'] ) ) ) {
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li' );
 			$css->render_measure_output( $attributes, 'titleMargin', 'margin' );
 
