@@ -137,6 +137,8 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 				<TypographyControls
 					reLetterSpacing={messageFont[0].letterSpacing}
 					onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value } )}
+					letterSpacingType={messageFont[0].letterType}
+					onLetterSpacingType={( value ) => saveMessageFont( { letterType: value } )}
 					fontFamily={messageFont[0].family}
 					onFontFamily={( value ) => saveMessageFont( { family: value } )}
 					onFontChange={( select ) => {

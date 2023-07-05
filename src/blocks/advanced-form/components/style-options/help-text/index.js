@@ -43,8 +43,10 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 				panelName={'kb-form-advanced-label-settings'}
 			>
 				<TypographyControls
-					letterSpacing={helpFont.letterSpacing}
-					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value.toString() } )}
+					reLetterSpacing={helpFont.letterSpacing}
+					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value } )}
+					letterSpacingType={helpFont.letterType}
+					onLetterSpacingType={( value ) => saveHelpFont( { letterType: value } )}
 					textTransform={helpFont.textTransform}
 					onTextTransform={( value ) => saveHelpFont( { textTransform: value } )}
 					fontFamily={helpFont.family}

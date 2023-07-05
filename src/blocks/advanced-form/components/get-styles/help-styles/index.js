@@ -12,8 +12,16 @@ export default ( previewDevice, parentHelpStyle ) => {
 	}
 
 	styles.fontSize = getFontSizeOptionOutput( getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ), get( parentHelpStyle, 'sizeType', 'px') );
-	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
-	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
+
+	let lineHeight = getPreviewSize( previewDevice, parentHelpStyle?.lineHeight?.[0], parentHelpStyle?.lineHeight?.[1], parentHelpStyle?.lineHeight?.[2] );
+	if( lineHeight ){
+		styles.lineHeight = lineHeight + get( parentHelpStyle, 'lineType', '');
+	}
+	let letterSpacing = getPreviewSize( previewDevice, parentHelpStyle?.letterSpacing?.[0], parentHelpStyle?.letterSpacing?.[1], parentHelpStyle?.letterSpacing?.[2] );
+	if( letterSpacing ){
+		styles.letterSpacing = letterSpacing + get( parentHelpStyle, 'letterType', 'px');
+	}
+
 	styles.fontWeight = parentHelpStyle.weight ? parentHelpStyle.weight : undefined;
 	styles.textTransform = parentHelpStyle.textTransform ? parentHelpStyle.textTransform : undefined;
 	styles.fontFamily = parentHelpStyle.family ? parentHelpStyle.family : undefined;

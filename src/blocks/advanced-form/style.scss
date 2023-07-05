@@ -4,6 +4,112 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ // Basic Styles.
+ .wp-block-kadence-advanced-form {
+	font-size: var( --kb-form-font-size, 1rem );
+	line-height: var( --kb-form-line-height, 1.6 );
+	textarea {
+		width: 100%;
+	}
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	textarea {
+		-webkit-appearance: none;
+		color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
+		border: 1px solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		font-size: var( --kb-form-font-size, 1rem );
+		line-height: var( --kb-form-line-height, 1.6 );
+		border-radius: var( --kb-form-border-radius, 3px );
+		padding: var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
+		max-width: 100%;
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+	}
+	input[type="text"]:focus,
+	input[type="email"]:focus,
+	input[type="url"]:focus,
+	input[type="password"]:focus,
+	input[type="search"]:focus,
+	input[type="number"]:focus,
+	input[type="tel"]:focus,
+	input[type="range"]:focus,
+	input[type="date"]:focus,
+	input[type="month"]:focus,
+	input[type="week"]:focus,
+	input[type="time"]:focus,
+	input[type="datetime"]:focus,
+	input[type="datetime-local"]:focus,
+	input[type="color"]:focus,
+	textarea:focus {
+		color: var(--kb-form-text-focus-color, var(--global-palette, #241e1a) );
+		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
+		outline: 0;
+		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+		background:var(--kb-form-background-focus-color, var(--global-palette9, #fff ) );
+	}
+	select {
+		border: 1px solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		background-size: 16px 100%;
+		padding: var( --kb-form-v-padding, 0.4em ) 35px var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
+		font-size: var( --kb-form-font-size, 1rem );
+		line-height: var( --kb-form-line-height, 1.6 );
+		border-radius: var( --kb-form-border-radius, 3px );
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) ) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat calc(100% - 6px) 50%;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		box-shadow: none;
+		outline: 0;
+		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+	}
+	select::-ms-expand {
+		display: none;
+	}
+	select:focus {
+		color: var(--kb-form-text-focus-color, var(--global-palette, #241e1a) );
+		border-color:var(--global-palette6, #6e6e70);
+		background-color:var(--kb-form-background-focus-color, var(--global-palette9, #fff ) );
+		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+		outline: 0;
+		// Fix for firefox if the color palette is dark.
+		option {
+			color: #333;
+		}
+	}
+	button {
+		line-height: var( --kb-form-line-height, 1.6 );;
+	}
+	::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	::-moz-placeholder { /* Firefox 19+ */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+		opacity: 1;
+	}
+	:-ms-input-placeholder { /* IE 10+ */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	:-moz-placeholder { /* Firefox 18- */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	::placeholder {
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+ }
+ // Forced Basic Styles.
 .wp-block-kadence-advanced-form {
 	.kb-advanced-form {
 		display: flex;
@@ -77,20 +183,6 @@
 				display: inline;
 			}
 		}
-
-		.dashicons.dashicons-trash {
-			margin-left: 0px;
-		}
-
-		input[type=text] {
-			width: 75%;
-		}
-
-		&__add-option {
-			margin-top: 15px;
-		}
-
-
 	}
 	.kb-adv-form-loading {
 		position: absolute;
@@ -196,12 +288,10 @@
 // Styles of infield label.
 .wp-block-kadence-advanced-form.kb-adv-form-label-style-infield {
 	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], textarea, select {
-		padding-top: calc(16px + 0.4rem);
+		padding-top: calc(1em + 0.4rem);
 	}
 	label.kb-adv-form-label {
 		position: absolute;
-		line-height: 16px;
-		font-size: 14px;
 		line-height: 1;
 		font-size: 75%;
 		left: 0;
@@ -232,6 +322,7 @@
 		padding: 0.4em 0;
 		line-height: 1;
 		transition: all 0.2s;
+		margin-top: -0.3em;
 	}
 }
 .kb-adv-form-label-style-float .kb-adv-form-text-type-input {
@@ -251,4 +342,10 @@
 			opacity: 0;
 		}
 	}
+}
+.kb-adv-form-input-size-large {
+	--kb-form-font-size: 1.35rem;
+}
+.kb-adv-form-input-size-small {
+	--kb-form-font-size: 0.9rem;
 }

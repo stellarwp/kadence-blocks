@@ -22,6 +22,31 @@
 	padding-left:12px;
 	border-left: 4px solid #cc1818;
 }
+.block-editor-block-inspector {
+	.kb-adv-field-options-wrap {
+		display: flex;
+		flex-direction: column;
+		gap:8px;
+		margin-bottom: 8px;
+	}
+	.kb-adv-field-option {
+		position: relative;
+		border: 1px solid var(--kb-border-color, #859CB6 );
+		padding: 0.5em;
+		.components-base-control {
+			margin-bottom: 8px;
+		}
+		.kadence-blocks-list-item__control-menu {
+			border-top: 1px solid var(--kb-border-color, #859CB6 );
+			margin-bottom: -.5em;
+			margin-left: -.5em;
+			margin-right: -.5em;
+			.components-button.has-icon {
+				padding: 4px;
+			}
+		}
+	}
+}
 .wp-block-kadence-advanced-form {
 	margin-top: 0;
 	margin-bottom: 0;
@@ -165,7 +190,10 @@
 
 		margin-bottom: 10px;
 		display: block !important;
-
+		.inline-option-add-item {
+			display: flex;
+			align-items: center;
+		}
 		.components-base-control {
 			display: inline;
 		}
@@ -183,7 +211,9 @@
 		}
 
 		input[type=text] {
-			width: 75%;
+			width: 100%;
+			border-radius: 3px;
+			padding: 0.2em 0.3em;
 		}
 
 		&__add-option {
@@ -311,5 +341,53 @@
 		padding-top: 5px;
 		padding-bottom: 5px;
 		padding-left: 3px;
+	}
+}
+// Styles of infield label.
+.kb-form-label-style-infield {
+	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], textarea, select {
+		padding-top: calc(16px + 0.4rem);
+	}
+	.kb-adv-form-label {
+		position: absolute;
+		line-height: 1;
+		font-size: 75%;
+		left: 0;
+		top: 0;
+		padding: 0.4em 0.5em 0;
+	}
+	.kb-adv-form-field {
+		position: relative;
+	}
+}
+// Styles of float label.
+.kb-form-label-style-float .kb-adv-form-field {
+	.kb-adv-form-label {
+		cursor: pointer;
+		opacity: 1;
+		transform: translate(0, 0) scale(0.75);
+		transform-origin: left bottom;
+		padding: 0.4em 0;
+		line-height: 1;
+		transition: all 0.2s;
+		margin-top: -0.3em;
+	}
+}
+.kb-form-label-style-float .kb-adv-form-text-type-input {
+	&:not( .kb-form-field-focus ) {
+		.kb-adv-form-label {
+			cursor: text;
+			transform: translate(0.5em, 115%) scale(1);
+		}
+	}
+
+	input, textarea {
+		&::placeholder {
+			opacity: 1;
+			transition: all .2s;
+		}
+		&:placeholder-shown:not(:focus)::placeholder {
+			opacity: 0;
+		}
 	}
 }

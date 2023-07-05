@@ -1,4 +1,4 @@
-import { getPreviewSize, KadenceColorOutput, getBorderStyle, getFontSizeOptionOutput, getBorderColor } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, getBorderStyle, getFontSizeOptionOutput, getBorderColor, getGapSizeOptionOutput } from '@kadence/helpers';
 import { get } from 'lodash';
 
 /**
@@ -19,34 +19,29 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 
 	let lineHeight = getPreviewSize( previewDevice, inputFont?.lineHeight?.[0], inputFont?.lineHeight?.[1], inputFont?.lineHeight?.[2] );
 	if( lineHeight ){
-		styles.lineHeight = lineHeight + get( inputFont, 'lineType', 'px');
+		styles.lineHeight = lineHeight + get( inputFont, 'lineType', '');
+	}
+	let letterSpacing = getPreviewSize( previewDevice, inputFont?.letterSpacing?.[0], inputFont?.letterSpacing?.[1], inputFont?.letterSpacing?.[2] );
+	if( letterSpacing ){
+		styles.letterSpacing = letterSpacing + get( inputFont, 'letterType', 'px');
 	}
 
 	let fontSize = getPreviewSize( previewDevice, inputFont.size[0], inputFont.size[1], inputFont.size[2] );
 	styles.fontSize = getFontSizeOptionOutput( fontSize, inputFont.sizeType );
 	styles.fieldFont = inputFont;
 
-	styles.previewRowGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.rowGap && '' !== fieldStyle?.rowGap ? fieldStyle?.rowGap + 'px' : '' ), ( undefined !== fieldStyle?.tabletRowGap && '' !== fieldStyle?.tabletRowGap ? fieldStyle?.tabletRowGap + 'px' : '' ), ( undefined !== fieldStyle?.mobileRowGap && '' !== fieldStyle?.mobileRowGap ? fieldStyle?.mobileRowGap + 'px' : '' ) );
-	styles.previewGutter = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.gutter && '' !== fieldStyle?.gutter ? fieldStyle?.gutter : '' ), ( undefined !== fieldStyle?.tabletGutter && '' !== fieldStyle?.tabletGutter ? fieldStyle?.tabletGutter : '' ), ( undefined !== fieldStyle?.mobileGutter && '' !== fieldStyle?.mobileGutter ? fieldStyle?.mobileGutter : '' ) );
+	let previewGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.gap?.[0] && '' !== fieldStyle?.gap?.[0] ? fieldStyle?.gap[0] : '' ), ( undefined !== fieldStyle?.gap?.[1] && '' !== fieldStyle?.gap?.[1] ? fieldStyle?.gap[1] : '' ), ( undefined !== fieldStyle?.gap?.[2] && '' !== fieldStyle?.gap?.[2] ? fieldStyle?.gap[2] : '' ) );
+	styles.previewRowGap = getGapSizeOptionOutput( previewGap, ( fieldStyle?.gapUnit ? fieldStyle.gapUnit : 'px' ) );
 
-	styles.paddingTop = ( 'custom' === fieldStyle?.size && '' !== fieldStyle?.deskPadding[ 0 ] ? fieldStyle?.deskPadding[ 0 ] + 'px' : undefined );
-	styles.paddingRight = ( 'custom' === fieldStyle?.size && '' !== fieldStyle?.deskPadding[ 1 ] ? fieldStyle?.deskPadding[ 1 ] + 'px' : undefined );
-	styles.paddingBottom = ( 'custom' === fieldStyle?.size && '' !== fieldStyle?.deskPadding[ 2 ] ? fieldStyle?.deskPadding[ 2 ] + 'px' : undefined );
-	styles.paddingLeft = ( 'custom' === fieldStyle?.size && '' !== fieldStyle?.deskPadding[ 3 ] ? fieldStyle?.deskPadding[ 3 ] + 'px' : undefined );
-
-	if ( fieldStyle?.size === 'standard' || fieldStyle?.size === 'small' || fieldStyle?.size === 'large' ) {
-		let size = 10;
-		if ( fieldStyle?.size === 'small' ) {
-			size = 5;
-		} else if ( fieldStyle?.size === 'large' ) {
-			size = 15;
-		}
-
-		styles.paddingTop = size + 'px';
-		styles.paddingRight = size + 'px';
-		styles.paddingBottom = size + 'px';
-		styles.paddingLeft = size + 'px';
-	}
+	let paddingTop = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 0 ], fieldStyle?.tabletPadding?.[ 0 ], fieldStyle?.mobilePadding?.[ 0 ] );
+	let paddingRight = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 1 ], fieldStyle?.tabletPadding?.[ 1 ], fieldStyle?.mobilePadding?.[ 1 ] );
+	let paddingBottom = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 2 ], fieldStyle?.tabletPadding?.[ 2 ], fieldStyle?.mobilePadding?.[ 2 ] );
+	let paddingLeft = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 3 ], fieldStyle?.tabletPadding?.[ 3 ], fieldStyle?.mobilePadding?.[ 3 ] );
+	let paddingUnit = fieldStyle?.paddingUnit ? fieldStyle?.paddingUnit : 'px';
+	styles.paddingTop = ( '' !== paddingTop ? paddingTop + paddingUnit : undefined );
+	styles.paddingRight = ( '' !== paddingRight ? paddingRight + paddingUnit : undefined );
+	styles.paddingBottom = ( '' !== paddingBottom ? paddingBottom + paddingUnit : undefined );
+	styles.paddingLeft = ( '' !== paddingLeft ? paddingLeft + paddingUnit : undefined );
 
 	styles.color = ( undefined !== fieldStyle?.color ? KadenceColorOutput( fieldStyle?.color ) : undefined );
 	styles.placeholderColor = ( undefined !== fieldStyle?.placeholderColor ? KadenceColorOutput( fieldStyle?.placeholderColor ) : undefined );

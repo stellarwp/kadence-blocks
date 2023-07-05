@@ -172,6 +172,8 @@ export function EditInner( props ) {
 		[ `kb-advanced-form-${id}` ]: true,
 		[ `kb-form${uniqueID}` ]: uniqueID,
 		[ `kb-form-label-style-${style?.labelStyle}` ]: style?.labelStyle,
+		[ `kb-form-basic-style` ]: style?.basicStyle,
+		[ `kb-form-input-size-${style?.size}` ]: style?.size,
 	} );
 
 	const [ title, setTitle ] = useFormProp( 'title' );
@@ -561,7 +563,7 @@ export function EditInner( props ) {
 					<>
 
 						<KadencePanelBody
-							title={__( 'Fields', 'kadence-blocks' )}
+							title={__( 'Input Fields', 'kadence-blocks' )}
 							initialOpen={true}
 							panelName={'kb-form-field-styles'}
 						>
@@ -677,6 +679,12 @@ export function EditInner( props ) {
 									setMetaAttribute( value, 'maxWidthUnit' );
 								}}
 								units={[ 'px', '%', 'vw' ]}
+							/>
+							<ToggleControl
+								label={ __( 'Enable Basic Form Styles', 'kadence-blocks' ) }
+								help={ __( 'This will apply some basic styles to your form', 'kadence-blocks' ) }
+								checked={ undefined !== style?.basicStyles ? style.basicStyles : true }
+								onChange={( value ) => { setMetaAttribute( { ...style, ...{ basicStyles: value } }, 'style') }}
 							/>
 						</KadencePanelBody>
 					</>

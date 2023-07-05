@@ -18,7 +18,6 @@ export { default as DuplicateField } from './duplicate-field';
 export { default as FieldStyles } from './style-options/field';
 export { default as LabelOptions } from './style-options/label';
 export { default as HelpTextOptions } from './style-options/help-text';
-export { default as SubmitButtonStyles } from './style-options/submit-button';
 
 export { default as SubmitActionOptions } from './submit-actions/options';
 export { default as MailerLiteOptions } from './submit-actions/mailer-lite';
