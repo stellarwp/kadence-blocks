@@ -1,0 +1,307 @@
+{
+	"apiVersion": 2,
+	"name": "kadence/progress-bar",
+	"title": "Progress Bar",
+	"category": "kadence-blocks",
+	"description": "Kadence progress bar",
+	"textdomain": "kadence-blocks",
+	"keywords": [
+		"kb",
+		"progress bar"
+	],
+	"attributes": {
+		"align": {
+			"type": "string"
+		},
+		"hAlign": {
+			"type": "string",
+			"default": "space-between"
+		},
+		"thAlign": {
+			"type": "string",
+			"default": ""
+		},
+		"mhAlign": {
+			"type": "string",
+			"default": ""
+		},
+		"id": {
+			"type": "number"
+		},
+		"width": {
+			"type": "number",
+			"default": "0"
+		},
+		"uniqueID": {
+			"type": "string"
+		},
+		"margin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobileMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"marginType": {
+			"type": "string",
+			"default": "px"
+		},
+		"labelPadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletLabelPadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobileLabelPadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"labelPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"barBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"barBackgroundOpacity": {
+			"type": "number",
+			"default": 1
+		},
+		"progressWidth": {
+			"type": "number",
+			"default": "2"
+		},
+		"progressWidthTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"progressWidthMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"progressColor": {
+			"type": "string",
+			"default": ""
+		},
+		"progressOpacity": {
+			"type": "number",
+			"default": 1
+		},
+		"barType": {
+			"enum": [
+				"line",
+				"circle",
+				"semicircle"
+			],
+			"default": "line",
+			"type": "string"
+		},
+		"containerMaxWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"tabletContainerMaxWidth": {
+			"type": "number"
+		},
+		"mobileContainerMaxWidth": {
+			"type": "number"
+		},
+		"containerMaxWidthUnits": {
+			"type": "string",
+			"default": "px"
+		},
+		"labelLayout": {
+			"type": "string",
+			"default": "lp"
+		},
+		"displayLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"delayUntilInView": {
+			"type": "boolean",
+			"default": true
+		},
+		"labelFont": {
+			"type": "object",
+			"default": {
+				"color": "",
+				"level": 6,
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"lineHeight": [
+					"",
+					"",
+					""
+				],
+				"linetype": "px",
+				"letterSpacing": [
+					"",
+					"",
+					""
+				],
+				"textTransform": "",
+				"family": "",
+				"google": false,
+				"style": "",
+				"weight": "",
+				"variant": "",
+				"subset": "",
+				"loadGoogle": true,
+				"padding": [
+					0,
+					0,
+					0,
+					0
+				],
+				"margin": [
+					0,
+					0,
+					0,
+					0
+				]
+			}
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"labelPosition": {
+			"default": "above",
+			"type": "string"
+		},
+		"numberFont": {
+			"type": "object",
+			"default": {
+				"color": "",
+				"level": 6,
+				"size": [
+					"",
+					"",
+					""
+				],
+				"sizeType": "px",
+				"lineHeight": [
+					"",
+					"",
+					""
+				],
+				"linetype": "px",
+				"letterSpacing": [
+					"",
+					"",
+					""
+				],
+				"textTransform": "",
+				"family": "",
+				"google": false,
+				"style": "",
+				"weight": "",
+				"variant": "",
+				"subset": "",
+				"loadGoogle": true,
+				"padding": [
+					0,
+					0,
+					0,
+					0
+				],
+				"margin": [
+					0,
+					0,
+					0,
+					0
+				]
+			}
+		},
+		"progressAmount": {
+			"type": "integer",
+			"default": 90
+		},
+		"progressMax": {
+			"type": "integer",
+			"default": 100
+		},
+		"displayPercent": {
+			"type": "boolean",
+			"default": true
+		},
+		"numberPrefix": {
+			"type": "string",
+			"default": ""
+		},
+		"numberSuffix": {
+			"type": "string",
+			"default": "%"
+		},
+		"numberIsRelative": {
+			"type": "boolean",
+			"default": false
+		},
+		"duration": {
+			"type": "number",
+			"default": 2.0
+		},
+		"easing": {
+			"enum": [
+				"easeIn",
+				"easeOut",
+				"linear",
+				"easeInOut"
+			],
+			"default": "easeInOut",
+			"type": "string"
+		},
+		"progressBorderRadius": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				""
+			]
+		}
+	},
+	"editorScript": "file:editor.js"
+}

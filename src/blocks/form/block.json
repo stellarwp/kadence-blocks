@@ -601,7 +601,8 @@
 	"ktanimate": true,
 	"ktanimateadd": true,
 	"ktanimatepreview": true,
-	"ktanimateswipe": true
+	"ktanimateswipe": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId"

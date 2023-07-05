@@ -304,7 +304,7 @@ function PageList( {
 
 		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
 		newStyles = [
-			{ css: `.single-iframe-content{${normalizeStyles} ${globalColors}}.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
+			{ css: `.single-iframe-content{${normalizeStyles} ${globalColors}}.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px }.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
 		];
 		return newStyles;
 	}, [ selectedStyle ] );

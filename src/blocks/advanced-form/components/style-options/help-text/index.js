@@ -38,7 +38,7 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 				onLineHeightType={( value ) => saveHelpFont( { lineType: value } )}
 			/>
 			<KadencePanelBody
-				title={__( 'Advanced Label Settings', 'kadence-blocks' )}
+				title={__( 'Advanced Help Text Settings', 'kadence-blocks' )}
 				initialOpen={false}
 				panelName={'kb-form-advanced-label-settings'}
 			>

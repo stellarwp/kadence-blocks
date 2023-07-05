@@ -12,7 +12,6 @@ import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
 } from '@wordpress/components';
@@ -22,7 +21,7 @@ const {
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
-	position: 'bottom right',
+	placement: 'bottom-end',
 };
 /**
  * Build the copy and paste controls

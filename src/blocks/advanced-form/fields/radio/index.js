@@ -25,7 +25,6 @@ registerBlockType('kadence/advanced-form-radio', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: radioInputIcon,
 	},

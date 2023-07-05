@@ -38,12 +38,12 @@ const HELP_URL = 'https://mailchimp.com/help/about-api-keys/';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function MailChimpControls( { settings, save, parentClientId } ) {
+function MailChimpControls( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ list, setList ] = useState( false );
+	const [ lists, setLists ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ listsLoaded, setListsLoaded ] = useState( false );
 	const [ isFetchingAttributes, setIsFetchingAttributes ] = useState( false );
@@ -69,35 +69,25 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 		});
 	}, [] );
 
-	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);
+	const fields = useMemo(() => getFormFields( formInnerBlocks ), [ parentClientId ]);
 
-	const saveMap = ( value, index  ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
-	}
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
+	};
 
 	const getMailChimpAudience = () => {
 
 		if ( !api ) {
-			setList( [] );
+			setLists( [] );
 			setListsLoaded( true );
 			return;
 		}
 
 		const sub = api.split( '-' )[ 1 ];
 		if ( !sub ) {
-			setList( [] );
+			setLists( [] );
 			setListsLoaded( true );
 			return;
 		}
@@ -109,18 +99,18 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 				{ apikey: api, endpoint: 'lists/', queryargs: [ 'count=300', 'offset=0' ] },
 			),
 		} )
-			.then( ( list ) => {
+			.then( ( lists ) => {
 				const theLists = [];
-				list.lists.map( ( item ) => {
+				lists.lists.map( ( item ) => {
 					theLists.push( { value: item.id, label: item.name } );
 				} );
 
-				setList( theLists );
+				setLists( theLists );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( ( err ) => {
-				setList( [] );
+				setLists( [] );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} );
@@ -263,10 +253,10 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 		} );
 	};
 
-	const hasList = Array.isArray( list ) && list.length;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length;
-	const hasGroups = Array.isArray( listGroups ) && listGroups.length;
-	const hasTags = Array.isArray( listTags ) && listTags.length;
+	const hasLists = Array.isArray( lists ) && lists.length > 0;
+	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
+	const hasGroups = Array.isArray( listGroups ) && listGroups.length > 0;
+	const hasTags = Array.isArray( listTags ) && listTags.length > 0;
 	return (
 		<KadencePanelBody
 			title={__( 'MailChimp Settings', 'kadence-blocks-pro' )}
@@ -308,27 +298,27 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasList && (
+					{!isFetching && !hasLists && (
 						<Fragment>
 							<h2 className="kt-heading-size-title">{__( 'Select Audience', 'kadence-blocks-pro' )}</h2>
 							{( !listsLoaded ? getMailChimpAudience() : '' )}
-							{!Array.isArray( list ) ?
+							{!Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No Audience found.', 'kadence-blocks-pro' )}
 						</Fragment>
 
 					)}
-					{!isFetching && hasList && (
+					{!isFetching && hasLists && (
 						<Fragment>
 							<h2 className="kt-heading-size-title">{__( 'Select Audience', 'kadence-blocks-pro' )}</h2>
 							<Select
 								value={( undefined !== settings && undefined !== settings && undefined !== settings.list ? settings.list : '' )}
 								onChange={( value ) => {
-									save( { list: ( value ? value : [] ) } );
+									save( { list: ( value ? value : {} ) } );
 								}}
 								id={'mc-list-selection'}
 								isClearable={true}
-								options={list}
+								options={lists}
 								isMulti={false}
 								maxMenuHeight={200}
 								placeholder={__( 'Select Audience' )}
@@ -425,9 +415,9 @@ function MailChimpControls( { settings, save, parentClientId } ) {
 															<SelectControl
 																label={__( 'Select Field:' )}
 																options={listAttr}
-																value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 																onChange={( value ) => {
-																	saveMap( value, index );
+																	saveMap( value, item.uniqueID );
 																}}
 															/>
 														</div>

@@ -23,6 +23,7 @@ import {
 	getFontSizeOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -85,18 +86,24 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
-
+function KadenceIconLists( props ) {
+	const { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } = props;
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -130,7 +137,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 			}
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -174,6 +182,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 
 	const previewColumnGap = getPreviewSize( previewDevice, ( undefined !== columnGap ? columnGap : '' ), ( undefined !== tabletColumnGap ? tabletColumnGap : '' ), ( undefined !== mobileColumnGap ? mobileColumnGap : '' ) );
 	const previewListGap = getPreviewSize( previewDevice, ( undefined !== listGap ? listGap : '' ), ( undefined !== tabletListGap ? tabletListGap : '' ), ( undefined !== mobileListGap ? mobileListGap : '' ) );
+	const previewColumns = getPreviewSize( previewDevice, ( undefined !== columns ? columns : '' ), ( undefined !== tabletColumns ? tabletColumns : '' ), ( undefined !== mobileColumns ? mobileColumns : '' ) );
 	const listMarginMouseOver = mouseOverVisualizer();
 	const listPaddingMouseOver = mouseOverVisualizer();
 
@@ -691,7 +700,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
 					}` }
 
-					{ ( previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; row-gap: ${ previewListGap }px; }` : '' ) }
+					{ ( '' !== previewListGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { row-gap: ${ previewListGap }px; }` : '' ) }
+					{ ( '' !== previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) }
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }
 					{ ( color ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${ KadenceColorOutput( color ) }; }` : '' ) }
 					{ ( background ? `.kt-svg-icon-list-items${ uniqueID }.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${ KadenceColorOutput( background ) }; }` : '' ) }
@@ -704,7 +714,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 				<KadenceWebfontLoader typography={ listStyles } clientId={ clientId } id={ 'listStyles' } />
 			) }
 			<div ref={container}
-				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kb-icon-list-style-${style} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
+				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kb-icon-list-style-${style} kt-svg-icon-list-columns-${previewColumns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
 				 style={{
 					marginTop: getSpacingOptionOutput( previewListMarginTop, listMarginType ),
 					marginRight: getSpacingOptionOutput( previewListMarginRight, listMarginType ),

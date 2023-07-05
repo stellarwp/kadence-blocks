@@ -37,6 +37,23 @@
     }
     // End temp Fix.
 }
+.wp-block-kadence-advancedgallery .kt-blocks-carousel {
+    .splide--fade.splide--rtl >.splide__track> .splide__list {
+        direction:rtl;
+        flex-direction: row-reverse;
+    }
+    .splide--rtl>.splide__arrows {
+        .splide__arrow--prev {
+            right:0px;
+            left:auto;
+        }
+        .splide__arrow--next {
+            left:0px;
+            right:auto;
+        }
+    }
+    // End temp Fix.
+}
 .wp-block-kadence-testimonials .kt-blocks-carousel {
     .splide__arrow--prev {
         left:0px;

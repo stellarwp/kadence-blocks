@@ -15,13 +15,25 @@ import {
 	PopColorControl,
 	TypographyControls,
 	BoxShadowControl,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
+	KadencePanelBody,
+	GradientControl
 } from '@kadence/components';
-import { useState } from '@wordpress/element';
 
-export default function FieldStyles( { setAttributes, style } ) {
+export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {
+
+	const [ fieldBorderRadius ] = useFormMeta( '_kad_form_fieldBorderRadius' );
+	const [ tabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
+	const [ mobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
+	const [ fieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
+
+	const [ fieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
+	const [ tabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
+	const [ mobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
 
 	const saveStyle = ( value ) => {
-		setAttributes( { ...style, ...value }, 'style');
+		setMetaAttribute( { ...style, ...value }, 'style');
 	}
 
 	const btnSizes = [
@@ -35,10 +47,10 @@ export default function FieldStyles( { setAttributes, style } ) {
 		{ key: 'solid', name: __( 'Solid', 'kadence-blocks' ) },
 		{ key: 'gradient', name: __( 'Gradient', 'kadence-blocks' ) },
 	];
-
-	const gradTypes = [
-		{ key: 'linear', name: __( 'Linear' ) },
-		{ key: 'radial', name: __( 'Radial' ) },
+	const labelStyles = [
+		{ value: 'normal',label: __( 'Normal', 'kadence-blocks' ) },
+		{ value: 'infield',label: __( 'In Field Label', 'kadence-blocks' ) },
+		{ value: 'float',label: __( 'Float Label', 'kadence-blocks' ) },
 	];
 
 	const saveStyleBoxShadow = ( value, index ) => {
@@ -66,46 +78,29 @@ export default function FieldStyles( { setAttributes, style } ) {
 		saveStyle( { boxShadowActive: newItems } );
 	};
 
-	const saveStyleGradient = ( value, index ) => {
-		const newItems = style.gradient.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = value;
-			}
-
-			return item;
-		} );
-
-		saveStyle( { gradient: newItems } );
+	const saveInputFont = ( value ) => {
+		setMetaAttribute( { ...inputFont, ...value }, 'inputFont');
 	};
-	const saveStyleGradientActive = ( value, index ) => {
-
-		const newItems = style.gradientActive.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = value;
-			}
-
-			return item;
-		} );
-
-		saveStyle( { gradientActive: newItems } );
-	};
-
-	const [ borderControl, setBorderControl ] = useState( 'linked' );
-	const [ mobilePaddingControl, setMobilePaddingControl ] = useState( 'linked' );
-	const [ tabletPaddingControl, setTabletPaddingControl ] = useState( 'linked' );
-	const [ deskPaddingControl, setDeskPaddingControl ] = useState( 'linked' );
 
 	return (
 		<>
+			<SelectControl
+				label={ __( 'Label Layout Style', 'kadence-blocks' ) }
+				options={ labelStyles }
+				onChange={ ( value ) => {
+					saveStyle( { labelStyle: value } );
+				} }
+				value={ style?.labelStyle }
+			/>
 			<TypographyControls
-				fontSize={style.fontSize}
-				onFontSize={( value ) => saveStyle( { fontSize: value } )}
-				fontSizeType={style.fontSizeType}
-				onFontSizeType={( value ) => saveStyle( { fontSizeType: value } )}
-				lineHeight={style.lineHeight}
-				onLineHeight={( value ) => saveStyle( { lineHeight: value } )}
-				lineHeightType={style.lineType}
-				onLineHeightType={( value ) => saveStyle( { lineType: value } )}
+				fontSize={inputFont.size}
+				onFontSize={( value ) => saveInputFont( { size: value } )}
+				fontSizeType={inputFont.sizeType}
+				onFontSizeType={( value ) => saveInputFont( { sizeType: value } )}
+				lineHeight={inputFont.lineHeight}
+				onLineHeight={( value ) => saveInputFont( { lineHeight: value } )}
+				lineHeightType={inputFont.lineType}
+				onLineHeightType={( value ) => saveInputFont( { lineType: value } )}
 			/>
 
 			<div className="kt-btn-size-settings-container">
@@ -118,7 +113,13 @@ export default function FieldStyles( { setAttributes, style } ) {
 							isSmall
 							isPrimary={style.size === key}
 							aria-pressed={style.size === key}
-							onClick={() => saveStyle( { size: key } )}
+							onClick={ () => {
+								if( style.size === key ) {
+									saveStyle( { size: '' } )
+								} else {
+									saveStyle( { size: key } )
+								}
+							} }
 						>
 							{name}
 						</Button>
@@ -157,9 +158,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 												<MeasurementControls
 													label={__( 'Mobile Padding', 'kadence-blocks' )}
 													measurement={style.mobilePadding}
-													control={mobilePaddingControl}
 													onChange={( value ) => saveStyle( { mobilePadding: value } )}
-													onControl={( value ) => setMobilePaddingControl( value )}
 													min={0}
 													max={100}
 													step={1}
@@ -171,9 +170,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 											<MeasurementControls
 												label={__( 'Tablet Padding', 'kadence-blocks' )}
 												measurement={style.tabletPadding}
-												control={tabletPaddingControl}
 												onChange={( value ) => saveStyle( { tabletPadding: value } )}
-												onControl={( value ) => setTabletPaddingControl( value )}
 												min={0}
 												max={100}
 												step={1}
@@ -184,9 +181,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 											<MeasurementControls
 												label={__( 'Desktop Padding', 'kadence-blocks' )}
 												measurement={style.deskPadding}
-												control={deskPaddingControl}
 												onChange={( value ) => saveStyle( { deskPadding: value } )}
-												onControl={( value ) => setDeskPaddingControl( value )}
 												min={0}
 												max={100}
 												step={1}
@@ -200,7 +195,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 					</TabPanel>
 				</div>
 			)}
-			<h2 className="kt-heading-size-title kt-secondary-color-size">{__( 'Input Colors', 'kadence-blocks' )}</h2>
+
 			<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 					  activeClass="active-tab"
 					  tabs={[
@@ -224,10 +219,10 @@ export default function FieldStyles( { setAttributes, style } ) {
 									<>
 										<PopColorControl
 											label={__( 'Input Focus Color', 'kadence-blocks' )}
-											value={( style.colorActive ? style.colorActive : '' )}
+											value={( inputFont.colorActive ? inputFont.colorActive : '' )}
 											default={''}
-											onChange={value => {
-												saveStyle( { colorActive: value } );
+											onChange={( value ) => {
+												saveInputFont( { colorActive: value } );
 											}}
 										/>
 										<div className="kt-btn-size-settings-container">
@@ -253,121 +248,24 @@ export default function FieldStyles( { setAttributes, style } ) {
 													label={__( 'Input Focus Background', 'kadence-blocks' )}
 													value={( style.backgroundActive ? style.backgroundActive : '' )}
 													default={''}
-													onChange={value => {
+													onChange={( value ) => {
 														saveStyle( { backgroundActive: value } );
 													}}
 													opacityValue={style.backgroundActiveOpacity}
-													onOpacityChange={value => saveStyle( { backgroundActiveOpacity: value } )}
+													onOpacityChange={( value ) => saveStyle( { backgroundActiveOpacity: value } )}
 													onArrayChange={( color, opacity ) => saveStyle( { backgroundActive: color, backgroundActiveOpacity: opacity } )}
 												/>
 											</div>
 										)}
 										{'gradient' === style.backgroundActiveType && (
 											<div className="kt-inner-sub-section">
-												<PopColorControl
-													label={__( 'Gradient Color 1', 'kadence-blocks' )}
-													value={( style.backgroundActive ? style.backgroundActive : '' )}
-													default={''}
-													onChange={value => {
-														saveStyle( { backgroundActive: value } );
-													}}
-													opacityValue={style.backgroundActiveOpacity}
-													onOpacityChange={value => saveStyle( { backgroundActiveOpacity: value } )}
-													onArrayChange={( color, opacity ) => saveStyle( { backgroundActive: color, backgroundActiveOpacity: opacity } )}
+												<GradientControl
+													value={ style.gradientActive }
+													onChange={ value => saveStyle( { gradientActive: value } ) }
+													gradients={ [] }
 												/>
-												<RangeControl
-													label={__( 'Location', 'kadence-blocks' )}
-													value={( style.gradientActive && undefined !== style.gradientActive[ 2 ] ? style.gradientActive[ 2 ] : 0 )}
-													onChange={( value ) => {
-														saveStyleGradientActive( value, 2 );
-													}}
-													min={0}
-													max={100}
-												/>
-												<PopColorControl
-													label={__( 'Gradient Color 2', 'kadence-blocks' )}
-													value={( style.gradientActive && undefined !== style.gradientActive[ 0 ] ? style.gradientActive[ 0 ] : '#999999' )}
-													default={'#999999'}
-													opacityValue={( style.gradientActive && undefined !== style.gradientActive[ 1 ] ? style.gradientActive[ 1 ] : 1 )}
-													onChange={value => {
-														saveStyleGradientActive( value, 0 );
-													}}
-													onOpacityChange={value => {
-														saveStyleGradientActive( value, 1 );
-													}}
-												/>
-												<RangeControl
-													label={__( 'Location' )}
-													value={( style.gradientActive && undefined !== style.gradientActive[ 3 ] ? style.gradientActive[ 3 ] : 100 )}
-													onChange={( value ) => {
-														saveStyleGradientActive( value, 3 );
-													}}
-													min={0}
-													max={100}
-												/>
-												<div className="kt-btn-size-settings-container">
-													<h2 className="kt-beside-btn-group">{__( 'Gradient Type', 'kadence-blocks' )}</h2>
-													<ButtonGroup className="kt-button-size-type-options" aria-label={__( 'Gradient Type', 'kadence-blocks' )}>
-														{map( gradTypes, ( { name, key } ) => (
-															<Button
-																key={key}
-																className="kt-btn-size-btn"
-																isSmall
-																isPrimary={( style.gradientActive && undefined !== style.gradientActive[ 4 ] ? style.gradientActive[ 4 ] : 'linear' ) === key}
-																aria-pressed={( style.gradientActive && undefined !== style.gradientActive[ 4 ] ? style.gradientActive[ 4 ] : 'linear' ) === key}
-																onClick={() => {
-																	saveStyleGradientActive( key, 4 );
-																}}
-															>
-																{name}
-															</Button>
-														) )}
-													</ButtonGroup>
-												</div>
-												{'radial' !== ( style.gradientActive && undefined !== style.gradientActive[ 4 ] ? style.gradientActive[ 4 ] : 'linear' ) && (
-													<RangeControl
-														label={__( 'Gradient Angle', 'kadence-blocks' )}
-														value={( style.gradientActive && undefined !== style.gradientActive[ 5 ] ? style.gradientActive[ 5 ] : 180 )}
-														onChange={( value ) => {
-															saveStyleGradientActive( value, 5 );
-														}}
-														min={0}
-														max={360}
-													/>
-												)}
-												{'radial' === ( style.gradientActive && undefined !== style.gradientActive[ 4 ] ? style.gradientActive[ 4 ] : 'linear' ) && (
-													<SelectControl
-														label={__( 'Gradient Position', 'kadence-blocks' )}
-														value={( style.gradientActive && undefined !== style.gradientActive[ 6 ] ? style.gradientActive[ 6 ] : 'center center' )}
-														options={[
-															{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-															{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-															{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-															{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-															{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-															{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-															{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-															{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-															{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-														]}
-														onChange={value => {
-															saveStyleGradientActive( value, 6 );
-														}}
-													/>
-												)}
 											</div>
 										)}
-										<PopColorControl
-											label={__( 'Input Focus Border', 'kadence-blocks' )}
-											value={( style.borderActive ? style.borderActive : '' )}
-											default={''}
-											onChange={value => {
-												saveStyle( { borderActive: value } );
-											}}
-											opacityValue={style.borderActiveOpacity}
-											onOpacityChange={value => saveStyle( { borderActiveOpacity: value } )}
-											onArrayChange={( color, opacity ) => saveStyle( { borderActive: color, borderActiveOpacity: opacity } )}
-										/>
 										<BoxShadowControl
 											label={__( 'Input Focus Box Shadow', 'kadence-blocks' )}
 											enable={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 0 ] ? style.boxShadowActive[ 0 ] : false )}
@@ -379,30 +277,41 @@ export default function FieldStyles( { setAttributes, style } ) {
 											blur={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 5 ] ? style.boxShadowActive[ 5 ] : 3 )}
 											spread={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 6 ] ? style.boxShadowActive[ 6 ] : 0 )}
 											inset={( undefined !== style.boxShadowActive && undefined !== style.boxShadowActive[ 7 ] ? style.boxShadowActive[ 7 ] : false )}
-											onEnableChange={value => {
+											onEnableChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 0 );
 											}}
-											onColorChange={value => {
+											onColorChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 1 );
 											}}
-											onOpacityChange={value => {
+											onOpacityChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 2 );
 											}}
-											onHOffsetChange={value => {
+											onHOffsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 3 );
 											}}
-											onVOffsetChange={value => {
+											onVOffsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 4 );
 											}}
-											onBlurChange={value => {
+											onBlurChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 5 );
 											}}
-											onSpreadChange={value => {
+											onSpreadChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 6 );
 											}}
-											onInsetChange={value => {
+											onInsetChange={ ( value ) => {
 												saveStyleBoxShadowActive( value, 7 );
 											}}
+										/>
+										<PopColorControl
+											label={__( 'Input Focus Border', 'kadence-blocks' )}
+											value={( style.borderActive ? style.borderActive : '' )}
+											default={''}
+											onChange={ ( value ) => {
+												saveStyle( { borderActive: value } );
+											}}
+											opacityValue={style.borderActiveOpacity}
+											onOpacityChange={ ( value ) => saveStyle( { borderActiveOpacity: value } )}
+											onArrayChange={( color, opacity ) => saveStyle( { borderActive: color, borderActiveOpacity: opacity } )}
 										/>
 									</>
 								);
@@ -413,7 +322,7 @@ export default function FieldStyles( { setAttributes, style } ) {
 											label={__( 'Input Color', 'kadence-blocks' )}
 											value={( style.color ? style.color : '' )}
 											default={''}
-											onChange={value => {
+											onChange={ ( value ) => {
 												saveStyle( { color: value } );
 											}}
 										/>
@@ -440,121 +349,24 @@ export default function FieldStyles( { setAttributes, style } ) {
 													label={__( 'Input Background', 'kadence-blocks' )}
 													value={( style.background ? style.background : '' )}
 													default={''}
-													onChange={value => {
+													onChange={ ( value ) => {
 														saveStyle( { background: value } );
 													}}
 													opacityValue={style.backgroundOpacity}
-													onOpacityChange={value => saveStyle( { backgroundOpacity: value } )}
+													onOpacityChange={ ( value ) => saveStyle( { backgroundOpacity: value } )}
 													onArrayChange={( color, opacity ) => saveStyle( { background: color, backgroundOpacity: opacity } )}
 												/>
 											</div>
 										)}
 										{'gradient' === style.backgroundType && (
 											<div className="kt-inner-sub-section">
-												<PopColorControl
-													label={__( 'Gradient Color 1', 'kadence-blocks' )}
-													value={( style.background ? style.background : '' )}
-													default={''}
-													onChange={value => {
-														saveStyle( { background: value } );
-													}}
-													opacityValue={style.backgroundOpacity}
-													onOpacityChange={value => saveStyle( { backgroundOpacity: value } )}
-													onArrayChange={( color, opacity ) => saveStyle( { background: color, backgroundOpacity: opacity } )}
+												<GradientControl
+													value={ style.gradient }
+													onChange={ value => saveStyle( { gradient: value } ) }
+													gradients={ [] }
 												/>
-												<RangeControl
-													label={__( 'Location', 'kadence-blocks' )}
-													value={( style.gradient && undefined !== style.gradient[ 2 ] ? style.gradient[ 2 ] : 0 )}
-													onChange={( value ) => {
-														saveStyleGradient( value, 2 );
-													}}
-													min={0}
-													max={100}
-												/>
-												<PopColorControl
-													label={__( 'Gradient Color 2', 'kadence-blocks' )}
-													value={( style.gradient && undefined !== style.gradient[ 0 ] ? style.gradient[ 0 ] : '#999999' )}
-													default={'#999999'}
-													opacityValue={( style.gradient && undefined !== style.gradient[ 1 ] ? style.gradient[ 1 ] : 1 )}
-													onChange={value => {
-														saveStyleGradient( value, 0 );
-													}}
-													onOpacityChange={value => {
-														saveStyleGradient( value, 1 );
-													}}
-												/>
-												<RangeControl
-													label={__( 'Location', 'kadence-blocks' )}
-													value={( style.gradient && undefined !== style.gradient[ 3 ] ? style.gradient[ 3 ] : 100 )}
-													onChange={( value ) => {
-														saveStyleGradient( value, 3 );
-													}}
-													min={0}
-													max={100}
-												/>
-												<div className="kt-btn-size-settings-container">
-													<h2 className="kt-beside-btn-group">{__( 'Gradient Type', 'kadence-blocks' )}</h2>
-													<ButtonGroup className="kt-button-size-type-options" aria-label={__( 'Gradient Type', 'kadence-blocks' )}>
-														{map( gradTypes, ( { name, key } ) => (
-															<Button
-																key={key}
-																className="kt-btn-size-btn"
-																isSmall
-																isPrimary={( style.gradient && undefined !== style.gradient[ 4 ] ? style.gradient[ 4 ] : 'linear' ) === key}
-																aria-pressed={( style.gradient && undefined !== style.gradient[ 4 ] ? style.gradient[ 4 ] : 'linear' ) === key}
-																onClick={() => {
-																	saveStyleGradient( key, 4 );
-																}}
-															>
-																{name}
-															</Button>
-														) )}
-													</ButtonGroup>
-												</div>
-												{'radial' !== ( style.gradient && undefined !== style.gradient[ 4 ] ? style.gradient[ 4 ] : 'linear' ) && (
-													<RangeControl
-														label={__( 'Gradient Angle', 'kadence-blocks' )}
-														value={( style.gradient && undefined !== style.gradient[ 5 ] ? style.gradient[ 5 ] : 180 )}
-														onChange={( value ) => {
-															saveStyleGradient( value, 5 );
-														}}
-														min={0}
-														max={360}
-													/>
-												)}
-												{'radial' === ( style.gradient && undefined !== style.gradient[ 4 ] ? style.gradient[ 4 ] : 'linear' ) && (
-													<SelectControl
-														label={__( 'Gradient Position', 'kadence-blocks' )}
-														value={( style.gradient && undefined !== style.gradient[ 6 ] ? style.gradient[ 6 ] : 'center center' )}
-														options={[
-															{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-															{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-															{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-															{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-															{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-															{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-															{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-															{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-															{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-														]}
-														onChange={value => {
-															saveStyleGradient( value, 6 );
-														}}
-													/>
-												)}
 											</div>
 										)}
-										<PopColorControl
-											label={__( 'Input Border', 'kadence-blocks' )}
-											value={( style.border ? style.border : '' )}
-											default={''}
-											onChange={value => {
-												saveStyle( { border: value } );
-											}}
-											opacityValue={style.borderOpacity}
-											onOpacityChange={value => saveStyle( { borderOpacity: value } )}
-											onArrayChange={( color, opacity ) => saveStyle( { border: color, borderOpacity: opacity } )}
-										/>
 										<BoxShadowControl
 											label={__( 'Input Box Shadow', 'kadence-blocks' )}
 											enable={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 0 ] ? style.boxShadow[ 0 ] : false )}
@@ -566,28 +378,28 @@ export default function FieldStyles( { setAttributes, style } ) {
 											blur={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 5 ] ? style.boxShadow[ 5 ] : 3 )}
 											spread={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 6 ] ? style.boxShadow[ 6 ] : 0 )}
 											inset={( undefined !== style.boxShadow && undefined !== style.boxShadow[ 7 ] ? style.boxShadow[ 7 ] : false )}
-											onEnableChange={value => {
+											onEnableChange={ ( value ) => {
 												saveStyleBoxShadow( value, 0 );
 											}}
-											onColorChange={value => {
+											onColorChange={ ( value ) => {
 												saveStyleBoxShadow( value, 1 );
 											}}
-											onOpacityChange={value => {
+											onOpacityChange={ ( value ) => {
 												saveStyleBoxShadow( value, 2 );
 											}}
-											onHOffsetChange={value => {
+											onHOffsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 3 );
 											}}
-											onVOffsetChange={value => {
+											onVOffsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 4 );
 											}}
-											onBlurChange={value => {
+											onBlurChange={ ( value ) => {
 												saveStyleBoxShadow( value, 5 );
 											}}
-											onSpreadChange={value => {
+											onSpreadChange={ ( value ) => {
 												saveStyleBoxShadow( value, 6 );
 											}}
-											onInsetChange={value => {
+											onInsetChange={ ( value ) => {
 												saveStyleBoxShadow( value, 7 );
 											}}
 										/>
@@ -600,37 +412,44 @@ export default function FieldStyles( { setAttributes, style } ) {
 				}
 			</TabPanel>
 			<h2>{__( 'Border Settings', 'kadence-blocks' )}</h2>
-			<MeasurementControls
-				label={__( 'Border Width', 'kadence-blocks' )}
-				measurement={style.borderWidth}
-				control={borderControl}
-				onChange={( value ) => saveStyle( { borderWidth: value } )}
-				onControl={( value ) => setBorderControl( value )}
-				min={0}
-				max={20}
-				step={1}
+			<ResponsiveBorderControl
+				label={__( 'Border', 'kadence-blocks' )}
+				value={ [ fieldBorderStyle ] }
+				tabletValue={tabletFieldBorderStyle}
+				mobileValue={mobileFieldBorderStyle}
+				onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
+				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
+				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}
 			/>
-			<RangeControl
+			<ResponsiveMeasurementControls
 				label={__( 'Border Radius', 'kadence-blocks' )}
-				value={style.borderRadius}
-				onChange={value => {
-					saveStyle( { borderRadius: value } );
-				}}
-				min={0}
-				max={50}
+				value={fieldBorderRadius}
+				tabletValue={tabletFieldBorderRadius}
+				mobileValue={mobileFieldBorderRadius}
+				onChange={( value ) => setMetaAttribute( value, 'fieldBorderRadius')}
+				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletFieldBorderRadius' )}
+				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileFieldBorderRadius' )}
+				unit={fieldBorderRadiusUnit}
+				units={[ 'px', 'em', 'rem', '%' ]}
+				onUnit={( value ) => setMetaAttribute( value, 'fieldBorderRadiusUnit' ) }
+				max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
+				step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
+				min={ 0 }
+				isBorderRadius={ true }
+				allowEmpty={true}
 			/>
 			<ResponsiveRangeControls
 				label={__( 'Field Row Gap', 'kadence-blocks' )}
 				value={( undefined !== style.rowGap ? style.rowGap : '' )}
-				onChange={value => {
+				onChange={ ( value ) => {
 					saveStyle( { rowGap: value.toString() } );
 				}}
 				tabletValue={( undefined !== style.tabletRowGap ? style.tabletRowGap : '' )}
-				onChangeTablet={value => {
+				onChangeTablet={ ( value ) => {
 					saveStyle( { tabletRowGap: value.toString() } );
 				}}
 				mobileValue={( undefined !== style.mobileRowGap ? style.mobileRowGap : '' )}
-				onChangeMobile={value => {
+				onChangeMobile={ ( value ) => {
 					saveStyle( { mobileRowGap: value.toString() } );
 				}}
 				min={0}
@@ -646,10 +465,44 @@ export default function FieldStyles( { setAttributes, style } ) {
 				label={__( 'Placeholder Color', 'kadence-blocks' )}
 				value={( style.placeholderColor ? style.placeholderColor : '' )}
 				default={''}
-				onChange={value => {
+				onChange={ ( value ) => {
 					saveStyle( { placeholderColor: value } );
 				}}
 			/>
+
+			<KadencePanelBody
+				title={__( 'Advanced Field Settings', 'kadence-blocks' )}
+				initialOpen={false}
+				panelName={'kb-form-advanced-field-settings'}
+			>
+				<TypographyControls
+					letterSpacing={inputFont.letterSpacing}
+					onLetterSpacing={( value ) => saveInputFont( { letterSpacing: value.toString() } )}
+					textTransform={inputFont.textTransform}
+					onTextTransform={( value ) => saveInputFont( { textTransform: value } )}
+					fontFamily={inputFont.family}
+					onFontFamily={( value ) => saveInputFont( { family: value } )}
+					onFontChange={( select ) => {
+						saveInputFont( {
+							family: select.value,
+							google: select.google,
+						} );
+					}}
+					onFontArrayChange={( values ) => saveInputFont( values )}
+					googleFont={inputFont.google}
+					onGoogleFont={( value ) => saveInputFont( { google: value } )}
+					loadGoogleFont={inputFont.loadGoogle}
+					onLoadGoogleFont={( value ) => saveInputFont( { loadGoogle: value } )}
+					fontVariant={inputFont.variant}
+					onFontVariant={( value ) => saveInputFont( { variant: value } )}
+					fontWeight={inputFont.weight}
+					onFontWeight={( value ) => saveInputFont( { weight: value } )}
+					fontStyle={inputFont.style}
+					onFontStyle={( value ) => saveInputFont( { style: value } )}
+					fontSubset={inputFont.subset}
+					onFontSubset={( value ) => saveInputFont( { subset: value } )}
+				/>
+			</KadencePanelBody>
 		</>
 	);
 

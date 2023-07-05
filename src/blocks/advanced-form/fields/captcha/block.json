@@ -1,0 +1,74 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"title": "Captcha",
+	"name": "kadence/advanced-form-captcha",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+	  "uniqueID": {
+		"type": "string",
+		"default": ""
+	  },
+	  "type": {
+		  "type": "string",
+		  "default": "googlev2"
+	  },
+	  "useKcSettings": {
+		"type": "boolean",
+		"default": false
+	  },
+	  "hideRecaptcha": {
+		"type": "boolean",
+		"default": false
+	  },
+	  "theme": {
+		  "type": "string",
+		  "default": "light"
+	  },
+	  "size": {
+		"type": "string",
+		"default": "normal"
+	  },
+	  "showRecaptchaNotice": {
+		"type": "boolean",
+		"default": false
+	  },
+	  "recaptchaNotice": {
+		"type": "string",
+		"default": ""
+	  },
+	  "maxWidth": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
+	  },
+	  "maxWidthUnit": {
+		"type": "string",
+		"default": "%"
+	  },
+	  "minWidth": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			""
+		]
+	  },
+	  "minWidthUnit": {
+		"type": "string",
+		"default": "px"
+	  }
+	},
+  "supports": {
+	"html": false,
+	"reusable": false,
+	"multiple": false,
+    "kbMetadata": true
+  },
+  "ancestor": [ "kadence/advanced-form" ],
+  "parent": [ "kadence/advanced-form", "kadence/column" ]
+}

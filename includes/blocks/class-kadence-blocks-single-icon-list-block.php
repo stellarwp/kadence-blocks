@@ -107,7 +107,15 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {
 			$parent_default = $block_instance->context['kadence/listIcon'];
 
-			return str_replace( 'USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+			$content = str_replace( 'USE_PARENT_DEFAULT_ICON', $parent_default, $content );
+		}
+		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIconWidth'] ) ) {
+			$parent_default_width = $block_instance->context['kadence/listIconWidth'];
+			if ( empty( $parent_default_width ) ) {
+				$parent_default_width = 2;
+			}
+
+			$content = str_replace( 'USE_PARENT_DEFAULT_WIDTH', $parent_default_width, $content );
 		}
 		return $content;
 	}

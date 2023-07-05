@@ -108,8 +108,8 @@ class URLInputControl extends Component {
 									label={ __( 'Link Target', 'kadence-blocks' ) }
 									value={ opensInNewTab }
 									options={ [
-										{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
-										{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
+										{ value: '_self', label: __( 'Same Tab/Window', 'kadence-blocks' ) },
+										{ value: '_blank', label: __( 'Open in New Tab', 'kadence-blocks' ) },
 										{ value: 'video', label: __( 'Video Popup', 'kadence-blocks' ) },
 									] }
 									onChange={ onSetNewTab }

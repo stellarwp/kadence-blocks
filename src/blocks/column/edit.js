@@ -51,6 +51,7 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import './editor.scss';
@@ -65,6 +66,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
 	BlockAlignmentToolbar,
+	BlockVerticalAlignmentControl,
 	BlockControls,
 	InnerBlocks,
 	InspectorControls,
@@ -78,6 +80,7 @@ import {
 	ToolbarGroup,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+const FORM_ALLOWED_BLOCKS = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
@@ -105,12 +108,18 @@ function SectionEdit( props ) {
 		}
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -119,7 +128,8 @@ function SectionEdit( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/column', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -268,19 +278,23 @@ function SectionEdit( props ) {
 		}
 		debounce( getDynamic, 200 );
 	}, [] );
-	const { hasInnerBlocks, inRowBlock } = useSelect(
+	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
-			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
+			const { getBlock, getBlockRootClientId, getBlockParentsByBlockName, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
 			const rootID = getBlockRootClientId( clientId );
 			let inRowBlock = false;
+			let inFormBlock = false;
 			if ( rootID ) {
+				const hasForm = getBlockParentsByBlockName( clientId, 'kadence/advanced-form' );
 				const parentBlock = getBlocksByClientId( rootID );
+				inFormBlock = ( undefined !== hasForm && hasForm.length ? true : false );
 				inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
 			}
 			return {
 				inRowBlock: inRowBlock,
 				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+				inFormBlock: inFormBlock,
 			};
 		},
 		[ clientId ]
@@ -449,50 +463,6 @@ function SectionEdit( props ) {
 	const hasHoverOverlayImage = ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? true : false );
 	const previewHoverOverlayImg = hasHoverOverlayImage ? `url( ${ overlayImgHover[ 0 ].bgImg } )` : '';
 	const previewHoverOverlay = overlayHoverType === 'gradient' ? overlayGradientHover : previewHoverOverlayImg;
-	const verticalAlignOptions = [
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
-				title: __( 'Align Top', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'top' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'top' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'top' } );
-					}
-				}
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
-				title: __( 'Align Middle', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'middle' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'middle' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'middle' } );
-					}
-				}
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
-				title: __( 'Align Bottom', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'bottom' ? true : false ),
-				onClick: () => {
-					if ( verticalAlignment === 'bottom' ) {
-						setAttributes( { verticalAlignment: '' } );
-					} else {
-						setAttributes( { verticalAlignment: 'bottom' } );
-					}
-				}
-			},
-		],
-	];
 	const nonTransAttrs = [ 'images', 'imagesDynamic' ];
 	const innerClasses = classnames( {
 		'kadence-inner-column-inner': true,
@@ -521,8 +491,10 @@ function SectionEdit( props ) {
 			renderAppender: hasInnerBlocks
 				? undefined
 				: InnerBlocks.ButtonBlockAppender,
+			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined
 		}
 	);
+	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
 	return (
 		<div { ...blockProps }>
 			<style>
@@ -592,13 +564,13 @@ function SectionEdit( props ) {
 
 				{ ( displayHoverShadow && undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { box-shadow:${ ( undefined !== shadowHover[ 0 ].inset && shadowHover[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ), ( undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 1 ) ) } !important; }` : '' ) }
 				{ kadenceBlockCSS && (
-					<Fragment>
+					<>
 						{ kadenceBlockCSS.replace( /selector/g, `.kadence-column-${ uniqueID }` ) }
-					</Fragment>
+					</>
 				) }
 			</style>
 			{ showSettings( 'allSettings', 'kadence/column' ) && (
-				<Fragment>
+				<>
 					<BlockControls>
 						{ ! inRowBlock && (
 							<BlockAlignmentToolbar
@@ -607,13 +579,22 @@ function SectionEdit( props ) {
 								onChange={ value => setAttributes( { align: value } ) }
 							/>
 						) }
-						<ToolbarGroup
-							className='kb-vertical-align'
-							isCollapsed={ true }
-							icon={ <VerticalAlignmentIcon value={ ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) ) } /> }
-							label={ __( 'Vertical Align', 'kadence-blocks' )  }
-							controls={ verticalAlignOptions }
-						/>
+						<ToolbarGroup group="align">
+							<BlockVerticalAlignmentControl
+								value={previewVerticalAlign === 'middle' ? 'center' : previewVerticalAlign }
+								onChange={ value => {
+									if ( value === 'center' ) {
+										setAttributes( { verticalAlignment: 'middle' } );
+									} else if ( value === 'bottom' ) {
+										setAttributes( { verticalAlignment: 'bottom' } );
+									}  else if ( value === 'top' ) {
+										setAttributes( { verticalAlignment: 'top' } );
+									}  else {
+										setAttributes( { verticalAlignment: '' } );
+									}
+								}}
+							/>
+						</ToolbarGroup>
 						<CopyPasteAttributes
 							attributes={ attributes }
 							excludedAttrs={ nonTransAttrs }
@@ -1594,7 +1575,7 @@ function SectionEdit( props ) {
 							</>
 						}
 					</InspectorControls>
-				</Fragment>
+				</>
 			) }
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),

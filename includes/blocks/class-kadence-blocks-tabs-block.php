@@ -128,6 +128,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( 'vtabs' === $layout && ! empty( $attributes['verticalTabWidth'][0] ) ) {
+			$css->set_media_state( 'desktopOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -139,7 +140,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'flex', '1' );
 		}
 		if ( 'vtabs' === $tablet_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) ) ) {
-			$css->set_media_state( 'tablet' );
+			$css->set_media_state( 'tabletOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -149,11 +150,10 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'float', 'none' );
 			$css->add_property( 'width', 'auto' );
 			$css->add_property( 'flex', '1' );
-			$css->set_media_state( 'desktop' );
 		}
 		if ( 'vtabs' === $mobile_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) || ! empty( $attributes['verticalTabWidth'][2] ) ) ) {
 			$mobile_width = ( ! empty( $attributes['verticalTabWidth'][2] ) ? $attributes['verticalTabWidth'][2] : $attributes['verticalTabWidth'][1] );
-			$css->set_media_state( 'mobile' );
+			$css->set_media_state( 'mobileOnly' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
@@ -163,9 +163,8 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'float', 'none' );
 			$css->add_property( 'width', 'auto' );
 			$css->add_property( 'flex', '1' );
-			$css->set_media_state( 'desktop' );
 		}
-
+		$css->set_media_state( 'desktop' );
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
 			if ( isset( $attributes['gutter'] ) && ! empty( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) ) {

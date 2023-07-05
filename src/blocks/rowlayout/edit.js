@@ -60,7 +60,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL, getPostOrFseId } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -95,6 +95,7 @@ import {
 	InspectorAdvancedControls,
 	useBlockProps,
 	useInnerBlocksProps,
+	BlockVerticalAlignmentControl,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
@@ -135,17 +136,18 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 /**
  * Build the row edit
  */
- function RowLayoutEditContainer( {
-	attributes,
-	setAttributes,
-	updateAlignment,
-	insertSection,
-	context,
-	updateColumns,
-	toggleSelection,
-	isSelected,
-	clientId,
-} ) {
+function RowLayoutEditContainer( props ) {
+	const {
+		attributes,
+		setAttributes,
+		updateAlignment,
+		insertSection,
+		context,
+		updateColumns,
+		toggleSelection,
+		isSelected,
+		clientId,
+	} = props;
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit } = attributes;
 	const { isPreviewMode } = useSelect( ( _select ) => {
 		const { __unstableIsPreviewMode } =
@@ -180,20 +182,27 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 	useEffect( () => {
 		setBlockDefaults( 'kadence/rowlayout', attributes);
-		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -533,32 +542,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: sixColIcon },
 		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
 	];
-	const verticalAlignOptions = [
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
-				title: __( 'Align Top', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'top' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'top' } ),
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
-				title: __( 'Align Middle', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'middle' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'middle' } ),
-			},
-		],
-		[
-			{
-				icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
-				title: __( 'Align Bottom', 'kadence-blocks' ),
-				isActive: ( verticalAlignment === 'bottom' ? true : false ),
-				onClick: () => setAttributes( { verticalAlignment: 'bottom' } ),
-			},
-		],
-	];
 	const innerClasses = classnames( {
 		'innerblocks-wrap': true,
 		'kb-theme-content-width': inheritMaxWidth,
@@ -572,7 +555,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			className: innerClasses,
 			style: {
 				maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
-				minHeight: previewMinHeight ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
+				minHeight: previewMinHeight && paddingUnit && '%' !== paddingUnit ? 'calc(' + previewMinHeight + minHeightUnit + ' - (' + ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ' + ' + ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, ( paddingUnit ? paddingUnit : 'px' ) ) : '0px' ) + ')' : undefined,
 				paddingLeft: '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 				paddingRight: '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, ( paddingUnit ? paddingUnit : 'px' ) ) : undefined,
 			},
@@ -595,7 +578,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 						controls={ [ 'center', 'wide', 'full' ] }
 						onChange={ value => setAttributes( { align: value } ) }
 					/>
-					<ToolbarGroup>
+					<ToolbarGroup group="content-width">
 						<ToolbarButton
 							className="kb-content-width"
 							icon={ inheritMaxWidth ? <ContentWidthIcon value='theme' /> : <ContentWidthIcon value='normal' /> }
@@ -657,13 +640,21 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 							</Popover>
 						) }
 					</ToolbarGroup>
-					<ToolbarGroup
-						isCollapsed={ true }
-						icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
-						label={ __( 'Vertical Align', 'kadence-blocks' )  }
-						controls={ verticalAlignOptions }
-					/>
-					<ToolbarGroup>
+					<ToolbarGroup group="align">
+						<BlockVerticalAlignmentControl
+							value={verticalAlignment === 'middle' ? 'center' : verticalAlignment }
+							onChange={ value => {
+								if ( value === 'center' ) {
+									setAttributes( { verticalAlignment: 'middle' } );
+								} else if ( value === 'bottom' ) {
+									setAttributes( { verticalAlignment: 'bottom' } );
+								}  else {
+									setAttributes( { verticalAlignment: 'top' } );
+								}
+							}}
+						/>
+					</ToolbarGroup>
+					<ToolbarGroup group="add-block">
 						<ToolbarButton
 							className="kb-row-add-section"
 							icon={ plusCircle }

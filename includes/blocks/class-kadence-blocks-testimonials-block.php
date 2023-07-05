@@ -258,6 +258,45 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-grid-wrap' );
 		$css->render_gap( $attributes );
+		if ( ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$gap_unit = ! empty( $attributes['gap_unit'] ) ? $attributes['gap_unit'] : 'px';
+			$gap = isset( $attributes['gap'][0] ) && '' !== $attributes['gap'][0] ? $attributes['gap'][0] : '32';
+			$tablet_gap   = ( isset( $attributes['gap'][1] ) && '' !== $attributes['gap'][1] ? $attributes['gap'][1] : $gap );
+			$mobile_gap   = ( isset( $attributes['gap'][2] ) && '' !== $attributes['gap'][2] ? $attributes['gap'][2] : $tablet_gap );
+			$columns_xxl  = ( ! empty( $attributes['columns'][0] ) ? $attributes['columns'][0] : '1' );
+			$columns_md   = ( ! empty( $attributes['columns'][2] ) ? $attributes['columns'][2] : '1' );
+			$columns_ss   = ( ! empty( $attributes['columns'][5] ) ? $attributes['columns'][5] : '1' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_xxl . ')' );
+			$css->add_property( 'padding-left', $gap . $gap_unit );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_xxl . ')' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $gap . $gap_unit );
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_md . ')' );
+			$css->add_property( 'padding-left', $tablet_gap . $gap_unit );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_md . ')' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $tablet_gap . $gap_unit );
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_ss . ')' );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_ss . ')' );
+			$css->add_property( 'padding-left', $mobile_gap . $gap_unit );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $mobile_gap . $gap_unit );
+			$css->set_media_state( 'desktop' );
+		}
 
 		if ( 'bubble' === $style || 'inlineimage' === $style ) {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );

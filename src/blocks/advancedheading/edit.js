@@ -48,6 +48,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -90,6 +91,7 @@ import {
 	ToolbarGroup,
 	Spinner,
 	SelectControl,
+	ToolbarDropdownMenu,
 	TextControl,
 } from '@wordpress/components';
 
@@ -223,12 +225,18 @@ function KadenceAdvancedHeading( props ) {
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -240,7 +248,8 @@ function KadenceAdvancedHeading( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/advancedheading', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -621,7 +630,7 @@ function KadenceAdvancedHeading( props ) {
 
 	const typed = useRef(null);
 	useEffect( () => {
-		if ( !isSelected && undefined !== attributes.content && attributes.content.includes( "kt-typed-text" ) ) {
+		if ( ! isSelected && undefined !== attributes.content && attributes.content.includes( "kt-typed-text" ) ) {
 			const parser = new DOMParser();
 			const contentHtml = parser.parseFromString( attributes.content, 'text/html' );
 
@@ -711,12 +720,13 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
-				<ToolbarGroup
-					isCollapsed={true}
-					icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
-					label={__( 'Change heading tag', 'kadence-blocks' )}
-					controls={headingOptions}
-				/>
+				<ToolbarGroup group="tag">
+					<ToolbarDropdownMenu
+						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
+						label={__( 'Change heading tag', 'kadence-blocks' )}
+						controls={headingOptions}
+					/>
+				</ToolbarGroup>
 				{showSettings( 'allSettings', 'kadence/advancedheading' ) && showSettings( 'toolbarTypography', 'kadence/advancedheading', false ) && (
 					<InlineTypographyControls
 						uniqueID={uniqueID}
@@ -925,7 +935,7 @@ function KadenceAdvancedHeading( props ) {
 											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
-											step={( sizeType === 'px' ? 1 : 0.1 )}
+											step={( sizeType === 'px' ? 1 : 0.001 )}
 											unit={ sizeType ? sizeType : 'px' }
 											onUnit={( value ) => {
 												setAttributes( { sizeType: value } );
@@ -1161,7 +1171,7 @@ function KadenceAdvancedHeading( props ) {
 							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
-									title={__( 'Highlight Settings', 'kadence-blocks' )}
+									title={__( 'Advanced Highlight Settings', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
