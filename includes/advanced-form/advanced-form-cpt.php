@@ -865,6 +865,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 					'gapUnit'              => 'px',
 					'labelStyle'           => 'normal',
 					'basicStyles'          => true,
+					'isDark'               => false,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -891,6 +892,31 @@ class Kadence_Blocks_Form_CPT_Controller {
 							'gapUnit'                 => array( 'type' => 'string' ),
 							'labelStyle'              => array( 'type' => 'string' ),
 							'basicStyles'             => array( 'type' => 'boolean' ),
+							'isDark'                  => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_background',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'background'           => '',
+					'gradient'             => '',
+					'backgroundType'       => 'normal',
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'background'              => array( 'type' => 'string' ),
+							'gradient'                => array( 'type' => 'string' ),
+							'backgroundType'          => array( 'type' => 'string' ),
 						),
 					),
 				),
@@ -971,7 +997,54 @@ class Kadence_Blocks_Form_CPT_Controller {
 				),
 			)
 		);
-
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_radioLabelFont',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'color'         => '',
+					'size'          => array( '', '', '' ),
+					'sizeType'      => 'px',
+					'lineHeight'    => array( '', '', '' ),
+					'lineType'      => '',
+					'letterSpacing' => array( '', '', '' ),
+					'letterType'    => 'px',
+					'textTransform' => '',
+					'family'        => '',
+					'google'        => '',
+					'style'         => '',
+					'weight'        => '',
+					'variant'       => '',
+					'subset'        => '',
+					'loadGoogle'    => true,
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'color'         => array( 'type' => 'string' ),
+							'size'          => array( 'type' => 'array' ),
+							'sizeType'      => array( 'type' => 'string' ),
+							'lineHeight'    => array( 'type' => 'array' ),
+							'lineType'      => array( 'type' => 'string' ),
+							'letterSpacing' => array( 'type' => 'array' ),
+							'letterType'    => array( 'type' => 'string' ),
+							'textTransform' => array( 'type' => 'string' ),
+							'family'        => array( 'type' => 'string' ),
+							'google'        => array( 'type' => 'string' ),
+							'style'         => array( 'type' => 'string' ),
+							'weight'        => array( 'type' => 'string' ),
+							'variant'       => array( 'type' => 'string' ),
+							'subset'        => array( 'type' => 'string' ),
+							'loadGoogle'    => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_helpFont',
@@ -1192,13 +1265,13 @@ class Kadence_Blocks_Form_CPT_Controller {
 			),
 			array(
 				'key'           => '_kad_form_messageBorderSuccess',
-				'default'       => array( array(
+				'default'       => array(
 					'top'    => array( '', '', '' ),
 					'right'  => array( '', '', '' ),
 					'bottom' => array( '', '', '' ),
 					'left'   => array( '', '', '' ),
 					'unit'   => ''
-				) ),
+				),
 				'type'          => 'array',
 				'children_type' => 'object',
 				'properties' => array(
@@ -1286,13 +1359,13 @@ class Kadence_Blocks_Form_CPT_Controller {
 			),
 			array(
 				'key'           => '_kad_form_messageBorderError',
-				'default'       => array( array(
+				'default'       => array(
 					'top'    => array( '', '', '' ),
 					'right'  => array( '', '', '' ),
 					'bottom' => array( '', '', '' ),
 					'left'   => array( '', '', '' ),
 					'unit'   => ''
-				) ),
+				),
 				'type'          => 'array',
 				'children_type' => 'object',
 				'properties' => array(

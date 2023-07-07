@@ -1,4 +1,4 @@
-import { getPreviewSize, KadenceColorOutput, getBorderStyle, getFontSizeOptionOutput, getBorderColor, getGapSizeOptionOutput } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, getBorderStyle, getFontSizeOptionOutput, getBorderColor, getBorderWidth, getGapSizeOptionOutput } from '@kadence/helpers';
 import { get } from 'lodash';
 
 /**
@@ -29,9 +29,14 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	let fontSize = getPreviewSize( previewDevice, inputFont.size[0], inputFont.size[1], inputFont.size[2] );
 	styles.fontSize = getFontSizeOptionOutput( fontSize, inputFont.sizeType );
 	styles.fieldFont = inputFont;
+	if ( inputFont?.color ) {
+		styles.color = KadenceColorOutput( inputFont.color );
+	}
 
 	let previewGap = getPreviewSize( previewDevice, ( undefined !== fieldStyle?.gap?.[0] && '' !== fieldStyle?.gap?.[0] ? fieldStyle?.gap[0] : '' ), ( undefined !== fieldStyle?.gap?.[1] && '' !== fieldStyle?.gap?.[1] ? fieldStyle?.gap[1] : '' ), ( undefined !== fieldStyle?.gap?.[2] && '' !== fieldStyle?.gap?.[2] ? fieldStyle?.gap[2] : '' ) );
-	styles.previewRowGap = getGapSizeOptionOutput( previewGap, ( fieldStyle?.gapUnit ? fieldStyle.gapUnit : 'px' ) );
+	if ( previewGap ) {
+		styles.previewRowGap = getGapSizeOptionOutput( previewGap, ( fieldStyle?.gapUnit ? fieldStyle.gapUnit : 'px' ) );
+	}
 
 	let paddingTop = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 0 ], fieldStyle?.tabletPadding?.[ 0 ], fieldStyle?.mobilePadding?.[ 0 ] );
 	let paddingRight = getPreviewSize( previewDevice, fieldStyle?.padding?.[ 1 ], fieldStyle?.tabletPadding?.[ 1 ], fieldStyle?.mobilePadding?.[ 1 ] );
@@ -43,7 +48,6 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	styles.paddingBottom = ( '' !== paddingBottom ? paddingBottom + paddingUnit : undefined );
 	styles.paddingLeft = ( '' !== paddingLeft ? paddingLeft + paddingUnit : undefined );
 
-	styles.color = ( undefined !== fieldStyle?.color ? KadenceColorOutput( fieldStyle?.color ) : undefined );
 	styles.placeholderColor = ( undefined !== fieldStyle?.placeholderColor ? KadenceColorOutput( fieldStyle?.placeholderColor ) : undefined );
 
 	styles.borderRadiusTop = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 0 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 0 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 0 ] : '' ) );
@@ -51,6 +55,8 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	styles.borderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 2 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 2 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 2 ] : '' ) );
 	styles.borderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 3 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 3 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 3 ] : '' ) );
 	styles.borderRadiusUnit = fieldBorderRadiusUnit ? fieldBorderRadiusUnit : 'px';
+
+	styles.borderTopWidth = getBorderWidth( previewDevice, 'top', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 
 	styles.borderTopColor = getBorderColor( previewDevice, 'top', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderRightColor = getBorderColor( previewDevice, 'right', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );

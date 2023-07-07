@@ -26,7 +26,10 @@ import {
 	URLInputControl,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
-	ResponsiveRangeControls
+	BackgroundTypeControl,
+	PopColorControl,
+	ResponsiveRangeControls,
+	GradientControl
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -43,6 +46,7 @@ import {
 	InspectorControls,
 	BlockControls,
 	useInnerBlocksProps,
+	InspectorAdvancedControls,
 	BlockVerticalAlignmentControl,
 	JustifyContentControl,
 } from '@wordpress/block-editor';
@@ -58,6 +62,7 @@ import {
 	FieldStyles,
 	SubmitActionOptions,
 	LabelOptions,
+	RadioLabelOptions,
 	HelpTextOptions,
 	MailerLiteOptions,
 	FluentCrmOptions,
@@ -144,7 +149,9 @@ export function EditInner( props ) {
 	const [ marginUnit ] = useFormMeta( '_kad_form_marginUnit' );
 
 	const [ style ] = useFormMeta( '_kad_form_style' );
+	const [ background ] = useFormMeta( '_kad_form_background' );
 	const [ helpFont ] = useFormMeta( '_kad_form_helpFont' );
+	const [ radioLabelFont ] = useFormMeta( '_kad_form_radioLabelFont' );
 	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 
@@ -153,7 +160,9 @@ export function EditInner( props ) {
 	const setMetaAttribute = ( value, key ) => {
 		setMeta( { ...meta, ['_kad_form_' + key]: value } );
 	};
-
+	const saveBackgroundStyle = ( value ) => {
+		setMetaAttribute( { ...background, ...value }, 'background' );
+	};
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
@@ -165,14 +174,21 @@ export function EditInner( props ) {
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== maxWidth?.[0] ? maxWidth[0] : '' ), ( undefined !== maxWidth?.[1] ? maxWidth[1] : '' ), ( undefined !== maxWidth?.[2] ? maxWidth[2] : '' ) );
-
+	const backgroundType = ( undefined !== background?.backgroundType && '' !== background?.backgroundType ? background.backgroundType : 'normal' );
+	let hasBackground = ( 'normal' === backgroundType && undefined !== background?.background && '' !== background?.background ? true : false );
+	if ( ! hasBackground ) {
+		hasBackground = ( 'gradient' === backgroundType && undefined !== background?.gradient && '' !== background?.gradient ? true : false );
+	}
+	const previewBackground = ( 'gradient' === backgroundType ? background?.gradient : background?.background );
 
 	const formClasses = classnames( {
 		'kb-advanced-form'          : true,
 		[ `kb-advanced-form-${id}` ]: true,
 		[ `kb-form${uniqueID}` ]: uniqueID,
 		[ `kb-form-label-style-${style?.labelStyle}` ]: style?.labelStyle,
-		[ `kb-form-basic-style` ]: style?.basicStyle,
+		[ `kb-form-basic-style` ]: ( undefined !== style?.basicStyles && false === style.basicStyles ? false : true ),
+		[ `kb-form-hide-required-asterisk` ]: ( undefined !== style?.showRequired && false === style.showRequired ? true : false ),
+		[ `kb-form-has-background` ]: hasBackground,
 		[ `kb-form-input-size-${style?.size}` ]: style?.size,
 	} );
 
@@ -317,6 +333,7 @@ export function EditInner( props ) {
 				paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
 
 				maxWidth: ( '' !== previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined ),
+				background: ( '' !== previewBackground ? KadenceColorOutput( previewBackground ) : undefined ),
 			}
 		},
 		{
@@ -578,7 +595,14 @@ export function EditInner( props ) {
 						>
 							<LabelOptions styleAttribute={style} setAttributes={setMetaAttribute} labelFont={labelFont}/>
 						</KadencePanelBody>
-
+						{/* Label Styles*/}
+						<KadencePanelBody
+							title={__( 'Radio/Checkbox Labels', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-radio-label-styles'}
+						>
+							<RadioLabelOptions setAttributes={setMetaAttribute} radioLabelFont={radioLabelFont}/>
+						</KadencePanelBody>
 						{/* Help Text Styles*/}
 						<KadencePanelBody
 							title={__( 'Help Text', 'kadence-blocks' )}
@@ -653,6 +677,31 @@ export function EditInner( props ) {
 							initialOpen={true}
 							panelName={ 'kb-adv-form-max-width' }
 						>
+							<BackgroundTypeControl
+								label={ __( 'Background Type', 'kadence-blocks' ) }
+								type={ background?.backgroundType ? background.backgroundType : 'normal' }
+								onChange={ value => saveBackgroundStyle( { backgroundType: value } ) }
+								allowedTypes={ [ 'normal', 'gradient' ] }
+							/>
+							{'gradient' !== background?.backgroundType && (
+								<PopColorControl
+									label={__( 'Background', 'kadence-blocks' )}
+									value={( background?.background ? background.background : '' )}
+									default={''}
+									onChange={ ( value ) => {
+										saveBackgroundStyle( { background: value } );
+									}}
+								/>
+							)}
+							{'gradient' === background?.backgroundType && (
+								<GradientControl
+									value={ background?.gradient }
+									onChange={ value => {
+										saveBackgroundStyle( { gradient: value } );
+									}}
+									gradients={ [] }
+								/>
+							)}
 							<ResponsiveRangeControls
 								label={__( 'Max Width', 'kadence-blocks' )}
 								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
@@ -680,18 +729,20 @@ export function EditInner( props ) {
 								}}
 								units={[ 'px', '%', 'vw' ]}
 							/>
-							<ToggleControl
-								label={ __( 'Enable Basic Form Styles', 'kadence-blocks' ) }
-								help={ __( 'This will apply some basic styles to your form', 'kadence-blocks' ) }
-								checked={ undefined !== style?.basicStyles ? style.basicStyles : true }
-								onChange={( value ) => { setMetaAttribute( { ...style, ...{ basicStyles: value } }, 'style') }}
-							/>
 						</KadencePanelBody>
 					</>
 				}
 
 			</InspectorControls>
-			<BackendStyles uniqueID={uniqueID} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
+			<InspectorAdvancedControls>
+				<ToggleControl
+					label={ __( 'Form Styles', 'kadence-blocks' ) }
+					help={ __( 'Only disable if you intend to control form styles through custom css or theme', 'kadence-blocks' ) }
+					checked={ undefined !== style?.basicStyles ? style.basicStyles : true }
+					onChange={( value ) => { setMetaAttribute( { ...style, ...{ basicStyles: value } }, 'style') }}
+				/>
+			</InspectorAdvancedControls>
+			<BackendStyles uniqueID={uniqueID} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont} radioLabelFont={radioLabelFont} />
 
 			<div {...innerBlocksProps} />
 			<SpacingVisualizer

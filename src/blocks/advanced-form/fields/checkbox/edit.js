@@ -417,7 +417,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 						:
 						<>
 							{times( options.length, n => (
-								<div className={'inline-option-add-item'} key={n}>
+								<div className={'kb-radio-check-item'} key={n}>
 									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} checked={options[ n ].selected}/>
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>

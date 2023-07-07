@@ -1,6 +1,7 @@
 export { default as getPreviewSize } from './get-preview-size';
 export { default as getBorderStyle } from './get-border-style';
 export { default as getBorderColor } from './get-border-color';
+export { default as getBorderWidth } from './get-border-width';
 export { default as advancedGetPreviewSize } from './advanced-get-preview-size';
 export { default as showSettings } from './show-settings';
 export { default as hexToRGBA } from './hex-to-rgba';

@@ -21,7 +21,7 @@ import { plus } from '@wordpress/icons';
 // import { ColorPicker } from '../../color-picker';
 // import { VisuallyHidden } from '../../visually-hidden';
 import ColorPicker from '../../color-picker';
-import { __experimentalHStack as HStack, Button, VisuallyHidden, Popover, Dashicon, Tooltip } from '@wordpress/components';
+import { __experimentalHStack as HStack, Button, VisuallyHidden, Popover, Dashicon, Tooltip, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 import {
 	addControlPoint,
 	clampPercent,
@@ -498,6 +498,27 @@ function ControlPoints( {
 										);
 									} ) }
 								</div>
+							) }
+							{ point?.position !== undefined && (
+								<NumberControl
+									label={__( 'Control Point Position %', 'kadence-blocks' )}
+									value={ point.position }
+									onChange={ ( value ) => {
+										console.log( index, value );
+										onChange(
+											updateControlPointPosition(
+												controlPoints,
+												index,
+												clampPercent(
+													parseFloat( value )
+												)
+											)
+										);
+									}}
+									min={0}
+									step={1}
+									max={100}
+								/>
 							) }
 							{ ! disableRemove && controlPoints.length > 2 && (
 								<HStack

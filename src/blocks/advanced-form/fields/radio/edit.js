@@ -424,14 +424,13 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 						:
 						<>
 							{times( options.length, n => (
-								<div key={n}>
+								<div key={n} className='kb-radio-check-item'>
 									<input
 										type={'radio'}
 										className={'kb-sub-field kb-checkbox-style'}
-										value={options}
+										value={options[ n ].value || options[ n ].label}
 										onChange={( value ) => false}
 									/>
-
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}

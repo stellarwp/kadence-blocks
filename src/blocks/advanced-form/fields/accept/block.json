@@ -22,6 +22,10 @@
 	"defaultValue": {
 	  "type": "string"
 	},
+	"isChecked": {
+		"type": "boolean",
+		"default": false
+	},
 	"defaultParameter": {
 	  "type": "string"
 	},

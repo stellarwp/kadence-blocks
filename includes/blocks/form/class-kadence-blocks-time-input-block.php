@@ -69,7 +69,7 @@ class Kadence_Blocks_Time_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type = 'time';
 		$is_required = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}

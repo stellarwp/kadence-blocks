@@ -63,9 +63,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function field_help_text( $attributes ) {
 		if ( ! empty( $attributes['helpText'] ) ) {
-			return '<div class="' . self::HELP_CLASS_NAME . '">' . $attributes['helpText'] . '</div>
-					<span id="aria-describe' . $attributes['uniqueID'] . '" class="kb-form-aria-describe screen-reader-text">' . $attributes['helpText'] . '</span>';
-
+			return '<div class="' . self::HELP_CLASS_NAME . '"' . ( empty( $attributes['ariaDescription'] ) ? ' id="aria-describe' . $attributes['uniqueID'] . '"' : '' ) . '>' . esc_html( $attributes['helpText'] ) . '</div>';
 		}
 		return '';
 	}
@@ -78,7 +76,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function field_label( $attributes ) {
 		$html = '';
-		if ( ! empty( $this->get_label( $attributes ) ) && ( !isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
+		if ( ! empty( $this->get_label( $attributes ) ) && ( ! isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
 			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . $this->field_name( $attributes ) . '">' . $this->get_label( $attributes );
 
 			if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
@@ -131,6 +129,24 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 *
 	 * @return string
 	 */
+	public function get_accept_default( $attributes ) {
+		$default = $this->get_default( $attributes );
+		if ( empty( $default ) ) {
+			return 'accept';
+		}
+		if ( ! empty( $default ) && ( 'true' === $default || true === $default ) ) {
+			return 'accept';
+		}
+
+		return $default;
+	}
+	/**
+	 * Generate the default attribute
+	 *
+	 * @param $block
+	 *
+	 * @return string
+	 */
 	public function get_default( $attributes ) {
 		$default = '';
 		if ( ! empty( $attributes['defaultValue'] ) ) {
@@ -154,7 +170,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function aria_described_by( $attributes ) {
 
-		if ( ! empty( $attributes['ariaDescription'] ) ) {
+		if ( ! empty( $attributes['ariaDescription'] ) || ! empty( $attributes['helpText'] ) ) {
 			return ' aria-describedby="#aria-describe' . $attributes['uniqueID'] . '"';
 		}
 

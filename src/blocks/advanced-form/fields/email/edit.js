@@ -49,6 +49,8 @@ function FieldEmail( { attributes, setAttributes, isSelected, clientId, context,
 	const classes = classNames( {
 		'kb-adv-form-field': true,
 		'kb-adv-form-text-type-input': true,
+		'kb-adv-form-infield-type-input': true,
+		'kb-form-field-focus': isSelected,
 	});
 	const blockProps = useBlockProps( {
 		className: classes,

@@ -6,8 +6,6 @@ import { RichText } from '@wordpress/block-editor';
 
 const FormFieldLabel = ( { setAttributes, label, showLabel, required } ) => {
 
-	let showRequired = true;
-
 	if( !showLabel ){
 		return (
 			<></>
@@ -26,7 +24,7 @@ const FormFieldLabel = ( { setAttributes, label, showLabel, required } ) => {
 					value={label}
 					multiline={ false }
 				/>
-				{ showRequired && required && <span className={ 'kb-adv-form-required' }>*</span>}
+				{ required && <span className={ 'kb-adv-form-required' }>*</span>}
 		</div>
 	);
 };

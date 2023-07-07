@@ -25,6 +25,9 @@ import {
 	ResponsiveGapSizeControl,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
+import { useSetting } from '@wordpress/block-editor';
+
+import { default as useColorIsDark } from '../../use-color-is-dark';
 
 export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {
 
@@ -36,11 +39,10 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 	const [ fieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
 	const [ tabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
 	const [ mobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
-
+	const colors = useSetting( 'color.palette' );
 	const saveStyle = ( value ) => {
 		setMetaAttribute( { ...style, ...value }, 'style');
 	}
-console.log('style', style);
 	const btnSizes = [
 		{ value: 'small', label: __( 'SM' , 'kadence-blocks') },
 		{ value: 'standard', label: __( 'MD', 'kadence-blocks' ) },
@@ -74,7 +76,7 @@ console.log('style', style);
 	const saveInputFont = ( value ) => {
 		setMetaAttribute( { ...inputFont, ...value }, 'inputFont');
 	};
-
+	
 	return (
 		<>
 			<ResponsiveGapSizeControl
@@ -113,14 +115,6 @@ console.log('style', style);
 							default={''}
 							onChange={( value ) => {
 								saveInputFont( { colorActive: value } );
-							}}
-						/>
-						<PopColorControl
-							label={__( 'Placeholder Color', 'kadence-blocks' )}
-							value={( style?.placeholderColor ? style.placeholderColor : '' )}
-							default={''}
-							onChange={ ( value ) => {
-								saveStyle( { placeholderColor: value } );
 							}}
 						/>
 						<BackgroundTypeControl
@@ -202,8 +196,16 @@ console.log('style', style);
 								saveInputFont( { color: value } );
 							}}
 						/>
+						<PopColorControl
+							label={__( 'Placeholder Color', 'kadence-blocks' )}
+							value={( style?.placeholderColor ? style.placeholderColor : '' )}
+							default={''}
+							onChange={ ( value ) => {
+								saveStyle( { placeholderColor: value } );
+							}}
+						/>
 						<BackgroundTypeControl
-							label={ __( 'Type', 'kadence-blocks' ) }
+							label={ __( 'Background Type', 'kadence-blocks' ) }
 							type={ style?.backgroundType ? style.backgroundType : 'normal' }
 							onChange={ value => saveStyle( { backgroundType: value } ) }
 							allowedTypes={ [ 'normal', 'gradient' ] }
@@ -214,14 +216,17 @@ console.log('style', style);
 								value={( style?.background ? style.background : '' )}
 								default={''}
 								onChange={ ( value ) => {
-									saveStyle( { background: value } );
+									const isColorDark = useColorIsDark( value, colors );
+									saveStyle( { background: value, isDark: isColorDark } );
 								}}
 							/>
 						)}
 						{'gradient' === style?.backgroundType && (
 							<GradientControl
 								value={ style?.gradient }
-								onChange={ value => saveStyle( { gradient: value } ) }
+								onChange={ value => {
+									saveStyle( { gradient: value, isDark: false } ) 
+								}}
 								gradients={ [] }
 							/>
 						)}

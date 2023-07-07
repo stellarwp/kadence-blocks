@@ -1769,7 +1769,6 @@ class Kadence_Blocks_CSS {
 			'fourth_prop' => 'border-left',
 		);
 		$args = wp_parse_args( $args, $defaults );
-
 		$sides_prop_keys = array(
 			'top' => 'first_prop',
 			'right' => 'second_prop',
@@ -1781,14 +1780,15 @@ class Kadence_Blocks_CSS {
 			'tablet',
 			'mobile',
 		);
-
 		foreach ( $sizes as $size ) {
 			$this->set_media_state( $size );
-
 			foreach ( $sides_prop_keys as $side => $prop_key ) {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
+				if ( 'messageBorderError' === $name ) {
+					print_r( $width );
+				}
 				if ( $width ) {
 					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {

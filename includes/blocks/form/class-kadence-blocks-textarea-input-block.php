@@ -71,7 +71,7 @@ class Kadence_Blocks_Textarea_Input_Block extends Kadence_Blocks_Advanced_Form_I
 		$is_required = $this->is_required( $attributes );
 		$rows = ! empty( $attributes['rows'] ) ? $attributes['rows'] : 3;
 
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}

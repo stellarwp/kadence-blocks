@@ -48,6 +48,7 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+		'kb-adv-form-infield-type-input': true,
 	});
 	const blockProps = useBlockProps( {
 		className: classes,

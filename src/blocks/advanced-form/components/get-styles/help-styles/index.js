@@ -18,7 +18,7 @@ export default ( previewDevice, parentHelpStyle ) => {
 		styles.lineHeight = lineHeight + get( parentHelpStyle, 'lineType', '');
 	}
 	let letterSpacing = getPreviewSize( previewDevice, parentHelpStyle?.letterSpacing?.[0], parentHelpStyle?.letterSpacing?.[1], parentHelpStyle?.letterSpacing?.[2] );
-	if( letterSpacing ){
+	if ( letterSpacing ){
 		styles.letterSpacing = letterSpacing + get( parentHelpStyle, 'letterType', 'px');
 	}
 
@@ -26,7 +26,6 @@ export default ( previewDevice, parentHelpStyle ) => {
 	styles.textTransform = parentHelpStyle.textTransform ? parentHelpStyle.textTransform : undefined;
 	styles.fontFamily = parentHelpStyle.family ? parentHelpStyle.family : undefined;
 	styles.fontStyle = parentHelpStyle.fontStyle ? parentHelpStyle.fontStyle : undefined;
-	styles.letterSpacing = parentHelpStyle.letterSpacing ? parentHelpStyle.letterSpacing + 'px' : undefined;
 
 	styles.paddingTop = ( '' !== parentHelpStyle.padding[0] ? parentHelpStyle.padding[0] + 'px' : undefined );
 	styles.paddingRight = ( '' !== parentHelpStyle.padding[1] ? parentHelpStyle.padding[1] + 'px' : undefined );

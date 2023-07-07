@@ -73,7 +73,7 @@ class Kadence_Blocks_Email_Input_Block extends Kadence_Blocks_Advanced_Form_Inpu
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type = 'email';
 		$is_required = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
