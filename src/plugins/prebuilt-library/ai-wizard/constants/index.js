@@ -161,3 +161,20 @@ export const LOCATION_TYPES = [
 	},
 ];
 
+export const MISSION_STATEMENT_GOAL = 300;
+
+export const MISSION_STATEMENT_STATUS = {
+	'weak': {
+		color: '#DF3416',
+		message: __( 'For better, more accurate copy enter a bit more content.', 'kadence-blocks' ),
+	},
+	'medium': {
+		color: '#B35F00',
+		message: __( 'This is a great start. Try adding to your mission statement a bit more if you can.', 'kadence-blocks' ),
+	},
+	'strong': {
+		color: '#1B8F6D',
+		message: __( 'Excellent work, this should help generate great content!', 'kadence-blocks' )
+	}
+}
+

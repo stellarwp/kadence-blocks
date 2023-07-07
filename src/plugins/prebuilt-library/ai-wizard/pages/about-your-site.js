@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { useEffect, useState } from '@wordpress/element';
 import { Flex, FlexBlock } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -10,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 import {
   FormSection,
 	Slider,
-	TextareaControl
+	TextareaProgress
 } from '../components';
 import {
 	Education4All,
@@ -18,7 +19,11 @@ import {
 	Prospera,
 	SpencerSharp
 } from './slides/about-your-site';
-import { ENTITY_TYPE_INDIVIDUAL } from '../constants';
+import {
+	ENTITY_TYPE_INDIVIDUAL,
+	MISSION_STATEMENT_STATUS,
+	MISSION_STATEMENT_GOAL
+} from '../constants';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import backgroundImage from '../assets/spa-bg.jpg';
 
@@ -40,10 +45,6 @@ const styles = {
 		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	keywordsLength: {
-		'good': 'green',
-		'poor': 'red',
 	}
 }
 
@@ -56,10 +57,30 @@ const entityToTitle = {
 };
 
 export function AboutYourSite() {
+	const [ indicator, setIndicator ] = useState();
+	const [ progress, setProgress ] = useState(0);
+
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType } = state;
 	// Compose title based on entityType value.
 	const customTitle = `${ title }${ entityType === ENTITY_TYPE_INDIVIDUAL ? '' : ' '}${ entityToTitle[ entityType ] }`
+
+	useEffect(() => {
+		const progress = Math.round((missionStatement.length/MISSION_STATEMENT_GOAL) * 100);
+		const statementProgress = progress >= 100 ? 100 : progress;
+
+		if (statementProgress < 50) {
+			setIndicator('weak')	
+		}
+		if (statementProgress >= 50) {
+			setIndicator('medium')	
+		}
+		if (statementProgress == 100) {
+			setIndicator('strong')	
+		}
+
+		setProgress( statementProgress );
+	}, [ missionStatement ])
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -73,17 +94,22 @@ export function AboutYourSite() {
 							headline={ customTitle }
 							content={ content }
 						>
-							<TextareaControl
-								style={{ height: 440 }}
-								label={ __('About Me/My Organization/My Project', 'kadence-blocks') }
+							<TextareaProgress
+								label={ customTitle }
 								hideLabelFromVision
 								placeholder="..."
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
+								showProgressBar={ missionStatement && missionStatement.length > 0 }
+								progressBarProps={{
+									value: progress,
+									color: MISSION_STATEMENT_STATUS?.[ indicator ]?.color ? MISSION_STATEMENT_STATUS[ indicator ].color : 'red',
+									message: MISSION_STATEMENT_STATUS?.[ indicator ]?.message ? MISSION_STATEMENT_STATUS[ indicator ].message : ''
+								}}
 							/>
 						</FormSection>
 					</FlexBlock>
-			</Flex>
+				</Flex>
 			</FlexBlock>
 			<FlexBlock display="flex">
 				<Flex justify="center">
