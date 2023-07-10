@@ -25,6 +25,14 @@
       "default": "",
       "__experimentalRole": "content"
     },
+	"linkNoFollow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"linkSponsored": {
+	  "type": "boolean",
+	  "default": false
+	},
     "target": {
       "type": "string",
       "default": "_self",

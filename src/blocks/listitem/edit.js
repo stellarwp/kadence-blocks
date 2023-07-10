@@ -61,6 +61,8 @@ function KadenceListItem( props ) {
         uniqueID,
         icon,
         link,
+		linkNoFollow,
+		linkSponsored,
         target,
         size,
         width,
@@ -174,7 +176,11 @@ function KadenceListItem( props ) {
                                     setAttributes({target: '_self'});
                                 }
                             }}
-                            dynamicAttribute={'link'}
+							linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
+							onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
+							linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
+							onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
+							dynamicAttribute={'link'}
                             allowClear={true}
                             isSelected={ isSelected }
                             attributes={ attributes }

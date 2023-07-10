@@ -79,6 +79,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.1.1 Alpha Version 2 =
 Release Date: July 12th, 2023
+* Add: No follow & Sponsored options to links in icon list.
 * Fix: Media styles not copy/pasting properly for Info Box.
 
 = 3.1.0 Alpha Version 1 =
