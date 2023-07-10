@@ -194,6 +194,11 @@ $react-slidy-mh: 50px !default;
   flex-grow: 1;
   padding: 100px 32px 32px 32px;
   border-radius: 20px;
+  background-size: cover;
+  -webkit-transition: background 200ms ease-in-out 300ms;
+  -moz-transition: background 200ms ease-in-out 300ms;
+  -o-transition: background 200ms ease-in-out 300ms;
+  transition: background 200ms ease-in-out 300ms;
 
   &:not(.has-background) {
     background: $color-gray-500;
@@ -203,11 +208,13 @@ $react-slidy-mh: 50px !default;
     position: absolute;
     top: 32px;
     margin: 0 auto 32px auto;
-    padding: 8px;
+    padding: 8px 12px;
     border-radius: 18px;
     background: $color-black;
     color: $color-white;
     font-size: 13px;
+    line-height: 1;
     z-index: 10;
   }
 }
+

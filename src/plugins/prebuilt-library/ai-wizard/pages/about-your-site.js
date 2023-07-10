@@ -22,10 +22,10 @@ import {
 import {
 	ENTITY_TYPE_INDIVIDUAL,
 	MISSION_STATEMENT_STATUS,
-	MISSION_STATEMENT_GOAL
+	MISSION_STATEMENT_GOAL,
+	INDUSTRY_BACKGROUNDS
 } from '../constants';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -59,7 +59,7 @@ const entityToTitle = {
 export function AboutYourSite() {
 	const [ indicator, setIndicator ] = useState();
 	const [ progress, setProgress ] = useState(0);
-
+	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType } = state;
 	// Compose title based on entityType value.
@@ -115,8 +115,9 @@ export function AboutYourSite() {
 				<Flex justify="center">
 					<FlexBlock style={ styles.rightContent }>
 						<Slider
-							backgroundImage={ backgroundImage }
+							backgroundImage={ INDUSTRY_BACKGROUNDS[ backgroundImage ] }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							doBeforeSlide={ (data) => setBackgroundImage( data.nextSlide ) }
 							slides={[
 								<HealingTouch />,
 								<SpencerSharp />,

@@ -21,9 +21,8 @@ import {
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { useSelectPlacement } from '../hooks/use-select-placement';
-import { CONTENT_TONE } from '../constants';
+import { CONTENT_TONE, INDUSTRY_BACKGROUNDS } from '../constants';
 import { SlideOne, SlideTwo, SlideThree, SlideFour } from './slides/the-details';
-import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -137,7 +136,7 @@ export function TheDetails() {
 				<Flex justify="center">
 					<FlexBlock style={ styles.rightContent }>
 						<Slider
-							backgroundImage={ backgroundImage }
+							backgroundImage={ INDUSTRY_BACKGROUNDS[ 0 ] }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
 							slides={[
 								<SlideOne />,

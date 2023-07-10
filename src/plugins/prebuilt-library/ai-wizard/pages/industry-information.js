@@ -30,16 +30,16 @@ import {
 	LOCATION_TYPES,
 	LOCATION_BUSINESS_ADDRESS,
 	LOCATION_SERVICE_AREA,
-	LOCATION_ONLINE_ONLY
+	LOCATION_ONLINE_ONLY,
+	INDUSTRY_BACKGROUNDS
 } from '../constants';
-import INDUSTRIES from '../constants/industries-v1';
+import INDUSTRIES from '../constants/industries';
 import {
 	Education4All,
 	HealingTouch,
 	Prospera,
 	SpencerSharp
 } from './slides/industry-information';
-import backgroundImage from '../assets/spa-bg.jpg';
 
 const styles = {
 	container: {
@@ -78,6 +78,7 @@ export function IndustryInformation() {
 	const [ pageRef, setPageRef ] = useState( null );
 	const [ controlRef, setControlRef ] = useState( null );
 	const [ currentIndustry, setCurrentIndustry ] = useState( null );
+	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { menuHeight, menuPlacement } = useSelectPlacement(pageRef, controlRef);
 	const { state, dispatch } = useKadenceAi();
 	const {
@@ -212,8 +213,9 @@ export function IndustryInformation() {
 				<Flex justify="center">
 					<FlexBlock style={ styles.rightContent }>
 						<Slider
-							backgroundImage={ backgroundImage }
+							backgroundImage={ INDUSTRY_BACKGROUNDS[ backgroundImage ] }
 							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							doBeforeSlide={ (data) => setBackgroundImage( data.nextSlide ) }
 							slides={[
 								<HealingTouch />,
 								<SpencerSharp />,

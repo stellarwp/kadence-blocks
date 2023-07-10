@@ -33,7 +33,15 @@ function CustomArrowRight(props) {
   return <CustomArrow { ...props } icon="arrow-right-alt2" />
 }
 
-export function Slider({ slides = [], text, backgroundImage }) {
+export function Slider(props) {
+	const {
+		slides = [],
+		text,
+		backgroundImage,
+		doAfterSlide = () => {},
+		doBeforeSlide = () => {}
+	} = props;
+
 	if (! slides.length) {
 		return;
 	}
@@ -53,6 +61,8 @@ export function Slider({ slides = [], text, backgroundImage }) {
 				infiniteLoop
 				ArrowLeft={ CustomArrowLeft }
 				ArrowRight={ CustomArrowRight }
+				doAfterSlide={ doAfterSlide }
+				doBeforeSlide={ doBeforeSlide }
 			>
 				{
 					slides.map((slide) => slide )

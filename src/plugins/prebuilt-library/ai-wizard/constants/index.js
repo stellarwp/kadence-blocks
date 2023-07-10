@@ -4,6 +4,14 @@
 import { __ } from '@wordpress/i18n';
 import { store, mapMarker, desktop } from '@wordpress/icons';
 
+/**
+ * Internal dependencies
+ */
+import BusinessBg from '../assets/business-bg.jpg';
+import EducationBg from '../assets/education-bg.jpg';
+import SpaBg from '../assets/spa-bg.jpg';
+import TaxesBg from '../assets/taxes-bg.jpg';
+
 const BASE_URL = 'http://prophecywp.lndo.site'; // @todo Remove local BASE_URL.
 
 export const PROPHECY_ROUTE_GET_COLLECTIONS = `${ BASE_URL }/wp-json/prophecy/v1/images/collections`;
@@ -178,3 +186,4 @@ export const MISSION_STATEMENT_STATUS = {
 	}
 }
 
+export const INDUSTRY_BACKGROUNDS = [ SpaBg, BusinessBg, TaxesBg, EducationBg ];
