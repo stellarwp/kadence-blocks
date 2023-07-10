@@ -22,7 +22,7 @@ import {
 } from '@kadence/icons';
 import classnames from 'classnames';
 
-import { debounce, map, get } from 'lodash';
+import { debounce, map, get, has } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -1092,11 +1092,21 @@ function KadenceInfoBox( props ) {
 	};
 	const onPaste = ( attributesToPaste ) => {
 		if ( attributesToPaste ) {
-			if ( attributesToPaste.mediaImage ) {
+			if ( attributesToPaste.mediaImage && has( attributesToPaste, [ 'mediaIcon', '0'] ) ) {
+				delete attributesToPaste.mediaImage[0].url;
+				delete attributesToPaste.mediaImage[0].id;
+				delete attributesToPaste.mediaImage[0].alt;
+				delete attributesToPaste.mediaImage[0].flipUrl;
+				delete attributesToPaste.mediaImage[0].flipId;
+				delete attributesToPaste.mediaImage[0].flipAlt;
+
 				saveMediaImage( attributesToPaste.mediaImage[ 0 ] );
 				delete attributesToPaste.mediaImage;
 			}
-			if ( attributesToPaste.mediaIcon ) {
+			if ( attributesToPaste.mediaIcon && has( attributesToPaste, [ 'mediaIcon', '0'] ) ) {
+				delete attributesToPaste.mediaIcon[0].icon;
+				delete attributesToPaste.mediaIcon[0].title;
+				delete attributesToPaste.mediaIcon[0].flipIcon;
 				saveMediaIcon( attributesToPaste.mediaIcon[ 0 ] );
 				delete attributesToPaste.mediaIcon;
 			}
@@ -1237,7 +1247,7 @@ function KadenceInfoBox( props ) {
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType', 'mediaImage', 'mediaIcon' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {

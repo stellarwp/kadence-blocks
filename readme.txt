@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.2 Alpha Version 2 =
+Release Date: July 12th, 2023
+* Fix: Media styles not copy/pasting properly for Info Box.
+
 = 3.1.0 Alpha Version 1 =
 Release Date: June 15th, 2023
 * Add: Advanced Form Block.
@@ -143,13 +147,13 @@ Release Date: April 27th, 2023
 
 = 3.0.34 =
 Release Date: April 24th, 2023
-* Update: Design library to use shadow dom. 
+* Update: Design library to use shadow dom.
 * Update: Filter for custom palette.
 * Fix: Issue with image crop.
 * Fix: Issue with testimonial media border radius in admin.
 * Fix: Accordion output styles.
 * Fix: Possible max width issue with sections.
-* Fix: Issue with typed text script. 
+* Fix: Issue with typed text script.
 * Fix: Issue with row background override in editor on mobile.
 * Fix: Issue with some columns in gallery when using individual settings.
 
