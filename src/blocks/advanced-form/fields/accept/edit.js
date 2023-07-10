@@ -30,6 +30,7 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 		label,
 		showLabel,
 		defaultValue,
+		isChecked,
 		helpText,
 		ariaDescription,
 		maxWidth,
@@ -124,16 +125,22 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 									checked={showLabel}
 									onChange={( value ) => setAttributes( { showLabel: value } )}
 								/>
+								<TextControl
+									label={__( 'Accept Statement', 'kadence-blocks' )}
+									value={description}
+									placeholder={__( 'Opt me in!', 'kadence-blocks' )}
+									onChange={( value ) => setAttributes( { description: value } )}
+								/>
 								<TextareaControl
 									label={__( 'Description', 'kadence-blocks' )}
 									help={ __( 'This will be displayed under the input and can be used to provide direction on how the field should be filled out.', 'kadence-blocks' )}
 									value={helpText}
 									onChange={( value ) => setAttributes( { helpText: value } )}
 								/>
-								<TextControl
-									label={__( 'Field Placeholder', 'kadence-blocks' )}
-									value={placeholder}
-									onChange={( value ) => setAttributes( { placeholder: value } )}
+								<ToggleControl
+									label={__( 'Start checked?', 'kadence-blocks' )}
+									checked={( undefined !== isChecked ? isChecked : false )}
+									onChange={( value ) => setAttributes( { isChecked: value } )}
 								/>
 								<FormInputControl
 									label={__( 'Default Value', 'kadence-blocks' )}
@@ -220,6 +227,7 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl
@@ -249,25 +257,29 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 						name={name}
 					/>
 
-					<div>
+					<div className='kb-radio-check-item'>
 						<input
 							type={'checkbox'}
 							className={'kb-field'}
 							value={ defaultPreview }
 							placeholder={placeholder}
+							checked={ ( undefined !== isChecked ? isChecked : false ) }
 							onChange={( value ) => false}
-						/>{ ' ' }
-						<RichText
-							className={'kadence-field-label__input'}
-							onChange={( value ) => {
-								setAttributes( { description: value } );
-							}}
-							placeholder={__( 'Opt me in!', 'kadence-blocks' )}
-							allowedFormats={[ 'core/bold', 'core/italic', 'core/link', 'core/underline' ]}
-							tagName="span"
-							value={description}
-							multiline={false}
 						/>
+						<label>
+							<RichText
+								className={'kadence-field-label__input'}
+								onChange={( value ) => {
+									setAttributes( { description: value } );
+								}}
+								placeholder={__( 'Opt me in!', 'kadence-blocks' )}
+								allowedFormats={[ 'core/bold', 'core/italic', 'core/link', 'core/underline' ]}
+								tagName="span"
+								value={description}
+								multiline={false}
+							/>
+							{ ! showLabel && required && <span className={ 'kb-adv-form-required' }>*</span>}
+						</label>
 					</div>
 
 					{helpText && <span className="kb-adv-form-help">{helpText}</span>}

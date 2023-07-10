@@ -23,6 +23,7 @@ import {
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 import { times, filter } from 'lodash';
+import { plus } from '@wordpress/icons';
 
 function FieldRadio( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 	const { uniqueID, required, label, showLabel, options, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
@@ -157,20 +158,18 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 								initialOpen={ true }
 								panelName={ 'kb-adv-form-radio-options' }
 							>
-								<div className="kb-field-options-wrap">
+								<div className="kb-adv-field-options-wrap">
 									{times( options.length, n => (
-										<div className="field-options-wrap">
-
-											{ n !== 0 && <hr/> }
-											<h2>{__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 )}</h2>
+										<div key={n} className="kb-adv-field-option">
 											<TextControl
-												label={__( 'Label', 'kadence-blocks' )}
+												className={'kb-option-text-control'}
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'label', 'kadence-blocks') }
 												placeholder={__( 'Option', 'kadence-blocks' )}
 												value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
 												onChange={( text ) => updateOption( n, { label: text } )}
 											/>
 											<TextControl
-												label={__( 'Value', 'kadence-blocks' )}
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'value', 'kadence-blocks') }
 												placeholder={options[ n ].label}
 												value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
 												onChange={( text ) => updateOption( n, { value: text } )}
@@ -205,7 +204,8 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 								</div>
 								<Button
 									className="kb-add-option"
-									isPrimary={true}
+									variant="primary"
+									icon={ plus }
 									onClick={() => {
 										let newOptions = options;
 										newOptions.push( {
@@ -216,7 +216,6 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 										setRerender( Math.random() );
 									}}
 								>
-									<Dashicon icon="plus"/>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
 							</KadencePanelBody>
@@ -356,6 +355,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl
@@ -389,7 +389,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 					{isSelected ?
 						<div className={'kb-form-multi'}>
 							{times( options.length, n => (
-								<div className={'kb-checkbox-item'} key={n}>
+								<div className={'inline-option-add-item'} key={n}>
 									<input
 										type={'radio'}
 										className={'kb-sub-field kb-checkbox-style'}
@@ -405,7 +405,8 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 							) )}
 
 							<Button
-								variant={'primary'}
+								variant="primary"
+								icon={ plus }
 								className={'kb-form-multi__add-option'}
 								onClick={() => {
 									let newOptions = options;
@@ -417,21 +418,19 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 									setRerender( Math.random() );
 								}}
 							>
-								<Dashicon icon="plus"/>
 								{__( 'Add Option', 'kadence-blocks' )}
 							</Button>
 						</div>
 						:
 						<>
 							{times( options.length, n => (
-								<div key={n}>
+								<div key={n} className='kb-radio-check-item'>
 									<input
 										type={'radio'}
 										className={'kb-sub-field kb-checkbox-style'}
-										value={options}
+										value={options[ n ].value || options[ n ].label}
 										onChange={( value ) => false}
 									/>
-
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}

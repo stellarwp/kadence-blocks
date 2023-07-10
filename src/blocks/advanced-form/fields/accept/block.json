@@ -1,4 +1,5 @@
 {
+  "apiVersion": 2,
   "name": "kadence/advanced-form-accept",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -20,6 +21,10 @@
 	},
 	"defaultValue": {
 	  "type": "string"
+	},
+	"isChecked": {
+		"type": "boolean",
+		"default": false
 	},
 	"defaultParameter": {
 	  "type": "string"

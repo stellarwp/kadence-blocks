@@ -46,6 +46,7 @@ function FieldTime( { attributes, setAttributes, isSelected, clientId, context, 
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+		'kb-adv-form-infield-type-input': true,
 	});
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -221,6 +222,7 @@ function FieldTime( { attributes, setAttributes, isSelected, clientId, context, 
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl

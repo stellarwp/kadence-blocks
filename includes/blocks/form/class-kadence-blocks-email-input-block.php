@@ -9,7 +9,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
+/**
+ * Class to Build the Accordion Block.
+ *
+ * @category class
+ */
 class Kadence_Blocks_Email_Input_Block extends Kadence_Blocks_Advanced_Form_Input_Block {
 
 	/**
@@ -69,7 +73,7 @@ class Kadence_Blocks_Email_Input_Block extends Kadence_Blocks_Advanced_Form_Inpu
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type = 'email';
 		$is_required = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -79,9 +83,8 @@ class Kadence_Blocks_Email_Input_Block extends Kadence_Blocks_Advanced_Form_Inpu
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content  = '';
 		$inner_content .= $this->field_label( $attributes );
+		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers( $attributes ) . '/>';
 		$inner_content .= $this->field_aria_label( $attributes );
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers($attributes) . '/>';
-
 		$inner_content .= $this->field_help_text( $attributes );
 
 		$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $inner_content );

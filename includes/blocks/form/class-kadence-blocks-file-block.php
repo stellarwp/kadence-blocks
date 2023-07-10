@@ -69,7 +69,7 @@ class Kadence_Blocks_File_Block extends Kadence_Blocks_Advanced_Form_Input_Block
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type          = 'file';
 		$is_required   = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -80,7 +80,7 @@ class Kadence_Blocks_File_Block extends Kadence_Blocks_Advanced_Form_Input_Block
 		$inner_content      = '';
 		$inner_content      .= $this->field_label( $attributes );
 		$inner_content      .= $this->field_aria_label( $attributes );
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers($attributes) . '/>';
+		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers( $attributes ) . '/>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

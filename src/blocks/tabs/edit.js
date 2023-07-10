@@ -1260,7 +1260,11 @@ function KadenceTabs( props ) {
 												<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 														  activeClass="active-tab"
 														  initialTabName={widthType}
-														  onSelect={value => setAttributes({widthType: value})}
+														  onSelect={(value) => {
+															if( value !== widthType) {
+																setAttributes({widthType: value});
+															}
+														  }}
 														  tabs={[
 															  {
 																  name: 'normal',

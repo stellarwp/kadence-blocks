@@ -23,9 +23,10 @@ import {
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 import { times, get, filter } from 'lodash';
+import { plus } from '@wordpress/icons';
 
 function FieldSelect( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, options, multiSelect, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, placeholder, options, multiSelect, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 	const [ rerender, setRerender ] = useState( 0 );
 
@@ -112,6 +113,7 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+		'kb-adv-form-infield-type-input': true,
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -157,54 +159,56 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 								initialOpen={true}
 								panelName={ 'kb-adv-form-select-options' }
 							>
-								{ times( options.length, n => (
-									<div className="field-options-wrap">
+								<div className="kb-adv-field-options-wrap">
+									{times( options.length, n => (
+										<div key={n} className="kb-adv-field-option">
 
-										<TextControl
-											className={'kb-option-text-control'}
-											key={n}
-											label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'label', 'kadence-blocks') }
-											placeholder={__( 'Option', 'kadence-blocks' )}
-											value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
-											onChange={( text ) => updateOption( n, { label: text } )}
-										/>
-										<TextControl
-											label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'value', 'kadence-blocks') }
-											placeholder={options[ n ].label}
-											value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
-											onChange={( text ) => updateOption( n, { value: text } )}
-										/>
-										<div className="kadence-blocks-list-item__control-menu">
-											<Button
-												icon="arrow-up"
-												onClick={n === 0 ? undefined : onOptionMoveUp( n )}
-												className="kadence-blocks-list-item__move-up"
-												label={__( 'Move Item Up' )}
-												aria-disabled={n === 0}
-												disabled={n === 0}
+											<TextControl
+												className={'kb-option-text-control'}
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'label', 'kadence-blocks') }
+												placeholder={__( 'Option', 'kadence-blocks' )}
+												value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
+												onChange={( text ) => updateOption( n, { label: text } )}
 											/>
-											<Button
-												icon="arrow-down"
-												onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
-												className="kadence-blocks-list-item__move-down"
-												label={__( 'Move Item Down' )}
-												aria-disabled={( n + 1 ) === options.length}
-												disabled={( n + 1 ) === options.length}
+											<TextControl
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'value', 'kadence-blocks') }
+												placeholder={options[ n ].label}
+												value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
+												onChange={( text ) => updateOption( n, { value: text } )}
 											/>
-											<Button
-												icon="no-alt"
-												onClick={() => removeOptionItem( n )}
-												className="kadence-blocks-list-item__remove"
-												label={__( 'Remove Item' )}
-												disabled={1 === options.length}
-											/>
+											<div className="kadence-blocks-list-item__control-menu">
+												<Button
+													icon="arrow-up"
+													onClick={n === 0 ? undefined : onOptionMoveUp( n )}
+													className="kadence-blocks-list-item__move-up"
+													label={__( 'Move Item Up' )}
+													aria-disabled={n === 0}
+													disabled={n === 0}
+												/>
+												<Button
+													icon="arrow-down"
+													onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
+													className="kadence-blocks-list-item__move-down"
+													label={__( 'Move Item Down' )}
+													aria-disabled={( n + 1 ) === options.length}
+													disabled={( n + 1 ) === options.length}
+												/>
+												<Button
+													icon="no-alt"
+													onClick={() => removeOptionItem( n )}
+													className="kadence-blocks-list-item__remove"
+													label={__( 'Remove Item' )}
+													disabled={1 === options.length}
+												/>
+											</div>
 										</div>
-									</div>
-								) )}
+									) )}
+								</div>
 
 								<Button
 									className="kb-add-option"
-									isPrimary={true}
+									variant="primary"
+									icon={ plus }
 									onClick={() => {
 										const newOptions = options;
 										newOptions.push( {
@@ -215,7 +219,6 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 										setRerender( Math.random() );
 									}}
 								>
-									<Dashicon icon="plus"/>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
 
@@ -252,6 +255,11 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 									help={ __( 'This will be displayed under the input and can be used to provide direction on how the field should be filled out.', 'kadence-blocks' )}
 									value={helpText}
 									onChange={( value ) => setAttributes( { helpText: value } )}
+								/>
+								<TextControl
+									label={__( 'Select Placeholder', 'kadence-blocks' )}
+									value={placeholder}
+									onChange={( value ) => setAttributes( { placeholder: value } )}
 								/>
 								<FormInputControl
 									label={__( 'Default Value', 'kadence-blocks' )}
@@ -339,6 +347,7 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl
@@ -371,7 +380,7 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 					{isSelected ?
 						<div className={'kb-form-multi'}>
 							{times( options.length, n => (
-								<div key={n}>
+								<div className={ 'inline-option-add-item' } key={n}>
 									<input key={'text' + n} type={'text'} value={options[ n ].label} className={'ignore-field-styles'}
 										   onChange={( value ) => updateOption( n, { label: value.target.value } )}/>
 									<Button onClick={() => removeOptionItem( n )}>
@@ -381,7 +390,8 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 							) )}
 
 							<Button
-								variant={'primary'}
+								variant="primary"
+								icon={ plus }
 								className={'kb-form-multi__add-option'}
 								onClick={() => {
 									const newOptions = options;
@@ -393,7 +403,6 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 									setRerender( Math.random() );
 								}}
 							>
-								<Dashicon icon="plus"/>
 								{__( 'Add Option', 'kadence-blocks' )}
 							</Button>
 						</div>

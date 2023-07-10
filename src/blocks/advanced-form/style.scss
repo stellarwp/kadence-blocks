@@ -4,7 +4,203 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ // Basic Styles.
+ .kb-form-basic-style {
+	font-size: var( --kb-form-font-size, 1rem );
+	line-height: var( --kb-form-line-height, 1.6 );
+	textarea {
+		width: 100%;
+	}
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	input[type="file"],
+	textarea {
+		-webkit-appearance: none;
+		color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
+		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		font-size: var( --kb-form-font-size, 1rem );
+		line-height: var( --kb-form-line-height, 1.6 );
+		border-radius: var( --kb-form-border-radius, 3px );
+		padding: var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
+		max-width: 100%;
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+		font-family: inherit;
+	}
+	input[type="text"]:focus,
+	input[type="email"]:focus,
+	input[type="url"]:focus,
+	input[type="password"]:focus,
+	input[type="search"]:focus,
+	input[type="number"]:focus,
+	input[type="tel"]:focus,
+	input[type="range"]:focus,
+	input[type="date"]:focus,
+	input[type="month"]:focus,
+	input[type="week"]:focus,
+	input[type="time"]:focus,
+	input[type="datetime"]:focus,
+	input[type="datetime-local"]:focus,
+	input[type="color"]:focus,
+	input[type="file"]:focus,
+	textarea:focus {
+		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a) ) );
+		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
+		outline: 0;
+		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+		background:var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff ) ) );
+	}
+	select {
+		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		background-size: 16px 100%;
+		padding: var( --kb-form-v-padding, 0.4em ) 35px var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
+		font-size: var( --kb-form-font-size, 1rem );
+		line-height: var( --kb-form-line-height, 1.6 );
+		border-radius: var( --kb-form-border-radius, 3px );
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) ) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat calc(100% - 6px) 50%;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		box-shadow: none;
+		outline: 0;
+		font-family: inherit;
+		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+	}
+	select::-ms-expand {
+		display: none;
+	}
+	select:focus {
+		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a) ) );
+		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
+		background:var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff ) ) ) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat calc(100% - 6px) 50%;
+		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+		outline: 0;
+		// Fix for firefox if the color palette is dark.
+		option {
+			color: #333;
+		}
+	}
+	button {
+		line-height: var( --kb-form-line-height, 1.6 );;
+	}
+	::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	::-moz-placeholder { /* Firefox 19+ */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+		opacity: 1;
+	}
+	:-ms-input-placeholder { /* IE 10+ */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	:-moz-placeholder { /* Firefox 18- */
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	::placeholder {
+		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
+	}
+	input[type="radio"], input[type="checkbox"] {
+		/* Add if not using autoprefixer */
+		-webkit-appearance: none;
+		/* Remove most all native input styles */
+		appearance: none;
+		/* For iOS < 15 */
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+		/* Not removed via appearance */
+		margin: 0;
+		color: currentColor;
+		width: .9em;
+		height: .9em;
+		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
+		border-radius: 50%;
+		transform: translateY(-0.18em);
+		display: grid;
+		place-content: center;
+		min-width: 0.8em;
+	  }
+	  input[type="checkbox"] {
+		transform: translateY(-0.075em);
+		border-radius: var(--kb-form-border-radius, 3px );
+	  }
+	  input[type="radio"]::before, input[type="checkbox"]::before {
+		content: "";
+		width: 0.3em;
+		height: 0.3em;
+		border-radius: 50%;
+		transform: scale(0);
+		transition: 120ms transform ease-in-out;
+		box-shadow: inset 1em 1em var(--kb-form-check-color, #fff );
+		/* Windows High Contrast Mode */
+		background-color: CanvasText;
+	}
+	input[type="checkbox"]::before {
+		clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+		border-radius: var(--kb-form-border-radius, 3px );
+		width: 0.5em;
+		height: 0.5em;
+	}
+	input[type="radio"]:checked, input[type="checkbox"]:checked {
+		border-color: var(--kb-form-check-highlight-color, #0c5aff );
+		background: var(--kb-form-check-highlight-color, #0c5aff );
+	}
+	input[type="radio"]:checked::before, input[type="checkbox"]:checked::before {
+		transform: scale(1);
+	}
+	input[type="radio"]:focus, input[type="checkbox"]:focus {
+		outline-offset: 3px;
+	}
+	.kb-radio-check-item {
+		display: flex;
+		margin: 0;
+		align-items: baseline;
+		label {
+			flex-grow: 1;
+			padding-left: 0.4em;
+			font-size: 90%;
+			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
+		}
+	}
+	input[type=file]::file-selector-button {
+		margin-right: 1em;
+		border: none;
+		font-size: 90%;
+		padding: var( --kb-form-btn-v-padding, 0.2em ) var( --kb-form-btn-h-padding, 1em );
+		border-radius: var(--kb-form-border-radius, 3px );
+		cursor: pointer;
+		transition: background .2s ease-in-out;
+	}
+	.kb-adv-form-help {
+		color: var(--kb-form-help-color, var(--global-palette6, #777) );
+		margin: 2px 0 2px 0;
+		font-size: 80%;
+		font-style: italic;
+		display: block;
+	}
+	input.has-error:not(:focus):invalid {
+		border-color: var(--kb-form-error-color, #be001b ) !important;
+	}
+ }
+ // Forced Basic Styles.
 .wp-block-kadence-advanced-form {
+	&.kb-form-has-background {
+		padding: 1em;
+	}
+	.kb-form-hide-required-asterisk .kb-adv-form-required {
+		display: none;
+	}
 	.kb-advanced-form {
 		display: flex;
 		flex-direction: column;
@@ -13,84 +209,36 @@
 		position: relative;
 		> * {
 			margin-bottom: 0;
+			margin-top: 0;
 		}
 	}
 	select {
 		max-width: unset;
 	}
-
 	.kb-adv-form-required {
 		margin-left: 2px;
 		color: #b32d2e;
 	}
-
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
-		.kb-checkbox-style, .kb-radio-style {
-			padding: 0;
-			background-color: initial;
-			cursor: default;
-			-webkit-appearance: auto;
-			appearance: auto;
-			box-sizing: border-box;
-			margin: 3px 5px 3px 0;
-			border-color: var(--global-gray-500, #818a91);
-			box-shadow: none;
-			width: auto;
-
-			&:before {
-				display: none;
-			}
-		}
-		.kb-radio-item {
-			display: flex;
-			margin: 0;
-			align-items: center;
-		}
-		.kb-adv-form-help {
-			color: var(--global-palette6, #777);
-			margin: 2px 0 2px 0;
-			font-size: 80%;
-			font-style: italic;
-			display: block;
-		}
-
 		&.kb-submit-field {
 			flex-direction: initial;
 		}
 	}
 
 	.kb-form-multi {
-
 		margin-bottom: 10px;
 		display: block !important;
-
 		.components-base-control {
 			display: inline;
 		}
-
 		.components-base-control__field {
 			display: inline;
-
 			input {
 				display: inline;
 			}
 		}
-
-		.dashicons.dashicons-trash {
-			margin-left: 0px;
-		}
-
-		input[type=text] {
-			width: 75%;
-		}
-
-		&__add-option {
-			margin-top: 15px;
-		}
-
-
 	}
 	.kb-adv-form-loading {
 		position: absolute;
@@ -160,36 +308,106 @@
 		transform: translate(19px, 0);
 	}
 }
-.kb-adv-form-warning {
-	background: #fff5f5;
-	padding: 1em;
-	border-radius: 2px;
-	border: 1px solid #fc8181;
-	color: #c53030;
-}
-
-.kb-adv-form-error-msg {
-	background: #fff5f5;
-	padding: 0.7em;
-	border-radius: 2px;
-	border: 1px solid #fc8181;
-	color: #c53030;
-	width: 100%;
-	text-align: left;
-}
-
-.kb-adv-form-has-error {
-	align-items: flex-start;
-}
-
-.kb-adv-form-field .kb-text-style-field.has-error:not(.missingclass) {
-	border-color: #c53030;
-}
-
 .kb-adv-form-success {
-	background: #ebf8ff;
+	background: var(--kb-form-success-background, #ebf8ff );
     padding: 1em;
-    border-radius: 2px;
-    border: 1px solid #4299e1;
-    color: #2b6cb0;
+    border-radius: 3px;
+    border: 0;
+    color: var(--kb-form-success-color, #2b6cb0 );
+}
+.kb-adv-form-warning {
+	background: var(--kb-form-error-background, #fde4e9 );
+	padding: 0.7em;
+	border-radius: 3px;
+	border: 0;
+	text-align: left;
+	width: 100%;
+	margin-top: 3px;
+	color: var(--kb-form-error-color, #be001b );
+}
+.kb-form-is-dark {
+	--kb-form-error-color: #fff;
+	--kb-form-error-background: #be001b;
+	--kb-form-success-color: #fff;
+	--kb-form-success-background: #2b6cb0;
+}
+.kb-adv-form-message.kb-adv-form-warning {
+	padding: 1em;
+}
+
+// .kb-adv-form-error-msg {
+// 	background: var(--kb-form-error-background, #fde4e9 );
+// 	padding: 0.7em;
+// 	border-radius: 3px;
+// 	border: 0;
+// 	color: var(--kb-form-error-color, #be001b );
+// 	width: 100%;
+// 	text-align: left;
+// }
+// Styles of infield label.
+.wp-block-kadence-advanced-form.kb-adv-form-label-style-infield {
+	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], input[type="file"], textarea, select {
+		padding-top: calc(1em + var( --kb-form-v-padding, 0.4em ));
+	}
+	label.kb-adv-form-label {
+		line-height: 1;
+		font-size: 75%;
+		padding: var( --kb-form-v-padding, 0.4em ) 0;
+	}
+	.kb-adv-form-infield-type-input {
+		position: relative;
+		label.kb-adv-form-label {
+			position: absolute;
+			left: 0;
+			top: 0;
+			padding: var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em ) 0;
+		}
+	}
+}
+// Styles of float label.
+.no-js {
+	.kb-adv-form-label-style-float .kb-adv-form-text-type-input {
+		&:not( .kb-form-field-focus ) {
+			label.kb-adv-form-label {
+				cursor: pointer;
+				transform: translate(0, 0) scale(0.75);
+			}
+		}
+	}
+}
+.kb-adv-form-label-style-float .kb-adv-form-field {
+	label.kb-adv-form-label {
+		cursor: pointer;
+		opacity: 1;
+		transform: translate(0, 0) scale(0.75);
+		transform-origin: left bottom;
+		padding: var( --kb-form-v-padding, 0.4em ) 0;
+		transition: all 0.2s;
+		font-size: 1em;
+		margin-top: -1em;
+	}
+}
+.kb-adv-form-label-style-float .kb-adv-form-text-type-input {
+	&:not( .kb-form-field-focus ) {
+		label.kb-adv-form-label {
+			cursor: text;
+			transform: translate( var( --kb-form-h-padding, 0.5em ), calc(100% + var(--kb-form-border-width, 1px ) ) ) scale(1);
+		}
+	}
+
+	input, textarea {
+		&::placeholder {
+			opacity: 1;
+			transition: all .2s;
+		}
+		&:placeholder-shown:not(:focus)::placeholder {
+			opacity: 0;
+		}
+	}
+}
+.kb-adv-form-input-size-large {
+	--kb-form-font-size: 1.25rem;
+}
+.kb-adv-form-input-size-small {
+	--kb-form-font-size: 0.85rem;
 }

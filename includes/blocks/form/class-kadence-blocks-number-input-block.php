@@ -71,7 +71,7 @@ class Kadence_Blocks_Number_Input_Block extends Kadence_Blocks_Advanced_Form_Inp
 		$is_required = $this->is_required( $attributes );
 		$min = isset( $attributes['minValue'] ) && $attributes['minValue'] !== '' ? ' min="' . $attributes['minValue']  . '" ' : '';
 		$max = isset( $attributes['maxValue'] ) && $attributes['maxValue'] !== '' ? ' max="' . $attributes['maxValue']  . '" ' : '';
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}

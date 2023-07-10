@@ -35,10 +35,12 @@ function FieldBlockAppender(
 				};
 			}
 			const { getBlockParentsByBlockName, getBlockIndex } = select( blockEditorStore );
+			const sectionBlock = getBlockParentsByBlockName( getRoot, 'kadence/column' );
+			const sectionBlockID = ( undefined !== sectionBlock && sectionBlock.length ? sectionBlock[ 0 ] : false );
 			const formBlock = getBlockParentsByBlockName( getRoot, 'kadence/advanced-form' );
 			const formBlockID = ( undefined !== formBlock && formBlock.length ? formBlock[ 0 ] : false );
 			return {
-				parentFormBlock: formBlockID,
+				parentFormBlock: sectionBlockID || formBlockID,
 				insertIndex: getBlockIndex( getRoot ) + 1,
 			};
 		},

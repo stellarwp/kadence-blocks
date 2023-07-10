@@ -1,14 +1,7 @@
 /**
- * #.# Styles
+ * #.# Button Styles
  */
- .kb-buttons-wrap {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	gap: var(--global-kb-gap-xs, 0.5rem);
- }
- .kb-button {
+ .kb-adv-form-submit-button {
 	z-index: 1;
     position: relative;
     overflow: hidden;
@@ -25,7 +18,7 @@
     flex: 1 0 fit-content;
     width: 100%;
 }
-.kb-button:not(.kb-btn-global-inherit) {
+.kb-adv-form-submit-button:not(.kb-btn-global-inherit) {
     border: 0 solid transparent;
     padding: 0.4em 1em;
     cursor: pointer;
@@ -37,7 +30,7 @@
         box-shadow: none;
     }
 }
-.kb-button.kb-btn-global-fill {
+.kb-adv-form-submit-button.kb-btn-global-fill {
     border: 0px solid transparent;
 	border-radius: 3px;
     background: var(--global-palette-btn-bg, #3633E1);
@@ -47,7 +40,7 @@
         background: var(--global-palette-btn-bg-hover, #2F2FFC);
     }
 }
-.kb-button.kb-btn-global-outline {
+.kb-adv-form-submit-button.kb-btn-global-outline {
     border: 2px solid var(--global-palette-btn-bg, #3633E1);
 	background:transparent;
 	color: var(--global-palette-btn-bg, #3633E1);
@@ -58,7 +51,7 @@
         color: var(--global-palette-btn-bg-hover, #2F2FFC);
     }
 }
-.kb-button::before {
+.kb-adv-form-submit-buttonn::before {
     position: absolute;
 	content: "";
 	top: 0;
@@ -70,34 +63,34 @@
 	background:transparent;
 	//transition: all .3s ease-in-out;
 }
-.kb-button:hover::before {
+.kb-adv-form-submit-button:hover::before {
 	opacity: 1;
 }
-.wp-block-kadence-advancedbtn .kb-button.kt-btn-size-small{
+.wp-block-kadence-advanced-form-submit .kb-adv-form-submit-button.kt-btn-size-small{
     font-size: 0.9rem;
 }
-.wp-block-kadence-advancedbtn .kb-button.kt-btn-size-large {
+.wp-block-kadence-advanced-form-submit .kb-adv-form-submit-button.kt-btn-size-large {
     font-size: 1.35rem;
 }
-.wp-block-kadence-advancedbtn .kb-button.kt-btn-size-xlarge {
+.wp-block-kadence-advanced-form-submit .kb-adv-form-submit-button.kt-btn-size-xlarge {
     font-size: 1.65rem;
 }
-.kb-button.kb-btn-global-outline.kt-btn-size-xlarge {
+.kb-adv-form-submit-button.kb-btn-global-outline.kt-btn-size-xlarge {
     border-width: 4px;
 }
-.kb-button.kb-btn-global-outline.kt-btn-size-large {
+.kb-adv-form-submit-button.kb-btn-global-outline.kt-btn-size-large {
     border-width: 3px;
     padding: calc( 0.4em - 3px ) calc( 1em - 3px );
 }
-.kb-button.kb-btn-global-outline.kt-btn-size-small {
+.kb-adv-form-submit-button.kb-btn-global-outline.kt-btn-size-small {
     border-width: 1px;
     padding: calc( 0.4em - 1px ) calc( 1em - 1px );
 }
-.kb-button.kt-btn-has-svg-true {
+.kb-adv-form-submit-button.kt-btn-has-svg-true {
     gap: 0.5em;
     display: inline-flex;
 }
-.wp-block-kadence-advancedbtn .kb-svg-icon-wrap {
+.wp-block-kadence-advanced-form-submit .kb-svg-icon-wrap {
 	display: inline-flex;
     justify-content: center;
     align-items: center;

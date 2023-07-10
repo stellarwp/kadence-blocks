@@ -57,13 +57,13 @@ class KB_Ajax_Advanced_Form {
 	public function process_ajax() {
 		$final_data = array();
 
-		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
+		if ( isset( $_POST['_kb_adv_form_id'] ) && ! empty( $_POST['_kb_adv_form_id'] ) && isset( $_POST['_kb_adv_form_post_id'] ) && ! empty( $_POST['_kb_adv_form_post_id'] ) ) {
 			$this->start_buffer();
 
 			if ( apply_filters( 'kadence_blocks_form_verify_nonce', is_user_logged_in() ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
-			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_post_id'] ) );
+			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_adv_form_post_id'] ) );
 
 			$form_args = $this->get_form( $post_id );
 			$messages  = $this->get_messages( $form_args['attributes'] );
@@ -205,27 +205,28 @@ class KB_Ajax_Advanced_Form {
 
 		return $success;
 	}
-
+	/**
+	 * Process the fields
+	 *
+	 * @param array $fields the fields.
+	 */
 	public function process_fields( $fields ) {
 
 		$processed_fields = array();
 
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
-
-			// Fail if required field is missing
+			// Fail if required field is missing.
 			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
 				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
-
 				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
 			}
 
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
 
-			// If field is file, verify and process the file
+			// If field is file, verify and process the file.
 			if ( $field['type'] === 'file' ) {
-
-				// File required & skipped
+				// File required & skipped.
 				if ( empty( $_FILES[ $expected_field ]['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
 					$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
 

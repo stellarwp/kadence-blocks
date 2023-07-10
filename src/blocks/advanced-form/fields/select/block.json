@@ -1,4 +1,5 @@
 {
+  "apiVersion": 2,
   "name": "kadence/advanced-form-select",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -9,6 +10,9 @@
 	"label": {
 	  "type": "string",
 	  "default": ""
+	},
+	"placeholder": {
+		"type": "string"
 	},
 	"showLabel": {
 	  "type": "boolean",

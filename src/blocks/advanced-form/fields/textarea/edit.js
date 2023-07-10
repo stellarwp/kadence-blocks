@@ -45,8 +45,17 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 	}, [] );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
+	const defaultPreview = useMemo( () => {
+		if ( undefined !== kadenceDynamic && undefined !== kadenceDynamic['defaultValue'] && undefined !== kadenceDynamic['defaultValue']?.enable && '' !== kadenceDynamic['defaultValue'].enable && true === kadenceDynamic['defaultValue'].enable ) {
+			return kadenceDynamic?.['defaultValue']?.field ? '{' + kadenceDynamic['defaultValue'].field + '}' : '';
+		}
+		return attributes?.defaultValue ? attributes.defaultValue : '';
+	}, [ kadenceDynamic, defaultValue ] );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+		'kb-adv-form-text-type-input': true,
+		'kb-adv-form-infield-type-input': true,
+		'kb-form-field-focus': isSelected || defaultPreview,
 	});
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -55,22 +64,16 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 			minWidth: '' !== previewMinWidth ? previewMinWidth + ( minWidthUnit ? minWidthUnit : 'px' ) : undefined,
 		}
 	} );
-	const defaultPreview = useMemo( () => {
-		if ( undefined !== kadenceDynamic && undefined !== kadenceDynamic['defaultValue'] && undefined !== kadenceDynamic['defaultValue']?.enable && '' !== kadenceDynamic['defaultValue'].enable && true === kadenceDynamic['defaultValue'].enable ) {
-			return kadenceDynamic?.['defaultValue']?.field ? '{' + kadenceDynamic['defaultValue'].field + '}' : '';
-		}
-		return attributes?.defaultValue ? attributes.defaultValue : '';
-	}, [ kadenceDynamic, defaultValue ] );
 	return (
 		<>
-			<style>
-				{ isSelected && (
-					<>
-						{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }` };
-					</>
-				)}
-			</style>
 			<div {...blockProps}>
+				<style>
+					{ isSelected && (
+						<>
+							{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }` };
+						</>
+					)}
+				</style>
 				<DuplicateField
 					clientId={ clientId }
 					name={name}
@@ -228,6 +231,7 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl
@@ -261,7 +265,8 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 						placeholder={placeholder}
 						rows={ rows }
 						onChange={( value ) => false}
-					>{ defaultPreview }</textarea>
+						value={ defaultPreview }
+					/>
 					{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 				</>
 				<FieldBlockAppender inline={ true } className="kb-custom-inbetween-inserter" getRoot={ clientId } />

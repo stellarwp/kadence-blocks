@@ -70,7 +70,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$is_required = $this->is_required( $attributes, 'required', '' );
 		$is_multiselect = ( isset( $attributes['multiSelect'] ) && $attributes['multiSelect'] === true ) ? 'multiple' : '';
 
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -78,17 +78,31 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			'class' => implode( ' ', $outer_classes ),
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+		$default_value = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
+		$show_placeholder = true;
+		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
+			foreach ( $attributes['options'] as $option ) {
+				$option_value = $this->get_option_value( $option );
+				if ( $default_value === $option_value ) {
+					$show_placeholder = false;
+				}
+			}
+		}
 		$inner_content  = '';
 
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<select ' . $is_multiselect . ' name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $this->a11y_helpers($attributes) . '>';
-
-		foreach ( $attributes['options'] as $option ) {
-			$inner_content .= '<option value="' . $this->get_option_value( $option ) . '">' . $option['label'] . '</option>';
+		$inner_content .= '<select ' . $is_multiselect . ' name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $this->a11y_helpers( $attributes ) . '>';
+		if ( ! empty( $attributes['placeholder'] ) && $show_placeholder ) {
+			$inner_content .= '<option value="" disabled selected>' . $attributes['placeholder'] . '</option>';
 		}
-
+		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
+			foreach ( $attributes['options'] as $option ) {
+				$option_value = $this->get_option_value( $option );
+				$inner_content .= '<option value="' . $option_value . '"' . ( $default_value === $option_value ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
+			}
+		}
 		$inner_content .= '</select>';
 
 		$inner_content .= $this->field_help_text( $attributes );

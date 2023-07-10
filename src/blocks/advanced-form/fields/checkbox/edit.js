@@ -23,6 +23,7 @@ import {
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 import { times } from 'lodash';
+import { plus } from '@wordpress/icons';
 
 function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 
@@ -173,70 +174,67 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 								initialOpen={true}
 								panelName={ 'kb-adv-form-checkbox-options'}
 							>
-							<div className="kb-field-options-wrap">
-								{times( options.length, n => (
-									<div className="field-options-wrap">
+								<div className="kb-adv-field-options-wrap">
+									{times( options.length, n => (
+										<div key={n} className="kb-adv-field-option">
 
-										<hr/>
-
-										<TextControl
-											className={'kb-option-text-control'}
-											key={n}
-											label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 )}
-											placeholder={__( 'Option', 'kadence-blocks' )}
-											value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
-											onChange={( text ) => updateOption( n, { label: text } )}
-										/>
-										<TextControl
-											label={__( 'Value', 'kadence-blocks' )}
-											placeholder={options[ n ].label}
-											value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
-											onChange={( text ) => updateOption( n, { value: text } )}
-										/>
-										<div className="kadence-blocks-list-item__control-menu">
-											<Button
-												icon="arrow-up"
-												onClick={n === 0 ? undefined : onOptionMoveUp( n )}
-												className="kadence-blocks-list-item__move-up"
-												label={__( 'Move Item Up' )}
-												aria-disabled={n === 0}
-												disabled={n === 0}
+											<TextControl
+												className={'kb-option-text-control'}
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'label', 'kadence-blocks') }
+												placeholder={__( 'Option', 'kadence-blocks' )}
+												value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
+												onChange={( text ) => updateOption( n, { label: text } )}
 											/>
-											<Button
-												icon="arrow-down"
-												onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
-												className="kadence-blocks-list-item__move-down"
-												label={__( 'Move Item Down' )}
-												aria-disabled={( n + 1 ) === options.length}
-												disabled={( n + 1 ) === options.length}
+											<TextControl
+												label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) + ' ' + __( 'value', 'kadence-blocks') }
+												placeholder={options[ n ].label}
+												value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
+												onChange={( text ) => updateOption( n, { value: text } )}
 											/>
-											<Button
-												icon="no-alt"
-												onClick={() => removeOptionItem( n )}
-												className="kadence-blocks-list-item__remove"
-												label={__( 'Remove Item' )}
-												disabled={1 === options.length}
-											/>
+											<div className="kadence-blocks-list-item__control-menu">
+												<Button
+													icon="arrow-up"
+													onClick={n === 0 ? undefined : onOptionMoveUp( n )}
+													className="kadence-blocks-list-item__move-up"
+													label={__( 'Move Item Up' )}
+													aria-disabled={n === 0}
+													disabled={n === 0}
+												/>
+												<Button
+													icon="arrow-down"
+													onClick={( n + 1 ) === options.length ? undefined : onOptionMoveDown( n )}
+													className="kadence-blocks-list-item__move-down"
+													label={__( 'Move Item Down' )}
+													aria-disabled={( n + 1 ) === options.length}
+													disabled={( n + 1 ) === options.length}
+												/>
+												<Button
+													icon="no-alt"
+													onClick={() => removeOptionItem( n )}
+													className="kadence-blocks-list-item__remove"
+													label={__( 'Remove Item' )}
+													disabled={1 === options.length}
+												/>
+											</div>
 										</div>
-									</div>
 								) )}
-							</div>
-							<Button
-								className="kb-add-option"
-								isPrimary={true}
-								onClick={() => {
-									const newOptions = options;
-									newOptions.push( {
-										value: '',
-										label: '',
-									} );
-									setAttributes( { options: newOptions } );
-									setRerender( Math.random() );
-								}}
-							>
-								<Dashicon icon="plus"/>
-								{__( 'Add Option', 'kadence-blocks' )}
-							</Button>
+								</div>
+								<Button
+									className="kb-add-option"
+									variant="primary"
+									icon={ plus }
+									onClick={() => {
+										const newOptions = options;
+										newOptions.push( {
+											value: '',
+											label: '',
+										} );
+										setAttributes( { options: newOptions } );
+										setRerender( Math.random() );
+									}}
+								>
+									{__( 'Add Option', 'kadence-blocks' )}
+								</Button>
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Field Controls', 'kadence-blocks' )}
@@ -354,6 +352,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 									label={__( 'Input aria description', 'kadence-blocks' )}
 									value={ariaDescription}
 									onChange={( value ) => setAttributes( { ariaDescription: value } )}
+									help={ __( 'This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby.', 'kadence-blocks' ) }
 								/>
 								{ required && (
 									<TextControl
@@ -387,7 +386,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 					{isSelected ?
 						<div className={'kb-form-field kb-form-multi'}>
 							{times( options.length, n => (
-								<div className={'kb-checkbox-item'} key={n}>
+								<div className={'inline-option-add-item'} key={n}>
 									<input key={'cb' + n} type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} onChange={( value ) => toggleSelected( n, value.target.value )}
 										   checked={options[ n ].selected}/>
 									<input key={'text' + n} type={'text'} value={options[ n ].label} className={'ignore-field-styles'}
@@ -399,7 +398,8 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 							) )}
 
 							<Button
-								variant={'primary'}
+								variant="primary"
+								icon={ plus }
 								className={'kb-form-multi__add-option'}
 								onClick={() => {
 									const newOptions = options;
@@ -411,14 +411,13 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 									setRerender( Math.random() );
 								}}
 							>
-								<Dashicon icon="plus"/>
 								{__( 'Add Option', 'kadence-blocks' )}
 							</Button>
 						</div>
 						:
 						<>
 							{times( options.length, n => (
-								<div className={'kb-checkbox-item'} key={n}>
+								<div className={'kb-radio-check-item'} key={n}>
 									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} checked={options[ n ].selected}/>
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>

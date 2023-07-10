@@ -63,16 +63,16 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 						setMetaAttribute( value, 'messageBackground' );
 					}}
 				/>
-				<ResponsiveBorderControl
-					label={__( 'Border', 'kadence-blocks' )}
-					value={messageBorderSuccess}
-					tabletValue={tabletMessageBorderSuccess}
-					mobileValue={mobileMessageBorderSuccess}
-					onChange={( value ) => setMetaAttribute( value, 'messageBorderSuccess' ) }
-					onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderSuccess' ) }
-					onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderSuccess' ) }
-				/>
 			</ColorGroup>
+			<ResponsiveBorderControl
+				label={__( 'Border', 'kadence-blocks' )}
+				value={messageBorderSuccess}
+				tabletValue={tabletMessageBorderSuccess}
+				mobileValue={mobileMessageBorderSuccess}
+				onChange={( value ) => setMetaAttribute( value, 'messageBorderSuccess' ) }
+				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderSuccess' ) }
+				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderSuccess' ) }
+			/>
 			<ColorGroup label={ __( 'Error Message Colors', 'kadence-blocks' ) }>
 				<PopColorControl
 					label={__( 'Error Message Color', 'kadence-blocks' )}
@@ -90,16 +90,16 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 						setMetaAttribute( value, 'messageBackgroundError' );
 					}}
 				/>
-				<ResponsiveBorderControl
-					label={__( 'Border', 'kadence-blocks' )}
-					value={messageBorderError}
-					tabletValue={tabletMessageBorderError}
-					mobileValue={mobileMessageBorderError}
-					onChange={( value ) => setMetaAttribute( value, 'messageBorderError' )}
-					onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderError')}
-					onChangeMobile={( value ) => setMetaAttribute( value, 'setMetaAttribute' )}
-				/>
 			</ColorGroup>
+			<ResponsiveBorderControl
+				label={__( 'Error Border', 'kadence-blocks' )}
+				value={messageBorderError}
+				tabletValue={tabletMessageBorderError}
+				mobileValue={mobileMessageBorderError}
+				onChange={( value ) => setMetaAttribute( value, 'messageBorderError' )}
+				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderError')}
+				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderError' )}
+			/>
 			<TypographyControls
 				fontSize={messageFont[0].size}
 				onFontSize={( value ) => saveMessageFont( { size: value } )}
@@ -137,6 +137,8 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 				<TypographyControls
 					reLetterSpacing={messageFont[0].letterSpacing}
 					onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value } )}
+					letterSpacingType={messageFont[0].letterType}
+					onLetterSpacingType={( value ) => saveMessageFont( { letterType: value } )}
 					fontFamily={messageFont[0].family}
 					onFontFamily={( value ) => saveMessageFont( { family: value } )}
 					onFontChange={( select ) => {

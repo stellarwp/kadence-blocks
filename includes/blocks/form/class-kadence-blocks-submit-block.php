@@ -31,12 +31,6 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 */
 	protected $block_name = 'submit';
 
-	/**
-	 * Block determines if generic styles need to be loaded for block.
-	 *
-	 * @var string
-	 */
-	protected $has_style = true;
 
 	/**
 	 * Instance Control

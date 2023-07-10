@@ -80,16 +80,14 @@ class Kadence_Blocks_Accept_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$inner_content  = '';
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
-
-		$inner_content .= '<div>';
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers($attributes) . '/>';
-
-		// Accept description. Added as a label so clicking description selects field
-		$description = array(
-			'uniqueID' => $unique_id,
-			'label' => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : ''
-		);
-		$inner_content .= $this->field_label( $description );
+		$is_checked = isset( $attributes['isChecked'] ) && true === $attributes['isChecked'] ? true : false;
+		$inner_content .= '<div class="kb-radio-check-item">';
+		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" value="' . esc_attr( $this->get_accept_default( $attributes ) ) . '"' . ( $is_checked ? ' checked' : '' ) . ' data-type="accept" class="kb-field kb-accept-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->a11y_helpers( $attributes ) . '/>';
+		$inner_content .= '<label for="' . $this->field_name( $attributes ) . '">' . $attributes['description'];
+		if ( ! empty( $attributes['required'] ) && $attributes['required'] && ( empty( $attributes['label'] ) || ( isset( $attributes['showLabel'] ) && ! $attributes['showLabel'] ) ) ) {
+			$inner_content .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
+		}
+		$inner_content .= '</label>';
 
 		$inner_content .= '</div>';
 

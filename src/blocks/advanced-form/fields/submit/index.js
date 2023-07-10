@@ -11,11 +11,6 @@ import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
- * Import Css
- */
-import './style.scss';
-
-/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';

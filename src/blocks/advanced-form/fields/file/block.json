@@ -1,4 +1,5 @@
 {
+  "apiVersion": 2,
   "name": "kadence/advanced-form-file",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
