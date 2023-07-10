@@ -77,7 +77,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.2 Alpha Version 2 =
+= 3.1.1 Alpha Version 2 =
 Release Date: July 12th, 2023
 * Fix: Media styles not copy/pasting properly for Info Box.
 
