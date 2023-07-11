@@ -10,7 +10,7 @@ export function SlideCardRow({ headline, content }) {
         <p className="slide-card-row__headline"><b>{ headline }</b></p>
       ) : null }
       { content ? (
-        <p className="slide-card-row__content">{ content }</p>
+        <div className="slide-card-row__content">{ content }</div>
       ) : null }
     </div>
   )

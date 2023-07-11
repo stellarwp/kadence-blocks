@@ -9,9 +9,17 @@
   }
 
   &__content {
-    margin: 0;
     font-size: 16px;
+  }
+
+  &__content p {
+    margin: 0;
+    font-size: clamp(13px, -0.75rem + 3vh, 16px);
     color: $color-disabled;
+
+    + p {
+      margin-top: 16px;
+    }
   }
 
   &--tone {
