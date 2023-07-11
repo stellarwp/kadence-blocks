@@ -364,7 +364,7 @@ export function EditInner( props ) {
 				}
 				setTitle(title);
 				let updatedMeta = meta;
-				if ( kadence_blocks_params.pro && updatedMeta?._kad_form_actions && ! updatedMeta._kad_form_actions.includes( 'entry' ) ) {
+				if ( kadence_blocks_params.pro === 'true' && updatedMeta?._kad_form_actions && ! updatedMeta._kad_form_actions.includes( 'entry' ) ) {
 					updatedMeta._kad_form_actions.push('entry');
 				}
 				updatedMeta._kad_form_description = initialDescription;
