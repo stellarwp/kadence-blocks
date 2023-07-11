@@ -319,8 +319,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
 
-			if( !empty( $attributes['flexBasis'][0] ) ) {
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
+			if ( ! empty( $attributes['flexBasis'][0] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][0] . $basis_unit );
 			}
@@ -562,7 +562,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		} elseif ( 'horizontal' === $tablet_direction ) {
 			if( !empty( $attributes['flexBasis'][1] ) ) {
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][1] . $basis_unit );
 			}
@@ -671,7 +671,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-left', '0px' );;
 			}
 
-			if ( !empty( $attributes['rowGap'][2] ) ) {
+			if ( ! empty( $attributes['rowGap'][2] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][2] ) && is_numeric( $attributes['rowGap'][2] ) ? $attributes['rowGap'][2] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
@@ -679,8 +679,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		} elseif ( 'horizontal' === $mobile_direction ) {
 
-			if( !empty( $attributes['flexBasis'][2] ) ) {
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
+			if ( ! empty( $attributes['flexBasis'][2] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > div' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][2] . $basis_unit );
 			}
