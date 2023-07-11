@@ -759,8 +759,8 @@ function RowLayoutEditContainer( props ) {
 											onChangeMobile={ ( value ) => {
 												setAttributes( { mobileMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
 											} }
-											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 ) }
-											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 ) }
+											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -800 ) }
+											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 800 ) }
 											step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 											unit={ marginUnit }
 											allowEmpty={ true }
