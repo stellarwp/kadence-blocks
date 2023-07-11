@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { advancedFormIcon } from '@kadence/icons';
+import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 } from '@kadence/components';
@@ -128,7 +128,7 @@ export function Edit( props ) {
 					<Placeholder
 						className="kb-select-or-create-placeholder"
 						label={__( 'Kadence Form', 'kadence-blocks' )}
-						icon={ advancedFormIcon }
+						icon={ formBlockIcon }
 					>
 						<Spinner/>
 					</Placeholder>
@@ -163,7 +163,7 @@ export function Edit( props ) {
 					<Placeholder
 						className="kb-select-or-create-placeholder"
 						label={__( 'Kadence Form', 'kadence-blocks' )}
-						icon={ advancedFormIcon }
+						icon={ formBlockIcon }
 					>
 						{ __( 'The selected from is in the trash.', 'kadence-blocks' ) }
 					</Placeholder>

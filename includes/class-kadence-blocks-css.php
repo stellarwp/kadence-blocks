@@ -1786,9 +1786,6 @@ class Kadence_Blocks_CSS {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
-				if ( 'messageBorderError' === $name ) {
-					print_r( $width );
-				}
 				if ( $width ) {
 					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Class to Build the Advanced Form Submit Actions.
+ *
+ * @package Kadence Blocks
+ */
 class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 	public function __construct( $form_args, $responses, $post_id ) {
@@ -7,7 +11,13 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$this->responses = $responses;
 		$this->post_id   = $post_id;
 	}
-
+	/**
+	 * Get the mapped attributes from responses.
+	 *
+	 * @param array $map the map array.
+	 * @param bool  $no_email if no email.
+	 * @param bool  $auto_map if auto map.
+	 */
 	public function get_mapped_attributes_from_responses( $map, $no_email = true, $auto_map = false ) {
 		$mapped_attributes = array();
 
@@ -36,7 +46,11 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		return $mapped_attributes;
 	}
-
+	/**
+	 * Get email from responses.
+	 *
+	 * @param array $map the map array.
+	 */
 	public function get_email_from_responses( $map ) {
 		$email = '';
 		$mapped_email = '';
@@ -52,7 +66,13 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		return $mapped_email ? $mapped_email : $email;
 	}
-
+	/**
+	 * Get the mapped attributes from responses.
+	 *
+	 * @param array $map the map array.
+	 * @param bool  $no_email if no email.
+	 * @param bool  $auto_map if auto map.
+	 */
 	public function get_response_field_by_name( $name ) {
 		foreach ( $this->responses as $response ) {
 			if ( isset( $response['name'] ) && $response['name'] == $name ) {
@@ -61,7 +81,11 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 		return '';
 	}
-
+	/**
+	 * Handle Field Replacements.
+	 *
+	 * @param string $text the text to replace.
+	 */
 	public function do_field_replacements( $text ) {
 		if ( strpos( $text, '{' ) !== false && strpos( $text, '}' ) !== false ) {
 			preg_match_all( '/{(.*?)}/', $text, $match );
@@ -85,17 +109,16 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		return $text;
 	}
-
+	/**
+	 * Handle the email action.
+	 */
 	public function email() {
-
 		$to      = isset( $this->form_args['attributes']['email']['emailTo'] ) && ! empty( trim( $this->form_args['attributes']['email']['emailTo'] ) ) ? trim( $this->form_args['attributes']['email']['emailTo'] ) : get_option( 'admin_email' );
 		$subject = isset( $this->form_args['attributes']['email']['subject'] ) && ! empty( trim( $this->form_args['attributes']['email']['subject'] ) ) ? $this->form_args['attributes']['email']['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
 
 		$subject = $this->do_field_replacements( $subject );
-
 		$email_content = '';
 		$reply_email   = false;
-
 		foreach ( $this->responses as $key => $data ) {
 			if ( 'email' === $data['type'] ) {
 				$reply_email = $data['value'];
@@ -106,9 +129,10 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$reply_email = isset( $this->form_args['attributes']['email']['fromEmail'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ? sanitize_email( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) : false;
 		}
 
-		if ( $this->form_args['attributes']['email']['html'] ) {
+		if ( ! isset( $this->form_args['attributes']['email']['html'] ) || ( isset( $this->form_args['attributes']['email']['html'] ) && $this->form_args['attributes']['email']['html'] ) ) {
 			$args          = array( 'fields' => $this->responses );
 			$email_content = kadence_blocks_get_template_html( 'form-email.php', $args );
+			$headers = 'Content-Type: text/html; charset=UTF-8' . "\r\n";
 		} else {
 			foreach ( $this->responses as $key => $data ) {
 				if ( is_array( $data['value'] ) ) {
@@ -116,15 +140,10 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				}
 				$email_content .= $data['label'] . ': ' . $data['value'] . "\n\n";
 			}
+			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}
 
 		$body = $email_content;
-
-		if ( $this->form_args['attributes']['email']['html'] ) {
-			$headers = 'Content-Type: text/html; charset=UTF-8' . "\r\n";
-		} else {
-			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
-		}
 
 		if ( $reply_email ) {
 			$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
@@ -150,13 +169,10 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 
 		$cc_headers = '';
-
 		if ( isset( $this->form_args['attributes']['email']['cc'] ) && ! empty( trim( $this->form_args['attributes']['email']['cc'] ) ) ) {
 			$cc_headers = 'Cc: ' . sanitize_email( trim( $this->form_args['attributes']['email']['cc'] ) ) . "\r\n";
 		}
-
-		wp_mail( $to, $subject, $body, $headers . $cc_headers );
-
+		$mail = wp_mail( $to, $subject, $body, $headers . $cc_headers );
 		if ( isset( $this->form_args['attributes']['email']['bcc'] ) && ! empty( trim( $this->form_args['attributes']['email']['bcc'] ) ) ) {
 			$bcc_emails = explode( ',', $this->form_args['attributes']['email']['bcc'] );
 			foreach ( $bcc_emails as $bcc_email ) {
@@ -164,7 +180,13 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			}
 		}
 	}
-
+	/**
+	 * Mailerlite rest call.
+	 *
+	 * @param string $api_url api url.
+	 * @param string $method method.
+	 * @param array  $body body.
+	 */
 	public function mailerlite_rest_call( $api_url, $method, $body ) {
 		$api_key = get_option( 'kadence_blocks_mailerlite_api' );
 
@@ -203,7 +225,9 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 		return $response;
 	}
-
+	/**
+	 * Mailerlite.
+	 */
 	public function mailerlite() {
 
 		$mailerlite_default = array(

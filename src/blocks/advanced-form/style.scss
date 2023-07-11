@@ -242,10 +242,10 @@
 	}
 	.kb-adv-form-loading {
 		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
+		top: -5px;
+		bottom: -5px;
+		left: -5px;
+		right: -5px;
 		background: rgba(255,255,255,0.7);
 		z-index: 10;
 		display:flex;
@@ -282,6 +282,14 @@
 			left: 45px;
 			animation: kb-adv-form-ellipses3 0.6s infinite;
 		}
+	}
+}
+.wp-block-kadence-advanced-form.kb-form-is-dark {
+	.kb-adv-form-loading {
+		background: rgba(0,0,0,0.7);
+	}
+	.kb-adv-form-loading-spin div {
+		background: rgba(255, 255, 255, 0.7);
 	}
 }
 @keyframes kb-adv-form-ellipses1 {

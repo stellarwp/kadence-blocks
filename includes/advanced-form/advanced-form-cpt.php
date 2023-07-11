@@ -206,7 +206,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 					'replyTo'   => 'email_field',
 					'cc'        => '',
 					'bcc'       => '',
-					'html'      => true
+					'html'      => true,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -456,7 +456,17 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'default'       => ''
 			)
 		);
-
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_submitHide',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => false
+			)
+		);
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_recaptcha',
@@ -468,8 +478,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'default'       => false
 			)
 		);
-
-
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_recaptchaVersion',
@@ -481,7 +489,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'default'       => 'v3'
 			)
 		);
-
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_webhook',
@@ -509,7 +516,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 				),
 			)
 		);
-
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_autoEmail',
@@ -555,15 +561,13 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					"formName"   => '',
-					"userIP"     => true,
-					"userDevice" => true,
+					'userIP'     => true,
+					'userDevice' => true,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'formName'   => array( 'type' => 'string' ),
 							'userIP'     => array( 'type' => 'boolean' ),
 							'userDevice' => array( 'type' => 'boolean' ),
 						),
@@ -579,11 +583,11 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "", "", "" ),
+				'default'       => array( '', '', '', '' ),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'array',
-						'properties' => array( "", "", "" ),
+						'properties' => array( '', '', '', '' ),
 					),
 				),
 			)
@@ -596,11 +600,11 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "", "", "" ),
+				'default'       => array( '', '', '', '' ),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'array',
-						'properties' => array( "", "", "" ),
+						'properties' => array( '', '', '', '' ),
 					),
 				),
 			)
@@ -613,11 +617,11 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
-				'default'       => array( "", "", "" ),
+				'default'       => array( '', '', '', '' ),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'array',
-						'properties' => array( "", "", "" ),
+						'properties' => array( '', '', '', '' ),
 					),
 				),
 			)
@@ -639,7 +643,21 @@ class Kadence_Blocks_Form_CPT_Controller {
 				),
 			)
 		);
-
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_description',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'string',
+				'default'       => '',
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'string'
+					),
+				),
+			)
+		);
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_fieldBorderStyle',
@@ -1264,25 +1282,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'           => '_kad_form_messageBorderSuccess',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
 				'key'           => '_kad_form_messageFont',
 				'default'       => array( array(
 					'size'    => array( '', '', '' ),
@@ -1320,101 +1319,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 				)
 			),
 			array(
-				'key'           => '_kad_form_tabletMessageBorderSuccess',
-				'default'       => array( array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				) ),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
-				'key'           => '_kad_form_mobileMessageBorderSuccess',
-				'default'       => array( array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				) ),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
-				'key'           => '_kad_form_messageBorderError',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
-				'key'           => '_kad_form_tabletMessageBorderError',
-				'default'       => array( array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				) ),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
-				'key'           => '_kad_form_mobileMessageBorderError',
-				'default'       => array( array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => ''
-				) ),
-				'type'          => 'array',
-				'children_type' => 'object',
-				'properties' => array(
-					'top'    => array( 'type' => 'array' ),
-					'right'  => array( 'type' => 'array' ),
-					'bottom' => array( 'type' => 'array' ),
-					'left'   => array( 'type' => 'array' ),
-					'unit'   => array( 'type' => 'string' ),
-				)
-			),
-			array(
 				'key'     => '_kad_form_maxWidthUnit',
 				'default' => 'px',
 				'type'    => 'string'
@@ -1425,6 +1329,174 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'type'          => 'array',
 				'children_type' => 'string'
 			),
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_messageBorderSuccess',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_tabletMessageBorderSuccess',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_mobileMessageBorderSuccess',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_messageBorderError',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_tabletMessageBorderError',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_mobileMessageBorderError',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => ''
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
 		);
 
 		foreach ( $register_meta as $meta ) {

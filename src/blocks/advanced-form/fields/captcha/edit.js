@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spinner } from '@wordpress/components';
+import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spinner, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -251,14 +251,6 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 													onChange={( value ) => setTurnstileSecretKey( value )}
 												/>
 
-												<TextControl
-													label={__( 'Force Specific Language', 'kadence-blocks' )}
-													value={recaptchaLanguage}
-													onChange={( value ) => setRecaptchaLanguage( value )}
-													help={<> {__( 'View language codes here', 'kadence-blocks' )} + ' ' + <a
-														href="https://developers.google.com/recaptcha/docs/language/">https://developers.google.com/recaptcha/docs/language/</a></>}
-												/>
-
 												<div className="components-base-control">
 													<Button
 														isPrimary
@@ -289,9 +281,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 													label={__( 'Force Specific Language', 'kadence-blocks' )}
 													value={recaptchaLanguage}
 													onChange={( value ) => setRecaptchaLanguage( value )}
-													help={__( 'View language codes here', 'kadence-blocks' ) + ' ' +
-														<a href={'https://developers.google.com/recaptcha/docs/language/'}>https://developers.google.com/recaptcha/docs/language/</a>}
 												/>
+												<p className='kb-small-help'><ExternalLink href={'https://developers.google.com/recaptcha/docs/language/'}>{__( 'View language codes here', 'kadence-blocks' )}</ExternalLink></p>
 
 												<div className="components-base-control">
 													<Button
@@ -458,33 +449,51 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 				<div style={{ minHeight: ( type !== 'googlev3' ? '74px' : undefined ) }}>
 					{ settingsLoaded ? (
 						<>
-							{previewType === 'hcaptcha' &&
-								<HCaptcha
-									reCaptchaCompat={false}
-									theme={previewTheme}
-									size={previewSize}
-									sitekey={previewhCaptchaSiteKey}
-									onVerify={( token, ekey ) => { return null; }}
-								/>
-							}
+							{previewType === 'hcaptcha' && (
+								<>
+									{ previewhCaptchaSiteKey && (
+										<HCaptcha
+											reCaptchaCompat={false}
+											theme={previewTheme}
+											size={previewSize}
+											sitekey={previewhCaptchaSiteKey}
+											onVerify={( token, ekey ) => { return null; }}
+										/>
+									) }
+									{ ! previewhCaptchaSiteKey && (
+										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
+											{ __('Please Add API Key', 'kadence-blocks' ) }
+										</div>
+									) }
+								</>
+							) }
 
-							{previewType === 'googlev2' &&
-								<ReCAPTCHA
-									key={googleV2RerenderKey}
-									sitekey={previewGoogleSiteKey}
-									theme={previewTheme}
-									hl={recaptchaLanguage}
-									size={previewSize}
-									onChange={() => { return null; }}
-								/>
-							}
+							{ previewType === 'googlev2' && (
+								<>
+									{ previewGoogleSiteKey && googleV2RerenderKey && (
+										<ReCAPTCHA
+											key={googleV2RerenderKey}
+											sitekey={previewGoogleSiteKey}
+											theme={previewTheme}
+											hl={recaptchaLanguage}
+											size={previewSize}
+											onChange={() => { return null; }}
+										/>
+									) }
+									{ ( ! previewGoogleSiteKey || ! googleV2RerenderKey ) && (
+										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
+											{ __('Please Add API Keys', 'kadence-blocks' ) }
+										</div>
+									) }
+								</>
+							) }
 
 							{previewType === 'googlev3' &&
 								<>
 									{previewHide === false &&
 										<em>{__( 'Google V3 reCAPTCHA', 'kadence-blocks' )}</em>
 									}
-									{ previewHide && !previewShowNotice &&
+									{ previewHide && ! previewShowNotice &&
 										<em>{ __( 'Placeholder for hidden Google V3 reCaptcha', 'kadence-blocks' ) }</em>
 									}
 									{previewHide && previewShowNotice &&
@@ -507,14 +516,23 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 								</>
 							}
 
-							{previewType === 'turnstile' &&
-								<Turnstile
-									theme={previewTheme}
-									size={previewSize}
-									sitekey={previewTurnstileSiteKey}
-									onVerify={( token ) => { return null; }}
-								/>
-							}
+							{previewType === 'turnstile' && (
+								<>
+									{ previewTurnstileSiteKey && (
+										<Turnstile
+											theme={previewTheme}
+											size={previewSize}
+											sitekey={previewTurnstileSiteKey}
+											onVerify={( token ) => { return null; }}
+										/>
+									) }
+									{ ! previewTurnstileSiteKey && (
+										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
+											{ __('Please Add API Key', 'kadence-blocks' ) }
+										</div>
+									) }
+								</>
+							) }
 						</>
 					) : (
 						<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>

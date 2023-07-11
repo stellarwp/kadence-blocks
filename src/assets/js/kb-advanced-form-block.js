@@ -58,13 +58,11 @@
 				var el = document.createElement('div');
 				el.id = error_id;
 				el.classList.add( 'kb-adv-form-error-msg' );
+				el.classList.add( 'kb-adv-form-message' );
 				el.classList.add( 'kb-adv-form-warning' );
 				el.setAttribute( 'role', 'alert' );
 				el.innerHTML = error_string;
 				if ( item.classList.contains( 'kb-accept-field' ) ) {
-					console.log( 'test', item.parentNode.parentNode.parentNode );
-					console.log( 'test', error_string );
-					//window.kadenceAdvancedForm.insertAfter( el, item.parentNode.parentNode );
 					item.parentNode.parentNode.append( el );
 				} else if ( item.classList.contains( 'kb-checkbox-field' ) || item.classList.contains( 'kb-radio-field' ) ) {
 					item.parentNode.append( el );
@@ -160,7 +158,7 @@
 
 							val = required[n].value.trim();
 
-							if ( val !== '') {
+							if ( val === '' ) {
 								error = true;
 								error_type = 'required';
 
@@ -171,7 +169,16 @@
 						case 'tel':
 
 							val = required[n].value.trim();
-							if ( val === '') {
+							if ( val !== '' ) {
+								//run the validation
+								// if( ! window.kadenceAdvancedForm.isValidTel( val ) ) {
+								// 	error = true;
+								// 	error_type = 'validation';
+
+								// 	// mark the error in the field.
+								// 	window.kadenceAdvancedForm.markError( required[n], error_type, self );
+								// }
+							} else if ( val === '' ) {
 								error = true;
 								error_type = 'required';
 
@@ -324,7 +331,6 @@
 				request.onload = function () {
 					if ( this.status >= 200 && this.status < 400 ) {
 						// If successful
-						//console.log( JSON.parse( this.response ) );
 						var response = JSON.parse( this.response );
 						if ( response.success ) {
 							var event = new CustomEvent( 'kb-advanced-form-success', {
@@ -336,10 +342,11 @@
 								window.location.replace(response.redirect);
 							} else {
 								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
-								if ( form.querySelector('.g-recaptcha') ) {
-									grecaptcha.reset();
+								if ( response?.hide ) {
+									form.remove();
+								} else {
+									window.kadenceAdvancedForm.clearForm( form );
 								}
-								window.kadenceAdvancedForm.clearForm( form );
 							}
 						} else {
 							if ( response.data ) {

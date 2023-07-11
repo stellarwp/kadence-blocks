@@ -66,12 +66,12 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 			</ColorGroup>
 			<ResponsiveBorderControl
 				label={__( 'Border', 'kadence-blocks' )}
-				value={messageBorderSuccess}
-				tabletValue={tabletMessageBorderSuccess}
-				mobileValue={mobileMessageBorderSuccess}
-				onChange={( value ) => setMetaAttribute( value, 'messageBorderSuccess' ) }
-				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderSuccess' ) }
-				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderSuccess' ) }
+				value={ [messageBorderSuccess] }
+				tabletValue={ [tabletMessageBorderSuccess] }
+				mobileValue={ [mobileMessageBorderSuccess] }
+				onChange={( value ) => setMetaAttribute( value[0], 'messageBorderSuccess' ) }
+				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletMessageBorderSuccess' ) }
+				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileMessageBorderSuccess' ) }
 			/>
 			<ColorGroup label={ __( 'Error Message Colors', 'kadence-blocks' ) }>
 				<PopColorControl
@@ -93,12 +93,12 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 			</ColorGroup>
 			<ResponsiveBorderControl
 				label={__( 'Error Border', 'kadence-blocks' )}
-				value={messageBorderError}
-				tabletValue={tabletMessageBorderError}
-				mobileValue={mobileMessageBorderError}
-				onChange={( value ) => setMetaAttribute( value, 'messageBorderError' )}
-				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletMessageBorderError')}
-				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileMessageBorderError' )}
+				value={ [messageBorderError] }
+				tabletValue={ [tabletMessageBorderError] }
+				mobileValue={ [mobileMessageBorderError] }
+				onChange={( value ) => setMetaAttribute( value[0], 'messageBorderError' )}
+				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletMessageBorderError')}
+				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileMessageBorderError' )}
 			/>
 			<TypographyControls
 				fontSize={messageFont[0].size}

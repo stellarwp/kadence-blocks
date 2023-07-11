@@ -32,6 +32,8 @@ class KB_Ajax_Advanced_Form {
 
 	private static $captcha_attrs = false;
 
+	private static $errors = [];
+
 	/**
 	 * Instance Control
 	 */
@@ -112,6 +114,9 @@ class KB_Ajax_Advanced_Form {
 			if ( self::$redirect ) {
 				$final_data['redirect'] = self::$redirect;
 			}
+			if ( isset( $form_args['attributes']['submitHide'] ) && true == $form_args['attributes']['submitHide'] ) {
+				$final_data['hide'] = true;
+			}
 
 			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args, $processed_fields, $post_id );
 			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id );
@@ -174,12 +179,17 @@ class KB_Ajax_Advanced_Form {
 
 		return $value;
 	}
-
+	/**
+	 * Process the submit actions.
+	 * 
+	 * @param array $form_args the form args.
+	 * @param array $processed_fields the processed fields.
+	 * @param int   $post_id the post id.
+	 */
 	public function after_submit_actions( $form_args, $processed_fields, $post_id ) {
 
 		$success = true;
-
-		$actions = $form_args['attributes']['actions'];
+		$actions = isset( $form_args['attributes']['actions'] ) ? $form_args['attributes']['actions'] : array( 'email' );
 
 		$submit_actions = new Kadence_Blocks_Advanced_Form_Submit_Actions( $form_args, $processed_fields, $post_id );
 
@@ -291,12 +301,12 @@ class KB_Ajax_Advanced_Form {
 
 
 			$processed_fields[] = array(
-				'label'    => $field['label'],
+				'label'    => ( ! empty( $field['label'] ) ? $field['label'] : '' ),
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
 				'value'    => $value,
 				'uniqueID' => $field['uniqueID'],
-				'name' => $expected_field,
+				'name'     => $expected_field,
 			);
 		}
 
@@ -434,7 +444,11 @@ class KB_Ajax_Advanced_Form {
 
 		return $allowed_mime_types;
 	}
-
+	/**
+	 * Upload file
+	 *
+	 * @param array $file_data the file data.
+	 */
 	private function set_permissions( $file ) {
 		$permission = apply_filters( 'kadence_form_upload_permissions', 0644, $file );
 
@@ -467,7 +481,7 @@ class KB_Ajax_Advanced_Form {
 		$meta_args = array();
 
 		foreach ( $post_meta as $meta_key => $meta_value ) {
-			if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
+			if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset( $meta_value[0] ) ){
 				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 			}
 		}
@@ -507,6 +521,11 @@ class KB_Ajax_Advanced_Form {
 			}
 		}
 	}
+	/**
+	 * Get form messages
+	 *
+	 * @param array $form_attributes the form attributes.
+	 */
 	private function get_messages( $form_attributes ) {
 		$messages = array(
 			'success'        => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),

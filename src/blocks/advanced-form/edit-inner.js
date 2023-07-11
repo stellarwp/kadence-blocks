@@ -56,6 +56,7 @@ import {
 	ToggleControl,
 	ToolbarGroup,
 	ToolbarButton,
+	TextareaControl,
 } from '@wordpress/components';
 
 import {
@@ -129,6 +130,7 @@ export function EditInner( props ) {
 	const [ activecampaign ] = useFormMeta( '_kad_form_activecampaign' );
 
 	const [ redirect ] = useFormMeta( '_kad_form_redirect' );
+	const [ description ] = useFormMeta( '_kad_form_description' );
 
 	const [ webhook ] = useFormMeta( '_kad_form_webhook' );
 	const [ autoEmail ] = useFormMeta( '_kad_form_autoEmail' );
@@ -154,6 +156,7 @@ export function EditInner( props ) {
 	const [ radioLabelFont ] = useFormMeta( '_kad_form_radioLabelFont' );
 	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
+	const [ submitHide ] = useFormMeta( '_kad_form_submitHide' );
 
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
@@ -162,6 +165,15 @@ export function EditInner( props ) {
 	};
 	const saveBackgroundStyle = ( value ) => {
 		setMetaAttribute( { ...background, ...value }, 'background' );
+	};
+	const saveStyle = ( value ) => {
+		setMetaAttribute( { ...style, ...value }, 'style');
+	}
+	const saveInputFont = ( value ) => {
+		setMetaAttribute( { ...inputFont, ...value }, 'inputFont');
+	};
+	const saveLabelFont = ( value ) => {
+		setMetaAttribute( { ...labelFont, ...value }, 'labelFont' );
 	};
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
@@ -214,7 +226,7 @@ export function EditInner( props ) {
 	let newBlock = get( blocks, [ 0 ], {} );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
-	const onAdd = async( title, template ) => {
+	const onAdd = async( title, template, style, initialDescription ) => {
 		try {
 			const response = await addNew();
 			if ( response.id ) {
@@ -222,13 +234,39 @@ export function EditInner( props ) {
 					case 'contact':
 						insertBlocks(
 							[
-								createBlock( 'kadence/advancedheading', { content: 'Contact Us' } ),
-								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
 									] ),
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
+									] ) 
+								] ),
+								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
+							],
+							0,
+							clientId,
+							false
+						);
+						break;
+					case 'contactAdvanced':
+						insertBlocks(
+							[
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } ),
+									] ) 
+								] ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-select', { label: 'Option 1' } )
+									] ),
+									createBlock( 'kadence/column', {}, [
+										createBlock( 'kadence/advanced-form-select', { label: 'Option 2' } )
 									] ) 
 								] ),
 								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
@@ -239,28 +277,18 @@ export function EditInner( props ) {
 							false
 						);
 						break;
-					case 'contactAdvanced':
+					case 'subscribeAdvanced':
 						insertBlocks(
 							[
-								createBlock( 'kadence/advancedheading', { content: 'Contact Us' } ),
-								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
+								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
-										createBlock( 'kadence/advanced-form-text', { label: 'First Name' } )
+										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
 									] ),
 									createBlock( 'kadence/column', {}, [
-										createBlock( 'kadence/advanced-form-text', { label: 'Last Name' } )
+										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
 									] ) 
 								] ),
-								createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } ),
-								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
-									createBlock( 'kadence/column', {}, [
-										createBlock( 'kadence/advanced-form-select', { label: 'Option 1' } )
-									] ),
-									createBlock( 'kadence/column', {}, [
-										createBlock( 'kadence/advanced-form-select', { label: 'Option 2' } )
-									] ) 
-								] ),
-								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
 							],
 							0,
 							clientId,
@@ -270,16 +298,14 @@ export function EditInner( props ) {
 					case 'subscribe':
 						insertBlocks(
 							[
-								createBlock( 'kadence/advancedheading', { content: 'Subscribe' } ),
-								createBlock( 'kadence/rowlayout', { colLayout: 'equal' }, [
-									createBlock( 'kadence/column', {}, [
-										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
-									] ),
+								createBlock( 'kadence/rowlayout', { colLayout: 'left-golden', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
+									] ),
+									createBlock( 'kadence/column', { verticalAlignment: 'bottom' }, [
+										createBlock( 'kadence/advanced-form-submit', { text: 'Submit', widthType: 'full' } ) 
 									] ) 
 								] ),
-								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
 							],
 							0,
 							clientId,
@@ -299,6 +325,40 @@ export function EditInner( props ) {
 						break;
 				}
 				setTitle(title);
+				let updatedMeta = meta;
+				if ( kadence_blocks_params.pro && updatedMeta?._kad_form_actions && ! updatedMeta._kad_form_actions.includes( 'entry' ) ) {
+					updatedMeta._kad_form_actions.push('entry');
+				}
+				updatedMeta._kad_form_description = initialDescription;
+				if ( style === 'dark' ) {
+					updatedMeta._kad_form_style = { ...updatedMeta._kad_form_style, background: 'palette3', isDark: true, placeholderColor: 'palette6', borderActive: 'palette7' };
+					updatedMeta._kad_form_inputFont = { ...updatedMeta._kad_form_inputFont, color: 'palette9' };
+					updatedMeta._kad_form_labelFont = { ...updatedMeta._kad_form_labelFont, color: 'palette9' };
+					updatedMeta._kad_form_background = { ...updatedMeta._kad_form_background, background: 'palette3' };
+					const borderStyle = {
+						top: ['palette6','',1],
+						right: ['palette6','',1],
+						bottom: ['palette6','',1],
+						left: ['palette6','',1],
+						unit: 'px',
+					};
+					updatedMeta._kad_form_fieldBorderStyle = borderStyle;
+				} else if ( style === 'infield' ) {
+					updatedMeta._kad_form_style = { ...updatedMeta._kad_form_style, labelStyle: 'infield' };
+				} else if ( style === 'underline' ) {
+					const borderStyle = {
+						top: ['#B9B9C5','',0],
+						right: ['#B9B9C5','',0],
+						bottom: ['#B9B9C5','',2],
+						left: ['#B9B9C5','',0],
+						unit: 'px',
+					}
+					updatedMeta._kad_form_labelFont = { ...updatedMeta._kad_form_labelFont, color: '#909097' };
+					updatedMeta._kad_form_style = { ...updatedMeta._kad_form_style, labelStyle: 'float', borderActive: 'palette1', boxShadow: [ true, '#000000', 0, 0, 0, 0, 0, false ], boxShadowActive: [ true, '#000000', 0, 0, 0, 0, 0, false ] };
+					updatedMeta._kad_form_fieldBorderStyle = borderStyle;
+					updatedMeta._kad_form_fieldBorderRadius = [0,0,0,0];
+				}
+				setMeta( { ...meta, updatedMeta } );
 				await wp.data.dispatch( 'core' ).saveEditedEntityRecord( 'postType', 'kadence_form', id );
 			}
 		} catch ( error ) {
@@ -396,6 +456,13 @@ export function EditInner( props ) {
 									onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
 									value={ id }
 								/>
+								<TextareaControl
+									label={__( 'Form Description', 'kadence-blocks' )}
+									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
+									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
+									value={( undefined !== description ? description : '' )}
+									onChange={value => setMetaAttribute( value, 'description' )}
+								/>
 							</KadencePanelBody>
 						) }
 						<KadencePanelBody
@@ -403,6 +470,14 @@ export function EditInner( props ) {
 							title={__( 'Submit Actions', 'kadence-blocks' )}
 						>
 							<SubmitActionOptions setAttributes={setMetaAttribute} selectedActions={actions}/>
+							<ToggleControl
+								label={__( 'Hide form after submit?', 'kadence-blocks' )}
+								checked={( undefined !== submitHide ? submitHide : false )}
+								onChange={( value ) => {
+									setMetaAttribute( value, 'submitHide' );
+								} }
+							/>
+
 						</KadencePanelBody>
 
 						{size( actions ) > 0 && (

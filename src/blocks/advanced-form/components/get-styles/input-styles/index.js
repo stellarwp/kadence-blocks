@@ -50,11 +50,16 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 
 	styles.placeholderColor = ( undefined !== fieldStyle?.placeholderColor ? KadenceColorOutput( fieldStyle?.placeholderColor ) : undefined );
 
-	styles.borderRadiusTop = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 0 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 0 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 0 ] : '' ) );
-	styles.borderRadiusRight = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 1 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 1 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 1 ] : '' ) );
-	styles.borderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 2 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 2 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 2 ] : '' ) );
-	styles.borderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius ? fieldBorderRadius[ 3 ] : '' ), ( undefined !== tabletFieldBorderRadius ? tabletFieldBorderRadius[ 3 ] : '' ), ( undefined !== mobileFieldBorderRadius ? mobileFieldBorderRadius[ 3 ] : '' ) );
+	let borderRadiusTop = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius?.[0] ? fieldBorderRadius[ 0 ] : '' ), ( undefined !== tabletFieldBorderRadius?.[0] ? tabletFieldBorderRadius[ 0 ] : '' ), ( undefined !== mobileFieldBorderRadius?.[0] ? mobileFieldBorderRadius[ 0 ] : '' ) );
+	let borderRadiusRight = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius?.[1] ? fieldBorderRadius[ 1 ] : '' ), ( undefined !== tabletFieldBorderRadius?.[1] ? tabletFieldBorderRadius[ 1 ] : '' ), ( undefined !== mobileFieldBorderRadius?.[1] ? mobileFieldBorderRadius[ 1 ] : '' ) );
+	let borderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius?.[2] ? fieldBorderRadius[ 2 ] : '' ), ( undefined !== tabletFieldBorderRadius?.[2] ? tabletFieldBorderRadius[ 2 ] : '' ), ( undefined !== mobileFieldBorderRadius?.[2] ? mobileFieldBorderRadius[ 2 ] : '' ) );
+	let borderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== fieldBorderRadius?.[3] ? fieldBorderRadius[ 3 ] : '' ), ( undefined !== tabletFieldBorderRadius?.[3] ? tabletFieldBorderRadius[ 3 ] : '' ), ( undefined !== mobileFieldBorderRadius?.[3] ? mobileFieldBorderRadius[ 3 ] : '' ) );
 	styles.borderRadiusUnit = fieldBorderRadiusUnit ? fieldBorderRadiusUnit : 'px';
+
+	styles.borderRadiusTop = ( '' !== borderRadiusTop ? borderRadiusTop + styles.borderRadiusUnit : undefined );
+	styles.borderRadiusRight = ( '' !== borderRadiusRight ? borderRadiusRight + styles.borderRadiusUnit : undefined );
+	styles.borderRadiusBottom = ( '' !== borderRadiusBottom ? borderRadiusBottom + styles.borderRadiusUnit : undefined );
+	styles.borderRadiusLeft = ( '' !== borderRadiusLeft ? borderRadiusLeft + styles.borderRadiusUnit : undefined );
 
 	styles.borderTopWidth = getBorderWidth( previewDevice, 'top', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 

@@ -273,8 +273,8 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 			<ResponsiveBorderControl
 				label={__( 'Border', 'kadence-blocks' )}
 				value={ [ fieldBorderStyle ] }
-				tabletValue={tabletFieldBorderStyle}
-				mobileValue={mobileFieldBorderStyle}
+				tabletValue={ [tabletFieldBorderStyle] }
+				mobileValue={ [mobileFieldBorderStyle] }
 				onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
 				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
 				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}

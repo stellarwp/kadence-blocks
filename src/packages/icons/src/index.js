@@ -169,6 +169,9 @@ export { default as captchaIcon } from './captcha'
 export { 
     formTemplateContactIcon,
     formTemplateContactAdvancedIcon,
+    formTemplateContactInFieldIcon,
+    formTemplateContactDarkIcon,
+    formTemplateContactUnderlineIcon,
     formTemplateSubscribeIcon,
     formTemplateSubscribeAdvancedIcon,
     formTemplateFeedbackIcon,

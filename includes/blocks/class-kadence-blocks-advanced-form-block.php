@@ -286,15 +286,28 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $help_style['weight'] ) && ! empty( $help_style['weight'] ) && 'regular' !== $help_style['weight'] ) {
 			$css->add_property( 'font-weight', $help_style['weight'] );
 		}
-		// Message Border.
+		/*
+		 *
+		 * Message Styles
+		 *
+		 */
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-message' );
+		$css->render_measure_output( $form_attributes, 'messagePadding', 'padding' );
+		$css->render_measure_output( $form_attributes, 'messageMargin', 'margin' );
+		$tmp_message_font = array( 'typography' => $message_font );
+		$css->render_typography( $tmp_message_font, 'typography' );
+		$css->render_measure_output( $form_attributes, 'messageBorderRadius', 'border-radius' );
+		// Success.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-success' );
 		$border_style = array(
 			'messageBorderSuccess' => array( ! empty( $form_attributes['messageBorderSuccess'] ) ? $form_attributes['messageBorderSuccess'] : array() ),
 			'tabletMessageBorderSuccess' => array( ! empty( $form_attributes['tabletMessageBorderSuccess'] ) ? $form_attributes['tabletMessageBorderSuccess'] : array() ),
-			'mobileMessageBorderSuccess' => array( ! empty( $form_attributes['mobileMessageBorderSuccess'] ) ? $form_attributes['mobileMessageBorderSuccess'] : array()  ),
+			'mobileMessageBorderSuccess' => array( ! empty( $form_attributes['mobileMessageBorderSuccess'] ) ? $form_attributes['mobileMessageBorderSuccess'] : array() ),
 		);
 		$css->render_border_styles( $border_style, 'messageBorderSuccess' );
-
+		$css->render_color_output( $form_attributes, 'messageColorSuccess', 'color' );
+		$css->render_color_output( $form_attributes, 'messageBackgroundSuccess', 'background' );
+		// Error.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-warning' );
 		$border_style = array(
 			'messageBorderError' => array( ! empty( $form_attributes['messageBorderError'] ) ? $form_attributes['messageBorderError'] : array() ),

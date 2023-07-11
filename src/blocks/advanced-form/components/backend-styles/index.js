@@ -19,25 +19,24 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${ fieldStyles?.borderTopColor ? '--kb-form-border-color: ' + fieldStyles.borderTopColor + ';' : '' }
 				${ fieldStyles?.borderTopWidth ? '--kb-form-border-width: ' + fieldStyles.borderTopWidth + ';' : '' }
 			}
-			.wp-block-kadence-advanced-form${uniqueID} input[type="text"]:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form${uniqueID} input[type="email"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="url"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="password"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="search"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="number"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="tel"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="range"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="date"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="month"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="week"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="time"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="datetime"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="datetime-local"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="color"],
-			.wp-block-kadence-advanced-form${uniqueID} input[type="file"],
-			.wp-block-kadence-advanced-form${uniqueID} select,
-			.wp-block-kadence-advanced-form${uniqueID} textarea {
-
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="text"]:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="email"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="url"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="password"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="search"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="number"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="tel"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="range"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="date"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="month"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="week"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="time"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime-local"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="color"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="file"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select,
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea {
 				${ fieldStyles?.fontSize ? 'font-size:' + fieldStyles.fontSize + ';' : ''}
 				${ fieldStyles?.lineHeight ? 'line-height:' + fieldStyles.lineHeight + ';' : '' }
 				${ fieldStyles?.letterSpacing ? 'letter-spacing:' + fieldStyles.letterSpacing + ';' : '' }
@@ -51,10 +50,10 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${ fieldStyles?.paddingBottom ? 'padding-bottom:' + fieldStyles.paddingBottom + ';' : '' }
 				${ fieldStyles?.paddingLeft ? 'padding-left:' + fieldStyles.paddingLeft + ';' : '' }
 
-				${ fieldStyles?.borderRadiusTop ? 'border-top-left-radius: ' + fieldStyles.borderRadiusTop + fieldStyles.borderRadiusUnit + ';' : '' }
-				${ fieldStyles?.borderRadiusRight ? 'border-top-right-radius: ' + fieldStyles.borderRadiusRight + fieldStyles.borderRadiusUnit + ';' : '' }
-				${ fieldStyles?.borderRadiusBottom ? 'border-bottom-right-radius: ' + fieldStyles.borderRadiusBottom + fieldStyles.borderRadiusUnit + ';' : '' }
-				${ fieldStyles?.borderRadiusLeft ? 'border-bottom-left-radius: ' + fieldStyles.borderRadiusLeft + fieldStyles.borderRadiusUnit + ';' : '' }
+				${ fieldStyles?.borderRadiusTop ? 'border-top-left-radius: ' + fieldStyles.borderRadiusTop + ';' : '' }
+				${ fieldStyles?.borderRadiusRight ? 'border-top-right-radius: ' + fieldStyles.borderRadiusRight + ';' : '' }
+				${ fieldStyles?.borderRadiusBottom ? 'border-bottom-right-radius: ' + fieldStyles.borderRadiusBottom + ';' : '' }
+				${ fieldStyles?.borderRadiusLeft ? 'border-bottom-left-radius: ' + fieldStyles.borderRadiusLeft + ';' : '' }
 
 				${ fieldStyles?.borderTop ? 'border-top: ' + fieldStyles.borderTop + ';' : '' }
 				${ fieldStyles?.borderRight ? 'border-right: ' + fieldStyles.borderRight + ';' : '' }
@@ -68,31 +67,25 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 
 				${ fieldStyles?.boxShadow ? 'box-shadow: ' + fieldStyles.boxShadow + ';' : '' }
 		}
-
 		.wp-block-kadence-advanced-form${uniqueID} input:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} select:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} textarea:focus {
 			${ fieldStyles?.backgroundActive ? 'background: ' + fieldStyles.backgroundActive + ';' : '' }
 		}
-
 		.wp-block-kadence-advanced-form${uniqueID} input::placeholder,
 		.wp-block-kadence-advanced-form${uniqueID} select::placeholder,
 		.wp-block-kadence-advanced-form${uniqueID} textarea::placeholder {
 			${ fieldStyles?.placeholderColor ? 'color: ' + fieldStyles.placeholderColor + ';' : '' }
 		}
-
 		.wp-block-kadence-advanced-form${uniqueID} input[type="radio"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
-
 		.wp-block-kadence-advanced-form${uniqueID} input[type="file"]{
 			display: block
 		}
-
 		.wp-block-kadence-advanced-form${uniqueID} input[type="checkbox"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
-
 		`}
 
 		</style>
