@@ -424,21 +424,26 @@ class Kadence_Blocks_Table_Of_Contents {
 		// https://bugzilla.gnome.org/show_bug.cgi?id=761534.
 		libxml_use_internal_errors( true );
 		// Parse the post content into an HTML document.
+		$content = mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' );
 		// loadHTML expects ISO-8859-1, so we need to convert the post content to
 		// that format. We use htmlentities to encode Unicode characters not
 		// supported by ISO-8859-1 as HTML entities. However, this function also
 		// converts all special characters like < or > to HTML entities, so we use
 		// htmlspecialchars_decode to decode them.
-		$content = htmlspecialchars_decode(
-			iconv( 'UTF-8', 'ISO-8859-1',
-				htmlentities( $content, ENT_COMPAT, 'UTF-8' )
-			),
-			ENT_QUOTES );
-
 		$doc->loadHTML(
-			'<!DOCTYPE html><html><head><title>:D</title><body>' .
-			$content .
-			'</body></html>'
+			htmlspecialchars_decode(
+				utf8_decode(
+					htmlentities(
+						'<!DOCTYPE html><html><head><title>:D</title><body>' .
+						htmlspecialchars( $content ) .
+						'</body></html>',
+						ENT_COMPAT,
+						'UTF-8',
+						false
+					)
+				),
+				ENT_COMPAT
+			)
 		);
 
 		// We're done parsing, so we can disable user error handling. This also
