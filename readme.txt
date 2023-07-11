@@ -77,13 +77,19 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.1 Alpha Version 2 =
+= 3.1.1 Beta Version 1 =
 Release Date: July 12th, 2023
-* Add: No follow & Sponsored options to links in icon list.
+* Add: Option to set gradient position with input.
+* Add: No follow & sponsored options to links in icon list.
+* Add: Form wizard with style options to advanced form.
+* Add: Row gap settings to section.
+* Add: Flex Basis settings to section.
 * Fix: Media styles not copy/pasting properly for Info Box.
 * Fix: % and rem based border radius on Advanced Buttons.
 * Fix: Increase specificity of Splide CSS to avoid conflicts.
 * Fix: Posts block image ratios on mobile.
+* Fix: issue with WPML and span in advanced text.
+* Fix: Issue with WPML and posts read more.
 
 = 3.1.0 Alpha Version 1 =
 Release Date: June 15th, 2023

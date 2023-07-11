@@ -748,7 +748,7 @@ function SectionEdit( props ) {
 												{ wrapContent !== 'nowrap' && wrapContent !== '' && (
 													<ResponsiveRangeControls
 														label={__( 'Flex Basis', 'kadence-blocks' )}
-														value={( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 )}
+														value={( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' )}
 														onChange={value => setAttributes( { flexBasis: [ value, ( flexBasis && flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
 														tabletValue={( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' )}
 														onChangeTablet={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), value, ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
