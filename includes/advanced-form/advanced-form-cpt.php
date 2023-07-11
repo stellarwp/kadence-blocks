@@ -35,6 +35,84 @@ class Kadence_Blocks_Form_CPT_Controller {
 		if ( is_admin() ) {
 			// Filter Kadence Theme to give the correct admin editor layout.
 			add_filter( 'kadence_post_layout', array( $this, 'single_form_layout' ), 99 );
+			$slug = self::SLUG;
+			add_filter(
+				"manage_{$slug}_posts_columns",
+				function( array $columns ) : array {
+					return $this->filter_post_type_columns( $columns );
+				}
+			);
+			add_action(
+				"manage_{$slug}_posts_custom_column",
+				function( string $column_name, int $post_id ) {
+					$this->render_post_type_column( $column_name, $post_id );
+				},
+				10,
+				2
+			);
+		}
+	}
+	/**
+	 * Filters the block area post type columns in the admin list table.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $columns Columns to display.
+	 * @return array Filtered $columns.
+	 */
+	private function filter_post_type_columns( array $columns ) : array {
+
+		$add = array(
+			'description'  => esc_html__( 'Description', 'kadence-pro' ),
+		);
+		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+			$add['entries'] = esc_html__( 'Entries', 'kadence-pro' );
+		} else {
+			$add['entries'] = esc_html__( 'Entries (Pro Only)', 'kadence-pro' );
+		}
+
+		$new_columns = array();
+		foreach ( $columns as $key => $label ) {
+			$new_columns[ $key ] = $label;
+			if ( 'title' == $key ) {
+				$new_columns = array_merge( $new_columns, $add );
+			}
+		}
+
+		return $new_columns;
+	}
+	/**
+	 * Renders column content for the block area post type list table.
+	 *
+	 * @param string $column_name Column name to render.
+	 * @param int    $post_id     Post ID.
+	 */
+	private function render_post_type_column( string $column_name, int $post_id ) {
+		if ( 'entries' !== $column_name && 'description' !== $column_name ) {
+			return;
+		}
+		//$post = get_post( $post_id );
+		if ( 'description' === $column_name ) {
+			$description = get_post_meta( $post_id, '_kad_form_description', true );
+			echo '<div class="kadence-form-description">' . esc_html( $description ) . '</div>';
+		}
+		if ( 'entries' === $column_name ) {
+			if ( class_exists( 'Kadence_Blocks_Pro' ) && class_exists( 'KBP\Queries\Entry' ) ) {
+				$entries = new KBP\Queries\Entry();
+				$args = array(
+					'status' => 'publish',
+					'number' => null,
+					'form_id' => $post_id,
+				);
+				$results = $entries->query( $args );
+				$url = add_query_arg(
+					array(
+						'form_id'  => $post_id,
+					),
+					get_admin_url( null, 'admin.php?page=kadence-blocks-entries' )
+				);
+				echo '<a href="' . esc_url( $url ) . '">' . count( $results ) . '</a>';
+			}
 		}
 	}
 	/**

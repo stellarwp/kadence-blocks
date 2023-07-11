@@ -515,10 +515,10 @@ export default function KadenceButtonEdit( props ) {
 				{( previewBorderHoverRightStyle ? 'border-right:' + previewBorderHoverRightStyle + '!important;' : '' )}
 				{( previewBorderHoverLeftStyle ? 'border-left:' + previewBorderHoverLeftStyle + '!important;' : '' )}
 				{( previewBorderHoverBottomStyle ? 'border-bottom:' + previewBorderHoverBottomStyle + '!important;' : '' )}
-				{( previewHoverRadiusTop ? 'border-top-left-radius:' + previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusRight ? 'border-top-right-radius:' + previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusLeft ? 'border-bottom-left-radius:' + previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusBottom ? 'border-bottom-right-radius:' + previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusTop ? 'border-top-left-radius:' + previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusRight ? 'border-top-right-radius:' + previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusLeft ? 'border-bottom-left-radius:' + previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusBottom ? 'border-bottom-right-radius:' + previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
 			{'}'}
 			{( iconColorHover ? `.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon { color:${KadenceColorOutput( iconColorHover )} !important;}` : '' )}
 			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before {`}

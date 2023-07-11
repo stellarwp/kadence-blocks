@@ -353,9 +353,11 @@
 			border: none;
 		}
 		.kt-init-forms-btn-group {
-			display: flex;
 			gap: 1.5em;
 			margin: 5px 0;
+			width: 100%;
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 			.kt-inital-form-style-btn {
 				width: auto;
 				margin: 0;
@@ -559,6 +561,7 @@
 	}
 	.kb-select-or-create-placeholder__actions {
 		display: block;
+		width:100%;
 		.components-base-control__field {
 			margin-right: 12px;
 		}

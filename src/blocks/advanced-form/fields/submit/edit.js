@@ -262,17 +262,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== hAlign ? hAlign : '' ), ( undefined !== thAlign ? thAlign : '' ), ( undefined !== mhAlign ? mhAlign : '' ) );
 	const previewOnlyIcon = getPreviewSize( previewDevice, ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : undefined ), ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : undefined ) );
 	let btnbg;
-	// let btnGrad;
-	// let btnGrad2;
 	if ( undefined !== backgroundType && 'gradient' === backgroundType ) {
 		btnbg = gradient;
-		// btnGrad = ( 'transparent' === background || undefined === background ? 'rgba(255,255,255,0)' : KadenceColorOutput( background ) );
-		// btnGrad2 = ( undefined !== gradient && undefined !== gradient[ 0 ] && '' !== gradient[ 0 ] ? KadenceColorOutput( gradient[ 0 ], ( undefined !== gradient && gradient[1] !== undefined ? gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== gradient && gradient[1] !== undefined ? gradient[1] : 1 ) ) );
-		// if ( undefined !== gradient && 'radial' === gradient[ 4 ] ) {
-		// 	btnbg = `radial-gradient(at ${( undefined === gradient[ 6 ] ? 'center center' : gradient[ 6 ] )}, ${btnGrad} ${( undefined === gradient[ 2 ] ? '0' : gradient[ 2 ] )}%, ${btnGrad2} ${( undefined === gradient[ 3 ] ? '100' : gradient[ 3 ] )}%)`;
-		// } else if ( undefined === gradient || 'radial' !== gradient[ 4 ] ) {
-		// 	btnbg = `linear-gradient(${( undefined !== gradient && undefined !== gradient[ 5 ] ? gradient[ 5 ] : '180' )}deg, ${btnGrad} ${( undefined !== gradient && undefined !== gradient[ 2 ] ? gradient[ 2 ] : '0' )}%, ${btnGrad2} ${( undefined !== gradient && undefined !== gradient[ 3 ] ? gradient[ 3 ] : '100' )}%)`;
-		// }
 	} else {
 		btnbg = ( 'transparent' === background || undefined === background ? undefined : KadenceColorOutput( background ) );
 	}
@@ -316,7 +307,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		btnRad = ( undefined !== borderRadius ? borderRadius : '3' );
 		btnBox = 'none';
 	}
-	const previewTypographyCSS = typographyStyle( typography, `.editor-styles-wrapper .wp-block-kadence-advancedbtn .kb-single-btn-${uniqueID} .kt-button-${uniqueID}`, previewDevice );
+	const previewTypographyCSS = typographyStyle( typography, `.editor-styles-wrapper .wp-block-kadence-advanced-form-submit.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`, previewDevice );
 	const renderCSS = (
 		<style>
 			{ ( '' !== previewTypographyCSS ? previewTypographyCSS : '' ) }
@@ -339,10 +330,10 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 				{( previewBorderHoverRightStyle ? 'border-right:' + previewBorderHoverRightStyle + '!important;' : '' )}
 				{( previewBorderHoverLeftStyle ? 'border-left:' + previewBorderHoverLeftStyle + '!important;' : '' )}
 				{( previewBorderHoverBottomStyle ? 'border-bottom:' + previewBorderHoverBottomStyle + '!important;' : '' )}
-				{( previewHoverRadiusTop ? 'border-top-left-radius:' + previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusRight ? 'border-top-right-radius:' + previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusLeft ? 'border-bottom-left-radius:' + previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
-				{( previewHoverRadiusBottom ? 'border-bottom-right-radius:' + previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusTop ? 'border-top-left-radius:' + previewHoverRadiusTop + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusRight ? 'border-top-right-radius:' + previewHoverRadiusRight + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusLeft ? 'border-bottom-left-radius:' + previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
+				{( '' !== previewHoverRadiusBottom ? 'border-bottom-right-radius:' + previewHoverRadiusBottom + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) + '!important;' : '' )}
 			{'}'}
 			{( iconColorHover ? `.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon { color:${KadenceColorOutput( iconColorHover )} !important;}` : '' )}
 			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before {`}
@@ -922,10 +913,10 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 						borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 						borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),
 						borderLeft: ( previewBorderLeftStyle ? previewBorderLeftStyle : undefined ),
-						borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
-						borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderTopLeftRadius: ( '' !== previewRadiusTop ? previewRadiusTop + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderTopRightRadius: ('' !== previewRadiusRight ? previewRadiusRight + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderBottomRightRadius: ( '' !== previewRadiusBottom ? previewRadiusBottom + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
+						borderBottomLeftRadius: ( '' !== previewRadiusLeft ? previewRadiusLeft + ( borderRadiusUnit ? borderRadiusUnit : 'px' ) : undefined ),
 						boxShadow      : ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color ? ( undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '' ) + ( undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0 ) + 'px ' + ( undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0 ) + 'px ' + ( undefined !== shadow[0].blur ? shadow[0].blur : 14 ) + 'px ' + ( undefined !== shadow[0].spread ? shadow[0].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[0].color ? shadow[0].color : '#000000' ), ( undefined !== shadow[0].opacity ? shadow[0].opacity : 1 ) ) : undefined ),
 
 						background   : ( undefined !== btnbg ? btnbg : undefined ),

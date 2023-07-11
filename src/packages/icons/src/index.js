@@ -174,7 +174,15 @@ export {
     formTemplateContactUnderlineIcon,
     formTemplateSubscribeIcon,
     formTemplateSubscribeAdvancedIcon,
-    formTemplateFeedbackIcon,
+    formTemplateContactAdvancedDarkIcon,
+    formTemplateContactAdvancedUnderlineIcon,
+    formTemplateContactAdvancedInFieldIcon,
+    formTemplateSubscribeDarkIcon,
+    formTemplateSubscribeUnderlineIcon,
+    formTemplateSubscribeInFieldIcon,
+    formTemplateSubscribeAdvancedDarkIcon,
+    formTemplateSubscribeAdvancedUnderlineIcon,
+    formTemplateSubscribeAdvancedInFieldIcon,
 } from './block-icons/advanced-form/templates'
 
 

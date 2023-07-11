@@ -14,6 +14,15 @@ import {
 	formTemplateContactInFieldIcon,
     formTemplateContactDarkIcon,
     formTemplateContactUnderlineIcon,
+	formTemplateContactAdvancedDarkIcon,
+    formTemplateContactAdvancedUnderlineIcon,
+    formTemplateContactAdvancedInFieldIcon,
+	formTemplateSubscribeDarkIcon,
+    formTemplateSubscribeUnderlineIcon,
+    formTemplateSubscribeInFieldIcon,
+    formTemplateSubscribeAdvancedDarkIcon,
+    formTemplateSubscribeAdvancedUnderlineIcon,
+    formTemplateSubscribeAdvancedInFieldIcon,
 } from '@kadence/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { map } from 'lodash';
@@ -48,24 +57,24 @@ export default function FormTitle( {
 	}
 	if ( 'subscribe' === template ) {
 		styleIcons = {
-			'skip': formTemplateContactIcon,
-			'dark': formTemplateContactDarkIcon,
-			'infield': formTemplateContactInFieldIcon,
-			'underline': formTemplateContactUnderlineIcon,
+			'skip': formTemplateSubscribeIcon,
+			'dark': formTemplateSubscribeDarkIcon,
+			'infield': formTemplateSubscribeInFieldIcon,
+			'underline': formTemplateSubscribeUnderlineIcon,
 		}
 	} else if ( 'contactAdvanced' === template ) {
 		styleIcons = {
-			'skip': formTemplateContactIcon,
-			'dark': formTemplateContactDarkIcon,
-			'infield': formTemplateContactInFieldIcon,
-			'underline': formTemplateContactUnderlineIcon,
+			'skip': formTemplateContactAdvancedIcon,
+			'dark': formTemplateContactAdvancedDarkIcon,
+			'infield': formTemplateContactAdvancedInFieldIcon,
+			'underline': formTemplateContactAdvancedUnderlineIcon,
 		}
 	} else if ( 'subscribeAdvanced' === template ) {
 		styleIcons = {
-			'skip': formTemplateContactIcon,
-			'dark': formTemplateContactDarkIcon,
-			'infield': formTemplateContactInFieldIcon,
-			'underline': formTemplateContactUnderlineIcon,
+			'skip': formTemplateSubscribeAdvancedIcon,
+			'dark': formTemplateSubscribeAdvancedDarkIcon,
+			'infield': formTemplateSubscribeAdvancedInFieldIcon,
+			'underline': formTemplateSubscribeAdvancedUnderlineIcon,
 		}
 	}
 	const startStyleOptions = [

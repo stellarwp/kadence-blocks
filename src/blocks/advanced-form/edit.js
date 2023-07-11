@@ -60,11 +60,12 @@ export function Edit( props ) {
 	const blockProps = useBlockProps( {
 		className: blockClasses
 	} );
-	const { post, currentPostType } = useSelect(
+	const { post, currentPostType, postId } = useSelect(
 		( select ) => {
 			return {
 				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_form', id ),
 				currentPostType: select( editorStore ).getCurrentPostType(),
+				postId: select( editorStore ).getCurrentPostId(),
 			}
 		},
 		[ id ],
@@ -107,7 +108,7 @@ export function Edit( props ) {
 	if ( currentPostType === 'kadence_form' ) {
 		return (
 			<div {...blockProps}>
-				<EditInner {...props} direct={true} id={ id }/>
+				<EditInner {...props} direct={true} id={ postId }/>
 			</div>
 		);
 	}

@@ -229,6 +229,44 @@ export function EditInner( props ) {
 	const onAdd = async( title, template, style, initialDescription ) => {
 		try {
 			const response = await addNew();
+			let buttonAttributes = {
+				text: 'Submit',
+				widthType: 'full'
+			};
+			if ( 'subscribe' === template && 'infield' === style ) {
+				buttonAttributes = {
+					typography: [ {
+						"size": [
+							"",
+							"",
+							""
+						],
+						"sizeType": "px",
+						"lineHeight": [
+							"42",
+							"",
+							""
+						],
+						"lineType": "px",
+						"letterSpacing": [
+							"",
+							"",
+							""
+						],
+						"letterType": "px",
+						"textTransform": "",
+						"family": "",
+						"google": "",
+						"style": "",
+						"weight": "",
+						"variant": "",
+						"subset": "",
+						"loadGoogle": true
+					}],
+					text: 'Submit',
+					widthType: 'full'
+				};
+			}
 			if ( response.id ) {
 				switch ( template ) {
 					case 'contact':
@@ -303,7 +341,7 @@ export function EditInner( props ) {
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
 									] ),
 									createBlock( 'kadence/column', { verticalAlignment: 'bottom' }, [
-										createBlock( 'kadence/advanced-form-submit', { text: 'Submit', widthType: 'full' } ) 
+										createBlock( 'kadence/advanced-form-submit', buttonAttributes ) 
 									] ) 
 								] ),
 							],
@@ -456,6 +494,20 @@ export function EditInner( props ) {
 									onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
 									value={ id }
 								/>
+								<TextareaControl
+									label={__( 'Form Description', 'kadence-blocks' )}
+									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
+									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
+									value={( undefined !== description ? description : '' )}
+									onChange={value => setMetaAttribute( value, 'description' )}
+								/>
+							</KadencePanelBody>
+						) }
+						{ direct && (
+							<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Form', 'kadence-blocks' ) }
+							>
 								<TextareaControl
 									label={__( 'Form Description', 'kadence-blocks' )}
 									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
