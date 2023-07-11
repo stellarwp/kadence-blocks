@@ -27,6 +27,7 @@
 				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
 					continue;
 				}
+				thisSlider.classList.add("kb-splide");
 
 				const slideCount = this.createSplideElements( thisSlider );
 				let parsedData = this.parseDataset(thisSlider.dataset);
