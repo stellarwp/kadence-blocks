@@ -4,7 +4,6 @@ import { get, isEmpty } from 'lodash';
 export default ( previewDevice, radioLabelFont ) => {
 
 	let styles = {};
-
 	if ( ! isEmpty( radioLabelFont, 'color' ) ) {
 		styles.color = KadenceColorOutput( radioLabelFont.color );
 	} else {

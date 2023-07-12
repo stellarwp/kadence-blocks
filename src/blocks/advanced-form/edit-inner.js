@@ -491,7 +491,7 @@ export function EditInner( props ) {
 									postType="kadence_form"
 									label={__( 'Selected Form', 'kadence-blocks' )}
 									hideLabelFromVision={ true }
-									onChange={ ( nextId ) => setAttributes( { id: nextId } ) }
+									onChange={ ( nextId ) => setAttributes( { id: parseInt( nextId ) } ) }
 									value={ id }
 								/>
 								<TextareaControl

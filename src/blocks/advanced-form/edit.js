@@ -143,8 +143,7 @@ export function Edit( props ) {
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
-									console.log( nextId );
-									setAttributes( { id: nextId } ) 
+									setAttributes( { id: parseInt( nextId ) } ) 
 								} }
 								value={ id }
 							/>
@@ -156,7 +155,7 @@ export function Edit( props ) {
 				<Chooser
 					id={id}
 					post={post}
-					commit={( nextId ) => setAttributes( { id: nextId } )}
+					commit={( nextId ) => setAttributes( { id: parseInt( nextId ) } )}
 				/>
 			)}
 			{id > 0 && !isEmpty( post ) && post.status === "trash" && (
@@ -178,7 +177,7 @@ export function Edit( props ) {
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
-									setAttributes( { id: nextId } ) 
+									setAttributes( { id: parseInt( nextId ) } ) 
 								} }
 								value={ id }
 							/>

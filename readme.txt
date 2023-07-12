@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.2
-Stable tag: 3.1.0
+Stable tag: 3.1.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,7 +77,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.1 Beta Version 1 =
+= 3.1.2 Beta Version 1 =
+Release Date: July 12th, 2023
+* Fix: Splide css file name.
+* Fix: Pro check in advanced form.
+* Fix: Radio label styles in editor.
+* Fix: Form select issue.
+
+= 3.1.1 Alpha Version 2 =
 Release Date: July 12th, 2023
 * Add: Option to set gradient position with input.
 * Add: No follow & sponsored options to links in icon list.
