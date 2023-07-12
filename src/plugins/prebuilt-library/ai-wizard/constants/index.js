@@ -12,11 +12,6 @@ import EducationBg from '../assets/education-bg.jpg';
 import SpaBg from '../assets/spa-bg.jpg';
 import TaxesBg from '../assets/taxes-bg.jpg';
 
-const BASE_URL = 'http://prophecywp.lndo.site'; // @todo Remove local BASE_URL.
-
-export const PROPHECY_ROUTE_GET_COLLECTIONS = `${ BASE_URL }/wp-json/prophecy/v1/images/collections`;
-export const PROPHECY_ROUTE_GET_VERTICALS = `${ BASE_URL }/wp-json/prophecy/v1/verticals`;
-
 export const API_MAX_ATTEMPTS = 3;
 export const API_ROUTE_GET_COLLECTIONS = '/kb-design-library/v1/get_image_collections';
 export const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
