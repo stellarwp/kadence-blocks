@@ -26,7 +26,17 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl, SpacingVisualizer } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, getPostOrFseId } from '@kadence/helpers';
+
+import {
+	getPreviewSize,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
+	setDynamicState,
+	getPostOrFseId
+} from '@kadence/helpers';
 
 /* global wp */
 
@@ -146,15 +156,8 @@ export function ImageEdit( props ) {
 		paddingUnit,
 		inQueryBlock,
 	} = attributes;
-	function getDynamic() {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['url'] && attributes.kadenceDynamic['url'].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'url', contextPost );
-		}
-	}
+
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -246,11 +249,18 @@ export function ImageEdit( props ) {
 			tempMobileBorderStyle[0].left[2] = borderWidthMobile?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile:[ '', '', '', '' ] } );
 		}
-		debounce( getDynamic, 200 );
 	}, [] );
+	
+	useEffect( () => {
+		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
+		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, context, setDynamicURL, url ? false : true);
+	}, [ 'url' ] );
+
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	const [ temporaryURL, setTemporaryURL ] = useState();
+	const [ dynamicURL, setDynamicURL ] = useState();
+
 	const altRef = useRef();
 	useEffect( () => {
 		altRef.current = alt;
@@ -463,6 +473,7 @@ export function ImageEdit( props ) {
 		className: classes,
 		['data-align']: ( 'center' === align ) ? align : undefined
 	} );
+
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
 			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
@@ -479,6 +490,7 @@ export function ImageEdit( props ) {
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
+					dynamicURL={ dynamicURL }
 					previewDevice={ previewDevice }
 					attributes={ attributes }
 					setAttributes={ setAttributes }

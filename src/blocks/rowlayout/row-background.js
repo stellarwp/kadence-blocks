@@ -19,6 +19,7 @@ import { getSpacingOptionOutput } from './utils';
 	previewDevice,
 	backgroundClasses,
 	children,
+	dynamicBackgroundImg,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, tabletPadding, mobilePadding, padding, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, gradient, margin, tabletMargin, mobileMargin, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit } = attributes;
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin && undefined !== margin[0] ? margin[0] : '' ), ( undefined !== tabletMargin && undefined !== tabletMargin[0] ? tabletMargin[0] : '' ), ( undefined !== mobileMargin && undefined !== mobileMargin[0] ? mobileMargin[0] : '' ) );
@@ -39,6 +40,7 @@ import { getSpacingOptionOutput } from './utils';
 	const previewRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( undefined !== minHeight ? minHeight : '' ), ( undefined !== minHeightTablet ? minHeightTablet : '' ), ( undefined !== minHeightMobile ? minHeightMobile : '' ) );
 	// Background Image.
+
 	let previewBackgroundImage = getPreviewSize( previewDevice, ( bgImg ? `url(${ bgImg })` : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImg && tabletBackground[0].enable ? `url(${ tabletBackground[0].bgImg })` : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImg && mobileBackground[0].enable ? `url(${ mobileBackground[0].bgImg })` : '' ) );
 
 	previewBackgroundImage = getPreviewSize(  previewDevice, ( backgroundSettingTab && 'gradient' == backgroundSettingTab ? gradient : previewBackgroundImage ), ( 'gradient' == tabletBackground?.[0]?.type && tabletBackground?.[0]?.gradient && tabletBackground?.[0]?.enable ? tabletBackground[0].gradient : previewBackgroundImage ), ( undefined !== mobileBackground[0] && undefined !== mobileBackground[0].type && 'gradient' == mobileBackground[0].type && undefined !== mobileBackground[0].gradient && mobileBackground[0].gradient && mobileBackground[0].enable ? mobileBackground[0].gradient : previewBackgroundImage ) );
@@ -50,6 +52,9 @@ import { getSpacingOptionOutput } from './utils';
 	if ( previewBackgroundImage === 'none' ) {
 		previewBackgroundImage = undefined;
 	}
+
+	previewBackgroundImage = dynamicBackgroundImg ? dynamicBackgroundImg : previewBackgroundImage;
+
 	// let disableBGImage = false;
 	// if ( 'Mobile' === previewDevice && undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].enable && 'gradient' !== mobileBackground[0].type && '' === mobileBackground[0].bgImg ) {
 	// 	disableBGImage = true;

@@ -6,7 +6,10 @@
   "category": "kadence-blocks",
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow"
   ],
   "textdomain": "kadence-blocks",
   "attributes": {

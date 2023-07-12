@@ -51,6 +51,7 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
+	setDynamicState,
 	getPostOrFseId
 } from '@kadence/helpers';
 
@@ -94,19 +95,14 @@ function SectionEdit( props ) {
 		context,
 		className,
 	} = props;
+
 	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode, rowGapUnit, rowGap, flexBasis, flexBasisUnit } = attributes;
-	const getDynamic = () => {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['backgroundImg:0:bgImg'] && attributes.kadenceDynamic['backgroundImg:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'backgroundImg:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['backgroundImgHover:0:bgImg'] && attributes.kadenceDynamic['backgroundImgHover:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'backgroundImgHover:0:bgImg', contextPost );
-		}
-	}
+
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
+
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
+
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
@@ -137,6 +133,7 @@ function SectionEdit( props ) {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
+
 		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
 		if ( attributes.inQueryBlock !== isInQueryBlock ) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -276,8 +273,13 @@ function SectionEdit( props ) {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		debounce( getDynamic, 200 );
 	}, [] );
+	
+	//set the dynamic image state
+	useEffect( () => {
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, context, setDynamicBackgroundImg, backgroundImg ? false : true );
+	}, [ 'backgroundImg' ] );
+	
 	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
 			const { getBlock, getBlockRootClientId, getBlockParentsByBlockName, getBlocksByClientId } = select( blockEditorStore );
@@ -299,7 +301,6 @@ function SectionEdit( props ) {
 		},
 		[ clientId ]
 	);
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const saveShadow = ( value ) => {
@@ -452,8 +453,9 @@ function SectionEdit( props ) {
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
 	const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
-	const previewBackgroundImg = hasBackgroundImage ? `url( ${ backgroundImg[ 0 ].bgImg } )` : '';
-	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImg;
+	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
+	const previewBackgroundImgCSS = hasBackgroundImage ? `url( ${ previewBackgroundImg[ 0 ].bgImg } )` : '';
+	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImgCSS;
 	const hasHoverBackgroundImage = ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? true : false );
 	const previewHoverBackgroundImg = hasHoverBackgroundImage ? `url( ${ backgroundImgHover[ 0 ].bgImg } )` : '';
 	const previewHoverBackground = backgroundHoverType === 'gradient' ? gradientHover : previewHoverBackgroundImg;
@@ -1124,6 +1126,7 @@ function SectionEdit( props ) {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1189,6 +1192,7 @@ function SectionEdit( props ) {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1272,6 +1276,7 @@ function SectionEdit( props ) {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Hover Blend Mode' ) }
@@ -1354,6 +1359,7 @@ function SectionEdit( props ) {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Blend Mode' ) }
@@ -1590,10 +1596,10 @@ function SectionEdit( props ) {
 				textAlign: ( previewAlign ? previewAlign : undefined ),
 				backgroundColor: backgroundString,
 				backgroundImage: (previewBackground ? previewBackground : undefined ),
-				backgroundSize: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : undefined ),
-				backgroundPosition: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : undefined ),
-				backgroundRepeat: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : undefined ),
-				backgroundAttachment: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : undefined ),
+				backgroundSize: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgSize ? previewBackgroundImg[ 0 ].bgImgSize : undefined ),
+				backgroundPosition: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgPosition ? previewBackgroundImg[ 0 ].bgImgPosition : undefined ),
+				backgroundRepeat: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgRepeat ? previewBackgroundImg[ 0 ].bgImgRepeat : undefined ),
+				backgroundAttachment: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgAttachment ? previewBackgroundImg[ 0 ].bgImgAttachment : undefined ),
 				borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
 				borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 				borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),

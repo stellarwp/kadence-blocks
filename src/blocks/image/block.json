@@ -4,7 +4,15 @@
 	"name": "kadence/image",
 	"title": "Advanced Image",
 	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId", "allowResize", "imageCrop" ],
+	"usesContext": [ 
+		"postId", 
+		"queryId", 
+		"allowResize", 
+		"imageCrop",
+		"kadence/dynamicSource",
+		"kadence/repeaterRowData",
+		"kadence/repeaterRow" 
+	],
 	"description": "Image block with greater controls and advanced features",
 	"keywords": [ "img", "image", "photo", "kb" ],
 	"textdomain": "kadence-blocks",
