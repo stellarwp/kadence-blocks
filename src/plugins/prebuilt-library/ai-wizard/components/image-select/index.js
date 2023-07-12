@@ -20,7 +20,7 @@ const styles = {
 	},
 	box: {
 		maxWidth: 480,
-		height: 360,
+		height: '30vh',
 		borderWidth: 1,
 		borderColor: '#DFDFDF',
 		borderStyle: 'solid',
