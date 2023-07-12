@@ -134,7 +134,11 @@ function SectionEdit( props ) {
 			addUniqueID( uniqueID, clientId );
 		}
 
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
+		if ( attributes.inQueryBlock !== isInQueryBlock ) {
+			attributes.inQueryBlock = isInQueryBlock;
+			setAttributes( { inQueryBlock: isInQueryBlock } );
+		}
 
 		// Update Old Styles
 		if ( ( '' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding ) ) {
