@@ -1,0 +1,25 @@
+import {
+	PexelsIcon,
+} from "@kadence/icons";
+
+export const API = {
+	proxy: "https://content.startertemplatecloud.com/",
+	testmode: false,
+	defaults: {
+		provider: "pexels",
+		order: "latest",
+		per_page: "20",
+		query: 'image',
+		image_type: 'JPEG',
+		locale: 'EN_US',
+		arr_key: "results",
+	},
+	providers: ["Pexels"],
+	pexels: {
+		name: "Pexels",
+		requires_key: true,
+		new: false,
+		api_var: "key",
+		icon: PexelsIcon,
+	},
+};

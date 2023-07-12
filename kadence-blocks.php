@@ -88,10 +88,13 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/activecampaign-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-pexels.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-image-picker.php';
+
 	/**
 	 * Site Health
 	 */
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-site-health.php';
+
 	/**
 	 * Telemetry.
 	 */

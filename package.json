@@ -18,6 +18,7 @@
     "change-case": "^4.1.2",
     "classnames": "^2.2.6",
     "colord": "^2.9.3",
+    "crypto-js": "^4.1.1",
     "gradient-parser": "^1.0.2",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
