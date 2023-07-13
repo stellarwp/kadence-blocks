@@ -29,6 +29,75 @@
             order: 3;
             overflow: auto;
             padding: 10px 10px 0 10px;
+
+            .kb-css-masonry {
+                margin-left: -10px;
+
+                .kb-css-masonry_column {
+                    padding-left: 10px;
+                }
+            }
+
+            .result {
+                line-height: 0;
+                margin-bottom: 10px;
+                border-radius: 5px;
+
+                .image-wrap {
+                    padding: 0;
+                    border: none;
+                    position: relative;
+                    line-height: 0;
+
+                    &:focus-visible {
+                        .image-hover-container {
+                            visibility: visible;
+                            opacity: 1;
+                        }
+                    }
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                .image-hover-container {
+                    opacity: 0;
+                    visibility: none;
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    width: 100%;
+                    background-color: rgba(0, 88, 176, .45);
+
+                    transition: all .2s ease-in-out;
+
+                    .download-button {
+                        background-color: white;
+                        border-radius: 10px;
+                        padding: 2px;
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                    }
+                }
+
+                // Show the hover container if the results is hovered, the select button is foucsed, or if the result is active
+                &:hover,
+                &.active {
+                    .image-hover-container {
+                        visibility: visible;
+                        opacity: 1;
+                    }
+                }
+
+                &.downloaded {
+                    .download-button {
+                        background-color: #65c774;
+                    }
+
+                }
+            }
         }
 
         .kadence-blocks-image-picker-sidebar {

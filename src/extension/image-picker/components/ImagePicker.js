@@ -57,8 +57,6 @@ export default function InstantImages(props) {
 
     const currentSelectedImage = 'undefined' != typeof( dataState.images ) ? ( ! isNaN( currentUserSelectionIndex ) ? dataState.images[currentUserSelectionIndex] : dataState.images[0] ) : {};
 
-    console.log( 'component', dataState );
-
 	// TODO reset everything when search changes
 	useEffect( () => {
 	}, [] );
@@ -73,9 +71,7 @@ export default function InstantImages(props) {
 	 * @param string query The query to search for.
 	 */
 	function handleSearch( query ) {
-		console.log('search called', query);
 		if ( query && ! isLoading ) {
-            console.log('searching...');
 			getImageDataSearch( provider, dataState, query, setDataState, setIsLoading );
 		}
 	}
@@ -83,12 +79,9 @@ export default function InstantImages(props) {
     const debouncedHandleSearch = useCallback( debounce( handleSearch, 500), [dataState, provider] );
 
 	const loadMore = () => {
-        console.log('calling load more');
 		if ( hasMore && ! isLoading ) {
-            console.log('loading more...');
 			getImageDataLoadMore( provider, dataState, query, setDataState, setIsLoading );
 		} else if ( ! hasMore ) {
-            console.log('no more to load');
             setIsLoading( false );
         }
 	};
@@ -96,9 +89,9 @@ export default function InstantImages(props) {
     const debouncedLoadMore = useCallback( debounce( loadMore, 500), [dataState, query, provider] );
 
     const breakpointCols = {
-		default: 2,
-		1900: 2,
-		1600: 2,
+		default: 3,
+		1900: 3,
+		1600: 3,
 		1200: 2,
 		500: 1,
 	}

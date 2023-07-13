@@ -26,7 +26,7 @@ export default function Result(props) {
                 <div className="result-details">
                     <div class="result-detail" data-setting="photographer">
                         <label class="result-detail-label" for="result-detail-photographer" >Photographer:</label>
-                        <div class="result-detail-value" id="result-detail-photographer"><a href={photographer_url}>{photographer}</a></div>
+                        <div class="result-detail-value" id="result-detail-photographer"><a href={photographer_url} target="_blank">{photographer}</a></div>
                     </div>
                     <div class="result-detail" data-setting="alt">
                         <label class="result-detail-label" for="result-detail-alt" >Alt:</label>

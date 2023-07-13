@@ -1,4 +1,11 @@
 import classNames from "classnames";
+import { Button } from "@wordpress/components";
+import {
+	download as DownloadIcon,
+	check as CheckIcon
+} from "@wordpress/icons";
+import { useMemo, useEffect, useState, useCallback } from '@wordpress/element';
+import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
 
 /**
  * Render the Photo component.
@@ -24,6 +31,9 @@ export default function Result(props) {
 		photographer_url,
 	} = result;
 
+    const [downloadComplete, setDownloadComplete] = useState( false );
+    const [isDownloading, setIsDownloading] = useState( false );
+
 	const handleOnFocus = () => {
 		setCurrentUserSelectionIndex( index );
 	}
@@ -31,26 +41,38 @@ export default function Result(props) {
 	}
 	const resultButton = React.useRef(null)
 
-	//console.log(1, resultButton, document.activeElement)
-
 	const isCurrent = index == currentUserSelectionIndex;
 
 	const activeClass = isCurrent ? 'active' : '';
+	const downloadedClass = downloadComplete ? 'downloaded' : '';
+
+	const handleDownload = () => {
+		if ( ! isDownloading ) {
+			downloadToMediaLibrary(result, setIsDownloading, setDownloadComplete)
+		}
+	}
 
 	return (
-		<article className={classNames("result", activeClass)}>
-			<div className="img-wrap">
-				<button
-					ref={resultButton}
-					className="photo-upload"
-					data-alt={alt}
-					title={'clicker'}
-					onFocus={handleOnFocus}
-					onBlur={handleOnBlur}
-				>
-					<img src={sizes[0].src} alt={alt} className={"img"} width="150px" height="150px"/>
-				</button>
-			</div>
+		<article className={classNames('result', activeClass, downloadedClass)}>
+			<button
+				ref={resultButton}
+				className='image-wrap'
+				data-alt={alt}
+				title={'Select Image'}
+				onFocus={handleOnFocus}
+				onBlur={handleOnBlur}
+			>
+				<img src={sizes[1].src} alt={alt} className={'img'} />
+				<div class="image-hover-container">
+					<Button 
+						icon={downloadComplete ? CheckIcon : DownloadIcon}
+						size={'small'}
+						onClick={handleDownload}
+						className={'download-button'}
+						isBusy={isDownloading}
+					/>
+				</div>
+			</button>
 		</article>
 	);
 }

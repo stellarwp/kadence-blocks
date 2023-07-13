@@ -33,3 +33,23 @@ export default function getQueryOptions( provider, options ) {
 
 	return defaults;
 }
+
+export function getImportOptions( results, options = {} ) {
+	var headers = new Headers();
+	headers.append("Content-Type", "application/json");
+
+	var body = {
+		images: results,
+	}
+
+	var mergedBody = JSON.stringify( { ...body, ...options } );
+
+	var defaults = {
+		method: 'POST',
+		headers: headers,
+		body: mergedBody,
+		redirect: 'follow'
+	}
+
+	return defaults;
+}

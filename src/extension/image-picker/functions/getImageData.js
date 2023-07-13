@@ -1,6 +1,6 @@
 import { API } from "../constants/API";
-import getQueryOptions from "./getQueryOptions";
-import buildURL from "./buildURL";
+import { getQueryOptions } from "./getQueryOptions";
+import { buildURL } from "./buildURL";
 
 /**
  * Get image response data.
@@ -23,7 +23,6 @@ export default async function getImageData( provider, currentDataState, setImage
 
 	try {
 		const results = await response.json();
-		console.log('2 success', options, results)
 
 		var newData = {...currentDataState}
 		if ( 'undefined' != typeof( results.code ) && 'rest_prophecy_image_search_no_results' == results.code ) {
@@ -39,7 +38,6 @@ export default async function getImageData( provider, currentDataState, setImage
 		setImageData( newData );
 		setIsLoading(false)
 	} catch (error) {
-		console.log('2 oops', provider, status, error, response);
 		setImageData({})
 		setIsLoading(false)
 	}

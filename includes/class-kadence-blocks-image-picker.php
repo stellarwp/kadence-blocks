@@ -78,8 +78,17 @@ class Kadence_Blocks_Image_Picker {
 	public function get_image_sizes() {
 		$image_sizes = wp_get_registered_image_subsizes();
 
-		if ( $image_sizes && $image_sizes['thumbnail'] ) {
-			return array( array_merge( array( 'id' => 'thumbnail' ), $image_sizes['thumbnail'] ) );
+		if ( $image_sizes && $image_sizes['thumbnail'] && $image_sizes['medium'] ) {
+			return array(
+				array_merge( array( 'id' => 'thumbnail' ), $image_sizes['thumbnail'] ),
+				array_merge( array( 'id' => 'medium_large' ), $image_sizes['medium_large'] ),
+				array(
+					'id' => 'download',
+					'width' => 2048,
+					'height' => 2048,
+					'crop' => false,
+				),
+			);
 		}
 
 		return array();

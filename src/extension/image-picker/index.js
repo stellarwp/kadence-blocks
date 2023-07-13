@@ -7,8 +7,6 @@ import getProvider from "./functions/getProvider";
 import getQueryOptions from "./functions/getQueryOptions";
 import { deleteSession, getSession, saveSession } from "./functions/session";
 
-console.log('starting', kadenceExtensionImagePicker);
-
 // Global vars
 let activeFrameId = "";
 let activeFrame = "";
@@ -24,7 +22,7 @@ wp.media.view.MediaFrame.Select = oldMediaFrameSelect.extend({
 		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 		routerView.set({
 			instantimages: {
-				text: 'Kadence Images', // eslint-disable-line no-undef
+				text: 'Pexels', // eslint-disable-line no-undef
 				priority: 120,
 			},
 		});
@@ -64,7 +62,7 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 		routerView.set({
 			instantimages: {
-				text: 'Kadence Images', // eslint-disable-line no-undef
+				text: 'Pexels', // eslint-disable-line no-undef
 				priority: 120,
 			},
 		});
@@ -136,8 +134,6 @@ const getMediaModalProvider = async (element) => {
 	//const sessionData = getSession(url);
 	const sessionData = false;
 
-	console.log('rolling', url, options);
-
 	if (sessionData) {
 		// Display results from session.
 		renderApp(element, provider, sessionData, null);
@@ -151,10 +147,8 @@ const getMediaModalProvider = async (element) => {
 			const results = await response.json();
 			const { error = null } = results;
 			renderApp(element, provider, results, error);
-			console.log('success', provider, results)
 			saveSession(url, results);
 		} catch (error) {
-			console.log('oops', provider, status);
 			deleteSession(url);
 		}
 	}
@@ -218,7 +212,6 @@ const createWrapperHTML = () => {
 
 // Document Ready
 jQuery(document).ready(function ($) {
-	console.log('kick off');
 	if (wp.media) {
 		// Open
 		wp.media.view.Modal.prototype.on("open", function () {
