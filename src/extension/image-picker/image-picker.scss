@@ -102,13 +102,17 @@
 
         .kadence-blocks-image-picker-sidebar {
             order: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             grid-row: span 2;
-            padding: 20px 16px;
             background: #f6f7f7;
             border-left: 1px solid #dcdcde;
-            overflow: auto;
 
             .result-details-container {
+                padding: 20px 16px;
+                padding-bottom: 0;
+                overflow: auto;
 
                 hr {
                     margin: 10px 0;
@@ -132,6 +136,11 @@
                         }
                     }
                 }
+            }
+
+            .download-button {
+                border-radius: 0;
+                justify-content: center;
             }
         }
     }

@@ -1,5 +1,5 @@
 import { 
-	Spinner,
+	Spinner
 } from '@wordpress/components';
 
 import Masonry from 'react-masonry-css'
@@ -11,7 +11,7 @@ import Result from "./Result";
 import ResultDetails from "./ResultDetails";
 import SearchForm from "./SearchForm";
 
-import { useMemo, useEffect, useState, useCallback } from '@wordpress/element';
+import { useMemo, useEffect, useState, useCallback, Fragment } from '@wordpress/element';
 import { debounce } from 'lodash';
 
 /**
@@ -96,51 +96,68 @@ export default function ImagePicker(props) {
 	}
 
 	return (
-		<div class="kadence-blocks-image-picker-contents">
-            <div className="kadence-blocks-image-picker-search-container">
-                <SearchForm 
-                    query={query}
-                    setQuery={setQuery}
-                />
-            </div>
-            <div className="kadence-blocks-image-picker-scroll-container">
-                { 'undefined' != typeof( dataState.images ) && (
-                    <InfiniteScroll
-                        className="block-editor-block-patterns-list-wrap"
-                        pageStart={0}
-                        loadMore={debouncedLoadMore}
-                        hasMore={hasMore}
-                        loader={<Spinner />}
-                        useWindow={false}
-                        >
-                            <Masonry
-                                breakpointCols={breakpointCols}
-                                className={ `kb-css-masonry kb-core-section-library` }
-                                columnClassName="kb-css-masonry_column"
+        <Fragment>
+            <div class="kadence-blocks-image-picker-contents">
+                <div className="kadence-blocks-image-picker-search-container">
+                    <SearchForm 
+                        query={query}
+                        setQuery={setQuery}
+                    />
+                </div>
+                <div className="kadence-blocks-image-picker-scroll-container">
+                    { 'undefined' != typeof( dataState.images ) && (
+                        <InfiniteScroll
+                            className="block-editor-block-patterns-list-wrap"
+                            pageStart={0}
+                            loadMore={debouncedLoadMore}
+                            hasMore={hasMore}
+                            loader={<Spinner />}
+                            useWindow={false}
                             >
-                                { dataState.images.map( ( image, index ) => {
-                                    return (
-                                        <Result 
-                                            result={ image }
-                                            setInactive={ false }
-                                            index={ index }
-                                            currentUserSelectionIndex={ currentUserSelectionIndex }
-                                            setCurrentUserSelectionIndex={ setCurrentUserSelectionIndex }
-                                        />
-                                    );
-                                })}
-                            </Masonry>
-                    </InfiniteScroll>
-                )}
-                { 'undefined' == typeof( dataState.images ) && (
-                    <div>No Results found for this search</div>
-                )}
+                                <Masonry
+                                    breakpointCols={breakpointCols}
+                                    className={ `kb-css-masonry kb-core-section-library` }
+                                    columnClassName="kb-css-masonry_column"
+                                >
+                                    { dataState.images.map( ( image, index ) => {
+                                        return (
+                                            <Result 
+                                                result={ image }
+                                                setInactive={ false }
+                                                index={ index }
+                                                currentUserSelectionIndex={ currentUserSelectionIndex }
+                                                setCurrentUserSelectionIndex={ setCurrentUserSelectionIndex }
+                                            />
+                                        );
+                                    })}
+                                </Masonry>
+                        </InfiniteScroll>
+                    )}
+                    { 'undefined' == typeof( dataState.images ) && (
+                        <div>No Results found for this search</div>
+                    )}
+                </div>
+                <div class="kadence-blocks-image-picker-sidebar">
+                    <ResultDetails
+                        result={ currentSelectedImage }
+                    />
+                </div>
             </div>
-            <div class="kadence-blocks-image-picker-sidebar">
-                <ResultDetails
-                    result={ currentSelectedImage }
-                />
-            </div>
-		</div>
-	);
+
+            {
+            // This <style> is to hide the media frame toolbar while this picker is active. 
+            // Very hacky, I couldn't find the 'real' way to do this.
+            }
+            <style>
+                {
+                    `.media-frame-content {
+                        bottom: 0;
+                    }
+                    .media-frame-toolbar {
+                        display: none;
+                    }`
+                }
+            </style>
+        </Fragment>
+    );
 }

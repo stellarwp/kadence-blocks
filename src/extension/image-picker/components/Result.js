@@ -4,15 +4,15 @@ import {
 	download as DownloadIcon,
 	check as CheckIcon
 } from "@wordpress/icons";
-import { useMemo, useEffect, useState, useCallback } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
 import { __ } from '@wordpress/i18n';
 
 /**
- * Render the Photo component.
+ * Render the Result component.
  *
  * @param {Object} props The component props.
- * @return {JSX.Element} The Photo component.
+ * @return {JSX.Element} The Result component.
  */
 export default function Result(props) {
 	const { 
