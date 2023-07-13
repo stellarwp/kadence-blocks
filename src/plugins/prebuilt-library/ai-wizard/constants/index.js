@@ -173,7 +173,7 @@ export const MISSION_STATEMENT_STATUS = {
 	},
 	'medium': {
 		color: '#B35F00',
-		message: __( 'This is a great start. Try adding to your mission statement a bit more if you can.', 'kadence-blocks' ),
+		message: __( 'This is a great start. Try adding a bit more if you can.', 'kadence-blocks' ),
 	},
 	'strong': {
 		color: '#1B8F6D',
