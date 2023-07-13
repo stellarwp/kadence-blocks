@@ -96,7 +96,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$message_font  = isset( $form_attributes['messageFont'] ) ? $form_attributes['messageFont'] : array();
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		
+
 		// Container
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
 		$css->render_measure_output( $form_attributes, 'padding', 'padding', array( 'desktop_key' => 'padding', 'tablet_key' => 'tabletPadding', 'mobile_key' => 'mobilePadding' ) );
@@ -238,7 +238,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 * Label Required
 		 *
 		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label .kb-advanced-form-required' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label .kb-adv-form-required' );
 		$css->render_color_output( $field_style, 'requiredColor', 'color' );
 
 		/*

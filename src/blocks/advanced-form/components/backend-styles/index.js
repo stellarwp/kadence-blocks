@@ -117,7 +117,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${labelStyles?.marginLeft ? 'margin-left:' + labelStyles.marginLeft + ';' : '' }
 			}
 
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kadence-label .required {;
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-label .kb-adv-form-required {;
 				${fieldStyle?.requiredColor ? 'color:' + fieldStyle.requiredColor + ';' : '' }
 			}
 
