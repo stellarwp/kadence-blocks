@@ -141,9 +141,11 @@ export function Wizard({
 								>
 								<Button
 									key={ index }
-									className={ 'wizard-step' }
+									className={ classnames( 'wizard-step', {
+										'is-complete': isStepCompleted(index),
+										'is-current': index === currentPage
+									} ) }
 									disabled={ isStepDisabled(index) }
-									// disabled={ isStepCompleted(index) ? null : true }
 									icon={
 										<StepperIcon
 											pageNumber={ index + 1 }
