@@ -1,4 +1,3 @@
-import { API } from "../constants/API";
 import { getImportOptions } from "./getQueryOptions";
 import { buildImportURL } from "./buildURL";
 

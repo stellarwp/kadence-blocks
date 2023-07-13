@@ -1,6 +1,6 @@
 import { API } from "../constants/API";
-import { getQueryOptions } from "./getQueryOptions";
-import { buildURL } from "./buildURL";
+import getQueryOptions from "./getQueryOptions";
+import buildURL from "./buildURL";
 
 /**
  * Get image response data.
@@ -12,7 +12,6 @@ export default async function getImageData( provider, currentDataState, setImage
 	if ( ! provider || ! currentDataState ) {
 		return [];
 	}
-
 
 	const queryOptions = getQueryOptions(provider, options);
 	const url = buildURL("search");

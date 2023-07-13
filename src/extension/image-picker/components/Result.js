@@ -6,6 +6,7 @@ import {
 } from "@wordpress/icons";
 import { useMemo, useEffect, useState, useCallback } from '@wordpress/element';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
+import { __ } from '@wordpress/i18n';
 
 /**
  * Render the Photo component.
@@ -58,7 +59,7 @@ export default function Result(props) {
 				ref={resultButton}
 				className='image-wrap'
 				data-alt={alt}
-				title={'Select Image'}
+				title={__( 'Select Image' )}
 				onFocus={handleOnFocus}
 				onBlur={handleOnBlur}
 			>

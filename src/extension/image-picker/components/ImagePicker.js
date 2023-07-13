@@ -15,18 +15,17 @@ import { useMemo, useEffect, useState, useCallback } from '@wordpress/element';
 import { debounce } from 'lodash';
 
 /**
- * Render the main InstantImages application component.
+ * Render the main ImagePicker application component.
  *
  * @param {Object}  props           The component props.
  * @param {string}  props.editor    Editor type.
- * @param {string}  props.provider  Image provider.
- * @param {Array}   props.data      API results.
- * @param {Element} props.container Instant Images container element.
+ * @param {string}  props.provider  Image provider (eg Pexels).
+ * @param {Array}   props.data      API results from the initial seeded / cached data.
+ * @param {Element} props.container Image Picker container element.
  * @param {Object}  props.api_error API error object.
- * @param {string}  props.clientId  WP block client ID.
- * @return {JSX.Element}            InstantImages component.
+ * @return {JSX.Element}            ImagePicker component.
  */
-export default function InstantImages(props) {
+export default function ImagePicker(props) {
 	const {
 		editor = "classic",
 		provider,

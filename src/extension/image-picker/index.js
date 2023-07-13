@@ -1,11 +1,12 @@
 import './image-picker.scss';
 import { createRoot, render } from "@wordpress/element";
-import InstantImages from "./components/ImagePicker";
+import ImagePicker from "./components/ImagePicker";
 
 import buildURL from "./functions/buildURL";
 import getProvider from "./functions/getProvider";
 import getQueryOptions from "./functions/getQueryOptions";
 import { deleteSession, getSession, saveSession } from "./functions/session";
+import { __ } from '@wordpress/i18n';
 
 // Global vars
 let activeFrameId = "";
@@ -15,14 +16,14 @@ let activeFrame = "";
 const oldMediaFrame = wp.media.view.MediaFrame.Post;
 const oldMediaFrameSelect = wp.media.view.MediaFrame.Select;
 
-// Create Instant Images Tabs
+// Create Image Picker Tab
 wp.media.view.MediaFrame.Select = oldMediaFrameSelect.extend({
 	// Tab / Router
 	browseRouter(routerView) {
 		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 		routerView.set({
-			instantimages: {
-				text: 'Pexels', // eslint-disable-line no-undef
+			kadenceimagepicker: {
+				text: __( 'Pexels' ), // eslint-disable-line no-undef
 				priority: 120,
 			},
 		});
@@ -31,7 +32,7 @@ wp.media.view.MediaFrame.Select = oldMediaFrameSelect.extend({
 	// Handlers
 	bindHandlers() {
 		oldMediaFrameSelect.prototype.bindHandlers.apply(this, arguments);
-		this.on("content:create:instantimages", this.frameContent, this);
+		this.on("content:create:kadenceimagepicker", this.frameContent, this);
 	},
 
 	/**
@@ -61,8 +62,8 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 	browseRouter(routerView) {
 		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 		routerView.set({
-			instantimages: {
-				text: 'Pexels', // eslint-disable-line no-undef
+			kadenceimagepicker: {
+				text: __( 'Pexels' ), // eslint-disable-line no-undef
 				priority: 120,
 			},
 		});
@@ -71,7 +72,7 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 	// Handlers
 	bindHandlers() {
 		oldMediaFrame.prototype.bindHandlers.apply(this, arguments);
-		this.on("content:create:instantimages", this.frameContent, this);
+		this.on("content:create:kadenceimagepicker", this.frameContent, this);
 	},
 
 	/**
@@ -91,8 +92,8 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 	},
 });
 
-// Render Instant Images
-const instantImagesMediaTab = () => {
+// Render Image Picker
+const imagePickerMediaTab = () => {
 	if (!activeFrame) {
 		return false; // Exit if not a frame.
 	}
@@ -105,7 +106,7 @@ const instantImagesMediaTab = () => {
 	modal.innerHTML = ""; // Clear any existing modals.
 
 	const html = createWrapperHTML(); // Create HTML wrapper
-	modal.appendChild(html); // Append Instant Images to modal.
+	modal.appendChild(html); // Append Image Picker to modal.
 
 	const element = modal.querySelector(
 		"#kadence-blocks-image-picker-router-" + activeFrameId
@@ -118,7 +119,7 @@ const instantImagesMediaTab = () => {
 };
 
 /**
- * Get the provider before initializing Instant Images.
+ * Get the provider before initializing Image Picker.
  *
  * @param {Element} element The ImagePicker HTML element to initialize.
  */
@@ -155,9 +156,9 @@ const getMediaModalProvider = async (element) => {
 };
 
 /**
- * Render the main Instant Images App component.
+ * Render the main Image Picker App component.
  *
- * @param {Element}     element  The Instant Images HTML element to initialize.
+ * @param {Element}     element  The Image Picker HTML element to initialize.
  * @param {string}      provider The verified provider.
  * @param {Array}       results  The API results.
  * @param {object|null} error    The API error object.
@@ -166,7 +167,7 @@ const renderApp = (element, provider, results, error) => {
 	if (createRoot) {
 		const root = createRoot(element);
 		root.render(
-			<InstantImages
+			<ImagePicker
 				editor="media-modal"
 				data={results}
 				container={element}
@@ -176,7 +177,7 @@ const renderApp = (element, provider, results, error) => {
 		);
 	} else {
 		render(
-			<InstantImages
+			<ImagePicker
 				editor="media-modal"
 				data={results}
 				container={element}
@@ -189,7 +190,7 @@ const renderApp = (element, provider, results, error) => {
 };
 
 /**
- * Create HTML markup to wrap Instant Images.
+ * Create HTML markup to wrap Image Picker.
  *
  * @return {Element} Create the HTML markup for the media modal.
  */
@@ -221,8 +222,8 @@ jQuery(document).ready(function ($) {
 			const selectedTab = activeFrame.querySelector(
 				".media-router button.media-menu-item.active"
 			);
-			if (selectedTab && selectedTab.id === "menu-item-instantimages") {
-				instantImagesMediaTab();
+			if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
+				imagePickerMediaTab();
 			}
 		});
 
@@ -234,8 +235,8 @@ jQuery(document).ready(function ($) {
 				const selectedTab = activeFrame.querySelector(
 					".media-router button.media-menu-item.active"
 				);
-				if (selectedTab && selectedTab.id === "menu-item-instantimages") {
-					instantImagesMediaTab();
+				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
+					imagePickerMediaTab();
 				}
 			}
 		);

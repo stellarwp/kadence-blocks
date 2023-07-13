@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { __ } from '@wordpress/i18n';
 
 /**
  * Render the Photo component.
@@ -25,15 +25,15 @@ export default function Result(props) {
                 <hr />
                 <div className="result-details">
                     <div class="result-detail" data-setting="photographer">
-                        <label class="result-detail-label" for="result-detail-photographer" >Photographer:</label>
+                        <label class="result-detail-label" for="result-detail-photographer">{ __( 'Photographer:' ) }</label>
                         <div class="result-detail-value" id="result-detail-photographer"><a href={photographer_url} target="_blank">{photographer}</a></div>
                     </div>
                     <div class="result-detail" data-setting="alt">
-                        <label class="result-detail-label" for="result-detail-alt" >Alt:</label>
+                        <label class="result-detail-label" for="result-detail-alt" >{ __( 'Alt:' ) }</label>
                         <textarea class="result-detail-value" id="result-detail-alt" value={alt} rows="4" />
                     </div>
                     <div class="result-detail" data-setting="url">
-                        <label class="result-detail-label" for="result-detail-url" >Url:</label>
+                        <label class="result-detail-label" for="result-detail-url" >{ __( 'Url:' ) }</label>
                         <div class="result-detail-value" id="result-detail-url"><a href={url}>{url}</a></div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@ export default function Result(props) {
         );
     } else {
         return (
-            <div className="result-details-container"></div>
+            <div className="result-details-container">{ __( 'No details for this photo' ) }</div>
         );
     }
 }
