@@ -73,6 +73,10 @@
 		position: absolute;
 	}
 
+	.components-wizard__finish-build-button {
+		background: $color-success;
+	}
+
 	.components-wizard__back-button {
 		left: 32px;
 	}

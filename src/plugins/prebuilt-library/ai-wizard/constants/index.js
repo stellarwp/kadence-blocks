@@ -171,11 +171,11 @@ export const MISSION_STATEMENT_STATUS = {
 	},
 	'medium': {
 		color: '#B35F00',
-		message: __( 'This is a great start. Try adding a bit more if you can.', 'kadence-blocks' ),
+		message: __( 'This is a great start. Try adding a bit more information to your description.', 'kadence-blocks' ),
 	},
 	'strong': {
 		color: '#1B8F6D',
-		message: __( 'Excellent work, this should help generate great content!', 'kadence-blocks' )
+		message: __( 'Excellent work! Want to add more? Keep going! More info means better content.', 'kadence-blocks' )
 	}
 }
 

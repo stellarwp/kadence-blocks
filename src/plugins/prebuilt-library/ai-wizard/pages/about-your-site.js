@@ -20,6 +20,7 @@ import {
 	SpencerSharp
 } from './slides/about-your-site';
 import {
+	ENTITY_TYPE_INDIVIDUAL,
 	MISSION_STATEMENT_STATUS,
 	MISSION_STATEMENT_GOAL,
 	INDUSTRY_BACKGROUNDS
@@ -59,9 +60,8 @@ export function AboutYourSite() {
 	const [ progress, setProgress ] = useState(0);
 	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
-	const { missionStatement, entityType, industry } = state;
+	const { missionStatement, entityType, companyName } = state;
 	const title = sprintf( __( 'Tell us about your%s', 'kadence-blocks' ), titlePartial[ entityType ]);
-	const placeholder = sprintf( __( 'The purpose of my %s website is...', 'kadence-blocks' ), industry.toLowerCase() );
 
 	useEffect(() => {
 		const progress = Math.round((missionStatement.length/MISSION_STATEMENT_GOAL) * 100);
@@ -80,6 +80,14 @@ export function AboutYourSite() {
 		setProgress( statementProgress );
 	}, [ missionStatement ])
 
+	function getPlaceholderText() {
+		if (entityType === ENTITY_TYPE_INDIVIDUAL) {
+			return sprintf( __( 'I am %s, a...', 'kadence-blocks' ), companyName );
+		}
+
+		return sprintf( __( '%s is a...', 'kadence-blocks' ), companyName );
+	}
+
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
 			<FlexBlock style={{ alignSelf: 'center' }}>
@@ -95,7 +103,7 @@ export function AboutYourSite() {
 							<TextareaProgress
 								hideLabelFromVision
 								label={ title }
-								placeholder={ placeholder }
+								placeholder={ getPlaceholderText() }
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
 								showProgressBar={ missionStatement && missionStatement.length > 0 }

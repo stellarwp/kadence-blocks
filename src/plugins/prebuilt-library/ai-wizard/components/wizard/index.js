@@ -203,7 +203,7 @@ export function Wizard({
 										disabled={ finishButtonDisabled }
 										onClick={ onFinish }
 										>
-										{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
+										{ __( 'Generate Content', 'kadence-blocks' ) }
 									</Button>
 								</>
 						) }
