@@ -36,57 +36,46 @@ export const CONTENT_TONE = [
 	{
 		value: 'NEUTRAL',
 		label: __('Neutral', 'kadence-blocks'),
-		description: __('Provides balanced and unbiased information without any specific emotional tone.', 'kadence-blocks'),
 	},
 	{
 		value: 'PROFESSIONAL',
 		label: __('Professional', 'kadence-blocks'),
-		description: __('Conveys expertise, reliability, and competence. Suitable for businesses and professional services.', 'kadence-blocks'),
 	},
 	{
 		value: 'FRIENDLY',
 		label: __('Friendly', 'kadence-blocks'),
-		description: __('Creates a warm and approachable atmosphere, fostering a personal connection with the audience.', 'kadence-blocks'),
 	},
 	{
 		value: 'INFORMATIVE',
 		label: __('Informative', 'kadence-blocks'),
-		description: __('Focuses on providing clear and helpful information about products, services, or topics of interest.', 'kadence-blocks'),
 	},
 	{
 		value: 'ENGAGING',
 		label: __('Engaging', 'kadence-blocks'),
-		description: __('Captivates and holds the attention of the audience through compelling and interactive content.', 'kadence-blocks'),
 	},
 	{
 		value: 'TRUSTWORTHY',
 		label: __('Trustworthy', 'kadence-blocks'),
-		description: __('Establishes credibility, reliability, and trust, essential for building strong relationships with customers.', 'kadence-blocks'),
 	},
 	{
 		value: 'CONVERSATIONAL',
 		label: __('Conversational', 'kadence-blocks'),
-		description: __('Mimics natural conversation, making the content relatable and easy to understand.', 'kadence-blocks'),
 	},
 	{
 		value: 'PERSUASIVE',
 		label: __('Persuasive', 'kadence-blocks'),
-		description: __('Influences and convinces the audience to take action through compelling and convincing language.', 'kadence-blocks'),
 	},
 	{
 		value: 'UPBEAT',
 		label: __('Upbeat', 'kadence-blocks'),
-		description: __('Infuses content with positivity, energy, and enthusiasm, leaving a lasting impression on visitors.', 'kadence-blocks'),
 	},
 	{
 		value: 'FUNNY',
 		label: __('Funny', 'kadence-blocks'),
-		description: __('Adds humor and entertainment to the content, aiming to create a lighthearted and amusing experience for the audience.', 'kadence-blocks'),
 	},
 	{
 		value: 'INSPIRATIONAL',
 		label: __('Inspirational', 'kadence-blocks'),
-		description: __('Motivates and inspires the audience, encouraging them to pursue their goals and aspirations.', 'kadence-blocks'),
 	},
 ];
 
@@ -131,9 +120,18 @@ export const ENTITY_TYPE = [
 ];
 
 export const ENTITY_TO_NAME = {
-	'COMPANY': __( 'Company Name', 'kadence-blocks' ),
-	'INDIVIDUAL': __( 'Name', 'kadence-blocks' ),
-	'ORGANIZATION': __( 'Organization Name', 'kadence-blocks' ),
+	'COMPANY': {
+		label: __( 'Company Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Company', 'kadence-blocks' ),
+	},
+	'INDIVIDUAL': {
+		label: __( 'Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Name', 'kadence-blocks' ),
+	}, 
+	'ORGANIZATION': {
+		label: __( 'Organization Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Organization', 'kadence-blocks' ),
+	}
 };
 
 export const LOCATION_BUSINESS_ADDRESS = 'Business Address';

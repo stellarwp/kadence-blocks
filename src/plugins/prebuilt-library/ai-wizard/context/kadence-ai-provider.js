@@ -3,12 +3,17 @@
  */
 import { createContext, useReducer, useContext } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { ENTITY_TYPE_INDIVIDUAL } from '../constants';
+
 const initialState = {
 	firstTime: true,
 	context: 'kadence',
 	currentPageIndex: 0,
 	companyName: '',
-	entityType: 'COMPANY',
+	entityType: ENTITY_TYPE_INDIVIDUAL,
 	locationType: '',
 	locationInput: '',
 	location: '',

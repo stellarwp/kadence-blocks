@@ -16,8 +16,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	ChipsInput,
 	FormSection,
-	Slider,
-	ToneSelectControl
+	SelectControl,
+	Slider
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { useSelectPlacement } from '../hooks/use-select-placement';
@@ -119,7 +119,7 @@ export function TheDetails() {
 						    headline={ __( 'Choose your tone', 'kadence-blocks' ) }
 						    content={ __( 'The tone allows the AI to reflect your personality in its communication style. Select a tone that closely aligns with your own.', 'kadence-blocks' ) }
 						  >
-						  	<ToneSelectControl
+								<SelectControl
 						  		ref={ setControlRef }
 						  		maxMenuHeight={ menuHeight }
 						  		menuPlacement={ menuPlacement }

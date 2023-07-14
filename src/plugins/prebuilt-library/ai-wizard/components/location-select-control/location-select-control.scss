@@ -3,6 +3,8 @@
 
 .location-select-control__label {
 	@include input_label;
+
+  margin-bottom: 0;
 }
 
 .location-select-control__group {

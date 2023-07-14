@@ -4,6 +4,8 @@
 .stellarwp.components-creatable-control {
   .components-input-control__label {
     @include input_label;
+
+    margin-bottom: 0;
   }
 
   .components-combobox-control__suggestions-container {
@@ -46,3 +48,13 @@
     }
   }
 }
+
+.stellarwp-creatable__menu .stellarwp-creatable__option {
+	padding-left: 18px;
+	padding-right: 18px;
+
+	&.stellarwp-creatable__option--is-selected {
+		background-color: $color-primary;
+	}
+}
+

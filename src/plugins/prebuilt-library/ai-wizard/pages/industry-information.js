@@ -77,6 +77,7 @@ export function IndustryInformation() {
 	}]);
 	const [ pageRef, setPageRef ] = useState( null );
 	const [ controlRef, setControlRef ] = useState( null );
+	const [ currentEntityType, setCurrentEntityType ] = useState( null );
 	const [ currentIndustry, setCurrentIndustry ] = useState( null );
 	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { menuHeight, menuPlacement } = useSelectPlacement(pageRef, controlRef);
@@ -97,6 +98,13 @@ export function IndustryInformation() {
 	}, []);
 
 	useEffect(() => {
+		const entityObject = ENTITY_TYPE.filter((option) => option.value === entityType);
+		if (entityObject.length) {
+			setCurrentEntityType(entityObject[0]);
+		}
+	}, [ entityType ])
+
+	useEffect(() => {
 		if (industry) {
 			setCurrentIndustry({
 				label: industry,
@@ -104,7 +112,7 @@ export function IndustryInformation() {
 			});
 		}
 	}, [ industry ])
-	
+
 	useEffect(() => {
 		switch (locationType) {
 			case LOCATION_BUSINESS_ADDRESS:
@@ -120,8 +128,8 @@ export function IndustryInformation() {
 		dispatch({ type: 'SET_INDUSTRY', payload: industry.value });
 	}
 
-	function handleEntityTypeChange(value) {
-		dispatch({ type: 'SET_ENTITY_TYPE', payload: value });
+	function handleEntityTypeChange(entityType) {
+		dispatch({ type: 'SET_ENTITY_TYPE', payload: entityType.value });
 	}
 
 	function handleLocationTypeChange(value) {
@@ -131,6 +139,14 @@ export function IndustryInformation() {
 		}
 
 		dispatch({ type: 'SET_LOCATION_TYPE', payload: value });
+	}
+
+	function getNameInputText(property) {
+		if (entityType && ENTITY_TO_NAME?.[ entityType ]?.[ property ]) {
+			return ENTITY_TO_NAME[ entityType ][ property ];
+		}
+
+		return '...';
 	}
 
 	function getLocationPlaceholderText() {
@@ -168,14 +184,14 @@ export function IndustryInformation() {
 							<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
 						 		<SelectControl
 									label={ __('I am', 'kadence-blocks') }
-									value={ entityType }
+									value={ currentEntityType }
 									onChange={ handleEntityTypeChange }
 									options={ ENTITY_TYPE }
 								/>
 								<TextControl
-									label={ entityType && ENTITY_TO_NAME.hasOwnProperty(entityType) ? ENTITY_TO_NAME[ entityType ] : ENTITY_TO_NAME.COMPANY }
+									label={ getNameInputText('label') }
 									autoFocus
-									placeholder="..."
+									placeholder={ getNameInputText('placeholder') }
 									value={ companyName }
 									onChange={ (value) => dispatch({ type: 'SET_COMPANY_NAME', payload: value }) }
 								/>
