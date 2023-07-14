@@ -722,7 +722,7 @@ export function Edit( props ) {
 						{displayPercent && ( <KadencePanelBody
 							title={__( 'Number Styling', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-progress-text-settings'}
+							panelName={'kb-progress-number-settings'}
 						>
 							<PopColorControl
 								label={__( 'Color Settings', 'kadence-blocks' )}
