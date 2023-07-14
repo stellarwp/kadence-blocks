@@ -285,7 +285,7 @@ export function Edit( props ) {
 		},
 	};
 
-	const container = '#progress-item';
+	const container = '#progress-item' + uniqueID;
 	const hasContainerDiv = document.querySelector( container );
 	let progressItem = null;
 
@@ -856,7 +856,7 @@ export function Edit( props ) {
 
 				{RenderLabel( 'above' )}
 
-				<div id={'progress-item'}></div>
+				<div id={'progress-item' + uniqueID }></div>
 
 				{RenderLabel( 'inside' )}
 

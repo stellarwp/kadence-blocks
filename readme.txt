@@ -82,6 +82,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Down arrow showing when multiselect is rendered.
 * Fix: Progress bar % hiding when changing position.
 * Fix: Progress bar prefix/suffix text not updating in editor.
+* Fix: Multiple progress bars on same page in editor.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
