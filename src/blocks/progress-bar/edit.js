@@ -168,6 +168,7 @@ export function Edit( props ) {
 	}, [ barType ] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ rerender, setRerender ] = useState( 0 );
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
@@ -310,7 +311,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition ] );
+	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, rerender ] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
@@ -509,11 +510,17 @@ export function Edit( props ) {
 										label={__( 'Number Prefix', 'kadence-blocks' )}
 										value={numberPrefix}
 										onChange={( value ) => setAttributes( { numberPrefix: value } )}
+										onBlur={() => {
+											setRerender( Math.random() );
+										}}
 									/>
 									<TextControl
 										label={__( 'Number Suffix', 'kadence-blocks' )}
 										value={numberSuffix}
 										onChange={( value ) => setAttributes( { numberSuffix: value } )}
+										onBlur={() => {
+											setRerender( Math.random() );
+										}}
 									/>
 									{progressMax !== 100 && (
 										<ToggleControl
