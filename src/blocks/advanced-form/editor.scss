@@ -122,6 +122,9 @@
 		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
 		font-family: inherit;
 	}
+	select[multiple=""] {
+		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+	}
 	select::-ms-expand {
 		display: none;
 	}
