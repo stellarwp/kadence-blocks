@@ -20,7 +20,6 @@ import {
 	SpencerSharp
 } from './slides/about-your-site';
 import {
-	ENTITY_TYPE_INDIVIDUAL,
 	MISSION_STATEMENT_STATUS,
 	MISSION_STATEMENT_GOAL,
 	INDUSTRY_BACKGROUNDS
