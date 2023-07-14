@@ -59,8 +59,9 @@ export function Photography() {
 	async function getVerticalsData() {
 		const verticalsData = await getVerticals();
 		const collectionsData = await getCollections();
+		const formattedVerticals = formatVerticalsData(verticalsData);
 
-		setVerticals( formatVerticalsData(verticalsData) );
+		setVerticals(formattedVerticals);
 		setCollections(collectionsData);
 	}
 
