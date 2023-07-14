@@ -79,6 +79,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.1.3 Beta Version 2 =
 * Fix: Adv Form required asterisk color not applying.
+* Fix: Down arrow showing when multiselect is rendered.
+* Fix: Progress bar % hiding when changing position.
+* Fix: Progress bar prefix/suffix text not updating in editor.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
