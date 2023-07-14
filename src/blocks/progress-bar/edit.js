@@ -310,7 +310,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile ] );
+	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition ] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
@@ -573,7 +573,7 @@ export function Edit( props ) {
 					<Fragment>
 						<KadencePanelBody>
 							<KadenceRadioButtons
-								label={__( 'Letter Case', 'kadence-blocks' )}
+								label={__( 'Text Position', 'kadence-blocks' )}
 								value={ labelPosition }
 								options={ [
 									{ value: 'above', label: __( 'Above', 'kadence-blocks' ) },
