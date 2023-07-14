@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import { Flex, FlexBlock } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -48,12 +48,11 @@ const styles = {
 	}
 }
 
-const title = __( 'Tell us about your', 'kadence-blocks' );
 const content = __( 'Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.', 'kadence-blocks' );
-const entityToTitle = {
-	'COMPANY': __( 'business', 'kadence-blocks' ),
+const titlePartial = {
+	'COMPANY': ` ${ __( 'business', 'kadence-blocks' ) }`,
 	'INDIVIDUAL': __( 'self', 'kadence-blocks' ),
-	'ORGANIZATION': __( 'organization', 'kadence-blocks' ),
+	'ORGANIZATION': ` ${ __( 'organization', 'kadence-blocks' ) }`
 };
 
 export function AboutYourSite() {
@@ -61,9 +60,9 @@ export function AboutYourSite() {
 	const [ progress, setProgress ] = useState(0);
 	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
-	const { missionStatement, entityType } = state;
-	// Compose title based on entityType value.
-	const customTitle = `${ title }${ entityType === ENTITY_TYPE_INDIVIDUAL ? '' : ' '}${ entityToTitle[ entityType ] }`
+	const { missionStatement, entityType, industry } = state;
+	const title = sprintf( __( 'Tell us about your%s', 'kadence-blocks' ), titlePartial[ entityType ]);
+	const placeholder = sprintf( __( 'The purpose of my %s website is...', 'kadence-blocks' ), industry.toLowerCase() );
 
 	useEffect(() => {
 		const progress = Math.round((missionStatement.length/MISSION_STATEMENT_GOAL) * 100);
@@ -91,13 +90,13 @@ export function AboutYourSite() {
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
 						<FormSection
-							headline={ customTitle }
+							headline={ title }
 							content={ content }
 						>
 							<TextareaProgress
-								label={ customTitle }
 								hideLabelFromVision
-								placeholder="..."
+								label={ title }
+								placeholder={ placeholder }
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
 								showProgressBar={ missionStatement && missionStatement.length > 0 }
