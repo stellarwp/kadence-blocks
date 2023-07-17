@@ -84,6 +84,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Progress bar prefix/suffix text not updating in editor.
 * Fix: Multiple progress bars on same page in editor.
 * Fix: Issue with field appender not showing fields when form is nested in a section block.
+* Fix: Setting custom fonts on Advanced form labels
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
