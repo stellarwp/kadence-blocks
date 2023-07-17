@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Schema updater for Kadence Form post meta.
+ * Schema updater for Kadence Blocks.
  *
  * @package Kadence Blocks.
  */
-class Kadence_Blocks_Form_Schema_Updater {
+class Kadence_Blocks_Schema_Updater {
 
 	/**
 	 * Instance Control
@@ -24,7 +24,7 @@ class Kadence_Blocks_Form_Schema_Updater {
 	/**
 	 * The option key for the schema version.
 	 */
-	const OPTION_KEY = 'kadence_blocks_form_schema_version';
+	const OPTION_KEY = 'kadence_blocks_schema_version';
 
 	/**
 	 * The current version of the schema.
@@ -79,6 +79,11 @@ class Kadence_Blocks_Form_Schema_Updater {
 	 * @return void
 	 */
 	private function update_0_to_1() {
+		$form_posts = get_posts( array(
+			'post_type'   => 'kadence_form',
+			'numberposts' => - 1,
+		) );
+
 		$meta_to_update = array(
 			'_kad_form_inputFont',
 			'_kad_form_labelFont',
@@ -87,7 +92,7 @@ class Kadence_Blocks_Form_Schema_Updater {
 			'_kad_form_messageFont'
 		);
 
-		foreach ( $this->get_form_posts() as $post ) {
+		foreach ( $form_posts as $post ) {
 			foreach ( $meta_to_update as $meta_key ) {
 				$meta_value = get_post_meta( $post->ID, $meta_key, true );
 
@@ -99,13 +104,6 @@ class Kadence_Blocks_Form_Schema_Updater {
 			}
 		}
 	}
-
-	private function get_form_posts() {
-		return get_posts( array(
-			'post_type'   => 'kadence_form',
-			'numberposts' => - 1,
-		) );
-	}
 }
 
-Kadence_Blocks_Form_Schema_Updater::get_instance();
+Kadence_Blocks_Schema_Updater::get_instance();

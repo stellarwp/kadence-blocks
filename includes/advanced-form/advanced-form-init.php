@@ -9,8 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-schema-updater.php';
-
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-advanced-form-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-advanced-form-input-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-text-input-block.php';
