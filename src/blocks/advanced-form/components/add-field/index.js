@@ -34,13 +34,20 @@ function FieldBlockAppender(
 					insertIndex: false,
 				};
 			}
-			const { getBlockParentsByBlockName, getBlockIndex } = select( blockEditorStore );
+			const { getBlockParentsByBlockName, getBlockIndex, getBlockParents } = select( blockEditorStore );
 			const sectionBlock = getBlockParentsByBlockName( getRoot, 'kadence/column' );
-			const sectionBlockID = ( undefined !== sectionBlock && sectionBlock.length ? sectionBlock[ 0 ] : false );
+			const sectionBlockID = ( undefined !== sectionBlock && sectionBlock.length ? sectionBlock[ sectionBlock.length - 1 ] : false );
 			const formBlock = getBlockParentsByBlockName( getRoot, 'kadence/advanced-form' );
 			const formBlockID = ( undefined !== formBlock && formBlock.length ? formBlock[ 0 ] : false );
+			const parents = getBlockParents( getRoot );
+			let priorityID = false;
+			if ( undefined !== parents && parents.length && parents.includes( formBlockID ) && parents.includes( sectionBlockID ) ) {
+				if ( parents.indexOf( formBlockID ) > parents.indexOf( sectionBlockID ) ) {
+					priorityID = formBlockID;
+				}
+			}
 			return {
-				parentFormBlock: sectionBlockID || formBlockID,
+				parentFormBlock: priorityID || sectionBlockID || formBlockID,
 				insertIndex: getBlockIndex( getRoot ) + 1,
 			};
 		},
