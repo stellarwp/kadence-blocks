@@ -24,18 +24,39 @@ import { useSelect, useDispatch } from '@wordpress/data';
  */
 import './editor.scss';
 
-export default function SelectParentBlock( { clientId, label = null } ) {
-	
+/**
+ * Supplying only a client ID will select the first parent block.
+ *
+ * Supplying a parentSlug will select the first parent with that slug for the given client ID.
+ *
+ * @param clientId
+ * @param label
+ * @param parentSlug
+ * @returns {JSX.Element|null}
+ * @constructor
+ */
+export default function SelectParentBlock( { clientId, label = null, parentSlug = null } ) {
+
 	const { selectBlock } = useDispatch( blockEditorStore );
 	const { firstParentClientId } = useSelect(
 		( select ) => {
 			const {
 				getBlockParents,
+				getBlockParentsByBlockName
 			} = select( blockEditorStore );
-			const parents = getBlockParents( clientId  );
-			const _firstParentClientId = parents[ parents.length - 1 ];
+
+			let parentClientId, parents;
+
+			if( parentSlug !== null ){
+				parents = getBlockParentsByBlockName(clientId, parentSlug);
+				parentClientId = parents[0];
+			} else {
+				parents = getBlockParents( clientId  );
+				parentClientId = parents[ parents.length - 1 ];
+			}
+
 			return {
-				firstParentClientId: _firstParentClientId,
+				firstParentClientId: parentClientId,
 			};
 		},
 		[]

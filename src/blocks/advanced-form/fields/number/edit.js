@@ -16,7 +16,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
 	useEffect,
 	useState,
@@ -83,12 +83,17 @@ function FieldNumber( { attributes, setAttributes, isSelected, clientId, context
 				)}
 			</style>
 			<div {...blockProps}>
-				{/*<DuplicateField*/}
-				{/*	clientId={ clientId }*/}
-				{/*	name={name}*/}
-				{/*	attributes={ attributes }*/}
-				{/*/>*/}
+				<DuplicateField
+					clientId={ clientId }
+					name={name}
+					attributes={ attributes }
+				/>
 				<InspectorControls>
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-number-general'}
 						setActiveTab={ ( value ) => setActiveTab( value ) }

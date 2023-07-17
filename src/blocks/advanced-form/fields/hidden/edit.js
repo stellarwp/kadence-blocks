@@ -9,7 +9,7 @@ import { TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, FormInputControl } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
 	useEffect,
 	useState,
@@ -68,6 +68,11 @@ function FieldHidden( { attributes, setAttributes, isSelected, clientId, context
 					attributes={ attributes }
 				/>
 				<InspectorControls>
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-hidden-general'}
 						setActiveTab={ ( value ) => setActiveTab( value ) }

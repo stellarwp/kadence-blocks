@@ -10,7 +10,7 @@ import { TextControl, TextareaControl, Button, ToggleControl, Dashicon } from '@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
 	useEffect,
 	useState,
@@ -160,7 +160,11 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 					attributes={ attributes }
 				/>
 				<InspectorControls>
-
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-checkbox-general'}
 						setActiveTab={ ( value ) => setActiveTab( value ) }

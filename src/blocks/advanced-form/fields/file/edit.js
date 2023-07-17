@@ -10,7 +10,7 @@ import { TextControl, TextareaControl, SelectControl, ToggleControl, CheckboxCon
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
 import {
 	getUniqueId,
@@ -103,6 +103,11 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 					attributes={attributes}
 				/>
 				<InspectorControls>
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-text-general'}
 						setActiveTab={ ( value ) => setActiveTab( value ) }

@@ -42,6 +42,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	SelectParentBlock
 } from '@kadence/components';
 import classnames from 'classnames';
 
@@ -373,6 +374,11 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 			{showSettings( 'allSettings', 'kadence/advancedbtn' ) && (
 				<>
 					<InspectorControls>
+						<SelectParentBlock
+							label={ __( 'View Form Settings', 'kadence-blocks' ) }
+							clientId={ clientId }
+							parentSlug={ 'kadence/advanced-form' }
+						/>
 						<InspectorControlTabs
 							panelName={'singlebtn'}
 							setActiveTab={( value ) => setActiveTab( value )}

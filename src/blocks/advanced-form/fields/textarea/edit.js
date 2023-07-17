@@ -6,11 +6,11 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, TextareaControl, SelectControl, ToggleControl, RangeControl, Notice } from '@wordpress/components';
+import { TextControl, TextareaControl, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
 	useEffect,
 	useState,
@@ -80,6 +80,11 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 					attributes={ attributes }
 				/>
 				<InspectorControls>
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-text-general'}
 						setActiveTab={ ( value ) => setActiveTab( value ) }

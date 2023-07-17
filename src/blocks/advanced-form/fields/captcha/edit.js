@@ -5,7 +5,7 @@ import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spi
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls } from '@kadence/components';
+import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import {
 	useEffect,
 	useState,
@@ -199,6 +199,11 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 			</style>
 			<div {...blockProps}>
 				<InspectorControls>
+					<SelectParentBlock
+						label={ __( 'View Form Settings', 'kadence-blocks' ) }
+						clientId={ clientId }
+						parentSlug={ 'kadence/advanced-form' }
+					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-date-general'}
 						setActiveTab={( value ) => setActiveTab( value )}
