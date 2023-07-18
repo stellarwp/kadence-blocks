@@ -164,10 +164,10 @@ function PatternLibrary( {
 			photographyOnly: false
 		} );
 
-		triggerAIDataReload( (state) => ! state );
+		triggerAIDataReload( ( state ) => ! state );
 	};
-	const handleAiWizardPrimaryAction = (event, rebuild) => {
-		if (rebuild) {
+	const handleAiWizardPrimaryAction = ( event, rebuild ) => {
+		if ( rebuild ) {
 			getAllNewData();
 		}
 	}
