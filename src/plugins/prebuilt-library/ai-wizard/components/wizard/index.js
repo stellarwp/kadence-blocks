@@ -182,7 +182,7 @@ export function Wizard({
 					<div className='components-wizard__finish-button-container'>
 						{ onSecondaryClick && typeof onSecondaryClick === 'function' ? (
 							<Button
-								variant="secondary"
+								variant="link"
 								className={ 'components-wizard__secondary-button' }
 								onClick={ onSecondaryClick }
 								>

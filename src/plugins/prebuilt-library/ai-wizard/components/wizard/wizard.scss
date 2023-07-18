@@ -81,6 +81,22 @@
 		}
 	}
 
+	.components-wizard__secondary-button {
+		background: $color-white;
+		text-decoration: underline;
+		color: $color-black;
+		font-size: 14px;
+		font-style: normal;
+		font-weight: 500;
+		padding: 6px 12px;
+    border-radius: 4px;
+
+		&:hover {
+			background: $color-gray-200;
+			text-decoration: none;
+		}
+	}
+
 	.components-wizard__back-button {
 		left: 32px;
 	}

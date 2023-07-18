@@ -22,13 +22,15 @@
 			position: relative;
 			z-index: 11;
 		}
-	
-		.components-button.is-link {
-			font-size: 10px;
-			color: $color-black;
 
-			&:hover {
-				text-decoration: none;
+		.stellarwp-ai-photography-library {
+			.components-button.is-link {
+				font-size: 10px;
+				color: $color-black;
+
+				&:hover {
+					text-decoration: none;
+				}
 			}
 		}
 
