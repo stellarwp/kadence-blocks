@@ -86,6 +86,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Multiple progress bars on same page in editor.
 * Fix: Issue with field appender not showing fields when form is nested in a section block.
 * Fix: Setting custom fonts on Advanced form labels
+* Fix: Layout issue with date picker in Countdown block.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023

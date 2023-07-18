@@ -686,7 +686,7 @@ function KadenceCountdown( props ) {
 												onChange={( value ) => setAttributes( { countdownType: value } )}
 											/>
 											{'date' === countdownType && (
-												<div className="components-base-control">
+												<div className="components-base-control kb-datepicker-fix">
 													<DateTimePicker
 														currentDate={( !date ? undefined : date )}
 														onChange={value => {
