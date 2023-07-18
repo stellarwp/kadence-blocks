@@ -95,6 +95,10 @@ export default function ImagePicker(props) {
 		500: 1,
 	}
 
+    // A bit of a hacky way to detmermine if we're inside a gallery picker or not.
+    // By looking for the create gallery button in our media frame.
+	const isGalleryPicker = Boolean(container.closest(".media-frame").querySelector("#menu-item-gallery"));
+
 	return (
         <Fragment>
             <div class="kadence-blocks-image-picker-contents">
@@ -144,20 +148,18 @@ export default function ImagePicker(props) {
                 </div>
             </div>
 
-            {
-            // This <style> is to hide the media frame toolbar while this picker is active. 
-            // Very hacky, I couldn't find the 'real' way to do this.
-            }
-            <style>
-                {
-                    `.media-frame-content {
-                        bottom: 0;
+            { ! isGalleryPicker &&
+                <style>
+                    {
+                        `.media-frame-content {
+                            bottom: 0;
+                        }
+                        .media-frame-toolbar {
+                            display: none;
+                        }`
                     }
-                    .media-frame-toolbar {
-                        display: none;
-                    }`
-                }
-            </style>
+                </style>
+            }
         </Fragment>
     );
 }
