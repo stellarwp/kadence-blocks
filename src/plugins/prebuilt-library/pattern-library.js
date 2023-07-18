@@ -158,16 +158,19 @@ function PatternLibrary( {
 	const toggleReloadVisible = () => {
 		setIsContextReloadVisible( ( state ) => ! state );
 	};
-	const closeAIWizard = ( rebuild ) => {
+	const closeAiWizard = () => {
 		setWizardState( {
 			visible: false,
 			photographyOnly: false
 		} );
-		triggerAIDataReload( ( state ) => ! state );
-		if ( rebuild ) {
+
+		triggerAIDataReload( (state) => ! state );
+	};
+	const handleAiWizardPrimaryAction = (event, rebuild) => {
+		if (rebuild) {
 			getAllNewData();
 		}
-	};
+	}
 	const hasCorrectUserData = ( tempData ) => {
 		const parsedUserData = SafeParseJSON( tempData, true );
 		if ( ! parsedUserData ) {
@@ -181,15 +184,6 @@ function PatternLibrary( {
 			return false;
 		}
 		if ( ! parsedUserData?.industry || '' === parsedUserData?.industry ) {
-			return false;
-		}
-		if ( 'Other' === parsedUserData?.industry && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
-			return false;
-		}
-		if ( 'Other' !== parsedUserData?.industry && ( ! parsedUserData?.industrySpecific || '' === parsedUserData?.industrySpecific ) ) {
-			return false;
-		}
-		if ( 'Other' === parsedUserData?.industrySpecific && ( ! parsedUserData?.industryOther || '' === parsedUserData?.industryOther ) ) {
 			return false;
 		}
 		if ( ! parsedUserData?.missionStatement || '' === parsedUserData?.missionStatement ) {
@@ -671,7 +665,11 @@ function PatternLibrary( {
 								</Popover>
 							) }
 							{ wizardState.visible && (
-								<AiWizard onClose={ closeAIWizard } photographyOnly={ wizardState.photographyOnly } />
+								<AiWizard
+									onClose={ closeAiWizard }
+									onPrimaryAction={ handleAiWizardPrimaryAction }
+									photographyOnly={ wizardState.photographyOnly }
+								/>
 							) }
 						</div>
 					</div>

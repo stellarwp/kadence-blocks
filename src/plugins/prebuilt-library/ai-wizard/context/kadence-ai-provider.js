@@ -10,6 +10,7 @@ import { ENTITY_TYPE_INDIVIDUAL } from '../constants';
 
 const initialState = {
 	firstTime: true,
+	isSubmitted: false,
 	context: 'kadence',
 	currentPageIndex: 0,
 	companyName: '',
@@ -18,8 +19,6 @@ const initialState = {
 	locationInput: '',
 	location: '',
 	industry: '',
-	industrySpecific: '',
-	industryOther: '',
 	missionStatement: '',
 	keywords: [],
 	tone: 'NEUTRAL',
@@ -70,16 +69,6 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				industry: action.payload
-			}
-		case 'SET_INDUSTRY_SPECIFIC':
-			return {
-				...state,
-				industrySpecific: action.payload
-			}
-		case 'SET_INDUSTRY_OTHER':
-			return {
-				...state,
-				industryOther: action.payload
 			}
 		case 'SET_MISSION_STATEMENT':
 			return {

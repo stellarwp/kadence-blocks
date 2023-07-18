@@ -24,15 +24,17 @@ export function Wizard({
 	className,
 	contentLabel,
 	logo,
-	finishButtonText = __( 'Save', 'kadence-blocks' ),
 	backButtonText = __( 'Back', 'kadence-blocks' ),
 	forwardButtonText = __( 'Next', 'kadence-blocks' ),
-	finishButtonDisabled = false,
 	backButtonDisabled = false,
 	forwardButtonDisabled = false,
 	onPageChange = () => {},
-	onFinish,
-	photographyOnly,
+	onClose = () => {},
+	onPrimaryClick = () => {},
+	primaryButtonText = __( 'Save', 'kadence-blocks' ),
+	primaryButtonDisabled = false,
+	onSecondaryClick,
+	secondaryButtonText,
 	pages = []
 }) {
 	const guideContainer = useRef(null);
@@ -49,9 +51,9 @@ export function Wizard({
 		if ( guideContainer.current ) {
 			(
 				focus.tabbable.find( guideContainer.current )
-				)[ 0 ]?.focus();
+			)[ 0 ]?.focus();
 		}
-		}, [ currentPage ] );
+	}, [ currentPage ] );
 
 	const pageId = pages && pages?.[currentPage]?.id ? pages[currentPage].id : `page-${ currentPage }`;
 
@@ -109,7 +111,7 @@ export function Wizard({
 			title={ logo }
 			className={ classnames( 'components-guide', 'stellarwp', className, pageId ) }
 			contentLabel={ contentLabel }
-			onRequestClose={ onFinish }
+			onRequestClose={ onClose }
 			ref={ guideContainer }
 			>
 			<div className="components-guide__container">
@@ -178,35 +180,23 @@ export function Wizard({
 				) }
 				{ ! canGoForward && (
 					<div className='components-wizard__finish-button-container'>
-						{ photographyOnly ? (
+						{ onSecondaryClick && typeof onSecondaryClick === 'function' ? (
 							<Button
-								variant="primary"
-								className={ 'components-wizard__finish-button' }
-								disabled={ finishButtonDisabled }
-								onClick={ onFinish }
+								variant="secondary"
+								className={ 'components-wizard__secondary-button' }
+								onClick={ onSecondaryClick }
 								>
-								{ finishButtonText }
+								{ secondaryButtonText ? secondaryButtonText : '' }
 							</Button>
-							) : (
-								<>
-									<Button
-										variant="secondary"
-										className={ 'components-wizard__finish-button' }
-										disabled={ finishButtonDisabled }
-										onClick={ onFinish }
-										>
-										{ finishButtonText }
-									</Button>
-									<Button
-										variant="primary"
-										className={ 'components-wizard__finish-build-button' }
-										disabled={ finishButtonDisabled }
-										onClick={ onFinish }
-										>
-										{ __( 'Generate Content', 'kadence-blocks' ) }
-									</Button>
-								</>
-						) }
+						) : null }
+						<Button
+							variant="primary"
+							className={ 'components-wizard__primary-button' }
+							disabled={ primaryButtonDisabled }
+							onClick={ onPrimaryClick }
+							>
+							{ primaryButtonText }
+						</Button>
 					</div>
 				) }
 			</div>

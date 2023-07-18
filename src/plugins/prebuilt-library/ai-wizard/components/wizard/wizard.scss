@@ -73,8 +73,12 @@
 		position: absolute;
 	}
 
-	.components-wizard__finish-build-button {
+	.components-wizard__primary-button {
 		background: $color-success;
+
+		&:hover {
+			background: $color-success-dark;
+		}
 	}
 
 	.components-wizard__back-button {
