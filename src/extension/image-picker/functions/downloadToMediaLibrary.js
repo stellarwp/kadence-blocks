@@ -1,6 +1,27 @@
-import { getImportOptions } from "./getQueryOptions";
-import { buildImportURL } from "./buildURL";
+import apiFetch from '@wordpress/api-fetch';
 
+/**
+ * Get library data.
+ *
+ * @param {(object)} userData
+ *
+ * @return {Promise<object>} Promise returns object
+ */
+async function downloadImage( images ) {
+	try {
+		const response = await apiFetch( {
+			path: '/kb-design-library/v1/process_images',
+			method: 'POST',
+			data: {
+				images: images,
+			},
+		} );
+		return response;
+	} catch (error) {
+		console.log(`ERROR: ${ error }`);
+		return false;
+	}
+}
 /**
  * Get image response data.
  *
@@ -12,22 +33,14 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
 		return [];
 	}
     setIsDownloading(true);
-
-    const importOptions = getImportOptions( [ result ] );
-	const url = buildImportURL();
 	
 	// Dispatch API fetch request.
-	const response = await fetch(url, importOptions);
-	const { status, headers } = response;
-
-	try {
-		const results = await response.json();
-
-		setIsDownloaded(true)
-		setIsDownloading(false)
-	} catch (error) {
-		setIsDownloaded(false)
-		setIsDownloading(false)
+	const response = await downloadImage([result]);
+	if ( response !== false ) {
+		setIsDownloaded(true);
+		setIsDownloading(false);
+	} else {
+		setIsDownloaded(false);
+		setIsDownloading(false);
 	}
-    //do it
 }
