@@ -352,8 +352,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Padding, check for old attributes and use if present.
 		if ( empty( $attributes['kbVersion'] ) ) {
 			// Add old defaults back in.
-			$css->add_property( 'padding-top', '25px' );
-			$css->add_property( 'padding-bottom', '25px' );
+			$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, 25px )' );
+			$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, 25px )' );
 		}
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
@@ -401,9 +401,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			);
 			// If no padding is set, use the default.
 			if ( ! isset( $attributes['padding'] ) ) {
-				$attributes['padding'] = [
-					'sm', '', 'sm', ''
-				];
+				// $attributes['padding'] = [
+				// 	'sm', '', 'sm', ''
+				// ];
+				$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, var(--global-kb-spacing-sm, 1.5rem) )' );
+				$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, var(--global-kb-spacing-sm, 1.5rem) )' );
 			}
 			$css->render_measure_output( $attributes, 'padding', 'padding', $args );
 		}
