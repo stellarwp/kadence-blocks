@@ -17,7 +17,9 @@ import './kadence-ai-wizard.scss';
 
 export function AiWizard( {
 	photographyOnly = false,
-	onClose
+	onClose,
+	onPrimaryAction,
+	onSecondaryAction
 } ) {
 	const [ wizardData, setWizardData ] = useState();
 	const { loading, getAiWizardData } = useDatabase();
@@ -29,6 +31,7 @@ export function AiWizard( {
 
 		setWizardData(response);
 	}
+
 	useEffect(() => {
 		// Set verticals data in session storage.
 		setVerticals();
@@ -44,7 +47,9 @@ export function AiWizard( {
 				<KadenceAiProvider value={ wizardData }>
 					<KadenceAiWizard
 						loading={ loading }
-						handleWizardClose={ onClose }
+						onWizardClose={ onClose }
+						onPrimaryAction={ onPrimaryAction }
+						onSecondaryAction={ onSecondaryAction }
 						photographyOnly={ photographyOnly }
 					/>
 				</KadenceAiProvider>

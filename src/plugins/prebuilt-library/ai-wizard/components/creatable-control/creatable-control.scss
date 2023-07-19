@@ -1,0 +1,60 @@
+@import '../../scss/variables.scss';
+@import '../../scss/mixins.scss';
+
+.stellarwp.components-creatable-control {
+  .components-input-control__label {
+    @include input_label;
+
+    margin-bottom: 0;
+  }
+
+  .components-combobox-control__suggestions-container {
+    position: relative;
+  }
+
+  .components-form-token-field__suggestions-list {
+    position: absolute;
+    top: 30px;
+    height: 200px;
+    background: white;
+    border: 1px solid;
+    z-index: 10;
+  }
+}
+
+.stellarwp.components-creatable-control {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8px);
+
+  .stellarwp-creatable__single-value + div,
+  .stellarwp-creatable__placeholder + div {
+    margin: 0 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+}
+
+.components-input-control__container {
+  &.has-prefix {
+    position: relative;
+
+    > svg {
+      position: absolute;
+      top: 8px;
+      z-index: 1;
+      left: 7px;
+      pointer-events: none;
+    }
+  }
+}
+
+.stellarwp-creatable__menu .stellarwp-creatable__option {
+	padding-left: 18px;
+	padding-right: 18px;
+
+	&.stellarwp-creatable__option--is-selected {
+		background-color: $color-primary;
+	}
+}
+

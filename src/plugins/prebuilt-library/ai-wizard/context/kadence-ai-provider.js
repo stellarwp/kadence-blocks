@@ -3,21 +3,27 @@
  */
 import { createContext, useReducer, useContext } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { ENTITY_TYPE_INDIVIDUAL } from '../constants';
+
 const initialState = {
 	firstTime: true,
+	isSubmitted: false,
 	context: 'kadence',
 	currentPageIndex: 0,
 	companyName: '',
-	entityType: 'COMPANY',
+	entityType: ENTITY_TYPE_INDIVIDUAL,
+	locationType: '',
+	locationInput: '',
 	location: '',
 	industry: '',
-	industrySpecific: '',
-	industryOther: '',
 	missionStatement: '',
 	keywords: [],
-	tone: '',
+	tone: 'NEUTRAL',
 	privacyAgreement: false,
-	photoLibrary: 'Default',
+	photoLibrary: 'My Images',
 	featuredImages: [],
 	backgroundImages: [],
 	saving: false,
@@ -49,20 +55,20 @@ function kadenceAiReducer(state, action) {
 				...state,
 				location: action.payload
 			}
+		case 'SET_LOCATION_INPUT':
+			return {
+				...state,
+				locationInput: action.payload
+			}
+		case 'SET_LOCATION_TYPE':
+			return {
+				...state,
+				locationType: action.payload
+			}
 		case 'SET_INDUSTRY':
 			return {
 				...state,
 				industry: action.payload
-			}
-		case 'SET_INDUSTRY_SPECIFIC':
-			return {
-				...state,
-				industrySpecific: action.payload
-			}
-		case 'SET_INDUSTRY_OTHER':
-			return {
-				...state,
-				industryOther: action.payload
 			}
 		case 'SET_MISSION_STATEMENT':
 			return {

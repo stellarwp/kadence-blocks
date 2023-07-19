@@ -35,7 +35,8 @@ export function Photography() {
 	const [ loading, setLoading ] = useState(false);
 	const [ collection, setCollection ] = useState([]);
 	const [ verticals, setVerticals ] = useState([]);
-	const [ collections, setCollections ] = useState([]);
+	const [ , setCollections ] = useState([]);
+	const [ currentPhotoLibrary, setCurrentPhotoLibrary ] = useState('');
 	const [ collectionLink, setCollectionLink ] = useState('');
 	const { state: { photoLibrary }, dispatch } = useKadenceAi();
 	const { getVerticals } = verticalsHelper();
@@ -49,13 +50,18 @@ export function Photography() {
 		setLoading(true);
 		getPhotoCollection();
 		getPhotoCollectionLink();
+		setCurrentPhotoLibrary({
+			label: photoLibrary,
+			value: photoLibrary
+		})
 	}, [ photoLibrary ]);
 
 	async function getVerticalsData() {
 		const verticalsData = await getVerticals();
 		const collectionsData = await getCollections();
+		const formattedVerticals = formatVerticalsData(verticalsData);
 
-		setVerticals(verticalsData);
+		setVerticals(formattedVerticals);
 		setCollections(collectionsData);
 	}
 
@@ -72,8 +78,33 @@ export function Photography() {
 		setCollectionLink(link);
 	}
 
-	function handlePhotoLibraryChange(value) {
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: value });
+	function formatVerticalsData(data) {
+		if (! data) {
+			return data;
+		}
+
+		const grouped = Object.keys(data).map((vertical) => ({
+			label: vertical,
+			options:
+				data[vertical].map((subVertical) => ({
+					label: subVertical,
+					value: subVertical,
+				}))
+		}))
+
+		grouped.push({
+			label: __('Media Library', 'kadence-blocks'),
+			options: [{
+				label: __('My Images', 'kadence-blocks'),
+				value: 'My Images'
+			}]
+		});
+
+		return grouped;
+	}
+
+	function handlePhotoLibraryChange(library) {
+		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: library.value });
 	}
 
 	return (
@@ -84,22 +115,10 @@ export function Photography() {
 						<SelectControl
 							className={ 'stellarwp-ai-photography-control' }
 							label={ __('Photo library', 'kadence-blocks') }
-							value={ photoLibrary }
+							value={ currentPhotoLibrary }
 							onChange={ handlePhotoLibraryChange }
-						>
-							{
-								verticals && (
-									Object.keys(verticals).map((vertical) => (
-										<optgroup label={ vertical }>{
-											verticals[vertical].map((subVertical) => (
-												<option value={ subVertical }>{ subVertical }</option>
-											))
-										}</optgroup>
-									))
-								)
-							}
-							<option value="My Images">{ __('My Images', 'kadence-blocks') }</option>
-						</SelectControl>
+							options={ verticals ? verticals : [] }
+						/>
 						{ photoLibrary !== 'My Images' && (
 							<Button
 								variant="link"

@@ -1,3 +1,5 @@
+import { LOCATION_ONLINE_ONLY } from '../constants';
+
 export function useAiWizardHelper(state, pages) {
 	if (! state) {
 		throw new Error('useAiWizardHelper requires state');
@@ -57,8 +59,8 @@ export function useAiWizardHelper(state, pages) {
 	function isForwardButtonDisabled() {
 		const {
 			currentPageIndex,
-			industry,
-			industrySpecific,
+			locationType,
+			locationInput,
 			keywords
 		} = state;
 		const missing = getMissingFields();
@@ -66,18 +68,8 @@ export function useAiWizardHelper(state, pages) {
 
 		switch(pageId) {
 			case 'industry-information':
-				if (industry === 'Other' && missing.length === 1 && missing.includes('industrySpecific')) {
-					return false;
-				}
-				if (industrySpecific === 'Other') {
-					return missing.length > 0;
-				}
-				if (missing.length === 1 && missing.includes('industryOther')) {
-					return false;
-				}
-
-				return missing.length > 0 ? true : false;
-			case 'about-your-site':
+				return locationType !== LOCATION_ONLINE_ONLY && ! locationInput;
+			case 'the-details':
 				const missingKeywords = keywords.length >= 5 ? false : true;
 
 				return (missingKeywords || missing.length > 0) ? true : false;

@@ -1,58 +1,70 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
+import Select from 'react-select';
 
 /**
- * WordPress dependencies
+ * Wordpress dependencies
  */
-import { useState } from '@wordpress/element';
-import { SelectControl as CoreSelectControl } from '@wordpress/components';
+import { forwardRef } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import './select-control.scss';
 
-export function SelectControl(props) {
-	const {
-		className = '',
-		onFocus = () => {},
-		onBlur = () => {},
-		error = false,
-		...rest
-	} = props;
+export const SelectControl = forwardRef(
+  function SelectControl( props, ref ) {
+    const {
+      maxMenuHeight,
+      menuPlacement,
+			isClearable,
+      label,
+      options,
+      value,
+      ...rest
+    } = props;
 
-	const [ isFocused, setIsFocused ] = useState(false);
-
-	const handleOnFocused = (event) => {
-		setIsFocused(true);
-
-		if (typeof onFocus === 'function') {
-			onFocus(event);
-		}
-	};
-	
-	const handleOnBlurred = (event) => {
-		setIsFocused(false);
-
-		if (typeof onBlur === 'function') {
-			onBlur(event);
-		}
-	};
-
-	const classes = classnames( 'stellarwp', className, {
-		'is-focused': isFocused,
-		'has-error': error
-	} );
-	
-	return (
-		<CoreSelectControl
-			className={ classes }
-			{ ...rest }
-			onFocus={ (event) => handleOnFocused(event) }
-			onBlur={ (event) => handleOnBlurred(event) }
-		/>
-	);
-}
+    return (
+      <div className="stellarwp components-select-control">
+		    { label ? (
+			    <label className="components-input-control__label">
+				    { label }
+			    </label>
+		    ) : null }
+			  <div className="components-input-control__container" ref={ ref }>
+				  <Select
+				    classNamePrefix="stellarwp-select"
+            maxMenuHeight={ maxMenuHeight }
+            menuPlacement={ menuPlacement }
+				    styles={{
+				      control: (baseStyles, state) => ({
+                ...baseStyles,
+				        fontSize: 16,
+				        boxShadow: 'none',
+                borderColor: state.isFocused ? '#000000' : '#DFDFDF',
+				      }),
+				      valueContainer: (baseStyles) => ({
+                ...baseStyles,
+                paddingLeft: 16 
+				      }),
+				      menu: (baseStyles) => ({
+				        ...baseStyles,
+				        fontSize: 16,
+				      }),
+				      indicatorsContainer: (baseStyles) => ({
+				        ...baseStyles,
+				        color: '#000000'
+				      }),
+				    }}
+					  isClearable={ isClearable }
+					  options={ options }
+					  value={ value }
+					  { ...rest }
+				  />
+        </div>
+      </div>
+    )
+  }
+)
 

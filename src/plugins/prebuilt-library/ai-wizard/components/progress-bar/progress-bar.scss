@@ -1,0 +1,24 @@
+.stellarwp-progress-bar {
+  &__wrap {
+    position: relative;
+    height: 2px;
+    overflow-y: hidden;
+    margin-bottom: 4px;
+  }
+
+  &__bar {
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    transition: transform 0.2s linear, backgroundColor 0.2s linear;
+    transform-origin: left;
+  }
+
+  &__message {
+    font-size: 10px;
+  }
+}
+

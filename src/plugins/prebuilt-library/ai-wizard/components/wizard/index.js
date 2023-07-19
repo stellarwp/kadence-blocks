@@ -24,15 +24,17 @@ export function Wizard({
 	className,
 	contentLabel,
 	logo,
-	finishButtonText = __( 'Save', 'kadence-blocks' ),
 	backButtonText = __( 'Back', 'kadence-blocks' ),
 	forwardButtonText = __( 'Next', 'kadence-blocks' ),
-	finishButtonDisabled = false,
 	backButtonDisabled = false,
 	forwardButtonDisabled = false,
 	onPageChange = () => {},
-	onFinish,
-	photographyOnly,
+	onClose = () => {},
+	onPrimaryClick = () => {},
+	primaryButtonText = __( 'Save', 'kadence-blocks' ),
+	primaryButtonDisabled = false,
+	onSecondaryClick,
+	secondaryButtonText,
 	pages = []
 }) {
 	const guideContainer = useRef(null);
@@ -83,7 +85,7 @@ export function Wizard({
 			saving,
 			saveError,
 			...rest
-		} = state;
+			} = state;
 
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
@@ -109,107 +111,96 @@ export function Wizard({
 			title={ logo }
 			className={ classnames( 'components-guide', 'stellarwp', className, pageId ) }
 			contentLabel={ contentLabel }
-			onRequestClose={ onFinish }
+			onRequestClose={ onClose }
 			ref={ guideContainer }
-		>
+			>
 			<div className="components-guide__container">
 				<div className="components-guide__page">
 					{ pages[ currentPage ].image }
 					{ pages[ currentPage ].content }
 				</div>
-
-				<div className="components-guide__footer">
-					{ canGoBack && (
-						<Button
-							className="components-wizard__back-button"
-							disabled={ backButtonDisabled }
-							onClick={ goBack }
+			</div>
+			<div className="components-guide__footer">
+				{ canGoBack && (
+					<Button
+						className="components-wizard__back-button"
+						disabled={ backButtonDisabled }
+						onClick={ goBack }
 						>
-							{ backButtonText }
-						</Button>
-					) }
-					{ pages.length > 1 && (
-						<ul
-							className="components-guide__page-control"
-							aria-label={ __( 'Guide controls', 'kadence-blocks' ) }
+						{ backButtonText }
+					</Button>
+				) }
+				{ pages.length > 1 && (
+					<ul
+						className="components-guide__page-control"
+						aria-label={ __( 'Guide controls', 'kadence-blocks' ) }
 						>
-							{ pages.map( ( page, index ) => (
-								<li
-									key={ index }
-									// Set aria-current="step" on the active page, see https://www.w3.org/TR/wai-aria-1.1/#aria-current
-									aria-current={ index === currentPage ? 'step' : undefined }
+						{ pages.map( ( page, index ) => (
+							<li
+								key={ index }
+								// Set aria-current="step" on the active page, see https://www.w3.org/TR/wai-aria-1.1/#aria-current
+								aria-current={ index === currentPage ? 'step' : undefined }
 								>
-									<Button
-										key={ index }
-										className={ 'wizard-step' }
-										disabled={ isStepDisabled(index) }
-										// disabled={ isStepCompleted(index) ? null : true }
-										icon={
-											<StepperIcon
-												pageNumber={ index + 1 }
-												isComplete={ isStepCompleted(index) }
-												isSelected={ index === currentPage }
-											/>
-										}
-										aria-label={ sprintf(
-											/* translators: 1: current page number 2: total number of pages */
-											__( 'Page %1$d of %2$d', 'kadence-blocks' ),
-											index + 1,
-											pages.length
-										) }
-										text={ page.step }
-										onClick={ () => setCurrentPage( index ) }
-									/>
-								</li>
-							) ) }
-						</ul>
-					) }
-					{ canGoForward && (
+								<Button
+									key={ index }
+									className={ classnames( 'wizard-step', {
+										'is-complete': isStepCompleted(index),
+										'is-current': index === currentPage
+									} ) }
+									disabled={ isStepDisabled(index) }
+									icon={
+										<StepperIcon
+											pageNumber={ index + 1 }
+											isComplete={ isStepCompleted(index) }
+											isSelected={ index === currentPage }
+										/>
+									}
+									aria-label={ sprintf(
+										/* translators: 1: current page number 2: total number of pages */
+										__( 'Page %1$d of %2$d', 'kadence-blocks' ),
+										index + 1,
+										pages.length
+									) }
+									text={ page.step }
+									onClick={ () => setCurrentPage( index ) }
+								/>
+							</li>
+						) ) }
+					</ul>
+				) }
+				{ canGoForward && (
+					<Button
+						variant="primary"
+						className={ 'components-wizard__forward-button' }
+						disabled={ forwardButtonDisabled }
+						onClick={ goForward }
+						>
+						{ forwardButtonText }
+					</Button>
+				) }
+				{ ! canGoForward && (
+					<div className='components-wizard__finish-button-container'>
+						{ onSecondaryClick && typeof onSecondaryClick === 'function' ? (
+							<Button
+								variant="link"
+								className={ 'components-wizard__secondary-button' }
+								onClick={ onSecondaryClick }
+								>
+								{ secondaryButtonText ? secondaryButtonText : '' }
+							</Button>
+						) : null }
 						<Button
 							variant="primary"
-							className={ 'components-wizard__forward-button' }
-							disabled={ forwardButtonDisabled }
-							onClick={ goForward }
-						>
-							{ forwardButtonText }
+							className={ 'components-wizard__primary-button' }
+							disabled={ primaryButtonDisabled }
+							onClick={ onPrimaryClick }
+							>
+							{ primaryButtonText }
 						</Button>
-					) }
-					{ ! canGoForward && (
-						<div className='components-wizard__finish-button-container'>
-							{ photographyOnly ? (
-								<Button
-									variant="primary"
-									className={ 'components-wizard__finish-button' }
-									disabled={ finishButtonDisabled }
-									onClick={ onFinish }
-								>
-									{ finishButtonText }
-								</Button>
-							) : (
-								<>
-									<Button
-										variant="secondary"
-										className={ 'components-wizard__finish-button' }
-										disabled={ finishButtonDisabled }
-										onClick={ onFinish }
-									>
-										{ finishButtonText }
-									</Button>
-									<Button
-										variant="primary"
-										className={ 'components-wizard__finish-build-button' }
-										disabled={ finishButtonDisabled }
-										onClick={ onFinish }
-									>
-										{ __( 'Save and Generate AI Data', 'kadence-blocks' ) }
-									</Button>
-								</>
-							) }
-						</div>
-					) }
-				</div>
+					</div>
+				) }
 			</div>
 		</Modal>
-	);
+		);
 }
 

@@ -2,11 +2,15 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { store, mapMarker, desktop } from '@wordpress/icons';
 
-const BASE_URL = 'http://prophecywp.lndo.site'; // @todo Remove local BASE_URL.
-
-export const PROPHECY_ROUTE_GET_COLLECTIONS = `${ BASE_URL }/wp-json/prophecy/v1/images/collections`;
-export const PROPHECY_ROUTE_GET_VERTICALS = `${ BASE_URL }/wp-json/prophecy/v1/verticals`;
+/**
+ * Internal dependencies
+ */
+import BusinessBg from '../assets/business-bg.jpg';
+import EducationBg from '../assets/education-bg.jpg';
+import SpaBg from '../assets/spa-bg.jpg';
+import TaxesBg from '../assets/taxes-bg.jpg';
 
 export const API_MAX_ATTEMPTS = 3;
 export const API_ROUTE_GET_COLLECTIONS = '/kb-design-library/v1/get_image_collections';
@@ -30,92 +34,48 @@ export const COLLECTION_REQUEST_IMAGE_SIZES = [
 
 export const CONTENT_TONE = [
 	{
-		value: 'APPRECIATIVE',
-		label: __('Appreciative', 'kadence-blocks'),
+		value: 'NEUTRAL',
+		label: __('Neutral', 'kadence-blocks'),
 	},
 	{
-		value: 'ASSERTIVE',
-		label: __('Assertive', 'kadence-blocks'),
+		value: 'PROFESSIONAL',
+		label: __('Professional', 'kadence-blocks'),
 	},
 	{
-		value: 'AWESTRUCK',
-		label: __('Awestruck', 'kadence-blocks'),
-	},
-	{
-		value: 'CANDID',
-		label: __('Candid', 'kadence-blocks'),
-	},
-	{
-		value: 'CASUAL',
-		label: __('Casual', 'kadence-blocks'),
-	},
-	{
-		value: 'CAUTIONARY',
-		label: __('Cautionary', 'kadence-blocks'),
-	},
-	{
-		value: 'COMPASSIONATE',
-		label: __('Compassionate', 'kadence-blocks'),
-	},
-	{
-		value: 'CONVINCING',
-		label: __('Convincing', 'kadence-blocks'),
-	},
-	{
-		value: 'CRITICAL',
-		label: __('Critical', 'kadence-blocks'),
-	},
-	{
-		value: 'EARNEST',
-		label: __('Earnest', 'kadence-blocks'),
-	},
-	{
-		value: 'ENTHUSIASTIC',
-		label: __('Enthusiastic', 'kadence-blocks'),
-	},
-	{
-		value: 'FORMAL',
-		label: __('Formal', 'kadence-blocks'),
-	},
-	{
-		value: 'FUNNY',
-		label: __('Funny', 'kadence-blocks'),
-	},
-	{
-		value: 'HUMBLE',
-		label: __('Humble', 'kadence-blocks'),
-	},
-	{
-		value: 'HUMOROUS',
-		label: __('Humorous', 'kadence-blocks'),
+		value: 'FRIENDLY',
+		label: __('Friendly', 'kadence-blocks'),
 	},
 	{
 		value: 'INFORMATIVE',
 		label: __('Informative', 'kadence-blocks'),
 	},
 	{
+		value: 'ENGAGING',
+		label: __('Engaging', 'kadence-blocks'),
+	},
+	{
+		value: 'TRUSTWORTHY',
+		label: __('Trustworthy', 'kadence-blocks'),
+	},
+	{
+		value: 'CONVERSATIONAL',
+		label: __('Conversational', 'kadence-blocks'),
+	},
+	{
+		value: 'PERSUASIVE',
+		label: __('Persuasive', 'kadence-blocks'),
+	},
+	{
+		value: 'UPBEAT',
+		label: __('Upbeat', 'kadence-blocks'),
+	},
+	{
+		value: 'FUNNY',
+		label: __('Funny', 'kadence-blocks'),
+	},
+	{
 		value: 'INSPIRATIONAL',
 		label: __('Inspirational', 'kadence-blocks'),
-	},
-	{
-		value: 'JOYFUL',
-		label: __('Joyful', 'kadence-blocks'),
-	},
-	{
-		value: 'PASSIONATE',
-		label: __('Passionate', 'kadence-blocks'),
-	},
-	{
-		value: 'THOUGHTFUL',
-		label: __('Thoughtful', 'kadence-blocks'),
-	},
-	{
-		value: 'URGENT',
-		label: __('Urgent', 'kadence-blocks'),
-	},
-	{
-		value: 'WORRIED',
-		label: __('Worried', 'kadence-blocks'),
 	},
 ];
 
@@ -140,24 +100,83 @@ export const COLLECTION_REQUEST_BODY = {
 	]
 };
 
+export const ENTITY_TYPE_COMPANY = 'COMPANY';
+export const ENTITY_TYPE_INDIVIDUAL = 'INDIVIDUAL';
+export const ENTITY_TYPE_ORGANIZATION = 'ORGANIZATION';
+
 export const ENTITY_TYPE = [
 	{
-		value: 'COMPANY',
+		value: ENTITY_TYPE_COMPANY,
 		label: __( 'A Company', 'kadence-blocks' ),
 	},
 	{
-		value: 'INDIVIDUAL',
+		value: ENTITY_TYPE_INDIVIDUAL,
 		label: __( 'An Individual', 'kadence-blocks' ),
 	},
 	{
-		value: 'ORGANIZATION',
+		value: ENTITY_TYPE_ORGANIZATION,
 		label: __( 'An Organization', 'kadence-blocks' ),
 	},
 ];
 
 export const ENTITY_TO_NAME = {
-	'COMPANY': __( 'Company Name', 'kadence-blocks' ),
-	'INDIVIDUAL': __( 'Name', 'kadence-blocks' ),
-	'ORGANIZATION': __( 'Organization Name', 'kadence-blocks' ),
+	'COMPANY': {
+		label: __( 'Company Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Company', 'kadence-blocks' ),
+	},
+	'INDIVIDUAL': {
+		label: __( 'Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Name', 'kadence-blocks' ),
+	}, 
+	'ORGANIZATION': {
+		label: __( 'Organization Name', 'kadence-blocks' ),
+		placeholder: __( 'Your Organization', 'kadence-blocks' ),
+	}
 };
 
+export const LOCATION_BUSINESS_ADDRESS = 'Business Address';
+export const LOCATION_SERVICE_AREA = 'Service Area';
+export const LOCATION_ONLINE_ONLY = 'Online Only';
+
+export const LOCATION_TYPES = [
+	{
+		icon: store,
+		text: __( 'Business Address', 'kadence-blocks' ),
+		value: LOCATION_BUSINESS_ADDRESS,
+		help: __( 'E.g.: 1234 Street #1, Chicago, IL 60076, USA', 'kadence-blocks' ),
+		placeholder: __( 'Street Adress, City, State, Zipcode, Country', 'kadence-blocks' ),
+	},
+	{
+		icon: mapMarker,
+		text: __( 'Service Area', 'kadence-blocks' ),
+		value: LOCATION_SERVICE_AREA,
+		help: __( 'E.g.: Chicago, USA', 'kadence-blocks' ),
+		placeholder: __( 'District, City, State, Zipcode, Country', 'kadence-blocks' ),
+	},
+	{
+		icon: desktop,
+		text: __( 'Online Only', 'kadence-blocks' ),
+		value: LOCATION_ONLINE_ONLY,
+		help: '',
+		placeholder: '',
+	},
+];
+
+export const MISSION_STATEMENT_GOAL = 300;
+
+export const MISSION_STATEMENT_STATUS = {
+	'weak': {
+		color: '#DF3416',
+		message: __( 'For better, more accurate copy enter a bit more content.', 'kadence-blocks' ),
+	},
+	'medium': {
+		color: '#B35F00',
+		message: __( 'This is a great start. Try adding a bit more information to your description.', 'kadence-blocks' ),
+	},
+	'strong': {
+		color: '#1B8F6D',
+		message: __( 'Excellent work! Want to add more? Keep going! More info means better content.', 'kadence-blocks' )
+	}
+}
+
+export const INDUSTRY_BACKGROUNDS = [ SpaBg, BusinessBg, TaxesBg, EducationBg ];

@@ -4,6 +4,9 @@
 import { Flex, FlexBlock } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import AiModalIntro from '../../../../../includes/assets/images/ai-modal-intro.png';
 
 const styles = {
@@ -27,8 +30,9 @@ const styles = {
 	}
 }
 
-const headline = __('Take your website creation to the next level with Kadence AI.', 'kadence-blocks');
-const content = __('Kadence AI creates a website building experience no other builder can offer. Our powerful technology generates content in fully designed Kadence patterns to meet your mission and goals in a seamless, intuitive experience. Say goodbye to generic placeholder text and blank screen anxiety. Welcome to elegant and effective content that represents your brand and connects with your audience.', 'kadence-blocks');
+const headline = __( 'Elevate Your Website Creation: Design Library + Kadence AI', 'kadence-blocks' );
+const content1 = __( 'Introducing Kadence AI, our AI-powered engine for creating websites.', 'kadence-blocks' );
+const content2 = __( 'Forget about learning AI - just tell us about yourself, and let Kadence AI take care of the rest. Say goodbye to blank screen anxiety. Welcome effective content that represents your brand.', 'kadence-blocks' );
 
 export function HowItWorks() {
 	return (
@@ -44,7 +48,10 @@ export function HowItWorks() {
 								{ headline }
 							</h1>
 							<p>
-								{ content }
+								{ content1 }
+							</p>
+							<p>
+								{ content2 }
 							</p>
 						</FlexBlock>
 				</Flex>
