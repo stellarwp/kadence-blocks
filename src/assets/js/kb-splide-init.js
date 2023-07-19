@@ -152,6 +152,24 @@
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
+				} else if (sliderType && sliderType === "rewind") {
+					splideOptions.type = "slide";
+					splideOptions.rewind = true;
+					let splideSlider = new Splide(thisSlider, splideOptions);
+					if ( ! inHiddenMenu ) {
+						splideSlider.on( 'overflow', function ( isOverflow ) {
+							// Reset the carousel position
+							splideSlider.go( 0 );
+
+							splideSlider.options = {
+							arrows    : splideOptions.arrows ? isOverflow : false,
+							pagination: splideOptions.pagination ? isOverflow : false,
+							drag      : splideOptions.drag ? isOverflow : false,
+							clones    : isOverflow ? undefined : 0, // Toggle clones
+							};
+						} );
+					}
+					splideSlider.mount();
 				} else {
 					let splideSlider = new Splide(thisSlider, splideOptions);
 					if ( ! inHiddenMenu ) {

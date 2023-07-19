@@ -226,6 +226,7 @@ function KadenceTestimonials( props ) {
 		tabletWrapperMargin,
 		mobileWrapperMargin,
 		wrapperMarginUnit,
+        carouselType
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
@@ -1213,6 +1214,21 @@ function KadenceTestimonials( props ) {
                                                 initialOpen={false}
                                                 panelName={'kb-testimonials-carousel'}
                                             >
+                                                 <SelectControl
+                                                    label={__('Carousel Type', 'kadence-blocks')}
+                                                    options={[
+                                                        {
+                                                            label: __('Infinite Loop', 'kadence-blocks'),
+                                                            value: 'loop',
+                                                        },
+                                                        {
+                                                            label: __('Rewind', 'kadence-blocks'),
+                                                            value: 'rewind',
+                                                        },
+                                                    ]}
+                                                    value={carouselType}
+                                                    onChange={(value) => setAttributes({carouselType: value})}
+                                                />
                                                 <ToggleControl
                                                     label={__('Carousel Auto Play', 'kadence-blocks')}
                                                     checked={autoPlay}
@@ -1240,11 +1256,11 @@ function KadenceTestimonials( props ) {
                                                     label={__('Slides to Scroll', 'kadence-blocks')}
                                                     options={[
                                                         {
-                                                            label: __('One'),
+                                                            label: __('One', 'kadence-blocks'),
                                                             value: '1',
                                                         },
                                                         {
-                                                            label: __('All'),
+                                                            label: __('All', 'kadence-blocks'),
                                                             value: 'all',
                                                         },
                                                     ]}
