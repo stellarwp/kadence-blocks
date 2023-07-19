@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.0.41' );
+define( 'KADENCE_BLOCKS_VERSION', '3.0.41.7' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -79,6 +79,7 @@ function kadence_blocks_init() {
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-settings.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-posts-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-mailerlite-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
@@ -86,6 +87,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/convertkit-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/activecampaign-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-pexels.php';
 	/**
 	 * Site Health
 	 */

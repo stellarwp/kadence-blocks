@@ -68,7 +68,7 @@
 	z-index: -1;
 	opacity: 0;
 	background:transparent;
-	//transition: all .3s ease-in-out;
+	//transition: opacity .3s ease-in-out;
 }
 .kb-button:hover::before {
 	opacity: 1;

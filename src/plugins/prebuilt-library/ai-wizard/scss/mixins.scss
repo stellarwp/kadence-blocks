@@ -1,0 +1,27 @@
+@import './variables.scss';
+
+@mixin input_label {
+	margin-bottom: 8px;
+	text-transform: initial;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.2;
+	letter-spacing: initial;
+	color: $color-gray-900;
+}
+
+@mixin input_base {
+	padding: 10px 16px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: $color-gray-300;
+	border-radius: 4px;
+	font-size: 16px;
+	background: $color-white;
+
+	&:focus {
+		box-shadow: none;
+		border-color: $color-black;
+	}
+}
+

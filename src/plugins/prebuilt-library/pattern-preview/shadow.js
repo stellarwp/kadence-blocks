@@ -18,7 +18,7 @@ function ScaledPatternShadowPreview( {
 	html,
 	viewportWidth,
 	containerWidth,
-	minHeight = '200px',
+	minHeight = 50,
 	additionalStyles = [],
 	title,
 	ratio,
@@ -32,7 +32,6 @@ function ScaledPatternShadowPreview( {
 	}
 	const [ refreshHeight, setRefreshHeight ] = useState( false );
 	const [ contentResizeListener, { height: contentHeight } ] = useResizeObserver();
-	
 	const styleAssets = (
 		<>
 			<link rel="stylesheet" id="kadence-blocks-iframe-base" href={ kadence_blocks_params.livePreviewStyles } media="all"></link>
@@ -78,11 +77,13 @@ function ScaledPatternShadowPreview( {
 	const finalContentHeight = refreshHeight ? 'auto' : contentHeight;
 	const resizeClear = () => {
 		setTimeout( () => {
+			// console.log('REOnePatternPreview');
 			setRefreshHeight( true );
 		}, 100 );
 		setTimeout( () => {
+		//	console.log('RETwoPatternPreview');
 			setRefreshHeight( false );
-		}, 500 );
+		}, 400 );
 	}
 	return (
 		<>
@@ -91,10 +92,10 @@ function ScaledPatternShadowPreview( {
 					className="block-editor-block-preview__content"
 					style={ {
 						transform: `scale(${ scale })`,
-						height: finalContentHeight * scale,
+						height: finalContentHeight ? finalContentHeight * scale : 'auto',
 						maxHeight:
 							finalContentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
-						// minHeight: contentHeight ? undefined : minHeight,
+						//minHeight: contentHeight ? undefined : minHeight,
 					} }
 				>
 					<root.div
@@ -106,8 +107,6 @@ function ScaledPatternShadowPreview( {
 							width: viewportWidth,
 							height: finalContentHeight,
 							pointerEvents: 'none',
-							// This is a catch-all max-height for patterns.
-							// See: https://github.com/WordPress/gutenberg/pull/38175.
 							maxHeight: MAX_HEIGHT,
 							minHeight:
 								scale !== 0 && scale < 1 && minHeight

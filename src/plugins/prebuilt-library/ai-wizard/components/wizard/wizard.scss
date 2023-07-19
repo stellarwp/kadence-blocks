@@ -1,0 +1,170 @@
+@import '../../scss/variables.scss';
+
+.stellarwp.components-modal__frame.components-guide {
+	max-width: 95%;
+	width: 100%;
+	max-height: 95%;
+	height: 100%;
+
+	.components-modal__content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Header */
+	.components-modal__header {
+		height: 68px;
+
+		.components-button {
+			margin: 18px 26px 0 0;
+
+			svg {
+				transition: fill 0.2s ease-in;
+			}
+
+			&:hover svg {
+				fill: $color-gray-400;
+			}
+		}
+
+		+ div {
+			display: flex;
+			height: 100%;
+		}
+	}
+
+	/* Header: Heading */
+	.components-modal__header-heading {
+		margin-left: 32px;
+	}
+
+	/* Container */
+	.components-guide__container {
+		margin-top: 0;
+		margin-bottom: 69px;
+		flex-grow: 1;
+		min-height: auto;
+	}
+
+	/* Container: Page */
+	.components-guide__page {
+		flex-grow: 1;
+	}
+
+	/* Footer */
+	.components-guide__footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: $color-white;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		margin: 0;
+		padding: 16px 32px;
+		height: 68px;
+		z-index: 10;
+	}
+
+	.components-wizard__back-button,
+	.components-wizard__forward-button,
+	.components-wizard__finish-button-container {
+		position: absolute;
+	}
+
+	.components-wizard__primary-button {
+		background: $color-success;
+
+		&:hover {
+			background: $color-success-dark;
+		}
+	}
+
+	.components-wizard__secondary-button {
+		background: $color-white;
+		text-decoration: underline;
+		color: $color-black;
+		font-size: 14px;
+		font-style: normal;
+		font-weight: 500;
+		padding: 6px 12px;
+    border-radius: 4px;
+
+		&:hover {
+			background: $color-gray-200;
+			text-decoration: none;
+		}
+	}
+
+	.components-wizard__back-button {
+		left: 32px;
+	}
+
+	.components-wizard__forward-button,
+	.components-wizard__finish-button-container {
+		right: 32px;
+	}
+	.components-wizard__finish-button-container {
+		display: flex;
+		gap: 10px;
+	}
+
+	/* Page Control: Step */
+	.stellarwp.step-count {
+		height: 24px;
+		width: 24px;
+		margin-right: 6px;
+		background: $color-disabled;
+		color: $color-white;
+		border-radius: 12px;
+		line-height: 24px;
+		font-size: 10px;
+
+		.dashicon {
+			margin: 2px;
+			padding: 0;
+		}
+	}
+
+	/* Page Control (Stepper) */
+	.components-guide__page-control {
+		.components-button {
+			padding: 6px 8px;
+			font-size: 12px;
+			color: $color-disabled;
+
+			&:disabled,
+			&:disabled:hover {
+				opacity: 1;
+				color: $color-disabled !important;
+			}
+			
+			.stellarwp.step-count {
+				background: $color-disabled;
+			}
+
+			&.is-complete {
+				color: $color-black;
+				
+				.stellarwp.step-count {
+					background: $color-black;
+				}
+			}
+
+			&.is-current {
+				color: $color-primary;
+				
+				.stellarwp.step-count {
+					background: $color-primary;
+				}
+			}
+		}
+	}
+
+	/* Form Style Overrides */
+	.components-base-control.stellarwp .components-base-control__field + .components-base-control__help {
+		margin-bottom: 8px;
+	}
+}
+

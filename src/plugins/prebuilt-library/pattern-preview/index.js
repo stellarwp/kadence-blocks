@@ -15,11 +15,9 @@ export function PatternPreview( {
 	neededCompatStyles,
 	patternType,
 } ) {
-
 	if ( ! html ) {
 		return null;
 	}
-	
 
 	return (
 		<AutoHeightPatternPreview

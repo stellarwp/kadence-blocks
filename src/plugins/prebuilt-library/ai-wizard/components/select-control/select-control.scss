@@ -1,0 +1,44 @@
+@import '../../scss/variables.scss';
+@import '../../scss/mixins.scss';
+
+.stellarwp.components-select-control {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8px);
+
+	label.components-input-control__label {
+		@include input_label;
+
+		margin-bottom: 0;
+	}
+
+	.stellarwp-select__single-value + div,
+	.stellarwp-select + div {
+    margin: 0 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+}
+
+.stellarwp-select__menu {
+	.stellarwp-select__option {
+		padding-left: 18px;
+		padding-right: 18px;
+
+		&.stellarwp-select__option--is-selected {
+			background-color: $color-primary;
+		}
+	}
+
+	.stellarwp-select__group {
+		.stellarwp-select__option {
+			padding-left: 24px;
+		}
+	}
+
+	.stellarwp-select__group-heading {
+		padding-left: 18px;
+		padding-right: 18px;
+	}
+}
+

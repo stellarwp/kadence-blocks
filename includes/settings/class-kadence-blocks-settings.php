@@ -751,6 +751,17 @@ class Kadence_Blocks_Settings {
 						'default'           => '',
 				)
 		);
+		register_setting(
+				'kadence_blocks_prophecy',
+				'kadence_blocks_prophecy',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'Config Kadence Block Prophecy AI', 'kadence-blocks' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => TRUE,
+						'default'           => '',
+				)
+		);
 	}
 	/**
 	 * Register settings

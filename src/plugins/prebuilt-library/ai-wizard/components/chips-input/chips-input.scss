@@ -1,0 +1,27 @@
+@import '../../scss/mixins.scss';
+@import '../../scss/variables.scss';
+
+.components-chips-input-control {
+	@include input_base;
+
+	display: flex;
+	padding: 12px;
+	min-height: 88px;
+	flex-wrap: wrap;
+	gap: 8px;
+
+	&:focus-within {
+		border-color: $color-black;
+	}
+}
+
+.stellarwp input.components-chips-input-control__input {
+	flex: 1 1 auto;
+	border: none;
+	padding: 0;
+	height: 24px;
+	min-height: 24px;
+	outline: none;
+	box-shadow: none;
+	font-size: 14px;
+}
