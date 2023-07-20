@@ -529,17 +529,6 @@ function KadenceIconLists( props ) {
 									initialOpen={ false }
 									panelName={'kb-list-link-styling'}
 								>
-									<SelectControl
-										label={ __( 'Underline Links', 'kadence-blocks' ) }
-										value={ linkUnderline }
-										options={ [
-											{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
-											{ value: 'always', label: __( 'Always', 'kadence-blocks' ) },
-											{ value: 'hover', label: __( 'On Hover', 'kadence-blocks' ) },
-											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
-										] }
-										onChange={ ( value ) => setAttributes( { linkUnderline: value } ) }
-									/>
 									<PopColorControl
 										label={__( 'Link Color' )}
 										value={ linkColor }
@@ -547,14 +536,22 @@ function KadenceIconLists( props ) {
 										onChange={ ( value ) => {
 											setAttributes( { linkColor: value } );
 										}}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( linkHoverColor ? linkHoverColor : '' )}
+										default2={''}
+										onChange2={value => setAttributes( { linkHoverColor: value } )}
+
 									/>
-									<PopColorControl
-										label={__( 'Link Hover Color' )}
-										value={ linkHoverColor }
-										default={''}
-										onChange={ ( value ) => {
-											setAttributes( { linkHoverColor: value } );
-										}}
+									<SelectControl
+										label={ __( 'Underline Links', 'kadence-blocks' ) }
+										value={ linkUnderline }
+										options={ [
+											{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+											{ value: 'always', label: __( 'Underline', 'kadence-blocks' ) },
+											{ value: 'hover', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+										] }
+										onChange={ ( value ) => setAttributes( { linkUnderline: value } ) }
 									/>
 								</KadencePanelBody>
 							</>
