@@ -318,6 +318,8 @@ div.kb-blocks-bg-video {
 	padding: 2px;
 	margin-right: 5px;
     margin-bottom: 5px;
+	width: auto !important; // override core style in FSE
+	box-shadow: none !important; // override core style in FSE
 }
 .components-button-group .kt-layout-btn svg {
     width:72px;
