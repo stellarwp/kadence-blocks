@@ -78,7 +78,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.1.3 Beta Version 2 =
+Release Date: July TBD, 2023
 * Add: Ability to select parent form block from form fields.
+* Add: Underline and color options for icon list links.
 * Fix: Adv Form required asterisk color not applying.
 * Fix: Down arrow showing when multiselect is rendered.
 * Fix: Progress bar % hiding when changing position.

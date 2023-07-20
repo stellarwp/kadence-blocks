@@ -170,6 +170,18 @@
 	"style": {
 		"type": "string",
 		"default": "default"
+	},
+	"linkUnderline": {
+		"type": "string",
+		"default": "inherit"
+	},
+	"linkColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"linkHoverColor": {
+	  "type": "string",
+	  "default": ""
 	}
   },
   "providesContext": {
