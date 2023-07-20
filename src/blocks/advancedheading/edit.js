@@ -703,6 +703,16 @@ function KadenceAdvancedHeading( props ) {
 				{ ( previewMaxWidth ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
+				{linkStyle && (
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a {
+							${ linkStyle === 'underline' ? 'text-decoration: underline;' : '' }
+							${ linkStyle === 'none' ? 'text-decoration: none;' : '' }
+					}
+					.kt-adv-heading${uniqueID} a, #block-${clientId} a:hover {
+							${ linkStyle === 'hover_underline' ? 'text-decoration: underline;' : '' }
+					}
+					`
+				)}
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
