@@ -89,6 +89,7 @@ Release Date: July TBD, 2023
 * Fix: Issue with field appender not showing fields when form is nested in a section block.
 * Fix: Setting custom fonts on Advanced form labels
 * Fix: Layout issue with date picker in Countdown block.
+* Fix: Google fonts not loading on frontend for Testimonials block.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023

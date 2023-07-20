@@ -64,7 +64,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/* Load any Google fonts that are needed */
 		$attributes_with_fonts = array( 'titleFont', 'contentFont', 'nameFont', 'occupationFont' );
 		foreach ( $attributes_with_fonts as $attribute_font_key ) {
-			if ( isset( $attributes[ $attribute_font_key ][0] ) && isset( $attributes[ $attribute_font_key ][0]['google'] ) && ( ! isset( $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && true === $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && isset( $attributes[ $attribute_font_key ][0]['family'] ) ) {
+			if ( isset( $attributes[ $attribute_font_key ][0] ) && isset( $attributes[ $attribute_font_key ][0]['google'] ) && ( isset( $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && true === $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && isset( $attributes[ $attribute_font_key ][0]['family'] ) ) {
 				$title_font = $attributes[ $attribute_font_key ][0];
 
 				$font_variant = isset( $title_font['variant'] ) ? $title_font['variant'] : null;
