@@ -42,8 +42,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	useState,
 	useEffect,
-	useCallback,
-	useMemo,
 	Fragment,
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
@@ -61,9 +59,7 @@ import {
 	Button,
 	ToggleControl,
 	RangeControl,
-	TextControl,
-	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	TextControl
 } from '@wordpress/components';
 import {
 	Circle,
@@ -286,20 +282,22 @@ export function Edit( props ) {
 	};
 
 	const container = '#progress-item' + uniqueID;
-	const hasContainerDiv = document.querySelector( container );
+	const iFrameSelector = document.getElementsByName( 'editor-canvas' );
+	const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+	const containerDiv = selector.querySelector( container );
 	let progressItem = null;
 
 	useEffect( () => {
-		if ( hasContainerDiv === null ) {
+		if ( containerDiv === null ) {
 			return;
 		}
 
 		if ( barType === 'line' ) {
-			progressItem = new Line( container, progressAttributes );
+			progressItem = new Line( containerDiv, progressAttributes );
 		} else if ( barType === 'circle' ) {
-			progressItem = new Circle( container, progressAttributes );
+			progressItem = new Circle( containerDiv, progressAttributes );
 		} else if ( barType === 'semicircle' ) {
-			progressItem = new SemiCircle( container, progressAttributes );
+			progressItem = new SemiCircle( containerDiv, progressAttributes );
 		}
 
 		if ( progressItem ) {
@@ -311,7 +309,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ hasContainerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, rerender ] );
+	}, [ containerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, rerender ] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
