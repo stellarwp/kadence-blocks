@@ -309,7 +309,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ containerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, rerender ] );
+	}, [ containerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender ] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
