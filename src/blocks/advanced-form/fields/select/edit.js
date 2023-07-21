@@ -232,6 +232,7 @@ function FieldSelect( { attributes, setAttributes, isSelected, clientId, context
 									label={__( 'Multi Select', 'kadence-blocks' )}
 									checked={multiSelect}
 									onChange={( value ) => setAttributes( { multiSelect: value } )}
+									help={__( 'Checkboxes are a preferred alternative due to their easier usability.', 'kadence-blocks' )}
 								/>
 							</KadencePanelBody>
 
