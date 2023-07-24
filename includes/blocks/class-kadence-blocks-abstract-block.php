@@ -169,7 +169,7 @@ class Kadence_Blocks_Abstract_Block {
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes );
+			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
 
 			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {

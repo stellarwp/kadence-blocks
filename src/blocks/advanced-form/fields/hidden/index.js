@@ -24,11 +24,9 @@ registerBlockType('kadence/advanced-form-hidden', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: hiddenInputIcon,
 	},
 	edit,
 	save: () => null,
-
 });

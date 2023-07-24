@@ -24,7 +24,6 @@ registerBlockType('kadence/advanced-form-telephone', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: phoneInputIcon,
 	},

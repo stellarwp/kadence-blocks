@@ -24,6 +24,8 @@ function Save( props ) {
         uniqueID,
         icon,
         link,
+		linkSponsored,
+		linkNoFollow,
         target,
         width,
         text,
@@ -60,10 +62,32 @@ function Save( props ) {
 				</svg>
 			</div>
 	);
+
+	let rel = '';
+	if( target === '_blank' ){
+		rel = 'noopener noreferrer';
+	}
+
+	if ( linkNoFollow ) {
+		if ( rel !== '' ) {
+			rel = rel + ' nofollow';
+		} else {
+			rel = 'nofollow';
+		}
+	}
+
+	if ( linkSponsored ) {
+		if ( rel !== '' ) {
+			rel = rel + ' sponsored';
+		} else {
+			rel = 'sponsored';
+		}
+	}
+
     return (
         <li {...blockProps}>
             { link && (
-                <a href={ link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === target ? target : undefined ) } rel={ '_blank' === target ? 'noopener noreferrer' : undefined }>
+                <a href={ link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === target ? target : undefined ) } rel={ '' !== rel ? rel : undefined }>
 					{ showIcon ? iconSpan : emptyIcon }
                     <RichText.Content
                         tagName="span"

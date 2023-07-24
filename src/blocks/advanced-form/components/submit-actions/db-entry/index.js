@@ -35,21 +35,16 @@ function DbEntryOptions( { settings, save } ) {
 			initialOpen={false}
 			panelName={'kb-db-entry-settings'}
 		>
-			<TextControl
-				label={__( 'Form Name', 'kadence-blocks' )}
-				value={( undefined !== settings.name ? settings.name : '' )}
-				onChange={( value ) => save( { name: value } )}
-			/>
 			<ToggleControl
 				label={__( 'Save User IP Address', 'kadence-blocks' )}
 				help={__( 'Saves the entrants IP address with the form data', 'kadence-blocks' )}
-				checked={( undefined !== settings.userIP ? settings.userIP : true )}
+				checked={( undefined !== settings?.userIP ? settings.userIP : true )}
 				onChange={( value ) => save( { userIP: value } )}
 			/>
 			<ToggleControl
 				label={__( 'Save User Device', 'kadence-blocks' )}
 				help={__( 'Saves the entrants device with form data', 'kadence-blocks' )}
-				checked={( undefined !== settings.userDevice ? settings.userDevice : true )}
+				checked={( undefined !== settings?.userDevice ? settings.userDevice : true )}
 				onChange={( value ) => save( { userDevice: value } )}
 			/>
 		</KadencePanelBody>

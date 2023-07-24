@@ -48,6 +48,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -224,12 +225,18 @@ function KadenceAdvancedHeading( props ) {
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -241,7 +248,8 @@ function KadenceAdvancedHeading( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/advancedheading', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -695,6 +703,16 @@ function KadenceAdvancedHeading( props ) {
 				{ ( previewMaxWidth ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
+				{linkStyle && (
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a {
+							${ linkStyle === 'underline' ? 'text-decoration: underline;' : '' }
+							${ linkStyle === 'none' ? 'text-decoration: none;' : '' }
+					}
+					.kt-adv-heading${uniqueID} a, #block-${clientId} a:hover {
+							${ linkStyle === 'hover_underline' ? 'text-decoration: underline;' : '' }
+					}
+					`
+				)}
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
@@ -1163,7 +1181,7 @@ function KadenceAdvancedHeading( props ) {
 							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
-									title={__( 'Highlight Settings', 'kadence-blocks' )}
+									title={__( 'Advanced Highlight Settings', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>

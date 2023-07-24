@@ -192,3 +192,9 @@
 #end-resizable-editor-section {
     display: none;
 }
+
+// In WP 6.2 (and 6.3 RC1) some CSS changes broke DateTimePicker layout. This is a manual fix until it's fixed in core.
+// https://github.com/WordPress/gutenberg/issues/49520
+.block-editor-block-inspector .kb-datepicker-fix .components-datetime .components-base-control {
+	margin-bottom: 0;
+}
