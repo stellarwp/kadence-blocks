@@ -93,6 +93,7 @@ Release Date: July TBD, 2023
 * Fix: Link style preview in editor for Advanced Text
 * Fix: Sticky sections inside Accordion panes.
 * Fix: Progress bar in full site editing.
+* Fix: Border radius on stacked icons in Icon block.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
