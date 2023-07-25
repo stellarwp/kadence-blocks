@@ -119,6 +119,7 @@ class KB_Ajax_Advanced_Form {
 			}
 
 			$success = isset( $submission_results['success'] ) && $submission_results['success'];
+			$final_data['submissionResults'] = $submission_results;
 
 			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', $success, $form_args, $processed_fields, $post_id, $submission_results );
 			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id, $submission_results );
