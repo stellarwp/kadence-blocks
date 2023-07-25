@@ -109,7 +109,7 @@ class KB_Ajax_Advanced_Form {
 
 			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $processed_fields, $post_id );
 
-			$this->after_submit_actions( $form_args, $processed_fields, $post_id );
+			$submission_results = $this->after_submit_actions( $form_args, $processed_fields, $post_id );
 
 			if ( self::$redirect ) {
 				$final_data['redirect'] = self::$redirect;
@@ -118,8 +118,11 @@ class KB_Ajax_Advanced_Form {
 				$final_data['hide'] = true;
 			}
 
-			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args, $processed_fields, $post_id );
-			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id );
+			$success = isset( $submission_results['success'] ) && $submission_results['success'];
+			$final_data['submissionResults'] = $submission_results;
+
+			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', $success, $form_args, $processed_fields, $post_id, $submission_results );
+			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id, $submission_results );
 
 			if ( ! $success ) {
 				$this->process_bail( $messages['error'], __( 'Third Party Failed', 'kadence-blocks' ) );
@@ -188,7 +191,7 @@ class KB_Ajax_Advanced_Form {
 	 */
 	public function after_submit_actions( $form_args, $processed_fields, $post_id ) {
 
-		$success = true;
+		$submission_results = array( 'success' => true );
 		$actions = isset( $form_args['attributes']['actions'] ) ? $form_args['attributes']['actions'] : array( 'email' );
 
 		$submit_actions = new Kadence_Blocks_Advanced_Form_Submit_Actions( $form_args, $processed_fields, $post_id );
@@ -211,9 +214,9 @@ class KB_Ajax_Advanced_Form {
 					break;
 			}
 		}
-		$success = apply_filters( 'kadence_advanced_form_actions', $success, $actions, $form_args, $processed_fields, $post_id );
+		$submission_results = apply_filters( 'kadence_advanced_form_actions', $submission_results, $actions, $form_args, $processed_fields, $post_id );
 
-		return $success;
+		return $submission_results;
 	}
 	/**
 	 * Process the fields

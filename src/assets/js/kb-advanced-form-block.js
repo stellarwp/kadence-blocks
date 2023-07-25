@@ -333,8 +333,12 @@
 						// If successful
 						var response = JSON.parse( this.response );
 						if ( response.success ) {
+							const submissionResults = response?.submissionResults; 
 							var event = new CustomEvent( 'kb-advanced-form-success', {
-								'detail': ( form.querySelector( 'input[name="_kb_adv_form_id"]' ) ? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value : '' ),
+								'detail': {
+									'uniqueId': ( form.querySelector( 'input[name="_kb_adv_form_id"]' ) ? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value : '' ),
+									'submissionResults': submissionResults
+								}
 							} );
 							// Dispatch the event.
 							window.document.body.dispatchEvent(event);
