@@ -1329,14 +1329,47 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$output = '';
 		$video_attributes = $attributes['backgroundVideo'][0];
 		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
-		$video_args = array(
-			'class' => 'kb-blocks-bg-video',
-			'id' => 'bg-row-video-' . $attributes['uniqueID'],
-			'playsinline' => '',
-			'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
-			'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
-			'src' => $video_attributes['local'],
-		);
+		// if ( 'local' == $attributes['backgroundVideoType'] ) {
+		if ( false ) {
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video',
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'playsinline' => '',
+				'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
+				'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
+				'src' => $video_attributes['local'],
+			);
+		} else {
+			//integrate all this nonsense with the current suite of settings as available
+			$src_query_string = http_build_query(
+				array(
+					'autoplay' => 1,
+					'controls' => 0,
+					'mute' => 1,
+					'muted' => 1,
+					'loop' => 1,
+					'disablekb' => 1,
+					'modestbranding' => 1,
+					'playsinline' => 1,
+					'rel' => 0,
+				)
+			);
+			// $video_args = array(
+			// 	'class' => 'kb-blocks-bg-video',
+			// 	'id' => 'bg-row-video-' . $attributes['uniqueID'],
+			// 	'src' => 'https://www.youtube.com/embed/OZBOEnHhR14?' . $src_query_string,
+			// );
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video',
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'src' => 'https://player.vimeo.com/video/789006133?' . $src_query_string,
+			);
+			// https://player.vimeo.com/video/789006133?h=82e9bae2d0&title=0&byline=0&portrait=0
+			// src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+			// allowfullscreen
+			// allowtransparency
+			// allow="autoplay"
+		}
 		if ( ! empty( $attributes['bgImg'] ) ) {
 			$video_args['poster'] = $attributes['bgImg'];
 		}
@@ -1373,7 +1406,25 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$btns_output .= '</div>';
 		}
 
-		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		// if ( 'local' == $attributes['backgroundVideoType'] ) {
+		if ( false ) {
+			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		} else {
+			//output a plyr container that can output the youtube video
+			//plyr_js'          => KADENCE_BLOCKS_URL . 'includes/assets/js/plyr.min.js
+			// <div class="plyr__video-embed" id="player">
+			// 	<iframe
+			// 		src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+			// 		allowfullscreen
+			// 		allowtransparency
+			// 		allow="autoplay"
+			// 	></iframe>
+			// </div>
+
+			// <iframe src="https://player.vimeo.com/video/789006133?h=82e9bae2d0&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+			// 	<p><a href="https://vimeo.com/789006133">Ultromedia Please (Interactive)</a> from <a href="https://vimeo.com/blinkindustries">Blink Industries</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+			$output = sprintf( '<div class="kb-blocks-bg-video-container"><iframe %1$s></iframe>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		}
 		return $output;
 	}
 	/**
