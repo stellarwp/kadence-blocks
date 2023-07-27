@@ -1,12 +1,13 @@
-@import '../../scss/mixins.scss';
+@import "../../scss/mixins.scss";
 
 .stellarwp-textarea-progress {
-  @include input_base;
-  padding: 0;
+	@include input_base;
+	padding: 0;
 
-  .stellarwp.components-base-control .components-textarea-control__input {
-	  border: none;
-	  resize: none;
+	.stellarwp.components-base-control .components-textarea-control__input {
+		border: none;
+		resize: none;
+		line-height: 24px;
 	}
 
 	.stellarwp-progress-bar {
