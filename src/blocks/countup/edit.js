@@ -13,7 +13,8 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getUniqueId,
-	getPostOrFseId
+	getPostOrFseId,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 import {
 	WebfontLoader,
@@ -216,7 +217,7 @@ function KadenceCounterUp( props ) {
 						fontWeight   : numberFont[ 0 ].weight,
 						fontStyle    : numberFont[ 0 ].style,
 						color        : KadenceColorOutput( numberColor ),
-						fontSize     : numberFont[ 0 ].size[ 0 ] + numberFont[ 0 ].sizeType,
+						fontSize     : getFontSizeOptionOutput( numberFont[ 0 ].size[ 0 ], numberFont[ 0 ].sizeType ),
 						lineHeight   : ( numberFont[ 0 ].lineHeight && numberFont[ 0 ].lineHeight[ 0 ] ? numberFont[ 0 ].lineHeight[ 0 ] + numberFont[ 0 ].lineType : undefined ),
 						letterSpacing: numberFont[ 0 ].letterSpacing + 'px',
 						fontFamily   : ( numberFont[ 0 ].family ? numberFont[ 0 ].family : '' ),
@@ -285,10 +286,10 @@ function KadenceCounterUp( props ) {
 								fontWeight   : titleFont[ 0 ].weight,
 								fontStyle    : titleFont[ 0 ].style,
 								color        : KadenceColorOutput( titleColor ),
-								fontSize     : titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
+								fontSize     : getFontSizeOptionOutput( titleFont[ 0 ].size[ 0 ], titleFont[ 0 ].sizeType ),
 								lineHeight   : ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
 								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
-								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
+								fontFamily   : ( titleFont[ 0 ].family ? titleFontr[ 0 ].family : '' ),
 								minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 								textAlign    : previewTitleAlign,
