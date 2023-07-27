@@ -1328,9 +1328,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$output = '';
 		$video_attributes = $attributes['backgroundVideo'][0];
+		$background_video_type = isset( $attributes['backgroundVideoType'] ) && $attributes['backgroundVideoType'] ? $attributes['backgroundVideoType'] : 'local';
 		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
-		// if ( 'local' == $attributes['backgroundVideoType'] ) {
-		if ( false ) {
+
+		if ( 'local' == $background_video_type ) {
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video',
 				'id' => 'bg-row-video-' . $attributes['uniqueID'],
@@ -1340,35 +1341,28 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'src' => $video_attributes['local'],
 			);
 		} else {
-			//integrate all this nonsense with the current suite of settings as available
-			$src_query_string = http_build_query(
+			// Vimeo and youtube share a bunch of params, that's convienent.
+			$src_query_string = '?' . http_build_query(
 				array(
 					'autoplay' => 1,
 					'controls' => 0,
-					'mute' => 1,
-					'muted' => 1,
-					'loop' => 1,
+					'mute' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 0 : 1 ),
 					'disablekb' => 1,
 					'modestbranding' => 1,
 					'playsinline' => 1,
 					'rel' => 0,
 				)
 			);
-			// $video_args = array(
-			// 	'class' => 'kb-blocks-bg-video',
-			// 	'id' => 'bg-row-video-' . $attributes['uniqueID'],
-			// 	'src' => 'https://www.youtube.com/embed/OZBOEnHhR14?' . $src_query_string,
-			// );
+			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
+			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
+
 			$video_args = array(
-				'class' => 'kb-blocks-bg-video',
+				'class' => 'kb-blocks-bg-video ' . $background_video_type,
 				'id' => 'bg-row-video-' . $attributes['uniqueID'],
-				'src' => 'https://player.vimeo.com/video/789006133?' . $src_query_string,
+				'src' => $src_base . $video_id . $src_query_string,
 			);
-			// https://player.vimeo.com/video/789006133?h=82e9bae2d0&title=0&byline=0&portrait=0
-			// src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
-			// allowfullscreen
-			// allowtransparency
-			// allow="autoplay"
 		}
 		if ( ! empty( $attributes['bgImg'] ) ) {
 			$video_args['poster'] = $attributes['bgImg'];
@@ -1407,23 +1401,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// if ( 'local' == $attributes['backgroundVideoType'] ) {
-		if ( false ) {
+		if ( 'local' == $background_video_type ) {
 			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
 		} else {
-			//output a plyr container that can output the youtube video
-			//plyr_js'          => KADENCE_BLOCKS_URL . 'includes/assets/js/plyr.min.js
-			// <div class="plyr__video-embed" id="player">
-			// 	<iframe
-			// 		src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
-			// 		allowfullscreen
-			// 		allowtransparency
-			// 		allow="autoplay"
-			// 	></iframe>
-			// </div>
-
-			// <iframe src="https://player.vimeo.com/video/789006133?h=82e9bae2d0&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-			// 	<p><a href="https://vimeo.com/789006133">Ultromedia Please (Interactive)</a> from <a href="https://vimeo.com/blinkindustries">Blink Industries</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
-			$output = sprintf( '<div class="kb-blocks-bg-video-container"><iframe %1$s></iframe>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><iframe %1$s></iframe></div>', implode( ' ', $video_html_attributes ) );
 		}
 		return $output;
 	}

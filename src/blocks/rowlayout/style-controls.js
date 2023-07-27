@@ -848,7 +848,7 @@ import { __ } from '@wordpress/i18n';
 			) }
 			{ 'video' === backgroundSettingTab && (
 				<>
-					{/* <SelectControl
+					<SelectControl
 						label={ __( 'Background Video Type' ) }
 						options={ [
 							{
@@ -866,7 +866,7 @@ import { __ } from '@wordpress/i18n';
 						] }
 						value={ backgroundVideoType }
 						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-					/> */}
+					/>
 					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
 						<Fragment>
 							<KadenceVideoControl
@@ -895,11 +895,21 @@ import { __ } from '@wordpress/i18n';
 							/>
 						</Fragment>
 					) }
+					{ ( undefined !== backgroundVideoType && 'local' !== backgroundVideoType ) && (
+						<div class="components-base-control">Warning: Embedded videos are not ideal for background content. Consider self hosting instead.</div>
+					) }
 					{ 'youtube' === backgroundVideoType && (
 						<TextControl
-							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-							onChange={ value => saveVideoSettings( { youtube: value } ) }
+							label={ __( 'YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youTube ? backgroundVideo[ 0 ].youTube : '' ) }
+							onChange={ value => saveVideoSettings( { youTube: value } ) }
+						/>
+					) }
+					{ 'vimeo' === backgroundVideoType && (
+						<TextControl
+							label={ __( 'Vimeo ID ( example: 789006133 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].vimeo ? backgroundVideo[ 0 ].vimeo : '' ) }
+							onChange={ value => saveVideoSettings( { vimeo: value } ) }
 						/>
 					) }
 					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
@@ -933,11 +943,13 @@ import { __ } from '@wordpress/i18n';
 						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
 						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
 					/>
-					<ToggleControl
-						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-					/>
+					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+						<ToggleControl
+							label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+							checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+							onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+						/>
+					) }
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
 						value={ ( bgColor ? bgColor : '' ) }
