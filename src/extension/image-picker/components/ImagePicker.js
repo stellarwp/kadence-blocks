@@ -95,7 +95,6 @@ export default function ImagePicker(props) {
 	 */
 	function handleSearch( query ) {
 		if ( query && ! isLoading ) {
-            setImagePickerSelection( 0 );
 			getImageDataSearch( provider, imagePickerResults, query, setImagePickerResults, setIsLoading );
 		}
 	}
