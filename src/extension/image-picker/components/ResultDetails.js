@@ -2,12 +2,11 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, Fragment } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
-import { TextareaControl } from '@wordpress/components';
-import { Button } from "@wordpress/components";
-import {
-	download as DownloadIcon,
-	check as CheckIcon
-} from "@wordpress/icons";
+import { 
+    TextareaControl,
+    __experimentalInputControl as InputControl,
+    Button
+} from '@wordpress/components';
 
 /**
  * Render the Result Details component.
@@ -21,6 +20,9 @@ export default function Result(props) {
 	const {
 		url,
 		alt,
+		height,
+		width,
+		id,
 		avg_color,
 		photographer,
 		sizes,
@@ -30,6 +32,7 @@ export default function Result(props) {
     const [downloadComplete, setDownloadComplete] = useState( false );
     const [isDownloading, setIsDownloading] = useState( false );
     const [altValue, setAltValue] = useState( alt );
+    const [filenameValue, setFilenameValue] = useState( '' );
 
 	const { imagePickerDownloadedImages } = useSelect(
         ( select ) => {
@@ -51,9 +54,10 @@ export default function Result(props) {
     // sync the state values with the current result
 	useEffect( () => {
         setAltValue( alt );
+        setFilenameValue('');
 	}, [ alt ] );
 
-    const resultData = { ...result, ...{ alt: altValue } }
+    const resultData = { ...result, ...{ alt: altValue }, ...{ filename: filenameValue } }
     const downloadedText = downloadComplete ? __('Download Complete') : __('Download Image');
 
     if ( result && sizes ) {
@@ -67,9 +71,17 @@ export default function Result(props) {
                             <label class="result-detail-label" for="result-detail-photographer">{ __( 'Photographer:' ) }</label>
                             <div class="result-detail-value" id="result-detail-photographer"><a href={photographer_url} target="_blank">{photographer}</a></div>
                         </div>
+                        <div class="result-detail" data-setting="filename">
+                            <label class="result-detail-label" for="result-detail-filename" >{ __( 'Filename:' ) }</label>
+                            <InputControl
+                                id={'result-detail-filename'}
+                                placeholder={__('Optional filename', 'kadence_blocks')}
+                                value={ filenameValue }
+                                onChange={ ( value ) => setFilenameValue( value ?? '' ) }
+                            />
+                        </div>
                         <div class="result-detail" data-setting="alt">
                             <label class="result-detail-label" for="result-detail-alt" >{ __( 'Alt:' ) }</label>
-                            {/* <textarea class="result-detail-value" id="result-detail-alt" value={alt} rows="4" /> */}
                             <TextareaControl
                                 id={'result-detail-alt'}
                                 placeholder={__('Enter image alt', 'kadence_blocks')}

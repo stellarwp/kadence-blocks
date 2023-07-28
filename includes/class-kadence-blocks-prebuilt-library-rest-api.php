@@ -464,7 +464,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			foreach ( $images as $image_data ) {
 				$image = array();
 				$image['url'] = $this->get_src_from_image_data( $image_data );
-				$image['id'] = 0;
+				$image['id'] = $image_data['id'];
+				$image['filename'] = $image_data['filename'] ?? '';
 				$image['alt']  = $image_data['alt'];
 				$image['photographer']  = $image_data['photographer'];
 				$image['photographer_url']  = $image_data['photographer_url'];
@@ -1670,6 +1671,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		return array();
 	}
 	/**
+	 * Sanitizes a string for a filename.
+	 *
+	 * @param string $filename The filename.
+	 * @return string a sanitized filename.
+	 */
+	public function sanitize_jpeg_filename( $filename ) {
+		return preg_replace( '/[^a-zA-Z0-9_-]+/', '-', strtolower( $filename ) ) . '.jpeg';
+	}
+	/**
 	 * Sanitizes an array of sizes.
 	 *
 	 * @param array    $sizes One or more size arrays.
@@ -1714,6 +1724,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
 			$filename = basename( $image_path );
 		}
+		// Custom filename if passed as data.
+		$filename = isset( $image_data['filename'] ) && $image_data['filename'] ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
+
 		$upload = wp_upload_bits( $filename, null, $file_content );
 		$post = array(
 			'post_title' => ( ! empty( $image_data['title'] ) ? $image_data['title'] : $filename ),
