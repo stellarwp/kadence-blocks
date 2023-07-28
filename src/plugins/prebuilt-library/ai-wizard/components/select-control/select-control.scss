@@ -1,52 +1,44 @@
+@import '../../scss/variables.scss';
 @import '../../scss/mixins.scss';
 
 .stellarwp.components-select-control {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8px);
+
 	label.components-input-control__label {
 		@include input_label;
+
+		margin-bottom: 0;
 	}
 
-	select.components-select-control__input {
-		padding-left: 16px;
-		height: 40px;
-		font-size: 16px;
-		box-shadow: none;
-		outline: none;
-	}
+	.stellarwp-select__single-value + div,
+	.stellarwp-select + div {
+    margin: 0 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+}
 
-	.components-input-control__suffix .components-input-control-suffix-wrapper {
-		padding-right: 16px;
+.stellarwp-select__menu {
+	.stellarwp-select__option {
+		padding-left: 18px;
+		padding-right: 18px;
 
-		svg {
-			width: 22px;
-			height: 22px;
+		&.stellarwp-select__option--is-selected {
+			background-color: $color-primary;
 		}
 	}
 
-	.components-input-control__container {
-		.components-input-control__backdrop {
-			border-width: 1px;
-			border-style: solid;
-			border-color: $color-gray-300;
-			border-radius: 4px;
-			box-shadow: none;
+	.stellarwp-select__group {
+		.stellarwp-select__option {
+			padding-left: 24px;
 		}
 	}
 
-	&.is-focused .components-input-control__backdrop {
-		border-color: $color-black;
-	}
-
-	.components-select-control__refresh {
-		position: absolute;
-		right: 0;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		padding: 10px;
-		cursor: pointer;
-
-		&.is-loading {
-			cursor: default;
-		}
+	.stellarwp-select__group-heading {
+		padding-left: 18px;
+		padding-right: 18px;
 	}
 }
+

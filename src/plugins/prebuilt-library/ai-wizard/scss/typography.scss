@@ -15,6 +15,14 @@
 	line-height: 1.25;
 }
 
+.stellarwp-h2 {
+	margin-bottom: 8px;
+	font-family: $fonts-system;
+	font-weight: 600;
+	font-size: 22px;
+	line-height: 1.25;
+}
+
 .stellarwp-body {
 	@include stellarwp_font_base;
 
@@ -25,6 +33,14 @@
 			margin-bottom: 0;
 		}
 	}
+
+	.stellarwp-small {
+		font-size: 12px;
+	}
+
+	.stellarwp-disabled {
+		color: $color-disabled;
+	}
 }
 
 .stellarwp-p {
@@ -33,6 +49,7 @@
 	margin-top: 0;
 	margin-bottom: 24px;
 }
+
 
 .stellarwp-ul {
 	@include stellarwp_font_base;

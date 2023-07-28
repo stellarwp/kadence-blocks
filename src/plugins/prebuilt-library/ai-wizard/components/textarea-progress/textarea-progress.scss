@@ -1,0 +1,17 @@
+@import '../../scss/mixins.scss';
+
+.stellarwp-textarea-progress {
+  @include input_base;
+  padding: 0;
+
+  .stellarwp.components-base-control .components-textarea-control__input {
+	  border: none;
+	  resize: none;
+	}
+
+	.stellarwp-progress-bar {
+		padding: 12px;
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+}

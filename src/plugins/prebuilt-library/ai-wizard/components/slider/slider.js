@@ -1,34 +1,19 @@
 /**
  * External dependencies
  */
-import ReactSlidy from 'react-slidy'
+import ReactSlidy from 'react-slidy';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
  */
-import { Dashicon, __experimentalText as Text } from '@wordpress/components';
+import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import img1 from '../../assets/sample-content-1.jpg';
-import img2 from '../../assets/sample-content-2.jpg';
-import img3 from '../../assets/sample-content-3.jpg';
 import './slider.scss';
-
-const styles = {
-	img: {
-		height: 'clamp(400px, 600px, 60vh)',
-		width: 'auto',
-		aspectRation: '11/15'
-	},
-	sliderContent: {
-		color: '#FFFFFF',
-		display: 'block',
-		marginBottom: 24
-	}
-}
 
 function CustomArrow({icon, ...props}) {
   return (
@@ -48,22 +33,42 @@ function CustomArrowRight(props) {
   return <CustomArrow { ...props } icon="arrow-right-alt2" />
 }
 
-export function Slider() {
+export function Slider(props) {
+	const {
+		slides = [],
+		text,
+		backgroundImage,
+		doAfterSlide = () => {},
+		doBeforeSlide = () => {}
+	} = props;
+
+	if (! slides.length) {
+		return;
+	}
+
+	const sliderClasses = classnames('stellarwp-slider', {
+		'has-background': backgroundImage,
+	})
+
 	return (
-		<>
-			<Text align="center" style={ styles.sliderContent }>
-				{ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-			</Text>
+		<div className={ sliderClasses } style={{ backgroundImage: `url(${ backgroundImage })` }}>
+			{ text ? (
+				<span className="stellarwp-slider__text" align="center">
+					{ text }
+				</span>
+			) : null }
 			<ReactSlidy
 				infiniteLoop
 				ArrowLeft={ CustomArrowLeft }
 				ArrowRight={ CustomArrowRight }
+				doAfterSlide={ doAfterSlide }
+				doBeforeSlide={ doBeforeSlide }
 			>
-				<img style={ styles.img } src={ img1 }	/>
-				<img style={ styles.img } src={ img2 }	/>
-				<img style={ styles.img } src={ img3 }	/>
+				{
+					slides.map((slide) => slide )
+				}
 			</ReactSlidy>
-		</>
+		</div>
 	);
 }
 

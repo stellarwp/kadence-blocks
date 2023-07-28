@@ -1,26 +1,31 @@
 /**
  * WordPress dependencies
  */
-import {
-	Flex,
-	FlexBlock,
-	FlexItem,
-	__experimentalVStack as VStack,
-	__experimentalDivider as Divider
-} from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { useEffect, useState } from '@wordpress/element';
+import { Flex, FlexBlock } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import {
-	ChipsInput,
-	SelectControl,
+  FormSection,
 	Slider,
-	TextareaControl
+	TextareaProgress
 } from '../components';
+import {
+	Education4All,
+	HealingTouch,
+	Prospera,
+	SpencerSharp
+} from './slides/about-your-site';
+import {
+	ENTITY_TYPE_INDIVIDUAL,
+	MISSION_STATEMENT_STATUS,
+	MISSION_STATEMENT_GOAL,
+	INDUSTRY_BACKGROUNDS
+} from '../constants';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import { CONTENT_TONE } from '../constants';
 
 const styles = {
 	container: {
@@ -30,24 +35,58 @@ const styles = {
 		maxWidth: 640,
 		marginLeft: 'auto' 
 	},
+	rightContent: {
+		marginRight: 32,
+		height: '100%',
+		display: 'flex',
+		flexDirection: 'column',
+	},
 	formWrapper: {
-		maxWidth: 380,
+		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	},
-	rightContent: {
-		backgroundColor: '#000000',
-	},
+	}
 }
 
+const content = __( 'Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.', 'kadence-blocks' );
+const titlePartial = {
+	'COMPANY': ` ${ __( 'business', 'kadence-blocks' ) }`,
+	'INDIVIDUAL': __( 'self', 'kadence-blocks' ),
+	'ORGANIZATION': ` ${ __( 'organization', 'kadence-blocks' ) }`
+};
+
 export function AboutYourSite() {
+	const [ indicator, setIndicator ] = useState();
+	const [ progress, setProgress ] = useState(0);
+	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
-	const maxTags = 10;
-	const {
-		missionStatement,
-		keywords,
-		tone
-	} = state;
+	const { missionStatement, entityType, companyName } = state;
+	const title = sprintf( __( 'Tell us about your%s', 'kadence-blocks' ), titlePartial[ entityType ]);
+
+	useEffect(() => {
+		const progress = Math.round((missionStatement.length/MISSION_STATEMENT_GOAL) * 100);
+		const statementProgress = progress >= 100 ? 100 : progress;
+
+		if (statementProgress < 50) {
+			setIndicator('weak')	
+		}
+		if (statementProgress >= 50) {
+			setIndicator('medium')	
+		}
+		if (statementProgress == 100) {
+			setIndicator('strong')	
+		}
+
+		setProgress( statementProgress );
+	}, [ missionStatement ])
+
+	function getPlaceholderText() {
+		if (entityType === ENTITY_TYPE_INDIVIDUAL) {
+			return sprintf( __( 'I am %s, a...', 'kadence-blocks' ), companyName );
+		}
+
+		return sprintf( __( '%s is a...', 'kadence-blocks' ), companyName );
+	}
 
 	return (
 		<Flex gap={ 0 } align="normal" style={ styles.container }>
@@ -57,57 +96,41 @@ export function AboutYourSite() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<VStack spacing={ 6 } style={{ margin: '0 auto' }}>
-							<TextareaControl
-								label={ __('About Me/My Organization/My Project', 'kadence-blocks') }
-								placeholder="..."
+						<FormSection
+							headline={ title }
+							content={ content }
+						>
+							<TextareaProgress
+								hideLabelFromVision
+								label={ title }
+								placeholder={ getPlaceholderText() }
 								value={ missionStatement }
 								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
+								showProgressBar={ missionStatement && missionStatement.length > 0 }
+								progressBarProps={{
+									value: progress,
+									color: MISSION_STATEMENT_STATUS?.[ indicator ]?.color ? MISSION_STATEMENT_STATUS[ indicator ].color : 'red',
+									message: MISSION_STATEMENT_STATUS?.[ indicator ]?.message ? MISSION_STATEMENT_STATUS[ indicator ].message : ''
+								}}
 							/>
-							<ChipsInput
-								id="2"
-								label={ __('Keywords', 'kadence-blocks') }
-								placeholder="..."
-								tags={ keywords }
-								maxTags={ maxTags }
-								selectedTags={ (selectedTags) => dispatch({ type: 'SET_KEYWORDS', payload: selectedTags }) }
-								help={
-									<>
-										<Flex>{ __('Separate with commas or the Enter key.', 'kadence-blocks') }</Flex>
-										<Flex>
-											<FlexBlock>{ __('Enter between 5 and 10 keywords', 'kadence-blocks') }</FlexBlock>
-											<FlexItem>{ `${ keywords.length }/${ maxTags }`}</FlexItem>
-										</Flex>
-									</>
-								}
-							/>
-						 	<SelectControl
-								label={ __('Tone', 'kadence-blocks') }
-								value={ tone }
-								onChange={ (value) => dispatch({ type: 'SET_TONE', payload: value }) }
-								options={ [
-									...[{
-										value: '',
-										label: __('Select...', 'kadence-blocks'),
-										disabled: true
-									}],
-									...CONTENT_TONE
-								] }
-							/>
-							<Divider style={ { borderBottomColor: '#DFDFDF', marginBottom: 10 } } />
-							<p>
-								{
-									__( 'Our content is generated using a custom integration with OpenAI. Please double-check everything before publishing to avoid any unintended language. Happy creating!', 'kadence-blocks' )
-								}
-							</p>
-						</VStack>
+						</FormSection>
 					</FlexBlock>
-			</Flex>
+				</Flex>
 			</FlexBlock>
-			<FlexBlock display="flex" style={ styles.rightContent }>
-				<Flex justify="center" align="center">
-					<FlexBlock>
-						<Slider />
+			<FlexBlock display="flex">
+				<Flex justify="center">
+					<FlexBlock style={ styles.rightContent }>
+						<Slider
+							backgroundImage={ INDUSTRY_BACKGROUNDS[ backgroundImage ] }
+							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
+							doBeforeSlide={ (data) => setBackgroundImage( data.nextSlide ) }
+							slides={[
+								<HealingTouch />,
+								<SpencerSharp />,
+								<Prospera />,
+								<Education4All />
+							]}
+						/>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>

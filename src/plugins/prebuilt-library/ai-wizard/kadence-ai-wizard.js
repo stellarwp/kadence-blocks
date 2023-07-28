@@ -1,8 +1,14 @@
 /**
+ * Wordpress dependencies
+ */
+
+import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { Wizard, KadenceK } from './components';
-import { HowItWorks, IndustryInformation, AboutYourSite, Photography } from './pages';
+import { HowItWorks, IndustryInformation, AboutYourSite, TheDetails, Photography } from './pages';
 import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
 import { useDatabase } from './hooks/use-database';
@@ -18,13 +24,19 @@ const pages = [
 		id: 'industry-information',
 		content: <IndustryInformation />,
 		step: 'Industry Information',
-		required: ['entityType', 'companyName', 'location', 'industry', 'industrySpecific', 'industryOther']
+		required: ['entityType', 'companyName', 'location', 'industry']
 	},
 	{
 		id: 'about-your-site',
 		content: <AboutYourSite />,
 		step: 'About Your Site',
-		required: ['missionStatement', 'keywords', 'tone']
+		required: ['missionStatement']
+	},
+	{
+		id: 'the-details',
+		content: <TheDetails />,
+		step: 'The Details',
+		required: ['keywords', 'tone']
 	},
 	{
 		id: 'photography',
@@ -44,67 +56,83 @@ function getPages(photographyOnly) {
 	return ! firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
 }
 
-export function KadenceAiWizard({ loading, handleWizardClose, photographyOnly }) {
+export function KadenceAiWizard( props ) {
+	const {
+		loading,
+		onWizardClose,
+		onPrimaryAction,
+		photographyOnly
+	} = props;
+
 	const { state, dispatch } = useKadenceAi();
+	const {
+		firstTime,
+		isSubmitted,
+		currentPageIndex,
+		saving,
+		saveError,
+		...rest
+	} = state;
+
 	const {
 		isForwardButtonDisabled,
 		isFinishButtonDisabled
 	} = useAiWizardHelper(state, getPages(photographyOnly));
 	const { saveAiWizardData } = useDatabase();
 
-	async function handleOnFinish(event) {
+	async function handleSave() {
+		const saveStatus = await saveAiWizardData({
+			firstTime: false,
+			isSubmitted: true,
+			...rest
+		});
+
+		if (saveStatus) {
+			onWizardClose();
+		}
+	}
+
+	function handleOnPrimaryClick(event) {
 		// No action on blur or escape keydown.
 		if (event.type === 'blur' || (event.keyCode === 27 && event.type === 'keydown')) {
 			return;
 		}
 
 		// Submit wizard data on finish buttton click.
-		if (event.type === 'click' && event.target.classList.contains('components-wizard__finish-button')) {
-			dispatch({ type: 'SET_SAVING', payload: true });
-
-			const {
-				firstTime,
-				saving,
-				saveError,
-				...rest
-			} = state;
-
-			const saveStatus = await saveAiWizardData({
-				firstTime: false,
-				...rest
-			});
-
-			if (saveStatus) {
-				dispatch({ type: 'SET_SAVING', payload: false });
-				handleWizardClose(false);
-
-				return;
+		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
+			handleSave();
+			
+			if (! photographyOnly) {
+				onPrimaryAction(event, true);
 			}
-		} else if (event.type === 'click' && event.target.classList.contains('components-wizard__finish-build-button')) {
-			dispatch({ type: 'SET_SAVING', payload: true });
 
-			const {
-				firstTime,
-				saving,
-				saveError,
-				...rest
-			} = state;
+			return;
+		}
 
-			const saveStatus = await saveAiWizardData({
-				firstTime: false,
-				...rest
-			});
+		onWizardClose();
+	}
+	
+	function handleOnSecondaryClick(event) {
+		// No action on blur or escape keydown.
+		if (event.type === 'blur' || (event.keyCode === 27 && event.type === 'keydown')) {
+			return;
+		}
 
-			if (saveStatus) {
-				dispatch({ type: 'SET_SAVING', payload: false });
-				handleWizardClose(true);
-
-				return;
-			}
+		// Submit wizard data on finish buttton click.
+		if (event.type === 'click' && event.target.classList.contains('components-wizard__secondary-button')) {
+			handleSave();
 		}
 	
-		// Close wizard.
-		handleWizardClose(false);
+		onWizardClose();
+	}
+
+	function handleOnClose(event) {
+		// No action on blur or escape keydown.
+		if (event.type === 'blur' || (event.keyCode === 27 && event.type === 'keydown')) {
+			return;
+		}
+
+		return onWizardClose();
 	}
 
 	if (loading) {
@@ -113,13 +141,17 @@ export function KadenceAiWizard({ loading, handleWizardClose, photographyOnly })
 
 	return (
 		<Wizard
+			isFirstTime={ firstTime }
 			logo={ <KadenceK /> }
 			pages={ getPages(photographyOnly) }
 			forwardButtonDisabled={ isForwardButtonDisabled() }
-			finishButtonDisabled={ isFinishButtonDisabled() }
 			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
-			onFinish={ (event) => handleOnFinish(event) }
-			photographyOnly={ photographyOnly }
+			onClose={ handleOnClose }
+			onPrimaryClick={ handleOnPrimaryClick }
+			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate Content', 'kadence-blocks' ) }
+			primaryButtonDisabled={ isFinishButtonDisabled() }
+			onSecondaryClick={ isSubmitted && ! photographyOnly ? handleOnSecondaryClick : null }
+			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }
 		/>
 	)
 }
