@@ -155,6 +155,9 @@ import { getSpacingOptionOutput } from './utils';
 						{ ( 'youtube' === backgroundVideoType ) && (
 							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
 						) }
+						{ ( 'vimeo' === backgroundVideoType ) && (
+							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://vumbnail.com/${ backgroundVideo[ 0 ].vimeo }.jpg)` } }></div>
+						) }
 					</div>
 				) }
 				{ children }

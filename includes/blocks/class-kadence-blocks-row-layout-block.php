@@ -1323,20 +1323,47 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes for the block.
 	 */
 	public function get_video_render( $attributes ) {
-		if ( empty( $attributes['backgroundVideo'][0]['local'] ) ) {
+		if ( empty( $attributes['backgroundVideo'][0]['local'] ) && empty( $attributes['backgroundVideo'][0]['vimeo'] ) && empty( $attributes['backgroundVideo'][0]['youtube'] ) ) {
 			return '';
 		}
 		$output = '';
 		$video_attributes = $attributes['backgroundVideo'][0];
+		$background_video_type = isset( $attributes['backgroundVideoType'] ) && $attributes['backgroundVideoType'] ? $attributes['backgroundVideoType'] : 'local';
 		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
-		$video_args = array(
-			'class' => 'kb-blocks-bg-video',
-			'id' => 'bg-row-video-' . $attributes['uniqueID'],
-			'playsinline' => '',
-			'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
-			'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
-			'src' => $video_attributes['local'],
-		);
+
+		if ( 'local' == $background_video_type ) {
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video',
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'playsinline' => '',
+				'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
+				'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
+				'src' => $video_attributes['local'],
+			);
+		} else {
+			// Vimeo and youtube share a bunch of params, that's convienent.
+			$src_query_string = '?' . http_build_query(
+				array(
+					'autoplay' => 1,
+					'controls' => 0,
+					'mute' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 0 : 1 ),
+					'disablekb' => 1,
+					'modestbranding' => 1,
+					'playsinline' => 1,
+					'rel' => 0,
+				)
+			);
+			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
+			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
+
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video ' . $background_video_type,
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'src' => $src_base . $video_id . $src_query_string,
+			);
+		}
 		if ( ! empty( $attributes['bgImg'] ) ) {
 			$video_args['poster'] = $attributes['bgImg'];
 		}
@@ -1373,7 +1400,12 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$btns_output .= '</div>';
 		}
 
-		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		// if ( 'local' == $attributes['backgroundVideoType'] ) {
+		if ( 'local' == $background_video_type ) {
+			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		} else {
+			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><iframe %1$s></iframe></div>', implode( ' ', $video_html_attributes ) );
+		}
 		return $output;
 	}
 	/**
