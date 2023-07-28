@@ -19,7 +19,8 @@ export function AiWizard( {
 	photographyOnly = false,
 	onClose,
 	onPrimaryAction,
-	onSecondaryAction
+	onSecondaryAction,
+	credits = '',
 } ) {
 	const [ wizardData, setWizardData ] = useState();
 	const { loading, getAiWizardData } = useDatabase();
@@ -51,6 +52,7 @@ export function AiWizard( {
 						onPrimaryAction={ onPrimaryAction }
 						onSecondaryAction={ onSecondaryAction }
 						photographyOnly={ photographyOnly }
+						credits={ credits }
 					/>
 				</KadenceAiProvider>
 			) }

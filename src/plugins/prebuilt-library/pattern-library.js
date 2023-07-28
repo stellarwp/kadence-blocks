@@ -95,6 +95,7 @@ function PatternLibrary( {
 	const [ pages, setPages ] = useState( false );
 	const [ aiContent, setAIContent ] = useState( {} );
 	const [ context, setContext ] = useState( '' );
+	const [ credits, setCredits ] = useState( '' );
 	const [ contextTab, setContextTab ] = useState( '' );
 	const [ aIUserData, setAIUserData ] = useState( false );
 	const [ localContexts, setLocalContexts ] = useState( false );
@@ -208,6 +209,8 @@ function PatternLibrary( {
 	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
 	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
 	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'value-prop' );
+	const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
+	const currentCredits = ( '' !== credits ? credits : savedCredits );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
 	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
 	const selectedPageStyles = ( pageStyles ? pageStyles : savedSelectedPageStyles );
@@ -252,7 +255,7 @@ function PatternLibrary( {
 
 		setPageStyles( activePageStyles );
 	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getAvailableCredits } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
@@ -390,9 +393,11 @@ function PatternLibrary( {
 			setTimeout( () => {
 				getAIContent( tempContext, true );
 			}, 1000 );
+			getRemoteAvailableCredits();
 		} else if ( response === 'credits' ) {
 			console.log( 'Error not enough credits to reload.' );
 			updateContextState( tempContext, false );
+			getRemoteAvailableCredits();
 		} else {
 			console.log( 'Error getting New AI Job.' );
 			updateContext( tempContext, 'failed' );
@@ -400,6 +405,7 @@ function PatternLibrary( {
 				forceRefreshLibrary();
 			}, 500 );
 			updateContextState( tempContext, false );
+			getRemoteAvailableCredits();
 		}
 	}
 
@@ -460,6 +466,7 @@ function PatternLibrary( {
 					getAIContent( key, true );
 				}, 1000 + ( index * 50 ) );
 			});
+			getRemoteAvailableCredits();
 			setIsLoading( false );
 		}
 	}
@@ -505,8 +512,26 @@ function PatternLibrary( {
 			setLocalContexts( localPrompts );
 		}
 	}
+	async function getRemoteAvailableCredits() {
+		const response = await getAvailableCredits();
+		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		console.log( response );
+		if ( response === 'error' ) {
+			console.log( 'Error getting credits' );
+			tempActiveStorage['credits'] = 'fetch';
+			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+			setCredits(0);
+		} else {
+			tempActiveStorage['credits'] = parseInt( response );
+			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+			setCredits( parseInt( response ) );
+		}
+	}
 	useEffect(() => {
 		getAIUserData();
+		if ( currentCredits === 'fetch' ) {
+			getRemoteAvailableCredits();
+		}
 	}, [aiDataState]);
 	useEffect(() => {
 		if ( aIUserData && ! hasInitialAI ) {
@@ -618,6 +643,7 @@ function PatternLibrary( {
 										text={ __('Update My Information', 'kadence-blocks') }
 										onClick={ () => {
 											setIsVisible( false );
+											getRemoteAvailableCredits();
 											setWizardState( {
 												visible: true,
 												photographyOnly: false
@@ -669,6 +695,7 @@ function PatternLibrary( {
 									onClose={ closeAiWizard }
 									onPrimaryAction={ handleAiWizardPrimaryAction }
 									photographyOnly={ wizardState.photographyOnly }
+									credits={ currentCredits }
 								/>
 							) }
 						</div>
@@ -877,6 +904,7 @@ function PatternLibrary( {
 																	anchor={ popoverContextAnchor }
 																>
 																	<p>{__('You can regenerate ai content for this context. This will use one credit and your current ai text will be forever lost. Would you like to regenerate ai content for this context?', 'kadence-blocks')}</p>
+																	<div className='kt-remaining-credits'>{ currentCredits } { __( 'Credits Remaining', 'kadence-blocks' ) }</div>
 																	<Button
 																		variant='primary'
 																		icon={ aiIcon }
