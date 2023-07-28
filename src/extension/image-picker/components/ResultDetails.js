@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, Fragment } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
 import { TextareaControl } from '@wordpress/components';
 import { Button } from "@wordpress/components";
@@ -30,9 +31,20 @@ export default function Result(props) {
     const [isDownloading, setIsDownloading] = useState( false );
     const [altValue, setAltValue] = useState( alt );
 
+	const { imagePickerDownloadedImages } = useSelect(
+        ( select ) => {
+            const imagePickerDownloadedImages = typeof select( 'kadenceblocks/data' ).getImagePickerDownloadedImages === "function" ? select( 'kadenceblocks/data' ).getImagePickerDownloadedImages() : '';
+            return {
+                imagePickerDownloadedImages: imagePickerDownloadedImages,
+            };
+        },
+        []
+    );
+	const { setImagePickerDownloadedImages } = useDispatch( 'kadenceblocks/data' );
+
     const handleDownload = () => {
 		if ( ! isDownloading ) {
-			downloadToMediaLibrary(resultData, setIsDownloading, setDownloadComplete)
+			downloadToMediaLibrary(resultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
 		}
 	}
 

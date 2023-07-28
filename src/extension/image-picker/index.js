@@ -9,8 +9,9 @@ import { deleteSession, getSession, saveSession } from "./functions/session";
 import { __ } from '@wordpress/i18n';
 
 // Global vars
-let activeFrameId = "";
-let activeFrame = "";
+let kadenceActiveFrameId = "";
+let kadenceActiveFrame = "";
+window.kadenceImagePickerQuery = "";
 
 // Load MediaFrame deps
 const oldMediaFrame = wp.media.view.MediaFrame.Post;
@@ -42,8 +43,8 @@ wp.media.view.MediaFrame.Select = oldMediaFrameSelect.extend({
 		const state = this.state();
 		// Get active frame
 		if (state) {
-			activeFrameId = state.id;
-			activeFrame = state.frame.el;
+			kadenceActiveFrameId = state.id;
+			kadenceActiveFrame = state.frame.el;
 		}
 	},
 
@@ -82,8 +83,8 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 		const state = this.state();
 		// Get active frame
 		if (state) {
-			activeFrameId = state.id;
-			activeFrame = state.frame.el;
+			kadenceActiveFrameId = state.id;
+			kadenceActiveFrame = state.frame.el;
 		}
 	},
 
@@ -94,11 +95,11 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
 
 // Render Image Picker
 const imagePickerMediaTab = () => {
-	if (!activeFrame) {
+	if (!kadenceActiveFrame) {
 		return false; // Exit if not a frame.
 	}
 
-	const modal = activeFrame.querySelector(".media-frame-content"); // Get all media modals
+	const modal = kadenceActiveFrame.querySelector(".media-frame-content"); // Get all media modals
 	if (!modal) {
 		return false; // Exit if not modal.
 	}
@@ -109,7 +110,7 @@ const imagePickerMediaTab = () => {
 	modal.appendChild(html); // Append Image Picker to modal.
 
 	const element = modal.querySelector(
-		"#kadence-blocks-image-picker-router-" + activeFrameId
+		"#kadence-blocks-image-picker-router-" + kadenceActiveFrameId
 	);
 	if (!element) {
 		return false; // Exit if not element.
@@ -203,7 +204,7 @@ const createWrapperHTML = () => {
 
 	const frame = document.createElement("div");
 	frame.classList.add("kadence-blocks-image-picker-router");
-	frame.setAttribute("id", "kadence-blocks-image-picker-router-" + activeFrameId);
+	frame.setAttribute("id", "kadence-blocks-image-picker-router-" + kadenceActiveFrameId);
 
 	container.appendChild(frame);
 	wrapper.appendChild(container);
@@ -216,10 +217,10 @@ jQuery(document).ready(function ($) {
 	if (wp.media) {
 		// Open
 		wp.media.view.Modal.prototype.on("open", function () {
-			if (!activeFrame) {
+			if (!kadenceActiveFrame) {
 				return false;
 			}
-			const selectedTab = activeFrame.querySelector(
+			const selectedTab = kadenceActiveFrame.querySelector(
 				".media-router button.media-menu-item.active"
 			);
 			if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
@@ -232,7 +233,7 @@ jQuery(document).ready(function ($) {
 			"click",
 			".media-router button.media-menu-item",
 			function () {
-				const selectedTab = activeFrame.querySelector(
+				const selectedTab = kadenceActiveFrame.querySelector(
 					".media-router button.media-menu-item.active"
 				);
 				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {

@@ -5,6 +5,7 @@ import {
 	check as CheckIcon
 } from "@wordpress/icons";
 import { useState } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
 import { __ } from '@wordpress/i18n';
 
@@ -34,6 +35,17 @@ export default function Result(props) {
 
     const [downloadComplete, setDownloadComplete] = useState( false );
     const [isDownloading, setIsDownloading] = useState( false );
+	
+	const { imagePickerDownloadedImages } = useSelect(
+        ( select ) => {
+            const imagePickerDownloadedImages = typeof select( 'kadenceblocks/data' ).getImagePickerDownloadedImages === "function" ? select( 'kadenceblocks/data' ).getImagePickerDownloadedImages() : '';
+            return {
+                imagePickerDownloadedImages: imagePickerDownloadedImages,
+            };
+        },
+        []
+    );
+	const { setImagePickerDownloadedImages } = useDispatch( 'kadenceblocks/data' );
 
 	const handleOnFocus = () => {
 		setCurrentUserSelectionIndex( index );
@@ -49,7 +61,7 @@ export default function Result(props) {
 
 	const handleDownload = () => {
 		if ( ! isDownloading ) {
-			downloadToMediaLibrary(result, setIsDownloading, setDownloadComplete)
+			downloadToMediaLibrary(result, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages)
 		}
 	}
 
