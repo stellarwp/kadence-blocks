@@ -30,9 +30,10 @@ import { map } from 'lodash';
 export default function FormTitle( {
 		setTitle,
 		isAdding,
+		existingTitle,
 		onAdd,
 	} ) {
-	const [ tmpTitle, setTmpTitle ] = useState( '' );
+	const [ tmpTitle, setTmpTitle ] = useState( existingTitle );
 	const [ initialDescription, setTmpDescription ] = useState( '' );
 	const [ wizardStep, setWizardStep ] = useState( 'start' );
 	const [ template, setTemplate ] = useState( '' );

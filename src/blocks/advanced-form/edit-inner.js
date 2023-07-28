@@ -443,12 +443,13 @@ export function EditInner( props ) {
 			renderAppender: formInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
-	if ( title === '' ) {
+	if ( formInnerBlocks.length === 0 ) {
 		return (
 			<>
 				<FormTitle
 					onAdd={ onAdd }
 					isAdding={ isAdding }
+					existingTitle={ title }
 				/>
 				<div className='kb-form-hide-while-setting-up'>
 					<div {...innerBlocksProps} />
