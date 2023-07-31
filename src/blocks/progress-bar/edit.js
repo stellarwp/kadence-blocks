@@ -494,7 +494,7 @@ export function Edit( props ) {
 						<KadencePanelBody
 							title={__( 'Number Settings', 'kadence-blocks' )}
 							initialOpen={true}
-							panelName={'kb-progress-percentage-settings'}
+							panelName={'kb-progress-number-settings'}
 						>
 							<ToggleControl
 								label={__( 'Show Number', 'kadence-blocks' )}
@@ -631,7 +631,7 @@ export function Edit( props ) {
 						<KadencePanelBody
 							title={__( 'Progress Color', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-progress-number-settings'}
+							panelName={'kb-progress-color'}
 						>
 							<PopColorControl
 								label={__( 'Progress Background', 'kadence-blocks' )}
@@ -653,7 +653,7 @@ export function Edit( props ) {
 								<KadencePanelBody
 									title={__( 'Text Styling', 'kadence-blocks' )}
 									initialOpen={false}
-									panelName={'kb-progress-text-settings'}
+									panelName={'kb-progress-text-styling'}
 								>
 									<PopColorControl
 										label={__( 'Color Settings', 'kadence-blocks' )}
@@ -727,7 +727,7 @@ export function Edit( props ) {
 						{displayPercent && ( <KadencePanelBody
 							title={__( 'Number Styling', 'kadence-blocks' )}
 							initialOpen={false}
-							panelName={'kb-progress-number-settings'}
+							panelName={'kb-progress-number-styling'}
 						>
 							<PopColorControl
 								label={__( 'Color Settings', 'kadence-blocks' )}
