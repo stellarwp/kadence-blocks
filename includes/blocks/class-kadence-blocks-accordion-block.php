@@ -99,10 +99,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				'mobile_key'  => 'paddingMobile',
 			);
 			$css->render_measure_output( $title_styles, 'padding', 'padding', $padding_args );
-			$css->set_selector( '.kt-accordion-wrap.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap' );
+			$css->set_selector( '.kt-accordion-wrap.kt-accordion-id' . $unique_id . ' > .kt-accordion-inner-wrap > .kt-accordion-pane > .kt-accordion-header-wrap' );
 			$css->render_range( $title_styles, 'marginTop', 'margin-top' );
 
-			// Override for Kadence Theme
+			// Override for Kadence Theme.
 			$css->set_selector( '.single-content .wp-block-kadence-pane>h2:first-child,
 			.single-content .wp-block-kadence-pane>h3:first-child,
 			.single-content .wp-block-kadence-pane>h4:first-child,

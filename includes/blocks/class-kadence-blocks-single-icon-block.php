@@ -82,7 +82,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_color_output( $attributes, 'background', 'background' );
 				$css->render_color_output( $attributes, 'border', 'border-color' );
 				$css->render_range( $attributes, 'borderWidth', 'border-width' );
-				$css->render_range( $attributes, 'borderRadius', 'border-radius' );
+				$css->render_range( $attributes, 'borderRadius', 'border-radius', '%' );
 				$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
 			}
 			$css->render_measure_output( $attributes, 'margin', 'margin', array( 'unit_key' => 'marginUnit' ) );

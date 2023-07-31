@@ -417,10 +417,14 @@
 	  "right"
 	],
 	"html": false,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow"
   ]
 }

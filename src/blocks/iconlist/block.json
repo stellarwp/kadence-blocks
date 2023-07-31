@@ -170,6 +170,18 @@
 	"style": {
 		"type": "string",
 		"default": "default"
+	},
+	"linkUnderline": {
+		"type": "string",
+		"default": "inherit"
+	},
+	"linkColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"linkHoverColor": {
+	  "type": "string",
+	  "default": ""
 	}
   },
   "providesContext": {
@@ -177,6 +189,7 @@
 	"kadence/listIconWidth": "width"
   },
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   }
 }

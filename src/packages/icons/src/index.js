@@ -45,11 +45,13 @@ export { default as video } from './video'
 export { default as gradient } from './gradient'
 export { default as brush } from './brush'
 export { default as hoverToggle } from './hover'
+export { default as duplicate } from './duplicate'
 export { default as copy } from './copy'
 export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
 export { default as dynamicIcon } from './dynamic';
+export { default as dynamic } from './dynamic';
 export { default as aiIcon } from './ai';
 export { default as aiSettings } from './ai-settings';
 
@@ -165,6 +167,26 @@ export { default as selectInputIcon } from './block-icons/advanced-form/select'
 export { default as textInputIcon } from './block-icons/advanced-form/text'
 export { default as textareaInputIcon } from './block-icons/advanced-form/textarea'
 export { default as timeInputIcon } from './block-icons/advanced-form/time'
+export { default as captchaIcon } from './captcha'
+export { 
+    formTemplateContactIcon,
+    formTemplateContactAdvancedIcon,
+    formTemplateContactInFieldIcon,
+    formTemplateContactDarkIcon,
+    formTemplateContactUnderlineIcon,
+    formTemplateSubscribeIcon,
+    formTemplateSubscribeAdvancedIcon,
+    formTemplateContactAdvancedDarkIcon,
+    formTemplateContactAdvancedUnderlineIcon,
+    formTemplateContactAdvancedInFieldIcon,
+    formTemplateSubscribeDarkIcon,
+    formTemplateSubscribeUnderlineIcon,
+    formTemplateSubscribeInFieldIcon,
+    formTemplateSubscribeAdvancedDarkIcon,
+    formTemplateSubscribeAdvancedUnderlineIcon,
+    formTemplateSubscribeAdvancedInFieldIcon,
+} from './block-icons/advanced-form/templates'
+
 
 // Pro Block Icons
 export { default as dynamicHTMLIcon } from './block-icons/dynamic-html'
@@ -191,3 +213,9 @@ export { default as tagsIcon } from './tags'
 export { default as userIcon } from './user'
 export { default as commentsIcon } from './comments'
 export { default as linkIcon } from './link'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
+export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'

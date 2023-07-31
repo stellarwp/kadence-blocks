@@ -219,7 +219,7 @@
 	filter: grayscale(0);
 }
 .kt-info-animate-flip, .kt-info-icon-animate-flip {
-	perspective: 1000;
+	perspective: 1000px;
 }
 .kt-blocks-info-box-link-wrap:hover .kt-info-animate-flip .kadence-info-box-image-inner-intrisic, .kt-blocks-info-box-link-wrap:hover .kt-info-icon-animate-flip .kadence-info-box-icon-inner-container {
 	transform: rotateY(180deg);

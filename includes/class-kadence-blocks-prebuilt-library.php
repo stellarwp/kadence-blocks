@@ -368,9 +368,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		if ( $this->local_file_exists() ) {
 			return false;
 		}
-		ob_start();
-		include $local_path;
-		return ob_get_clean();
+		return file_get_contents( $local_path );
 	}
 	/**
 	 * Get remote file contents.
@@ -1326,7 +1324,8 @@ class Kadence_Blocks_Prebuilt_Library {
 			if ( ! function_exists( 'WP_Filesystem' ) ) {
 				require_once wp_normalize_path( ABSPATH . '/wp-admin/includes/file.php' );
 			}
-			WP_Filesystem();
+			$wpfs_creds = apply_filters( 'kadence_wpfs_credentials', false );
+			WP_Filesystem( $wpfs_creds );
 		}
 		return $wp_filesystem;
 	}

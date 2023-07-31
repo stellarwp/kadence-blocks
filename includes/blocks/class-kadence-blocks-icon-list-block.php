@@ -175,6 +175,27 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'padding',  $attributes['padding'] . 'px' );
 			}
 		}
+
+		if( !empty( $attributes['linkUnderline']) && ( $attributes['linkUnderline'] === 'always' || $attributes['linkUnderline'] === 'none' ) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem>a' );
+			$css->add_property( 'text-decoration', $attributes['linkUnderline'] === 'always' ? 'underline' : 'none' );
+		}
+		if( !empty( $attributes['linkUnderline']) && $attributes['linkUnderline'] === 'hover' ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a' );
+			$css->add_property( 'text-decoration', 'none' );
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a:hover' );
+			$css->add_property( 'text-decoration', 'underline' );
+		}
+
+		if( !empty( $attributes['linkColor']) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a' );
+			$css->add_property('color', $attributes['linkColor'] );
+		}
+		if( !empty( $attributes['linkHoverColor']) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a:hover' );
+			$css->add_property('color', $attributes['linkHoverColor'] );
+		}
+
 		return $css->css_output();
 	}
 

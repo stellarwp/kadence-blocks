@@ -1,0 +1,31 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.kb-progress-label-wrap {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.kb-progress-bar-type-line .kt-progress-label-inside {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-55%)
+}
+
+.kb-progress-bar-type-circle .kt-progress-label-inside {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.kb-progress-bar-type-semicircle .kt-progress-label-inside {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}

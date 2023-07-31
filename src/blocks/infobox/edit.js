@@ -22,7 +22,7 @@ import {
 } from '@kadence/icons';
 import classnames from 'classnames';
 
-import { debounce, map, get } from 'lodash';
+import { debounce, map, get, has } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -63,7 +63,8 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
-	getFontSizeOptionOutput
+	getFontSizeOptionOutput,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -110,8 +111,8 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Build the overlay edit
  */
 
-function KadenceInfoBox( { attributes, className, setAttributes, isSelected, context, clientId, name } ) {
-
+function KadenceInfoBox( props ) {
+	const { attributes, className, setAttributes, isSelected, context, clientId, name } = props;
 	const {
 		uniqueID,
 		link,
@@ -202,12 +203,18 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -215,7 +222,8 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	useEffect( () => {
 		setBlockDefaults( 'kadence/infobox', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -305,7 +313,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 			contextPost = context.postId;
 		}
 		if ( kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', contextPost );
+			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'mediaImage:0:url', context );
 		}
 	};
 	const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
@@ -1084,11 +1092,21 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 	};
 	const onPaste = ( attributesToPaste ) => {
 		if ( attributesToPaste ) {
-			if ( attributesToPaste.mediaImage ) {
+			if ( attributesToPaste.mediaImage && has( attributesToPaste, [ 'mediaIcon', '0'] ) ) {
+				delete attributesToPaste.mediaImage[0].url;
+				delete attributesToPaste.mediaImage[0].id;
+				delete attributesToPaste.mediaImage[0].alt;
+				delete attributesToPaste.mediaImage[0].flipUrl;
+				delete attributesToPaste.mediaImage[0].flipId;
+				delete attributesToPaste.mediaImage[0].flipAlt;
+
 				saveMediaImage( attributesToPaste.mediaImage[ 0 ] );
 				delete attributesToPaste.mediaImage;
 			}
-			if ( attributesToPaste.mediaIcon ) {
+			if ( attributesToPaste.mediaIcon && has( attributesToPaste, [ 'mediaIcon', '0'] ) ) {
+				delete attributesToPaste.mediaIcon[0].icon;
+				delete attributesToPaste.mediaIcon[0].title;
+				delete attributesToPaste.mediaIcon[0].flipIcon;
 				saveMediaIcon( attributesToPaste.mediaIcon[ 0 ] );
 				delete attributesToPaste.mediaIcon;
 			}
@@ -1229,7 +1247,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, con
 		/>
 	</>;
 
-	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType', 'mediaImage', 'mediaIcon' ];
+	const nonTransAttrs = [ 'link', 'linkTitle', 'title', 'contentText', 'mediaType' ];
 
 	const blockProps = useBlockProps( {
 		className: classnames( className, {

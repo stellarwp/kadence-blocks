@@ -64,7 +64,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/* Load any Google fonts that are needed */
 		$attributes_with_fonts = array( 'titleFont', 'contentFont', 'nameFont', 'occupationFont' );
 		foreach ( $attributes_with_fonts as $attribute_font_key ) {
-			if ( isset( $attributes[ $attribute_font_key ][0] ) && isset( $attributes[ $attribute_font_key ][0]['google'] ) && ( ! isset( $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && true === $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && isset( $attributes[ $attribute_font_key ][0]['family'] ) ) {
+			if ( isset( $attributes[ $attribute_font_key ][0] ) && isset( $attributes[ $attribute_font_key ][0]['google'] ) && ( isset( $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && true === $attributes[ $attribute_font_key ][0]['loadGoogle'] ) && isset( $attributes[ $attribute_font_key ][0]['family'] ) ) {
 				$title_font = $attributes[ $attribute_font_key ][0];
 
 				$font_variant = isset( $title_font['variant'] ) ? $title_font['variant'] : null;
@@ -258,6 +258,45 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-grid-wrap' );
 		$css->render_gap( $attributes );
+		if ( ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$gap_unit = ! empty( $attributes['gap_unit'] ) ? $attributes['gap_unit'] : 'px';
+			$gap = isset( $attributes['gap'][0] ) && '' !== $attributes['gap'][0] ? $attributes['gap'][0] : '32';
+			$tablet_gap   = ( isset( $attributes['gap'][1] ) && '' !== $attributes['gap'][1] ? $attributes['gap'][1] : $gap );
+			$mobile_gap   = ( isset( $attributes['gap'][2] ) && '' !== $attributes['gap'][2] ? $attributes['gap'][2] : $tablet_gap );
+			$columns_xxl  = ( ! empty( $attributes['columns'][0] ) ? $attributes['columns'][0] : '1' );
+			$columns_md   = ( ! empty( $attributes['columns'][2] ) ? $attributes['columns'][2] : '1' );
+			$columns_ss   = ( ! empty( $attributes['columns'][5] ) ? $attributes['columns'][5] : '1' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_xxl . ')' );
+			$css->add_property( 'padding-left', $gap . $gap_unit );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_xxl . ')' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $gap . $gap_unit );
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_md . ')' );
+			$css->add_property( 'padding-left', $tablet_gap . $gap_unit );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_md . ')' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $tablet_gap . $gap_unit );
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item' );
+			$css->add_property( 'display', 'none' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider) .kb-slide-item:nth-child(-n+' . $columns_ss . ')' );
+			$css->add_property( 'display', 'block' );
+			$css->add_property( 'float', 'left' );
+			$css->add_property( 'width', 'calc(100% / ' . $columns_ss . ')' );
+			$css->add_property( 'padding-left', $mobile_gap . $gap_unit );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-testimonials-inner-wrap .kt-blocks-carousel-init:not(.splide-initialized):not(.tns-slider)' );
+			$css->add_property( 'margin-left', '-' . $mobile_gap . $gap_unit );
+			$css->set_media_state( 'desktop' );
+		}
 
 		if ( 'bubble' === $style || 'inlineimage' === $style ) {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
@@ -762,6 +801,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$trans_speed  = ( ! empty( $attributes['transSpeed'] ) ? $attributes['transSpeed'] : 400 );
 			$auto_speed   = ( ! empty( $attributes['autoSpeed'] ) ? $attributes['autoSpeed'] : 7000 );
 			$slides_sc    = ( ! empty( $attributes['slidesScroll'] ) ? $attributes['slidesScroll'] : '1' );
+			$slider_type  = ( ! empty( $attributes['carouselType'] ) ? $attributes['carouselType'] : 'loop' );
 
 			$outer_classes = array( 'kt-blocks-testimonials-wrap' . $unique_id );
 			$outer_classes[] = ! empty( $attributes['hAlign'] ) ? 'kt-testimonial-halign-' . $attributes['hAlign'] : 'kt-testimonial-halign-center';
@@ -792,7 +832,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 				$carousel_content = '';
 
-				$carousel_content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $this->get_usable_value( $css_class, $gap, $gap_unit ) ) . '" data-slider-gap-tablet="' . esc_attr( $this->get_usable_value( $css_class, $tablet_gap, $gap_unit ) ) . '" data-slider-gap-mobile="' . esc_attr( $this->get_usable_value( $css_class, $mobile_gap, $gap_unit ) ) . '">';
+				$carousel_content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-type="' . esc_attr( $slider_type ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $this->get_usable_value( $css_class, $gap, $gap_unit ) ) . '" data-slider-gap-tablet="' . esc_attr( $this->get_usable_value( $css_class, $tablet_gap, $gap_unit ) ) . '" data-slider-gap-mobile="' . esc_attr( $this->get_usable_value( $css_class, $mobile_gap, $gap_unit ) ) . '">';
 				$carousel_content .= $content;
 				$carousel_content .= '</div>';
 				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $carousel_content );
@@ -852,7 +892,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		wp_register_style( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-kb-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION, true );

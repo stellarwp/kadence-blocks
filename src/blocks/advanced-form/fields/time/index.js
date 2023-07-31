@@ -24,7 +24,6 @@ registerBlockType('kadence/advanced-form-time', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: timeInputIcon,
 	},

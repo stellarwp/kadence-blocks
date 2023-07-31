@@ -3,7 +3,13 @@
 	"title": "Section",
 	"name": "kadence/column",
 	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId" ],
+	"usesContext": [
+		"postId",
+		"queryId",
+		"kadence/dynamicSource",
+		"kadence/repeaterRowData",
+		"kadence/repeaterRow"
+	],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 		"id": {
@@ -240,6 +246,22 @@
 			"default": [ "", "", "" ]
 		},
 		"gutterUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"rowGap": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"rowGapUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"flexBasis": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"flexBasisUnit": {
 			"type": "string",
 			"default": "px"
 		},
@@ -615,7 +637,8 @@
 		"ktanimatepreview": true,
 		"ktanimateswipe": true,
 		"ktdynamic": true,
-		"kbcss": true
+		"kbcss": true,
+		"kbMetadata": true
 	},
 	"editorStyle": "kadence-blocks-column",
 	"style": "kadence-blocks-column"

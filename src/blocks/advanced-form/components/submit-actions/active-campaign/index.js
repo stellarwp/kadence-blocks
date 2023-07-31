@@ -37,25 +37,25 @@ const HELP_URL = 'https://ithemes92330.activehosted.com/app/settings/developer';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function ActiveCampaignOptions( { settings, save, parentClientId } ) {
+function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
 	const [ apiBase, setApiBase ] = useState( '' );
 	const [ isSavedApiBase, setIsSavedApiBase ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ list, setList ] = useState( false );
+	const [ lists, setLists ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ listsLoaded, setListsLoaded ] = useState( false );
 	const [ isFetchingAttributes, setIsFetchingAttributes ] = useState( false );
 	const [ listAttr, setListAttr ] = useState( false );
 	const [ listAttrLoaded, setListAttrLoaded ] = useState( false );
-	const [ isFetchingGroups, setIsFetchingGroups ] = useState( false );
-	const [ listGroups, setListGroups ] = useState( false );
-	const [ listGroupLoaded, setListGroupLoaded ] = useState( false );
+	const [ isFetchingGroups, setIsFetchingAutomations ] = useState( false );
+	const [ automations, setAutomations ] = useState( false );
+	const [ automationLoaded, setAutomationsLoaded ] = useState( false );
 	const [ isFetchingTags, setIsFetchingTags ] = useState( false );
-	const [ listTags, setListTags ] = useState( false );
-	const [ listTagsLoaded, setListTagsLoaded ] = useState( false );
+	const [ tags, setTags ] = useState( false );
+	const [ tagsLoaded, setTagsLoaded ] = useState( false );
 
 	useEffect( () => {
 		apiFetch( {
@@ -73,28 +73,17 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 
 	}, [] );
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 
-	const saveMap = ( value, index ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	const getLists = () => {
-
 		if ( !api ) {
-			setList( [] );
+			setLists( [] );
 			setListsLoaded( true );
 			return;
 		}
@@ -107,25 +96,25 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 				{ endpoint: 'lists' },
 			),
 		} )
-			.then( ( list ) => {
+			.then( ( lists ) => {
 				const theLists = [];
-				list.lists.map( ( item ) => {
+				lists.map( ( item ) => {
 					theLists.push( { value: item.id, label: item.name } );
 				} );
 
-				setList( theLists );
+				setLists( theLists );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( ( err ) => {
-				setList( [] );
+				setLists( [] );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} );
 	};
 
 	const getAutomations = () => {
-		setIsFetchingGroups( true );
+		setIsFetchingAutomations( true );
 
 		apiFetch( {
 			path: addQueryArgs(
@@ -133,20 +122,20 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 				{ endpoint: 'automations' },
 			),
 		} )
-			.then( ( list ) => {
-				const theGroups = [];
-				list.automations.map( ( item ) => {
-					theGroups.push( { value: item.id, label: item.name } );
+			.then( ( automations ) => {
+				const theAutomations = [];
+				automations.map( ( item ) => {
+					theAutomations.push( { value: item.id, label: item.name } );
 				} );
 
-				setListGroups( theGroups );
-				setListGroupLoaded( true );
-				setIsFetchingGroups( false );
+				setAutomations( theAutomations );
+				setAutomationsLoaded( true );
+				setIsFetchingAutomations( false );
 			} )
-			.catch( () => {
-				setListGroups( [] );
-				setListGroupLoaded( true );
-				setIsFetchingGroups( false );
+			.catch( (err) => {
+				setAutomations( [] );
+				setAutomationsLoaded( true );
+				setIsFetchingAutomations( false );
 			} );
 	};
 
@@ -159,21 +148,21 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 				{ endpoint: 'tags' },
 			),
 		} )
-			.then( ( list ) => {
+			.then( ( tags ) => {
 				const theTags = [];
-				if ( list.tags ) {
-					list.tags.map( ( item ) => {
+				if ( tags ) {
+					tags.map( ( item ) => {
 						theTags.push( { value: item.id, label: item.tag } );
 					} );
 				}
 
-				setListTags( theTags );
-				setListTagsLoaded( true );
+				setTags( theTags );
+				setTagsLoaded( true );
 				setIsFetchingTags( false );
 			} )
 			.catch( () => {
-				setListTags( [] );
-				setListTagsLoaded( true );
+				setTags( [] );
+				setTagsLoaded( true );
 				setIsFetchingTags( false );
 			} );
 	};
@@ -248,10 +237,10 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 		} );
 	};
 
-	const hasList = Array.isArray( list ) && list.length;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length;
-	const hasGroups = Array.isArray( listGroups ) && listGroups.length;
-	const hasTags = Array.isArray( listTags ) && listTags.length;
+	const hasLists = Array.isArray( lists ) && lists.length > 0;
+	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
+	const hasAutomations = Array.isArray( automations ) && automations.length > 0;
+	const hasTags = Array.isArray( tags ) && tags.length > 0;
 
 	return (
 		<KadencePanelBody
@@ -298,27 +287,27 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasList && (
+					{!isFetching && !hasLists && (
 						<Fragment>
 							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
 							{( !listsLoaded ? getLists() : '' )}
-							{!Array.isArray( list ) ?
+							{!Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No Lists found.', 'kadence-blocks' )}
 						</Fragment>
 
 					)}
-					{!isFetching && hasList && (
+					{!isFetching && hasLists && (
 						<Fragment>
 							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
 							<Select
 								value={( undefined !== settings && undefined !== settings && undefined !== settings.list ? settings.list : '' )}
 								onChange={( value ) => {
-									save( { list: ( value ? value : [] ) } );
+									save( { list: ( value ? value : {} ) } );
 								}}
 								id={'mc-list-selection'}
 								isClearable={true}
-								options={list}
+								options={lists}
 								isMulti={false}
 								maxMenuHeight={200}
 								placeholder={__( 'Select List' )}
@@ -328,27 +317,26 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 								{isFetchingGroups && (
 									<Spinner/>
 								)}
-								{!isFetchingGroups && !hasGroups && (
+								{!isFetchingGroups && !hasAutomations && (
 									<Fragment>
 										<h2 className="kt-heading-size-title">{__( 'Select Automation', 'kadence-blocks' )}</h2>
-										{( !listGroupLoaded ? getAutomations() : '' )}
-										{!Array.isArray( listGroups ) ?
+										{( !automationLoaded ? getAutomations() : '' )}
+										{!Array.isArray( automations ) ?
 											<Spinner/> :
 											__( 'No Groups found.', 'kadence-blocks' )}
 									</Fragment>
-
 								)}
-								{!isFetchingGroups && hasGroups && (
+								{ ! isFetchingGroups && hasAutomations && (
 									<Fragment>
 										<h2 className="kt-heading-size-title">{__( 'Select Automation', 'kadence-blocks' )}</h2>
 										<Select
-											value={( undefined !== settings && undefined !== settings && undefined !== settings.groups ? settings.groups : '' )}
+											value={( undefined !== settings && undefined !== settings && undefined !== settings.automation ? settings.automation : '' )}
 											onChange={( value ) => {
-												save( { groups: ( value ? value : [] ) } );
+												save( { automation: ( value ? value : [] ) } );
 											}}
 											id={'mc-automation-selection'}
 											isClearable={true}
-											options={listGroups}
+											options={automations}
 											maxMenuHeight={200}
 											placeholder={__( 'Select Automation' )}
 										/>
@@ -360,8 +348,8 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 								{!isFetchingTags && !hasTags && (
 									<Fragment>
 										<h2 className="kt-heading-size-title">{__( 'Select Tags', 'kadence-blocks' )}</h2>
-										{( !listTagsLoaded ? getTags() : '' )}
-										{!Array.isArray( listTags ) ?
+										{( !tagsLoaded ? getTags() : '' )}
+										{!Array.isArray( tags ) ?
 											<Spinner/> :
 											__( 'No Tags found.', 'kadence-blocks' )}
 									</Fragment>
@@ -377,7 +365,7 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 											}}
 											id={'mc-tag-selection'}
 											isClearable={true}
-											options={listTags}
+											options={tags}
 											isMulti={true}
 											maxMenuHeight={200}
 											placeholder={__( 'Select Tags' )}
@@ -411,9 +399,9 @@ function ActiveCampaignOptions( { settings, save, parentClientId } ) {
 														<SelectControl
 															label={__( 'Select Field:' )}
 															options={listAttr}
-															value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+															value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 															onChange={( value ) => {
-																saveMap( value, index );
+																saveMap( value, item.uniqueID );
 															}}
 														/>
 													</div>
