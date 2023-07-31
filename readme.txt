@@ -96,6 +96,7 @@ Release Date: July TBD, 2023
 * Fix: Border radius on stacked icons in Icon block.
 * Fix: Number & Title font size preview in Count Up Block.
 * Fix: Background colors and icon for select fields in Adv Form Block.
+* Fix: Max width units on Table of Contents block.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
