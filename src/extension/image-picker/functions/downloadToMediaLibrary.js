@@ -77,6 +77,6 @@ function refreshMediaModal(wpAttachmentId) {
 			const selection = wp.media.frame.state().get("selection");
 			const selected = parseInt(wpAttachmentId);
 			selection.reset(selected ? [wp.media.attachment(selected)] : []);
-		}, 100);
+		}, 1000);
 	}
 }
