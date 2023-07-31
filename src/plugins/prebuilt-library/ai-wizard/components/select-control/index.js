@@ -18,15 +18,16 @@ export const SelectControl = forwardRef(
     const {
       maxMenuHeight,
       menuPlacement,
-			isClearable,
+	  isClearable,
       label,
       options,
       value,
+	  horizontal,
       ...rest
     } = props;
 
     return (
-      <div className="stellarwp components-select-control">
+      <div className={`stellarwp components-select-control ${horizontal ? "input-control-horizontal" : ""}`}>
 		    { label ? (
 			    <label className="components-input-control__label">
 				    { label }
@@ -35,18 +36,19 @@ export const SelectControl = forwardRef(
 			  <div className="components-input-control__container" ref={ ref }>
 				  <Select
 				    classNamePrefix="stellarwp-select"
-            maxMenuHeight={ maxMenuHeight }
-            menuPlacement={ menuPlacement }
+					maxMenuHeight={ maxMenuHeight }
+					menuPlacement={ menuPlacement }
 				    styles={{
 				      control: (baseStyles, state) => ({
-                ...baseStyles,
+                		...baseStyles,
 				        fontSize: 16,
 				        boxShadow: 'none',
-                borderColor: state.isFocused ? '#000000' : '#DFDFDF',
+                		borderColor: state.isFocused ? '#000000' : '#DFDFDF',
+						width: '100%'
 				      }),
 				      valueContainer: (baseStyles) => ({
-                ...baseStyles,
-                paddingLeft: 16 
+                		...baseStyles,
+                		paddingLeft: 16
 				      }),
 				      menu: (baseStyles) => ({
 				        ...baseStyles,
@@ -57,10 +59,10 @@ export const SelectControl = forwardRef(
 				        color: '#000000'
 				      }),
 				    }}
-					  isClearable={ isClearable }
-					  options={ options }
-					  value={ value }
-					  { ...rest }
+					isClearable={ isClearable }
+					options={ options }
+					value={ value }
+					{ ...rest }
 				  />
         </div>
       </div>

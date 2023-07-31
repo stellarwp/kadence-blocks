@@ -6,6 +6,13 @@
   flex-direction: column;
   gap: calc(8px);
 
+  &.input-control-horizontal {
+	flex-direction: row;
+	justify-content: start;
+	align-items: center;
+	width: 100%;
+  }
+
 	label.components-input-control__label {
 		@include input_label;
 
@@ -14,9 +21,17 @@
 
 	.stellarwp-select__single-value + div,
 	.stellarwp-select + div {
-    margin: 0 2px;
-    padding-top: 1px;
-    padding-bottom: 1px;
+		margin: 0 2px;
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+
+  .components-input-control__container {
+	flex: 1;
+
+	.stellarwp-select__input input[type=text]:focus {
+		box-shadow: none;
+	}
   }
 }
 

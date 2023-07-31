@@ -23,7 +23,10 @@ const initialState = {
 	keywords: [],
 	tone: 'NEUTRAL',
 	privacyAgreement: false,
-	photoLibrary: 'My Images',
+	photoLibrary: {
+		label: '',
+		value: ''
+	},
 	featuredImages: [],
 	backgroundImages: [],
 	saving: false,

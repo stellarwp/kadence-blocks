@@ -11,8 +11,6 @@ import { SafeParseJSON } from '@kadence/helpers';
 import { KadenceAiProvider } from './context/kadence-ai-provider';
 import { KadenceAiWizard } from './kadence-ai-wizard';
 import { useDatabase } from './hooks/use-database';
-import { verticalsHelper } from './utils/verticals-helper';
-import { collectionsHelper } from './utils/collections-helper';
 import './kadence-ai-wizard.scss';
 
 export function AiWizard( {
@@ -23,8 +21,6 @@ export function AiWizard( {
 } ) {
 	const [ wizardData, setWizardData ] = useState();
 	const { loading, getAiWizardData } = useDatabase();
-	const { setVerticals } = verticalsHelper();
-	const { setCollections } = collectionsHelper();
 
 	async function getPreviousData() {
 		const response = SafeParseJSON(await getAiWizardData());
@@ -33,10 +29,6 @@ export function AiWizard( {
 	}
 
 	useEffect(() => {
-		// Set verticals data in session storage.
-		setVerticals();
-		// Set collections data in session storage.
-		setCollections();
 		// Get previously-saved data for modal.
 		getPreviousData();
 	}, []);

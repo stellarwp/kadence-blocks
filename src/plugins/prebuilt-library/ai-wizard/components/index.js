@@ -9,7 +9,6 @@ export * from './image-carousel';
 export * from './image-select';
 export * from './location-select-control';
 export * from './photos-curated';
-export * from './photos-personal';
 export * from './progress-bar';
 export * from './select-control';
 export * from './slider';
@@ -19,4 +18,5 @@ export * from './textarea-progress';
 export * from './toggle-control';
 export * from './tone-select-control';
 export * from './wizard';
+export * from './photo-collection';
 

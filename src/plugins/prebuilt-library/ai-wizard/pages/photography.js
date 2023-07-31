@@ -9,18 +9,24 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import {
-	Button,
 	SelectControl,
 	PhotosCurated,
-	PhotosPersonal
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
-import { verticalsHelper } from '../utils/verticals-helper';
 import { collectionsHelper } from '../utils/collections-helper';
 
 const styles = {
+	topSection: {
+
+		borderBottom: '1px solid #DFDFDF',
+		marginBottom: '40px',
+		paddingBottom: '24px',
+		position: 'relative',
+		top: '-32px'
+	},
 	selectWrapper: {
-		maxWidth: 400,
+		maxWidth: 500,
+
 	},
 	selectControl: {
 		width: '100%',
@@ -32,112 +38,79 @@ const styles = {
 }
 
 export function Photography() {
-	const [ loading, setLoading ] = useState(false);
-	const [ collection, setCollection ] = useState([]);
-	const [ verticals, setVerticals ] = useState([]);
-	const [ , setCollections ] = useState([]);
-	const [ currentPhotoLibrary, setCurrentPhotoLibrary ] = useState('');
-	const [ collectionLink, setCollectionLink ] = useState('');
 	const { state: { photoLibrary }, dispatch } = useKadenceAi();
-	const { getVerticals } = verticalsHelper();
-	const { getCollections, getCollectionByIndustry, getCollectionLinkByIndustry } = collectionsHelper();
-	
-	useEffect(() => {
-		getVerticalsData();
-	}, []);
+	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading, updateWordpressCollections } = collectionsHelper();
+	const [allVerticals, setAllVerticals] = useState();
+	const [selectedCollection, setSelectedCollection] = useState([]);
 
 	useEffect(() => {
-		setLoading(true);
-		getPhotoCollection();
-		getPhotoCollectionLink();
-		setCurrentPhotoLibrary({
-			label: photoLibrary,
-			value: photoLibrary
-		})
-	}, [ photoLibrary ]);
-
-	async function getVerticalsData() {
-		const verticalsData = await getVerticals();
-		const collectionsData = await getCollections();
-		const formattedVerticals = formatVerticalsData(verticalsData);
-
-		setVerticals(formattedVerticals);
-		setCollections(collectionsData);
-	}
-
-	async function getPhotoCollection() {
-		const collectionData = await getCollectionByIndustry(photoLibrary);
-
-		setLoading(false);
-		setCollection(collectionData);
-	}
-
-	async function getPhotoCollectionLink() {
-		const link = await getCollectionLinkByIndustry(photoLibrary);
-
-		setCollectionLink(link);
-	}
-
-	function formatVerticalsData(data) {
-		if (! data) {
-			return data;
+		if(preMadeCollections && wordpressCollections) {
+			setAllVerticals([
+				{
+					label: 'My Collections',
+					options: wordpressCollections.map((vert) => ({
+						label: vert.label,
+						value: vert.value,
+					}))
+				}, {
+					label: 'Premade Collections',
+					options: preMadeCollections.map((vert) => ({
+						label: vert.label,
+						value: vert.value,
+					}))
+				}
+			]);
+			getSelectedGalleries();
 		}
+	}, [preMadeCollections, wordpressCollections]);
 
-		const grouped = Object.keys(data).map((vertical) => ({
-			label: vertical,
-			options:
-				data[vertical].map((subVertical) => ({
-					label: subVertical,
-					value: subVertical,
-				}))
-		}))
+	useEffect(() => {
+		if(!loading) {
+			getSelectedGalleries();
+		}
+	}, [ photoLibrary, loading]);
 
-		grouped.push({
-			label: __('Media Library', 'kadence-blocks'),
-			options: [{
-				label: __('My Images', 'kadence-blocks'),
-				value: 'My Images'
-			}]
-		});
-
-		return grouped;
+	async function getSelectedGalleries() {
+		const collectionData = await getCollectionGalleries(photoLibrary.value);
+		setSelectedCollection(collectionData);
 	}
 
 	function handlePhotoLibraryChange(library) {
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: library.value });
+		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: library });
+	}
+
+	function updateCollectionPhotos(galleryIndex, photoList) {
+		const newCollection = [
+			{ name: 'featured', images: selectedCollection[0].images },
+			{ name: 'background', images: selectedCollection[1].images }
+		];
+		newCollection[galleryIndex].images = photoList;
+		const newValue = updateWordpressCollections(photoLibrary.value, newCollection);
+		console.log('new value', newValue);
+		handlePhotoLibraryChange(newValue);
 	}
 
 	return (
 		<div className="stellarwp-ai-photography-library">
-			<Flex justify="center">
+			<Flex justify="center" style={ styles.topSection }>
 				<FlexBlock style={ styles.selectWrapper }>
-					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="column" style={ styles.alignCenter }>
+					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="row">
 						<SelectControl
 							className={ 'stellarwp-ai-photography-control' }
-							label={ __('Photo library', 'kadence-blocks') }
-							value={ currentPhotoLibrary }
+							label={ __('Use Images From:', 'kadence-blocks') }
+							value={ photoLibrary }
 							onChange={ handlePhotoLibraryChange }
-							options={ verticals ? verticals : [] }
+							options={ allVerticals || [] }
+							horizontal
 						/>
-						{ photoLibrary !== 'My Images' && (
-							<Button
-								variant="link"
-								text={ __('I\'d like to use my own images', 'kadence-blocks') }
-								onClick={ () => dispatch({ type: 'SET_PHOTO_LIBRARY', payload: 'My Images' }) }
-							/>
-						) }
 					</Flex>
 				</FlexBlock>
 			</Flex>
-			{ photoLibrary !== 'My Images' ? (
 				<PhotosCurated
-					loading={ loading }
-					collection={ collection }
-					collectionLink={ collectionLink }
+					featured={ selectedCollection[0] || {} }
+					background={ selectedCollection[1] || {} }
+					updateCollection={ updateCollectionPhotos }
 				/>
-			) : (
-				<PhotosPersonal />
-			) }
 		</div>
 	);
 }

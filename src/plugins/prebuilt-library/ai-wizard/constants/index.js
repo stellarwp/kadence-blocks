@@ -19,14 +19,8 @@ export const API_ROUTE_GET_VERTICALS = '/kb-design-library/v1/get_verticals';
 export const COLLECTION_REQUEST_IMAGE_TYPE = 'WEBP';
 export const COLLECTION_REQUEST_IMAGE_SIZES = [
 	{
-		id: 'medium_portrait',
+		id: 'medium_square',
 		width: 600,
-		height: 800,
-		crop: true
-	},
-	{
-		id: 'medium_landscape',
-		width: 800,
 		height: 600,
 		crop: true
 	}
@@ -81,19 +75,14 @@ export const CONTENT_TONE = [
 
 export const VERTICALS_SESSION_KEY = 'kadence_ai_verticals';
 export const COLLECTIONS_SESSION_KEY = 'kadence_ai_collections';
+export const COLLECTIONS_CUSTOM_SESSION_KEY = 'kadence_ai_custom_collections';
 
 export const COLLECTION_REQUEST_BODY = {
 	image_type: 'WEBP',
 	sizes: [
 		{
-			id: 'medium_portrait',
+			id: 'medium_square',
 			width: 600,
-			height: 800,
-			crop: true
-		},
-		{
-			id: 'medium_landscape',
-			width: 800,
 			height: 600,
 			crop: true
 		}
@@ -127,7 +116,7 @@ export const ENTITY_TO_NAME = {
 	'INDIVIDUAL': {
 		label: __( 'Name', 'kadence-blocks' ),
 		placeholder: __( 'Your Name', 'kadence-blocks' ),
-	}, 
+	},
 	'ORGANIZATION': {
 		label: __( 'Organization Name', 'kadence-blocks' ),
 		placeholder: __( 'Your Organization', 'kadence-blocks' ),
