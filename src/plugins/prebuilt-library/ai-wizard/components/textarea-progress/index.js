@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { useEffect, useState } from "@wordpress/element";
+import { Button, Flex, FlexItem } from "@wordpress/components";
 
 /**
  * Internal dependencies
@@ -9,13 +10,16 @@ import { useEffect, useState } from "@wordpress/element";
 import { TextareaControl } from "../textarea-control";
 import { ProgressBar } from "../progress-bar";
 import "./textarea-progress.scss";
+import { Check } from "../icons";
 
 export function TextareaProgress(props) {
 	const {
-		showProgressBar = true,
 		progressBarProps,
 		value,
 		initialHeight = 300,
+		aiSuggestion,
+		onUndo,
+		onAccept,
 		...rest
 	} = props;
 	const [inputRef, setInputRef] = useState(null);
@@ -43,12 +47,40 @@ export function TextareaProgress(props) {
 	}
 
 	return (
-		<div className="stellarwp-textarea-progress">
-			<TextareaControl ref={setInputRef} {...rest} value={value} />
-			<ProgressBar
-				styles={!showProgressBar ? { visibility: "hidden" } : null}
-				{...progressBarProps}
+		<div
+			className={`stellarwp-textarea-progress ${
+				aiSuggestion ? "stellarwp-textarea-progress--suggestion-active" : ""
+			}`}
+		>
+			<TextareaControl
+				ref={setInputRef}
+				{...rest}
+				value={aiSuggestion || value}
 			/>
+			{!aiSuggestion && <ProgressBar {...progressBarProps} />}
+			{aiSuggestion && (
+				<Flex className="stellarwp-textarea-progress__actions">
+					<FlexItem>
+						<Button
+							className="stellarwp-textarea-progress__undo-button"
+							variant="link"
+							onClick={onUndo}
+						>
+							Undo
+						</Button>
+					</FlexItem>
+					<FlexItem>
+						<Button
+							className="stellarwp-textarea-progress__approve-button"
+							icon={Check}
+							variant="link"
+							onClick={onAccept}
+						>
+							Use This Copy
+						</Button>
+					</FlexItem>
+				</Flex>
+			)}
 		</div>
 	);
 }

@@ -11,9 +11,10 @@ import {
 	__experimentalText as Text,
 } from "@wordpress/components";
 import { __, sprintf } from "@wordpress/i18n";
-import { visibility, visibilityOff } from "../components/icons";
 import { Button } from "../components";
+import { missionStatementHelper } from "../utils/mission-statement-helper";
 import { THOUGHT_STARTERS } from "../constants";
+import { Ai, Visibility, VisibilityOff } from "../components/icons";
 
 /**
  * Internal dependencies
@@ -95,12 +96,14 @@ export function AboutYourSite() {
 	const [progress, setProgress] = useState(0);
 	const [backgroundImage, setBackgroundImage] = useState(0);
 	const [showTooltip, setShowTooltip] = useState(false);
+	const [aiSuggestion, setAiSuggestion] = useState(false);
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, companyName } = state;
 	const title = sprintf(
 		__("Tell us about your%s", "kadence-blocks"),
 		titlePartial[entityType]
 	);
+	const { getMissionStatement } = missionStatementHelper();
 
 	useEffect(() => {
 		const progress = Math.round(
@@ -108,7 +111,10 @@ export function AboutYourSite() {
 		);
 		const statementProgress = progress >= 100 ? 100 : progress;
 
-		if (statementProgress < 50) {
+		if (statementProgress == 0) {
+			setIndicator("initial");
+		}
+		if (statementProgress < 50 && statementProgress > 0) {
 			setIndicator("weak");
 		}
 		if (statementProgress >= 50) {
@@ -129,6 +135,11 @@ export function AboutYourSite() {
 		return sprintf(__("%s is a...", "kadence-blocks"), companyName);
 	}
 
+	async function handleMissionStatement() {
+		const missionStatement = await getMissionStatement();
+		setAiSuggestion(missionStatement);
+	}
+
 	return (
 		<Flex gap={0} align="normal" style={styles.container}>
 			<FlexBlock style={{ alignSelf: "center" }}>
@@ -144,9 +155,6 @@ export function AboutYourSite() {
 									onChange={(value) =>
 										dispatch({ type: "SET_MISSION_STATEMENT", payload: value })
 									}
-									showProgressBar={
-										missionStatement && missionStatement.length > 0
-									}
 									progressBarProps={{
 										value: progress,
 										color: MISSION_STATEMENT_STATUS?.[indicator]?.color
@@ -155,6 +163,16 @@ export function AboutYourSite() {
 										message: MISSION_STATEMENT_STATUS?.[indicator]?.message
 											? MISSION_STATEMENT_STATUS[indicator].message
 											: "",
+									}}
+									disabled={aiSuggestion}
+									aiSuggestion={aiSuggestion}
+									onUndo={() => setAiSuggestion("")}
+									onAccept={() => {
+										dispatch({
+											type: "SET_MISSION_STATEMENT",
+											payload: aiSuggestion,
+										});
+										setAiSuggestion("");
 									}}
 								/>
 								{showTooltip && (
@@ -173,32 +191,36 @@ export function AboutYourSite() {
 									</VStack>
 								)}
 							</View>
-							<Flex justify="space-between">
-								<FlexItem>
-									<Button
-										onClick={() =>
-											dispatch({ type: "SET_PAGE", payload: "about-your-site" })
-										}
-									>
-										{__("Improve my Mission Statement", "kadence-blocks")}
-									</Button>
-								</FlexItem>
-								<FlexItem>
-									<Button
-										size="small"
-										className="stellarwp-show-tips-button"
-										icon={showTooltip ? visibilityOff : visibility}
-										iconPosition="right"
-										onClick={() =>
-											setShowTooltip((showTooltip) => !showTooltip)
-										}
-									>
-										{showTooltip
-											? __("Hide Tips", "kadence-blocks")
-											: __("Show Tips", "kadence-blocks")}
-									</Button>
-								</FlexItem>
-							</Flex>
+							{!aiSuggestion && (
+								<Flex justify="space-between">
+									<FlexItem>
+										{progress == 100 && (
+											<Button
+												className="stellarwp-ai-improve-button"
+												icon={Ai}
+												onClick={() => handleMissionStatement()}
+											>
+												{__("Improve my Mission Statement", "kadence-blocks")}
+											</Button>
+										)}
+									</FlexItem>
+									<FlexItem>
+										<Button
+											size="small"
+											className="stellarwp-show-tips-button"
+											icon={showTooltip ? VisibilityOff : Visibility}
+											iconPosition="right"
+											onClick={() =>
+												setShowTooltip((showTooltip) => !showTooltip)
+											}
+										>
+											{showTooltip
+												? __("Hide Tips", "kadence-blocks")
+												: __("Show Tips", "kadence-blocks")}
+										</Button>
+									</FlexItem>
+								</Flex>
+							)}
 						</FormSection>
 					</FlexBlock>
 				</Flex>

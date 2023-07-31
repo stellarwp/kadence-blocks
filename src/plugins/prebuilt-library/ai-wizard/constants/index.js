@@ -172,6 +172,10 @@ export const LOCATION_TYPES = [
 export const MISSION_STATEMENT_GOAL = 300;
 
 export const MISSION_STATEMENT_STATUS = {
+	initial: {
+		color: "#757575",
+		message: __("The more detail you add, the better.", "kadence-blocks"),
+	},
 	weak: {
 		color: "#DF3416",
 		message: __(

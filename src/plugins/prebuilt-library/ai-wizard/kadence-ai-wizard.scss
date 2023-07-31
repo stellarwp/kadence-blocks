@@ -27,6 +27,23 @@
 				margin-right: 0;
 			}
 		}
+
+		.stellarwp-ai-improve-button {
+			border: 1px solid $color-gray-300;
+			border-radius: 4px;
+			height: 42px;
+			padding-inline: 14px;
+
+			svg {
+				margin-right: 4px;
+			}
+
+			&:hover,
+			&:focus {
+				color: $color-black;
+				background-color: #f0f1f9;
+			}
+		}
 	}
 
 	/* Photography Page Style Overrides */
