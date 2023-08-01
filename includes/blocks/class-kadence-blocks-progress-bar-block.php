@@ -241,7 +241,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $delay ) {
 			$content .= '
 				let progressBarController' . $simple_id . ' = new ScrollMagic.Controller();
-				let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '", logLevel: 3});
+				let desiredAnimation = new ScrollMagic.Scene({triggerElement: "#kb-progress-bar' . $unique_id . '"});
 				desiredAnimation.triggerHook(0.88);
 				desiredAnimation.addTo( progressBarController' . $simple_id . ' );
 				desiredAnimation.on("start", function (e) {';
