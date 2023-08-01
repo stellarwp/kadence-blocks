@@ -22,11 +22,13 @@ export function collectionsHelper() {
 	 * @return {void}
 	 */
 	function initCollections() {
-		// const wordpressCollections = JSON.parse(sessionStorage.getItem(COLLECTIONS_CUSTOM_SESSION_KEY)) || [];
-		// if(!wordpressCollections || wordpressCollections.length === 0) {
+		const wordpressCollections = JSON.parse(sessionStorage.getItem(COLLECTIONS_CUSTOM_SESSION_KEY)) || [];
+		if(!wordpressCollections) {
 			sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify([]));
 			setWordpressCollections([]);
-		// }
+		} else {
+			setWordpressCollections(wordpressCollections);
+		}
 		setLoading(false);
 	}
 
@@ -38,6 +40,9 @@ export function collectionsHelper() {
 	 * @return {promise<object[]>}
 	*/
 	async function getCollectionGalleries(collectionId) {
+		if(!wordpressCollections) {
+
+		}
 		const foundWordpressCollection = wordpressCollections.find((item) => item.value === collectionId);
 		if(foundWordpressCollection) {
 			return foundWordpressCollection.galleries;
@@ -60,7 +65,6 @@ export function collectionsHelper() {
 		}
 
 		const found = wordpressCollections.findIndex((item) => item.value === collectionId);
-		console.log('Found', found);
 		if(found > -1) {
 			// update wordpress collection
 			const wpCollectionsClone = [...wordpressCollections];

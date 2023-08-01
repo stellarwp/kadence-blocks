@@ -7,15 +7,12 @@ import {
 	FlexBlock,
 	Spinner
 } from '@wordpress/components';
-import {
-	useEffect,
-	useState,
-} from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import { Button } from '..';
+import { usePhotos } from '../../hooks/use-photos';
 
 const styles = {
 	wrapper: {
@@ -33,8 +30,11 @@ const styles = {
 	},
 	gridWrapper: {
 		maxHeight: '318px',
+		height: '500px',
 		overflow: 'hidden',
 		overflowY: 'auto',
+		marginRight: '-8px',
+   		paddingRight: '8px'
 	},
 	loading: {
 		position: 'absolute',
@@ -92,46 +92,45 @@ const styles = {
 }
 
 export function PhotoCollection({ photos, collectionLink, title, description, updateCollection }) {
-	const [photoGallery, setPhotoGallery] = useState();
+	const photoGallery = usePhotos(photos);
 
-	useEffect(() => {
-		if(!photos) {
-			setPhotoGallery([]);
-			return;
-		}
+	let mediaLibrary = {};
+	initModal();
 
-		const numPhotos = photos.length;
-		if(numPhotos < 12) {
-			const numToFill = 12 - numPhotos;
-			const filledList = [
-				...photos,
-				...Array.from(Array(numToFill)).map((item, index) => ({ alt: `placeholder${index + 1}`}))
-			];
-			setPhotoGallery(filledList);
-		} else {
-			setPhotoGallery(photos);
-		}
-	}, [photos]);
-
-	const mediaLibrary = window.wp.media({
-		id: title,
-        title: `Edit ${title}`,
-        button: {
-            text: 'Use These Images',
-        },
-		multiple: 'add',
-    });
+	function initModal() {
+		mediaLibrary = window.wp.media({
+			id: title,
+			title: `Edit ${title}`,
+			button: {
+				text: 'Use These Images',
+			},
+			multiple: 'add',
+		});
+	}
 
 	mediaLibrary.on( 'select', function() {
+		// TODO: Use collectionLink to download the Pexel collection to the media library
 		const selectedPhotos = mediaLibrary.state().get('selection').toJSON();
 		const formattedPhotos = selectedPhotos.map((photo) => ({
 			id: photo.id,
 			alt: photo.alt || photo.name,
+			isLocal: true,
 			sizes: [
 				{ name: 'thumbnail', src: photo.sizes.thumbnail.url }
 			]
 		}));
+		initModal();
 		updateCollection(formattedPhotos);
+	});
+
+	mediaLibrary.on( 'open', function() {
+		const selectionAPI = mediaLibrary.state().get( 'selection' );
+		photos.forEach( function( image ) {
+			if(image.isLocal) {
+				const attachment = wp.media.attachment( image.id );
+				selectionAPI.add( attachment ? [ attachment ] : []);
+			}
+		});
 	});
 
 
@@ -143,7 +142,7 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 				<div style={ styles.title }>{ title} </div>
 				<div style={ styles.description }>{ description }</div>
 			</div>
-			<div style={ styles.gridWrapper }>
+			<div style={ styles.gridWrapper } id="custom-scroll-bar">
 				<div style={ styles.grid }>
 					{ photoGallery && photoGallery.length > 0 ?
 						photoGallery.map((image, index) => (

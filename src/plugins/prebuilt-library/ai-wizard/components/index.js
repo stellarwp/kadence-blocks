@@ -5,8 +5,6 @@ export * from './chips-input';
 export * from './creatable-control';
 export * from './form-section';
 export * from './icons';
-export * from './image-carousel';
-export * from './image-select';
 export * from './location-select-control';
 export * from './photos-curated';
 export * from './progress-bar';

@@ -66,6 +66,8 @@ export function Photography() {
 
 	useEffect(() => {
 		if(!loading) {
+			// Resets the images so they provide immediate feedback
+			setSelectedCollection([{}, {}]);
 			getSelectedGalleries();
 		}
 	}, [ photoLibrary, loading]);
