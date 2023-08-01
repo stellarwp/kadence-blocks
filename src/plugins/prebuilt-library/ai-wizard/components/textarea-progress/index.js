@@ -2,7 +2,13 @@
  * WordPress dependencies
  */
 import { useEffect, useState } from "@wordpress/element";
-import { Button, Flex, FlexItem } from "@wordpress/components";
+import {
+	Button,
+	Flex,
+	FlexItem,
+	Icon,
+	__experimentalView as View,
+} from "@wordpress/components";
 
 /**
  * Internal dependencies
@@ -10,13 +16,15 @@ import { Button, Flex, FlexItem } from "@wordpress/components";
 import { TextareaControl } from "../textarea-control";
 import { ProgressBar } from "../progress-bar";
 import "./textarea-progress.scss";
-import { Check } from "../icons";
+import { Check, Sparkle } from "../icons";
+import { __ } from "@wordpress/i18n";
 
 export function TextareaProgress(props) {
 	const {
 		progressBarProps,
 		value,
 		initialHeight = 300,
+		aiLoading,
 		aiSuggestion,
 		onUndo,
 		onAccept,
@@ -58,29 +66,39 @@ export function TextareaProgress(props) {
 				value={aiSuggestion || value}
 			/>
 			{!aiSuggestion && <ProgressBar {...progressBarProps} />}
-			{aiSuggestion && (
-				<Flex className="stellarwp-textarea-progress__actions">
+			<Flex className="stellarwp-textarea-progress__actions">
+				{aiLoading && (
 					<FlexItem>
-						<Button
-							className="stellarwp-textarea-progress__undo-button"
-							variant="link"
-							onClick={onUndo}
-						>
-							Undo
-						</Button>
+						<View className="stellarwp-textarea-progress__ai-loading">
+							<Icon icon={Sparkle} />
+							{`${__("Kadence AI is writing...", "kadence-blocks")}`}
+						</View>
 					</FlexItem>
-					<FlexItem>
-						<Button
-							className="stellarwp-textarea-progress__approve-button"
-							icon={Check}
-							variant="link"
-							onClick={onAccept}
-						>
-							Use This Copy
-						</Button>
-					</FlexItem>
-				</Flex>
-			)}
+				)}
+				{aiSuggestion && (
+					<>
+						<FlexItem>
+							<Button
+								className="stellarwp-textarea-progress__undo-button"
+								variant="link"
+								onClick={onUndo}
+							>
+								Undo
+							</Button>
+						</FlexItem>
+						<FlexItem>
+							<Button
+								className="stellarwp-textarea-progress__approve-button"
+								icon={Check}
+								variant="link"
+								onClick={onAccept}
+							>
+								Use This Copy
+							</Button>
+						</FlexItem>
+					</>
+				)}
+			</Flex>
 		</div>
 	);
 }

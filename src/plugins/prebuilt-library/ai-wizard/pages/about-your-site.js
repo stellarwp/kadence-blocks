@@ -97,6 +97,7 @@ export function AboutYourSite() {
 	const [backgroundImage, setBackgroundImage] = useState(0);
 	const [showTooltip, setShowTooltip] = useState(false);
 	const [aiSuggestion, setAiSuggestion] = useState(false);
+	const [aiLoading, setAiLoading] = useState(false);
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, companyName } = state;
 	const title = sprintf(
@@ -136,7 +137,11 @@ export function AboutYourSite() {
 	}
 
 	async function handleMissionStatement() {
-		const missionStatement = await getMissionStatement();
+		setAiLoading(true);
+		const missionStatement = await getMissionStatement().then((data) => {
+			setAiLoading(false);
+			return data;
+		});
 		setAiSuggestion(missionStatement);
 	}
 
@@ -165,6 +170,7 @@ export function AboutYourSite() {
 											: "",
 									}}
 									disabled={aiSuggestion}
+									aiLoading={aiLoading}
 									aiSuggestion={aiSuggestion}
 									onUndo={() => setAiSuggestion("")}
 									onAccept={() => {
@@ -191,7 +197,7 @@ export function AboutYourSite() {
 									</VStack>
 								)}
 							</View>
-							{!aiSuggestion && (
+							{!aiSuggestion && !aiLoading && (
 								<Flex justify="space-between">
 									<FlexItem>
 										{progress == 100 && (

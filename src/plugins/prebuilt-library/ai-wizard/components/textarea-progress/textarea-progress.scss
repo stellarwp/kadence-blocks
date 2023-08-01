@@ -47,4 +47,12 @@
 			color: $color-black;
 		}
 	}
+
+	&__ai-loading {
+		font-size: 10px;
+		color: $color-primary;
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
 }
