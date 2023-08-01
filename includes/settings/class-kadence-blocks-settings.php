@@ -780,6 +780,11 @@ class Kadence_Blocks_Settings {
 		//add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'enable_editor_width', __( 'Enable Editor Width', 'kadence-blocks' ), array( $this, 'enabled_editor_width_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 
+		// Image picker settings.
+		register_setting( 'kt_blocks_image_picker', 'kt_blocks_image_picker', array( $this, 'validate_options' ) );
+		add_settings_section( 'kt_blocks_image_picker_sec', '', array( $this, 'maxwidths_callback' ), 'kt_blocks_image_picker_section' );
+		add_settings_field( 'enable_image_picker', __( 'Enable Pexels Image Picker', 'kadence-blocks' ), array( $this, 'enabled_image_picker_callback' ), 'kt_blocks_image_picker_section', 'kt_blocks_image_picker_sec' );
+
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -856,6 +861,18 @@ class Kadence_Blocks_Settings {
 		// global $content_width;
 		// echo '<h5 class="kt-main-subtitle">' . esc_html__( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
 		// echo '<div class="kt-main-description-notice">' . esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ) . 'px</div>';
+	}
+	/**
+	 * Outputs Image Picker true false field
+	 */
+	public function enabled_image_picker_callback() {
+		$data = self::get_data_options( 'kt_blocks_image_picker' );
+		$default_enabled = ( isset( $data['enable_image_picker'] ) ? $data['enable_image_picker'] : 'true' );
+		// echo '<p>' . esc_html__( 'Allows a Pexels Image picker in the media library.', 'kadence-blocks' ) . '<p>';
+		echo '<select class="kt-blocks-enable-enable_image_picker kt-image-picker-defaults-select" name="kt_blocks_image_picker[enable_image_picker]">';
+			echo '<option value="false" ' . ( 'false' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
 	}
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
@@ -945,13 +962,26 @@ class Kadence_Blocks_Settings {
 						<?php if ( apply_filters( 'kadence_blocks_editor_width', $this->show_editor_width() ) ) { ?>
 							<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></small></h2>
 							<?php global $content_width; ?>
-								<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
-								<div class="kt-promo-row-area">
+							<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
+							<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kt_blocks_editor_width' );
 									do_settings_sections( 'kt_blocks_editor_width_section' );
 									do_settings_sections( 'kt_blocks_editor_defaults_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_image_picker', true ) ) { ?>
+							<!-- <h2><?php echo esc_html__( 'Use Pexels Image Picker', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Add a Pexels image picker in the media library.', 'kadence-blocks' ); ?></small></h2> -->
+							<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kt_blocks_image_picker' );
+									do_settings_sections( 'kt_blocks_image_picker_section' );
 									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>

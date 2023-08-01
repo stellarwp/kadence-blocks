@@ -1,10 +1,12 @@
 <?php
 /**
- * Outputs google fonts.
+ * Add an external image picker (Pexels) to the media library.
+ *
+ * @package extensions
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -13,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Kadence_Blocks_Image_Picker {
 	/**
 	 * The singleton instance
+	 *
+	 * @var mixed $instance
 	 */
 	private static $instance = null;
 
@@ -53,9 +57,11 @@ class Kadence_Blocks_Image_Picker {
 	 * Enqueue block plugin for backend editor.
 	 */
 	public function enqueue_media() {
-		// Check if the Kadence setting to enable this picker is on.
-		$is_option_enabled = true;
+		// Check if the Kadence setting to enable this picker is on and we're on the right screen.
+		$image_picker_settings  = get_option( 'kt_blocks_image_picker', array() );
+		$is_option_enabled = ( apply_filters( 'kadence_blocks_show_image_picker', true ) && ( ! isset( $image_picker_settings['enable_image_picker'] ) || 'true' === $image_picker_settings['enable_image_picker'] ) );
 		$current_screen = is_admin() && function_exists( 'get_current_screen' ) ? get_current_screen()->base : '';
+
 		if ( $this->image_picker_has_access() && $is_option_enabled && 'upload' !== $current_screen ) {
 
 			wp_enqueue_script( 'kadence-extension-image-picker' );
