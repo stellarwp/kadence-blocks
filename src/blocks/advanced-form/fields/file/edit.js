@@ -297,7 +297,7 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 							isSelected={isSelected}
 							name={name}
 						/>
-						<input type={'file'} disabled={true}/>
+						<input type={'file'} />
 
 						{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 					</div>

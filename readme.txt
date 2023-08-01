@@ -81,6 +81,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 Release Date: August 1st, 2023
 * Add: Ability to select parent form block from form fields.
 * Add: Underline and color options for icon list links.
+* Update: Responsive Measure Control to show inherited sizes.
 * Fix: Adv Form required asterisk color not applying.
 * Fix: Down arrow showing when multiselect is rendered.
 * Fix: Progress bar % hiding when changing position.
@@ -97,6 +98,7 @@ Release Date: August 1st, 2023
 * Fix: Number & Title font size preview in Count Up Block.
 * Fix: Background colors and icon for select fields in Adv Form Block.
 * Fix: Max width units on Table of Contents block.
+* Fix: Spacing issue with Process Bar label and number.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023

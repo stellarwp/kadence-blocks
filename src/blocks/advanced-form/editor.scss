@@ -71,6 +71,7 @@
 	input[type="datetime"],
 	input[type="datetime-local"],
 	input[type="color"],
+	input[type="file"],
 	textarea {
 		-webkit-appearance: none;
 		color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
@@ -83,6 +84,10 @@
 		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
 		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
 		font-family: inherit;
+	}
+	input[type="file"] {
+		width: 100%;
+		pointer-events: none;
 	}
 	input[type="text"]:not(.ignore-field-styles):focus,
 	input[type="email"]:focus,
@@ -99,6 +104,7 @@
 	input[type="datetime"]:focus,
 	input[type="datetime-local"]:focus,
 	input[type="color"]:focus,
+	input[type="file"]:focus,
 	textarea:focus {
 		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a) ) );
 		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
@@ -221,7 +227,7 @@
 			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
 		}
 	}
-	input[type=file]::file-selector-button {
+	input[type="file"]::file-selector-button {
 		margin-right: 1em;
 		border: none;
 		font-size: 90%;
@@ -468,6 +474,12 @@
 		}
 	}
 }
+.kb-advanced-form.kb-form-is-dark {
+	color-scheme: dark;
+	.kb-hidden-field-label {
+		color:var(--global-palette7, #fff );
+	}
+}
 .kadence-blocks-form-warning {
 	background: #fff5f5;
 	margin-top: 10px;
@@ -582,7 +594,7 @@
 }
 // Styles of infield label.
 .wp-block-kadence-advanced-form .kb-form-label-style-infield {
-	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], textarea, select {
+	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="file"], input[type="color"], textarea, select {
 		&:not(.ignore-field-styles) {
 			padding-top: calc(1em + var( --kb-form-v-padding, 0.4em ));
 		}

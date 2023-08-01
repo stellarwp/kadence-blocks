@@ -201,6 +201,7 @@ export function EditInner( props ) {
 		[ `kb-form-basic-style` ]: ( undefined !== style?.basicStyles && false === style.basicStyles ? false : true ),
 		[ `kb-form-hide-required-asterisk` ]: ( undefined !== style?.showRequired && false === style.showRequired ? true : false ),
 		[ `kb-form-has-background` ]: hasBackground,
+		[ `kb-form-is-dark` ]: undefined !== style?.isDark && true === style.isDark,
 		[ `kb-form-input-size-${style?.size}` ]: style?.size,
 	} );
 

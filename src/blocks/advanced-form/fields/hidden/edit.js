@@ -131,7 +131,7 @@ function FieldHidden( { attributes, setAttributes, isSelected, clientId, context
 					}
 				</InspectorControls>
 				<>
-					{label === '' ? <em>Hidden Field</em> : <em>Hidden Field: {label}</em>}
+					{label === '' ? <em className='kb-hidden-field-label'>Hidden Field</em> : <em className='kb-hidden-field-label'>Hidden Field: {label}</em>}
 				</>
 				<FieldBlockAppender inline={ true } className="kb-custom-inbetween-inserter" getRoot={ clientId } />
 			</div>

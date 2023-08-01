@@ -80,9 +80,6 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="radio"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="file"]{
-			display: block
-		}
 		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="checkbox"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}

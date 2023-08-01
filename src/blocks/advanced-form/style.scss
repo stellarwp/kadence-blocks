@@ -176,7 +176,7 @@
 			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
 		}
 	}
-	input[type=file]::file-selector-button {
+	input[type="file"]::file-selector-button {
 		margin-right: 1em;
 		border: none;
 		font-size: 90%;
