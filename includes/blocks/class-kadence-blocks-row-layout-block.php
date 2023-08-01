@@ -1323,7 +1323,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes for the block.
 	 */
 	public function get_video_render( $attributes ) {
-		if ( empty( $attributes['backgroundVideo'][0]['local'] ) && empty( $attributes['backgroundVideo'][0]['vimeo'] ) && empty( $attributes['backgroundVideo'][0]['youtube'] ) ) {
+		if ( empty( $attributes['backgroundVideo'][0]['local'] ) && empty( $attributes['backgroundVideo'][0]['vimeo'] ) && empty( $attributes['backgroundVideo'][0]['youTube'] ) ) {
 			return '';
 		}
 		$output = '';
