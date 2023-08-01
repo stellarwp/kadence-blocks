@@ -8,7 +8,7 @@ import { default as hashString } from '../hash-string';
 export default function getPostOrFseId( props, parentPostData ) {
 
 	const { postId, reusableParent, rootBlock, editedPostId } = parentPostData;
-	const id = getPostOrWidgetId( props,  postId, reusableParent, 0 );
+	const id = getPostOrWidgetId( props, postId, reusableParent, 0 );
 
 	if ( id === 0 ) {
 		// Try getting the FSE template slug.

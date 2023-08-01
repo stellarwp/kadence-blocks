@@ -155,6 +155,11 @@ function KadenceForm( props ) {
 		setBlockDefaults( 'kadence/form', attributes);
 
 		const postOrFseId = getPostOrFseId( props, parentData );
+		if ( postOrFseId !== postID ) {
+			setAttributes( {
+				postID: postOrFseId,
+			} );
+		}
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
@@ -218,13 +223,6 @@ function KadenceForm( props ) {
 			} else {
 				setMessageFontBorderControl( 'individual' );
 			}
-		}
-
-		const checkPostID = getPostOrWidgetId( props );
-		if ( checkPostID !== postID ) {
-			setAttributes( {
-				postID: checkPostID,
-			} );
 		}
 
 		/**

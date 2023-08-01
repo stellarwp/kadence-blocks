@@ -99,6 +99,7 @@ Release Date: August 1st, 2023
 * Fix: Background colors and icon for select fields in Adv Form Block.
 * Fix: Max width units on Table of Contents block.
 * Fix: Spacing issue with Process Bar label and number.
+* Fix: Possible small error with form block.
 
 = 3.1.2 Beta Version 1 =
 Release Date: July 12th, 2023
