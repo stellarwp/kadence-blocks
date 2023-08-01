@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
-Tested up to: 6.2
-Stable tag: 3.1.2
+Tested up to: 6.3
+Stable tag: 3.1.3
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,8 +77,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.3 Beta Version 2 =
-Release Date: July TBD, 2023
+= 3.1.3 =
+Release Date: August 1st, 2023
 * Add: Ability to select parent form block from form fields.
 * Add: Underline and color options for icon list links.
 * Fix: Adv Form required asterisk color not applying.

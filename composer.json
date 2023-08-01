@@ -46,10 +46,10 @@
 			  "file_patterns": []
 			},
 			"packages": [
+				"psr/container",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
-				"lucatume/di52",
-				"psr/container"
+				"lucatume/di52"
 			]
 		}
 	}

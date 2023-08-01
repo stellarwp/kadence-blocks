@@ -65,7 +65,7 @@
     flex-grow: 1;
 }
 .kadence-measure-range-control .kadence-single-measure-range-control {
-    flex-grow: 1;
+    flex: 1;
     display: block;
 	margin: 0;
     padding: 0;
@@ -122,6 +122,9 @@
 }
 
 .kadence-measure-range-control {
+	.kadence-spacing-btn-placeholder {
+		opacity: .4;
+	}
 	.kadence-range-popover-settings .components-base-control__field {
 		margin-bottom: 0;
 	}

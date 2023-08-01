@@ -67,6 +67,7 @@ export default function MeasureRangeControl( {
 	min = 0,
 	beforeIcon = '',
 	help = '',
+	placeholder = [ '', '', '', '' ],
 	defaultValue = [ '', '', '', '' ],
 	control = 'individual',
 	unit = '',
@@ -196,6 +197,7 @@ export default function MeasureRangeControl( {
 								units={ units }
 								onUnit={ onUnit }
 								defaultValue={ defaultValue[0] }
+								placeholder={ placeholder?.[0] ? placeholder?.[0] : '' }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
@@ -226,6 +228,7 @@ export default function MeasureRangeControl( {
 								units={ units }
 								onUnit={ onUnit }
 								defaultValue={ defaultValue[0] }
+								placeholder={ placeholder?.[0] ? placeholder?.[0] : '' }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
@@ -249,6 +252,7 @@ export default function MeasureRangeControl( {
 								units={ units }
 								onUnit={ onUnit }
 								defaultValue={ defaultValue[1] }
+								placeholder={ placeholder?.[1] ? placeholder?.[1] : '' }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
@@ -272,6 +276,7 @@ export default function MeasureRangeControl( {
 								units={ units }
 								onUnit={ onUnit }
 								defaultValue={ defaultValue[2] }
+								placeholder={ placeholder?.[2] ? placeholder?.[2] : '' }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
@@ -295,6 +300,7 @@ export default function MeasureRangeControl( {
 								units={ units }
 								onUnit={ onUnit }
 								defaultValue={ defaultValue[3] }
+								placeholder={ placeholder?.[3] ? placeholder?.[3] : '' }
 								allowReset={ false }
 								disableCustomSizes={ true }
 								setCustomControl={ realSetIsCustom }
