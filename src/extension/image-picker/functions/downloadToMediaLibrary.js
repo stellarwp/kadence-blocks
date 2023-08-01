@@ -68,15 +68,25 @@ function refreshMediaModal(wpAttachmentId) {
 
 		// Delay to allow for tab switching
 		setTimeout(function () {
-			if (wp.media.frame.content.get() !== null) {
-				// Force a refresh of the mdeia modal content.
-				wp.media.frame.content.get().collection._requery(true);
-			}
+			setMediaSelection( wpAttachmentId )
+		}, 100);
+	}
+}
 
-			// Select the attached that was just uploaded.
-			const selection = wp.media.frame.state().get("selection");
-			const selected = parseInt(wpAttachmentId);
-			selection.reset(selected ? [wp.media.attachment(selected)] : []);
-		}, 1000);
+function setMediaSelection( wpAttachmentId ) {
+	if( ( 'undefined' != typeof( wp.media.frame.state() ) && wp.media.frame.state() ) && ( 'undefined' != typeof( wp.media.frame.content ) && wp.media.frame.content ) ) {
+		if (wp.media.frame.content.get() !== null) {
+			// Force a refresh of the mdeia modal content.
+			wp.media.frame.content.get().collection._requery(true);
+		}
+
+		// Select the attached that was just uploaded.
+		const selection = wp.media.frame.state().get("selection");
+		const selected = parseInt(wpAttachmentId);
+		selection.reset(selected ? [wp.media.attachment(selected)] : []);
+	} else {
+		setTimeout(function () {
+			setMediaSelection( wpAttachmentId )
+		}, 100);
 	}
 }
