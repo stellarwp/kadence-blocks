@@ -67,6 +67,8 @@ import { getSpacingOptionOutput } from './utils';
 	const previewBackgroundAttachment = getPreviewSize( previewDevice, ( bgImgAttachment ? bgImgAttachment : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgAttachment && tabletBackground[0].enable ? tabletBackground[0].bgImgAttachment : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgAttachment && mobileBackground[0].enable ? mobileBackground[0].bgImgAttachment : '' ) );
 	const previewBackgroundSettingTab = getPreviewSize( previewDevice, ( backgroundSettingTab ? backgroundSettingTab : 'normal' ), ( undefined !== tabletBackground && tabletBackground?.[0] && tabletBackground?.[0]?.enable ? 'normal' : '' ), ( undefined !== mobileBackground && mobileBackground?.[0] && mobileBackground?.[0]?.enable ? 'normal' : '' ) );
 
+	console.log(attributes)
+
 	const sliderSettings = {
 		type         : backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && backgroundSliderSettings[ 0 ].fade ? 'fade' : 'slide',
 		dots         : ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
@@ -153,7 +155,7 @@ import { getSpacingOptionOutput } from './utils';
 							<video className="kb-blocks-bg-video" playsinline="" loop="" src={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : undefined ) }></video>
 						) }
 						{ ( 'youtube' === backgroundVideoType ) && (
-							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
+							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://img.youtube.com/vi/${ backgroundVideo[ 0 ].youTube }/maxresdefault.jpg)` } }></div>
 						) }
 						{ ( 'vimeo' === backgroundVideoType ) && (
 							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://vumbnail.com/${ backgroundVideo[ 0 ].vimeo }.jpg)` } }></div>
