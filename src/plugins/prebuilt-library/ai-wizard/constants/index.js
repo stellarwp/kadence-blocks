@@ -228,3 +228,11 @@ export const THOUGHT_STARTERS = {
 		"What is the action you want visitors to take?",
 	],
 };
+
+export const KEYWORD_SUGGESTION_STATES = {
+	loading: "loading",
+	notFound: "notFound",
+	error: "error",
+	success: "success",
+	allAdded: "allAdded",
+};
