@@ -157,7 +157,7 @@ function KadenceForm( props ) {
 		const postOrFseId = getPostOrFseId( props, parentData );
 		if ( postOrFseId !== postID ) {
 			setAttributes( {
-				postID: postOrFseId,
+				postID: postOrFseId.toString(),
 			} );
 		}
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
