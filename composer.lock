@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c7eebc2279ac0f30e6abe8529f1e561",
+    "content-hash": "ed2b7eb0929c6dab71e133d9a5b5e548",
     "packages": [
         {
             "name": "lucatume/di52",
@@ -148,16 +148,16 @@
         },
         {
             "name": "stellarwp/telemetry",
-            "version": "dev-main",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "6f14b14ff0a7378b3b6d59de84c85bc349351763"
+                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/6f14b14ff0a7378b3b6d59de84c85bc349351763",
-                "reference": "6f14b14ff0a7378b3b6d59de84c85bc349351763",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/cccdf75a925547d25222a2fa92a3c357a952069b",
+                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b",
                 "shasum": ""
             },
             "require": {
@@ -182,7 +182,6 @@
                 "the-events-calendar/coding-standards": "dev-master",
                 "wp-coding-standards/wpcs": "^2.3"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -198,17 +197,15 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/develop"
+                "source": "https://github.com/stellarwp/telemetry/tree/2.0.1"
             },
-            "time": "2023-06-29T09:07:19+00:00"
+            "time": "2023-06-01T14:25:43+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "stellarwp/telemetry": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
@@ -216,5 +213,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
