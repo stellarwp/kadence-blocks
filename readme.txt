@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -79,7 +79,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.1.4 =
 Release Date: August 1st, 2023
-* Fix: Styling on Testimonial, Row Layout, and Advanced Gallery Sliders.
+* Fix: Possible Styling issue Testimonial Carousel, Row Layout Background Slider, and Advanced Gallery Sliders.
 
 = 3.1.3 =
 Release Date: August 1st, 2023
