@@ -1626,7 +1626,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 Kadence_Blocks_Form_CPT_Controller::get_instance();
 
-add_filter( 'default_content', function ( string $content, \WP_Post $post ) {
+add_filter( 'default_content', function ( $content, $post ) {
 	if ( $post->post_type === 'kadence_form' ) {
 		return serialize_block( [
 			'blockName'    => 'kadence/advanced-form',

@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.8 =
+Release Date: August TBD, 2023
+* Fix: Potential advanced forms conflict with with third-party plugins.
+
 = 3.1.7 =
 Release Date: August 2nd, 2023
 * Fix: Thumbnail Gallery showing vertical thumbnails.
