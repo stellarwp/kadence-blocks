@@ -133,6 +133,7 @@
 
 					navSlider.classList.add("slick-initialized");
 					navSlider.classList.add("slick-slider");
+					navSlider.classList.add("kb-splide");
 
 					let carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					let thumbnailSlider = new Splide(navSlider, navSliderOptions);
