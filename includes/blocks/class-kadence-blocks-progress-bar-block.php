@@ -164,6 +164,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress = isset( $attributes['progress'] ) ? $attributes['progress'] : 0;
 		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
+		$decimal      = ! empty( $attributes['decimal'] ) ? $attributes['decimal'] : 'none';
 		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : true;
 		$strokeWidths = array(
 			!empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2,
@@ -262,6 +263,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	                                } else {
 	                                    value = Math.round(bar.value() * ' . $progress_max . ');
 	                                }
+									' . ( $is_relative ? 'value = bar.value() * 100;' : 'value = bar.value() * ' . $progress_max . ';' ) . '
+									' . ( $decimal === 'one' ? 'value = Math.round( value * 10) / 10;' : ( $decimal === 'two' ? 'value = Math.round( value * 100) / 100;' : 'value = Math.round( value );' ) ) . '
+									
 									if( elementAbove ){
 										elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
 									} else if ( elementInside ){

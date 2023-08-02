@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 3.1.5 =
+Release Date: August 2nd, 2023
+* Add: Support for decimals in progress bar
+* Update: Progress Bar text alignment options.
+* Update: Advanced form for widget screen.
+* Update: Deprecated date settings.
+* Fix: Line height preview in progress bar.
 
 = 3.1.4 =
 Release Date: August 1st, 2023

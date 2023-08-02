@@ -60,7 +60,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
+import { getSettings as getDateSettings } from '@wordpress/date';
 
 import { applyFilters } from '@wordpress/hooks';
 
@@ -230,7 +230,6 @@ function KadenceCountdown( props ) {
 
 		if ( !date ) {
 			dateSettings = getDateSettings();
-
 			const { timezone } = dateSettings;
 			const today = new Date();
 			const newDate = new Date();

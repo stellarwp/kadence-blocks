@@ -176,7 +176,7 @@
 					"",
 					""
 				],
-				"linetype": "px",
+				"lineType": "",
 				"letterSpacing": [
 					"",
 					"",
@@ -228,7 +228,7 @@
 					"",
 					""
 				],
-				"linetype": "px",
+				"lineType": "",
 				"letterSpacing": [
 					"",
 					"",
@@ -257,16 +257,20 @@
 			}
 		},
 		"progressAmount": {
-			"type": "integer",
+			"type": "number",
 			"default": 90
 		},
 		"progressMax": {
-			"type": "integer",
+			"type": "number",
 			"default": 100
 		},
 		"displayPercent": {
 			"type": "boolean",
 			"default": true
+		},
+		"decimal": {
+			"type": "string",
+			"default": "none"
 		},
 		"numberPrefix": {
 			"type": "string",

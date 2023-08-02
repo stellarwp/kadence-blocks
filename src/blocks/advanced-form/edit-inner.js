@@ -15,11 +15,13 @@ import { useState, useCallback, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { size, get, isEqual } from 'lodash';
+import { addQueryArgs } from '@wordpress/url';
 import {
 	useEntityBlockEditor,
 	useEntityProp,
 } from '@wordpress/core-data';
 import { store as editorStore } from '@wordpress/block-editor';
+import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 	InspectorControlTabs,
@@ -56,6 +58,8 @@ import {
 	ToggleControl,
 	ToolbarGroup,
 	ToolbarButton,
+	Button,
+	Placeholder,
 	TextareaControl,
 } from '@wordpress/components';
 
@@ -455,6 +459,42 @@ export function EditInner( props ) {
 				<div className='kb-form-hide-while-setting-up'>
 					<div {...innerBlocksProps} />
 				</div>
+			</>
+		);
+	}
+	if ( typeof pagenow !== 'undefined' && ( 'widgets' === pagenow || 'customize' === pagenow ) ) {
+		const editPostLink = addQueryArgs( 'post.php', { 
+			post: id, 
+			action: 'edit' 
+		} );
+		return (
+			<>
+				<Placeholder
+					className="kb-select-or-create-placeholder"
+					label={__( 'Kadence Form', 'kadence-blocks' )}
+					icon={ formBlockIcon }
+				>
+					<p style={{ width: '100%', marginBottom:'10px'}}>{ __( 'Advanced forms can not be edited within the widgets screen.', 'kadence-blocks' ) }</p>
+					<Button href={ editPostLink } variant='primary' className='kb-form-edit-link'>
+						{ __( 'Edit Form', 'kadence-blocks' ) }
+					</Button>
+				</Placeholder>
+				<InspectorControls>
+					<KadencePanelBody
+							panelName={'kb-advanced-form-selected-switch'}
+							title={ __( 'Selected Form', 'kadence-blocks' ) }
+						>
+						<SelectForm
+							postType="kadence_form"
+							label={__( 'Selected Form', 'kadence-blocks' )}
+							hideLabelFromVision={ true }
+							onChange={ ( nextId ) => {
+								setAttributes( { id: parseInt( nextId ) } ) 
+							} }
+							value={ id }
+						/>
+					</KadencePanelBody>
+				</InspectorControls>
 			</>
 		);
 	}

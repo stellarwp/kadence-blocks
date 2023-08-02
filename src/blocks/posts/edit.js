@@ -45,7 +45,7 @@ import {
 	KadenceBlockDefaults,
 	CopyPasteAttributes
 } from '@kadence/components';
-import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
+import { dateI18n, format, getSettings as getDateSettings } from '@wordpress/date';
 import {
 	Fragment,
 	useEffect,
@@ -252,7 +252,7 @@ function KadencePosts( props ) {
 		} );
 	};
 	const HtmlTagOut = 'h' + ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[ 0 ].level ? titleFont[ 0 ].level : '2' );
-	const dateFormat = __experimentalGetSettings().formats.date;
+	const dateFormat = getDateSettings().formats.date;
 
 	const settingspanel = (
 		<>
