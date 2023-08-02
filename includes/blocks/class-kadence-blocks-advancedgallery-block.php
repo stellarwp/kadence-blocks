@@ -72,6 +72,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) ) {
 			$this->enqueue_style( 'kadence-blocks-splide' );
+			$this->enqueue_style( 'kadence-kb-splide' );
 			$this->should_render_inline_stylesheet( 'kadence-blocks-splide' );
 
 			$this->enqueue_script( 'kadence-blocks-splide-init' );

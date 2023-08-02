@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.4 =
+Release Date: August 1st, 2023
+* Fix: Styling on Testimonial, Row Layout, and Advanced Gallery Sliders.
+
 = 3.1.3 =
 Release Date: August 1st, 2023
 * Add: Ability to select parent form block from form fields.

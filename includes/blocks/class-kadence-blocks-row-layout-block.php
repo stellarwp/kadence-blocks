@@ -61,6 +61,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
 			$this->enqueue_style( 'kadence-blocks-splide' );
+			$this->enqueue_style( 'kadence-kb-splide' );
 			if ( $inline ) {
 				$this->should_render_inline_stylesheet( 'kadence-blocks-splide' );
 			}

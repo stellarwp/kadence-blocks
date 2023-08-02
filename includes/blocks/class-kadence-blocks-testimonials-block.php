@@ -77,6 +77,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		/* Tiny slider is required if we're using a carousel layout */
 		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
 			$this->enqueue_style( 'kadence-blocks-splide' );
+			$this->enqueue_style( 'kadence-kb-splide' );
 			$this->enqueue_script( 'kadence-blocks-splide-init' );
 		}
 		// Main Icon.
