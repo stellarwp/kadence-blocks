@@ -115,8 +115,18 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 	public function email() {
 		$to      = isset( $this->form_args['attributes']['email']['emailTo'] ) && ! empty( trim( $this->form_args['attributes']['email']['emailTo'] ) ) ? trim( $this->form_args['attributes']['email']['emailTo'] ) : get_option( 'admin_email' );
 		$subject = isset( $this->form_args['attributes']['email']['subject'] ) && ! empty( trim( $this->form_args['attributes']['email']['subject'] ) ) ? $this->form_args['attributes']['email']['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
+		$from_email = isset( $this->form_args['attributes']['email']['fromEmail'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ? sanitize_email( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) : '';
+		$from_name = ( isset( $this->form_args['attributes']['email']['fromName'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromName'] ) ) ? trim( $this->form_args['attributes']['email']['fromName'] ) . ' ' : '' );
+		$email_cc = isset( $this->form_args['attributes']['email']['cc'] ) && ! empty( trim( $this->form_args['attributes']['email']['cc'] ) ) ? sanitize_email( trim( $this->form_args['attributes']['email']['cc'] ) ) : '';
+		$email_bcc = isset( $this->form_args['attributes']['email']['bcc'] ) && ! empty( trim( $this->form_args['attributes']['email']['bcc'] ) ) ? $this->form_args['attributes']['email']['bcc'] : '';
 
+		$to = $this->do_field_replacements( $to );
 		$subject = $this->do_field_replacements( $subject );
+		$from_email = $this->do_field_replacements( $from_email );
+		$from_name = $this->do_field_replacements( $from_name );
+		$email_cc = $this->do_field_replacements( $email_cc );
+		$email_bcc = $this->do_field_replacements( $email_bcc );
+
 		$email_content = '';
 		$reply_email   = false;
 		foreach ( $this->responses as $key => $data ) {
@@ -126,7 +136,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		}
 
 		if ( isset( $this->form_args['attributes']['email']['replyTo'] ) && 'from_email' === $this->form_args['attributes']['email']['replyTo'] ) {
-			$reply_email = isset( $this->form_args['attributes']['email']['fromEmail'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ? sanitize_email( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) : false;
+			$reply_email = $from_email ? $from_email : false;
 		}
 
 		if ( ! isset( $this->form_args['attributes']['email']['html'] ) || ( isset( $this->form_args['attributes']['email']['html'] ) && $this->form_args['attributes']['email']['html'] ) ) {
@@ -149,32 +159,17 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
 		}
 
-		if ( isset( $this->form_args['attributes']['email']['fromEmail'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ) {
-			$from_name = ( isset( $this->form_args['attributes']['email']['fromName'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromName'] ) ) ? trim( $this->form_args['attributes']['email']['fromName'] ) . ' ' : '' );
-			if ( strpos( $from_name, '{field_' ) !== false ) {
-				preg_match_all( '/{field_(.*?)}/', $from_name, $match );
-				if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
-					foreach ( $match[1] as $field_id ) {
-						if ( isset( $field_id ) ) {
-							$real_id = absint( $field_id ) - 1;
-							if ( isset( $this->responses[ $real_id ] ) && is_array( $this->responses[ $real_id ] ) && isset( $this->responses[ $real_id ]['value'] ) ) {
-								$from_name = str_replace( '{field_' . $field_id . '}', $this->responses[ $real_id ]['value'], $from_name );
-							}
-						}
-					}
-				}
-			}
-
-			$headers .= 'From: ' . $from_name . '<' . sanitize_email( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) . '>' . "\r\n";
+		if ( $from_email ) {
+			$headers .= 'From: ' . $from_name . '<' . $from_email . '>' . "\r\n";
 		}
 
 		$cc_headers = '';
-		if ( isset( $this->form_args['attributes']['email']['cc'] ) && ! empty( trim( $this->form_args['attributes']['email']['cc'] ) ) ) {
-			$cc_headers = 'Cc: ' . sanitize_email( trim( $this->form_args['attributes']['email']['cc'] ) ) . "\r\n";
+		if ( $email_cc ) {
+			$cc_headers = 'Cc: ' . $email_cc . "\r\n";
 		}
 		$mail = wp_mail( $to, $subject, $body, $headers . $cc_headers );
-		if ( isset( $this->form_args['attributes']['email']['bcc'] ) && ! empty( trim( $this->form_args['attributes']['email']['bcc'] ) ) ) {
-			$bcc_emails = explode( ',', $this->form_args['attributes']['email']['bcc'] );
+		if ( $email_bcc ) {
+			$bcc_emails = explode( ',', $email_bcc );
 			foreach ( $bcc_emails as $bcc_email ) {
 				wp_mail( sanitize_email( trim( $bcc_email ) ), $subject, $body, $headers );
 			}
