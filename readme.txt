@@ -88,7 +88,7 @@ Release Date: August 2nd, 2023
 = 3.1.6 =
 Release Date: August 2nd, 2023
 * Fix: Form Recovery issue.
-* Fix: Possible undefined varable notice.
+* Fix: Possible undefined variable notice.
 
 = 3.1.5 =
 Release Date: August 2nd, 2023
