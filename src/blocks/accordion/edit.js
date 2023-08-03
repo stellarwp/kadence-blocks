@@ -1284,6 +1284,7 @@ function KadenceAccordionComponent( props ) {
 									panelName={'kb-accordion-pane-title-font-settings'}
 								>
 									<TypographyControls
+										fontGroup={'heading'}
 										fontSize={titleStyles[ 0 ].size}
 										onFontSize={( value ) => saveTitleStyles( { size: value } )}
 										fontSizeType={titleStyles[ 0 ].sizeType}

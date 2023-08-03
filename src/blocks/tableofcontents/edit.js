@@ -780,6 +780,7 @@ function KadenceTableOfContents( props ) {
 											onChange={(value) => setAttributes({titleColor: value})}
 										/>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={titleSize}
 											onFontSize={(value) => setAttributes({titleSize: value})}
 											fontSizeType={titleSizeType}
@@ -886,6 +887,7 @@ function KadenceTableOfContents( props ) {
 									onChange={value => setAttributes({linkStyle: value})}
 								/>
 								<TypographyControls
+									fontGroup={'body'}
 									fontSize={contentSize}
 									onFontSize={(value) => setAttributes({contentSize: value})}
 									fontSizeType={contentSizeType}

@@ -1942,6 +1942,7 @@ function KadenceForm( props ) {
 								/>
 							</KadencePanelBody>
 							<TypographyControls
+								fontGroup={'body'}
 								fontSize={messageFont[ 0 ].size}
 								onFontSize={( value ) => saveMessageFont( { size: value } )}
 								fontSizeType={messageFont[ 0 ].sizeType}
@@ -1977,6 +1978,7 @@ function KadenceForm( props ) {
 								panelName={'kb-form-advanced-message-font-settings'}
 							>
 								<TypographyControls
+									fontGroup={'body'}
 									letterSpacing={messageFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value } )}
 									fontFamily={messageFont[ 0 ].family}
@@ -2647,6 +2649,7 @@ function KadenceForm( props ) {
 								panelName={'kb-form-advanced-label-settings'}
 							>
 								<TypographyControls
+									fontGroup={'body'}
 									letterSpacing={labelFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
 									textTransform={labelFont[ 0 ].textTransform}
@@ -3401,6 +3404,7 @@ function KadenceForm( props ) {
 								panelName={'kb-form-advanced-button-settings'}
 							>
 								<TypographyControls
+									fontGroup={'body'}
 									letterSpacing={submitFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveSubmitFont( { letterSpacing: value } )}
 									textTransform={submitFont[ 0 ].textTransform}

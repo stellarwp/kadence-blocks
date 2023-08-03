@@ -259,7 +259,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'editor_width'   => $enable_editor_width,
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
 			'headingWeights' => apply_filters( 'kadence_blocks_default_heading_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null ) ),
-			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
+			'bodyWeights'    => apply_filters( 'kadence_blocks_default_body_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_body_weights() : null ) ),
+			'buttonWeights'  => apply_filters( 'kadence_blocks_default_button_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null ) ),
 			'postTypes'      => kadence_blocks_get_post_types(),
 			'taxonomies'     => kadence_blocks_get_taxonomies(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
@@ -472,6 +473,33 @@ function kadence_blocks_get_headings_weights() {
 /**
  * Get an array font weight options.
  */
+function kadence_blocks_get_body_weights() {
+	$weights = array();
+	if ( function_exists( 'Kadence\kadence' ) ) {
+		$base_font = \Kadence\kadence()->option( 'base_font' );
+		if ( is_array( $base_font ) ) {
+			if ( isset( $base_font['family'] ) && ! empty( $base_font['family'] ) && substr( $base_font['family'], 0, strlen( '-apple-system' ) ) === '-apple-system' ) {
+				// System Font.
+				$weights = array(
+					array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) ),
+					array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) ),
+					array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) ),
+					array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) ),
+					array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) ),
+					array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) ),
+					array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) ),
+					array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) ),
+					array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) ),
+					array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) ),
+				);
+			}
+		}
+	}
+	return apply_filters( 'kadence_blocks_body_weight_options', $weights );
+}
+/**
+ * Get an array font weight options.
+ */
 function kadence_blocks_get_button_weights() {
 	$weights = array();
 	if ( function_exists( 'Kadence\kadence' ) ) {
@@ -539,7 +567,6 @@ function kadence_blocks_get_button_weights() {
 				);
 			}
 		}
-		//print_r( $button_font );
 	}
 	return apply_filters( 'kadence_blocks_button_weight_options', $weights );
 }

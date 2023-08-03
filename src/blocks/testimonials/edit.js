@@ -1720,6 +1720,7 @@ function KadenceTestimonials( props ) {
                                                     onChange={value => saveContentFont({color: value})}
                                                 />
                                                 <TypographyControls
+                                                    fontGroup={'body'}
                                                     fontSize={contentFont[0].size}
                                                     onFontSize={(value) => saveContentFont({size: value})}
                                                     fontSizeType={contentFont[0].sizeType}
@@ -1944,6 +1945,7 @@ function KadenceTestimonials( props ) {
                                                     onChange={(value) => saveNameFont({color: value})}
                                                 />
                                                 <TypographyControls
+                                                    fontGroup={'body'}
                                                     fontSize={nameFont[0].size}
                                                     onFontSize={(value) => saveNameFont({size: value})}
                                                     fontSizeType={nameFont[0].sizeType}
@@ -2002,6 +2004,7 @@ function KadenceTestimonials( props ) {
                                                     onChange={(value) => saveOccupationFont({color: value})}
                                                 />
                                                 <TypographyControls
+                                                    fontGroup={'body'}
                                                     fontSize={occupationFont[0].size}
                                                     onFontSize={(value) => saveOccupationFont({size: value})}
                                                     fontSizeType={occupationFont[0].sizeType}

@@ -1984,6 +1984,7 @@ function KadenceInfoBox( props ) {
 												step={1}
 											/>
 											<TypographyControls
+												fontGroup={'body'}
 												fontFamily={mediaNumber[ 0 ] && mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : ''}
 												onFontFamily={( value ) => saveMediaNumber( { family: value } )}
 												onFontChange={( select ) => {
@@ -2242,6 +2243,7 @@ function KadenceInfoBox( props ) {
 												onChange2={value => setAttributes( { textHoverColor: value } )}
 											/>
 											<TypographyControls
+												fontGroup={'body'}
 												fontSize={textFont[ 0 ].size}
 												onFontSize={( value ) => saveTextFont( { size: value } )}
 												fontSizeType={textFont[ 0 ].sizeType}
@@ -2368,6 +2370,7 @@ function KadenceInfoBox( props ) {
 												max={200}
 											/>
 											<TypographyControls
+												fontGroup={'body'}
 												fontSize={learnMoreStyles[ 0 ].size}
 												onFontSize={( value ) => saveLearnMoreStyles( { size: value } )}
 												fontSizeType={learnMoreStyles[ 0 ].sizeType}

@@ -80,6 +80,7 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 				panelName={'kb-form-advanced-label-settings'}
 			>
 				<TypographyControls
+					fontGroup={'body'}
 					reLetterSpacing={labelFont.letterSpacing}
 					onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
 					letterSpacingType={labelFont.letterType}

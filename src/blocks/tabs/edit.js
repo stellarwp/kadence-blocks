@@ -1446,6 +1446,7 @@ function KadenceTabs( props ) {
 										panelName={'kb-tab-title-font'}
 									>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={ [ size, tabSize, mobileSize ] }
 											onFontSize={(value) => saveFontAttribute( 'size', value )}
 											fontSizeType={ sizeType ? sizeType : 'px'}
@@ -1520,6 +1521,7 @@ function KadenceTabs( props ) {
 										/>
 										{enableSubtitle && (
 											<TypographyControls
+												fontGroup={'body'}
 												fontSize={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].size ? subtitleFont[0].size : ['', '', ''])}
 												onFontSize={(value) => saveSubtitleFont({size: value})}
 												fontSizeType={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].sizeType ? subtitleFont[0].sizeType : 'px')}

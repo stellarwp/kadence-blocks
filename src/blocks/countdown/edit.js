@@ -968,7 +968,7 @@ function KadenceCountdown( props ) {
 											onChange={value => setAttributes( { numberColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'number-item'}
+											fontGroup={'body'}
 											fontSize={numberFont[ 0 ].size}
 											onFontSize={( value ) => saveNumberFont( { size: value } )}
 											fontSizeType={numberFont[ 0 ].sizeType}
@@ -1021,7 +1021,7 @@ function KadenceCountdown( props ) {
 											onChange={value => setAttributes( { labelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'label-item'}
+											fontGroup={'body'}
 											fontSize={labelFont[ 0 ].size}
 											onFontSize={( value ) => saveLabelFont( { size: value } )}
 											fontSizeType={labelFont[ 0 ].sizeType}
@@ -1073,7 +1073,7 @@ function KadenceCountdown( props ) {
 											onChange={value => setAttributes( { preLabelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'prelabel-item'}
+											fontGroup={'body'}
 											fontSize={preLabelFont[ 0 ].size}
 											onFontSize={( value ) => savePreFont( { size: value } )}
 											fontSizeType={preLabelFont[ 0 ].sizeType}
@@ -1125,7 +1125,7 @@ function KadenceCountdown( props ) {
 											onChange={value => setAttributes( { postLabelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'postlabel-item'}
+											fontGroup={'body'}
 											fontSize={postLabelFont[ 0 ].size}
 											onFontSize={( value ) => savePostFont( { size: value } )}
 											fontSizeType={postLabelFont[ 0 ].sizeType}

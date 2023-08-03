@@ -803,7 +803,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 										panelName={'kb-adv-btn-font-family'}
 									>
 										<TypographyControls
-											fontGroup={'typography'}
+											fontGroup={'button'}
 											fontSize={typography[0].size}
 											onFontSize={( value ) => saveTypography( { size: value } )}
 											fontSizeType={typography[0].sizeType}

@@ -44,6 +44,7 @@ export default function RadioLabelOptions( { setAttributes, radioLabelFont } ) {
 				panelName={'kb-form-advanced-label-settings'}
 			>
 				<TypographyControls
+					fontGroup={'body'}
 					reLetterSpacing={radioLabelFont?.letterSpacing}
 					onLetterSpacing={( value ) => saveRadioLabelFont( { letterSpacing: value } )}
 					letterSpacingType={radioLabelFont?.letterType}

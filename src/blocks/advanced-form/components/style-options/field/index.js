@@ -312,6 +312,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				panelName={'kb-form-advanced-field-settings'}
 			>
 				<TypographyControls
+					fontGroup={'body'}
 					reLetterSpacing={inputFont.letterSpacing}
 					onLetterSpacing={( value ) => saveInputFont( { letterSpacing: value } )}
 					letterSpacingType={inputFont?.letterType}

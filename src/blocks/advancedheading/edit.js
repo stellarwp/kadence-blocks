@@ -1210,7 +1210,7 @@ function KadenceAdvancedHeading( props ) {
 										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
 									/>
 									<TypographyControls
-										fontGroup={'mark-heading'}
+										fontGroup={'heading'}
 										fontSize={markSize}
 										onFontSize={( value ) => setAttributes( { markSize: value } )}
 										fontSizeType={markSizeType}

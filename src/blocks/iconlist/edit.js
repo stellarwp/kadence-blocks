@@ -487,6 +487,7 @@ function KadenceIconLists( props ) {
 											}}
 										/>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={listStyles[ 0 ].size}
 											onFontSize={( value ) => saveListStyles( { size: value } )}
 											fontSizeType={listStyles[ 0 ].sizeType}

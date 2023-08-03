@@ -135,6 +135,7 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 				panelName={'kb-form-advanced-message-font-settings'}
 			>
 				<TypographyControls
+					fontGroup={'body'}
 					reLetterSpacing={messageFont[0].letterSpacing}
 					onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value } )}
 					letterSpacingType={messageFont[0].letterType}

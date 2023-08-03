@@ -528,7 +528,7 @@ function KadencePosts( props ) {
 							blockSlug={ 'kadence/posts' }
 						>
 							<TypographyControls
-								fontGroup={'post-title'}
+								fontGroup={'heading'}
 								tagLevel={titleFont[ 0 ].level}
 								tagLowLevel={2}
 								tagHighLevel={7}

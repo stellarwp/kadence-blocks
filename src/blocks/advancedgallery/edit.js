@@ -1280,6 +1280,7 @@ function GalleryEdit( props ) {
 												onOpacityChange={value => saveCaptionFont( { backgroundOpacity: value } )}
 											/>
 											<TypographyControls
+												fontGroup={'body'}
 												fontSize={captionStyles[ 0 ].size}
 												onFontSize={( value ) => saveCaptionFont( { size: value } )}
 												fontSizeType={captionStyles[ 0 ].sizeType}
