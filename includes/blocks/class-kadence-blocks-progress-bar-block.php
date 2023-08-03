@@ -264,7 +264,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	                                    value = Math.round(bar.value() * ' . $progress_max . ');
 	                                }
 									' . ( $is_relative ? 'value = bar.value() * 100;' : 'value = bar.value() * ' . $progress_max . ';' ) . '
-									' . ( $decimal === 'one' ? 'value = Math.round( value * 10) / 10;' : ( $decimal === 'two' ? 'value = Math.round( value * 100) / 100;' : 'value = Math.round( value );' ) ) . '
+									' . ( $decimal === 'one' ? 'value = Math.round( value * 10) / 10;value = value.toFixed(1);' : ( $decimal === 'two' ? 'value = Math.round( value * 100) / 100;value = value.toFixed(2);' : 'value = Math.round( value );' ) ) . '
 									
 									if( elementAbove ){
 										elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";

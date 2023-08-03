@@ -264,8 +264,10 @@ export function Edit( props ) {
 			}
 			if ( decimal === 'one' ) {
 				value = Math.round(value * 10) / 10;
+				value = value.toFixed(1)
 			} else if ( decimal === 'two' ) {
 				value = Math.round(value * 100) / 100;
+				value = value.toFixed(2)
 			} else {
 				value = Math.round( value );
 			}
@@ -293,14 +295,13 @@ export function Edit( props ) {
 	const container = '#progress-item' + uniqueID;
 	const iFrameSelector = document.getElementsByName( 'editor-canvas' );
 	const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
-	const containerDiv = selector.querySelector( container );
 	let progressItem = null;
 
 	useEffect( () => {
+		const containerDiv = selector.querySelector( container );
 		if ( containerDiv === null ) {
 			return;
 		}
-
 		if ( barType === 'line' ) {
 			progressItem = new Line( containerDiv, progressAttributes );
 		} else if ( barType === 'circle' ) {
@@ -318,7 +319,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ containerDiv, progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal ] );
+	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID ] );
 
 	const RenderLabel = ( currentPosition ) => {
 		if ( currentPosition !== labelPosition || ( !displayLabel && !displayPercent ) ) {
@@ -682,7 +683,7 @@ export function Edit( props ) {
 										onChange={value => saveLabelFont( { color: value } )}
 									/>
 									<TypographyControls
-										fontGroup={'heading'}
+										fontGroup={'body'}
 										fontSize={labelFont.size}
 										onFontSize={( value ) => saveLabelFont( { size: value } )}
 										fontSizeType={labelFont.sizeType}
@@ -736,7 +737,7 @@ export function Edit( props ) {
 								onChange={value => saveNumberFont( { color: value } )}
 							/>
 							<TypographyControls
-								fontGroup={'numberheading'}
+								fontGroup={'body'}
 								fontSize={numberFont.size}
 								onFontSize={( value ) => saveNumberFont( { size: value } )}
 								fontSizeType={numberFont.sizeType}
