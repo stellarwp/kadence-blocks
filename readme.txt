@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,9 +78,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 3.1.8 =
-Release Date: August TBD, 2023
-* Fix: Potential advanced forms conflict with with third-party plugins.
+Release Date: August 3rd, 2023
+* Update: Force Decimals to show if set in progress bar.
+* Update: Better font weight inherit style options.
 * Fix: Advanced Form file uploads.
+* Fix: Potential advanced forms conflict with with third-party plugins.
+* Fix: Possible issue with slider flickering on some mobile browsers.
+* Fix: Metadata being included in block defaults.
+* Fix: Issue with progress bar rendering. 
+* Fix: Issue where shorter youtube videos would not loop unless in a playlist.
+* Fix: CountUp block issue with font family in editor.
 
 = 3.1.7 =
 Release Date: August 2nd, 2023
