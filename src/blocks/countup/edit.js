@@ -289,7 +289,7 @@ function KadenceCounterUp( props ) {
 								fontSize     : getFontSizeOptionOutput( titleFont[ 0 ].size[ 0 ], titleFont[ 0 ].sizeType ),
 								lineHeight   : ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
 								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
-								fontFamily   : ( titleFont[ 0 ].family ? titleFontr[ 0 ].family : '' ),
+								fontFamily   : ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 								minHeight    : ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 								textAlign    : previewTitleAlign,
