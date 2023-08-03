@@ -80,6 +80,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.1.8 =
 Release Date: August TBD, 2023
 * Fix: Potential advanced forms conflict with with third-party plugins.
+* Fix: Advanced Form file uploads.
 
 = 3.1.7 =
 Release Date: August 2nd, 2023

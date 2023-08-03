@@ -300,7 +300,7 @@
 			var form_data = new FormData(self);
 			form_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
 			//form_data = window.kadenceAdvancedForm.serialize( form_data );
-			form_data = new URLSearchParams(form_data);
+			// form_data = new URLSearchParams(form_data);
 			//form_data = form_data + '&_kb_form_verify=' + kb_adv_form_params.nonce;
 			return form_data;
 		},
@@ -325,56 +325,63 @@
 				form.append( el );
 				submitButton.setAttribute( 'disabled', 'disabled' )
 				submitButton.classList.add( 'button-primary-disabled' );
-				var request = new XMLHttpRequest();
-				request.open( 'POST', kb_adv_form_params.ajaxurl, true );
-				request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-				request.onload = function () {
-					if ( this.status >= 200 && this.status < 400 ) {
-						// If successful
-						var response = JSON.parse( this.response );
-						if ( response.success ) {
-							const submissionResults = response?.submissionResults; 
-							var event = new CustomEvent( 'kb-advanced-form-success', {
-								'detail': {
-									'uniqueId': ( form.querySelector( 'input[name="_kb_adv_form_id"]' ) ? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value : '' ),
-									'submissionResults': submissionResults
-								}
-							} );
-							// Dispatch the event.
-							window.document.body.dispatchEvent(event);
-							if ( response.redirect ) {
-								window.location.replace(response.redirect);
-							} else {
-								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
-								if ( response?.hide ) {
-									form.remove();
-								} else {
-									window.kadenceAdvancedForm.clearForm( form );
-								}
-							}
-						} else {
-							if ( response.data ) {
-								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
-								if ( response.data.required ) {
-									if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
-										window.kadenceAdvancedForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
-									}
-								}
-							}
-						}
-					}
-					if ( form.querySelector('.g-recaptcha') ) {
+
+				let fetchOptions = {
+					method: 'POST',
+					body  : form_data,
+				};
+
+				fetch( kb_adv_form_params.ajaxurl, fetchOptions ).then( ( response ) => {
+					if ( form.querySelector( '.g-recaptcha' ) ) {
 						grecaptcha.reset();
 					}
 					submitButton.removeAttribute( 'disabled' );
 					submitButton.classList.remove( 'button-primary-disabled' );
 					form.querySelector( '.kb-adv-form-loading' ).remove();
-				};
-				request.onerror = function() {
-					// Connection error
-					console.log('Connection error');
-				};
-				request.send( form_data.toString() );
+
+					if ( response.status >= 200 && response.status < 400 ) {
+						return response.json();
+					}
+
+				} ).then( ( body ) => {
+
+					var response = body;
+
+					if ( response.success ) {
+						const submissionResults = response?.submissionResults;
+						var event = new CustomEvent( 'kb-advanced-form-success', {
+							'detail': {
+								'uniqueId'         : ( form.querySelector( 'input[name="_kb_adv_form_id"]' ) ? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value : '' ),
+								'submissionResults': submissionResults,
+							},
+						} );
+						// Dispatch the event.
+						window.document.body.dispatchEvent( event );
+						if ( response.redirect ) {
+							window.location.replace( response.redirect );
+						} else {
+							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
+							if ( response?.hide ) {
+								form.remove();
+							} else {
+								window.kadenceAdvancedForm.clearForm( form );
+							}
+						}
+					} else {
+						if ( response.data ) {
+							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
+							if ( response.data.required ) {
+								if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
+									window.kadenceAdvancedForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
+								}
+							}
+						}
+					}
+
+				} ).catch( function( error ) {
+					console.log( 'Connection error' );
+				} );
+
 			}
 
 		},
