@@ -58,8 +58,8 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
  * @since 4.3
  */
 function refreshMediaModal(wpAttachmentId) {
-	if (wp.media && wp.media.frame && wp.media.frame.el) {
-		const mediaModalEl = wp.media.frame.el;
+	if (window.kadenceImagePickerFrame?.el) {
+		const mediaModalEl = window.kadenceImagePickerFrame.el;
 		const mediaTab = mediaModalEl.querySelector("#menu-item-browse");
 		if (mediaTab) {
 			// Open the 'Media Library' tab.
@@ -74,16 +74,19 @@ function refreshMediaModal(wpAttachmentId) {
 }
 
 function setMediaSelection( wpAttachmentId ) {
-	if( ( 'undefined' != typeof( wp.media.frame.state() ) && wp.media.frame.state() ) && ( 'undefined' != typeof( wp.media.frame.content ) && wp.media.frame.content ) ) {
-		if (wp.media.frame.content.get() !== null) {
-			// Force a refresh of the mdeia modal content.
-			wp.media.frame.content.get().collection._requery(true);
+	if( ( 'undefined' != typeof( window.kadenceImagePickerFrame.state() ) && window.kadenceImagePickerFrame.state() ) && ( 'undefined' != typeof( window.kadenceImagePickerFrame.content ) && window.kadenceImagePickerFrame.content ) ) {
+		if (window.kadenceImagePickerFrame.content.get() !== null) {
+			// Force a refresh of the media modal content.
+			window.kadenceImagePickerFrame.content.get().collection._requery(true);
 		}
 
 		// Select the attached that was just uploaded.
-		const selection = wp.media.frame.state().get("selection");
+		const selection = window.kadenceImagePickerFrame.state().get("selection");
 		const selected = parseInt(wpAttachmentId);
-		selection.reset(selected ? [wp.media.attachment(selected)] : []);
+		if ( selected ) {
+			selection.add([wp.media.attachment(selected)]);
+			selection.single([wp.media.attachment(selected)]);
+		}
 	} else {
 		setTimeout(function () {
 			setMediaSelection( wpAttachmentId )

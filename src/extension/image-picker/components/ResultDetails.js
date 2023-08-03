@@ -58,11 +58,10 @@ export default function Result(props) {
 	}, [ alt ] );
 
     const resultData = { ...result, ...{ alt: altValue }, ...{ filename: filenameValue } }
-    const downloadedText = downloadComplete ? __('Download Complete') : __('Download Image');
-
+    const downloadedText = downloadComplete ? __('Download Complete', 'kadence-blocks') : __('Download Image', 'kadence-blocks');
     if ( result && sizes ) {
         return (
-            <Fragment>
+            <>
                 <div className="result-details-container">
                     <img src={sizes[0].src} alt={alt} className={"img"} width="150px" height="150px"/>
                     <hr />
@@ -104,7 +103,7 @@ export default function Result(props) {
                     variant={'primary'}
                     className={'download-button'}
                 />
-            </Fragment>
+            </>
         );
     } else {
         return (

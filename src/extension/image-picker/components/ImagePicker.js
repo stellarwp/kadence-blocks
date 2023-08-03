@@ -23,7 +23,6 @@ import { debounce, isEmpty } from 'lodash';
  * @param {string}  props.provider  Image provider (eg Pexels).
  * @param {Array}   props.data      API results from the initial seeded / cached data.
  * @param {Element} props.container Image Picker container element.
- * @param {Object}  props.api_error API error object.
  * @return {JSX.Element}            ImagePicker component.
  */
 export default function ImagePicker(props) {
@@ -32,22 +31,8 @@ export default function ImagePicker(props) {
 		provider,
 		data,
 		container,
-		api_error = null,
-		clientId = null,
 	} = props;
 
-	const delay = 250;
-	const searchClass = "searching";
-	const searchDefaults = {
-		active: false,
-		term: "",
-		type: "",
-		results: 0,
-	};
-
-    //seed initial state from props passed in
-    // const [dataState, setDataState] = useState( props.data.data );
-    // const [currentUserSelectionIndex, setCurrentUserSelectionIndex] = useState( 0 );
     const [isLoading, setIsLoading] = useState( false );
 
     const { imagePickerQuery, imagePickerSelection, imagePickerResults } = useSelect(
@@ -67,8 +52,6 @@ export default function ImagePicker(props) {
 	const { setImagePickerSelection } = useDispatch( 'kadenceblocks/data' );
 	const { setImagePickerResults } = useDispatch( 'kadenceblocks/data' );
 
-
-    console.log(1, imagePickerQuery, imagePickerSelection, imagePickerResults);
 
     const totalImages = 'undefined' != typeof( imagePickerResults.total ) ? imagePickerResults.total : 0;
     const page = 'undefined' != typeof( imagePickerResults.page ) ? imagePickerResults.page : 1;
@@ -112,7 +95,7 @@ export default function ImagePicker(props) {
     const debouncedLoadMore = useCallback( debounce( loadMore, 500), [imagePickerResults, imagePickerQuery, provider] );
 
     const breakpointCols = {
-		default: 4,
+		default: 5,
 		1900: 4,
 		1600: 4,
 		1200: 3,

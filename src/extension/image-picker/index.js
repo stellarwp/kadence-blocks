@@ -1,3 +1,6 @@
+/**
+ * Props to Instant Image & StockPak for the inspiration for this code. 
+ */
 import './image-picker.scss';
 import { createRoot, render } from "@wordpress/element";
 import ImagePicker from "./components/ImagePicker";
@@ -9,97 +12,97 @@ import { deleteSession, getSession, saveSession } from "./functions/session";
 import { __ } from '@wordpress/i18n';
 
 // Global vars
-let kadenceActiveFrameId = "";
-let kadenceActiveFrame = "";
-window.kadenceImagePickerQuery = "";
+window.kadenceImagePickerId = "";
+window.kadenceImagePickerFrame = "";
+const kadenceImagePickerInit = () => {
+	// Load MediaFrame deps
+	const initialMediaFrame = wp.media.view.MediaFrame.Post;
+	const initialMediaFrameSelect = wp.media.view.MediaFrame.Select;
 
-// Load MediaFrame deps
-const oldMediaFrame = wp.media.view.MediaFrame.Post;
-const oldMediaFrameSelect = wp.media.view.MediaFrame.Select;
+	// Create Image Picker Tab
+	wp.media.view.MediaFrame.Post = initialMediaFrame.extend({
+		// Tab / Router
+		browseRouter(routerView) {
+			initialMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
+			routerView.set({
+				kadenceimagepicker: {
+					text: 'Pexels',
+					priority: 120,
+				},
+			});
+		},
 
-// Create Image Picker Tab
-wp.media.view.MediaFrame.Select = oldMediaFrameSelect.extend({
-	// Tab / Router
-	browseRouter(routerView) {
-		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
-		routerView.set({
-			kadenceimagepicker: {
-				text: __( 'Pexels' ), // eslint-disable-line no-undef
-				priority: 120,
-			},
-		});
-	},
+		// Handlers
+		bindHandlers() {
+			initialMediaFrame.prototype.bindHandlers.apply(this, arguments);
+			this.on("content:create:kadenceimagepicker", this.frameContent, this);
+		},
 
-	// Handlers
-	bindHandlers() {
-		oldMediaFrameSelect.prototype.bindHandlers.apply(this, arguments);
-		this.on("content:create:kadenceimagepicker", this.frameContent, this);
-	},
+		/**
+		 * Render callback for the content region in the `browse` mode.
+		 */
+		frameContent() {
+			const state = this.state();
+			// Get active frame
+			if (state) {
+				window.kadenceImagePickerId = state.id;
+				window.kadenceImagePickerFrame = state.frame;
+			}
+		},
 
-	/**
-	 * Render callback for the content region in the `browse` mode.
-	 */
-	frameContent() {
-		const state = this.state();
-		// Get active frame
-		if (state) {
-			kadenceActiveFrameId = state.id;
-			kadenceActiveFrame = state.frame.el;
-		}
-	},
+		getFrame(id) {
+			return this.states.findWhere({ id });
+		},
+	});
+	// Create Image Picker Tab
+	wp.media.view.MediaFrame.Select = initialMediaFrameSelect.extend({
+		// Tab / Router
+		browseRouter(routerView) {
+			initialMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
+			routerView.set({
+				kadenceimagepicker: {
+					text: __( 'Pexels' ), // eslint-disable-line no-undef
+					priority: 120,
+				},
+			});
+		},
 
-	/**
-	 * Get the current frame.
-	 *
-	 * @param {string} id The ID.
-	 */
-	getFrame(id) {
-		return this.states.findWhere({ id });
-	},
-});
+		// Handlers
+		bindHandlers() {
+			initialMediaFrameSelect.prototype.bindHandlers.apply(this, arguments);
+			this.on("content:create:kadenceimagepicker", this.frameContent, this);
+		},
 
-wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
-	// Tab / Router
-	browseRouter(routerView) {
-		oldMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
-		routerView.set({
-			kadenceimagepicker: {
-				text: __( 'Pexels' ), // eslint-disable-line no-undef
-				priority: 120,
-			},
-		});
-	},
+		/**
+		 * Render callback for the content region in the `browse` mode.
+		 */
+		frameContent() {
+			const state = this.state();
+			// Get active frame
+			if (state) {
+				window.kadenceImagePickerId = state.id;
+				window.kadenceImagePickerFrame = state.frame;
+			}
+		},
 
-	// Handlers
-	bindHandlers() {
-		oldMediaFrame.prototype.bindHandlers.apply(this, arguments);
-		this.on("content:create:kadenceimagepicker", this.frameContent, this);
-	},
-
-	/**
-	 * Render callback for the content region in the `browse` mode.
-	 */
-	frameContent() {
-		const state = this.state();
-		// Get active frame
-		if (state) {
-			kadenceActiveFrameId = state.id;
-			kadenceActiveFrame = state.frame.el;
-		}
-	},
-
-	getFrame(id) {
-		return this.states.findWhere({ id });
-	},
-});
+		/**
+		 * Get the current frame.
+		 *
+		 * @param {string} id The ID.
+		 */
+		getFrame(id) {
+			return this.states.findWhere({ id });
+		},
+	});
+}
 
 // Render Image Picker
 const imagePickerMediaTab = () => {
-	if (!kadenceActiveFrame) {
+	if (!window.kadenceImagePickerFrame?.el) {
 		return false; // Exit if not a frame.
 	}
 
-	const modal = kadenceActiveFrame.querySelector(".media-frame-content"); // Get all media modals
+	const modal = window.kadenceImagePickerFrame.el.querySelector(".media-frame-content"); // Get all media modals
 	if (!modal) {
 		return false; // Exit if not modal.
 	}
@@ -110,7 +113,7 @@ const imagePickerMediaTab = () => {
 	modal.appendChild(html); // Append Image Picker to modal.
 
 	const element = modal.querySelector(
-		"#kadence-blocks-image-picker-router-" + kadenceActiveFrameId
+		"#kadence-blocks-image-picker-router-" + window.kadenceImagePickerId
 	);
 	if (!element) {
 		return false; // Exit if not element.
@@ -204,7 +207,7 @@ const createWrapperHTML = () => {
 
 	const frame = document.createElement("div");
 	frame.classList.add("kadence-blocks-image-picker-router");
-	frame.setAttribute("id", "kadence-blocks-image-picker-router-" + kadenceActiveFrameId);
+	frame.setAttribute("id", "kadence-blocks-image-picker-router-" + window.kadenceImagePickerId);
 
 	container.appendChild(frame);
 	wrapper.appendChild(container);
@@ -214,13 +217,14 @@ const createWrapperHTML = () => {
 
 // Document Ready
 jQuery(document).ready(function ($) {
+	kadenceImagePickerInit();
 	if (wp.media) {
 		// Open
 		wp.media.view.Modal.prototype.on("open", function () {
-			if (!kadenceActiveFrame) {
+			if (!window.kadenceImagePickerFrame?.el) {
 				return false;
 			}
-			const selectedTab = kadenceActiveFrame.querySelector(
+			const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
 				".media-router button.media-menu-item.active"
 			);
 			if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
@@ -233,7 +237,10 @@ jQuery(document).ready(function ($) {
 			"click",
 			".media-router button.media-menu-item",
 			function () {
-				const selectedTab = kadenceActiveFrame.querySelector(
+				if (!window.kadenceImagePickerFrame?.el) {
+					return false;
+				}
+				const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
 					".media-router button.media-menu-item.active"
 				);
 				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
