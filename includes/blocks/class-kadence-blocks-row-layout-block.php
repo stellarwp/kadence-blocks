@@ -1341,6 +1341,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'src' => $video_attributes['local'],
 			);
 		} else {
+			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
+			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
+
 			// Vimeo and youtube share a bunch of params, that's convienent.
 			$src_query_string = '?' . http_build_query(
 				array(
@@ -1349,14 +1352,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					'mute' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
 					'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
 					'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 0 : 1 ),
+					'playlist' => $video_id,
 					'disablekb' => 1,
 					'modestbranding' => 1,
 					'playsinline' => 1,
 					'rel' => 0,
 				)
 			);
-			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
-			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
 
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video ' . $background_video_type,
