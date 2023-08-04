@@ -77,7 +77,7 @@ export function TextareaProgress(props) {
 							</View>
 						</FlexItem>
 					)}
-					{aiSuggestion && (
+					{aiSuggestion && !aiLoading && (
 						<>
 							<FlexItem>
 								<Button

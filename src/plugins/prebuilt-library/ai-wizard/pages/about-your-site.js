@@ -13,6 +13,7 @@ import {
 import { __, sprintf } from "@wordpress/i18n";
 import { Button } from "../components";
 import { missionStatementHelper } from "../utils/mission-statement-helper";
+import { convertStreamDataToJson } from "../utils/convert-stream-data-to-json";
 import { THOUGHT_STARTERS } from "../constants";
 import { Ai, Visibility, VisibilityOff } from "../components/icons";
 
@@ -40,7 +41,7 @@ const styles = {
 	},
 	leftContent: {
 		maxWidth: 640,
-		marginLeft: "auto",
+		marginInline: "auto",
 	},
 	rightContent: {
 		marginRight: 32,
@@ -96,7 +97,7 @@ export function AboutYourSite() {
 	const [progress, setProgress] = useState(0);
 	const [backgroundImage, setBackgroundImage] = useState(0);
 	const [showTooltip, setShowTooltip] = useState(false);
-	const [aiSuggestion, setAiSuggestion] = useState(false);
+	const [aiSuggestion, setAiSuggestion] = useState("");
 	const [aiLoading, setAiLoading] = useState(false);
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, companyName } = state;
@@ -136,13 +137,34 @@ export function AboutYourSite() {
 		return sprintf(__("%s is a...", "kadence-blocks"), companyName);
 	}
 
-	async function handleMissionStatement() {
+	function handleMissionStatement(value) {
 		setAiLoading(true);
-		const missionStatement = await getMissionStatement().then((data) => {
-			setAiLoading(false);
-			return data;
-		});
-		setAiSuggestion(missionStatement);
+
+		getMissionStatement(value)
+			.then((readableStream) => {
+				const reader = readableStream.getReader();
+
+				reader.read().then(function processText({ done, value }) {
+					if (done) {
+						setAiLoading(false);
+						return;
+					}
+
+					const eventData = convertStreamDataToJson(value);
+
+					if (eventData?.content) {
+						setAiSuggestion((previousValue) => {
+							return previousValue + eventData.content;
+						});
+					}
+
+					return reader.read().then(processText);
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				setAiLoading(false);
+			});
 	}
 
 	return (
@@ -204,7 +226,7 @@ export function AboutYourSite() {
 											<Button
 												className="stellarwp-ai-improve-button"
 												icon={Ai}
-												onClick={() => handleMissionStatement()}
+												onClick={() => handleMissionStatement(missionStatement)}
 											>
 												{__("Improve my Mission Statement", "kadence-blocks")}
 											</Button>

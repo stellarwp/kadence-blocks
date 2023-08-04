@@ -36,7 +36,7 @@ const styles = {
 	},
 	leftContent: {
 		maxWidth: 640,
-		marginLeft: "auto",
+		marginInline: "auto",
 	},
 	rightContent: {
 		marginRight: 32,
@@ -61,7 +61,17 @@ const styles = {
 export function TheDetails() {
 	const { state, dispatch } = useKadenceAi();
 	const maxTags = 10;
-	const { keywords, suggestedKeywords, suggestedKeywordsState, tone } = state;
+	const {
+		companyName,
+		entityType,
+		industry,
+		keywords,
+		location,
+		missionStatement,
+		suggestedKeywords,
+		suggestedKeywordsState,
+		tone,
+	} = state;
 	const [keywordsLengthError, setKeywordsLengthError] = useState(null);
 	const [currentTone, setCurrentTone] = useState(null);
 	const [pageRef, setPageRef] = useState(null);
@@ -104,7 +114,13 @@ export function TheDetails() {
 			payload: KEYWORD_SUGGESTION_STATES.loading,
 		});
 
-		getSuggestedKeywords()
+		getSuggestedKeywords({
+			name: companyName,
+			entity_type: entityType,
+			industry,
+			location,
+			description: missionStatement,
+		})
 			.then((response) => {
 				dispatch({
 					type: "SET_SUGGESTED_KEYWORDS",
@@ -112,7 +128,7 @@ export function TheDetails() {
 				});
 				dispatch({
 					type: "SET_SUGGESTED_KEYWORDS_STATE",
-					payload: response.length
+					payload: response?.length
 						? KEYWORD_SUGGESTION_STATES.success
 						: KEYWORD_SUGGESTION_STATES.notFound,
 				});

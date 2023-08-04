@@ -17,6 +17,8 @@ export const API_ROUTE_GET_COLLECTIONS =
 	"/kb-design-library/v1/get_image_collections";
 export const API_ROUTE_GET_IMAGES = "/kb-design-library/v1/get_images";
 export const API_ROUTE_GET_VERTICALS = "/kb-design-library/v1/get_verticals";
+export const API_ROUTE_IMPROVE_MISSION_STATEMENT =
+	"/proxy/intake/improve-mission-statement";
 export const COLLECTION_REQUEST_IMAGE_TYPE = "WEBP";
 export const COLLECTION_REQUEST_IMAGE_SIZES = [
 	{

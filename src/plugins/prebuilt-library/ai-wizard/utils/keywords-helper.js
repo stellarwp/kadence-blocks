@@ -1,14 +1,4 @@
-import {
-	API_ROUTE_GET_IMAGES,
-	COLLECTIONS_SESSION_KEY,
-	COLLECTION_REQUEST_IMAGE_TYPE,
-	API_ROUTE_GET_COLLECTIONS,
-	COLLECTION_REQUEST_IMAGE_SIZES,
-} from "../constants";
-
-import apiFetch from "@wordpress/api-fetch";
-import { addQueryArgs } from "@wordpress/url";
-import { SafeParseJSON } from "@kadence/helpers";
+import { API_ROUTE_PROPHECY, API_PROPHECY_TOKEN } from "../constants";
 
 export function keywordsHelper() {
 	/**
@@ -16,37 +6,40 @@ export function keywordsHelper() {
 	 *
 	 * @return {Promise<array>}
 	 */
-	async function getSuggestedKeywords() {
+	async function getSuggestedKeywords({
+		name,
+		entity_type,
+		industry,
+		location,
+		description,
+	}) {
 		try {
-			/* let collections = [];
-			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_COLLECTIONS, {
-					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
-				} ),
-			} );
-			const responseData = SafeParseJSON( response, false );
+			const response = await fetch(
+				`${API_ROUTE_PROPHECY}/intake/suggest-keywords`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+						Authorization: `Bearer ${API_PROPHECY_TOKEN}`,
+					},
+					body: JSON.stringify({
+						name,
+						entity_type: entity_type.toLowerCase(),
+						industry,
+						location,
+						description,
+						count: 10,
+					}),
+				}
+			);
 
-			if ( responseData?.data?.collections ) {
-				collections = responseData.data.collections;
-				// Save collections object to session storage.
-				saveCollections(collections);
-			} */
-
-			// Return error for testing.
-
-			return new Promise((resolve, reject) => {
-				setTimeout(() => {
-					resolve([
-						"Acupuncture",
-						"Deep Tissue",
-						"Physical Therapy",
-						"Local Massage",
-					]);
-				}, 5000);
-			});
+			const data = await response.json();
+			const { keywords } = data;
+			return Promise.resolve(keywords);
 		} catch (error) {
 			const message = error?.message ? error.message : error;
-			throw new Error("Something went wrong");
+			return Promise.reject(message);
 		}
 	}
 

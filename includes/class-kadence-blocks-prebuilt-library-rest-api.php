@@ -178,6 +178,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function __construct() {
 		$this->namespace = 'kb-design-library/v1';
+		$this->namespace_intake = 'proxy/intake';
 		$this->rest_base = 'get';
 		$this->reset = 'reset';
 	}
@@ -267,6 +268,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_industry_verticals' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace_intake,
+			'/improve-mission-statement',
+			array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'get_improved_mission_statement' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -811,7 +824,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Converts a string into a slug.
-	 * 
+	 *
 	 * @param string $str The prompt data.
 	 *
 	 * @return string of the slug.
@@ -828,7 +841,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Retrieves the path to the local data file.
-	 * 
+	 *
 	 * @param array $prompt_data The prompt data.
 	 *
 	 * @return string of the path to local data file.
@@ -908,7 +921,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			return $this->block_ai_folder;
 
-		} 
+		}
 		if ( ! $this->block_library_folder ) {
 			$this->block_library_folder = $this->get_base_path();
 			$this->block_library_folder .= $this->get_subfolder_name();
@@ -1392,6 +1405,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'images/collections';
+		var_dump($api_url);
 		$response = wp_remote_get(
 			$api_url,
 			array(
@@ -1401,6 +1415,49 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
+
+		return $contents;
+	}
+
+	/**
+	 * Get improved mission statement.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_improved_mission_statement() {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$auth = array(
+			'domain' => 'stellar.beta', //$site_url
+			'key'    => $this->api_key,
+		);
+		$api_url  = $this->remote_ai_url . 'proxy/intake/improve-mission-statement';
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+				),
+			)
+		);
+    return $response;
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
