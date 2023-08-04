@@ -356,10 +356,10 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 				'';
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
-		// Break post content into lines.
-		$block_lines = explode( PHP_EOL, $form_block->post_content );
 		// Remove the advanced form block so it doesn't try and render.
-		$content = str_replace( $block_lines[0], '', $form_block->post_content );
+		$content = preg_replace( '/<!-- wp:kadence\/advanced-form {.*?} -->/', '', $form_block->post_content );
+		$content = str_replace( '<!-- wp:kadence/advanced-form  -->', '', $content );
+		$content = str_replace( '<!-- wp:kadence/advanced-form -->', '', $content );
 		$content = str_replace( '<!-- /wp:kadence/advanced-form -->', '', $content );
 
 		// Handle embeds for form block.
@@ -371,7 +371,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		unset( self::$seen_refs[ $attributes['id'] ] );
 		$form_attributes = $this->get_form_attributes( $attributes['id'] );
 		$form_attributes = json_decode( json_encode( $form_attributes ), true );
-		//print_r( $form_attributes );
 		$field_style = isset( $form_attributes['style'] ) ? $form_attributes['style'] : array();
 		$background_style = isset( $form_attributes['background'] ) ? $form_attributes['background'] : array();
 		$outer_classes = array( 'wp-block-kadence-advanced-form', 'wp-block-kadence-advanced-form' . $unique_id );
