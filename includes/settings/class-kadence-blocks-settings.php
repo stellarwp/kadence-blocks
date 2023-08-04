@@ -1049,18 +1049,22 @@ class Kadence_Blocks_Settings {
 							</div>
 							<div class="kt-dashboard-spacer"></div>
 						<?php } ?>
+						<div class="kt-promo-row-area">
 						<?php if ( apply_filters( 'kadence_blocks_show_local_fonts', ! defined( 'KADENCE_VERSION' ) ) ) { ?>
-							<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
-								<?php global $content_width; ?>
+								<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
 								echo '</form>';
-							?>
-							<?php if ( apply_filters( 'kadence_blocks_show_image_picker', true ) ) { ?>
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_image_picker', true ) ) { ?>
 							<!-- <h2><?php echo esc_html__( 'Use Pexels Image Picker', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Add a Pexels image picker in the media library.', 'kadence-blocks' ); ?></small></h2> -->
+							<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kt_blocks_image_picker' );

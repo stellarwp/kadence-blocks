@@ -45,6 +45,7 @@ export function Photography() {
 
 	useEffect(() => {
 		if(preMadeCollections && wordpressCollections) {
+			console.log('premade', preMadeCollections);
 			setAllVerticals([
 				{
 					label: 'My Collections',
