@@ -33,6 +33,10 @@
 			{
 				"file": "kadence-blocks.php",
 				"regex": "(define\\( +['\"]KADENCE_BLOCKS_VERSION['\"], +['\"])([^'\"]+)"
+			},
+			{
+				"file": "readme.txt",
+				"regex": "(Stable tag: +)(.+)"
 			}
 		],
         "views": [],
