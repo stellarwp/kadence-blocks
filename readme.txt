@@ -77,6 +77,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.9 =
+* Fix: Disk space & multisite quota check on Form file uploads.
+
 = 3.1.8 =
 Release Date: August 3rd, 2023
 * Update: Force Decimals to show if set in progress bar.

@@ -271,14 +271,17 @@ class KB_Ajax_Advanced_Form {
 					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File type not allowed', 'kadence-blocks' ) );
 				}
 
-				require_once( ABSPATH . 'wp-includes/ms-functions.php' );
-				require_once( ABSPATH . 'wp-admin/includes/ms.php' );
-
-				// Check if space is an issue
-				$space     = get_upload_space_available();
 				$file_size = filesize( $_FILES[ $expected_field ]['tmp_name'] );
-				if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk space on the server.', 'kadence-blocks' ) );
+
+				// Check if multisite has a quota
+				if ( is_multisite() ) {
+					require_once( ABSPATH . 'wp-includes/ms-functions.php' );
+					require_once( ABSPATH . 'wp-admin/includes/ms.php' );
+
+					$space     = get_upload_space_available();
+					if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
+						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
+					}
 				}
 
 				$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
@@ -298,7 +301,12 @@ class KB_Ajax_Advanced_Form {
 
 					$value = content_url( $rel_file_path );
 				} else {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+					// Was disk space an issue?
+					if ( disk_free_space( ABSPATH ) < $file_size ) {
+						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk space on the server.', 'kadence-blocks' ) );
+					} else {
+						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+					}
 				}
 			}
 
