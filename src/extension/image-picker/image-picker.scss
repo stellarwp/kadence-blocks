@@ -1,0 +1,148 @@
+.kadence-blocks-image-picker {
+    width: 100%;
+    height: 100%;
+
+    .kadence-blocks-image-picker-wrapper, 
+    .kadence-blocks-image-picker-router,
+    .kadence-blocks-image-picker-contents {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kadence-blocks-image-picker-contents {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        grid-template-rows: min-content 1fr;
+
+        .kadence-blocks-image-picker-search-container {
+            order: 1;
+            background: #f6f7f7;
+            border-bottom: 1px solid #dcdcde;
+            padding: 10px;
+
+            input {
+                width: 100%;
+            }
+        }
+
+        .kadence-blocks-image-picker-scroll-container {
+            order: 3;
+            overflow: auto;
+            padding: 10px 10px 0 10px;
+
+            .kb-css-masonry {
+                margin-left: -10px;
+
+                .kb-css-masonry_column {
+                    padding-left: 10px;
+                }
+            }
+
+            .result {
+                line-height: 0;
+                margin-bottom: 10px;
+                border-radius: 5px;
+
+                .image-wrap {
+                    padding: 0;
+                    border: none;
+                    position: relative;
+                    line-height: 0;
+
+                    &:focus-visible {
+                        .image-hover-container {
+                            visibility: visible;
+                            opacity: 1;
+                        }
+                    }
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                .image-hover-container {
+                    opacity: 0;
+                    visibility: none;
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    width: 100%;
+                    background-color: rgba(0, 88, 176, .45);
+
+                    transition: all .2s ease-in-out;
+
+                    .download-button {
+                        background-color: white;
+                        border-radius: 2px;
+                        padding: 2px;
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                    }
+                }
+
+                // Show the hover container if the results is hovered, the select button is foucsed, or if the result is active
+                &:hover,
+                &.active {
+                    .image-hover-container {
+                        visibility: visible;
+                        opacity: 1;
+                    }
+                }
+
+                &.downloaded {
+                    .download-button {
+                        background-color: #65c774;
+                    }
+
+                }
+            }
+        }
+
+        .kadence-blocks-image-picker-sidebar {
+            order: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            grid-row: span 2;
+            background: #f6f7f7;
+            border-left: 1px solid #dcdcde;
+
+            .result-details-container {
+                padding: 20px 16px;
+                padding-bottom: 0;
+                overflow: auto;
+
+                hr {
+                    margin: 10px 0;
+                }
+
+                .result-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .result-detail {
+                        display: grid;
+                        grid-template-columns: 30% minmax(0, 1fr);
+                        gap: 10px;
+
+                        .result-detail-label {
+                            text-align: right;
+                        }
+                        .result-detail-value {
+                            word-wrap: break-word;
+                        }
+                    }
+                }
+            }
+
+            .download-button {
+                border-radius: 0;
+                justify-content: center;
+            }
+        }
+    }
+
+}

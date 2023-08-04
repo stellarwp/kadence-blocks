@@ -322,6 +322,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/process_images',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'process_images' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->reset,
 			array(
 				array(
@@ -430,6 +442,42 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( $response );
 			}
 		}
+	}
+
+	/**
+	 * Imports a collection of images.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function process_images( $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['images'] ) ) {
+			return rest_ensure_response( 'failedddd' );
+		}
+
+		$images = $parameters['images'];
+		$downloaded_images = array();
+
+		// Process images.
+		if ( ! empty( $images ) ) {
+			foreach ( $images as $image_data ) {
+				$image = array();
+				$image['url'] = $this->get_src_from_image_data( $image_data );
+				$image['id'] = $image_data['id'];
+				$image['filename'] = $image_data['filename'] ?? '';
+				$image['alt']  = $image_data['alt'];
+				$image['photographer']  = $image_data['photographer'];
+				$image['photographer_url']  = $image_data['photographer_url'];
+				$image['alt']  = $image_data['alt'];
+				$image['title'] = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
+
+				// Download remote image.
+				$downloaded_images[] = $this->import_image( $image );
+			}
+		}
+
+		return $downloaded_images;
 	}
 	/**
 	 * Retrieves a collection of objects.
@@ -1623,6 +1671,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		return array();
 	}
 	/**
+	 * Sanitizes a string for a filename.
+	 *
+	 * @param string $filename The filename.
+	 * @return string a sanitized filename.
+	 */
+	public function sanitize_jpeg_filename( $filename ) {
+		return preg_replace( '/[^a-zA-Z0-9_-]+/', '-', strtolower( $filename ) ) . '.jpeg';
+	}
+	/**
 	 * Sanitizes an array of sizes.
 	 *
 	 * @param array    $sizes One or more size arrays.
@@ -1667,6 +1724,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
 			$filename = basename( $image_path );
 		}
+		// Custom filename if passed as data.
+		$filename = isset( $image_data['filename'] ) && $image_data['filename'] ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
+
 		$upload = wp_upload_bits( $filename, null, $file_content );
 		$post = array(
 			'post_title' => ( ! empty( $image_data['title'] ) ? $image_data['title'] : $filename ),
@@ -1701,6 +1761,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'id'  => $post_id,
 			'url' => $upload['url'],
 		);
+	}
+	/**
+	 * Gets a src url from an array of image data for a certain size.
+	 *
+	 * @param array  $image_data An object passed from the fronted that contains image data and sizes.
+	 * @param string $size_name The name of the size to return.
+	 * @return string The download url or empty if no url found.
+	 */
+	public function get_src_from_image_data( $image_data, $size_name = 'download' ) {
+		$download_url = '';
+		if ( $image_data && isset( $image_data['sizes'] ) && ! empty( $image_data['sizes'] ) ) {
+			foreach ( $image_data['sizes'] as $size ) {
+				if ( $size['name'] == $size_name ) {
+					$download_url = $size['src'] ? $size['src'] : '';
+				}
+			}
+		}
+		return $download_url;
 	}
 	/**
 	 * Get information for our image.
