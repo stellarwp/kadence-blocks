@@ -142,24 +142,27 @@ export function AboutYourSite() {
 
 		getMissionStatement(value)
 			.then((readableStream) => {
-				const reader = readableStream.getReader();
+				// const reader = readableStream.getReader();
 
-				reader.read().then(function processText({ done, value }) {
-					if (done) {
-						setAiLoading(false);
-						return;
-					}
+				// reader.read().then(function processText({ done, value }) {
+				// 	if (done) {
+				// 		setAiLoading(false);
+				// 		return;
+				// 	}
 
-					const eventData = convertStreamDataToJson(value);
+				// 	const eventData = convertStreamDataToJson(value);
 
-					if (eventData?.content) {
-						setAiSuggestion((previousValue) => {
-							return previousValue + eventData.content;
-						});
-					}
+				// 	if (eventData?.content) {
+				// 		setAiSuggestion((previousValue) => {
+				// 			return previousValue + eventData.content;
+				// 		});
+				// 	}
 
-					return reader.read().then(processText);
-				});
+				// 	return reader.read().then(processText);
+				// });
+				const text = JSON.parse(readableStream);
+				setAiSuggestion( text?.content );
+				setAiLoading(false);
 			})
 			.catch((error) => {
 				console.log(error);

@@ -178,7 +178,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function __construct() {
 		$this->namespace = 'kb-design-library/v1';
-		$this->namespace_intake = 'proxy/intake';
 		$this->rest_base = 'get';
 		$this->reset = 'reset';
 	}
@@ -274,11 +273,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 		register_rest_route(
-			$this->namespace_intake,
+			$this->namespace,
 			'/improve-mission-statement',
 			array(
 				array(
-					'methods'             => WP_REST_Server::EDITABLE,
+					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_improved_mission_statement' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
@@ -1405,7 +1404,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'images/collections';
-		var_dump($api_url);
 		$response = wp_remote_get(
 			$api_url,
 			array(
@@ -1436,7 +1434,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
-	public function get_improved_mission_statement() {
+	public function get_improved_mission_statement( $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['content'] ) ) {
+			return new WP_REST_Response( array( 'error' => 'Content is missing.' ), 400 );
+		}
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
 		} else {
@@ -1444,33 +1446,26 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url
-			'key'    => $this->api_key,
+			'domain' => $site_url,
+			'key'    => $request->get_param( self::PROP_API_KEY ),
 		);
 		$api_url  = $this->remote_ai_url . 'proxy/intake/improve-mission-statement';
-		$response = wp_remote_get(
+		$body = array(
+			'text' => $parameters['content'],
+			'stream' => false,
+		);
+		$response = wp_remote_post(
 			$api_url,
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
 				),
+				'body' => json_encode( $body ),
 			)
 		);
-    return $response;
-		// Early exit if there was an error.
-		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
-			return 'error';
-		}
-
-		// Get the CSS from our response.
-		$contents = wp_remote_retrieve_body( $response );
-		// Early exit if there was an error.
-		if ( is_wp_error( $contents ) ) {
-			return 'error';
-		}
-
-		return $contents;
+		return rest_ensure_response( $response );
 	}
 	/**
 	 * Get remote file contents.

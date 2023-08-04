@@ -3,11 +3,7 @@ import apiFetch from "@wordpress/api-fetch";
 import { addQueryArgs } from "@wordpress/url";
 
 export function missionStatementHelper() {
-	const token = {
-		domain: "stellar.beta",
-		key: "",
-	};
-	async function getMissionStatement(missionStatement) {
+	async function getMissionStatement( missionStatement ) {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs(API_ROUTE_IMPROVE_MISSION_STATEMENT, {
@@ -15,9 +11,13 @@ export function missionStatementHelper() {
 						? kadence_blocks_params.proData.api_key
 						: "",
 				}),
+				method: 'POST',
+				data: {
+					content: missionStatement,
+				},
 			});
 			console.log(response);
-			if (!response.ok) {
+			if ( ! ( response?.response?.code === 200 ) ) {
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}
