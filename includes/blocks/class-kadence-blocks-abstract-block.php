@@ -125,7 +125,8 @@ class Kadence_Blocks_Abstract_Block {
 
 				$unique_id = $attributes['uniqueID'];
 				$css_class = Kadence_Blocks_CSS::get_instance();
-				if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_head_css', true, $this->block_name, $attributes ) ) {
+				$has_dynamic_content = isset( $attributes['kadenceDynamic'] ) && ! empty( $attributes['kadenceDynamic'] );
+				if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_head_css', true, $this->block_name, $attributes ) && ! $has_dynamic_content ) {
 					// Filter attributes for easier dynamic css.
 					$attributes = apply_filters( 'kadence_blocks_' . $this->block_name . '_render_block_attributes', $attributes );
 					$this->build_css( $attributes, $css_class, $unique_id, $unique_id );
