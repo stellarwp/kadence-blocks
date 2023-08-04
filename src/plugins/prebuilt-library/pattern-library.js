@@ -400,11 +400,11 @@ function PatternLibrary( {
 			getRemoteAvailableCredits();
 		} else {
 			console.log( 'Error getting New AI Job.' );
-			updateContext( tempContext, 'failed' );
+			// updateContext( tempContext, 'failed' );
+			updateContextState( tempContext, 'error' );
 			setTimeout( () => {
 				forceRefreshLibrary();
 			}, 500 );
-			updateContextState( tempContext, false );
 			getRemoteAvailableCredits();
 		}
 	}

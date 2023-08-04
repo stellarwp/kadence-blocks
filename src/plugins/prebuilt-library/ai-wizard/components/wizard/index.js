@@ -208,7 +208,7 @@ export function Wizard({
 									disabled={ primaryButtonDisabled }
 									onClick={ onPrimaryClick }
 									>
-									{ primaryButtonText + ' ' + __( '(25 Credits)', 'kadence-blocks' ) }
+									{ primaryButtonText + ' ' + __( '(96 Credits)', 'kadence-blocks' ) }
 								</Button>
 							</div>
 						) }
