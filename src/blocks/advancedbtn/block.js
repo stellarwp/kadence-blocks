@@ -37,7 +37,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/advancedbtn', {
 	...metadata,
-	title: __( 'Advanced Buttons', 'kadence-blocks' ),
+	title: __( 'Buttons (Adv)', 'kadence-blocks' ),
 	description: __( 'Create an advanced button or a row of buttons. Style each one, including hover controls', 'kadence-blocks' ),
 	keywords: [
 		__( 'button', 'kadence-blocks' ),

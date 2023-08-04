@@ -48,6 +48,7 @@ import {
 	mouseOverVisualizer,
 	getFontSizeOptionOutput,
 	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -59,7 +60,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
+import { getSettings as getDateSettings } from '@wordpress/date';
 
 import { applyFilters } from '@wordpress/hooks';
 
@@ -124,8 +125,9 @@ const ANCHOR_REGEX = /[\s#]/g;
 /**
  * Build the spacer edit
  */
-function KadenceCountdown( { attributes, setAttributes, className, clientId, isNested, parentBlock, getPreviewDevice } ) {
+function KadenceCountdown( props ) {
 
+	const { attributes, setAttributes, className, clientId, isNested, parentBlock, getPreviewDevice } = props;
 	const {
 		uniqueID,
 		expireAction,
@@ -191,11 +193,17 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -204,7 +212,8 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -221,7 +230,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 
 		if ( !date ) {
 			dateSettings = getDateSettings();
-
 			const { timezone } = dateSettings;
 			const today = new Date();
 			const newDate = new Date();
@@ -677,7 +685,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 												onChange={( value ) => setAttributes( { countdownType: value } )}
 											/>
 											{'date' === countdownType && (
-												<div className="components-base-control">
+												<div className="components-base-control kb-datepicker-fix">
 													<DateTimePicker
 														currentDate={( !date ? undefined : date )}
 														onChange={value => {
@@ -960,7 +968,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 											onChange={value => setAttributes( { numberColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'number-item'}
+											fontGroup={'body'}
 											fontSize={numberFont[ 0 ].size}
 											onFontSize={( value ) => saveNumberFont( { size: value } )}
 											fontSizeType={numberFont[ 0 ].sizeType}
@@ -1013,7 +1021,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 											onChange={value => setAttributes( { labelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'label-item'}
+											fontGroup={'body'}
 											fontSize={labelFont[ 0 ].size}
 											onFontSize={( value ) => saveLabelFont( { size: value } )}
 											fontSizeType={labelFont[ 0 ].sizeType}
@@ -1065,7 +1073,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 											onChange={value => setAttributes( { preLabelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'prelabel-item'}
+											fontGroup={'body'}
 											fontSize={preLabelFont[ 0 ].size}
 											onFontSize={( value ) => savePreFont( { size: value } )}
 											fontSizeType={preLabelFont[ 0 ].sizeType}
@@ -1117,7 +1125,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 											onChange={value => setAttributes( { postLabelColor: value } )}
 										/>
 										<TypographyControls
-											fontGroup={'postlabel-item'}
+											fontGroup={'body'}
 											fontSize={postLabelFont[ 0 ].size}
 											onFontSize={( value ) => savePostFont( { size: value } )}
 											fontSizeType={postLabelFont[ 0 ].sizeType}

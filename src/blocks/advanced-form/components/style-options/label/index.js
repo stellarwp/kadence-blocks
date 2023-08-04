@@ -7,6 +7,7 @@ import {
 } from '@kadence/components';
 
 import {
+	SelectControl,
 	ToggleControl
 } from '@wordpress/components';
 
@@ -24,9 +25,22 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 	const saveStyle = ( value ) => {
 		setAttributes( { ...styleAttribute, ...value }, 'style' );
 	}
-
+	const labelStyles = [
+		{ value: 'normal',label: __( 'Normal', 'kadence-blocks' ) },
+		{ value: 'infield',label: __( 'In Field Label', 'kadence-blocks' ) },
+		{ value: 'float',label: __( 'Float Label', 'kadence-blocks' ) },
+	];
+	const showRequiredPreview = ( undefined !== styleAttribute?.showRequired ? styleAttribute.showRequired : true );
 	return (
 		<>
+			<SelectControl
+				label={ __( 'Label Layout Style', 'kadence-blocks' ) }
+				options={ labelStyles }
+				onChange={ ( value ) => {
+					saveStyle( { labelStyle: value } );
+				} }
+				value={ styleAttribute?.labelStyle }
+			/>
 			<PopColorControl
 				label={__( 'Label Color', 'kadence-blocks' )}
 				value={( labelFont.color ? labelFont.color : '' )}
@@ -36,15 +50,15 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 				}}
 			/>
 			<ToggleControl
-				label={__( 'Show Required?', 'kadence-blocks' )}
-				help={__( 'If off required asterisk is removed.', 'kadence-blocks' )}
-				checked={( undefined !== styleAttribute.showRequired ? styleAttribute.showRequired : true )}
+				label={__( 'Show Required Asterisk?', 'kadence-blocks' )}
+				help={__( 'If field is required this will add an asterisk after the label.', 'kadence-blocks' )}
+				checked={showRequiredPreview}
 				onChange={( value ) => saveStyle( { showRequired: value } )}
 			/>
-			{styleAttribute.showRequired && (
+			{showRequiredPreview && (
 				<PopColorControl
-					label={__( 'Required Color', 'kadence-blocks' )}
-					value={( styleAttribute.requiredColor ? styleAttribute.requiredColor : '' )}
+					label={__( 'Required Asterisk Color', 'kadence-blocks' )}
+					value={( styleAttribute?.requiredColor ? styleAttribute.requiredColor : '' )}
 					default={''}
 					onChange={( value ) => saveStyle( { requiredColor: value } )}
 
@@ -66,8 +80,11 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 				panelName={'kb-form-advanced-label-settings'}
 			>
 				<TypographyControls
-					letterSpacing={labelFont.letterSpacing}
-					onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value.toString() } )}
+					fontGroup={'body'}
+					reLetterSpacing={labelFont.letterSpacing}
+					onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
+					letterSpacingType={labelFont.letterType}
+					onLetterSpacingType={( value ) => saveLabelFont( { letterType: value } )}
 					textTransform={labelFont.textTransform}
 					onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
 					fontFamily={labelFont.family}

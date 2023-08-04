@@ -35,12 +35,12 @@ const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-fin
  * @returns {object} Measure settings.
  */
 
-export default function MailerLiteOptions( { settings, save, parentClientId } ) {
+export default function MailerLiteOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setAPI ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ group, setGroup ] = useState( false );
+	const [ groups, setGroups ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ groupsLoaded, setGroupsLoaded ] = useState( false );
 	const [ isFetchingFields, setIsFetchingFields ] = useState( false );
@@ -60,29 +60,17 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		});
 	}, [] );
 
-	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);
+	const fields = useMemo(() => getFormFields( formInnerBlocks ), [ parentClientId ]);
 
-	const saveMailerliteMap = ( value, index ) => {
-
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
-	const getMailerLiteGroup = () => {
+	const getMailerLiteGroups = () => {
 		if ( !api ) {
-			setGroup( [] );
+			setGroups( [] );
 			setGroupsLoaded( true );
 			return;
 		}
@@ -97,16 +85,17 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		} )
 			.then( ( groups ) => {
 				const theGroups = [];
-				groups.map( ( item ) => {
+				groups.data.map( ( item ) => {
 					theGroups.push( { value: item.id, label: item.name } );
 				} );
 
-				setGroup( theGroups );
+				setGroups( theGroups );
 				setGroupsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( () => {
-				setGroup( [] );
+				console.log('err')
+				setGroups( [] );
 				setGroupsLoaded( true );
 				setIsFetching( false );
 			} );
@@ -135,9 +124,9 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 				const theFields = [];
 				theFields.push( { value: null, label: 'None' } );
 				theFields.push( { value: 'email', label: 'Email *' } );
-				fields.map( ( item, index ) => {
+				fields.data.map( ( item, index ) => {
 					if ( item.key !== 'email' ) {
-						theFields.push( { value: item.key, label: item.title } );
+						theFields.push( { value: item.key, label: item.name } );
 					}
 				} );
 
@@ -145,7 +134,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 				setGroupFieldsLoaded( true );
 				setIsFetchingFields( false );
 			} )
-			.catch( () => {
+			.catch( ( err ) => {
 				const theFields = [];
 				theFields.push( { value: null, label: 'None' } );
 				theFields.push( { value: 'email', label: 'Email *' } );
@@ -183,7 +172,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 		} );
 	};
 
-	const hasGroup = Array.isArray( group ) && group.length;
+	const hasGroups = Array.isArray( groups ) && groups.length;
 	const hasFields = Array.isArray( groupFields ) && groupFields.length;
 
 	return (
@@ -217,7 +206,7 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 						&nbsp;
 						<Button
 							isSecondary
-							onClick={() => removeAPI}
+							onClick={() => removeAPI()}
 						>
 							{__( 'Remove', 'kadence-blocks-pro' )}
 						</Button>
@@ -229,28 +218,29 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasGroup && (
+					{!isFetching && !hasGroups && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select a Group', 'kadence-blocks' )}</h2>
-							{( !groupsLoaded ? getMailerLiteGroup() : '' )}
-							{!Array.isArray( group ) ?
+							{( !groupsLoaded ? getMailerLiteGroups() : '' )}
+							{!Array.isArray( groups ) ?
 								<Spinner/> :
 								__( 'No group found.', 'kadence-blocks-pro' )}
 						</>
 
 					)}
-					{!isFetching && hasGroup && (
+					{!isFetching && hasGroups && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select Group', 'kadence-blocks' )}</h2>
 							<div className="mailerlite-select-form-row">
 								<Select
-									value={( group ? group.filter( ( { value } ) => value.toString() === ( undefined !== settings.group && settings.group[ 0 ] ? settings.group[ 0 ].toString() : '' ) ) : '' )}
+									value={( undefined !== settings && undefined !== settings && undefined !== settings.group ? settings.group : '' )}
 									onChange={( value ) => {
-										save( { group: ( value.value ? [ value.value ] : [] ) } );
+										save( { group: ( value ? value : {} ) } );
 									}}
 									placeholder={__( 'Select a Group', 'kadence-blocks' )}
 									maxMenuHeight={300}
-									options={group}
+									options={groups}
+									isMulti={false}
 								/>
 							</div>
 							{!settings.group && (
@@ -285,9 +275,9 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 															<SelectControl
 																label={__( 'Select Field:' )}
 																options={groupFields}
-																value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 																onChange={( value ) => {
-																	saveMailerliteMap( value, index );
+																	saveMap( value, item.uniqueID );
 																}}
 															/>
 														</div>

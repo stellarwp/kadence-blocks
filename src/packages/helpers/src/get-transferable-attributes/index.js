@@ -7,10 +7,11 @@ export default function getTransferableAttributes( attributes, defaultAttributes
     let attributesToTransfer = {};
     
     //some attributes should never be transferred to a new block
-	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults' ];
+	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults', 'metadata' ];
     const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
     attributesToTransfer = omit(attributes, allExcludedAttrs);
     
+
     //preventing multiples of some attributes can save space / complexity
     if (preventMultiple !== []) {
         preventMultiple.forEach((item) => {

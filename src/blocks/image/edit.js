@@ -26,7 +26,17 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl, SpacingVisualizer } from '@kadence/components';
 import { imageIcon } from '@kadence/icons';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock } from '@kadence/helpers';
+
+import {
+	getPreviewSize,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
+	setDynamicState,
+	getPostOrFseId
+} from '@kadence/helpers';
 
 /* global wp */
 
@@ -98,18 +108,20 @@ function hasDefaultSize( image, defaultSize ) {
 	);
 }
 
-export function ImageEdit( {
-	attributes,
-	setAttributes,
-	isSelected,
-	className,
-	noticeUI,
-	insertBlocksAfter,
-	noticeOperations,
-	onReplace,
-	context,
-	clientId,
-} ) {
+export function ImageEdit( props ) {
+
+	const {
+		attributes,
+		setAttributes,
+		isSelected,
+		className,
+		noticeUI,
+		insertBlocksAfter,
+		noticeOperations,
+		onReplace,
+		context,
+		clientId,
+	} = props;
 	const {
 		url = '',
 		alt,
@@ -144,23 +156,22 @@ export function ImageEdit( {
 		paddingUnit,
 		inQueryBlock,
 	} = attributes;
-	function getDynamic() {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['url'] && attributes.kadenceDynamic['url'].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'url', contextPost );
-		}
-	}
+
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -169,7 +180,8 @@ export function ImageEdit( {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/image', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -181,7 +193,7 @@ export function ImageEdit( {
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{ 
+		let tempBorderStyle = JSON.parse( JSON.stringify( attributes.borderStyle ? attributes.borderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -208,7 +220,7 @@ export function ImageEdit( {
 		if ( updateBorderStyle ) {
 			setAttributes( { borderStyle: tempBorderStyle } );
 		}
-		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{ 
+		let tempTabBorderStyle = JSON.parse( JSON.stringify( attributes.tabletBorderStyle ? attributes.tabletBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -223,7 +235,7 @@ export function ImageEdit( {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes( { tabletBorderStyle: tempTabBorderWidth, borderWidthTablet:[ '', '', '', '' ] } );
 		}
-		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{ 
+		let tempMobileBorderStyle = JSON.parse( JSON.stringify( attributes.mobileBorderStyle ? attributes.mobileBorderStyle : [{
 			top: [ '', '', '' ],
 			right: [ '', '', '' ],
 			bottom: [ '', '', '' ],
@@ -237,11 +249,18 @@ export function ImageEdit( {
 			tempMobileBorderStyle[0].left[2] = borderWidthMobile?.[3] || '';
 			setAttributes( { mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile:[ '', '', '', '' ] } );
 		}
-		debounce( getDynamic, 200 );
 	}, [] );
+	
+	useEffect( () => {
+		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
+		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, context, setDynamicURL, url ? false : true);
+	}, [ 'url' ] );
+
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	const [ temporaryURL, setTemporaryURL ] = useState();
+	const [ dynamicURL, setDynamicURL ] = useState();
+
 	const altRef = useRef();
 	useEffect( () => {
 		altRef.current = alt;
@@ -454,6 +473,7 @@ export function ImageEdit( {
 		className: classes,
 		['data-align']: ( 'center' === align ) ? align : undefined
 	} );
+
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
 			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
@@ -470,6 +490,7 @@ export function ImageEdit( {
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
+					dynamicURL={ dynamicURL }
 					previewDevice={ previewDevice }
 					attributes={ attributes }
 					setAttributes={ setAttributes }

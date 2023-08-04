@@ -51,6 +51,8 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
+	setDynamicState,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import './editor.scss';
@@ -79,38 +81,41 @@ import {
 	ToolbarGroup,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+const FORM_ALLOWED_BLOCKS = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
 /**
  * Build the section edit.
  */
-function SectionEdit( {
-	attributes,
-	setAttributes,
-	isSelected,
-	clientId,
-	context,
-	className,
-} ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode } = attributes;
-	const getDynamic = () => {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['backgroundImg:0:bgImg'] && attributes.kadenceDynamic['backgroundImg:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'backgroundImg:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['backgroundImgHover:0:bgImg'] && attributes.kadenceDynamic['backgroundImgHover:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'backgroundImgHover:0:bgImg', contextPost );
-		}
-	}
+function SectionEdit( props ) {
+	const {
+		attributes,
+		setAttributes,
+		isSelected,
+		clientId,
+		context,
+		className,
+	} = props;
+
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode, rowGapUnit, rowGap, flexBasis, flexBasisUnit } = attributes;
+
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
+
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
+
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -119,7 +124,8 @@ function SectionEdit( {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/column', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -127,6 +133,7 @@ function SectionEdit( {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
+
 		const isInQueryBlock = getInQueryBlock( context, inQueryBlock );
 		if ( attributes.inQueryBlock !== isInQueryBlock ) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -266,26 +273,34 @@ function SectionEdit( {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
-		debounce( getDynamic, 200 );
 	}, [] );
-	const { hasInnerBlocks, inRowBlock } = useSelect(
+
+	//set the dynamic image state
+	useEffect( () => {
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, context, setDynamicBackgroundImg, backgroundImg ? false : true );
+	}, [ 'backgroundImg' ] );
+
+	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
-			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
+			const { getBlock, getBlockRootClientId, getBlockParentsByBlockName, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
 			const rootID = getBlockRootClientId( clientId );
 			let inRowBlock = false;
+			let inFormBlock = false;
 			if ( rootID ) {
+				const hasForm = getBlockParentsByBlockName( clientId, 'kadence/advanced-form' );
 				const parentBlock = getBlocksByClientId( rootID );
+				inFormBlock = ( undefined !== hasForm && hasForm.length ? true : false );
 				inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
 			}
 			return {
 				inRowBlock: inRowBlock,
 				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
+				inFormBlock: inFormBlock,
 			};
 		},
 		[ clientId ]
 	);
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const saveShadow = ( value ) => {
@@ -414,10 +429,12 @@ function SectionEdit( {
 
 	const previewAlign = getPreviewSize( previewDevice, ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) , ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) );
 	const previewGutter = getPreviewSize( previewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
+	const previewRowGap = getPreviewSize( previewDevice, ( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : '' ) , ( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' ) );
 	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : '' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
 	const previewJustify = getPreviewSize( previewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
 	const previewWrap = getPreviewSize( previewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 	const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
+	const previewFlexBasis = getPreviewSize( previewDevice, ( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( height && '' !== height[ 0 ] ? height[ 0 ] : '' ) , ( height && '' !== height[ 1 ] ? height[ 1 ] : '' ), ( height && '' !== height[ 2 ] ? height[ 2 ] : '' ) );
@@ -436,8 +453,9 @@ function SectionEdit( {
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
 	const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
-	const previewBackgroundImg = hasBackgroundImage ? `url( ${ backgroundImg[ 0 ].bgImg } )` : '';
-	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImg;
+	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
+	const previewBackgroundImgCSS = hasBackgroundImage ? `url( ${ previewBackgroundImg[ 0 ].bgImg } )` : '';
+	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImgCSS;
 	const hasHoverBackgroundImage = ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? true : false );
 	const previewHoverBackgroundImg = hasHoverBackgroundImage ? `url( ${ backgroundImgHover[ 0 ].bgImg } )` : '';
 	const previewHoverBackground = backgroundHoverType === 'gradient' ? gradientHover : previewHoverBackgroundImg;
@@ -475,6 +493,7 @@ function SectionEdit( {
 			renderAppender: hasInnerBlocks
 				? undefined
 				: InnerBlocks.ButtonBlockAppender,
+			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined
 		}
 	);
 	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
@@ -518,6 +537,9 @@ function SectionEdit( {
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > * { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
+				{ ( '' !== previewRowGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { display: flex; flex-direction: column; row-gap: ${ previewRowGap + ( rowGapUnit ? rowGapUnit : 'px' )}; }` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-list-appender { display:none; }` : '' ) }
@@ -594,8 +616,8 @@ function SectionEdit( {
 							<>
 								{showSettings( 'textAlign', 'kadence/column' ) && (
 									<KadencePanelBody
-										title={__( 'Flex Align Settings', 'kadence-blocks' )}
-										panelName={'kb-col-align-settings'}
+										title={__( 'Flex Settings', 'kadence-blocks' )}
+										panelName={'kb-col-flex-settings'}
 									>
 										<SmallResponsiveControl
 											label={__( 'Inner Block Direction', 'kadence-blocks' )}
@@ -627,10 +649,10 @@ function SectionEdit( {
 												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } )}
 											/>}
 										/>
-										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
-											<>
+										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' ? (
+											<Fragment>
 												<ResponsiveRangeControls
-													label={__( 'Gutter', 'kadence-blocks' )}
+													label={__( 'Gap', 'kadence-blocks' )}
 													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
 													onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
 													tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
@@ -725,8 +747,56 @@ function SectionEdit( {
 														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } )}
 													/>}
 												/>
-											</>
+
+												{ wrapContent !== 'nowrap' && wrapContent !== '' && (
+													<ResponsiveRangeControls
+														label={__( 'Flex Basis', 'kadence-blocks' )}
+														value={( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' )}
+														onChange={value => setAttributes( { flexBasis: [ value, ( flexBasis && flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
+														tabletValue={( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' )}
+														onChangeTablet={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), value, ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) ] } )}
+														mobileValue={( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' )}
+														onChangeMobile={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ), value ] } )}
+														min={0}
+														max={( flexBasisUnit === '%' ? 100 : 1000 )}
+														step={1}
+														unit={flexBasisUnit}
+														onUnit={( value ) => setAttributes( { flexBasisUnit: value } )}
+														units={[ '%', 'px' ]}
+													/>
+												)}
+											</Fragment>
+										) : (
+											<Fragment>
+												<ResponsiveRangeControls
+													label={__( 'Row Gap', 'kadence-blocks' )}
+													value={( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : 0 )}
+													onChange={value => setAttributes( { rowGap: [ value, ( rowGap && rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
+													tabletValue={( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' )}
+													onChangeTablet={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), value, ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
+													mobileValue={( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' )}
+													onChangeMobile={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ), value ] } )}
+													min={0}
+													max={ ( rowGapUnit !== 'px' ? 12 : 200 ) }
+													step={( rowGapUnit !== 'px' ? 0.1 : 1 )}
+													unit={rowGapUnit}
+													onUnit={( value ) => setAttributes( { rowGapUnit: value } )}
+													units={[ 'px', 'em', 'rem' ]}
+												/>
+
+											</Fragment>
 										)}
+										<SelectControl
+											label={__( 'Vertical Alignment', 'kadence-blocks' )}
+											value={( verticalAlignment ? verticalAlignment : '' )}
+											options={[
+												{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+												{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
+												{ value: 'middle', label: __( 'Middle', 'kadence-blocks' ) },
+												{ value: 'bottom', label: __( 'Bottom', 'kadence-blocks' ) },
+											]}
+											onChange={ ( value ) => setAttributes( { verticalAlignment: value } )}
+										/>
 										<ResponsiveAlignControls
 											label={__( 'Text Alignment', 'kadence-blocks' )}
 											value={( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' )}
@@ -1057,6 +1127,7 @@ function SectionEdit( {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1122,6 +1193,7 @@ function SectionEdit( {
 															setAttributes={setAttributes}
 															name={'kadence/column'}
 															clientId={clientId}
+															context={context}
 														/>
 													</>
 												)}
@@ -1205,6 +1277,7 @@ function SectionEdit( {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Hover Blend Mode' ) }
@@ -1287,6 +1360,7 @@ function SectionEdit( {
 															setAttributes={ setAttributes }
 															name={ 'kadence/column' }
 															clientId={ clientId }
+															context={context}
 														/>
 														<SelectControl
 															label={ __( 'Blend Mode' ) }
@@ -1523,10 +1597,10 @@ function SectionEdit( {
 				textAlign: ( previewAlign ? previewAlign : undefined ),
 				backgroundColor: backgroundString,
 				backgroundImage: (previewBackground ? previewBackground : undefined ),
-				backgroundSize: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : undefined ),
-				backgroundPosition: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : undefined ),
-				backgroundRepeat: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : undefined ),
-				backgroundAttachment: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : undefined ),
+				backgroundSize: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgSize ? previewBackgroundImg[ 0 ].bgImgSize : undefined ),
+				backgroundPosition: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgPosition ? previewBackgroundImg[ 0 ].bgImgPosition : undefined ),
+				backgroundRepeat: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgRepeat ? previewBackgroundImg[ 0 ].bgImgRepeat : undefined ),
+				backgroundAttachment: ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImgAttachment ? previewBackgroundImg[ 0 ].bgImgAttachment : undefined ),
 				borderTop: ( previewBorderTopStyle ? previewBorderTopStyle : undefined ),
 				borderRight: ( previewBorderRightStyle ? previewBorderRightStyle : undefined ),
 				borderBottom: ( previewBorderBottomStyle ? previewBorderBottomStyle : undefined ),

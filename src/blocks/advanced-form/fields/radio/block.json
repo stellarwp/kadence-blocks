@@ -1,8 +1,12 @@
 {
+  "apiVersion": 2,
   "name": "kadence/advanced-form-radio",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
+	"uniqueID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -19,9 +23,11 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
-	  "type": "string",
-	  "default": ""
+	"defaultValue": {
+	  "type": "string"
+	},
+	"defaultParameter": {
+	  "type": "string"
 	},
 	"ariaDescription": {
 	  "type": "string",
@@ -37,17 +43,46 @@
 		{"value": "", "label": "", "selected": false}
 	  ]
 	},
-	"width": {
+	"maxWidth": {
 	  "type": "array",
 	  "default": [
-		"100",
-		"",
-		""
+		  "",
+		  "",
+		  ""
 	  ]
+	},
+	"maxWidthUnit": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"minWidth": {
+	  "type": "array",
+	  "default": [
+		  "",
+		  "",
+		  ""
+	  ]
+	},
+	"minWidthUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"inputName": {
+	  "type": "string"
+	},
+	"requiredMessage": {
+	  "type": "string"
+	},
+	"anchor": {
+	  "type": "string"
 	}
   },
-  "editorScript": "file:editor.js",
-  "parent": [
-	"kadence/advanced-form"
-  ]
+  "supports": {
+	"anchor": true,
+	"html": false,
+	"reusable": false,
+	"kbMetadata": true,
+	"kbContentLabel": "label"
+  },
+  "parent": [ "kadence/advanced-form" ]
 }

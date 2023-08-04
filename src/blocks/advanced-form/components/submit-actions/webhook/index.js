@@ -24,27 +24,15 @@ import { KadencePanelBody } from '@kadence/components';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function WebhookOptions( { settings, save, parentClientId } ) {
+function WebhookOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 	const SLUG_REGEX = /[\s#]/g;
 
-	const saveWebhookMap = ( value, index ) => {
-
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
 	return (
@@ -72,10 +60,10 @@ function WebhookOptions( { settings, save, parentClientId } ) {
 								</div>
 								<TextControl
 									label={__( 'Webhook Field Name', 'kadence-blocks' )}
-									value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+									value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 									onChange={( nextValue ) => {
 										nextValue = nextValue.replace( SLUG_REGEX, '-' );
-										saveWebhookMap( nextValue, index );
+										saveMap( nextValue, item.uniqueID );
 									}}
 								/>
 							</div>

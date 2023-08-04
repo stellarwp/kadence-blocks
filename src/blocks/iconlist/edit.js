@@ -23,6 +23,7 @@ import {
 	getFontSizeOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 import {
@@ -77,6 +78,7 @@ import {
 	ToolbarGroup,
 	ToolbarButton,
 	SelectControl,
+	ToggleControl
 } from '@wordpress/components';
 
 import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
@@ -85,18 +87,24 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } ) {
-
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style } = attributes;
+function KadenceIconLists( props ) {
+	const { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } = props;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style, linkUnderline, linkColor, linkHoverColor } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' ).getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -130,7 +138,8 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 			}
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -267,7 +276,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						{( activeTab === 'general' ) &&
 							<>
 								<KadencePanelBody
-									title={__( 'List Controls' )}
 									initialOpen={true}
 									panelName={'kb-icon-list-controls'}
 								>
@@ -466,12 +474,12 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 								</KadencePanelBody>
 								{ showSettings( 'textStyle', 'kadence/iconlist' ) && (
 									<KadencePanelBody
-										title={__( 'List Text Styling' )}
+										title={__( 'Text Styling' )}
 										initialOpen={ false }
 										panelName={'kb-list-text-styling'}
 									>
 										<PopColorControl
-											label={__( 'Color Settings' )}
+											label={__( 'Color' )}
 											value={( listStyles[0].color ? listStyles[0].color : '' )}
 											default={''}
 											onChange={value => {
@@ -479,6 +487,7 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 											}}
 										/>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={listStyles[ 0 ].size}
 											onFontSize={( value ) => saveListStyles( { size: value } )}
 											fontSizeType={listStyles[ 0 ].sizeType}
@@ -515,6 +524,37 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 										/>
 									</KadencePanelBody>
 								)}
+
+								<KadencePanelBody
+									title={__( 'Link Styling' )}
+									initialOpen={ false }
+									panelName={'kb-list-link-styling'}
+								>
+									<PopColorControl
+										label={__( 'Link Color' )}
+										value={ linkColor }
+										default={''}
+										onChange={ ( value ) => {
+											setAttributes( { linkColor: value } );
+										}}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( linkHoverColor ? linkHoverColor : '' )}
+										default2={''}
+										onChange2={value => setAttributes( { linkHoverColor: value } )}
+
+									/>
+									<SelectControl
+										label={ __( 'Underline Links', 'kadence-blocks' ) }
+										value={ linkUnderline }
+										options={ [
+											{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+											{ value: 'always', label: __( 'Underline', 'kadence-blocks' ) },
+											{ value: 'hover', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+										] }
+										onChange={ ( value ) => setAttributes( { linkUnderline: value } ) }
+									/>
+								</KadencePanelBody>
 							</>
 						}
 
@@ -557,120 +597,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 									/>
 								</KadencePanelBody>
 
-
-								{/*
-								 <div className="kt-sidebar-settings-spacer"></div>
-								 { showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
-									<KadencePanelBody
-										title={__( 'Edit All Icon Styles Together' )}
-										initialOpen={ false }
-										panelName={'kb-icon-all-styles'}
-									>
-										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
-										<KadenceIconPicker
-											value={firstInnerAttrs.icon}
-											onChange={value => {
-												if ( value !== firstInnerAttrs.icon ) {
-													saveAllListItem( { icon: value } );
-												}
-											}}
-										/>
-										<RangeControl
-											label={__( 'Icon Size' )}
-											value={firstInnerAttrs.size}
-											onChange={value => {
-												saveAllListItem( { size: value } );
-											}}
-											min={5}
-											max={250}
-										/>
-										{firstInnerAttrs.icon && 'fe' === firstInnerAttrs.icon.substring( 0, 2 ) && (
-											<RangeControl
-												label={__( 'Line Width' )}
-												value={firstInnerAttrs.width}
-												onChange={value => {
-													saveAllListItem( { width: value } );
-												}}
-												step={0.5}
-												min={0.5}
-												max={4}
-											/>
-										)}
-										<PopColorControl
-											label={__( 'Icon Color' )}
-											value={( firstInnerAttrs.color ? firstInnerAttrs.color : '' )}
-											default={''}
-											onChange={value => {
-												saveAllListItem( { color: value } );
-											}}
-										/>
-										<SelectControl
-											label={__( 'Icon Style' )}
-											value={firstInnerAttrs.style}
-											options={[
-												{ value: 'default', label: __( 'Default' ) },
-												{ value: 'stacked', label: __( 'Stacked' ) },
-											]}
-											onChange={value => {
-												saveAllListItem( { style: value } );
-											}}
-										/>
-										{firstInnerAttrs.style !== 'default' && (
-											<PopColorControl
-												label={__( 'Icon Background' )}
-												value={( firstInnerAttrs.background ? firstInnerAttrs.background : '' )}
-												default={''}
-												onChange={value => {
-													saveAllListItem( { background: value } );
-												}}
-											/>
-										)}
-										{firstInnerAttrs.style !== 'default' && (
-											<PopColorControl
-												label={__( 'Border Color' )}
-												value={( firstInnerAttrs.border ? firstInnerAttrs.border : '' )}
-												default={''}
-												onChange={value => {
-													saveAllListItem( { border: value } );
-												}}
-											/>
-										)}
-										{firstInnerAttrs.style !== 'default' && (
-											<RangeControl
-												label={__( 'Border Size (px)' )}
-												value={firstInnerAttrs.borderWidth}
-												onChange={value => {
-													saveAllListItem( { borderWidth: value } );
-												}}
-												min={0}
-												max={20}
-											/>
-										)}
-										{firstInnerAttrs.style !== 'default' && (
-											<RangeControl
-												label={__( 'Border Radius (%)' )}
-												value={firstInnerAttrs.borderRadius}
-												onChange={value => {
-													saveAllListItem( { borderRadius: value } );
-												}}
-												min={0}
-												max={50}
-											/>
-										)}
-										{firstInnerAttrs.style !== 'default' && (
-											<RangeControl
-												label={__( 'Padding (px)' )}
-												value={firstInnerAttrs.padding}
-												onChange={value => {
-													saveAllListItem( { padding: value } );
-												}}
-												min={0}
-												max={180}
-											/>
-										)}
-									</KadencePanelBody>
-								)} */}
-
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } preventMultiple={ [ 'items' ] } />
 
 							</>
@@ -691,7 +617,15 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, i
 						font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
 						text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
 					}` }
-
+					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap a {
+						color:  ${ ( linkColor ? KadenceColorOutput( linkColor ) : '' ) };
+						${ ( linkUnderline && linkUnderline === 'always' ? 'text-decoration: underline;' : '' ) }
+						${ ( linkUnderline && ( linkUnderline === 'none' ||  linkUnderline === 'hover' ) ? 'text-decoration: none;' : '' ) }
+					}` }
+					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap a:hover {
+						color:  ${ ( linkHoverColor ? KadenceColorOutput( linkHoverColor ) : '' ) };
+						${ ( linkUnderline && linkUnderline === 'hover' ? 'text-decoration: underline;' : '' ) }
+					}` }
 					{ ( '' !== previewListGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { row-gap: ${ previewListGap }px; }` : '' ) }
 					{ ( '' !== previewColumnGap ? `.kt-svg-icon-list-items${ uniqueID } .wp-block-kadence-iconlist { column-gap: ${ previewColumnGap }px; }` : '' ) }
 					{ ( previewIconSize ? `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { font-size: ${ previewIconSize }px; }` : '' ) }

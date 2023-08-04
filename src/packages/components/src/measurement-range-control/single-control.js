@@ -79,6 +79,7 @@ export default function SingleMeasureRangeControl( {
 	label,
 	onChange,
 	value = '',
+	placeholder = '',
 	className = '',
 	options = OPTIONS_MAP,
 	step = 1,
@@ -142,6 +143,7 @@ export default function SingleMeasureRangeControl( {
 		label: unitItem,
 	} ) );
 	const currentValue = ! realIsCustomControl ? getOptionIndex( options, value ) : Number( value );
+	const currentPlaceholder = ! realIsCustomControl ? getOptionIndex( options, placeholder ) : Number( placeholder )
 	const setInitialValue = () => {
 		if ( value === undefined ) {
 			onChange( '0' );
@@ -159,7 +161,6 @@ export default function SingleMeasureRangeControl( {
 	} else if ( label && addParent ) {
 		rangeLabel = addParent + label + ' ' + currentValueLabel
 	}
-
 	const customRange = (
 		<>
 			<CoreRangeControl
@@ -237,7 +238,12 @@ export default function SingleMeasureRangeControl( {
 									{ parentLabel && label && (
 										<span className='kadence-placement-label'>{ label }</span>
 									) }
-									<span className='kadence-spacing-btn-val'>{ options[ currentValue ]?.label }</span>
+									<span className='kadence-spacing-btn-val'>
+										{ options[ currentValue ]?.label }
+										{ ! options[ currentValue ]?.label && (
+											<span className='kadence-spacing-btn-placeholder'>{ options?.[ currentPlaceholder ]?.label ? options?.[ currentPlaceholder ]?.label : placeholder }</span>
+										) }
+									</span>
 								</Button>
 								{ isOpen && (
 									<Popover
@@ -265,6 +271,7 @@ export default function SingleMeasureRangeControl( {
 							step={ step }
 							units={ controlUnits }
 							value={ value }
+							placeholder={ placeholder ? placeholder : undefined }
 							disableUnits={ true }
 							onChange={ ( newVal ) => onChangeCustom( newVal ) }
 							onMouseOver={ onMouseOver }

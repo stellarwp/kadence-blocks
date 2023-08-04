@@ -1,13 +1,28 @@
-import { select } from '@wordpress/data';
+import { fieldBlocks } from "../../constants";
 
-export default ( parentClientId ) => {
-	const fields = [];
+function getFormFields( blocks ) {
+	if ( Array.isArray( blocks ) && blocks.length ) {
+		var fields = []
+		blocks.forEach( ( block ) => {
+			var innerFields = []
+			if ( fieldBlocks.includes( block.name ) ) {
+				fields.push( {
+					uniqueID: block?.attributes?.uniqueID || '',
+					name: block?.attributes?.inputName || '',
+					label: block?.attributes?.label || block?.name.replace( 'kadence/advanced-form-', ''),
+					type: block?.name.replace( 'kadence/advanced-form-', '') || '',
+				} );
+			}
 
-	const innerFields = select("core/block-editor").getBlocksByClientId( parentClientId )[0].innerBlocks;
+			if ( 'undefined' != typeof( block.innerBlocks ) && Array.isArray( block.innerBlocks ) && block.innerBlocks.length ) {
+				innerFields = getFormFields( block.innerBlocks );
+			}
 
-	innerFields.forEach( ( block ) => {
-		fields.push( block.attributes );
-	} );
+			fields = [...fields, ...innerFields];
+		} );
 
-	return fields;
+		return fields;
+	}
 }
+
+export default getFormFields;

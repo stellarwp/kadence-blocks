@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
-Tested up to: 6.2
-Stable tag: 3.0.41
+Tested up to: 6.3
+Stable tag: 3.1.8
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,6 +77,97 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.9 =
+* Fix: Disk space & multisite quota check on Form file uploads.
+
+= 3.1.8 =
+Release Date: August 3rd, 2023
+* Update: Force Decimals to show if set in progress bar.
+* Update: Better font weight inherit style options.
+* Fix: Advanced Form file uploads.
+* Fix: Potential advanced forms conflict with with third-party plugins.
+* Fix: Possible issue with slider flickering on some mobile browsers.
+* Fix: Metadata being included in block defaults.
+* Fix: Issue with progress bar rendering. 
+* Fix: Issue where shorter youtube videos would not loop unless in a playlist.
+* Fix: CountUp block issue with font family in editor.
+
+= 3.1.7 =
+Release Date: August 2nd, 2023
+* Fix: Thumbnail Gallery showing vertical thumbnails.
+
+= 3.1.6 =
+Release Date: August 2nd, 2023
+* Fix: Form Recovery issue.
+* Fix: Possible undefined variable notice.
+
+= 3.1.5 =
+Release Date: August 2nd, 2023
+* Add: Support for decimals in progress bar
+* Update: Progress Bar text alignment options.
+* Update: Advanced form for widget screen.
+* Update: Deprecated date settings.
+* Fix: Line height preview in progress bar.
+
+= 3.1.4 =
+Release Date: August 1st, 2023
+* Fix: Possible Styling issue Testimonial Carousel, Row Layout Background Slider, and Advanced Gallery Sliders.
+
+= 3.1.3 =
+Release Date: August 1st, 2023
+* Add: Ability to select parent form block from form fields.
+* Add: Underline and color options for icon list links.
+* Update: Responsive Measure Control to show inherited sizes.
+* Fix: Adv Form required asterisk color not applying.
+* Fix: Down arrow showing when multiselect is rendered.
+* Fix: Progress bar % hiding when changing position.
+* Fix: Progress bar prefix/suffix text not updating in editor.
+* Fix: Multiple progress bars on same page in editor.
+* Fix: Issue with field appender not showing fields when form is nested in a section block.
+* Fix: Setting custom fonts on Advanced form labels
+* Fix: Layout issue with date picker in Countdown block.
+* Fix: Google fonts not loading on frontend for Testimonials block.
+* Fix: Link style preview in editor for Advanced Text
+* Fix: Sticky sections inside Accordion panes.
+* Fix: Progress bar in full site editing.
+* Fix: Border radius on stacked icons in Icon block.
+* Fix: Number & Title font size preview in Count Up Block.
+* Fix: Background colors and icon for select fields in Adv Form Block.
+* Fix: Max width units on Table of Contents block.
+* Fix: Spacing issue with Process Bar label and number.
+* Fix: Possible small error with form block.
+
+= 3.1.2 Beta Version 1 =
+Release Date: July 12th, 2023
+* Fix: Splide css file name.
+* Fix: Pro check in advanced form.
+* Fix: Radio label styles in editor.
+* Fix: Form select issue.
+
+= 3.1.1 Alpha Version 2 =
+Release Date: July 12th, 2023
+* Add: Option to set gradient position with input.
+* Add: No follow & sponsored options to links in icon list.
+* Add: Form wizard with style options to advanced form.
+* Add: Row gap settings to section.
+* Add: Flex Basis settings to section.
+* Fix: Media styles not copy/pasting properly for Info Box.
+* Fix: % and rem based border radius on Advanced Buttons.
+* Fix: Increase specificity of Splide CSS to avoid conflicts.
+* Fix: Posts block image ratios on mobile.
+* Fix: issue with WPML and span in advanced text.
+* Fix: Issue with WPML and posts read more.
+
+= 3.1.0 Alpha Version 1 =
+Release Date: June 15th, 2023
+* Add: Advanced Form Block.
+* Add: Progress Bar Block.
+* Add: Dynamic block labels in list view.
+* Add: Ability to set custom names for Kadence blocks in list view
+* Add: Option for local google fonts.
+* Update: Unique Ids are now set site wide.
+* Update: Block names for easier searching.
+
 = 3.0.41 =
 Release Date: June 6th, 2023
 * Update: Typography custom sizes to support three decimals.
@@ -133,13 +224,13 @@ Release Date: April 27th, 2023
 
 = 3.0.34 =
 Release Date: April 24th, 2023
-* Update: Design library to use shadow dom. 
+* Update: Design library to use shadow dom.
 * Update: Filter for custom palette.
 * Fix: Issue with image crop.
 * Fix: Issue with testimonial media border radius in admin.
 * Fix: Accordion output styles.
 * Fix: Possible max width issue with sections.
-* Fix: Issue with typed text script. 
+* Fix: Issue with typed text script.
 * Fix: Issue with row background override in editor on mobile.
 * Fix: Issue with some columns in gallery when using individual settings.
 

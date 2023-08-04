@@ -1,4 +1,4 @@
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, getFontSizeOptionOutput } from '@kadence/helpers';
 import { get, isEmpty } from 'lodash';
 
 export default ( previewDevice, parentHelpStyle ) => {
@@ -11,14 +11,31 @@ export default ( previewDevice, parentHelpStyle ) => {
 		styles.color = 'inherit';
 	}
 
-	styles.fontSize = getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ) + get( parentHelpStyle, 'sizeType', 'px');
-	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
-	styles.lineHeight = getPreviewSize( previewDevice, parentHelpStyle.lineHeight[ 0 ], parentHelpStyle.lineHeight[ 1 ], parentHelpStyle.lineHeight[ 2 ] ) + parentHelpStyle.lineType;
-	styles.fontWeight = parentHelpStyle.weight ? parentHelpStyle.weight : undefined;
-	styles.textTransform = parentHelpStyle.textTransform ? parentHelpStyle.textTransform : undefined;
-	styles.fontFamily = parentHelpStyle.family ? parentHelpStyle.family : undefined;
-	styles.fontStyle = parentHelpStyle.fontStyle ? parentHelpStyle.fontStyle : undefined;
-	styles.letterSpacing = parentHelpStyle.letterSpacing ? parentHelpStyle.letterSpacing + 'px' : undefined;
+	styles.fontSize = getFontSizeOptionOutput( getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ), get( parentHelpStyle, 'sizeType', 'px') );
+	let lineHeight = getPreviewSize( previewDevice, parentHelpStyle?.lineHeight?.[0], parentHelpStyle?.lineHeight?.[1], parentHelpStyle?.lineHeight?.[2] );
+	if( lineHeight ){
+		styles.lineHeight = lineHeight + get( parentHelpStyle, 'lineType', '');
+	}
+	let letterSpacing = getPreviewSize( previewDevice, parentHelpStyle?.letterSpacing?.[ 0 ], parentHelpStyle?.letterSpacing?.[ 1 ], parentHelpStyle?.letterSpacing?.[ 2 ] );
+	if( letterSpacing ){
+		styles.letterSpacing = letterSpacing + get( parentHelpStyle, 'letterType', 'px');
+	}
+
+	if(parentHelpStyle.weight) {
+		styles.fontWeight = parentHelpStyle.weight;
+	}
+
+	if ( parentHelpStyle.textTransform ) {
+		styles.textTransform = parentHelpStyle.textTransform;
+	}
+
+	if( parentHelpStyle.family ) {
+		styles.fontFamily = parentHelpStyle.family;
+	}
+
+	if( parentHelpStyle.fontStyle ) {
+		styles.fontStyle = parentHelpStyle.fontStyle;
+	}
 
 	styles.paddingTop = ( '' !== parentHelpStyle.padding[0] ? parentHelpStyle.padding[0] + 'px' : undefined );
 	styles.paddingRight = ( '' !== parentHelpStyle.padding[1] ? parentHelpStyle.padding[1] + 'px' : undefined );

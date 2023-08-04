@@ -35,6 +35,8 @@ export default function HoverToggleControl( {
 	label = __( 'Hover Styles', 'kadence-blocks' ),
 	activeLabel = __( 'Active Styles', 'kadence-blocks' ),
 	initial = 'normal',
+	hoverTab = __( 'Hover', 'kadence-blocks' ),
+	normalTab = __( 'Normal', 'kadence-blocks' ),
 	active,
 	hover,
 	normal,
@@ -55,12 +57,12 @@ export default function HoverToggleControl( {
 					tabs={[
 						{
 							name     : 'normal',
-							title    : __( 'Normal', 'kadence-blocks' ),
+							title    : normalTab,
 							className: 'kt-normal-tab',
 						},
 						{
 							name     : 'hover',
-							title    : __( 'Hover', 'kadence-blocks' ),
+							title    : hoverTab,
 							className: 'kt-hover-tab',
 						},
 					]}>

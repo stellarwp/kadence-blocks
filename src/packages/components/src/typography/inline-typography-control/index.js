@@ -160,9 +160,13 @@ class InlineTypographyControls extends Component {
 		];
 		const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
 		const headingWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.headingWeights ? kadence_blocks_params.headingWeights : [] );
+		const bodyWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.bodyWeights ? kadence_blocks_params.bodyWeights : [] );
 		const buttonWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.buttonWeights ? kadence_blocks_params.buttonWeights : [] );
 		if ( isKadenceT && this.props.fontGroup === 'heading' && headingWeights && Array.isArray( headingWeights ) && headingWeights.length ) {
 			standardWeights = headingWeights;
+		}
+		if ( isKadenceT && this.props.fontGroup === 'body' && bodyWeights && Array.isArray( bodyWeights ) && bodyWeights.length ) {
+			standardWeights = bodyWeights;
 		}
 		if ( isKadenceT && this.props.fontGroup === 'button' && buttonWeights && Array.isArray( buttonWeights ) && buttonWeights.length ) {
 			standardWeights = buttonWeights;

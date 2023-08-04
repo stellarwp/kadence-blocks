@@ -24,7 +24,6 @@ registerBlockType('kadence/advanced-form-file', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: fileInputIcon,
 	},
