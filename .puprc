@@ -1,6 +1,8 @@
 {
     "build": [
-    	"composer install --no-dev"
+    	"composer install --no-dev",
+		"npm install --legacy-peer-deps",
+        "npm run build"
     ],
     "build_dev": [
 		"composer install --no-dev",
@@ -19,16 +21,17 @@
 			"slug": "wp-plugins/kadence-blocks/stable",
 			"textdomain": "kadence-blocks",
 			"url": "https://translate.wordpress.org",
-			"path": "languages"
-
+			"path": "languages",
+			"filter": {
+				"minimum_percentage": 30
+			}
 		}
     ],
     "paths": {
         "build_dir": ".pup-build",
-        "changelog": null,
+        "changelog": "readme.txt",
         "css": [ "dist/" ],
         "js": [ "dist/" ],
-        "sync_files": [],
         "versions": [
 			{
 				"file": "kadence-blocks.php",
@@ -39,7 +42,6 @@
 				"regex": "(Stable tag: +)(.+)"
 			}
 		],
-        "views": [],
         "zip_dir": ".pup-zip"
     },
     "repo": "stellarwp/kadence-blocks",
