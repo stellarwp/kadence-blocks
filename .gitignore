@@ -5,3 +5,6 @@ dist/
 zip/
 bin/strauss.phar
 vendor/
+bin/pup.phar
+.pup-build
+.pup-zip
