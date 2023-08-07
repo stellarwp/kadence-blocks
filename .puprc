@@ -16,17 +16,6 @@
 		}
 	},
 	"clean": [],
-	"i18n": [
-		{
-			"slug": "wp-plugins/kadence-blocks/stable",
-			"textdomain": "kadence-blocks",
-			"url": "https://translate.wordpress.org",
-			"path": "languages",
-			"filter": {
-				"minimum_percentage": 30
-			}
-		}
-	],
 	"paths": {
 		"build_dir": ".pup-build",
 		"changelog": "readme.txt",
