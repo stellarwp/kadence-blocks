@@ -8,6 +8,34 @@ import {
 	Spinner
 } from '@wordpress/components';
 
+import apiFetch from '@wordpress/api-fetch';
+import { useState, useEffect, Fragment } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+
+/**
+ * Get library data.
+ *
+ * @param {(object)} userData
+ *
+ * @return {Promise<object>} Promise returns object
+ */
+async function downloadImages( images ) {
+	try {
+		const response = await apiFetch( {
+			path: '/kb-design-library/v1/process_images',
+			method: 'POST',
+			data: {
+				images: images,
+			},
+		} );
+		return response;
+	} catch (error) {
+		console.log(`ERROR: ${ error }`);
+		return false;
+	}
+}
+
+
 /**
  * Internal dependencies
  */
@@ -93,10 +121,9 @@ const styles = {
 
 export function PhotoCollection({ photos, collectionLink, title, description, updateCollection }) {
 	const photoGallery = usePhotos(photos);
-
+    const [isDownloading, setIsDownloading] = useState( false );
+    const [downloadedIDs, setDownloadedIDs] = useState( '' );
 	let mediaLibrary = {};
-	initModal();
-
 	function initModal() {
 		mediaLibrary = window.wp.media({
 			id: title,
@@ -107,7 +134,7 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 			multiple: 'add',
 		});
 	}
-
+	initModal();
 	mediaLibrary.on( 'select', function() {
 		// TODO: Use collectionLink to download the Pexel collection to the media library
 		const selectedPhotos = mediaLibrary.state().get('selection').toJSON();
@@ -124,14 +151,41 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 	});
 
 	mediaLibrary.on( 'open', function() {
+		console.log('open', photos);
+		console.log('downloadedIDs', downloadedIDs);
 		const selectionAPI = mediaLibrary.state().get( 'selection' );
-		photos.forEach( function( image ) {
-			if(image.isLocal) {
-				const attachment = wp.media.attachment( image.id );
-				selectionAPI.add( attachment ? [ attachment ] : []);
-			}
+		downloadedIDs.forEach( function( id ) {
+			const attachment = wp.media.attachment( image.id );
+			selectionAPI.add( attachment ? [ attachment ] : []);
 		});
+		// photos.forEach( function( image ) {
+		// 	if(image.isLocal) {
+		// 		const attachment = wp.media.attachment( image.id );
+		// 		selectionAPI.add( attachment ? [ attachment ] : []);
+		// 	}
+		// });
 	});
+	async function downloadToMediaLibrary() {
+		const response = await downloadImages(photos);
+		console.log('response', response);
+		if ( response !== false ) {
+			let tempIds = [];
+			response.forEach(photo => {
+				tempIds.push(photo.id);
+			});
+			setDownloadedIDs( tempIds );
+			mediaLibrary.open();
+			setIsDownloading(false);
+		} else {
+			setIsDownloading(false);
+		}
+	}
+	function handleDownload() {
+		if ( ! isDownloading ) {
+			setIsDownloading(true);
+			downloadToMediaLibrary();
+		}
+	}
 
 
 	return (
@@ -171,9 +225,13 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 						variant="link"
 						text={ __('Edit Collection', 'kadence') }
 						target="_blank"
-						onClick={ (_e) => mediaLibrary.open() }
+						onClick={ () => handleDownload() }
+						disabled={ isDownloading }
 						style={{ fontSize: '14px'}}
 					/>
+					{ isDownloading && (
+						<Spinner />
+					)}
 				</FlexBlock>
 			</Flex>
 		</div>

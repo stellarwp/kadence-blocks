@@ -47,6 +47,7 @@ export default function Result(props) {
 
     const handleDownload = () => {
 		if ( ! isDownloading ) {
+            console.log('downloadToMediaLibrary', resultData);
 			downloadToMediaLibrary(resultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
 		}
 	}

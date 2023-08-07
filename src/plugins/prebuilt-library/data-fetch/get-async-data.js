@@ -96,6 +96,7 @@ export function getAsyncData() {
 		if ( ! userData?.photoLibrary ) {
 			return [];
 		}
+		console.log('userData', userData);
 		if ( 'My Images' === userData?.photoLibrary ) {
 			const myImages = { data: [] };
 			if ( userData?.featuredImages ) {

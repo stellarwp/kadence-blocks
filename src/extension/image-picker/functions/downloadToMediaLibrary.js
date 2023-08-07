@@ -40,7 +40,7 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
 		setIsDownloaded(true);
 		setIsDownloading(false);
 
-		const wpAttachmentId = response[0].id;
+		const wpAttachmentId = response?.[0]?.id;
 
 		setImagePickerDownloadedImages(imagePickerDownloadedImages.concat([wpAttachmentId]))
 		

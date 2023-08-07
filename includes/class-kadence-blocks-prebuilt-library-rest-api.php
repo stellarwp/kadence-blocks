@@ -463,14 +463,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $images ) ) {
 			foreach ( $images as $image_data ) {
 				$image = array();
-				$image['url'] = $this->get_src_from_image_data( $image_data );
-				$image['id'] = $image_data['id'];
-				$image['filename'] = $image_data['filename'] ?? '';
-				$image['alt']  = $image_data['alt'];
-				$image['photographer']  = $image_data['photographer'];
+
+				$image['url']               = $this->get_src_from_image_data( $image_data );
+				$image['id']                = $image_data['id'];
+				$image['filename']          = $image_data['filename'] ?? '';
+				$image['photographer']      = $image_data['photographer'];
 				$image['photographer_url']  = $image_data['photographer_url'];
-				$image['alt']  = $image_data['alt'];
-				$image['title'] = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
+				$image['alt']               = $image_data['alt'];
+				$image['title']             = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
 
 				// Download remote image.
 				$downloaded_images[] = $this->import_image( $image );
