@@ -1469,7 +1469,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				'body' => json_encode( $body ),
 			)
 		);
-		return rest_ensure_response( $response );
+
+    $contents = wp_remote_retrieve_body( $response );
+    // Early exit if there was an error.
+    if ( is_wp_error( $contents ) ) {
+      return 'error';
+    }
+
+    return $contents;
 	}
 	/**
 	 * Get remote file contents.

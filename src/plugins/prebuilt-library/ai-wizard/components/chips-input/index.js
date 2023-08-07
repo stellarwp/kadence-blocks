@@ -85,6 +85,9 @@ export function ChipsInput(props) {
 	}
 
 	function addSuggestedKeyword(keyword) {
+		if (tags.length >= maxTags) {
+			return;
+		}
 		const newSelectedItems = [...tags];
 		newSelectedItems.push(keyword);
 		selectedTags(newSelectedItems);

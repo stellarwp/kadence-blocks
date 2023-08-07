@@ -1,5 +1,6 @@
 import { API_ROUTE_GET_KEYWORDS } from "../constants";
 import apiFetch from "@wordpress/api-fetch";
+import { SafeParseJSON } from "@kadence/helpers";
 import { addQueryArgs } from "@wordpress/url";
 
 export function keywordsHelper() {
@@ -18,27 +19,23 @@ export function keywordsHelper() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs(API_ROUTE_GET_KEYWORDS, {
-					name,
-					entity_type,
-					industry,
-					location,
-					description,
-					count: 10,
 					api_key: kadence_blocks_params?.proData?.api_key
 						? kadence_blocks_params.proData.api_key
 						: "",
 				}),
+				method: "POST",
+				data: {
+					name,
+					entity_type: entity_type?.toLowerCase(),
+					industry,
+					location,
+					description,
+					count: 10,
+				},
 			});
 			const responseData = SafeParseJSON(response, false);
-
-			if (!(response?.response?.code === 200)) {
-				const message = response?.message ? response.message : response;
-				return Promise.reject(message);
-			}
-
-			return Promise.resolve(responseData);
+			return Promise.resolve(responseData?.keywords);
 		} catch (error) {
-			console.log(error);
 			const message = error?.message ? error.message : error;
 			return Promise.reject(message);
 		}
