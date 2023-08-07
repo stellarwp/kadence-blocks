@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.10 =
+Release Date: August TBD, 2023
+* Fix: Required checkboxes wanting all boxes selected.
+
 = 3.1.9 =
 Release Date: August 4th, 2023
 * Update: Allow additional field replacements to the email post submit action.
