@@ -13,12 +13,13 @@ import SpaBg from "../assets/spa-bg.jpg";
 import TaxesBg from "../assets/taxes-bg.jpg";
 
 export const API_MAX_ATTEMPTS = 3;
+export const API_URL =
+	"https://content.startertemplatecloud.com/wp-json/prophecy/v1/";
 export const API_ROUTE_GET_COLLECTIONS =
 	"/kb-design-library/v1/get_image_collections";
 export const API_ROUTE_GET_IMAGES = "/kb-design-library/v1/get_images";
 export const API_ROUTE_GET_VERTICALS = "/kb-design-library/v1/get_verticals";
-export const API_ROUTE_IMPROVE_MISSION_STATEMENT =
-	"/kb-design-library/v1/improve-mission-statement";
+export const API_ROUTE_GET_KEYWORDS = "/kb-design-library/v1/get_keywords";
 export const COLLECTION_REQUEST_IMAGE_TYPE = "WEBP";
 export const COLLECTION_REQUEST_IMAGE_SIZES = [
 	{

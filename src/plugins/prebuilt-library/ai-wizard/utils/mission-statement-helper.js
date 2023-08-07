@@ -1,23 +1,32 @@
-import { API_ROUTE_IMPROVE_MISSION_STATEMENT } from "../constants";
-import apiFetch from "@wordpress/api-fetch";
-import { addQueryArgs } from "@wordpress/url";
+import { API_URL } from "../constants";
 
 export function missionStatementHelper() {
-	async function getMissionStatement( missionStatement ) {
+	async function getMissionStatement(missionStatement) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs(API_ROUTE_IMPROVE_MISSION_STATEMENT, {
-					api_key: kadence_blocks_params?.proData?.api_key
-						? kadence_blocks_params.proData.api_key
-						: "",
-				}),
-				method: 'POST',
-				data: {
-					content: missionStatement,
-				},
-			});
-			console.log(response);
-			if ( ! ( response?.response?.code === 200 ) ) {
+			// Get site domain from the url.
+			const url = new URL(window.location.href);
+			const domain = url.hostname;
+			const token = {
+				domain: domain,
+				key: kadence_blocks_params?.proData?.api_key
+					? kadence_blocks_params.proData.api_key
+					: "",
+			};
+			const response = await fetch(
+				`${API_URL}proxy/intake/improve-mission-statement`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-Prophecy-Token": btoa(JSON.stringify(token)),
+					},
+					body: JSON.stringify({
+						text: missionStatement,
+						stream: true,
+					}),
+				}
+			);
+			if (!(response?.status === 200)) {
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}

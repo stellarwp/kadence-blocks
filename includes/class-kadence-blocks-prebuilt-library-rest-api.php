@@ -274,11 +274,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
-			'/improve-mission-statement',
+			'/get_keywords',
 			array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'get_improved_mission_statement' ),
+					'callback'            => array( $this, 'get_keyword_suggestions' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -1429,15 +1429,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 
 	/**
-	 * Get improved mission statement.
+	 * Get keyword suggestions.
 	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
-	public function get_improved_mission_statement( $request ) {
+	public function get_keyword_suggestions( $request ) {
 		$parameters = $request->get_json_params();
-		if ( empty( $parameters['content'] ) ) {
-			return new WP_REST_Response( array( 'error' => 'Content is missing.' ), 400 );
+		if ( empty( $parameters['name'] ) || empty($parameters['entity_type']) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
+			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
 		}
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
@@ -1449,10 +1449,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'domain' => $site_url,
 			'key'    => $request->get_param( self::PROP_API_KEY ),
 		);
-		$api_url  = $this->remote_ai_url . 'proxy/intake/improve-mission-statement';
+		$api_url  = $this->remote_ai_url . 'proxy/intake/suggest-keywords';
 		$body = array(
-			'text' => $parameters['content'],
-			'stream' => false,
+			'name' => $parameters['name'],
+			'entity_type' => $parameters['entity_type'],
+			'industry' => $parameters['industry'],
+			'location' => $parameters['location'],
+			'description' => $parameters['description'],
+			'count' => $parameters['count'],
 		);
 		$response = wp_remote_post(
 			$api_url,
