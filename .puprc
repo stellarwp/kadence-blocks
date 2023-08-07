@@ -19,12 +19,8 @@
 	"paths": {
 		"build_dir": ".pup-build",
 		"changelog": "readme.txt",
-		"css": [
-			"dist/"
-		],
-		"js": [
-			"dist/"
-		],
+		"css": [],
+		"js": [],
 		"versions": [
 			{
 				"file": "kadence-blocks.php",
