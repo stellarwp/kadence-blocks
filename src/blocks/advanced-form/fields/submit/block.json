@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"title": "Submit Button",
 	"name": "kadence/advanced-form-submit",
 	"category": "kadence-blocks",

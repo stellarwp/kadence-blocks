@@ -1,5 +1,5 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"title": "Section",
 	"name": "kadence/column",
 	"category": "kadence-blocks",

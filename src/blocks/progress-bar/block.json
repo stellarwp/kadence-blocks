@@ -1,5 +1,5 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "kadence/progress-bar",
 	"title": "Progress Bar",
 	"category": "kadence-blocks",
