@@ -1,0 +1,43 @@
+{
+	"build": [
+		"composer install --no-dev",
+		"npm install --legacy-peer-deps",
+		"npm run build"
+	],
+	"build_dev": [
+		"composer install --no-dev",
+		"npm install --legacy-peer-deps",
+		"npm run build"
+	],
+	"checks": {
+		"version-conflict": {
+			"fail_method": "error",
+			"fail_method_dev": "warn"
+		}
+	},
+	"clean": [],
+	"paths": {
+		"build_dir": ".pup-build",
+		"changelog": "readme.txt",
+		"css": [
+			"dist/"
+		],
+		"js": [
+			"dist/"
+		],
+		"versions": [
+			{
+				"file": "kadence-blocks.php",
+				"regex": "(define\\( +['\"]KADENCE_BLOCKS_VERSION['\"], +['\"])([^'\"]+)"
+			},
+			{
+				"file": "readme.txt",
+				"regex": "(Stable tag: +)(.+)"
+			}
+		],
+		"zip_dir": ".pup-zip"
+	},
+	"repo": "stellarwp/kadence-blocks",
+	"zip_use_default_ignore": false,
+	"zip_name": "kadence-blocks"
+}
