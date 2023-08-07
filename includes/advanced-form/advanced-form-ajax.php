@@ -405,12 +405,21 @@ class KB_Ajax_Advanced_Form {
 			wp_send_json_error( $data );
 		}
 	}
-
+	/**
+	 * Get Allowed Mime Types.
+	 *
+	 * @param array $categories an array of category names.
+	 */
 	public function get_allowed_mine_types( $categories ) {
 		$allowed_mime_types = array();
 
 		$mimtypes = array(
 			'image'     => array(
+				'image/gif',
+				'image/jpeg',
+				'image/png',
+			),
+			'images'     => array(
 				'image/gif',
 				'image/jpeg',
 				'image/png',
@@ -423,7 +432,7 @@ class KB_Ajax_Advanced_Form {
 				'video/mpg',
 				'video/mpeg',
 				'video/quicktime',
-				'video/x-ms-wmv'
+				'video/x-ms-wmv',
 			),
 			'audio'     => array(
 				'audio/mpeg',
@@ -446,12 +455,12 @@ class KB_Ajax_Advanced_Form {
 				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'application/vnd.ms-powerpoint',
 				'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-			)
+			),
 		);
 
 
 		foreach ( $categories as $category ) {
-			if( isset( $mimtypes[ $category ] ) ) {
+			if ( isset( $mimtypes[ $category ] ) ) {
 				$allowed_mime_types = array_merge( $allowed_mime_types, $mimtypes[ $category ] );
 			}
 		}
