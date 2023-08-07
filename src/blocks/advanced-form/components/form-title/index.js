@@ -38,6 +38,8 @@ export default function FormTitle( {
 	const [ wizardStep, setWizardStep ] = useState( 'start' );
 	const [ template, setTemplate ] = useState( '' );
 	const [ style, setStyle ] = useState( 'basic' );
+	const [ isSaving, setIsSaving ] = useState( false );
+
 	const formSteps = [
 		{ key: 'start', name: __( 'Layout', 'kadence-blocks' ) },
 		{ key: 'style', name: __( 'Style', 'kadence-blocks' ) },
@@ -203,9 +205,9 @@ export default function FormTitle( {
 						/>
 						<Button
 							variant="primary"
-							onClick={ () => onAdd( tmpTitle, template, style, initialDescription ) }
+							onClick={ () => { setIsSaving( true ); onAdd( tmpTitle, template, style, initialDescription ); } }
 							isBusy={ isAdding }
-							disabled={tmpTitle === ''}
+							disabled={tmpTitle === '' || isSaving}
 						>
 							{__( 'Create', 'kadence-blocks' )}
 						</Button>

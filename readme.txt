@@ -79,7 +79,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 3.1.10 =
 Release Date: August TBD, 2023
+* Update: More details error message on advanced form submission failure.
 * Fix: Required checkboxes wanting all boxes selected.
+* Fix: Advanced forms number field not displaying min/max value in editor.
+* Fix: Toggling allowed file types in advanced form.
+* Fix: Allowing multiple file types in advanced form upload.
 
 = 3.1.9 =
 Release Date: August 4th, 2023
@@ -95,7 +99,7 @@ Release Date: August 3rd, 2023
 * Fix: Potential advanced forms conflict with with third-party plugins.
 * Fix: Possible issue with slider flickering on some mobile browsers.
 * Fix: Metadata being included in block defaults.
-* Fix: Issue with progress bar rendering. 
+* Fix: Issue with progress bar rendering.
 * Fix: Issue where shorter youtube videos would not loop unless in a playlist.
 * Fix: CountUp block issue with font family in editor.
 

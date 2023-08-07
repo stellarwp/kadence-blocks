@@ -151,13 +151,13 @@ function FieldNumber( { attributes, setAttributes, isSelected, clientId, context
 								<NumberControl
 									label={__( 'Maximum Value', 'kadence-blocks' )}
 									value={maxValue}
-									onChange={( value ) => setAttributes( { maxValue: value } )}
+									onChange={( value ) => setAttributes( { maxValue: parseInt( value ) } )}
 								/>
 
 								<NumberControl
 									label={__( 'Minimum Value', 'kadence-blocks' )}
 									value={minValue}
-									onChange={( value ) => setAttributes( { minValue: value } )}
+									onChange={( value ) => setAttributes( { minValue: parseInt( value ) } )}
 								/>
 
 							</KadencePanelBody>
