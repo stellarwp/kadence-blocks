@@ -6,5 +6,6 @@ zip/
 bin/strauss.phar
 vendor/
 bin/pup.phar
+bin/wp-cli.phar
 .pup-build
 .pup-zip
