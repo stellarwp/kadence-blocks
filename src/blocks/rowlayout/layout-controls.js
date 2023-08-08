@@ -59,7 +59,6 @@ import { Fragment } from '@wordpress/element';
 import {
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
 } from '@wordpress/components';
 
 /**

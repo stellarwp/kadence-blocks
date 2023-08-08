@@ -9,19 +9,20 @@
 /**
  * WordPress dependencies
  */
- const { apiFetch } = wp;
- import {
+import apiFetch from '@wordpress/api-fetch';
+
+import {
 	withDispatch,
 } from '@wordpress/data';
 import {
 	Component,
-	Fragment,
 } from '@wordpress/element';
 import {
 	Button,
 	Modal,
 	Spinner,
 } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	update,
 	close,
@@ -47,7 +48,6 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
 	{
