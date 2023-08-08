@@ -188,6 +188,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			  let barContainer = document.querySelector("#kb-progress-bar' . $unique_id . '");
 			  let type = "' . $attributes['barType'] . '";
 			  let barSvg = barContainer.querySelector("svg");
+			  if ( ! barSvg ) {
+			  	return;
+			  }
 			  let barPaths = barSvg.querySelectorAll("path");
 			  let path1 = barPaths[0];
 			  let path2 = barPaths[1];

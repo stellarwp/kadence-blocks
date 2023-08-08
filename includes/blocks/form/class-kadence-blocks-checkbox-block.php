@@ -77,17 +77,20 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content      = '';
-		$inner_content      .= $this->field_label( $attributes );
+		$check_label = $attributes;
+		$check_label['uniqueID'] = 'cb' . $unique_id;
+
+		$inner_content      .= $this->field_label( $check_label );
 		$inner_content      .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<div class="kb-radio-check-item-wrap">';
+		$inner_content .= '<div class="kb-radio-check-item-wrap" id="' . $this->field_name( $check_label ) . '" data-type="checkbox" data-required="' . $is_required . '">';
 
 		foreach ( $attributes['options'] as $key => $option ) {
 			$id         = $unique_id . '_' . $key;
 			$is_checked = ! empty( $option['selected'] );
 
 			$inner_content .= '<div class="kb-radio-check-item">';
-			$inner_content .= '<input class="kb-radio-style" type="checkbox" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '"' . ( $is_checked ? ' checked' : '' ) . ' value="' . $this->get_option_value( $option ) . '" ' . $this->a11y_helpers($attributes) . '>';
+			$inner_content .= '<input class="kb-checkbox-style" type="checkbox" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '[]"' . ( $is_checked ? ' checked' : '' ) . ' value="' . $this->get_option_value( $option ) . '">';
 
 			$inner_content .= '<label for="' . $id . '">' . $option['label'] . '</label>';
 

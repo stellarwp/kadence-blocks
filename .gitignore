@@ -6,3 +6,6 @@ zip/
 bin/strauss.phar
 vendor/
 .idea
+bin/pup.phar
+.pup-build
+.pup-zip

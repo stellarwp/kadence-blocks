@@ -12,6 +12,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
+import { without } from 'lodash';
 import {
 	getUniqueId,
 	getPreviewSize,

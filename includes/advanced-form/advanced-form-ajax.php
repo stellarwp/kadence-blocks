@@ -253,12 +253,12 @@ class KB_Ajax_Advanced_Form {
 
 				// Was file too big
 				if ( $_FILES[ $expected_field ]['size'] > $max_upload_size_bytes ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
+					$this->process_bail( __( 'Submission Failed. File too Large', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
 				}
 
 
 				if ( ! is_uploaded_file( $_FILES[ $expected_field ]['tmp_name'] ) ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
+					$this->process_bail( __( 'Submission Failed. File could not be uploaded', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
 				}
 
 
@@ -268,7 +268,7 @@ class KB_Ajax_Advanced_Form {
 				$mime_type = mime_content_type( $_FILES[ $expected_field ]['tmp_name'] );
 
 				if ( ! in_array( $mime_type, $allowed_file_types ) ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File type not allowed', 'kadence-blocks' ) );
+					$this->process_bail( __( 'Submission Failed. File type is not allowed.', 'kadence-blocks' ), __( 'File type not allowed', 'kadence-blocks' ) );
 				}
 
 				$file_size = filesize( $_FILES[ $expected_field ]['tmp_name'] );
@@ -280,7 +280,7 @@ class KB_Ajax_Advanced_Form {
 
 					$space     = get_upload_space_available();
 					if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
+						$this->process_bail( __( 'Submission Failed. Not enough disk quota on this website.', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
 					}
 				}
 
@@ -303,9 +303,9 @@ class KB_Ajax_Advanced_Form {
 				} else {
 					// Was disk space an issue?
 					if ( disk_free_space( ABSPATH ) < $file_size ) {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk space on the server.', 'kadence-blocks' ) );
+						$this->process_bail( __( 'Submission Failed. Not enough disk space on the server', 'kadence-blocks' ), __( 'Not enough disk space on the server.', 'kadence-blocks' ) );
 					} else {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+						$this->process_bail( __( 'Submission Failed. Failed to upload file', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
 					}
 				}
 			}
@@ -405,11 +405,20 @@ class KB_Ajax_Advanced_Form {
 			wp_send_json_error( $data );
 		}
 	}
-
+	/**
+	 * Get Allowed Mime Types.
+	 *
+	 * @param array $categories an array of category names.
+	 */
 	public function get_allowed_mine_types( $categories ) {
 		$allowed_mime_types = array();
 
 		$mimtypes = array(
+			'image'     => array(
+				'image/gif',
+				'image/jpeg',
+				'image/png',
+			),
 			'images'     => array(
 				'image/gif',
 				'image/jpeg',
@@ -423,7 +432,7 @@ class KB_Ajax_Advanced_Form {
 				'video/mpg',
 				'video/mpeg',
 				'video/quicktime',
-				'video/x-ms-wmv'
+				'video/x-ms-wmv',
 			),
 			'audio'     => array(
 				'audio/mpeg',
@@ -446,11 +455,14 @@ class KB_Ajax_Advanced_Form {
 				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'application/vnd.ms-powerpoint',
 				'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-			)
+			),
 		);
 
+
 		foreach ( $categories as $category ) {
-			$allowed_mime_types = array_merge( $allowed_mime_types, $mimtypes[ $category ] );
+			if ( isset( $mimtypes[ $category ] ) ) {
+				$allowed_mime_types = array_merge( $allowed_mime_types, $mimtypes[ $category ] );
+			}
 		}
 
 		return $allowed_mime_types;
