@@ -1,8 +1,50 @@
-@import './scss/variables.scss';
-@import './scss/mixins';
-@import './scss/global.scss';
+@import "./scss/variables.scss";
+@import "./scss/mixins";
+@import "./scss/global.scss";
 
 .stellarwp.components-modal__frame.components-guide {
+	/* About Your Site Page Style Overrides */
+	&.about-your-site {
+		.stellarwp-textarea-progress {
+			margin-bottom: 8px;
+		}
+
+		.stellarwp-show-tips-button {
+			color: $color-black;
+			padding: 0;
+			flex-direction: row-reverse;
+			gap: 8px;
+			font-size: 12px;
+			letter-spacing: -0.24px;
+
+			&:hover,
+			&:focus {
+				color: $color-black;
+				box-shadow: none;
+			}
+
+			svg {
+				margin-right: 0;
+			}
+		}
+
+		.stellarwp-ai-improve-button {
+			border: 1px solid $color-gray-300;
+			border-radius: 4px;
+			height: 42px;
+			padding-inline: 14px;
+
+			svg {
+				margin-right: 4px;
+			}
+
+			&:hover,
+			&:focus {
+				color: $color-black;
+				background-color: #f0f1f9;
+			}
+		}
+	}
 
 	/* Photography Page Style Overrides */
 	&.photography {
