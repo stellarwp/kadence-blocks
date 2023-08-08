@@ -4,9 +4,9 @@
 export default function getInQueryBlock( context, inQueryBlock ) {
     const inQueryContext = Boolean( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId );
     const inRepeaterContext = Boolean( context && 'undefined' != typeof( context['kadence/dynamicSource'] ) && context['kadence/dynamicSource'] );
-    const inKPElement = 'undefined' != typeof( kbpData ) && 'undefined' != typeof( kbpData.isKadenceE ) && kbpData.isKadenceE;
+    const inKadenceE = 'undefined' != typeof( kbpData ) && 'undefined' != typeof( kbpData.isKadenceE ) && kbpData.isKadenceE;
 
-    if ( inQueryContext || inRepeaterContext || inKPElement ) {
+    if ( inQueryContext || inRepeaterContext || inKadenceE ) {
         return true;
     }
     return false;
