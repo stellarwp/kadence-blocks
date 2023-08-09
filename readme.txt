@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.1.12 =
+Release Date: August TBD, 2023
+* Fix: Previewing Advanced Forms in transforms
+
 = 3.1.11 =
 Release Date: August 8th, 2023
 * Fix: Possible security issue with form uploads.
