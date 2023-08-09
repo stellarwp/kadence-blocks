@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { formBlockIcon } from '@kadence/icons';
+import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 } from '@kadence/components';
@@ -72,11 +72,12 @@ export function Edit( props ) {
 	);
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				isPreviewMode: select( 'core/block-editor' ).getSettings().__unstableIsPreviewMode,
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
 					postId: select( 'core/editor' ).getCurrentPostId(),
@@ -87,6 +88,14 @@ export function Edit( props ) {
 		},
 		[ clientId ]
 	);
+
+	if( isPreviewMode ) {
+		return(
+			<>
+				{formTemplateContactIcon}
+			</>
+		);
+	}
 
 	useEffect( () => {
 		const postOrFseId = getPostOrFseId( props, parentData );

@@ -700,9 +700,9 @@ function KadenceAdvancedHeading( props ) {
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
 					}`}
-				{ ( previewMaxWidth ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
+				{ ( previewMaxWidth ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:0; }` : '' ) }
 				{linkStyle && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a {
 							${ linkStyle === 'underline' ? 'text-decoration: underline;' : '' }

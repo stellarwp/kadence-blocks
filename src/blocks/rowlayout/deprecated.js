@@ -18,6 +18,7 @@ import {
 	getColorClassName,
 } from '@wordpress/block-editor';
 import metadata from './block.json';
+
 const v5 = {
 	attributes: metadata.attributes,
 	supports: {

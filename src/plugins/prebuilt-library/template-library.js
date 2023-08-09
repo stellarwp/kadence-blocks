@@ -5,14 +5,10 @@ import SingleTemplateLibrary from './single-template-library';
 /**
  * WordPress dependencies
  */
- const {
-	applyFilters,
-} = wp.hooks;
-import { 
+import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Template library
