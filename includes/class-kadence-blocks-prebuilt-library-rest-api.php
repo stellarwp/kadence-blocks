@@ -286,6 +286,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/get_search_query',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'get_image_search_query' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
 			'/get_images',
 			array(
 				array(
@@ -375,6 +387,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_images_by_industry( $request ) {
 		$industries = $request->get_param( self::PROP_INDUSTRIES );
+		$search_query = $request->get_param( self::PROP_INDUSTRY );
 		$image_type = $request->get_param( self::PROP_IMAGE_TYPE );
 		$image_sizes = $request->get_param( self::PROP_IMAGE_SIZES );
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
@@ -392,19 +405,36 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $image_sizes ) && is_array( $image_sizes ) ) {
 			$identifier .= '_' . json_encode( $image_sizes );
 		}
+		if ( ! empty( $search_query ) ) {
+			$identifier .= '_' . $search_query;
+		}
 		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
 			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
 		} else {
-			// Check if we have a remote file.
-			$response = $this->get_remote_industry_images( $industries, $image_type, $image_sizes );
-			$data = json_decode( $response, true );
-			if ( $response === 'error' ) {
-				return rest_ensure_response( 'error' );
-			} else if ( ! isset( $data['data'][0]['collection_slug'] ) ) {
-				return rest_ensure_response( 'error' );
+			if ( ! empty( $search_query ) && in_array( 'aiGenerated', $industries, true ) ) {
+				// Check if we have a remote file.
+				$response = $this->get_remote_search_images( $search_query, $image_type, $image_sizes );
+				$data = json_decode( $response, true );
+				if ( $response === 'error' ) {
+					return rest_ensure_response( 'error' );
+				} else if ( ! isset( $data['data'] ) ) {
+					return rest_ensure_response( 'error' );
+				} else {
+					$this->create_data_file( $response, $identifier );
+					return rest_ensure_response( $response );
+				}
 			} else {
-				$this->create_data_file( $response, $identifier );
-				return rest_ensure_response( $response );
+				// Check if we have a remote file.
+				$response = $this->get_remote_industry_images( $industries, $image_type, $image_sizes );
+				$data = json_decode( $response, true );
+				if ( $response === 'error' ) {
+					return rest_ensure_response( 'error' );
+				} else if ( ! isset( $data['data'][0]['collection_slug'] ) ) {
+					return rest_ensure_response( 'error' );
+				} else {
+					$this->create_data_file( $response, $identifier );
+					return rest_ensure_response( $response );
+				}
 			}
 		}
 	}
@@ -1377,6 +1407,71 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
+	public function get_remote_search_images( $search_query, $image_type = 'JPEG', $sizes = array() ) {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$auth = array(
+			'domain' => $site_url,
+			'key'    => $this->api_key,
+		);
+		if ( empty( $search_query ) ) {
+			return 'error';
+		}
+		if ( empty( $sizes ) ) {
+			$sizes = array(
+				array(
+					"id" => "2048x2048",
+					"width" => 2048,
+					"height" => 2048,
+					"crop" => false,
+				),
+			);
+		}
+		if ( empty( $image_type ) ) {
+			$image_type = 'JPEG';
+		}
+		$body = array(
+			'query' => $search_query,
+			'image_type' => $image_type,
+			'sizes' => $sizes,
+			'page' => 1,
+			'per_page' => 24,
+		);
+		$response = wp_remote_post(
+			$this->remote_ai_url . 'images/search',
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
+				),
+				'body' => json_encode( $body ),
+			)
+		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
+
+		return $contents;
+	}
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
 	public function get_remote_industry_images( $industries, $image_type = 'JPEG', $sizes = array() ) {
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
@@ -1385,7 +1480,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url,
+			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
 		if ( empty( $industries ) ) {
@@ -1475,7 +1570,54 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return $contents;
 	}
+	/**
+	 * Get image search query.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_image_search_query( $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['name'] ) || empty( $parameters['entity_type'] ) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
+			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
+		}
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$auth = array(
+			'domain' => $site_url,
+			'key'    => $request->get_param( self::PROP_API_KEY ),
+		);
+		$api_url  = $this->remote_ai_url . 'proxy/intake/search-query';
+		$body = array(
+			'name' => $parameters['name'],
+			'entity_type' => $parameters['entity_type'],
+			'industry' => $parameters['industry'],
+			'location' => $parameters['location'],
+			'description' => $parameters['description'],
+		);
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
+				),
+				'body' => json_encode( $body ),
+			)
+		);
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
 
+		return $contents;
+	}
 	/**
 	 * Get keyword suggestions.
 	 *
@@ -1518,13 +1660,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 
-    $contents = wp_remote_retrieve_body( $response );
-    // Early exit if there was an error.
-    if ( is_wp_error( $contents ) ) {
-      return 'error';
-    }
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
 
-    return $contents;
+		return $contents;
 	}
 	/**
 	 * Get remote file contents.

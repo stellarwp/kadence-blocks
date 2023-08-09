@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
 import { SafeParseJSON } from '@kadence/helpers';
 const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 
+
 export function getAsyncData() {
 	const [ isLoadingWizard, setLoadingWizard ] = useState(false);
 	const [ isLoadingImages, setLoadingImages ] = useState(false);
@@ -96,22 +97,54 @@ export function getAsyncData() {
 		if ( ! userData?.photoLibrary ) {
 			return [];
 		}
-		console.log('userData', userData);
-		if ( 'My Images' === userData?.photoLibrary ) {
+		console.log(userData);
+		const localGallery = userData?.customCollections && userData?.customCollections.some(item => item.value === userData?.photoLibrary) ? userData?.customCollections.find(item => item.value === userData?.photoLibrary) : false;
+		if ( localGallery ) {
 			const myImages = { data: [] };
-			if ( userData?.featuredImages ) {
-				const aImages = userData?.featuredImages.map( ( item, index ) => {
+			if ( localGallery?.galleries?.[0]?.images ) {
+				const aImages = localGallery?.galleries?.[0]?.images.map( ( item, index ) => {
 					return { sizes:[ { src: item.url } ]};
 				} );
 				myImages.data.push( { images: aImages } );
 			}
-			if ( userData?.backgroundImages ) {
-				const bImages = userData?.backgroundImages.map( ( item, index ) => {
+			if ( localGallery?.galleries?.[1]?.images ) {
+				const bImages = localGallery?.galleries?.[1]?.images.map( ( item, index ) => {
+					if ( item?.sizes?.[1]?.src ) {
+						return { sizes:[ { src: item.sizes[1].src } ]};
+					}
 					return { sizes:[ { src: item.url } ]};
 				} );
 				myImages.data.push( { images: bImages } );
 			}
 			return myImages;
+		}
+		if ( 'aiGenerated' === userData?.photoLibrary ) {
+			const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [ userData.photoLibrary ];
+			try {
+				const response = await apiFetch( {
+					path: addQueryArgs( API_ROUTE_GET_IMAGES, {
+						industries: industries,
+						industry: userData?.imageSearchQuery,
+						api_key: data_key,
+					} ),
+				} );
+				const responseData = SafeParseJSON( response, false );
+				if ( responseData ) {
+					return { data:
+						[{
+							name: 'featured',
+							images: responseData?.data?.images.slice(0, 12),
+						},
+						{
+							name: 'background',
+							images: responseData?.data?.images.slice(12, 24),
+						}]
+					};
+				}
+				return [];
+			} catch (error) {
+				console.log(`ERROR: ${ error }`);
+			}
 		}
 		const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [ userData.photoLibrary ];
 		try {
@@ -122,6 +155,7 @@ export function getAsyncData() {
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
+			console.log(responseData);
 			if ( responseData ) {
 				return responseData;
 			}

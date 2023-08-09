@@ -18,19 +18,22 @@ import { __ } from '@wordpress/i18n';
 
 export function preMadeCollectionsHelper() {
 	const [loading, setLoading] = useState(true);
-	const [pexelLinks, setPexelLinks] = useState();
-	const [verticals, setVerticals] = useState();
+	const [pexelLinks, setPexelLinks] = useState([]);
+	const [verticals, setVerticals] = useState([]);
 
 	useEffect(() => {
 		setLoading(true);
-		const cachedCollections = sessionStorage.getItem(COLLECTIONS_SESSION_KEY);
+		// Temp Cache Busting
+		//const cachedCollections = sessionStorage.getItem(COLLECTIONS_SESSION_KEY);
+		const cachedCollections = '';
 		if (!cachedCollections) {
 			getCollectionsFromProphecy();
 		} else {
 			setPexelLinks(JSON.parse(cachedCollections));
 		}
-
-		const cachedVerticals = sessionStorage.getItem(VERTICALS_SESSION_KEY);
+		// Temp Cache Busting.
+		//const cachedVerticals = sessionStorage.getItem(VERTICALS_SESSION_KEY);
+		const cachedVerticals = '';
 		if (!cachedVerticals) {
 			getVerticalsFromProphecy();
 		} else {
@@ -38,7 +41,6 @@ export function preMadeCollectionsHelper() {
 			setLoading(false);
 		}
 	}, []);
-
 
 
 	/**
@@ -135,29 +137,41 @@ export function preMadeCollectionsHelper() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPreMadeCollectionByIndustry(industry) {
+	async function getPreMadeCollectionByIndustry(industry, search = '' ) {
 		const industries = Array.isArray(industry) ? industry : [ industry ];
 
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 					industries: industries,
+					industry: search,
 					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
 					image_sizes: COLLECTION_REQUEST_IMAGE_SIZES,
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
-			if ( responseData && responseData.data ) {
-				const dataWithLinks = responseData.data.map((gallery) => {
-					const matchingLink = pexelLinks.find((item) => item.collection_slug === gallery.collection_slug);
-					return {
-						name: gallery.collection_slug,
-						images: gallery.images,
-						pexelLink: matchingLink?.collection_url || ''
-					}
-				});
-				return dataWithLinks;
+			if ( responseData && responseData?.data ) {
+				if ( 'aiGenerated' === industry ) {
+					return [{
+						name: 'featured',
+						images: responseData?.data?.images.slice(0, 12),
+					},
+					{
+						name: 'background',
+						images: responseData?.data?.images.slice(12, 24),
+					}]
+				} else {
+					const dataWithLinks = responseData.data.map((gallery) => {
+						const matchingLink = pexelLinks.find((item) => item.collection_slug === gallery.collection_slug);
+						return {
+							name: gallery.collection_slug,
+							images: gallery.images,
+							pexelLink: matchingLink?.collection_url || ''
+						}
+					});
+					return dataWithLinks;
+				}
 			}
 			return [];
 		} catch (error) {

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { createContext, useReducer, useContext } from "@wordpress/element";
-
+import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
@@ -23,17 +23,16 @@ const initialState = {
 	keywords: [],
 	tone: "NEUTRAL",
 	privacyAgreement: false,
-	photoLibrary: {
-		label: '',
-		value: ''
-	},
+	photoLibrary: 'aiGenerated',
 	featuredImages: [],
 	backgroundImages: [],
+	customCollections: [ { label: __('My Images', 'kadence-blocks-pro'), value: 'my-images', galleries: [{ name: 'featured', isLocal: true, images: [] },{ name: 'background', isLocal: true, images: [] } ] } ],
 	saving: false,
 	saveError: false,
 	verticals: [],
 	suggestedKeywords: [],
 	suggestedKeywordsState: "",
+	imageSearchQuery: "",
 };
 
 const KadenceAiContext = createContext();
@@ -110,6 +109,11 @@ function kadenceAiReducer(state, action) {
 				...state,
 				backgroundImages: action.payload,
 			};
+		case "SET_CUSTOM_COLLECTIONS":
+			return {
+				...state,
+				customCollections: action.payload,
+			};
 		case "SET_FEATURED_PREVIEW":
 			return {
 				...state,
@@ -124,6 +128,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				saving: action.payload,
+			};
+		case "SET_IMAGE_SEARCH_QUERY":
+			return {
+				...state,
+				imageSearchQuery: action.payload,
 			};
 		case "SET_SUGGESTED_KEYWORDS":
 			return {

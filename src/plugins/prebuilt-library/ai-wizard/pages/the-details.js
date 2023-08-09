@@ -23,12 +23,15 @@ import {
 } from "../constants";
 import { keywordsHelper } from "../utils/keywords-helper";
 const { getSuggestedKeywords } = keywordsHelper();
+import { searchQueryHelper } from "../utils/search-query-helper";
+const { getImageSearchQuery } = searchQueryHelper();
 import {
 	SlideOne,
 	SlideTwo,
 	SlideThree,
 	SlideFour,
 } from "./slides/the-details";
+import { handle } from "@wordpress/icons";
 
 const styles = {
 	container: {
@@ -71,6 +74,7 @@ export function TheDetails() {
 		suggestedKeywords,
 		suggestedKeywordsState,
 		tone,
+		imageSearchQuery,
 	} = state;
 	const [keywordsLengthError, setKeywordsLengthError] = useState(null);
 	const [currentTone, setCurrentTone] = useState(null);
@@ -95,6 +99,9 @@ export function TheDetails() {
 
 	useEffect(() => {
 		handleFetchSuggestedKeywords();
+		if ( ! imageSearchQuery ) {
+			handleFetchImageSearchQuery();
+		}
 	}, []);
 
 	function getKeywordsLengthStyle() {
@@ -107,7 +114,28 @@ export function TheDetails() {
 
 		return "inherit";
 	}
-
+	function handleFetchImageSearchQuery() {
+		getImageSearchQuery({
+			name: companyName,
+			entity_type: entityType,
+			industry,
+			location,
+			description: missionStatement,
+		})
+			.then((response) => {
+				console.log("REPSEONSE IMAGE SEARCH");
+				console.log(response);
+				if ( response?.query ) {
+					dispatch({
+						type: "SET_IMAGE_SEARCH_QUERY",
+						payload: response.query,
+					});
+				}
+			})
+			.catch(() => {
+				console.log("error");
+			});
+	}
 	function handleFetchSuggestedKeywords() {
 		dispatch({
 			type: "SET_SUGGESTED_KEYWORDS_STATE",

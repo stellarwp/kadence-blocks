@@ -33,6 +33,7 @@ export const COLLECTION_REQUEST_IMAGE_SIZES = [
 ]
 export const API_URL = "https://content.startertemplatecloud.com/wp-json/prophecy/v1/";
 export const API_ROUTE_GET_KEYWORDS = "/kb-design-library/v1/get_keywords";
+export const API_ROUTE_GET_SEARCH_QUERY = "/kb-design-library/v1/get_search_query";
 
 export const CONTENT_TONE = [
 	{

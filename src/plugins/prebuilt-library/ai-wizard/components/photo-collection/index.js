@@ -11,7 +11,10 @@ import {
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect, Fragment } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-
+import {
+	MediaUpload,
+} from '@wordpress/block-editor';
+// import MediaModal from './media-modal';
 /**
  * Get library data.
  *
@@ -62,7 +65,8 @@ const styles = {
 		overflow: 'hidden',
 		overflowY: 'auto',
 		marginRight: '-8px',
-   		paddingRight: '8px'
+   		paddingRight: '9px',
+		position: 'relative',
 	},
 	loading: {
 		position: 'absolute',
@@ -103,7 +107,7 @@ const styles = {
 	linkWrapper: {
 		paddingTop: 16,
 		textAlign: 'center',
-		borderTop: '1px solid #DFDFDF'
+		borderTop: '1px solid #DFDFDF',
 	},
 	contentWrapper: {
 		gap: 8,
@@ -117,73 +121,82 @@ const styles = {
 		fontSize: '14px',
 		marginTop: '8px'
 	},
+	importNotice: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundColor: 'rgba(255,255,255,0.9)',
+		display: 'flex',
+		fontSize: '18px',
+		alignItems: 'center',
+		justifyContent: 'center',
+		zIndex: 11,
+	},
+	spinner: {
+		marginRight: '8px',
+		marginLeft: '8px',
+		marginTop: '4px',
+		marginBottom: '4px',
+	},
 }
 
-export function PhotoCollection({ photos, collectionLink, title, description, updateCollection }) {
+const ALLOWED_MEDIA_TYPES = [ 'image' ];
+
+export function PhotoCollection({ photos, loading, collectionLink, title, description, updateCollection }) {
 	const photoGallery = usePhotos(photos);
     const [isDownloading, setIsDownloading] = useState( false );
-    const [downloadedIDs, setDownloadedIDs] = useState( '' );
-	let mediaLibrary = {};
-	function initModal() {
-		mediaLibrary = window.wp.media({
-			id: title,
-			title: `Edit ${title}`,
-			button: {
-				text: 'Use These Images',
-			},
-			multiple: 'add',
-		});
-	}
-	initModal();
-	mediaLibrary.on( 'select', function() {
-		// TODO: Use collectionLink to download the Pexel collection to the media library
-		const selectedPhotos = mediaLibrary.state().get('selection').toJSON();
-		const formattedPhotos = selectedPhotos.map((photo) => ({
+    const [downloadedIDs, setDownloadedIDs] = useState( [] );
+	const [selectionIDs, setSelectionIDs] = useState( [] );
+
+	useEffect(() => {
+		if ( photos ) {
+			const tempSelectionIDs = [];
+			photos.forEach( function( image ) {
+				tempSelectionIDs.push( image.id );
+			});
+			setSelectionIDs( tempSelectionIDs );
+		} else {
+			setSelectionIDs( [] );
+		}
+	}, [photos]);
+	function onSelectImages( images ) {
+		const formattedPhotos = images.map((photo) => ({
 			id: photo.id,
 			alt: photo.alt || photo.name,
-			isLocal: true,
+			url: photo?.sizes?.large?.url || photo?.sizes?.full?.url,
 			sizes: [
-				{ name: 'thumbnail', src: photo.sizes.thumbnail.url }
+				{ name: 'thumbnail', src: photo?.sizes?.thumbnail?.url }
 			]
 		}));
-		initModal();
 		updateCollection(formattedPhotos);
-	});
-
-	mediaLibrary.on( 'open', function() {
-		console.log('open', photos);
-		console.log('downloadedIDs', downloadedIDs);
-		const selectionAPI = mediaLibrary.state().get( 'selection' );
-		downloadedIDs.forEach( function( id ) {
-			const attachment = wp.media.attachment( image.id );
-			selectionAPI.add( attachment ? [ attachment ] : []);
-		});
-		// photos.forEach( function( image ) {
-		// 	if(image.isLocal) {
-		// 		const attachment = wp.media.attachment( image.id );
-		// 		selectionAPI.add( attachment ? [ attachment ] : []);
-		// 	}
-		// });
-	});
-	async function downloadToMediaLibrary() {
+	}
+	async function downloadToMediaLibrary( open ) {
+		setIsDownloading(true);
 		const response = await downloadImages(photos);
 		console.log('response', response);
 		if ( response !== false ) {
-			let tempIds = [];
-			response.forEach(photo => {
-				tempIds.push(photo.id);
+			const tempDownloadedIDs = [];
+			response.forEach( function( image ) {
+				tempDownloadedIDs.push( image.id );
 			});
-			setDownloadedIDs( tempIds );
-			mediaLibrary.open();
-			setIsDownloading(false);
+			setSelectionIDs( tempDownloadedIDs );
+			setTimeout( function() {
+				open();
+				setIsDownloading(false);
+			}, 100 );
 		} else {
 			setIsDownloading(false);
 		}
 	}
-	function handleDownload() {
+	function handleDownload( open ) {
 		if ( ! isDownloading ) {
-			setIsDownloading(true);
-			downloadToMediaLibrary();
+			if ( photos?.length > 0 ) {
+				downloadToMediaLibrary( open );
+			} else {
+				open();
+			}
 		}
 	}
 
@@ -196,7 +209,7 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 				<div style={ styles.title }>{ title} </div>
 				<div style={ styles.description }>{ description }</div>
 			</div>
-			<div style={ styles.gridWrapper } id="custom-scroll-bar">
+			<div style={ styles.gridWrapper } className="kb-images-custom-scroll-bar">
 				<div style={ styles.grid }>
 					{ photoGallery && photoGallery.length > 0 ?
 						photoGallery.map((image, index) => (
@@ -218,20 +231,35 @@ export function PhotoCollection({ photos, collectionLink, title, description, up
 						)
 					))}
 				</div>
+				{ loading && (
+					<div style={ styles.importNotice } className="kb-importing-information">
+						<Spinner style={ styles.spinner } /> { __('Loading...', 'kadence') }
+					</div>
+				)}
+				{ isDownloading && (
+					<div style={ styles.importNotice } className="kb-importing-information">
+						<Spinner style={ styles.spinner } /> { __('Importing Images...', 'kadence') }
+					</div>
+				) }
 			</div>
 			<Flex>
 				<FlexBlock style={ styles.linkWrapper }>
-					<Button
-						variant="link"
-						text={ __('Edit Collection', 'kadence') }
-						target="_blank"
-						onClick={ () => handleDownload() }
-						disabled={ isDownloading }
-						style={{ fontSize: '14px'}}
+					<MediaUpload
+						onSelect={( imgs ) => onSelectImages( imgs ) }
+						allowedTypes={ALLOWED_MEDIA_TYPES}
+						multiple
+						gallery
+						value={selectionIDs}
+						render={( { open } ) => (
+							<Button
+								variant="link"
+								disabled={ isDownloading }
+								text={__( 'Edit Collection', 'kadence-blocks' )}
+								onClick={ () => handleDownload( open ) }
+								style={{ fontSize: '14px'}}
+							/>
+						)}
 					/>
-					{ isDownloading && (
-						<Spinner />
-					)}
 				</FlexBlock>
 			</Flex>
 		</div>

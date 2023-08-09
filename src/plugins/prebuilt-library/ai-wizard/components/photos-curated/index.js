@@ -27,7 +27,7 @@ const styles = {
 	}
 }
 
-export function PhotosCurated({ featured, background, updateCollection }) {
+export function PhotosCurated({ loading, featured, background, updateCollection }) {
 
 	const saveUpdatedPhotos = (galleryIndex) => (selectedImages) => {
 		updateCollection(galleryIndex, selectedImages);
@@ -41,7 +41,9 @@ export function PhotosCurated({ featured, background, updateCollection }) {
 				<Flex align="top" gap="5">
 					<FlexBlock>
 						<PhotoCollection
+							loading={loading}
 							photos={featured?.images}
+							isLocal={featured?.isLocal}
 							collectionLink={featured?.pexelLink}
 							title={content.featuredTitle}
 							description={content.featuredDescription}
@@ -50,7 +52,9 @@ export function PhotosCurated({ featured, background, updateCollection }) {
 					</FlexBlock>
 					<FlexBlock>
 						<PhotoCollection
+							loading={loading}
 							photos={background?.images}
+							isLocal={background?.isLocal}
 							collectionLink={background?.pexelLink}
 							title={content.backgroundTitle}
 							description={content.backgroundDescription}

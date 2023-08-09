@@ -182,9 +182,11 @@ export function AboutYourSite() {
 									label={title}
 									placeholder={getPlaceholderText()}
 									value={missionStatement}
-									onChange={(value) =>
-										dispatch({ type: "SET_MISSION_STATEMENT", payload: value })
-									}
+									onChange={(value) => {
+										dispatch({ type: "SET_MISSION_STATEMENT", payload: value });
+										// Make sure search query is empty so it forces a recheck.
+										dispatch({ type: "SET_IMAGE_SEARCH_QUERY", payload: '' });
+									}}
 									progressBarProps={{
 										value: progress,
 										color: MISSION_STATEMENT_STATUS?.[indicator]?.color

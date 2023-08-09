@@ -40,16 +40,15 @@ const styles = {
 export function Photography() {
 	const { state: { photoLibrary }, dispatch } = useKadenceAi();
 	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading, updateWordpressCollections } = collectionsHelper();
-	const [allVerticals, setAllVerticals] = useState();
-	const [selectedCollection, setSelectedCollection] = useState([]);
+	const [ allVerticals, setAllVerticals ] = useState( [] );
+	const [ loadingSelection, setLoadingSelection ] = useState( false );
+	const [ selectedCollection, setSelectedCollection ] = useState([{}, {}]);
 
 	useEffect(() => {
-		if(preMadeCollections && wordpressCollections) {
-			console.log('premade', preMadeCollections);
-			console.log('wordpress', wordpressCollections);
+		if ( preMadeCollections && wordpressCollections ) {
 			setAllVerticals([
 				{
-					label: 'My Collections',
+					label: __( 'My Collections', 'kadence-blocks' ),
 					options: wordpressCollections.map((vert) => ({
 						label: vert.label,
 						value: vert.value,
@@ -65,35 +64,63 @@ export function Photography() {
 			getSelectedGalleries();
 		}
 	}, [preMadeCollections, wordpressCollections]);
-
-	useEffect(() => {
-		if(!loading) {
-			// Resets the images so they provide immediate feedback
-			setSelectedCollection([{}, {}]);
-			getSelectedGalleries();
+	async function getSelectedGalleries( newSlug = null ) {
+		if ( loadingSelection ) {
+			return;
 		}
-	}, [ photoLibrary, loading]);
-
-	async function getSelectedGalleries() {
-		const collectionData = await getCollectionGalleries(photoLibrary.value);
-		setSelectedCollection(collectionData);
+		setLoadingSelection(true);
+		const collectionData = await getCollectionGalleries( ( newSlug ? newSlug : photoLibrary ) );
+		if ( collectionData ) {
+			setSelectedCollection(collectionData);
+		}
+		setLoadingSelection(false);
 	}
 
 	function handlePhotoLibraryChange(library) {
-		dispatch({ type: 'SET_PHOTO_LIBRARY', payload: library });
+		let newSlug = library;
+		if ( library?.value ) {
+			newSlug = library.value;
+		}
+		if ( newSlug !== photoLibrary ) {
+			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: newSlug });
+			setSelectedCollection([{}, {}]);
+			getSelectedGalleries( newSlug );
+		} else {
+			getSelectedGalleries( newSlug );
+		}
+	}
+	function handlePossiblePhotoLibraryChange(library) {
+		let newSlug = library;
+		if ( library?.value ) {
+			newSlug = library.value;
+		}
+		if ( newSlug !== photoLibrary ) {
+			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: newSlug });
+			setSelectedCollection([{}, {}]);
+		} else {
+			getSelectedGalleries( newSlug );
+		}
 	}
 
 	function updateCollectionPhotos(galleryIndex, photoList) {
 		const newCollection = [
-			{ name: 'featured', images: selectedCollection[0].images },
-			{ name: 'background', images: selectedCollection[1].images }
+			{ name: 'featured', isLocal:selectedCollection?.[0]?.isLocal ? true : false, images: selectedCollection?.[0]?.images },
+			{ name: 'background', isLocal:selectedCollection?.[1]?.isLocal ? true : false, images: selectedCollection?.[1]?.images }
 		];
 		newCollection[galleryIndex].images = photoList;
-		const newValue = updateWordpressCollections(photoLibrary.value, newCollection);
-		console.log('new value', newValue);
-		handlePhotoLibraryChange(newValue);
+		newCollection[galleryIndex].isLocal = true;
+		const newValue = updateWordpressCollections(photoLibrary, newCollection);
+		handlePossiblePhotoLibraryChange( newValue );
 	}
-
+	function findOptionWithValue(arr, value) {
+		for (let group of arr) {
+			const foundOption = group.options.find(option => option.value === value);
+			if (foundOption) {
+				return foundOption;
+			}
+		}
+		return null;
+	}
 	return (
 		<div className="stellarwp-ai-photography-library">
 			<Flex justify="center" style={ styles.topSection }>
@@ -102,8 +129,10 @@ export function Photography() {
 						<SelectControl
 							className={ 'stellarwp-ai-photography-control' }
 							label={ __('Use Images From:', 'kadence-blocks') }
-							value={ photoLibrary }
-							onChange={ handlePhotoLibraryChange }
+							value={ allVerticals?.length > 0 ? findOptionWithValue( allVerticals, photoLibrary ) : '' }
+							onChange={ ( value ) => {
+								handlePhotoLibraryChange( value.value );
+							} }
 							options={ allVerticals || [] }
 							horizontal
 						/>
@@ -111,6 +140,7 @@ export function Photography() {
 				</FlexBlock>
 			</Flex>
 				<PhotosCurated
+					loading={loadingSelection}
 					featured={ selectedCollection[0] || {} }
 					background={ selectedCollection[1] || {} }
 					updateCollection={ updateCollectionPhotos }

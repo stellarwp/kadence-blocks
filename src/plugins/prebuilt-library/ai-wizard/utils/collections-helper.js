@@ -4,9 +4,10 @@ import {
 
 import { useState, useEffect } from '@wordpress/element';
 import { preMadeCollectionsHelper } from './premade-collection-helper';
-
+import { useKadenceAi } from '../context/kadence-ai-provider';
 
 export function collectionsHelper() {
+	const { state: { customCollections, imageSearchQuery }, dispatch } = useKadenceAi();
 	const { loading: preMadeLoading, verticals: preMadeCollections, getPreMadeCollectionByIndustry } = preMadeCollectionsHelper();
 	const [loading, setLoading] = useState(true);
 	const [wordpressCollections, setWordpressCollections] = useState();
@@ -22,12 +23,14 @@ export function collectionsHelper() {
 	 * @return {void}
 	 */
 	function initCollections() {
-		const wordpressCollections = JSON.parse(sessionStorage.getItem(COLLECTIONS_CUSTOM_SESSION_KEY)) || [];
-		if(!wordpressCollections) {
-			sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify([]));
-			setWordpressCollections([]);
+		if( ! customCollections ) {
+			const temp = [ { label: __('My Images', 'kadence-blocks-pro'), value: 'my-collections', galleries: [
+				{ name: 'featured', isLocal: true, images: [] },
+				{ name: 'background', isLocal: true, images: [] }
+			] } ];
+			setWordpressCollections( temp );
 		} else {
-			setWordpressCollections(wordpressCollections);
+			setWordpressCollections( customCollections );
 		}
 		setLoading(false);
 	}
@@ -40,15 +43,16 @@ export function collectionsHelper() {
 	 * @return {promise<object[]>}
 	*/
 	async function getCollectionGalleries(collectionId) {
-		if(!wordpressCollections) {
-
+		if ( ! collectionId || ! wordpressCollections ) {
+			return;
 		}
-		const foundWordpressCollection = wordpressCollections.find((item) => item.value === collectionId);
-		if(foundWordpressCollection) {
-			return foundWordpressCollection.galleries;
+		if ( wordpressCollections && wordpressCollections.length > 0 ) {
+			const foundWordpressCollection = wordpressCollections.find((item) => item.value === collectionId);
+			if( foundWordpressCollection ) {
+				return foundWordpressCollection.galleries;
+			}
 		}
-
-		const premadeCollection = await getPreMadeCollectionByIndustry(collectionId);
+		const premadeCollection = await getPreMadeCollectionByIndustry(collectionId, imageSearchQuery );
 		return premadeCollection;
 	}
 
@@ -69,7 +73,9 @@ export function collectionsHelper() {
 			// update wordpress collection
 			const wpCollectionsClone = [...wordpressCollections];
 			wpCollectionsClone[found].galleries = updatedCollection;
-			return { label: wpCollectionsClone[found].label, value: wpCollectionsClone[found].value };
+			dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: wpCollectionsClone });
+			setWordpressCollections(wpCollectionsClone);
+			return wpCollectionsClone[found].value;
 		} else {
 			// create new collection record
 			const matchingPremade = preMadeCollections.find((item) => item.value === collectionId);
@@ -92,10 +98,9 @@ export function collectionsHelper() {
 				newCollection,
 				...wordpressCollections
 			];
-
-			sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify(updatedCollections));
+			dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: updatedCollections });
 			setWordpressCollections(updatedCollections);
-			return { value: newCollection.value, label: newCollection.label };
+			return newCollection.value;
 		}
 
 	}
