@@ -9,8 +9,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import {
-	SelectControl,
 	PhotosCurated,
+	AdvancedSelect
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { collectionsHelper } from '../utils/collections-helper';
@@ -39,7 +39,8 @@ const styles = {
 
 export function Photography() {
 	const { state: { photoLibrary }, dispatch } = useKadenceAi();
-	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading, updateWordpressCollections } = collectionsHelper();
+	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading,
+		updateGalleries, createCollection, updateCollectionName, deleteCollection } = collectionsHelper();
 	const [allVerticals, setAllVerticals] = useState();
 	const [selectedCollection, setSelectedCollection] = useState([]);
 
@@ -51,12 +52,14 @@ export function Photography() {
 					options: wordpressCollections.map((vert) => ({
 						label: vert.label,
 						value: vert.value,
+						useActions: true,
 					}))
 				}, {
 					label: 'Premade Collections',
 					options: preMadeCollections.map((vert) => ({
 						label: vert.label,
 						value: vert.value,
+						useActions: false,
 					}))
 				}
 			]);
@@ -66,7 +69,7 @@ export function Photography() {
 
 	useEffect(() => {
 		if(!loading) {
-			// Resets the images so they provide immediate feedback
+			/* Resets the images so they provide immediate feedback */
 			setSelectedCollection([{}, {}]);
 			getSelectedGalleries();
 		}
@@ -74,6 +77,8 @@ export function Photography() {
 
 	async function getSelectedGalleries() {
 		const collectionData = await getCollectionGalleries(photoLibrary.value);
+		dispatch({ type: 'SET_FEATURED_IMAGES', payload: collectionData[0] ? collectionData[0].images : [] });
+		dispatch({ type: 'SET_BACKGROUND_IMAGES', payload: collectionData[1] ? collectionData[1].images : [] });
 		setSelectedCollection(collectionData);
 	}
 
@@ -87,9 +92,32 @@ export function Photography() {
 			{ name: 'background', images: selectedCollection[1].images }
 		];
 		newCollection[galleryIndex].images = photoList;
-		const newValue = updateWordpressCollections(photoLibrary.value, newCollection);
-		console.log('new value', newValue);
+		const newValue = updateGalleries(photoLibrary.value, newCollection);
 		handlePhotoLibraryChange(newValue);
+	}
+
+	function createNewCollection(collectionName) {
+		const galleries = [
+			{ name: 'featured', images: [] },
+			{ name: 'background', images: [] }
+		];
+		const newValue = createCollection(collectionName, galleries);
+		handlePhotoLibraryChange(newValue);
+	}
+
+	function updateCollection(updatedName, collectionId) {
+		const option = updateCollectionName(updatedName, collectionId);
+		if(photoLibrary.value === option.value) {
+			handlePhotoLibraryChange(option);
+		}
+	}
+
+	function removeCollection(collectionId) {
+		if(photoLibrary.value === collectionId) {
+			handlePhotoLibraryChange(allVerticals[1].options[0]);
+		}
+		deleteCollection(collectionId);
+
 	}
 
 	return (
@@ -97,13 +125,14 @@ export function Photography() {
 			<Flex justify="center" style={ styles.topSection }>
 				<FlexBlock style={ styles.selectWrapper }>
 					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="row">
-						<SelectControl
-							className={ 'stellarwp-ai-photography-control' }
-							label={ __('Use Images From:', 'kadence-blocks') }
+						<AdvancedSelect
 							value={ photoLibrary }
-							onChange={ handlePhotoLibraryChange }
+							label= { __('Use Images From:', 'kadence-blocks') }
 							options={ allVerticals || [] }
-							horizontal
+							onChange={ handlePhotoLibraryChange }
+							createRecord={ createNewCollection }
+							updateRecord={ updateCollection }
+							deleteRecord={ removeCollection }
 						/>
 					</Flex>
 				</FlexBlock>
