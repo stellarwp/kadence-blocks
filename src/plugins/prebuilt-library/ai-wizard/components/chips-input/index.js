@@ -31,6 +31,7 @@ export function ChipsInput(props) {
 		placeholder,
 		onSuggestedKeywordAdded,
 		onTryAgain,
+		onTagDeleted,
 		...baseProps
 	} = props;
 
@@ -42,6 +43,7 @@ export function ChipsInput(props) {
 		const newSelectedTags = [...tags];
 		newSelectedTags.splice(newSelectedTags.indexOf(tag), 1);
 		selectedTags(newSelectedTags);
+		onTagDeleted(tag);
 	}
 
 	function maybeUpdateTags() {

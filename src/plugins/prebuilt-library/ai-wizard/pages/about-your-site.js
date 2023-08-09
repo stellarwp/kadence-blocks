@@ -160,8 +160,6 @@ export function AboutYourSite() {
 
 					return reader.read().then(processText);
 				});
-				const text = JSON.parse(readableStream);
-				setAiSuggestion(text?.content);
 				setAiLoading(false);
 			})
 			.catch((error) => {
