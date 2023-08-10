@@ -68,7 +68,7 @@ export function useAiWizardHelper(state, pages) {
 
 		switch(pageId) {
 			case 'industry-information':
-				return locationType !== LOCATION_ONLINE_ONLY && ! locationInput;
+				return (missing.length > 0 || locationType !== LOCATION_ONLINE_ONLY && ! locationInput);
 			case 'the-details':
 				const missingKeywords = keywords.length >= 5 ? false : true;
 
