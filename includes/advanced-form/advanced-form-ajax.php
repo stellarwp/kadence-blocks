@@ -302,6 +302,7 @@ class KB_Ajax_Advanced_Form {
 				'value'    => $value,
 				'uniqueID' => $field['uniqueID'],
 				'name'     => $expected_field,
+				'file_name'=> !empty( $_FILES[ $expected_field ]['name'] ) ? $_FILES[ $expected_field ]['name'] : '',
 			);
 		}
 
