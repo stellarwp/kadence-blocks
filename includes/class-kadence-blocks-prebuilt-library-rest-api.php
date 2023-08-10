@@ -283,6 +283,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/get_keywords',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'get_keyword_suggestions' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
 			'/get_images',
 			array(
 				array(
@@ -850,7 +862,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Converts a string into a slug.
-	 * 
+	 *
 	 * @param string $str The prompt data.
 	 *
 	 * @return string of the slug.
@@ -867,7 +879,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Retrieves the path to the local data file.
-	 * 
+	 *
 	 * @param array $prompt_data The prompt data.
 	 *
 	 * @return string of the path to local data file.
@@ -947,7 +959,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			return $this->block_ai_folder;
 
-		} 
+		}
 		if ( ! $this->block_library_folder ) {
 			$this->block_library_folder = $this->get_base_path();
 			$this->block_library_folder .= $this->get_subfolder_name();
@@ -1492,6 +1504,57 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		return $contents;
+	}
+
+	/**
+	 * Get keyword suggestions.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_keyword_suggestions( $request ) {
+		$parameters = $request->get_json_params();
+		if ( empty( $parameters['name'] ) || empty($parameters['entity_type']) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
+			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
+		}
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$auth = array(
+			'domain' => $site_url,
+			'key'    => $request->get_param( self::PROP_API_KEY ),
+		);
+		$api_url  = $this->remote_ai_url . 'proxy/intake/suggest-keywords';
+		$body = array(
+			'name' => $parameters['name'],
+			'entity_type' => $parameters['entity_type'],
+			'industry' => $parameters['industry'],
+			'location' => $parameters['location'],
+			'description' => $parameters['description'],
+			'count' => $parameters['count'],
+		);
+		$response = wp_remote_post(
+			$api_url,
+			array(
+				'timeout' => 20,
+				'headers' => array(
+					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'Content-Type' => 'application/json',
+				),
+				'body' => json_encode( $body ),
+			)
+		);
+
+    $contents = wp_remote_retrieve_body( $response );
+    // Early exit if there was an error.
+    if ( is_wp_error( $contents ) ) {
+      return 'error';
+    }
+
+    return $contents;
 	}
 	/**
 	 * Get remote file contents.

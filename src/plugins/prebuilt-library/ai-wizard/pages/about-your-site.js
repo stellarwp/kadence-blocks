@@ -1,31 +1,39 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
-import { Flex, FlexBlock } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
+import { useEffect, useState } from "@wordpress/element";
+import {
+	Flex,
+	FlexBlock,
+	FlexItem,
+	__experimentalView as View,
+	__experimentalVStack as VStack,
+	__experimentalText as Text,
+} from "@wordpress/components";
+import { __, sprintf } from "@wordpress/i18n";
+import { Button } from "../components";
+import { missionStatementHelper } from "../utils/mission-statement-helper";
+import { convertStreamDataToJson } from "../utils/convert-stream-data-to-json";
+import { THOUGHT_STARTERS } from "../constants";
+import { Ai, Visibility, VisibilityOff } from "../components/icons";
 
 /**
  * Internal dependencies
  */
-import {
-  FormSection,
-	Slider,
-	TextareaProgress
-} from '../components';
+import { FormSection, Slider, TextareaProgress } from "../components";
 import {
 	Education4All,
 	HealingTouch,
 	Prospera,
-	SpencerSharp
-} from './slides/about-your-site';
+	SpencerSharp,
+} from "./slides/about-your-site";
 import {
 	ENTITY_TYPE_INDIVIDUAL,
 	MISSION_STATEMENT_STATUS,
 	MISSION_STATEMENT_GOAL,
-	INDUSTRY_BACKGROUNDS
-} from '../constants';
-import { useKadenceAi } from '../context/kadence-ai-provider';
+	INDUSTRY_BACKGROUNDS,
+} from "../constants";
+import { useKadenceAi } from "../context/kadence-ai-provider";
 
 const styles = {
 	container: {
@@ -33,102 +41,234 @@ const styles = {
 	},
 	leftContent: {
 		maxWidth: 640,
-		marginLeft: 'auto' 
+		marginInline: "auto",
 	},
 	rightContent: {
 		marginRight: 32,
-		height: '100%',
-		display: 'flex',
-		flexDirection: 'column',
+		height: "100%",
+		display: "flex",
+		flexDirection: "column",
 	},
 	formWrapper: {
 		maxWidth: 504,
 		paddingRight: 32,
 		paddingLeft: 32,
-	}
-}
+	},
+	textareaWrapper: {
+		position: "relative",
+	},
+	tooltip: {
+		position: "absolute",
+		top: 16,
+		left: "100%",
+		borderRadius: "0px 4px 4px 0px",
+		padding: 12,
+		backgroundColor: "#FAFAFA",
+		width: 200,
+		zIndex: 1,
 
-const content = __( 'Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.', 'kadence-blocks' );
+		title: {
+			fontSize: 12,
+			fontWeight: 600,
+		},
+
+		content: {
+			fontSize: 11,
+			lineHeight: "14px",
+			letterSpacing: -0.2,
+			listStyle: "disc",
+			paddingLeft: 14,
+		},
+	},
+};
+
+const content = __(
+	"Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.",
+	"kadence-blocks"
+);
 const titlePartial = {
-	'COMPANY': ` ${ __( 'business', 'kadence-blocks' ) }`,
-	'INDIVIDUAL': __( 'self', 'kadence-blocks' ),
-	'ORGANIZATION': ` ${ __( 'organization', 'kadence-blocks' ) }`
+	COMPANY: ` ${__("business", "kadence-blocks")}`,
+	INDIVIDUAL: __("self", "kadence-blocks"),
+	ORGANIZATION: ` ${__("organization", "kadence-blocks")}`,
 };
 
 export function AboutYourSite() {
-	const [ indicator, setIndicator ] = useState();
-	const [ progress, setProgress ] = useState(0);
-	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
+	const [indicator, setIndicator] = useState();
+	const [progress, setProgress] = useState(0);
+	const [backgroundImage, setBackgroundImage] = useState(0);
+	const [showTooltip, setShowTooltip] = useState(false);
+	const [aiSuggestion, setAiSuggestion] = useState("");
+	const [aiLoading, setAiLoading] = useState(false);
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, companyName } = state;
-	const title = sprintf( __( 'Tell us about your%s', 'kadence-blocks' ), titlePartial[ entityType ]);
+	const title = sprintf(
+		__("Tell us about your%s", "kadence-blocks"),
+		titlePartial[entityType]
+	);
+	const { getMissionStatement } = missionStatementHelper();
 
 	useEffect(() => {
-		const progress = Math.round((missionStatement.length/MISSION_STATEMENT_GOAL) * 100);
+		const progress = Math.round(
+			(missionStatement.length / MISSION_STATEMENT_GOAL) * 100
+		);
 		const statementProgress = progress >= 100 ? 100 : progress;
 
-		if (statementProgress < 50) {
-			setIndicator('weak')	
+		if (statementProgress == 0) {
+			setIndicator("initial");
+		}
+		if (statementProgress < 50 && statementProgress > 0) {
+			setIndicator("weak");
 		}
 		if (statementProgress >= 50) {
-			setIndicator('medium')	
+			setIndicator("medium");
 		}
 		if (statementProgress == 100) {
-			setIndicator('strong')	
+			setIndicator("strong");
 		}
 
-		setProgress( statementProgress );
-	}, [ missionStatement ])
+		setProgress(statementProgress);
+	}, [missionStatement]);
 
 	function getPlaceholderText() {
 		if (entityType === ENTITY_TYPE_INDIVIDUAL) {
-			return sprintf( __( 'I am %s, a...', 'kadence-blocks' ), companyName );
+			return sprintf(__("I am %s, a...", "kadence-blocks"), companyName);
 		}
 
-		return sprintf( __( '%s is a...', 'kadence-blocks' ), companyName );
+		return sprintf(__("%s is a...", "kadence-blocks"), companyName);
+	}
+
+	function handleMissionStatement(value) {
+		setAiLoading(true);
+
+		getMissionStatement(value)
+			.then((readableStream) => {
+				const reader = readableStream.getReader();
+
+				reader.read().then(function processText({ done, value }) {
+					if (done) {
+						setAiLoading(false);
+						return;
+					}
+
+					const eventData = convertStreamDataToJson(value);
+
+					if (eventData?.content) {
+						setAiSuggestion((previousValue) => {
+							return previousValue + eventData.content;
+						});
+					}
+
+					return reader.read().then(processText);
+				});
+				setAiLoading(false);
+			})
+			.catch((error) => {
+				console.log(error);
+				setAiLoading(false);
+			});
 	}
 
 	return (
-		<Flex gap={ 0 } align="normal" style={ styles.container }>
-			<FlexBlock style={{ alignSelf: 'center' }}>
-				<Flex
-					justify="center"
-					style={ styles.leftContent }
-				>
-					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
-						<FormSection
-							headline={ title }
-							content={ content }
-						>
-							<TextareaProgress
-								hideLabelFromVision
-								label={ title }
-								placeholder={ getPlaceholderText() }
-								value={ missionStatement }
-								onChange={ (value) => dispatch({ type: 'SET_MISSION_STATEMENT', payload: value }) }
-								showProgressBar={ missionStatement && missionStatement.length > 0 }
-								progressBarProps={{
-									value: progress,
-									color: MISSION_STATEMENT_STATUS?.[ indicator ]?.color ? MISSION_STATEMENT_STATUS[ indicator ].color : 'red',
-									message: MISSION_STATEMENT_STATUS?.[ indicator ]?.message ? MISSION_STATEMENT_STATUS[ indicator ].message : ''
-								}}
-							/>
+		<Flex gap={0} align="normal" style={styles.container}>
+			<FlexBlock style={{ alignSelf: "center" }}>
+				<Flex justify="center" style={styles.leftContent}>
+					<FlexBlock style={styles.formWrapper} className={"stellarwp-body"}>
+						<FormSection headline={title} content={content}>
+							<View style={styles.textareaWrapper}>
+								<TextareaProgress
+									hideLabelFromVision
+									label={title}
+									placeholder={getPlaceholderText()}
+									value={missionStatement}
+									onChange={(value) =>
+										dispatch({ type: "SET_MISSION_STATEMENT", payload: value })
+									}
+									progressBarProps={{
+										value: progress,
+										color: MISSION_STATEMENT_STATUS?.[indicator]?.color
+											? MISSION_STATEMENT_STATUS[indicator].color
+											: "red",
+										message: MISSION_STATEMENT_STATUS?.[indicator]?.message
+											? MISSION_STATEMENT_STATUS[indicator].message
+											: "",
+									}}
+									disabled={aiSuggestion}
+									aiLoading={aiLoading}
+									aiSuggestion={aiSuggestion}
+									onUndo={() => setAiSuggestion("")}
+									onAccept={() => {
+										dispatch({
+											type: "SET_MISSION_STATEMENT",
+											payload: aiSuggestion,
+										});
+										setAiSuggestion("");
+									}}
+								/>
+								{showTooltip && (
+									<VStack style={styles.tooltip}>
+										<Text style={styles.tooltip.title}>
+											{__("Thought Starters", "kadence-blocks")}
+										</Text>
+
+										{THOUGHT_STARTERS[entityType].length > 0 && (
+											<ul style={styles.tooltip.content}>
+												{THOUGHT_STARTERS[entityType].map((thoughtStarter) => (
+													<li key={thoughtStarter}>{thoughtStarter}</li>
+												))}
+											</ul>
+										)}
+									</VStack>
+								)}
+							</View>
+							{!aiSuggestion && !aiLoading && (
+								<Flex justify="space-between">
+									<FlexItem>
+										{progress == 100 && (
+											<Button
+												className="stellarwp-ai-improve-button"
+												icon={Ai}
+												onClick={() => handleMissionStatement(missionStatement)}
+											>
+												{__("Improve my Mission Statement", "kadence-blocks")}
+											</Button>
+										)}
+									</FlexItem>
+									<FlexItem>
+										<Button
+											size="small"
+											className="stellarwp-show-tips-button"
+											icon={showTooltip ? VisibilityOff : Visibility}
+											iconPosition="right"
+											onClick={() =>
+												setShowTooltip((showTooltip) => !showTooltip)
+											}
+										>
+											{showTooltip
+												? __("Hide Tips", "kadence-blocks")
+												: __("Show Tips", "kadence-blocks")}
+										</Button>
+									</FlexItem>
+								</Flex>
+							)}
 						</FormSection>
 					</FlexBlock>
 				</Flex>
 			</FlexBlock>
 			<FlexBlock display="flex">
 				<Flex justify="center">
-					<FlexBlock style={ styles.rightContent }>
+					<FlexBlock style={styles.rightContent}>
 						<Slider
-							backgroundImage={ INDUSTRY_BACKGROUNDS[ backgroundImage ] }
-							text={ __('Not sure where to start? Here\'s some real life examples!', 'kadence-blocks') }
-							doBeforeSlide={ (data) => setBackgroundImage( data.nextSlide ) }
+							backgroundImage={INDUSTRY_BACKGROUNDS[backgroundImage]}
+							text={__(
+								"Not sure where to start? Here's some real life examples!",
+								"kadence-blocks"
+							)}
+							doBeforeSlide={(data) => setBackgroundImage(data.nextSlide)}
 							slides={[
 								<HealingTouch />,
 								<SpencerSharp />,
 								<Prospera />,
-								<Education4All />
+								<Education4All />,
 							]}
 						/>
 					</FlexBlock>
@@ -137,4 +277,3 @@ export function AboutYourSite() {
 		</Flex>
 	);
 }
-
