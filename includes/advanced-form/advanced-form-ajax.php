@@ -515,7 +515,7 @@ class KB_Ajax_Advanced_Form {
 	 * @param string $ext the file extension.
 	 */
 	public function set_custom_upload_unique_filename( $dir, $name, $ext ) {
-		$time_name = apply_filters( 'kadence_blocks_advanced_form_upload_file_name', time() . '_' . wp_generate_password( 16 ) . '.' . $ext, $dir, $name );
+		$time_name = apply_filters( 'kadence_blocks_advanced_form_upload_file_name', time() . '_' . wp_generate_password( 16, false ) . '.' . $ext, $dir, $name );
 		return wp_unique_filename( $dir, $time_name );
 	}
 
