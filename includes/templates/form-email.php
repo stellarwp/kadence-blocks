@@ -128,7 +128,7 @@ defined( 'ABSPATH' ) || exit;
 								<td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-top: 20px;">
 									<p style="font-family: sans-serif; font-size: 14px; font-weight: Bold; margin: 0; Margin-bottom: 15px;"><?php echo esc_html( $data['label'] ); ?></p>
 									<?php if( !empty( $data['type'] ) && $data['type'] === 'file' && !empty( $data['value']) ) { ?>
-										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;"><a href="'. esc_html( $data['value'] ) .'">' . esc_html( $data['value'] ) . '</a></p>' ); ?>
+										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;"><a href="'. esc_html( $data['value'] ) .'">' . esc_html__( 'View File', 'kadence-blocks' ) . '</a></p>' ); ?>
 									<?php } else { ?>
 										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . esc_html( $data['value'] ) . '</p>' ); ?>
 									<?php } ?>

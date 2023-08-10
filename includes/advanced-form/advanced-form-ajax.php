@@ -285,7 +285,7 @@ class KB_Ajax_Advanced_Form {
 				);
 				if ( isset( $file_upload['url'] ) ) {
 					$this->add_htaccess_to_uploads_root();
-					$value = $file_upload['url'];
+					$value = $this->get_downloader_url( $file_upload['url'] );
 				} else {
 					if ( ! empty( $file_upload['error'] ) ) {
 						$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );
@@ -620,15 +620,7 @@ class KB_Ajax_Advanced_Form {
 	 */
 	public function add_htaccess_to_uploads_root() {
 		$wp_uploads = wp_upload_dir();
-		$kadence_form_root_upload_dir = 'kadence_form';
-
-		// Get root Kadence form upload directory.
-		$kadence_form_upload_dir = $this->set_custom_upload_directory( array() );
-		if( !empty( $kadence_form_upload_dir['path'] ) ){
-			$upload_dir_parts = explode( '/', $kadence_form_upload_dir['path'] );
-			$upload_dir_parts = array_values( array_filter($upload_dir_parts) );
-			$kadence_form_root_upload_dir = $upload_dir_parts[0];
-		}
+		$kadence_form_root_upload_dir = $this->get_kadence_form_root_upload_dir();
 
 		if ( ! $wp_uploads['error'] ) {
 			$htaccess_file = $wp_uploads['basedir'] . '/'. $kadence_form_root_upload_dir .'/.htaccess';
@@ -646,6 +638,47 @@ Header set X-Robots-Tag "noindex"
 			$content_array = apply_filters( 'kadence_blocks_form_upload_htaccess_rules', $content_array );
 			insert_with_markers( $htaccess_file, 'Kadence Blocks', $content_array );
 		}
+	}
+
+	/**
+	 * Given the direct link to a file, return the url to the downloader.
+	 *
+	 * @param $file_url
+	 *
+	 * @return mixed
+	 */
+	public function get_downloader_url( $file_url ) {
+		$kadence_form_root_upload_dir = $this->get_kadence_form_root_upload_dir();
+		$file_path = explode($kadence_form_root_upload_dir, $file_url, 2);
+
+		// Couldn't find the root directory just return the url
+		if( !isset( $file_path[1]) ) {
+			return $file_url;
+		}
+
+		$query_args = array(
+			'kadence-form-download' => $kadence_form_root_upload_dir . $file_path[1]
+		);
+
+		return add_query_arg( $query_args, home_url() );
+	}
+
+	/**
+	 * Given the direct link to a file, return the url to the downloader.
+	 *
+	 * @return mixed|string
+	 */
+	public function get_kadence_form_root_upload_dir() {
+		$root_dir = 'kadence_form';
+
+		$kadence_form_upload_dir = $this->set_custom_upload_directory( array() );
+		if( !empty( $kadence_form_upload_dir['path'] ) ){
+			$upload_dir_parts = explode( '/', $kadence_form_upload_dir['path'] );
+			$upload_dir_parts = array_values( array_filter($upload_dir_parts) );
+			$root_dir = $upload_dir_parts[0];
+		}
+
+		return $root_dir;
 	}
 }
 
