@@ -24,15 +24,9 @@ class KB_Ajax_Advanced_Form {
 
 	private static $redirect = false;
 
-	private static $actions = [];
-
 	private static $fields = [];
 
-	private static $messages = [];
-
 	private static $captcha_attrs = false;
-
-	private static $errors = [];
 
 	/**
 	 * Instance Control
@@ -184,7 +178,7 @@ class KB_Ajax_Advanced_Form {
 	}
 	/**
 	 * Process the submit actions.
-	 * 
+	 *
 	 * @param array $form_args the form args.
 	 * @param array $processed_fields the processed fields.
 	 * @param int   $post_id the post id.
@@ -290,6 +284,7 @@ class KB_Ajax_Advanced_Form {
 					)
 				);
 				if ( isset( $file_upload['url'] ) ) {
+					$this->add_htaccess_to_uploads_root();
 					$value = $file_upload['url'];
 				} else {
 					if ( ! empty( $file_upload['error'] ) ) {
@@ -520,7 +515,7 @@ class KB_Ajax_Advanced_Form {
 	 * @param string $ext the file extension.
 	 */
 	public function set_custom_upload_unique_filename( $dir, $name, $ext ) {
-		$time_name = apply_filters( 'kadence_blocks_advanced_form_upload_file_name', time() . '_' . $name, $dir, $name );
+		$time_name = apply_filters( 'kadence_blocks_advanced_form_upload_file_name', time() . '_' . wp_generate_password( 16 ) . '.' . $ext, $dir, $name );
 		return wp_unique_filename( $dir, $time_name );
 	}
 
@@ -614,6 +609,41 @@ class KB_Ajax_Advanced_Form {
 		return $messages;
 	}
 
+	/**
+	 * Create .htaccess in uploads folder to prevent PHP execution.
+	 * This security precaution exists in case the server was misconfigured to execute unintended file extensions.
+	 *
+	 * @return void
+	 */
+	public function add_htaccess_to_uploads_root() {
+		$wp_uploads = wp_upload_dir();
+		$kadence_form_root_upload_dir = 'kadence_form';
+
+		// Get root Kadence form upload directory.
+		$kadence_form_upload_dir = $this->set_custom_upload_directory( array() );
+		if( !empty( $kadence_form_upload_dir['path'] ) ){
+			$upload_dir_parts = explode( '/', $kadence_form_upload_dir['path'] );
+			$upload_dir_parts = array_values( array_filter($upload_dir_parts) );
+			$kadence_form_root_upload_dir = $upload_dir_parts[0];
+		}
+
+		if ( ! $wp_uploads['error'] ) {
+			$htaccess_file = $wp_uploads['basedir'] . '/'. $kadence_form_root_upload_dir .'/.htaccess';
+			$content       = '# Prevent PHP execution in this folder for all files in case server is misconfigured to execute unintended file extensions.
+<Files *>
+SetHandler none
+SetHandler default-handler
+Options -ExecCGI
+RemoveHandler .cgi .php .php3 .php4 .php5 .phtml .pl .py .pyc .pyo
+</Files>
+<IfModule headers_module>
+Header set X-Robots-Tag "noindex"
+</IfModule>';
+			$content_array = explode( "\n", $content );
+			$content_array = apply_filters( 'kadence_blocks_form_upload_htaccess_rules', $content_array );
+			insert_with_markers( $htaccess_file, 'Kadence Blocks', $content_array );
+		}
+	}
 }
 
 KB_Ajax_Advanced_Form::get_instance();
