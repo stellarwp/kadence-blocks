@@ -5,25 +5,22 @@ import { useEffect, useState } from "@wordpress/element";
 import {
 	Flex,
 	FlexBlock,
-	Icon,
-	__experimentalVStack as VStack,
-} from "@wordpress/components";
-import { __ } from "@wordpress/i18n";
-import { search } from "@wordpress/icons";
+	__experimentalVStack as VStack
+} from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import {
+	Autocomplete,
 	FormSection,
-	CreatableControl,
 	SelectControl,
 	Slider,
 	TextControl,
-	LocationSelectControl,
-} from "../components";
-import { useKadenceAi } from "../context/kadence-ai-provider";
-import { useSelectPlacement } from "../hooks/use-select-placement";
+	LocationSelectControl
+} from '../components';
+import { useKadenceAi } from '../context/kadence-ai-provider';
 import {
 	ENTITY_TYPE,
 	ENTITY_TO_NAME,
@@ -31,9 +28,8 @@ import {
 	LOCATION_BUSINESS_ADDRESS,
 	LOCATION_SERVICE_AREA,
 	LOCATION_ONLINE_ONLY,
-	INDUSTRY_BACKGROUNDS,
-} from "../constants";
-import INDUSTRIES from "../constants/industries";
+	INDUSTRY_BACKGROUNDS
+} from '../constants';
 import {
 	Education4All,
 	HealingTouch,
@@ -73,49 +69,18 @@ const content = __(
 );
 
 export function IndustryInformation() {
-	const [industries, setIndustries] = useState([
-		{
-			value: "",
-			label: "...",
-			disabled: true,
-		},
-	]);
-	const [pageRef, setPageRef] = useState(null);
-	const [controlRef, setControlRef] = useState(null);
-	const [currentEntityType, setCurrentEntityType] = useState(null);
-	const [currentIndustry, setCurrentIndustry] = useState(null);
-	const [backgroundImage, setBackgroundImage] = useState(0);
-	const { menuHeight, menuPlacement } = useSelectPlacement(pageRef, controlRef);
+	const [ currentEntityType, setCurrentEntityType ] = useState( null );
+	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
 	const { companyName, entityType, locationInput, locationType, industry } =
 		state;
 
 	useEffect(() => {
-		setIndustries(
-			INDUSTRIES.map((industry) => ({
-				label: industry,
-				value: industry,
-			}))
-		);
-	}, []);
-
-	useEffect(() => {
-		const entityObject = ENTITY_TYPE.filter(
-			(option) => option.value === entityType
-		);
+		const entityObject = ENTITY_TYPE.filter((option) => option.value === entityType);
 		if (entityObject.length) {
 			setCurrentEntityType(entityObject[0]);
 		}
 	}, [entityType]);
-
-	useEffect(() => {
-		if (industry) {
-			setCurrentIndustry({
-				label: industry,
-				value: industry,
-			});
-		}
-	}, [industry]);
 
 	useEffect(() => {
 		switch (locationType) {
@@ -135,7 +100,7 @@ export function IndustryInformation() {
 	}, [locationInput, locationType]);
 
 	function handleIndustryChange(industry) {
-		dispatch({ type: "SET_INDUSTRY", payload: industry.value });
+		dispatch({ type: 'SET_INDUSTRY', payload: industry });
 	}
 
 	function handleEntityTypeChange(entityType) {
@@ -188,17 +153,23 @@ export function IndustryInformation() {
 	}
 
 	return (
-		<Flex gap={0} align="normal" style={styles.container} ref={setPageRef}>
-			<FlexBlock style={{ alignSelf: "center" }}>
-				<Flex justify="center" style={styles.leftContent}>
-					<FlexBlock style={styles.formWrapper} className={"stellarwp-body"}>
-						<FormSection headline={headline} content={content}>
-							<VStack spacing={4} style={{ margin: "0 auto" }}>
-								<SelectControl
-									label={__("I am", "kadence-blocks")}
-									value={currentEntityType}
-									onChange={handleEntityTypeChange}
-									options={ENTITY_TYPE}
+		<Flex gap={ 0 } align="normal" style={ styles.container }>
+			<FlexBlock style={{ alignSelf: 'center' }}>
+				<Flex
+					justify="center"
+					style={ styles.leftContent }
+				>
+					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
+						<FormSection
+							headline={ headline }
+							content={ content }
+						>
+							<VStack spacing={ 4 } style={{ margin: '0 auto' }}>
+						 		<SelectControl
+									label={ __('I am', 'kadence-blocks') }
+									value={ currentEntityType }
+									onChange={ handleEntityTypeChange }
+									options={ ENTITY_TYPE }
 								/>
 								<TextControl
 									label={getNameInputText("label")}
@@ -225,16 +196,22 @@ export function IndustryInformation() {
 										}
 										help={getLocationHelpText()}
 									/>
-								) : null}
-								<CreatableControl
-									ref={setControlRef}
-									menuPlacement={menuPlacement}
-									maxMenuHeight={menuHeight}
-									label={__("What Industry are you in?", "kadence-blocks")}
-									value={currentIndustry}
-									options={industries}
-									prefix={<Icon icon={search} />}
-									onChange={handleIndustryChange}
+						 		) : null }
+								<Autocomplete
+									label={ __('What Industry are you in?', 'kadence-blocks') }
+									placeholder={ __('Find your industry', 'kadence-blocks') }
+									detachedMediaQuery="none"
+									openOnFocus={ true }
+									onSelect={ handleIndustryChange }
+									initialState={{
+										isOpen: false,
+									  query: industry ? industry : '',
+										params: {
+											hitsPerPage: 8,
+											highlightPreTag: '<mark>',
+											highlightPostTag: '</mark>',
+										},
+									}}
 								/>
 							</VStack>
 						</FormSection>

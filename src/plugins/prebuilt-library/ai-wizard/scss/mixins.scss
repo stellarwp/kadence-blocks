@@ -19,7 +19,8 @@
 	font-size: 16px;
 	background: $color-white;
 
-	&:focus {
+	&:focus,
+	&:focus-within {
 		box-shadow: none;
 		border-color: $color-black;
 	}

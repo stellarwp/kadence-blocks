@@ -9,6 +9,7 @@
     "build:custom": "wp-scripts build --webpack-bundle-analyzer"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.10.0",
     "@dotlottie/player-component": "^1.2.2",
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@hcaptcha/react-hcaptcha": "^1.8.1",
@@ -16,6 +17,7 @@
     "@splidejs/react-splide": "^0.7.12",
     "@wordpress/icons": "^9.25.0",
     "@wordpress/url": "^3.35.0",
+    "algoliasearch": "^4.19.1",
     "change-case": "^4.1.2",
     "classnames": "^2.2.6",
     "colord": "^2.9.3",

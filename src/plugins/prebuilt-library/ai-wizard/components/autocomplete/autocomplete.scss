@@ -1,0 +1,116 @@
+@import '../../scss/mixins.scss';
+@import '../../scss/variables.scss';
+
+.stellarwp-autocomplete-control .components-input-control__label {
+  @include input_label;
+
+  display: block;
+}
+
+/* Form Styles */
+.aa-Autocomplete {
+  @include input_base;
+
+  padding: 0;
+}
+
+.aa-Form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.aa-SubmitButton,
+.aa-ClearButton {
+  border: none;
+  width: 38px;
+  height: 38px;
+  background: none;
+  line-height: 1;
+  
+  svg {
+    width: 24;
+    height: 24;
+  }
+}
+
+.aa-InputWrapper {
+  flex-grow: 1;
+}
+
+.aa-Input[type='search'] {
+  width: calc(100% - 1px);
+	padding: 10px 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  line-height: normal;
+  font-size: 16px;
+
+  &:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+.aa-InputWrapperSuffix {
+  display: flex;
+}
+
+.aa-InputSeparator {
+  display: block;
+  align-self: stretch;
+  background-color: rgb(204, 204, 204);
+  margin-bottom: 8px;
+  margin-top: 8px;
+  width: 1px;
+  box-sizing: border-box;
+}
+
+/* Result Styles */
+.aa-Panel {
+  position: relative;
+}
+
+.aa-Source {
+  position: absolute;
+  width: 100%;
+  margin: 8px 0;
+  max-height: 175px;
+  overflow-y: scroll;
+  background: $color-white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
+  border-radius: 4px;
+  border: 1px solid $color-gray-300;
+}
+
+.aa-List {
+  margin: 0;
+}
+
+.aa-Item {
+  margin: 0;
+  padding: 8px 12px;
+  background-color: $color-white;
+  color: inherit;
+  cursor: default;
+  display: block;
+  font-size: 16px;
+
+  &:hover,
+  &:focus {
+    background: rgb(222, 235, 255);
+  }
+
+  mark {
+    background: rgb(222, 235, 255);
+    color: $color-primary-dark;
+  }
+}
