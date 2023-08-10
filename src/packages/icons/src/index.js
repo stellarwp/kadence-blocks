@@ -54,7 +54,6 @@ export { default as dynamicIcon } from './dynamic';
 export { default as dynamic } from './dynamic';
 export { default as aiIcon } from './ai';
 export { default as aiSettings } from './ai-settings';
-export { default as dynamic } from './dynamic'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
