@@ -112,7 +112,7 @@ export function Photography() {
 		];
 		newCollection[galleryIndex].images = photoList;
 		newCollection[galleryIndex].isLocal = true;
-		const newValue = updateWordpressCollections(photoLibrary, newCollection);
+		const newValue = updateGalleries(photoLibrary, newCollection);
 		handlePossiblePhotoLibraryChange( newValue );
 	}
 	function findOptionWithValue(arr, value) {
@@ -155,8 +155,8 @@ export function Photography() {
 				<FlexBlock style={ styles.selectWrapper }>
 					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="row">
 						<AdvancedSelect
-							value={ photoLibrary }
 							label= { __('Use Images From:', 'kadence-blocks') }
+							options={ allVerticals || [] }
 							value={ allVerticals?.length > 0 ? findOptionWithValue( allVerticals, photoLibrary ) : '' }
 							onChange={ ( value ) => {
 								handlePhotoLibraryChange( value.value );

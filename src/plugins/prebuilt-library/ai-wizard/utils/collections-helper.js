@@ -156,7 +156,7 @@ export function collectionsHelper() {
 		toUpdate[matchingIndex].label = collectionName;
 		dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: toUpdate });
 		setWordpressCollections(toUpdate);
-		return newCollection.value;
+		return toUpdate.value;
 	}
 
 	/**

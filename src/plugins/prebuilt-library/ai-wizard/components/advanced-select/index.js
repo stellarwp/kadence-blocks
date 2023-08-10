@@ -66,7 +66,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 							onClick={ () => setIsOpen(!isOpen) }
 						>
 							<div className="stellarwp-advancedSelect__button-content">
-								<div className="stellarwp-advancedSelect__button-label">{ value.label }</div>
+								<div className="stellarwp-advancedSelect__button-label">{ value?.label }</div>
 								<div className="stellarwp-advancedSelect__button-icon"><Icon size={25} icon={chevronDown} /></div>
 							</div>
 
@@ -86,7 +86,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 										width={ componentWidth }
 										options={ options }
 										onSelect={ onChange }
-										value={ value.value }
+										value={ value?.value }
 										allowClose={ setAllowClose }
 									/>
 								</Popover>
