@@ -497,8 +497,8 @@ class KB_Ajax_Advanced_Form {
 	 */
 	public function set_custom_upload_directory( $param ) {
 		$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' );
-		$param['url']  = $param['baseurl'] . $subfolder;
-		$param['path'] = $param['basedir'] . $subfolder;
+		$param['url']  = isset( $param['baseurl'] ) ? $param['baseurl'] . $subfolder : $subfolder;
+		$param['path'] = isset( $param['basedir'] ) ? $param['basedir'] . $subfolder : $subfolder;
 		return apply_filters( 'kadence_blocks_advanced_form_upload_directory', $param );
 	}
 	/**

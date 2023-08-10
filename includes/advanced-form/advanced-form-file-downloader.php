@@ -18,7 +18,13 @@ class Kadence_Blocks_Form_File_Downloader {
 			if ( isset( $upload_dir['basedir'] ) ) {
 				$path = $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'];
 
-				if( realpath( $path ) === $path && file_exists( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] ) ) {
+				$form_ajax_actions = new KB_Ajax_Advanced_Form();
+				$form_upload_root = $form_ajax_actions->get_kadence_form_root_upload_dir();
+
+				$paths_match = realpath( $path ) === $path;
+				$path_is_inside_upload_dir = substr($path, 0, strlen($form_upload_root)) !== $form_upload_root;
+
+				if( $paths_match && $path_is_inside_upload_dir && file_exists( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] ) ) {
 					Kadence_Blocks_Form_File_Downloader::download( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] );
 				}
 			}
