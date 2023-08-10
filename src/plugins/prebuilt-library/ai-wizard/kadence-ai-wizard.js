@@ -61,7 +61,8 @@ export function KadenceAiWizard( props ) {
 		loading,
 		onWizardClose,
 		onPrimaryAction,
-		photographyOnly
+		photographyOnly,
+		credits,
 	} = props;
 
 	const { state, dispatch } = useKadenceAi();
@@ -152,6 +153,8 @@ export function KadenceAiWizard( props ) {
 			primaryButtonDisabled={ isFinishButtonDisabled() }
 			onSecondaryClick={ isSubmitted && ! photographyOnly ? handleOnSecondaryClick : null }
 			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }
+			credits={ credits }
+			photographyOnly={ photographyOnly }
 		/>
 	)
 }

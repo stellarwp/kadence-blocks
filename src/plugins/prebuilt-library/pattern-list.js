@@ -91,8 +91,18 @@ function BannerHeader( { selectedCategory } ) {
 		</Heading>
 	);
 }
-
 function LoadingHeader( { type } ) {
+	if ( 'error' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice kb-patterns-banner-notice-error"
+			>
+				{ __( 'Error Generating AI Content', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
 	return (
 		<Heading
 			level={ 2 }
@@ -191,6 +201,17 @@ function LaunchWizard( { launchWizard } ) {
 	);
 }
 function LoadingFailedHeader( { type } ) {
+	if ( 'license' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice ai-failed-loading"
+			>
+				{ __( 'Error Generating AI Content, verify license and available credits.', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
 	return (
 		<Heading
 			level={ 2 }
@@ -300,11 +321,15 @@ function PatternList( {
 				console.log( 'Generating AI Content' );
 				setFailedAI( false );
 				return [];
+			} else if ( 'error' === getContextState(aiContext) ) {
+				console.log( 'Error Generating AI Content' );
+				setFailedAI( true );
+				setFailedAIType( 'license' );
 			} else if ( getContextContent(aiContext) === 'failed' ){
 				console.log( 'AI Content has failed' );
 				setFailedAI( true );
 				setFailedAIType( 'general' );
-			}else if ( getContextContent(aiContext) === 'failedReload' ){
+			} else if ( getContextContent(aiContext) === 'failedReload' ){
 				console.log( 'AI Content has failed, reload page required.' );
 				setFailedAI( true );
 				setFailedAIType( 'reload' );

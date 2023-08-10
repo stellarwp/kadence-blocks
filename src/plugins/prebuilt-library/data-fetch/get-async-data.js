@@ -15,16 +15,36 @@ export function getAsyncData() {
 	const [ isLoadingAI, setLoadingAI ] = useState(false);
 	const [ error, setError ] = useState(false);
 
-	let data_key     = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
-	let data_email   = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
-	const product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
+	let data_key     = ( kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
+	let data_email   = ( kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_email ? kadence_blocks_params.proData.api_email : '' );
+	const product_id = ( kadence_blocks_params?.proData && kadence_blocks_params?.proData?.product_id ? kadence_blocks_params.proData.product_id : '' );
 	if ( ! data_key ) {
-		data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.ithemes_key ?  kadence_blocks_params.proData.ithemes_key : '' );
+		data_key = (  kadence_blocks_params?.proData && kadence_blocks_params?.proData?.ithemes_key ? kadence_blocks_params.proData.ithemes_key : '' );
 		if ( data_key ) {
 			data_email = 'iThemes';
 		}
 	}
-
+	/**
+	 * Get remaining credits.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getAvailableCredits() {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_remaining_credits', {
+					api_key: data_key,
+					api_email: data_email,
+				} ),
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'error';
+		}
+	}
 	/**
 	 * Save wizard data to Wordpress options table.
 	 *
@@ -388,6 +408,7 @@ export function getAsyncData() {
 		processPattern,
 		getLocalAIContexts,
 		getAIContentRemaining,
+		getAvailableCredits,
 	}
 }
 
