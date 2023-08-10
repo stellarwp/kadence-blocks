@@ -1,18 +1,18 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
+import classnames from "classnames";
 
 /**
  * WordPress dependencies
  */
-import { Button as CoreButton } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { Button as CoreButton } from "@wordpress/components";
+import { __ } from "@wordpress/i18n";
 
 /**
  * Internal dependencies
  */
-import './chip.scss';
+import "./chip.scss";
 
 /**
  * @param {object} props
@@ -22,13 +22,10 @@ import './chip.scss';
  * @return {ReactNode}
  */
 export function Chip(props) {
-	const {
-		onDelete,
-		text
-	} = props;
+	const { onDelete, text, className } = props;
 
-	const classes = classnames('stellarwp', 'chip', {
-		'has-icon': onDelete
+	const classes = classnames("stellarwp", "chip", className, {
+		"has-icon": onDelete,
 	});
 
 	function handleDeleteClick(event) {
@@ -39,19 +36,20 @@ export function Chip(props) {
 
 	let deleteButton = null;
 	if (onDelete) {
-		deleteButton = <CoreButton
-			icon="no-alt"
-			label={ __('Delete Selection', 'kadence-blocks')}
-			isSmall
-			onClick={ handleDeleteClick }
-		/>;
+		deleteButton = (
+			<CoreButton
+				icon="no-alt"
+				label={__("Delete Selection", "kadence-blocks")}
+				isSmall
+				onClick={handleDeleteClick}
+			/>
+		);
 	}
 
 	return (
-		<div className={ classes }>
-			{ text && <span>{ text }</span> }
-			{ deleteButton }
+		<div className={classes}>
+			{text && <span>{text}</span>}
+			{deleteButton}
 		</div>
 	);
 }
-

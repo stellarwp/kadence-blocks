@@ -25,3 +25,10 @@
 	}
 }
 
+@mixin loading_indicator {
+	font-size: 12px;
+	color: $color-primary;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}

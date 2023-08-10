@@ -5,3 +5,4 @@ dist/
 zip/
 bin/strauss.phar
 vendor/
+.idea
