@@ -37,11 +37,11 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/advancedheading', {
 	...metadata,
-	title: __( 'Advanced Text', 'kadence-blocks' ),
+	title: __( 'Text (Adv)', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	keywords: [
 		__( 'text', 'kadence-blocks' ),
-		__( 'title', 'kadence-blocks' ),
+		__( 'advanced', 'kadence-blocks' ),
 		__( 'heading', 'kadence-blocks' ),
 		'KB',
 	],

@@ -1,7 +1,5 @@
 <?php
 
-include 'advanced-form/advanced-form-submit-actions.php';
-
 /**
  * Advanced Form Ajax Handing.
  *
@@ -32,6 +30,10 @@ class KB_Ajax_Advanced_Form {
 
 	private static $messages = [];
 
+	private static $captcha_attrs = false;
+
+	private static $errors = [];
+
 	/**
 	 * Instance Control
 	 */
@@ -55,63 +57,79 @@ class KB_Ajax_Advanced_Form {
 	 * Process the form submit.
 	 */
 	public function process_ajax() {
+		$final_data = array();
 
-		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
+		if ( isset( $_POST['_kb_adv_form_id'] ) && ! empty( $_POST['_kb_adv_form_id'] ) && isset( $_POST['_kb_adv_form_post_id'] ) && ! empty( $_POST['_kb_adv_form_post_id'] ) ) {
 			$this->start_buffer();
 
-			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
+			if ( apply_filters( 'kadence_blocks_form_verify_nonce', is_user_logged_in() ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
-
-			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_post_id'] ) );
+			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_adv_form_post_id'] ) );
 
 			$form_args = $this->get_form( $post_id );
 			$messages  = $this->get_messages( $form_args['attributes'] );
 
-			// Check Honey Pot.
-			if ( isset( $form_args['attributes']['honeyPot'] ) && true === $form_args['attributes']['honeyPot'] && isset( $_POST['_kb_verify_email'] ) ) {
-
-				$honeypot_check = htmlspecialchars( $_POST['_kb_verify_email'], ENT_QUOTES );
-				if ( ! empty( $honeypot_check ) ) {
-					$this->process_bail( __( 'Submission Rejected', 'kadence-blocks' ), __( 'Spam Detected', 'kadence-blocks' ) );
-				}
-			}
-
 			// Check Recaptcha.
-			if ( isset( $form_args['attributes']['recaptcha'] ) && true === $form_args['attributes']['recaptcha'] ) {
-				if ( isset( $form_args['attributes']['recaptchaVersion'] ) && 'v2' === $form_args['attributes']['recaptchaVersion'] ) {
-					if ( ! isset( $_POST['g-recaptcha-response'] ) || empty( $_POST['g-recaptcha-response'] ) ) {
-						$this->process_bail( $messages['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+			if ( self::$captcha_attrs !== false ) {
+				$captcha_settings = new Kadence_Blocks_Form_Captcha_Settings( self::$captcha_attrs );
+
+				if ( $captcha_settings->is_valid ) {
+					$captcha_verify = new Kadence_Blocks_Form_Captcha_Verify( $captcha_settings );
+
+					$valid = false;
+					switch ( $captcha_settings->service ) {
+						case 'googlev3':
+							$token = ! empty( $_POST['recaptcha_response'] ) ? $_POST['recaptcha_response'] : '';
+							$valid = $captcha_verify->verify_google( $token );
+							break;
+						case 'googlev2':
+							$token = ! empty( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '';
+							$valid = $captcha_verify->verify_google( $token );
+							break;
+						case 'turnstile':
+							$token = ! empty( $_POST['cf-turnstile-response'] ) ? $_POST['cf-turnstile-response'] : '';
+							$valid = $captcha_verify->verify_turnstile( $token );
+							break;
+						case 'hcaptcha':
+							$token = ! empty( $_POST['h-captcha-response'] ) ? $_POST['h-captcha-response'] : '';
+							$valid = $captcha_verify->verify_hcaptcha( $token );
+							break;
 					}
-					if ( ! $this->verify_recaptcha_v2( $_POST['g-recaptcha-response'] ) ) {
-						$this->process_bail( $messages['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+
+					if ( ! $valid ) {
+						$this->process_bail( $messages['recaptchaerror'], __( 'CAPTCHA Failed', 'kadence-blocks' ) );
 					}
-				} else {
-					if ( ! $this->verify_recaptcha( $_POST['recaptcha_response'] ) ) {
-						$this->process_bail( $messages['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
-					}
+
+					unset( $_POST['recaptcha_response'], $_POST['g-recaptcha-response'], $_POST['cf-turnstile-response'], $_POST['h-captcha-response'] );
 				}
-				unset( $_POST['recaptcha_response'] );
 			}
-			unset( $_POST['_kb_form_sub_id'], $_POST['_kb_verify_email'] );
 
+			$processed_fields = $this->process_fields( $form_args['fields'] );
 
-			$responses = $this->process_fields( $form_args['fields'] );
+			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $processed_fields, $post_id );
 
-			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $form_args['fields'], $post_id, $responses );
+			$submission_results = $this->after_submit_actions( $form_args, $processed_fields, $post_id );
 
-			$this->after_submit_actions( $form_args, $responses, $post_id );
+			if ( self::$redirect ) {
+				$final_data['redirect'] = self::$redirect;
+			}
+			if ( isset( $form_args['attributes']['submitHide'] ) && true == $form_args['attributes']['submitHide'] ) {
+				$final_data['hide'] = true;
+			}
 
-			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', true, $form_args['fields'], $post_id, $responses );
-			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages );
+			$success = isset( $submission_results['success'] ) && $submission_results['success'];
+			$final_data['submissionResults'] = $submission_results;
+
+			$success  = apply_filters( 'kadence_blocks_advanced_form_submission_success', $success, $form_args, $processed_fields, $post_id, $submission_results );
+			$messages = apply_filters( 'kadence_blocks_advanced_form_submission_messages', $messages, $form_args, $processed_fields, $post_id, $submission_results );
 
 			if ( ! $success ) {
 				$this->process_bail( $messages['error'], __( 'Third Party Failed', 'kadence-blocks' ) );
 			} else {
-				$final_data['html'] = '<div class="kadence-blocks-form-message kadence-blocks-form-success">' . $messages['success'] . '</div>';
+				$final_data['html'] = '<div class="kb-adv-form-message kb-adv-form-success">' . $messages['success'] . '</div>';
 				$this->send_json( $final_data );
 			}
-
 		} else {
 			$this->process_bail( __( 'Submission failed', 'kadence-blocks' ), __( 'No Data', 'kadence-blocks' ) );
 		}
@@ -164,82 +182,64 @@ class KB_Ajax_Advanced_Form {
 
 		return $value;
 	}
+	/**
+	 * Process the submit actions.
+	 * 
+	 * @param array $form_args the form args.
+	 * @param array $processed_fields the processed fields.
+	 * @param int   $post_id the post id.
+	 */
+	public function after_submit_actions( $form_args, $processed_fields, $post_id ) {
 
-	public function after_submit_actions( $form_args, $responses, $post_id ) {
+		$submission_results = array( 'success' => true );
+		$actions = isset( $form_args['attributes']['actions'] ) ? $form_args['attributes']['actions'] : array( 'email' );
 
-		$success = true;
-
-		$actions = $form_args['attributes']['actions'];
-
-		$submitActions = new AdvancedFormSubmitActions( $form_args, $responses, $post_id );
+		$submit_actions = new Kadence_Blocks_Advanced_Form_Submit_Actions( $form_args, $processed_fields, $post_id );
 
 		foreach ( $actions as $action ) {
 			switch ( $action ) {
 				case 'email':
-					$submitActions->email();
+					$submit_actions->email();
 					break;
 				case 'redirect':
 					if ( isset( $form_args['attributes']['redirect'] ) && ! empty( trim( $form_args['attributes']['redirect'] ) ) ) {
-						self::$redirect = apply_filters( 'kadence_blocks_advanced_form_redirect', trim( $form_args['attributes']['redirect'] ), $form_args, $responses, $post_id );
+						self::$redirect = apply_filters( 'kadence_blocks_advanced_form_redirect', trim( $form_args['attributes']['redirect'] ), $form_args, $processed_fields, $post_id );
 					}
 					break;
 				case 'mailerlite':
-					$submitActions->mailerlite();
+					$submit_actions->mailerlite();
 					break;
 				case 'fluentCRM':
-					$submitActions->fluentCRM();
-					break;
-				case 'sendinblue':
-					$submitActions->sendinblue();
-					break;
-				case 'mailchimp':
-					$submitActions->mailchimp();
-					break;
-				case 'convertkit':
-					$submitActions->convertkit();
-					break;
-				case 'activecampaign':
-					$submitActions->activecampaign();
-					break;
-				case 'webhook':
-					$submitActions->webhook();
-				case 'entry':
-					$submitActions->entry($post_id);
-					break;
-				case 'autoEmail':
-					$submitActions->autoEmail();
+					$submit_actions->fluentCRM();
 					break;
 			}
 		}
+		$submission_results = apply_filters( 'kadence_advanced_form_actions', $submission_results, $actions, $form_args, $processed_fields, $post_id );
 
-		if( self::$redirect ){
-			// Return the redirect URL.
-		}
-
-		return $success;
+		return $submission_results;
 	}
-
+	/**
+	 * Process the fields
+	 *
+	 * @param array $fields the fields.
+	 */
 	public function process_fields( $fields ) {
 
-		$responses = array();
+		$processed_fields = array();
 
 		foreach ( $fields as $index => $field ) {
-
-			$expected_field = 'kb_field_' . $index;
-
-			// Fail if required field is missing
+			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
+			// Fail if required field is missing.
 			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
 				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
-
 				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
 			}
 
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
 
-			// If field is file, verify and process the file
+			// If field is file, verify and process the file.
 			if ( $field['type'] === 'file' ) {
-
-				// File required & skipped
+				// File required & skipped.
 				if ( empty( $_FILES[ $expected_field ]['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
 					$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
 
@@ -303,16 +303,17 @@ class KB_Ajax_Advanced_Form {
 			}
 
 
-			$responses[] = array(
-				'label'    => $field['label'],
+			$processed_fields[] = array(
+				'label'    => ( ! empty( $field['label'] ) ? $field['label'] : '' ),
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
 				'value'    => $value,
+				'uniqueID' => $field['uniqueID'],
+				'name'     => $expected_field,
 			);
 		}
 
-		return $responses;
-
+		return $processed_fields;
 	}
 
 	/**
@@ -333,88 +334,6 @@ class KB_Ajax_Advanced_Form {
 		$this->send_json( $out, true );
 	}
 
-	/**
-	 * Check Recaptcha
-	 *
-	 * @param string $token Recaptcha token.
-	 *
-	 * @return bool
-	 */
-	private function verify_recaptcha( $token ) {
-		$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-		$secret        = get_option( 'kadence_blocks_recaptcha_secret_key' );
-		if ( ! $secret ) {
-			return false;
-		}
-		$args           = array(
-			'body' => array(
-				'secret'   => $secret,
-				'response' => $token,
-			),
-		);
-		$verify_request = wp_remote_post( $recaptcha_url, $args );
-		if ( is_wp_error( $verify_request ) ) {
-			return false;
-		}
-		$response = wp_remote_retrieve_body( $verify_request );
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-		$response = json_decode( $response, true );
-
-		if ( ! isset( $response['success'] ) ) {
-			return false;
-		}
-
-		return $response['success'];
-
-	}
-
-	/**
-	 * Check Recaptcha V2
-	 *
-	 * @param string $token Recaptcha token.
-	 *
-	 * @return bool
-	 */
-	private function verify_recaptcha_v2( $token ) {
-
-		$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-		$secret        = get_option( 'kadence_blocks_recaptcha_secret_key' );
-		if ( ! $secret ) {
-			return false;
-		}
-		$args           = array(
-			'body' => array(
-				'secret'   => $secret,
-				'response' => $token,
-				'remoteip' => $_SERVER['REMOTE_ADDR'],
-			),
-		);
-		$verify_request = wp_remote_post( $recaptcha_url, $args );
-		if ( is_wp_error( $verify_request ) ) {
-			return false;
-		}
-		$response = wp_remote_retrieve_body( $verify_request );
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-		$response = json_decode( $response, true );
-
-		if ( ! isset( $response['success'] ) ) {
-			return false;
-		}
-		if ( isset( $response['success'] ) && true === $response['success'] ) {
-			return $response['success'];
-		}
-		if ( isset( $response['error-codes'] ) && is_array( $response['error-codes'] ) ) {
-			if ( isset( $response['error-codes'][0] ) && $response['error-codes'][0] === 'timeout-or-duplicate' ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	/**
 	 * Create HTML string from notices
@@ -427,7 +346,7 @@ class KB_Ajax_Advanced_Form {
 		$html = '';
 		foreach ( $notices as $note_type => $notice ) {
 			if ( ! empty( $notice['note'] ) ) {
-				$html .= '<div class="kadence-blocks-form-message kadence-blocks-form-warning">' . $notice['note'] . '</div>';
+				$html .= '<div class="kb-adv-form-message kb-adv-form-warning">' . $notice['note'] . '</div>';
 			}
 		}
 
@@ -476,24 +395,6 @@ class KB_Ajax_Advanced_Form {
 			wp_send_json( $data );
 		} else {
 			wp_send_json_error( $data );
-		}
-	}
-
-	/**
-	 * Get form args
-	 *
-	 * @param string $content the post content.
-	 */
-	public function parse_blocks( $content ) {
-		$parser_class = apply_filters( 'block_parser_class', 'WP_Block_Parser' );
-		if ( class_exists( $parser_class ) ) {
-			$parser = new $parser_class();
-
-			return $parser->parse( $content );
-		} elseif ( function_exists( 'gutenberg_parse_blocks' ) ) {
-			return gutenberg_parse_blocks( $content );
-		} else {
-			return false;
 		}
 	}
 
@@ -546,7 +447,11 @@ class KB_Ajax_Advanced_Form {
 
 		return $allowed_mime_types;
 	}
-
+	/**
+	 * Upload file
+	 *
+	 * @param array $file_data the file data.
+	 */
 	private function set_permissions( $file ) {
 		$permission = apply_filters( 'kadence_form_upload_permissions', 0644, $file );
 
@@ -567,7 +472,7 @@ class KB_Ajax_Advanced_Form {
 
 		$post_data = get_post( absint( $post_id ) );
 		if ( is_object( $post_data ) ) {
-			$blocks = $this->parse_blocks( $post_data->post_content );
+			$blocks = parse_blocks( $post_data->post_content );
 		}
 
 		// No form field inner blocks found.
@@ -578,30 +483,52 @@ class KB_Ajax_Advanced_Form {
 		$post_meta = get_post_meta( $post_id );
 		$meta_args = array();
 
-		foreach($post_meta as $meta_key => $meta_value ){
-			if( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
-				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize($meta_value[0]);
+		foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( strpos( $meta_key, '_kad_form_' ) === 0 && isset( $meta_value[0] ) ){
+				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 			}
 		}
 
-		$form_args['attributes'] = json_decode(json_encode($meta_args), true);
-
+		$form_args['attributes'] = json_decode( json_encode( $meta_args ), true );
 		foreach ( $blocks[0]['innerBlocks'] as $block ) {
-			if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
-
-
-				if ( strpos( $block['blockName'], 'kadence/advanced-form-' ) === 0 ) {
-					$form_args['fields'][] = array_merge(
-						$block['attrs'],
-						array( 'type' => str_replace( 'kadence/advanced-form-', '', $block['blockName'] ) )
-					);
-				}
-			}
+			$this->recursively_parse_blocks( $block );
 		}
+		$form_args['fields'] = self::$fields;
 
 		return $form_args;
 	}
+	/**
+	 * Gets all the field blocks that are in post.
+	 *
+	 * @access private
+	 *
+	 * @param string $block The page content content.
+	 */
+	private function recursively_parse_blocks( $block ) {
+		if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
+			if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				foreach ( $block['innerBlocks'] as $inner_block ) {
+					$this->recursively_parse_blocks( $inner_block );
+				}
+			} else {
+				if ( 'kadence/advanced-form-submit' !== $block['blockName'] && strpos( $block['blockName'], 'kadence/advanced-form-' ) === 0 ) {
+					self::$fields[] = array_merge(
+						$block['attrs'],
+						array( 'type' => str_replace( 'kadence/advanced-form-', '', $block['blockName'] ) )
+					);
 
+					if ( $block['blockName'] === 'kadence/advanced-form-captcha' ) {
+						self::$captcha_attrs = $block['attrs'];
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Get form messages
+	 *
+	 * @param array $form_attributes the form attributes.
+	 */
 	private function get_messages( $form_attributes ) {
 		$messages = array(
 			'success'        => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),

@@ -35,13 +35,14 @@ export function Wizard({
 	primaryButtonDisabled = false,
 	onSecondaryClick,
 	secondaryButtonText,
+	credits = '',
+	photographyOnly,
 	pages = []
 }) {
 	const guideContainer = useRef(null);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [completed, setCompleted] = useState(new Set());
 	const { saveAiWizardData } = useDatabase();
-
 	useEffect( () => {
 		// Communicate current page index.
 		onPageChange && onPageChange(currentPage);
@@ -54,7 +55,6 @@ export function Wizard({
 			)[ 0 ]?.focus();
 		}
 	}, [ currentPage ] );
-
 	const pageId = pages && pages?.[currentPage]?.id ? pages[currentPage].id : `page-${ currentPage }`;
 
 	const canGoBack = currentPage > 0;
@@ -189,14 +189,29 @@ export function Wizard({
 								{ secondaryButtonText ? secondaryButtonText : '' }
 							</Button>
 						) : null }
-						<Button
-							variant="primary"
-							className={ 'components-wizard__primary-button' }
-							disabled={ primaryButtonDisabled }
-							onClick={ onPrimaryClick }
-							>
-							{ primaryButtonText }
-						</Button>
+						{ photographyOnly && (
+							<Button
+								variant="primary"
+								className={ 'components-wizard__primary-button' }
+								disabled={ primaryButtonDisabled }
+								onClick={ onPrimaryClick }
+								>
+								{ primaryButtonText }
+							</Button>
+						) }
+						{ ! photographyOnly && (
+							<div className='kt-generate-wrap'>
+								<div className='kt-remaining-credits'>{ credits } { __( 'Credits Remaining', 'kadence-blocks' ) }</div>
+								<Button
+									variant="primary"
+									className={ 'components-wizard__primary-button' }
+									disabled={ primaryButtonDisabled }
+									onClick={ onPrimaryClick }
+									>
+									{ primaryButtonText + ' ' + __( '(96 Credits)', 'kadence-blocks' ) }
+								</Button>
+							</div>
+						) }
 					</div>
 				) }
 			</div>

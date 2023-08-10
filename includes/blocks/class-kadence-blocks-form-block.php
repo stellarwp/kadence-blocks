@@ -790,7 +790,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$recaptcha_site_key = 'missingkey';
 		}
 
-		$recaptcha_lang = !empty( get_option('kadence_blocks_recaptcha_language') ) ? '&hl=' . get_option('kadence_blocks_recaptcha_language') : '';
+		$recaptcha_lang = ! empty( get_option('kadence_blocks_recaptcha_language') ) ? '&hl=' . get_option('kadence_blocks_recaptcha_language') : '';
 
 		wp_register_script( 'kadence-blocks-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ) . $recaptcha_lang, array(), KADENCE_BLOCKS_VERSION, true );
 		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";

@@ -130,6 +130,7 @@ import { __ } from '@wordpress/i18n';
 	attributes,
 	setAttributes,
 	isSelected,
+	context,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
@@ -847,7 +848,7 @@ import { __ } from '@wordpress/i18n';
 			) }
 			{ 'video' === backgroundSettingTab && (
 				<>
-					{/* <SelectControl
+					<SelectControl
 						label={ __( 'Background Video Type' ) }
 						options={ [
 							{
@@ -865,7 +866,7 @@ import { __ } from '@wordpress/i18n';
 						] }
 						value={ backgroundVideoType }
 						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-					/> */}
+					/>
 					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
 						<Fragment>
 							<KadenceVideoControl
@@ -894,11 +895,21 @@ import { __ } from '@wordpress/i18n';
 							/>
 						</Fragment>
 					) }
+					{ ( undefined !== backgroundVideoType && 'local' !== backgroundVideoType ) && (
+						<div class="components-base-control">Warning: Embedded videos are not ideal for background content. Consider self hosting instead.</div>
+					) }
 					{ 'youtube' === backgroundVideoType && (
 						<TextControl
-							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-							onChange={ value => saveVideoSettings( { youtube: value } ) }
+							label={ __( 'YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youTube ? backgroundVideo[ 0 ].youTube : '' ) }
+							onChange={ value => saveVideoSettings( { youTube: value } ) }
+						/>
+					) }
+					{ 'vimeo' === backgroundVideoType && (
+						<TextControl
+							label={ __( 'Vimeo ID ( example: 789006133 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].vimeo ? backgroundVideo[ 0 ].vimeo : '' ) }
+							onChange={ value => saveVideoSettings( { vimeo: value } ) }
 						/>
 					) }
 					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
@@ -932,11 +943,13 @@ import { __ } from '@wordpress/i18n';
 						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
 						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
 					/>
-					<ToggleControl
-						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-					/>
+					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+						<ToggleControl
+							label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+							checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+							onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+						/>
+					) }
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
 						value={ ( bgColor ? bgColor : '' ) }
@@ -1024,6 +1037,7 @@ import { __ } from '@wordpress/i18n';
 						setAttributes={ setAttributes }
 						name={ 'kadence/rowlayout' }
 						clientId={ clientId }
+						context={context}
 					/>
 				</>
 			)}

@@ -40,7 +40,7 @@ export default function KadenceBlockDefaults( {
 		return null;
 	}
 
-	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor' ];
+	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor', 'metadata' ];
 
 	const {createErrorNotice} = useDispatch(noticesStore);
 

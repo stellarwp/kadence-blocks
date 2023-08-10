@@ -532,12 +532,17 @@
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow" 
   ],
   "supports": {
 	"ktanimate": true,
 	"ktanimatereveal": true,
 	"ktanimatepreview": true,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true,
+	"kbContentLabel": "content"
   }
 }

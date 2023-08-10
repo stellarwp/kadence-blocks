@@ -24,7 +24,6 @@ registerBlockType('kadence/advanced-form-number', {
 	keywords: [
 		'kadence',
 	],
-	parent: [ 'kadence/advanced-form' ],
 	icon: {
 		src: numberInputIcon,
 	},

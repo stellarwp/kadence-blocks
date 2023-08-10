@@ -149,6 +149,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @var string
 	 */
 	protected $remote_ai_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $remote_credits_url = 'https://content.startertemplatecloud.com/wp-json/kadence-credits/v1/';
+
 	/**
 	 * The remote URL.
 	 *
@@ -322,6 +331,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/get_remaining_credits',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_remaining_credits' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->reset,
 			array(
 				array(
@@ -406,6 +427,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$this->create_data_file( $response, 'image_collections' );
 				return rest_ensure_response( $response );
 			}
+		}
+	}
+	/**
+	 * Retrieves remaining credits.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_remaining_credits( $request ) {
+		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
+		// Check if we have a remote file.
+		$response = $this->get_remote_remaining_credits();
+		$data = json_decode( $response, true );
+		if ( $response === 'error' ) {
+			return rest_ensure_response( 'error' );
+		} else {
+			return rest_ensure_response( $response );
 		}
 	}
 	/**
@@ -929,7 +968,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url
+			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
 		$prophecy_data = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
@@ -1226,7 +1265,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url
+			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
@@ -1325,7 +1364,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url,
+			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
 		if ( empty( $industries ) ) {
@@ -1380,6 +1419,45 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
+	public function get_remote_remaining_credits() {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$args = array(
+			'site'  => $site_url,
+			'key'   => $this->api_key,
+			'email' => $this->api_email,
+		);
+		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 20,
+			)
+		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
+
+		return $contents;
+	}
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
 	public function get_remote_image_collections() {
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
@@ -1388,7 +1466,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$auth = array(
-			'domain' => 'stellar.beta', //$site_url
+			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
 		$api_url  = $this->remote_ai_url . 'images/collections';
