@@ -467,6 +467,9 @@ class KB_Ajax_Advanced_Form {
 				'numbers'                      => 'application/vnd.apple.numbers',
 				'pages'                        => 'application/vnd.apple.pages',
 			),
+			'archive' => array(
+				'zip'  => 'application/zip',
+			),
 		);
 		foreach ( $categories as $category ) {
 			if ( isset( $mimtypes[ $category ] ) ) {
