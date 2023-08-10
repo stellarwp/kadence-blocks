@@ -9,8 +9,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import {
-	SelectControl,
 	PhotosCurated,
+	AdvancedSelect
 } from '../components';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import { collectionsHelper } from '../utils/collections-helper';
@@ -39,7 +39,8 @@ const styles = {
 
 export function Photography() {
 	const { state: { photoLibrary }, dispatch } = useKadenceAi();
-	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading, updateWordpressCollections } = collectionsHelper();
+	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading,
+		updateGalleries, createCollection, updateCollectionName, deleteCollection } = collectionsHelper();
 	const [ allVerticals, setAllVerticals ] = useState( [] );
 	const [ loadingSelection, setLoadingSelection ] = useState( false );
 	const [ selectedCollection, setSelectedCollection ] = useState([{}, {}]);
@@ -52,12 +53,14 @@ export function Photography() {
 					options: wordpressCollections.map((vert) => ({
 						label: vert.label,
 						value: vert.value,
+						useActions: true,
 					}))
 				}, {
 					label: 'Premade Collections',
 					options: preMadeCollections.map((vert) => ({
 						label: vert.label,
 						value: vert.value,
+						useActions: false,
 					}))
 				}
 			]);
@@ -121,20 +124,46 @@ export function Photography() {
 		}
 		return null;
 	}
+
+	function createNewCollection(collectionName) {
+		const galleries = [
+			{ name: 'featured', images: [] },
+			{ name: 'background', images: [] }
+		];
+		const newValue = createCollection(collectionName, galleries);
+		handlePhotoLibraryChange(newValue);
+	}
+
+	function updateCollection( updatedName, collectionId ) {
+		const option = updateCollectionName(updatedName, collectionId);
+		if( photoLibrary === option ) {
+			handlePhotoLibraryChange(option);
+		}
+	}
+
+	function removeCollection(collectionId) {
+		if(photoLibrary.value === collectionId) {
+			handlePhotoLibraryChange(allVerticals[1].options[0]);
+		}
+		deleteCollection(collectionId);
+
+	}
+
 	return (
 		<div className="stellarwp-ai-photography-library">
 			<Flex justify="center" style={ styles.topSection }>
 				<FlexBlock style={ styles.selectWrapper }>
 					<Flex className={ 'stellarwp-ai-photography-library__selection' } direction="row">
-						<SelectControl
-							className={ 'stellarwp-ai-photography-control' }
-							label={ __('Use Images From:', 'kadence-blocks') }
+						<AdvancedSelect
+							value={ photoLibrary }
+							label= { __('Use Images From:', 'kadence-blocks') }
 							value={ allVerticals?.length > 0 ? findOptionWithValue( allVerticals, photoLibrary ) : '' }
 							onChange={ ( value ) => {
 								handlePhotoLibraryChange( value.value );
 							} }
-							options={ allVerticals || [] }
-							horizontal
+							createRecord={ createNewCollection }
+							updateRecord={ updateCollection }
+							deleteRecord={ removeCollection }
 						/>
 					</Flex>
 				</FlexBlock>

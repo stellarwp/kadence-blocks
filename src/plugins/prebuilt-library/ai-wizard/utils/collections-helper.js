@@ -63,10 +63,13 @@ export function collectionsHelper() {
 	 *
 	 * @return {Object} Returns the value and label of the new option
 	 */
-	function updateWordpressCollections(collectionId, updatedCollection) {
+	function updateGalleries(collectionId, updatedCollection) {
 		if (! collectionId) {
-			return '';
+			return {};
 		}
+
+		let newCollection = {};
+		let updatedCollections = [...wordpressCollections];
 
 		const found = wordpressCollections.findIndex((item) => item.value === collectionId);
 		if(found > -1) {
@@ -86,7 +89,7 @@ export function collectionsHelper() {
 				return acc;
 			}, 0);
 
-			const newCollection = {
+			newCollection = {
 				label: `${matchingPremade.label} (Edited${collectionVersion > 0 ? ` ${collectionVersion + 1}` : ''})`,
 				value: `${collectionId}_${collectionVersion}_${new Date().getTime().toString().slice(-6)}`,
 				createdFrom: collectionId,
@@ -102,7 +105,81 @@ export function collectionsHelper() {
 			setWordpressCollections(updatedCollections);
 			return newCollection.value;
 		}
+	}
 
+	/**
+	 * Create new collection
+	 * @param {string} collectionName
+	 *
+	 * @return {Object} Returns the value and label of the new option
+	 */
+	function createCollection(collectionName, galleries) {
+		if (! collectionName) {
+			return {};
+		}
+
+		const newCollection = {
+			label: collectionName,
+			value: `${collectionName.replace(/ /g, '')}_${0}_${new Date().getTime().toString().slice(-6)}`,
+			createdFrom: null,
+			version: 0,
+			galleries: galleries
+		}
+
+		const updatedCollections = [
+			newCollection,
+			...wordpressCollections
+		];
+		dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: updatedCollections });
+		setWordpressCollections(updatedCollections);
+		return newCollection.value;
+	}
+
+	/**
+	 * Create new collection
+	 * @param {string} collectionName
+	 * @param {string} collectionId
+	 *
+	 * @return {void}
+	 */
+	function updateCollectionName(collectionName, collectionId) {
+		if (! collectionId || ! collectionName) {
+			return;
+		}
+
+		const matchingIndex = wordpressCollections.findIndex((item) => item.value === collectionId);
+		if(matchingIndex === -1) {
+			return;
+		}
+
+		const toUpdate = [...wordpressCollections];
+		toUpdate[matchingIndex].label = collectionName;
+		dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: toUpdate });
+		setWordpressCollections(toUpdate);
+		return newCollection.value;
+	}
+
+	/**
+	 * Delete local collection
+	 * @param {string} collectionId
+	 *
+	 * @return {void}
+	 */
+	function deleteCollection(collectionId) {
+		if (! collectionId) {
+			return;
+		}
+
+		const matchingIndex = wordpressCollections.findIndex((item) => item.value === collectionId);
+		if(matchingIndex === -1) {
+			return;
+		}
+
+		const toUpdate = [...wordpressCollections];
+		toUpdate.splice(matchingIndex, 1);
+
+		sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify(toUpdate));
+		setWordpressCollections(toUpdate);
 	}
 
 	return {
@@ -110,7 +187,10 @@ export function collectionsHelper() {
 		preMadeCollections,
 		wordpressCollections,
 		getCollectionGalleries,
-		updateWordpressCollections
+		updateGalleries,
+		createCollection,
+		updateCollectionName,
+		deleteCollection
 	}
 }
 

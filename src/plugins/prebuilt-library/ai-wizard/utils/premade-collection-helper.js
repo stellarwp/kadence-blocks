@@ -15,7 +15,6 @@ import { useState, useEffect } from '@wordpress/element';
 import { SafeParseJSON } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
 
-
 export function preMadeCollectionsHelper() {
 	const [loading, setLoading] = useState(true);
 	const [pexelLinks, setPexelLinks] = useState([]);
