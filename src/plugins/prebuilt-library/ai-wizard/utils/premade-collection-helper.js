@@ -109,7 +109,7 @@ export function preMadeCollectionsHelper() {
 					});
 
 					parsedVerticals.unshift({
-						label: __('AI Generated Collection', 'kadence-blocks'),
+						label: __('AI Search Collection', 'kadence-blocks'),
 						value: "aiGenerated",
 						galleries: [
 							{ name: 'featured', images: [] },

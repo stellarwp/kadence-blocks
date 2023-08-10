@@ -11,10 +11,10 @@ import {
 import apiFetch from '@wordpress/api-fetch';
 import { useState, useEffect, Fragment } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import {
-	MediaUpload,
-} from '@wordpress/block-editor';
-// import MediaModal from './media-modal';
+// import {
+// 	MediaUpload,
+// } from '@wordpress/block-editor';
+import MediaUpload from './media-modal';
 /**
  * Get library data.
  *
@@ -249,6 +249,7 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 						allowedTypes={ALLOWED_MEDIA_TYPES}
 						multiple
 						gallery
+						title={ 'Edit Collection' }
 						value={selectionIDs}
 						render={( { open } ) => (
 							<Button

@@ -99,8 +99,8 @@ const getGalleryDetailsMediaFrame = () => {
 						insert: {
 							style: 'primary',
 							text: editing
-								? wp.media.view.l10n.updateGallery
-								: wp.media.view.l10n.insertGallery,
+								? __( 'Update Collection', 'kadence-blocks' )
+								: __( 'Create Collection', 'kadence-blocks' ),
 							priority: 80,
 							requires: { library: true },
 
@@ -126,43 +126,64 @@ const getGalleryDetailsMediaFrame = () => {
 				} )
 			);
 		},
-		galleryEditToolbar() {
-			const selection = this.state( 'gallery' ).get( 'selection' );
-			console.log( selection );
-			this.toolbar.set(
-				new wp.media.view.Toolbar( {
-					controller: this,
-					items: {
-						insert: {
-							style: 'primary',
-							text: 'Add to gallery',
-							priority: 80,
-							requires: { library: true },
-							selection: selection,
-
-							/**
-							 * @fires wp.media.controller.State#update
-							 */
-							click() {
-								console.log( "here" );
-								// const controller = this.controller,
-								// 	state = controller.state();
-
-								// controller.close();
-								// state.trigger(
-								// 	'update',
-								// 	state.get( 'library' )
-								// );
-
-								// // Restore and reset the default state.
-								// controller.setState( controller.options.state );
-								// controller.reset();
-							},
-						},
-					},
-				} )
-			);
+		galleryEditToolbar: function() {
+			var editing = this.state().get('editing');
+			this.toolbar.set( new wp.media.view.Toolbar({
+				controller: this,
+				items: {
+					insert: {
+						style:    'primary',
+						text:     editing ? __( 'Update Collection', 'kadence-blocks' ) : __( 'Add to Collection', 'kadence-blocks' ),
+						priority: 80,
+						requires: { library: true },
+	
+						/**
+						 * @fires wp.media.controller.State#update
+						 */
+						click: function() {
+							var controller = this.controller,
+								state = controller.state();
+	
+							controller.close();
+							state.trigger( 'update', state.get('library') );
+	
+							// Restore and reset the default state.
+							controller.setState( controller.options.state );
+							controller.reset();
+						}
+					}
+				}
+			}) );
 		},
+		galleryAddToolbar: function() {
+			this.toolbar.set( new wp.media.view.Toolbar({
+				controller: this,
+				items: {
+					insert: {
+						style:    'primary',
+						text:     __( 'Add to Collection', 'kadence-blocks' ),
+						priority: 80,
+						requires: { selection: true },
+	
+						/**
+						 * @fires wp.media.controller.State#reset
+						 */
+						click: function() {
+							var controller = this.controller,
+								state = controller.state(),
+								edit = controller.state('gallery-edit');
+	
+							edit.get('library').add( state.get('selection').models );
+							state.trigger('reset');
+							controller.setState('gallery-edit');
+							// Move focus to the modal when jumping back from Add to Gallery to Edit Gallery view.
+							this.controller.modal.focusManager.focus();
+						}
+					}
+				}
+			}) );
+		},
+
 
 		/**
 		 * Handle the edit state requirements of selected media item.
@@ -190,13 +211,14 @@ const getGalleryDetailsMediaFrame = () => {
 		 */
 		createStates: function createStates() {
 			this.on( 'toolbar:create:main-gallery', this.galleryToolbar, this );
-			this.on( 'toolbar:create:add-gallery', this.galleryEditToolbar, this );
+			this.on( 'toolbar:create:gallery-add', this.galleryAddToolbar, this );
+			this.on( 'toolbar:create:gallery-edit', this.galleryEditToolbar, this );
 			this.on( 'content:render:edit-image', this.editState, this );
 
 			this.states.add( [
 				new wp.media.controller.Library( {
 					id: 'gallery',
-					title: wp.media.view.l10n.createGalleryTitle,
+					title: __( 'Create Collection', 'kadence-blocks' ),
 					priority: 40,
 					toolbar: 'main-gallery',
 					filterable: 'uploaded',
@@ -213,6 +235,7 @@ const getGalleryDetailsMediaFrame = () => {
 				} ),
 
 				new wp.media.controller.GalleryEdit( {
+					title: __( 'Edit Collection', 'kadence-blocks' ),
 					library: this.options.selection,
 					editing: this.options.editing,
 					menu: 'gallery',
@@ -221,7 +244,7 @@ const getGalleryDetailsMediaFrame = () => {
 				} ),
 
 				new wp.media.controller.GalleryAdd({
-					toolbar: 'add-gallery',
+					title: __( 'Add to Collection', 'kadence-blocks' ),
 				}),
 			] );
 		},

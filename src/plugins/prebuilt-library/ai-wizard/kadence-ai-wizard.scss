@@ -96,3 +96,14 @@
 	}
 }
 
+.components-popover.ai-generated-search-edit-popover-settings .components-popover__content {
+    min-width: 400px;
+    width: 60%;
+    padding: 1em;
+}
+.ai-generated-search-edit-wrap {
+    text-align: center;
+    margin-bottom: 1em;
+	margin-top: calc(-1em - 19px);
+    height: 19px;
+}
