@@ -201,7 +201,6 @@ export function IndustryInformation() {
 									label={ __('What Industry are you in?', 'kadence-blocks') }
 									placeholder={ __('Find your industry', 'kadence-blocks') }
 									detachedMediaQuery="none"
-									openOnFocus={ true }
 									onSelect={ handleIndustryChange }
 									initialState={{
 										isOpen: false,
