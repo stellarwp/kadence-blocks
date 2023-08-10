@@ -60,6 +60,20 @@
   }
 }
 
+.aa-InputWrapperSuffix {
+  display: flex;
+}
+
+.aa-InputSeparator {
+  display: block;
+  align-self: stretch;
+  background-color: rgb(204, 204, 204);
+  margin-bottom: 8px;
+  margin-top: 8px;
+  width: 1px;
+  box-sizing: border-box;
+}
+
 /* Result Styles */
 .aa-Panel {
   position: relative;

@@ -9,7 +9,7 @@ import { getAlgoliaResults } from '@algolia/autocomplete-preset-algolia';
  * Wordpress dependencies
  */
 import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
-import { search, closeSmall } from '@wordpress/icons';
+import { search, chevronDown, closeSmall } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -136,15 +136,21 @@ export function Autocomplete(props) {
                 { ...autocomplete.getInputProps({}) }
               />
             </div>
-            { autocompleteState.query && (
               <div className="aa-InputWrapperSuffix">
+              { autocompleteState.query && (
                 <Button
                   className="aa-ClearButton"
                   onClick={ handleResetClick }
                   icon={ closeSmall }
                 />
-              </div>
-            ) }
+              ) }
+              <span className="aa-InputSeparator" />
+              <Button
+                className="aa-Chevron"
+                onClick={ () => inputRef.current.focus() }
+                icon={ chevronDown }
+              />
+            </div>
           </form>
           <div
             ref={ panelRef }
