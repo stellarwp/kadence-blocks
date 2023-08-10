@@ -103,6 +103,7 @@ export function Autocomplete(props) {
             },
           ];
         },
+        openOnFocus: false,
         ...props,
       }),
     []
