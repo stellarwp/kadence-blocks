@@ -5,7 +5,7 @@
 /**
  * Wordpress dependencies
  */
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useContext } from '@wordpress/element';
 import { Icon, plus } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
@@ -15,10 +15,13 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '../button';
 import { AdvancedSelectOption } from './advanced-select-option';
 import { AdvancedSelectInput } from './advanced-select-input';
+import { AdvancedSelectContext } from '.';
 
 
 export const AdvancedSelectMenu = function (props) {
-	const { width, options, onSelect, value, allowClose, createRecord, updateRecord, deleteRecord } = props;
+	const { width, options, onSelect, value, allowClose } = props;
+	const { createRecord } = useContext(AdvancedSelectContext);
+
 	const [formattedOptions, setFormattedOptions] = useState([]);
 	const [creating, setCreating] = useState(false);
 
@@ -51,7 +54,6 @@ export const AdvancedSelectMenu = function (props) {
 
     return (
 		<div className="stellarwp advanced-select-menu" style={{ width }}>
-
 			{creating ? (
 				<div className="advanced-select-menu__create-input">
 					<AdvancedSelectInput
@@ -75,8 +77,6 @@ export const AdvancedSelectMenu = function (props) {
 							onOptionSelect={ onOptionSelect }
 							isActive={ value === option.value }
 							doNotClose={ (bool) => allowClose(!bool) }
-							updateRecord={ updateRecord }
-							deleteRecord={ deleteRecord }
 						/>
 					))}
 				</div>

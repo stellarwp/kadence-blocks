@@ -5,7 +5,7 @@
 /**
  * Wordpress dependencies
  */
-import { forwardRef, useRef, useState, useEffect } from '@wordpress/element';
+import { forwardRef, useRef, useState, useEffect, createContext } from '@wordpress/element';
 import { Popover } from '@wordpress/components';
 import { Icon, chevronDown } from '@wordpress/icons';
 
@@ -15,6 +15,8 @@ import { Icon, chevronDown } from '@wordpress/icons';
 import './advanced-select.scss';
 import { Button } from '../button';
 import { AdvancedSelectMenu } from './advanced-select-menu';
+
+export const AdvancedSelectContext = createContext({});
 
 export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 	const { value, label, options, onChange, createRecord, updateRecord, deleteRecord } = props;
@@ -54,46 +56,45 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 	function doNothing() {/* Override the WP component defaults */}
 
     return (
-		<div className="stellarwp components-advanced-select" ref={ ref }>
-			{label && <label class="components-input-control__label">{ label }</label>}
+		<AdvancedSelectContext.Provider value={{ createRecord, updateRecord, deleteRecord }}>
+			<div className="stellarwp components-advanced-select" ref={ ref }>
+				{label && <label class="components-input-control__label">{ label }</label>}
 
-				<div className="stellarwp-advancedSelect" ref={parentRef}>
-					<Button
-						className={`${isOpen ? 'is-open' : ''}`}
-						onClick={ () => setIsOpen(!isOpen) }
-					>
-						<div className="stellarwp-advancedSelect__button-content">
-							<div className="stellarwp-advancedSelect__button-label">{ value.label }</div>
-							<div className="stellarwp-advancedSelect__button-icon"><Icon size={25} icon={chevronDown} /></div>
-						</div>
+					<div className="stellarwp-advancedSelect" ref={parentRef}>
+						<Button
+							className={`${isOpen ? 'is-open' : ''}`}
+							onClick={ () => setIsOpen(!isOpen) }
+						>
+							<div className="stellarwp-advancedSelect__button-content">
+								<div className="stellarwp-advancedSelect__button-label">{ value.label }</div>
+								<div className="stellarwp-advancedSelect__button-icon"><Icon size={25} icon={chevronDown} /></div>
+							</div>
 
-						{isOpen && (
-							<Popover
-								placement="bottom-start"
-								offset={8}
-								animate={false}
-								style={{
-									maxHeight: '500px'
-								}}
-								className="stellarwp-advancedSelect__content"
-								onClose={ doNothing }
-								onFocusOutside={ doNothing }
-							>
-								<AdvancedSelectMenu
-									width={ componentWidth }
-									options={ options }
-									onSelect={ onChange }
-									value={ value.value }
-									allowClose={ setAllowClose }
-									createRecord={ createRecord }
-									updateRecord={ updateRecord }
-									deleteRecord={ deleteRecord }
-								/>
-							</Popover>
-						)}
-					</Button>
-				</div>
-		</div>
+							{isOpen && (
+								<Popover
+									placement="bottom-start"
+									offset={8}
+									animate={false}
+									style={{
+										maxHeight: '500px'
+									}}
+									className="stellarwp-advancedSelect__content"
+									onClose={ doNothing }
+									onFocusOutside={ doNothing }
+								>
+									<AdvancedSelectMenu
+										width={ componentWidth }
+										options={ options }
+										onSelect={ onChange }
+										value={ value.value }
+										allowClose={ setAllowClose }
+									/>
+								</Popover>
+							)}
+						</Button>
+					</div>
+			</div>
+		</AdvancedSelectContext.Provider>
     )
   }
 )
