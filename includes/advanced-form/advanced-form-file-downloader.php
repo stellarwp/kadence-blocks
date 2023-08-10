@@ -15,8 +15,12 @@ class Kadence_Blocks_Form_File_Downloader {
 
 			$upload_dir = wp_upload_dir();
 
-			if ( isset( $upload_dir['basedir'] ) && file_exists( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] ) ) {
-				Kadence_Blocks_Form_File_Downloader::download( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] );
+			if ( isset( $upload_dir['basedir'] ) ) {
+				$path = $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'];
+
+				if( realpath( $path ) === $path && file_exists( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] ) ) {
+					Kadence_Blocks_Form_File_Downloader::download( $upload_dir['basedir'] . '/' . $_GET['kadence-form-download'] );
+				}
 			}
 		}
 	}
