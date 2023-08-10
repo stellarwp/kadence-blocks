@@ -1,3 +1,4 @@
+export * from './autocomplete';
 export * from './button';
 export * from './checkbox-control';
 export * from './chip';
