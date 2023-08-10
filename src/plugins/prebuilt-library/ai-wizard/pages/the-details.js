@@ -80,6 +80,7 @@ export function TheDetails() {
 	const [currentTone, setCurrentTone] = useState(null);
 	const [pageRef, setPageRef] = useState(null);
 	const [controlRef, setControlRef] = useState(null);
+	const [initialKeywords, setInitialKeywords] = useState();
 	const { menuHeight, menuPlacement } = useSelectPlacement(pageRef, controlRef);
 
 	useEffect(() => {
@@ -150,6 +151,7 @@ export function TheDetails() {
 			description: missionStatement,
 		})
 			.then((response) => {
+				setInitialKeywords(response);
 				dispatch({
 					type: "SET_SUGGESTED_KEYWORDS",
 					payload: response,
@@ -185,6 +187,15 @@ export function TheDetails() {
 		}
 	}
 
+	function handleDeleteKeyword(keyword) {
+		if (initialKeywords?.includes(keyword)) {
+			dispatch({
+				type: "SET_SUGGESTED_KEYWORDS",
+				payload: [...suggestedKeywords, keyword],
+			});
+		}
+	}
+
 	return (
 		<Flex gap={0} align="normal" style={styles.container} ref={setPageRef}>
 			<FlexBlock style={{ alignSelf: "center" }}>
@@ -212,6 +223,7 @@ export function TheDetails() {
 									suggestedKeywordsState={suggestedKeywordsState}
 									onSuggestedKeywordAdded={handleSuggestedKeywordsRefresh}
 									onTryAgain={handleFetchSuggestedKeywords}
+									onTagDeleted={handleDeleteKeyword}
 									help={
 										<>
 											<Flex

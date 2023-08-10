@@ -85,7 +85,7 @@ export function TextareaProgress(props) {
 									variant="link"
 									onClick={onUndo}
 								>
-									Undo
+									{`${__("Undo", "kadence-blocks")}`}
 								</Button>
 							</FlexItem>
 							<FlexItem>
@@ -95,7 +95,7 @@ export function TextareaProgress(props) {
 									variant="link"
 									onClick={onAccept}
 								>
-									Use This Copy
+									{`${__("Use This Copy", "kadence-blocks")}`}
 								</Button>
 							</FlexItem>
 						</>
