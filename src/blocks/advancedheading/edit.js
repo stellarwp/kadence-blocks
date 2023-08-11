@@ -56,6 +56,7 @@ import {
  */
 import './formats/markformat';
 import './formats/typed-text';
+import AIText from './ai-text/ai-text.js';
 
 import Typed from 'typed.js';
 
@@ -224,6 +225,7 @@ function KadenceAdvancedHeading( props ) {
 		borderRadiusUnit,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
+	const [ contentRef, setContentRef ] = useState();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
@@ -579,7 +581,11 @@ function KadenceAdvancedHeading( props ) {
 					className={'kb-adv-heading-inner'}
 					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
 					value={content}
-					onChange={(value) => setAttributes({content: value})}
+					ref={setContentRef}
+					onChange={(value) => {
+						console.log(value);
+						setAttributes({content: value})
+					}}
 					onMerge={mergeBlocks}
 					onSplit={(value) => {
 						if (!value) {
@@ -600,7 +606,7 @@ function KadenceAdvancedHeading( props ) {
 						fontFamily: (typography ? renderTypography : ''),
 						textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
 					}}
-					placeholder={__('Write something…', 'kadence-blocks')}
+					placeholder={__('Write something...', 'kadence-blocks')}
 				/>
 
 				{iconSide === 'right' && renderIcon()}
@@ -730,6 +736,11 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
+				<AIText
+					contentRef={ contentRef }
+					attributes={ attributes }
+					onChange={ value => setAttributes( value ) }
+				/>
 				<ToolbarGroup group="tag">
 					<ToolbarDropdownMenu
 						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}

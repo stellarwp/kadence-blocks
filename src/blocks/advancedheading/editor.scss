@@ -368,3 +368,96 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .is-root-container > .wp-block[data-type="kadence/advancedheading"]:first-child .kadence-advancedheading-text {
     margin-top: 0;
 }
+
+/** AI TEXT **/
+.components-toolbar-group.kb-ai-toolbar-group {
+    padding: 0;
+}
+.components-toolbar-group .components-button.kb-ai-dropdown-toggle.has-icon {
+    padding: 8px;
+    min-width: 44px;
+    padding-left: 12px;
+    padding-right: 12px;
+    svg {
+        max-width:18px;
+        max-height:18px;
+    }
+}
+.kb-ai-quick-prompt-icon-dropdown .components-popover__content {
+    padding: 8px;
+}
+.components-popover.kb-ai-dropdown-container-content.is-positioned {
+    margin-top: 8px;
+}
+.kb-ai-response-text-input .components-textarea-control__input:disabled {
+    color: #454545;
+}
+.kb-ai-dropdown-container-content .components-popover__content {
+    padding: 6px;
+    width: 540px;
+    max-width: 100%;
+    .kb-ai-prompt-wrap {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        .components-button.kb-ai-send.has-icon {
+            align-self: flex-end;
+            height: 54px;
+            padding-left: 10px;
+            gap: 6px;
+        }
+        .kb-ai-prompt-icon {
+            width: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-self: stretch;
+            svg {
+                fill: var(--kadence-color, #0058b0 );
+                max-width:18px;
+                max-height:18px;
+            }
+            .components-spinner {
+                margin: 0;
+            }
+        }
+        .components-base-control {
+            flex: 1;
+            margin: 0;
+            .components-base-control__field {
+                margin: 0;
+            }
+            .components-textarea-control__input {
+                border: 0;
+                margin: 0;
+                box-shadow: none !important;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            &.kb-ai-prompt-text-input {
+                .components-textarea-control__input {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}
+.components-popover.kb-ai-quick-prompt-icon-dropdown {
+    margin-top: 16px;
+    margin-left: -6px;
+}
+.kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.has-text.has-icon {
+    gap: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    min-height: 30px;
+}
+.kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.has-text.has-icon svg {
+    max-width:16px;
+}
+.kb-ai-prompt-icon {
+    .kb-ai-quick-prompts-toggle.has-icon {
+        height: 100%;
+        display: flex;
+    }
+}
