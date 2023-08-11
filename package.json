@@ -6,7 +6,10 @@
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start",
     "build": "wp-scripts build",
-    "build:custom": "wp-scripts build --webpack-bundle-analyzer"
+    "build:custom": "wp-scripts build --webpack-bundle-analyzer",
+	"test-wpunit": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept run wpunit",
+	"test-acceptance": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept run acceptance",
+	"test-build": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept build"
   },
   "dependencies": {
     "@dotlottie/player-component": "^1.2.2",

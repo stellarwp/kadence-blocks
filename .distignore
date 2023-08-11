@@ -4,6 +4,7 @@
 /gulp
 /src
 /node_modules
+/tests
 
 .distignore
 .gitignore
@@ -15,3 +16,7 @@ gulpfile.js
 package.json
 package-lock.json
 webpack.config.js
+docker-compose.yml
+codeception.dist.yml
+.env
+.env.testing
