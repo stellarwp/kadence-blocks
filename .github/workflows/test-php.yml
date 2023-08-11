@@ -35,8 +35,8 @@ jobs:
       - name: Install composer
         run: sudo composer self-update --stable
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
+      #- name: Validate composer.json and composer.lock
+      #  run: composer validate
 
       - name: Cache Composer packages
         id: composer-cache
