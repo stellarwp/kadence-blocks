@@ -9,7 +9,8 @@ jobs:
       fail-fast: false
       matrix:
         test: ["wpunit"]
-        wordpress: ["nightly", "5.9"]
+        # wordpress: ["nightly", "5.9"]
+        wordpress: ["6.0"]
 
     steps:
 
@@ -24,8 +25,6 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - run: npm ci --ignore-scripts --legacy-peer-deps
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.MACHINE_USER_PAT }}
 
       - run: npm rebuild && npm run prepare --if-present
 
