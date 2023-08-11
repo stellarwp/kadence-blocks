@@ -9,7 +9,7 @@ import classnames from 'classnames';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { getPreviewGutterSize, getGutterTotal } from './utils';
 import ContainerDimensions from 'react-container-dimensions';
 export default function ThreeColumnDrag( {

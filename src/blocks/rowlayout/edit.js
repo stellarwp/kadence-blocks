@@ -7,17 +7,8 @@
  */
 import {
 	rowIcon,
-	collapseRowIcon,
-	collapseRowThreeIcon,
-	collapseRowFourIcon,
-	collapseRowFiveIcon,
-	collapseRowSixIcon,
 	twoColIcon,
-	gridIcon,
 	threeColIcon,
-	threeGridIcon,
-	lastRowIcon,
-	firstRowIcon,
 	twoLeftGoldenIcon,
 	twoRightGoldenIcon,
 	leftHalfIcon,
@@ -29,14 +20,7 @@ import {
 	lFourFortyIcon,
 	rFourFortyIcon,
 	fiveColIcon,
-	sixColIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon,
-	topLeftIcon,
-	topRightIcon,
-	bottomLeftIcon,
-	bottomRightIcon,
-	video
+	sixColIcon
 } from '@kadence/icons';
 
 /**
@@ -53,8 +37,6 @@ import {
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
 	KadencePanelBody,
-	VerticalAlignmentIcon,
-	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	SpacingVisualizer,
@@ -62,15 +44,14 @@ import {
 } from '@kadence/components';
 
 import {
-	KadenceColorOutput, 
+	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
 	mouseOverVisualizer,
 	setBlockDefaults,
 	getUniqueId,
-	getInQueryBlock, 
+	getInQueryBlock,
 	setDynamicState,
-	isRTL,
 	getPostOrFseId
 } from '@kadence/helpers';
 
@@ -100,12 +81,10 @@ import metadata from './block.json';
  */
 import { useEffect, useState, useRef } from '@wordpress/element';
 import {
-	MediaUpload,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
 	InspectorAdvancedControls,
-	useBlockProps,
 	useInnerBlocksProps,
 	BlockVerticalAlignmentControl,
 	store as blockEditorStore,
@@ -113,32 +92,20 @@ import {
 import {
 	Button,
 	ButtonGroup,
-	Tooltip,
-	TabPanel,
 	Popover,
 	ToolbarGroup,
 	ToolbarButton,
-	TextControl,
-	Dashicon,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
-	GradientPicker
 } from '@wordpress/components';
 import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	blockDefault,
-	styles,
 	brush,
-	image,
 	settings,
-	plusCircleFilled,
 	plusCircle,
-	closeSmall,
 } from '@wordpress/icons';
-import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal block libraries
  */
@@ -376,7 +343,7 @@ function RowLayoutEditContainer( props ) {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
 	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
-	
+
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );

@@ -27,6 +27,10 @@
 				"regex": "(define\\( +['\"]KADENCE_BLOCKS_VERSION['\"], +['\"])([^'\"]+)"
 			},
 			{
+				"file": "kadence-blocks.php",
+				"regex": "(Version: +)(.+)"
+			},
+			{
 				"file": "readme.txt",
 				"regex": "(Stable tag: +)(.+)"
 			}

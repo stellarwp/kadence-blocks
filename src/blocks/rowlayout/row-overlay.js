@@ -6,9 +6,6 @@
 
  import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
-import {
-	Fragment,
-} from '@wordpress/element';
 const overlayOpacityOutput = memoize( ( opacity ) => {
 	if ( opacity < 10 ) {
 		return '0.0' + opacity;

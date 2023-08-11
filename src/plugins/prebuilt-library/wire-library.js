@@ -14,14 +14,10 @@ const {
  */
 import Masonry from 'react-masonry-css'
 import { debounce } from 'lodash';
-import LazyLoad from 'react-lazy-load';
 /**
  * WordPress dependencies
  */
-const {
-	applyFilters,
-} = wp.hooks;
-const { apiFetch } = wp;
+import apiFetch from '@wordpress/api-fetch';
 import {
 	withSelect,
 	withDispatch,
@@ -42,13 +38,9 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import {
-	arrowLeft,
-	download,
 	previous,
 	update,
-	next,
-	chevronLeft,
-	chevronDown,
+	next
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 

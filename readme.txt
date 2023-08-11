@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.9
+Stable tag: 3.1.11
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -77,8 +77,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 3.1.10 =
+= 3.1.12 =
 Release Date: August TBD, 2023
+* Fix: Previewing Advanced Forms in transforms
+
+= 3.1.11 =
+Release Date: August 8th, 2023
+* Fix: Possible security issue with form uploads.
+
+= 3.1.10 =
+Release Date: August 7th, 2023
 * Update: More details error message on advanced form submission failure.
 * Fix: Required checkboxes wanting all boxes selected.
 * Fix: Advanced forms number field not displaying min/max value in editor.
