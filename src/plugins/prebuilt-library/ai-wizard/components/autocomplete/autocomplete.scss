@@ -12,6 +12,13 @@
   @include input_base;
 
   padding: 0;
+
+  &:focus-within {
+    .aa-ClearButton,
+    .aa-Chevron {
+      color: $color-black;
+    }
+  }
 }
 
 .aa-Form {
@@ -74,12 +81,22 @@
   box-sizing: border-box;
 }
 
+.aa-ClearButton,
+.aa-Chevron {
+  color: rgb(204, 204, 204);
+
+  &:hover,
+  &:focus {
+    color: $color-black;
+  }
+}
+
 /* Result Styles */
 .aa-Panel {
   position: relative;
 }
 
-.aa-Source {
+.aa-PanelWrapper {
   position: absolute;
   width: 100%;
   margin: 8px 0;
@@ -112,5 +129,23 @@
   mark {
     background: rgb(222, 235, 255);
     color: $color-primary-dark;
+  }
+}
+
+.aa-ItemCreate {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;
+  background-color: $color-white;
+  color: inherit;
+  cursor: default;
+  font-size: 16px;
+  text-align: left;
+  
+  &:hover,
+  &:focus {
+    background: rgb(222, 235, 255);
+    color: $color-black;
   }
 }
