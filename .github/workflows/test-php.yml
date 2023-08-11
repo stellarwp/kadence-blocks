@@ -14,10 +14,6 @@ jobs:
     steps:
 
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.MACHINE_USER_PAT }}
-          ssh-key: ${{ secrets.MACHINE_USER_KEY }}
-          submodules: "recursive"
 
       - name: Install NodeJS
         uses: actions/setup-node@v3
