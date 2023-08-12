@@ -75,8 +75,10 @@ jobs:
         run: |
           curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-          ./bin/test-up.sh
-          ./bin/wait-for-it.sh http://localhost:7253
+          docker-compose -f docker-compose.yml up -d
+          docker-compose exec -T wordpress chown www-data:www-data wp-content wp-content/plugins
+          sleep 30
+#          ./bin/wait-for-it.sh http://localhost:7253
 
       - name: Run tests
         run: |
