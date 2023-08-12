@@ -50,6 +50,8 @@ jobs:
 
       - name: Install composer dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
+        env:
+          COMPOSER_HOME: $GITHUB_WORKSPACE/.composer
         run: |
           composer install --no-progress --no-suggest --ignore-platform-reqs
 #          sudo ./bin/composer-prod.sh
@@ -72,7 +74,7 @@ jobs:
       - name: Setup docker
         run: |
           curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
           ./bin/test-up.sh
           ./bin/wait-for-it.sh http://localhost:7253
 
