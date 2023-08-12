@@ -70,7 +70,7 @@ jobs:
         run: sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
       - name: Setup docker
-        run: sudo ./bin/setup-docker.sh
+        run: ./bin/setup-docker.sh
 
       - name: Run tests
         run: |
