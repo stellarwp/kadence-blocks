@@ -52,7 +52,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
           composer install --no-progress --no-suggest --ignore-platform-reqs
-          ./bin/composer-prod.sh
+          sudo ./bin/composer-prod.sh
 
       - name: Generate autoloader
         if: steps.composer-cache.outputs.cache-hit == 'true'
@@ -70,7 +70,7 @@ jobs:
         run: sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
       - name: Setup docker
-        run: ./bin/setup-docker.sh
+        run: sudo ./bin/setup-docker.sh
 
       - name: Run tests
         run: |
