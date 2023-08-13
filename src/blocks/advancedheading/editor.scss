@@ -395,7 +395,22 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .kb-ai-dropdown-container-content .components-popover__content {
     padding: 6px;
     width: 540px;
+    width: 640px;
     max-width: 100%;
+    .kb-ai-suggesed-text {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-left: 5px;
+        border-bottom: 1px solid #aaa;
+        padding: 5px;
+        .kb-ai-suggestion-content {
+            flex: 1;
+        }
+        .kb-ai-send.has-icon {
+            align-self: flex-end;
+        }
+    }
     .kb-ai-prompt-wrap {
         display: flex;
         align-items: center;
@@ -420,6 +435,12 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
             .components-spinner {
                 margin: 0;
             }
+        }
+        .kb-ai-suggestion-content {
+            flex: 1;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
         }
         .components-base-control {
             flex: 1;

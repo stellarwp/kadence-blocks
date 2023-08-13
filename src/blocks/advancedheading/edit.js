@@ -579,11 +579,9 @@ function KadenceAdvancedHeading( props ) {
 					id={ 'adv-heading' + uniqueID }
 					tagName="span"
 					className={'kb-adv-heading-inner'}
-					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
+					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/ai-text', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
 					value={content}
-					ref={setContentRef}
 					onChange={(value) => {
-						console.log(value);
 						setAttributes({content: value})
 					}}
 					onMerge={mergeBlocks}
@@ -736,11 +734,11 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
-				<AIText
+				{/* <AIText
 					contentRef={ contentRef }
 					attributes={ attributes }
 					onChange={ value => setAttributes( value ) }
-				/>
+				/> */}
 				<ToolbarGroup group="tag">
 					<ToolbarDropdownMenu
 						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
