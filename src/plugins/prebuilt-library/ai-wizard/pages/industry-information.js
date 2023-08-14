@@ -202,6 +202,7 @@ export function IndustryInformation() {
 									placeholder={ __('Find your industry', 'kadence-blocks') }
 									detachedMediaQuery="none"
 									onSelect={ handleIndustryChange }
+									currentValue={ industry ? industry : '' }
 									initialState={{
 										isOpen: false,
 									  query: industry ? industry : '',

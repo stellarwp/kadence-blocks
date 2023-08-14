@@ -13,7 +13,6 @@ import { search, chevronDown, closeSmall } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-
 /**
  * Internal dependencies
  */
@@ -24,10 +23,25 @@ const searchClient = algoliasearch(SEARCH_APP_ID, SEARCH_API_KEY);
 
 export function Autocomplete(props) {
   const [autocompleteState, setAutocompleteState] = useState({});
+  const [showCreate, setShowCreate] = useState(true);
+  const [allowNewCreate, setAllowNewCreate] = useState(true);
+  const [initialQuery, setInitialQuery] = useState('');
 
   const controlRef = useRef(null);
+  const formRef = useRef(null);
   const inputRef = useRef(null);
   const panelRef = useRef(null);
+
+  useEffect(() => {
+    setAutocompleteState((previousState) => ({
+      ...previousState,
+      query: props.currentValue
+    }));
+  }, []);
+
+  useEffect(() => {
+    setInitialQuery(props.currentValue);
+  }, [ props.currentValue ])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -42,8 +56,8 @@ export function Autocomplete(props) {
   }, [ controlRef ]);
 
   useEffect(() => {
-    autocomplete.setIsOpen(inputRef.current && (document.activeElement === inputRef.current));
-  }, [ inputRef ]);
+    setShowCreate(isShowingCreate());
+  }, [ autocompleteState.query, autocompleteState.collections ]);
 
   useEffect(() => {
     const pageElement = document.querySelector('.components-modal__frame.stellarwp');
@@ -52,7 +66,7 @@ export function Autocomplete(props) {
     const panelPosition = (panelRectangle.bottom + 180) > pageRectangle.bottom ? 'top' : 'bottom';
 
     if (!! autocompleteState.isOpen) {
-        const panelSourceElement = document.querySelector('.aa-Source');
+        const panelSourceElement = document.querySelector('.aa-PanelWrapper');
         const panelSourceHeight = panelSourceElement.clientHeight;
 
         if (panelPosition === 'top') {
@@ -65,13 +79,59 @@ export function Autocomplete(props) {
     props.onSelect('');
     autocomplete.setQuery('');
     autocomplete.refresh();
+    inputRef.current.focus();
+    setAllowNewCreate(true);
+  }
+
+  function handleItemCreate() {
+    props.onSelect(autocompleteState.query);
+    setAutocompleteState((previousState) => ({
+      ...previousState,
+      isOpen: false
+    }));
+    setAllowNewCreate(true);
+    setShowCreate(false);
+  }
+
+  function isMatchingIndex() {
+    const { collections, query } = autocompleteState;
+
+    if (Array.isArray(collections) && Array.isArray(collections[0]?.items)) {
+      const match = collections[0].items.filter((result) => result.name.toLowerCase() === query.toLowerCase());
+      return match.length ? true : false;
+    }
+
+    return false;
+  }
+
+  function isShowingCreate() {
+    const { query, collections } = autocompleteState;
+
+    if (initialQuery !== '' && initialQuery === query) {
+      return false;
+    }
+
+    if (! query || query.trim() === '') {
+      return false;
+    }
+
+    const queryInCollection = isMatchingIndex();
+    if (queryInCollection) {
+      return false;
+    }
+
+    if (! allowNewCreate && query && collections?.[0]?.items && collections[0].items.length === 0) {
+      return false;
+    }
+    
+    return true;
   }
 
   const autocomplete = useMemo(
     () =>
       createAutocomplete({
         onStateChange({ state }) {
-          setAutocompleteState(state)
+          setAutocompleteState(state);
         },
         getSources() {
           return [
@@ -99,6 +159,8 @@ export function Autocomplete(props) {
               onSelect: (event) => {
                 props.onSelect(event.item.name);
                 event.setQuery(event.item.name);
+
+                setAllowNewCreate(false);
               },
             },
           ];
@@ -120,6 +182,7 @@ export function Autocomplete(props) {
         <div className="aa-Autocomplete" { ...autocomplete.getRootProps({}) }>
           <form
             className="aa-Form"
+            ref={ formRef }
             { ...autocomplete.getFormProps({ inputElement: inputRef.current }) }
           >
             <div className="aa-InputWrapperPrefix">
@@ -163,30 +226,43 @@ export function Autocomplete(props) {
               .join(' ')}
             { ...autocomplete.getPanelProps({}) }
           >
-            { autocompleteState.isOpen &&
-              autocompleteState.collections.map((collection, index) => {
-                const { source, items } = collection;
+            { (autocompleteState.isOpen || showCreate) && (
+              <div className="aa-PanelWrapper">
+                {
+                  autocompleteState.collections &&
+                    autocompleteState.collections.map((collection, index) => {
+                      const { source, items } = collection;
 
-                return (
-                  <div key={`source-${index}`} className="aa-Source">
-                    { items.length > 0 && (
-                      <ul className="aa-List" {...autocomplete.getListProps()}>
-                        { items.map((item) => (
-                          <li
-                            key={item.objectID}
-                            className="aa-Item"
-                            {...autocomplete.getItemProps({
-                              item,
-                              source,
-                            })}
-                            dangerouslySetInnerHTML={{ __html: item?._highlightResult?.name?.value ? item._highlightResult.name.value : item.name }}
-                          />
-                        )) }
-                      </ul>
-                    ) }
-                  </div>
-                );
-              }) }
+                      return (
+                        <div key={`source-${index}`} className="aa-Source">
+                          { items.length > 0 && (
+                            <ul className="aa-List" {...autocomplete.getListProps()}>
+                              { items.map((item) => (
+                                <li
+                                  key={item.objectID}
+                                  className="aa-Item"
+                                  {...autocomplete.getItemProps({
+                                    item,
+                                    source,
+                                  })}
+                                  dangerouslySetInnerHTML={{ __html: item?._highlightResult?.name?.value ? item._highlightResult.name.value : item.name }}
+                                />
+                              )) }
+                            </ul>
+                          ) }
+                        </div>
+                      );
+                    })
+                }
+                { showCreate && (
+                  <Button
+                    className="aa-ItemCreate"
+                    text={ `+ ${ __('Add', 'kadence-blocks') }: "${ autocompleteState.query }"` }
+                    onClick={ handleItemCreate }
+                  />
+                ) }
+              </div>
+            ) }
           </div>
         </div>
       </div>
