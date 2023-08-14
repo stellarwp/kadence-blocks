@@ -17,7 +17,7 @@ function stylesPipe(sources) {
         .pipe(cleancss(config.cleancss));
 }
 
-function misc() {
+function miscStyles() {
     return stylesPipe(['src/assets/css/*.scss'])
         .pipe(rename((file) => {
             file.basename += '.min'
@@ -25,7 +25,7 @@ function misc() {
         .pipe(dest(config.dirs.dist + '/css'));
 }
 
-exports.miscStyles = misc;
+exports.miscStyles = miscStyles;
 
-exports.buildStyles = parallel(misc);
-exports.styles = parallel(misc);
+exports.buildStyles = parallel(miscStyles);
+exports.styles = parallel(miscStyles);
