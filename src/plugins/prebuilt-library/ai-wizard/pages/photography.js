@@ -70,6 +70,11 @@ export function Photography() {
 			getSelectedGalleries();
 		}
 	}, [preMadeCollections, wordpressCollections]);
+	useEffect(() => {
+		if ( preMadeCollections && wordpressCollections ) {
+			getSelectedGalleries();
+		}
+	}, [imageSearchQuery]);
 	async function getSelectedGalleries( newSlug = null ) {
 		if ( loadingSelection ) {
 			return;
@@ -213,8 +218,8 @@ export function Photography() {
 											type: "SET_IMAGE_SEARCH_QUERY",
 											payload: localSearchQuery,
 										});
+										setSelectedCollection([{}, {}]);
 									}
-									getSelectedGalleries();
 									setIsOpen( false );
 								} }
 							/>
