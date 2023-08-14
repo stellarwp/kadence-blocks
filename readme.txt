@@ -80,6 +80,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 3.1.12 =
 Release Date: August TBD, 2023
 * Fix: Previewing Advanced Forms in transforms
+* Fix: Advanced form file size limit not saving
 
 = 3.1.11 =
 Release Date: August 8th, 2023

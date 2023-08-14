@@ -89,6 +89,9 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 		setAttributes( { maxSizeMb: wpMaxUploadSizeMb } );
 	}
 
+	console.log( 'maxSizeMb: ', maxSizeMb );
+	console.log('wpMaxUploadSizeMb: ', wpMaxUploadSizeMb);
+
 	return (
 		<>
 			<style>
@@ -155,7 +158,7 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 									label={__( 'File Size Limit', 'kadence-blocks' )}
 									value={maxSizeMb}
 									onChange={value => {
-										setAttributes( { maxSizeMb: value } );
+										setAttributes( { maxSizeMb: parseInt( value ) } );
 									}}
 									options={getSizeOptions()}
 									max={wpMaxUploadSizeMb}
