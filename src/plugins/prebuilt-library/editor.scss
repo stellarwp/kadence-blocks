@@ -1046,22 +1046,20 @@ button.components-button.kb-trigger-ai.has-icon {
     max-height: calc(95vh - 284px);
 }
 button.components-button.kadence-ai-wizard-button {
-	margin-bottom: 24px;
-	text-decoration: underline;
-	font-weight: 500;
-	width: 100%;
-	justify-content: space-between;
-	padding:6px;
+	text-align: left;
+    font-weight: normal;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 6px;
+	gap:8px;
+}
+.kb-wizard-advanced-text {
+	flex-grow: 1;
 }
 button.components-button.kadence-ai-wizard-button.has-icon svg {
-	font-size: 16px;
-	width: 1em;
-	height: 1em;
-	background: var( --kadence-ui-color, #0073E6 );
-	padding: 3px 5px;
-	color: white;
-	border-radius: 3px;
-	width: auto !important;
+	font-size: 20px;
+    width: 1em;
+    height: 1em;
 }
 .components-toggle-control.kb-toggle-align-right {
 	--wp-components-color-accent:var(--kadence-ui-color, #0073E6);
@@ -1271,9 +1269,16 @@ h2.components-heading.kb-patterns-banner-notice.kb-page-notice-above {
     justify-content: center;
     padding: 48px;
 }
-.components-popover.kb-library-extra-settings  .components-popover__content {
+.components-popover.kb-library-extra-settings .components-popover__content {
+    min-width: 250px;
+    padding:8px;
+	gap: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.components-popover.kb-library-extra-advanced-settings .components-popover__content {
     min-width: 240px;
-    padding:1.2em;
+    padding:16px;
 }
 .preparing-importing-images {
     display: flex;

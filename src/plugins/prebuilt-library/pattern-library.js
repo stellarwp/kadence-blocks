@@ -55,6 +55,8 @@ import {
 	chevronLeft,
 	chevronDown,
 	settings,
+	image,
+	chevronRightSmall,
 } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
@@ -70,7 +72,7 @@ import { getAsyncData } from './data-fetch/get-async-data';
  */
 import { SafeParseJSON } from '@kadence/helpers';
 
-import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { kadenceNewIcon, aiIcon, aiSettings, eye } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
 
@@ -124,6 +126,7 @@ function PatternLibrary( {
 	const [ fontSize, setFontSize ] = useState( '' );
 	const [ aiDataState, triggerAIDataReload ] = useState( false );
 	const [ isVisible, setIsVisible ] = useState( false );
+	const [ isAdvVisible, setIsAdvVisible ] = useState( false );
 	const [ isFilterVisible, setIsFilterVisible ] = useState( false );
 	const [ filterChoices, setFilterChoices ] = useState(
 		new Array( styleTerms.length ).fill( false )
@@ -131,6 +134,7 @@ function PatternLibrary( {
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
+	const [ popoverAdvAnchor, setPopoverAdvAnchor ] = useState();
 	const [ filterPopoverAnchor, setFilterPopoverAnchor ] = useState();
 	const { updateContextState, updateMassContextState, updateContext, updateMassContext } = useDispatch( 'kadence/library' );
 	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect(
@@ -146,6 +150,9 @@ function PatternLibrary( {
 	);
 	const toggleVisible = () => {
 		setIsVisible( ( state ) => ! state );
+	};
+	const toggleAdvVisible = () => {
+		setIsAdvVisible( ( state ) => ! state );
 	};
 	const toggleFilterVisible = () => {
 		setIsFilterVisible( ( state ) => ! state );
@@ -638,9 +645,9 @@ function PatternLibrary( {
 								>
 									<Button
 										className='kadence-ai-wizard-button'
-										iconPosition='right'
+										iconPosition='left'
 										icon={ aiIcon }
-										text={ __('Update My Information', 'kadence-blocks') }
+										text={ __('Update Kadence AI Details', 'kadence-blocks') }
 										onClick={ () => {
 											setIsVisible( false );
 											getRemoteAvailableCredits();
@@ -650,45 +657,64 @@ function PatternLibrary( {
 											} );
 										}}
 									/>
-									<ToggleControl
-										className='kb-toggle-align-right small'
-										label={__( 'Custom Image Selection', 'kadence-blocks' )}
-										checked={selectedReplaceImages !== 'none'}
-										help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
-										onChange={( value ) => {
-											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
-											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setPatterns( JSON.parse(JSON.stringify(patterns)) );
-											setReplaceImages( ( value ? 'all' : 'none' ) );
+									<Button
+										icon={ image }
+										iconPosition='left'
+										className='kadence-ai-wizard-button'
+										text={ __('Update Design Library Images', 'kadence-blocks') }
+										disabled={ selectedReplaceImages === 'none' }
+										onClick={ () => {
+											setIsVisible( false );
+											setWizardState( {
+												visible: true,
+												photographyOnly: true
+											} );
 										}}
 									/>
-									{ selectedReplaceImages !== 'none' && (
-										<Button
-											className='kadence-ai-wizard-button'
-											text={ __('Update Image Selection', 'kadence-blocks') }
-											onClick={ () => {
-												setIsVisible( false );
-												setWizardState( {
-													visible: true,
-													photographyOnly: true
-												} );
-											}}
-										/>
+									<Button
+										iconPosition='left'
+										className='kadence-ai-wizard-button'
+										icon={ eye }
+										ref={ setPopoverAdvAnchor }
+										isPressed={ isAdvVisible }
+										disabled={ isAdvVisible }
+										onClick={ toggleAdvVisible }
+									><span className='kb-wizard-advanced-text'>{__('Advanced', 'kadence-blocks') }</span> <span className='kb-carrot-open'><Icon icon={ chevronRightSmall } /></span></Button>
+									{ isAdvVisible && (
+										<Popover
+											className="kb-library-extra-advanced-settings"
+											placement="right-start"
+											onClose={ debounce( toggleAdvVisible, 100 ) }
+											anchor={ popoverAdvAnchor }
+										>
+											<ToggleControl
+												className='kb-toggle-align-right small'
+												label={__( 'Custom Image Selection', 'kadence-blocks' )}
+												checked={selectedReplaceImages !== 'none'}
+												help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
+												onChange={( value ) => {
+													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+													tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
+													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+													setPatterns( JSON.parse(JSON.stringify(patterns)) );
+													setReplaceImages( ( value ? 'all' : 'none' ) );
+												}}
+											/>
+											<ToggleControl
+												className='kb-toggle-align-right small'
+												label={__( 'Live Preview', 'kadence-blocks' )}
+												checked={selectedPreviewMode !== 'image'}
+												help={__('If disabled you will not see a live preview of how the patterns will look on your site.', 'kadence-blocks')}
+												onChange={( value ) => {
+													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+													tempActiveStorage['previewMode'] = value ? 'iframe' : 'image';
+													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+													setPreviewMode( ( value ? 'iframe' : 'image' ) );
+												}}
+											/>
+										</Popover>
 									) }
-									<ToggleControl
-										className='kb-toggle-align-right small'
-										label={__( 'Live Preview', 'kadence-blocks' )}
-										checked={selectedPreviewMode !== 'image'}
-										help={__('If disabled you will not see a live preview of how the patterns will look on your site.', 'kadence-blocks')}
-										onChange={( value ) => {
-											const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-											tempActiveStorage['previewMode'] = value ? 'iframe' : 'image';
-											localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-											setPreviewMode( ( value ? 'iframe' : 'image' ) );
-										}}
-									/>
-								</Popover>
+									</Popover>
 							) }
 							{ wizardState.visible && (
 								<AiWizard
