@@ -1124,8 +1124,11 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 		height: 32px;
 		min-width: 32px;
 		&.is-pressed {
-			background: var(--wp-components-color-foreground,#1e1e1e);
-    		color: var(--wp-components-color-foreground-inverted,#fff);
+			background: var( --kadence-ui-color, #0073E6 );
+    		color: #fff;
+			&:disabled {
+				opacity: 1;
+			}
 		}
 	}
 	.kb-library-style-popover .components-button.kb-trigger-extra-settings.has-icon svg {
