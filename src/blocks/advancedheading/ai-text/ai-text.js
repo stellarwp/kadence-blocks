@@ -21,9 +21,9 @@ import {
 	BlockControls,
 } from '@wordpress/block-editor';
 import { KadencePanelBody } from '@kadence/components';
-import { chevronRightSmall } from '@wordpress/icons';
+import { chevronRightSmall, close } from '@wordpress/icons';
 import { ENTER } from '@wordpress/keycodes';
-import { aiIcon, autoFix, notes, subject, check, playlist } from '@kadence/icons';
+import { aiIcon, autoFix, notes, subject, check, playlist, chatBubble } from '@kadence/icons';
 import { getAIContentHelper } from "./fetch-ai";
 import { convertStreamDataToJson } from "./convert-stream-data-to-json";
 import {
@@ -63,11 +63,13 @@ export const AIText = {
 		const [ aiDynamicRows, setAIDynamicRows ] = useState(2);
 		const [ isToggled, setIsToggled ] = useState(false);
 		const [ popoverAnchor, setPopoverAnchor] = useState();
+		const [ popoverToneAnchor, setPopoverToneAnchor] = useState();
 		const [ popoverMainAnchor, setPopoverMainAnchor] = useState();
 		const [ popoverSecondAnchor, setPopoverSecondAnchor] = useState();
 		const { getAIContent, getAITransform, getAIEdit } = getAIContentHelper();
 		const hasContent = selectedContent && selectedContent.length > 0 ? true : false;
 		const [ isOpen, setIsOpen ] = useState(false);
+		const [ isToneOpen, setIsToneOpen ] = useState(false);
 		useEffect( () => {
 			if ( value?.text && value?.text.length > 0 && value?.end && value.start !== value.end ) {
 				setSelectedContent( value.text.substring(value.start, value.end) );
@@ -80,7 +82,6 @@ export const AIText = {
 					setIsOpen( false );
 				}
 			}
-			console.log( selectedContent );
 		}, [ value ] );
 		function handleGettingContent(value) {
 			setIsLoading(true);
@@ -92,6 +93,9 @@ export const AIText = {
 					reader.read().then(function processText({ done, value }) {
 						if (done) {
 							setIsLoading(false);
+							setPrompt('');
+							setIsOpen( true );
+							console.log('Stream complete');
 							return;
 						}
 
@@ -104,24 +108,24 @@ export const AIText = {
 						}
 						return reader.read().then(processText);
 					});
-					setIsLoading(false);
-					setIsOpen( true );
 				})
 				.catch((error) => {
 					console.log(error);
 					setIsLoading(false);
 				});
 		}
-		function handleEditingContent(value, prompt) {
+		function handleEditingContent(value, prompt, type) {
 			setIsLoading(true);
 			setAiSuggestion( '' );
-			getAIEdit(value, prompt)
+			getAIEdit(value, prompt, type)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
 
 					reader.read().then(function processText({ done, value }) {
 						if (done) {
 							setIsLoading(false);
+							setPrompt('');
+							setIsOpen( true );
 							return;
 						}
 
@@ -134,8 +138,6 @@ export const AIText = {
 						}
 						return reader.read().then(processText);
 					});
-					setIsLoading(false);
-					setIsOpen( true );
 				})
 				.catch((error) => {
 					console.log(error);
@@ -152,6 +154,8 @@ export const AIText = {
 					reader.read().then(function processText({ done, value }) {
 						if (done) {
 							setIsLoading(false);
+							setPrompt('');
+							setIsOpen( true );
 							return;
 						}
 
@@ -164,9 +168,6 @@ export const AIText = {
 						}
 						return reader.read().then(processText);
 					});
-					setIsLoading(false);
-					setPrompt('');
-					setIsOpen( true );
 				})
 				.catch((error) => {
 					console.log(error);
@@ -199,7 +200,7 @@ export const AIText = {
 							<div className="kb-ai-dropdown-container-content-wrap">
 								{ hasContent && (
 									<div className='kb-ai-selected-text'>
-										{ __( 'Selected Text:', 'kadence-blocks' ) } <span>{ selectedContent }</span>
+										<strong>{ __( 'Selected Text:', 'kadence-blocks' ) }</strong> <span>{ selectedContent }</span>
 									</div>
 								) }
 								{ aiSuggestion && (
@@ -215,7 +216,11 @@ export const AIText = {
 											iconPosition="left"
 											iconSize={ 16 }
 											onClick={ () => {
-												onChange( insert( remove( value, 0, value.replacements.length ), create( { html: aiSuggestion } ) ) );
+												if ( hasContent ) {
+													onChange( insert( remove( value, 0, value.replacements.length ), create( { html: aiSuggestion } ) ) );
+												} else {
+													onChange( insert( value, create( { html: aiSuggestion } ) ) );
+												}
 												setAiSuggestion( '' );
 												setTempPrompt( '' );
 												setPrompt( '' );
@@ -257,7 +262,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ notes }
 																			onClick={ () => {
-																				setTempPrompt( 'SHORTER: ' + aiSuggestion );
 																				handleTransformingContent( aiSuggestion, 'shorten' );
 																			} }
 																			iconPosition='left'
@@ -267,7 +271,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ subject }
 																			onClick={ () => {
-																				setTempPrompt( 'LONGER: ' + aiSuggestion );
 																				handleTransformingContent( aiSuggestion, 'lengthen' );
 																			} }
 																			iconPosition='left'
@@ -285,6 +288,15 @@ export const AIText = {
 																				{ __( 'Try Again', 'kadence-blocks' ) }
 																			</MenuItem>
 																		) }
+																		<MenuItem
+																			icon={ close }
+																			onClick={ () => {
+																				setIsToggled( false );
+																			} }
+																			iconPosition='left'
+																		>
+																			{ __( 'Discard', 'kadence-blocks' ) }
+																		</MenuItem>
 																	</MenuGroup>
 																</div>
 															</Popover>
@@ -316,7 +328,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ autoFix }
 																			onClick={ () => {
-																				setTempPrompt( 'IMPROVE: ' + selectedContent );
 																				handleTransformingContent( selectedContent, 'improve' );
 																			} }
 																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
@@ -327,7 +338,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ notes }
 																			onClick={ () => {
-																				setTempPrompt( 'SHORTER: ' + selectedContent );
 																				handleTransformingContent( selectedContent, 'shorten' );
 																			} }
 																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
@@ -338,7 +348,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ subject }
 																			onClick={ () => {
-																				setTempPrompt( 'LONGER: ' + selectedContent );
 																				handleTransformingContent( selectedContent, 'lengthen' );
 																			} }
 																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
@@ -349,7 +358,6 @@ export const AIText = {
 																		<MenuItem
 																			icon={ playlist }
 																			onClick={ () => {
-																				setTempPrompt( 'SIMPLIFY: ' + selectedContent );
 																				handleTransformingContent( selectedContent, 'simplify' );
 																			} }
 																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
@@ -357,6 +365,70 @@ export const AIText = {
 																		>
 																			{ __( 'Simplify', 'kadence-blocks' ) }
 																		</MenuItem>
+																		<MenuItem
+																			icon={ chevronRightSmall }
+																			className='kb-ai-quick-prompt-change-tone'
+																			onClick={ () => setIsToneOpen( isToneOpen ? false : true ) }
+																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			iconPosition='right'
+																			ref={ setPopoverToneAnchor }
+																		>
+																			{chatBubble} { __( 'Change Tone', 'kadence-blocks' ) }
+																		</MenuItem>
+																		{ isToneOpen && (
+																			<Popover
+																				onClose={ () => {
+																					//setIsOpen( false );
+																				}}
+																				placement="right-start"
+																				anchor={popoverToneAnchor}
+																				className={ 'kb-ai-quick-prompt-change-tone-dropdown' }
+																			>
+																				<div className={'components-dropdown-menu__menu'}  role="menu" aria-orientation="vertical" aria-label="Options">
+																					<MenuGroup>
+																						<MenuItem
+																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							onClick={ () => {
+																								handleEditingContent(selectedContent, 'Professional', 'tone');
+																							} }
+																						>
+																							{ __( 'Professional', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							onClick={ () => {
+																								handleEditingContent(selectedContent, 'Friendly', 'tone');
+																							} }
+																						>
+																							{ __( 'Friendly', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							onClick={ () => {
+																								handleEditingContent(selectedContent, 'Informative', 'tone');
+																							} }
+																						>
+																							{ __( 'Informative', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(selectedContent, 'Engaging', 'tone');
+																							} }
+																						>
+																							{ __( 'Engaging', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							onClick={ () => {
+																								handleEditingContent(selectedContent, 'Funny', 'tone');
+																							} }
+																						>
+																							{ __( 'Funny', 'kadence-blocks' ) }
+																						</MenuItem>
+																					</MenuGroup>
+																				</div>
+																			</Popover>
+																		) }
 																	</MenuGroup>
 																</div>
 															</Popover>
@@ -371,7 +443,7 @@ export const AIText = {
 											<TextareaControl
 												className={ dynamicRows > 1 ? 'kb-ai-prompt-text-input' : 'kb-ai-prompt-text-input kb-ai-prompt-single' }
 												placeholder={ ( hasContent || aiSuggestion ) ? __( 'Ask Kadence AI to edit...', 'kadence-blocks' ) : __( 'Ask Kadence AI to generate...', 'kadence-blocks' ) }
-												value={ prompt || tempPrompt }
+												value={ prompt }
 												rows={ dynamicRows }
 												autoFocus
 												onChange={ ( value ) => {
@@ -391,7 +463,7 @@ export const AIText = {
 														setIsOpen( false );
 														setPrevPrompt( prompt );
 														if ( hasContent ) {
-															handleEditingContent(selectedContent, prompt);
+															handleEditingContent(selectedContent, prompt, 'edit');
 														} else {
 															handleGettingContent(prompt);
 														}
@@ -408,7 +480,7 @@ export const AIText = {
 													setIsOpen( false );
 													setPrevPrompt( prompt );
 													if ( hasContent ) {
-														handleEditingContent(selectedContent, prompt);
+														handleEditingContent(selectedContent, prompt, 'edit');
 													} else {
 														handleGettingContent(prompt);
 													}

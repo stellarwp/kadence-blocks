@@ -71,7 +71,7 @@ export function getAIContentHelper() {
 			return Promise.reject(message);
 		}
 	}
-	async function getAIEdit( content, prompt ) {
+	async function getAIEdit( content, prompt, type = 'edit') {
 		try {
 			// Get site domain from the url.
 			const url = new URL(window.location.href);
@@ -82,19 +82,24 @@ export function getAIContentHelper() {
 					? kadence_blocks_params.proData.api_key
 					: "",
 			};
+			const body = {
+				text: content,
+				stream: true,
+			};
+			if ( type === 'tone' ) {
+				body.tone = prompt;
+			} else {
+				body.prompt = prompt;
+			}
 			const response = await fetch(
-				`${API_URL}proxy/transform/edit`,
+				`${API_URL}proxy/transform/${type}`,
 				{
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 						"X-Prophecy-Token": btoa(JSON.stringify(token)),
 					},
-					body: JSON.stringify({
-						text: content,
-						prompt: prompt,
-						stream: true,
-					}),
+					body: JSON.stringify(body),
 				}
 			);
 			if (!(response?.status === 200)) {

@@ -386,6 +386,12 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .kb-ai-quick-prompt-icon-dropdown .components-popover__content {
     padding: 8px;
 }
+.kb-ai-quick-prompt-change-tone-dropdown .components-popover__content {
+    padding: 8px;
+}
+.kb-ai-quick-prompt-change-tone-dropdown.is-positioned {
+    margin-left: 8px;
+}
 .components-popover.kb-ai-dropdown-container-content.is-positioned {
     margin-top: 8px;
 }
@@ -423,6 +429,7 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
         }
         .kb-ai-prompt-icon {
             width: 40px;
+            min-height: 54px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -463,15 +470,43 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
         }
     }
 }
+.kb-ai-quick-prompt-change-tone {
+    display: block;
+}
+.kb-ai-quick-prompt-change-tone .components-button.components-dropdown-menu__toggle.has-icon {
+    gap: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    min-height: 30px;
+    width: 100%;
+    justify-content: start;
+}
+.kb-ai-quick-prompt-change-tone .components-button.components-dropdown-menu__toggle.has-icon svg {
+    max-width: 16px;
+}
 .components-popover.kb-ai-quick-prompt-icon-dropdown {
     margin-top: 16px;
     margin-left: -6px;
+}
+.kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.kb-ai-quick-prompt-change-tone {
+    gap: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    min-height: 30px;
+    display: flex;
 }
 .kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.has-text.has-icon {
     gap: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
     min-height: 30px;
+}
+.kb-ai-quick-prompt-icon-dropdown .components-button .components-menu-item__item {
+    svg {
+        max-width:16px;
+        margin-right: 8px;
+    }
+
 }
 .kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.has-text.has-icon svg {
     max-width:16px;
@@ -481,4 +516,8 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
         height: 100%;
         display: flex;
     }
+}
+.kb-ai-selected-text {
+    padding: 4px;
+    background: #eee;
 }

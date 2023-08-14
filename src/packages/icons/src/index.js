@@ -59,6 +59,7 @@ export { default as subject } from './subject';
 export { default as notes } from './notes';
 export { default as playlist } from './playlist';
 export { default as check } from './check';
+export { default as chatBubble } from './chat-bubble';
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
