@@ -1,6 +1,31 @@
 const API_URL = "https://content.startertemplatecloud.com/wp-json/prophecy/v1/";
+import { addQueryArgs } from '@wordpress/url';
+import apiFetch from '@wordpress/api-fetch';
 
 export function getAIContentHelper() {
+	/**
+	 * Get remaining credits.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getAvailableCredits() {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_remaining_credits', {
+					api_key: kadence_blocks_params?.proData?.api_key
+					? kadence_blocks_params.proData.api_key
+					: "",
+					api_email:( kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_email ? kadence_blocks_params.proData.api_email : '' ),
+				} ),
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'error';
+		}
+	}
 	async function getAIContent( prompt ) {
 		try {
 			// Get site domain from the url.
@@ -116,5 +141,6 @@ export function getAIContentHelper() {
 		getAIContent,
 		getAITransform,
 		getAIEdit,
+		getAvailableCredits,
 	};
 }

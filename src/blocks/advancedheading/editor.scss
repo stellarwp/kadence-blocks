@@ -519,5 +519,16 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 }
 .kb-ai-selected-text {
     padding: 4px;
-    background: #eee;
+    background: #ACCEF7;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+.kb-ai-credits {
+    background: #f2f2f2;
+    margin: 0 -6px -6px -6px;
+    padding: 6px;
+    text-align: right;
+    font-size: 11px;
+    border-top: 1px solid #DFDFDF;
 }

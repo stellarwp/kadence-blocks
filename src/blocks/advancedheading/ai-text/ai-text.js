@@ -21,6 +21,7 @@ import {
 	BlockControls,
 } from '@wordpress/block-editor';
 import { KadencePanelBody } from '@kadence/components';
+import { SafeParseJSON } from '@kadence/helpers';
 import { chevronRightSmall, close } from '@wordpress/icons';
 import { ENTER } from '@wordpress/keycodes';
 import { aiIcon, autoFix, notes, subject, check, playlist, chatBubble } from '@kadence/icons';
@@ -62,17 +63,48 @@ export const AIText = {
 		const [ dynamicRows, setDynamicRows ] = useState(1);
 		const [ aiDynamicRows, setAIDynamicRows ] = useState(2);
 		const [ isToggled, setIsToggled ] = useState(false);
+		const [ credits, setCredits ] = useState( '' );
+		const [ tempCredits, setTempCredits ] = useState( '' );
 		const [ popoverAnchor, setPopoverAnchor] = useState();
 		const [ popoverToneAnchor, setPopoverToneAnchor] = useState();
 		const [ popoverMainAnchor, setPopoverMainAnchor] = useState();
 		const [ popoverSecondAnchor, setPopoverSecondAnchor] = useState();
-		const { getAIContent, getAITransform, getAIEdit } = getAIContentHelper();
+		const { getAIContent, getAITransform, getAIEdit, getAvailableCredits } = getAIContentHelper();
 		const hasContent = selectedContent && selectedContent.length > 0 ? true : false;
 		const [ isOpen, setIsOpen ] = useState(false);
 		const [ isToneOpen, setIsToneOpen ] = useState(false);
+		const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
+		const currentCredits = ( '' !== credits ? credits : savedCredits );
+		async function getRemoteAvailableCredits() {
+			const response = await getAvailableCredits();
+			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+			if ( response === 'error' ) {
+				console.log( 'Error getting credits' );
+				tempActiveStorage['credits'] = 'fetch';
+				localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+				setCredits(0);
+				setTempCredits( '' );
+			} else {
+				tempActiveStorage['credits'] = parseInt( response );
+				localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+				setCredits( parseInt( response ) );
+				setTempCredits( '' );
+			}
+		}
+		useEffect(() => {
+			if ( currentCredits === 'fetch' ) {
+				getRemoteAvailableCredits();
+			}
+		}, [credits]);
 		useEffect( () => {
 			if ( value?.text && value?.text.length > 0 && value?.end && value.start !== value.end ) {
 				setSelectedContent( value.text.substring(value.start, value.end) );
+				if ( ! isOpen && value?.text.length > 30 ) {
+					setIsOpen( true );
+				}
+			} else if ( value?.text && value?.text.length > 0 && value.start === value.end && value?.text.length !== value.start ) {
+				setSelectedContent( value.text );
 				if ( ! isOpen && value?.text.length > 30 ) {
 					setIsOpen( true );
 				}
@@ -95,6 +127,8 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
+							setTempCredits(parseInt( currentCredits ) - 1);
+							setCredits( 'fetch' );
 							console.log('Stream complete');
 							return;
 						}
@@ -125,6 +159,8 @@ export const AIText = {
 						if (done) {
 							setIsLoading(false);
 							setPrompt('');
+							setTempCredits(parseInt( currentCredits ) - 1);
+							setCredits( 'fetch' );
 							setIsOpen( true );
 							return;
 						}
@@ -156,6 +192,8 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
+							setTempCredits(parseInt( currentCredits ) - 1);
+							setCredits( 'fetch' );
 							return;
 						}
 
@@ -191,7 +229,7 @@ export const AIText = {
 					{ isToggled && (
 						<Popover
 							onClose={ () => {
-								//setIsToggled( false );
+								setIsToggled( false );
 							}}
 							placement="bottom"
 							anchor={popoverMainAnchor}
@@ -217,7 +255,11 @@ export const AIText = {
 											iconSize={ 16 }
 											onClick={ () => {
 												if ( hasContent ) {
-													onChange( insert( remove( value, 0, value.replacements.length ), create( { html: aiSuggestion } ) ) );
+													if ( selectedContent.length !== value.text.length && value.start !== value.end) {
+														onChange( insert( remove( value, value.start,value.end ), create( { html: aiSuggestion } ) ) );
+													} else {
+														onChange( insert( remove( value, 0, value.replacements.length ), create( { html: aiSuggestion } ) ) );
+													}
 												} else {
 													onChange( insert( value, create( { html: aiSuggestion } ) ) );
 												}
@@ -262,6 +304,7 @@ export const AIText = {
 																		<MenuItem
 																			icon={ notes }
 																			onClick={ () => {
+																				setPrevPrompt( '' );
 																				handleTransformingContent( aiSuggestion, 'shorten' );
 																			} }
 																			iconPosition='left'
@@ -271,6 +314,7 @@ export const AIText = {
 																		<MenuItem
 																			icon={ subject }
 																			onClick={ () => {
+																				setPrevPrompt( '' );
 																				handleTransformingContent( aiSuggestion, 'lengthen' );
 																			} }
 																			iconPosition='left'
@@ -291,6 +335,11 @@ export const AIText = {
 																		<MenuItem
 																			icon={ close }
 																			onClick={ () => {
+																				setAiSuggestion( '' );
+																				setTempPrompt( '' );
+																				setPrompt( '' );
+																				setPrevPrompt( '' );
+																				setIsOpen( false );
 																				setIsToggled( false );
 																			} }
 																			iconPosition='left'
@@ -330,17 +379,27 @@ export const AIText = {
 																			onClick={ () => {
 																				handleTransformingContent( selectedContent, 'improve' );
 																			} }
-																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																			iconPosition='left'
 																		>
 																			{ __( 'Improve Writing', 'kadence-blocks' ) }
+																		</MenuItem>
+																		<MenuItem
+																			icon={ check }
+																			onClick={ () => {
+																				handleTransformingContent( selectedContent, 'spelling' );
+																			} }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
+																			iconPosition='left'
+																		>
+																			{ __( 'Fix Spelling & Grammar', 'kadence-blocks' ) }
 																		</MenuItem>
 																		<MenuItem
 																			icon={ notes }
 																			onClick={ () => {
 																				handleTransformingContent( selectedContent, 'shorten' );
 																			} }
-																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																			iconPosition='left'
 																		>
 																			{ __( 'Make Shorter', 'kadence-blocks' ) }
@@ -350,7 +409,7 @@ export const AIText = {
 																			onClick={ () => {
 																				handleTransformingContent( selectedContent, 'lengthen' );
 																			} }
-																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																			iconPosition='left'
 																		>
 																			{ __( 'Make Longer', 'kadence-blocks' ) }
@@ -360,7 +419,7 @@ export const AIText = {
 																			onClick={ () => {
 																				handleTransformingContent( selectedContent, 'simplify' );
 																			} }
-																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																			iconPosition='left'
 																		>
 																			{ __( 'Simplify', 'kadence-blocks' ) }
@@ -369,7 +428,7 @@ export const AIText = {
 																			icon={ chevronRightSmall }
 																			className='kb-ai-quick-prompt-change-tone'
 																			onClick={ () => setIsToneOpen( isToneOpen ? false : true ) }
-																			disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																			iconPosition='right'
 																			ref={ setPopoverToneAnchor }
 																		>
@@ -387,7 +446,7 @@ export const AIText = {
 																				<div className={'components-dropdown-menu__menu'}  role="menu" aria-orientation="vertical" aria-label="Options">
 																					<MenuGroup>
 																						<MenuItem
-																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																							onClick={ () => {
 																								handleEditingContent(selectedContent, 'Professional', 'tone');
 																							} }
@@ -395,7 +454,7 @@ export const AIText = {
 																							{ __( 'Professional', 'kadence-blocks' ) }
 																						</MenuItem>
 																						<MenuItem
-																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																							onClick={ () => {
 																								handleEditingContent(selectedContent, 'Friendly', 'tone');
 																							} }
@@ -403,7 +462,7 @@ export const AIText = {
 																							{ __( 'Friendly', 'kadence-blocks' ) }
 																						</MenuItem>
 																						<MenuItem
-																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																							onClick={ () => {
 																								handleEditingContent(selectedContent, 'Informative', 'tone');
 																							} }
@@ -418,7 +477,7 @@ export const AIText = {
 																							{ __( 'Engaging', 'kadence-blocks' ) }
 																						</MenuItem>
 																						<MenuItem
-																							disabled={ selectedContent && selectedContent.length > 30 ? false : true }
+																							disabled={ selectedContent && selectedContent.length > 5 ? false : true }
 																							onClick={ () => {
 																								handleEditingContent(selectedContent, 'Funny', 'tone');
 																							} }
@@ -498,6 +557,11 @@ export const AIText = {
 										</>
 									) }
 								</div>
+								{ currentCredits && (
+									<div className="kb-ai-credits">
+										{ __( 'Credits Remaining:', 'kadence-blocks' ) } { 'fetch' !== currentCredits ? currentCredits : tempCredits }
+									</div>
+								) }
 							</div>
 						</Popover>
 					) }

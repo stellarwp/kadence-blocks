@@ -734,11 +734,6 @@ function KadenceAdvancedHeading( props ) {
 				)}
 			</style>
 			<BlockControls>
-				{/* <AIText
-					contentRef={ contentRef }
-					attributes={ attributes }
-					onChange={ value => setAttributes( value ) }
-				/> */}
 				<ToolbarGroup group="tag">
 					<ToolbarDropdownMenu
 						icon={<HeadingLevelIcon level={( htmlTag !== 'heading' ? htmlTag : level )}/>}
