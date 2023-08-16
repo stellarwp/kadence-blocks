@@ -75,6 +75,26 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 6. Editor Width settings inside Gutenberg
 
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the
+Kadence Blocks plugin through the Patchstack
+Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The
+Patchstack team will assist you with verification, CVE assignment, and
+notify the developers of this plugin.
+
+== Security Policy ==
+
+= Reporting Security Bugs =
+
+Please report security bugs found in the
+Kadence Blocks plugin's source code through the
+Patchstack Vulnerability Disclosure
+Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will
+assist you with verification, CVE assignment, and notify the
+developers of this plugin.
+
 == Changelog ==
 
 = 3.1.12 =
