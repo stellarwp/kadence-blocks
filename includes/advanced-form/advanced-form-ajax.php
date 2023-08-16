@@ -642,7 +642,7 @@ Header set X-Robots-Tag "noindex"
 	}
 
 	/**
-	 * Given the direct link to a file, return the url to the downloader.
+	 * Given the direct link to a file, return the url to the downloader
 	 *
 	 * @param $file_url
 	 *

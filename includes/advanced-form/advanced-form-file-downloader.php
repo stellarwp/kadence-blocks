@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Safe downloading of Advanced Form File Submissions.
+ * Safe downloading of Advanced Form File Submissions
  */
 class Kadence_Blocks_Form_File_Downloader {
 
