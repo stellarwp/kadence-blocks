@@ -274,6 +274,64 @@ export const AIText = {
 									</div>
 								) }
 								<div className="kb-ai-prompt-wrap">
+									{ ! isLoading && (
+										<>
+											<TextareaControl
+												className={ dynamicRows > 1 ? 'kb-ai-prompt-text-input' : 'kb-ai-prompt-text-input kb-ai-prompt-single' }
+												placeholder={ ( hasContent || aiSuggestion ) ? __( 'Ask Kadence AI to edit...', 'kadence-blocks' ) : __( 'Ask Kadence AI to generate...', 'kadence-blocks' ) }
+												value={ prompt }
+												rows={ dynamicRows }
+												onChange={ ( value ) => {
+													if ( isOpen ) {
+														setIsOpen( false );
+													}
+													if ( value.length > 60 && dynamicRows === 1 ) {
+														setDynamicRows( 2 );
+													} else if ( dynamicRows === 2 && value.length <= 60 ) {
+														setDynamicRows( 1 );
+													}
+													setPrompt( value );
+												}}
+												onKeyDown={( event ) => {
+													if ( event.keyCode === ENTER ) {
+														event.preventDefault();
+														setIsOpen( false );
+														setPrevPrompt( prompt );
+														if ( hasContent ) {
+															handleEditingContent(selectedContent, prompt, 'edit');
+														} else {
+															handleGettingContent(prompt);
+														}
+													}
+												}}
+											/>
+											<Button
+												className="kb-ai-send"
+												label={ __( 'Send', 'kadence-blocks' ) }
+												icon={ chevronRightSmall }
+												disabled={ ! prompt }
+												iconPosition="right"
+												onClick={ () => {
+													setIsOpen( false );
+													setPrevPrompt( prompt );
+													if ( hasContent ) {
+														handleEditingContent(selectedContent, prompt, 'edit');
+													} else {
+														handleGettingContent(prompt);
+													}
+												} }
+											/>
+										</>
+									) }
+									{ isLoading && (
+										<>
+											<TextareaControl
+												className={ 'kb-ai-prompt-text-input kb-ai-prompt-single' }
+												value={ 'Kadence AI is working...' }
+												rows={ 1 }
+											/>
+										</>
+									) }
 									<div className="kb-ai-prompt-icon">
 										{ isLoading ? (
 											<Spinner />
@@ -295,6 +353,7 @@ export const AIText = {
 																onClose={ () => {
 																	//setIsOpen( false );
 																}}
+																focusOnMount={ false }
 																placement="bottom-start"
 																anchor={popoverSecondAnchor}
 																className={ 'kb-ai-quick-prompt-icon-dropdown' }
@@ -331,6 +390,76 @@ export const AIText = {
 																			>
 																				{ __( 'Try Again', 'kadence-blocks' ) }
 																			</MenuItem>
+																		) }
+																		<MenuItem
+																			icon={ playlist }
+																			onClick={ () => {
+																				handleTransformingContent( aiSuggestion, 'simplify' );
+																			} }
+																			iconPosition='left'
+																		>
+																			{ __( 'Simplify', 'kadence-blocks' ) }
+																		</MenuItem>
+																		<MenuItem
+																			icon={ chevronRightSmall }
+																			className='kb-ai-quick-prompt-change-tone'
+																			onClick={ () => setIsToneOpen( isToneOpen ? false : true ) }
+																			disabled={ selectedContent && selectedContent.length > 5 ? false : true }
+																			iconPosition='right'
+																			ref={ setPopoverToneAnchor }
+																		>
+																			{chatBubble} { __( 'Change Tone', 'kadence-blocks' ) }
+																		</MenuItem>
+																		{ isToneOpen && (
+																			<Popover
+																				onClose={ () => {
+																					//setIsOpen( false );
+																				}}
+																				placement="right-start"
+																				anchor={popoverToneAnchor}
+																				focusOnMount={ false }
+																				className={ 'kb-ai-quick-prompt-change-tone-dropdown' }
+																			>
+																				<div className={'components-dropdown-menu__menu'}  role="menu" aria-orientation="vertical" aria-label="Options">
+																					<MenuGroup>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(aiSuggestion, 'Professional', 'tone');
+																							} }
+																						>
+																							{ __( 'Professional', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(aiSuggestion, 'Friendly', 'tone');
+																							} }
+																						>
+																							{ __( 'Friendly', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(aiSuggestion, 'Informative', 'tone');
+																							} }
+																						>
+																							{ __( 'Informative', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(aiSuggestion, 'Engaging', 'tone');
+																							} }
+																						>
+																							{ __( 'Engaging', 'kadence-blocks' ) }
+																						</MenuItem>
+																						<MenuItem
+																							onClick={ () => {
+																								handleEditingContent(aiSuggestion, 'Funny', 'tone');
+																							} }
+																						>
+																							{ __( 'Funny', 'kadence-blocks' ) }
+																						</MenuItem>
+																					</MenuGroup>
+																				</div>
+																			</Popover>
 																		) }
 																		<MenuItem
 																			icon={ close }
@@ -370,6 +499,7 @@ export const AIText = {
 																}}
 																placement="bottom-start"
 																anchor={popoverAnchor}
+																focusOnMount={ false }
 																className={ 'kb-ai-quick-prompt-icon-dropdown' }
 															>
 																<div className={'components-dropdown-menu__menu'}  role="menu" aria-orientation="vertical" aria-label="Options">
@@ -441,6 +571,7 @@ export const AIText = {
 																				}}
 																				placement="right-start"
 																				anchor={popoverToneAnchor}
+																				focusOnMount={ false }
 																				className={ 'kb-ai-quick-prompt-change-tone-dropdown' }
 																			>
 																				<div className={'components-dropdown-menu__menu'}  role="menu" aria-orientation="vertical" aria-label="Options">
@@ -497,65 +628,6 @@ export const AIText = {
 											</>
 										) }
 									</div>
-									{ ! isLoading && (
-										<>
-											<TextareaControl
-												className={ dynamicRows > 1 ? 'kb-ai-prompt-text-input' : 'kb-ai-prompt-text-input kb-ai-prompt-single' }
-												placeholder={ ( hasContent || aiSuggestion ) ? __( 'Ask Kadence AI to edit...', 'kadence-blocks' ) : __( 'Ask Kadence AI to generate...', 'kadence-blocks' ) }
-												value={ prompt }
-												rows={ dynamicRows }
-												autoFocus
-												onChange={ ( value ) => {
-													if ( isOpen ) {
-														setIsOpen( false );
-													}
-													if ( value.length > 60 && dynamicRows === 1 ) {
-														setDynamicRows( 2 );
-													} else if ( dynamicRows === 2 && value.length <= 60 ) {
-														setDynamicRows( 1 );
-													}
-													setPrompt( value );
-												}}
-												onKeyDown={( event ) => {
-													if ( event.keyCode === ENTER ) {
-														event.preventDefault();
-														setIsOpen( false );
-														setPrevPrompt( prompt );
-														if ( hasContent ) {
-															handleEditingContent(selectedContent, prompt, 'edit');
-														} else {
-															handleGettingContent(prompt);
-														}
-													}
-												}}
-											/>
-											<Button
-												className="kb-ai-send"
-												label={ __( 'Send', 'kadence-blocks' ) }
-												icon={ chevronRightSmall }
-												disabled={ ! prompt }
-												iconPosition="right"
-												onClick={ () => {
-													setIsOpen( false );
-													setPrevPrompt( prompt );
-													if ( hasContent ) {
-														handleEditingContent(selectedContent, prompt, 'edit');
-													} else {
-														handleGettingContent(prompt);
-													}
-												} }
-											/>
-										</>
-									) }
-									{ isLoading && (
-										<>
-											<TextareaControl
-												className={ 'kb-ai-prompt-text-input kb-ai-prompt-single' }
-												value={ 'Kadence AI is working...' }
-												rows={ 1 }
-											/>
-										</>
-									) }
 								</div>
 								{ currentCredits && (
 									<div className="kb-ai-credits">

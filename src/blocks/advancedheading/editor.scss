@@ -434,6 +434,7 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
             justify-content: center;
             align-items: center;
             align-self: stretch;
+            order: -1;
             svg {
                 fill: var(--kadence-color, #0058b0 );
                 max-width:18px;

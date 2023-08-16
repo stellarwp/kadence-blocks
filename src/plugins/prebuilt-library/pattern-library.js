@@ -209,7 +209,7 @@ function PatternLibrary( {
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
 	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
-	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'all' );
+	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'home' );
 	const savedSelectedPageStyles = ( undefined !== activeStorage?.kbPageStyles && '' !== activeStorage?.kbPageStyles ? activeStorage.kbPageStyles : 'all' ); // @todo: Should probably be an array of all available styles
 	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
 	const savedReplaceImages = ( undefined !== activeStorage?.replaceImages && '' !== activeStorage?.replaceImages ? activeStorage.replaceImages : 'all' );
@@ -728,65 +728,7 @@ function PatternLibrary( {
 					</div>
 					<div className="kb-library-sidebar-sub-choices">
 						<Button
-							className={ 'kb-subtab-button kb-trigger-patterns' + ( selectedSubTab === 'patterns' ? ' is-pressed' : '' ) }
-							aria-pressed={ selectedSubTab === 'patterns' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['subTab'] = 'patterns';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setSubTab( 'patterns' );
-							}}
-						>
-							{ __( 'Patterns', 'kadence-blocks' ) }
-						</Button>
-						<Button
-							className={ 'kb-subtab-button kb-trigger-pages' + ( selectedSubTab === 'pages' ? ' is-pressed' : '' ) }
-							aria-pressed={ selectedSubTab === 'pages' }
-							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['subTab'] = 'pages';
-								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-								setSubTab( 'pages' );
-							}}
-						>
-							{ __( 'Pages', 'kadence-blocks' ) }
-						</Button>
-					</div>
-					{ selectedSubTab === 'pages' ? (
-						<div className="kb-library-sidebar-context-choices">
-							<Button
-								className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
-								aria-pressed={ selectedContextTab === 'design' }
-								onClick={ () => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['contextTab'] = 'design';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									forceRefreshLibrary();
-									setContextTab( 'design' );
-								}}
-							>
-								{ __( 'Wireframe', 'kadence-blocks' ) }
-							</Button>
-							<Button
-								className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
-								aria-pressed={ selectedContextTab === 'context' }
-								icon={ aiIcon }
-								iconPosition='right'
-								iconSize={ 16 }
-								text={ __( 'With Context', 'kadence-blocks' )}
-								onClick={ () => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['contextTab'] = 'context';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									forceRefreshLibrary();
-									setContextTab( 'context' );
-								}}
-							/>
-						</div>
-					) : (
-						<div className="kb-library-sidebar-context-choices">
-							<Button
-								className={ 'kb-context-tab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
+								className={ 'kb-subtab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
 								aria-pressed={ selectedContextTab === 'design' }
 								onClick={ () => {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
@@ -799,12 +741,12 @@ function PatternLibrary( {
 								{ __( 'By Design', 'kadence-blocks' ) }
 							</Button>
 							<Button
-								className={ 'kb-context-tab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
+								className={ 'kb-subtab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
 								aria-pressed={ selectedContextTab === 'context' }
 								icon={ aiIcon }
-								iconPosition='right'
+								iconPosition='left'
 								iconSize={ 16 }
-								text={ __( 'By Context', 'kadence-blocks' )}
+								text={ __( 'With AI', 'kadence-blocks' )}
 								onClick={ () => {
 									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 									tempActiveStorage['contextTab'] = 'context';
@@ -813,8 +755,34 @@ function PatternLibrary( {
 									setContextTab( 'context' );
 								}}
 							/>
-						</div>
-					) }
+					</div>
+					<div className="kb-library-sidebar-context-choices">
+						<Button
+							className={ 'kb-context-tab-button kb-trigger-patterns' + ( selectedSubTab === 'patterns' ? ' is-pressed' : '' ) }
+							aria-pressed={ selectedSubTab === 'patterns' }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+								tempActiveStorage['subTab'] = 'patterns';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								setSubTab( 'patterns' );
+							}}
+						>
+							{ __( 'Patterns', 'kadence-blocks' ) }
+						</Button>
+						<Button
+							className={ 'kb-context-tab-button kb-trigger-pages' + ( selectedSubTab === 'pages' ? ' is-pressed' : '' ) }
+							aria-pressed={ selectedSubTab === 'pages' }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+								tempActiveStorage['subTab'] = 'pages';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								setSubTab( 'pages' );
+							}}
+						>
+							{ __( 'Pages', 'kadence-blocks' ) }
+						</Button>
+					</div>
+					
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>
 					<div className="kb-library-sidebar-search">

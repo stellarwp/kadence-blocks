@@ -160,7 +160,6 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Button.
 					if ( heroContent?.cards?.[index]?.['button-short'] ) {
 						content = content.replace( "CTA", heroContent?.cards?.[index]?.['button-short']);
-						content = content.replace( "CTA", heroContent?.cards?.[index]?.['button-short']);
 					}
 				}
 			}

@@ -379,6 +379,7 @@ button.components-button.kb-reload-context-confirm.has-icon svg {
 	background: #fff;
 	border-right: 1px solid #edf2f7;
 	max-height: 95vh;
+	min-height: 95vh;
 }
 .kb-prebuilt-header.kb-prebuilt-library-header {
 	position: relative;
@@ -1329,6 +1330,7 @@ h2.components-heading.kb-patterns-banner-notice.ai-failed-loading {
     border-radius:0;
     padding: 0px 16px;
 	flex: 1;
+	gap:8px;
     height: 32px;
     line-height: 1;
     min-height: 0;
