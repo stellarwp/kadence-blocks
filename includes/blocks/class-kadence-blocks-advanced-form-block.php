@@ -422,10 +422,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$form_fields .= '<input type="hidden" name="action" value="kb_process_advanced_form_submit">';
 		$form_fields .= '<input type="hidden" name="_kb_adv_form_id" value="' . $unique_id . '">';
-		$content = sprintf( '<div %1$s><form %2$s>%3$s%4$s</form></div>', $wrapper_attributes, $inner_wrapper_attributes, $content, $form_fields );
+		$content = sprintf( '<div %1$s><form id="twitch" %2$s>%3$s%4$s</form></div>', $wrapper_attributes, $inner_wrapper_attributes, $content, $form_fields );
 
 		return $content;
 	}
+
 	/**
 	 * Get form fields.
 	 *
@@ -494,6 +495,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'mf-conditional-fields', KADENCE_BLOCKS_URL . 'includes/assets/js/mf-conditional-fields.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
 		wp_localize_script(
 			'kadence-blocks-' . $this->block_name,
 			'kb_adv_form_params',
@@ -508,6 +511,32 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 				'item'          => __( 'Item', 'kadence-blocks' ),
 			)
 		);
+	}
+
+	/**
+	 * Render for block scripts block.
+	 *
+	 * @param array   $attributes the blocks attributes.
+	 * @param boolean $inline true or false based on when called.
+	 */
+	public function render_scripts( $attributes, $inline = false ) {
+		if ( $this->has_style ) {
+			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
+				if ( $inline ) {
+					$this->should_render_inline_stylesheet( 'kadence-blocks-' . $this->block_name );
+				}
+			}
+		}
+		if ( $this->has_script ) {
+			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
+				$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
+			}
+		}
+
+		if ( true ) {
+			$this->enqueue_script( 'mf-conditional-fields' );
+		}
 	}
 }
 
