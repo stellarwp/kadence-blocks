@@ -87,7 +87,6 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	// Advanced Form.
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
-	Kadence_Blocks_Form_File_Downloader::check_download_request();
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-local-gfonts.php';
