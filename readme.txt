@@ -106,7 +106,6 @@ Release Date: August 17th, 2023
 * Fix: Possible issue with custom svg icon and simplexml_load_file.
 * Fix: Issue with advanced form message styling.
 
-
 = 3.1.11 =
 Release Date: August 8th, 2023
 * Fix: Possible security issue with form uploads.
