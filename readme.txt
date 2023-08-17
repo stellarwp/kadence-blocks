@@ -102,6 +102,7 @@ Release Date: August TBD, 2023
 * Fix: Previewing Advanced Forms in transforms
 * Fix: Advanced form file size limit not saving
 * Fix: Block defaults not applying on Table of Contents
+* Fix: ReCAPTCHA v2 on advanced forms
 
 = 3.1.11 =
 Release Date: August 8th, 2023
