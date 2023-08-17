@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.11
+Stable tag: 3.1.12
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,11 +98,14 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.12 =
-Release Date: August TBD, 2023
-* Fix: Previewing Advanced Forms in transforms
-* Fix: Advanced form file size limit not saving
-* Fix: Block defaults not applying on Table of Contents
-* Fix: ReCAPTCHA v2 on advanced forms
+Release Date: August 17th, 2023
+* Fix: Previewing Advanced Forms in transforms.
+* Fix: Advanced form file size limit not saving.
+* Fix: Block defaults not applying on Table of Contents.
+* Fix: ReCAPTCHA v2 on advanced forms.
+* Fix: Possible issue with custom svg icon and simplexml_load_file.
+* Fix: Issue with advanced form message styling.
+
 
 = 3.1.11 =
 Release Date: August 8th, 2023
