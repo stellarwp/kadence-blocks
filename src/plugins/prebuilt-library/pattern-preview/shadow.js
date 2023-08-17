@@ -85,6 +85,8 @@ function ScaledPatternShadowPreview( {
 			setRefreshHeight( false );
 		}, 400 );
 	}
+	const trans_scroll_speed = contentHeight >= MAX_HEIGHT ? ( ( ( finalContentHeight - MAX_HEIGHT ) / 650) * 1000 ) : 2000;
+	const transitionSpeed = `transform ${trans_scroll_speed}ms linear !important`;
 	return (
 		<>
 			<LazyLoad onContentVisible={() => {resizeClear()}}>
@@ -116,6 +118,7 @@ function ScaledPatternShadowPreview( {
 					>
 						{styleAssets}
 						{shaddowAssets}
+						<style>{`.pattern-shadow-wrap { transition: ${transitionSpeed} }`}</style>
 						<div part={'container'} className={ "editor-styles-wrapper pattern-shadow-wrap" }>{ contentResizeListener }<div className={ `single-iframe-content${ kadence_blocks_params.isKadenceT ? ' single-content' : '' }`} dangerouslySetInnerHTML={ {__html: html } } /></div>
 					</root.div>
 				</Disabled>
