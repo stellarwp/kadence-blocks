@@ -236,6 +236,7 @@ return array(
 		'fe_truck',
 		'fe_tv',
 		'fe_twitter',
+		'ic_twitterX',
 		'fe_type',
 		'fe_umbrella',
 		'fe_underline',
