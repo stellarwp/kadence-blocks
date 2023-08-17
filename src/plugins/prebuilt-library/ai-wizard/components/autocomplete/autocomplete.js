@@ -41,7 +41,7 @@ export function Autocomplete(props) {
 
   useEffect(() => {
     setInitialQuery(props.currentValue);
-  }, [ props.currentValue ])
+  }, [ props.currentValue ]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -80,6 +80,10 @@ export function Autocomplete(props) {
     autocomplete.setQuery('');
     autocomplete.refresh();
     inputRef.current.focus();
+    setAllowNewCreate(true);
+  }
+
+  function handleKeyDown() {
     setAllowNewCreate(true);
   }
 
@@ -198,6 +202,7 @@ export function Autocomplete(props) {
                 className="aa-Input"
                 ref={ inputRef }
                 { ...autocomplete.getInputProps({}) }
+                onKeyDown={ handleKeyDown }
               />
             </div>
               <div className="aa-InputWrapperSuffix">
