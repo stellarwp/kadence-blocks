@@ -123,6 +123,9 @@ export function getAsyncData() {
 			const myImages = { data: [] };
 			if ( localGallery?.galleries?.[0]?.images ) {
 				const aImages = localGallery?.galleries?.[0]?.images.map( ( item, index ) => {
+					if ( item?.sizes?.[1]?.src ) {
+						return { sizes:[ { src: item.sizes[1].src } ]};
+					}
 					return { sizes:[ { src: item.url } ]};
 				} );
 				myImages.data.push( { images: aImages } );
