@@ -175,7 +175,6 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 	async function downloadToMediaLibrary( open ) {
 		setIsDownloading(true);
 		const response = await downloadImages(photos);
-		console.log('response', response);
 		if ( response !== false ) {
 			const tempDownloadedIDs = [];
 			response.forEach( function( image ) {

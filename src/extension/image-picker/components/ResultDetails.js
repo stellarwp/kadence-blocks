@@ -15,7 +15,7 @@ import {
  * @return {JSX.Element} The Result Details component.
  */
 export default function Result(props) {
-	const { result } = props;
+	const { result, isDownloading, setIsDownloading, multiResult, imagePickerMultiSelection, index } = props;
 
 	const {
 		url,
@@ -28,12 +28,10 @@ export default function Result(props) {
 		sizes,
 		photographer_url,
 	} = result;
-
     const [downloadComplete, setDownloadComplete] = useState( false );
-    const [isDownloading, setIsDownloading] = useState( false );
     const [altValue, setAltValue] = useState( alt );
     const [filenameValue, setFilenameValue] = useState( '' );
-
+    const isMultiSelected = imagePickerMultiSelection?.length && imagePickerMultiSelection.length > 1 && imagePickerMultiSelection.includes( index );
 	const { imagePickerDownloadedImages } = useSelect(
         ( select ) => {
             const imagePickerDownloadedImages = typeof select( 'kadenceblocks/data' ).getImagePickerDownloadedImages === "function" ? select( 'kadenceblocks/data' ).getImagePickerDownloadedImages() : '';
@@ -45,26 +43,44 @@ export default function Result(props) {
     );
 	const { setImagePickerDownloadedImages } = useDispatch( 'kadenceblocks/data' );
 
-    const handleDownload = () => {
-		if ( ! isDownloading ) {
-            console.log('downloadToMediaLibrary', resultData);
-			downloadToMediaLibrary(resultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
-		}
-	}
 
     // sync the state values with the current result
 	useEffect( () => {
         setAltValue( alt );
         setFilenameValue('');
 	}, [ alt ] );
-
+    function mergeArrays(arr1, arr2) {
+        const combined = [...arr1, ...arr2];
+    
+        const uniqueMap = combined.reduce((acc, obj) => {
+            acc[obj.id] = obj; // Assuming `id` is the unique identifier
+            return acc;
+        }, {});
+    
+        return Object.values(uniqueMap);
+    }
     const resultData = { ...result, ...{ alt: altValue }, ...{ filename: filenameValue } }
-    const downloadedText = downloadComplete ? __('Download Complete', 'kadence-blocks') : __('Download Image', 'kadence-blocks');
+    const handleDownload = () => {
+		if ( ! isDownloading ) {
+            if ( isMultiSelected ) {
+                const multiResultData = mergeArrays( multiResult, [resultData ] );
+			    downloadToMediaLibrary(multiResultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
+            } else {
+                downloadToMediaLibrary([resultData], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
+            }
+		}
+	}
+    const isDownloaded = imagePickerDownloadedImages?.length && imagePickerDownloadedImages.includes( id ) ? true : false;
+    const donloadImageText = isMultiSelected ? __('Download Selected Images', 'kadence-blocks') : __('Download Image', 'kadence-blocks');
+    const downloadedText = downloadComplete ? __('Download Complete', 'kadence-blocks') : donloadImageText;
     if ( result && sizes ) {
         return (
             <>
                 <div className="result-details-container">
                     <img src={sizes[0].src} alt={alt} className={"img"} width="150px" height="150px"/>
+                    { isDownloaded && (
+                        <div className="result-is-downloaded">{ __( 'Already Downloaded', 'kadence-blocks' ) }</div>
+                    ) }
                     <hr />
                     <div className="result-details">
                         <div class="result-detail" data-setting="photographer">

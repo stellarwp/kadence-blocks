@@ -8,11 +8,14 @@ import buildURL from "./buildURL";
  * @param {Object} data The API results object.
  * @return {Array} 	 The results as an array.
  */
-export default async function getImageData( provider, currentDataState, setImageData, setIsLoading, combine, options ) {
+export default async function getImageData( provider, currentDataState, setImageData, setIsLoading, combine, options, setIsSearching = '' ) {
 	if ( ! provider || ! currentDataState ) {
 		return [];
 	}
-
+	setIsLoading(true);
+	if ( 'function' == typeof( setIsSearching ) ) {
+		setIsSearching( true );
+	}
 	const queryOptions = getQueryOptions(provider, options);
 	const url = buildURL("search");
 	
@@ -35,10 +38,16 @@ export default async function getImageData( provider, currentDataState, setImage
 		}
 
 		setImageData( newData );
-		setIsLoading(false)
+		setIsLoading(false);
+		if ( 'function' == typeof( setIsSearching ) ) {
+			setIsSearching( false );
+		}
 	} catch (error) {
-		setImageData({})
-		setIsLoading(false)
+		setImageData({});
+		setIsLoading(false);
+		if ( 'function' == typeof( setIsSearching ) ) {
+			setIsSearching( false );
+		}
 	}
 
 	return response;
@@ -50,7 +59,7 @@ export default async function getImageData( provider, currentDataState, setImage
  * @param {Object} data The API results object.
  * @return {Array} 	 The results as an array.
  */
-export async function getImageDataSearch( provider, currentDataState, query, setImageData, setIsLoading ) {
+export async function getImageDataSearch( provider, currentDataState, query, setImageData, setIsLoading, setIsSearching ) {
 	if ( ! provider || ! currentDataState ) {
 		return [];
 	}
@@ -60,7 +69,7 @@ export async function getImageDataSearch( provider, currentDataState, query, set
         query: query ? query : API.defaults.query
     };
 
-	return getImageData( provider, currentDataState, setImageData, setIsLoading, false, options )
+	return getImageData( provider, currentDataState, setImageData, setIsLoading, false, options, setIsSearching );
 }
 
 /**

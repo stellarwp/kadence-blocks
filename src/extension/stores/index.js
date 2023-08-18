@@ -8,6 +8,7 @@ const DEFAULT_STATE = {
 	webFonts: {},
 	imagePickerQuery: '',
 	imagePickerSelection: 0,
+	imagePickerMultiSelection: [],
 	imagePickerResults: {},
 	imagePickerDownloadedImages: [],
 };
@@ -71,6 +72,12 @@ const actions = {
 		return {
 			type: 'SET_IMAGE_PICKER_SELECTION',
 			index
+		};
+	},
+	setImagePickerMultiSelection( selection ) {
+		return {
+			type: 'SET_IMAGE_PICKER_MULTI_SELECTION',
+			selection
 		};
 	},
 	setImagePickerResults( results ) {
@@ -198,6 +205,11 @@ const store = createReduxStore( 'kadenceblocks/data', {
 					...state,
 					imagePickerSelection:action.index,
 				};
+			case 'SET_IMAGE_PICKER_MULTI_SELECTION':
+				return {
+					...state,
+					imagePickerMultiSelection:action.selection,
+				};
 			case 'SET_IMAGE_PICKER_RESULTS':
 				return {
 					...state,
@@ -291,6 +303,10 @@ const store = createReduxStore( 'kadenceblocks/data', {
 		getImagePickerSelection( state ) {
 			const { imagePickerSelection } = state;
 			return imagePickerSelection;
+		},
+		getImagePickerMultiSelection( state ) {
+			const { imagePickerMultiSelection } = state;
+			return imagePickerMultiSelection;
 		},
 		getImagePickerResults( state ) {
 			const { imagePickerResults } = state;

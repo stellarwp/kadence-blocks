@@ -35,14 +35,19 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
     setIsDownloading(true);
 	
 	// Dispatch API fetch request.
-	const response = await downloadImage([result]);
+	const response = await downloadImage(result);
 	if ( response !== false ) {
 		setIsDownloaded(true);
 		setIsDownloading(false);
 
 		const wpAttachmentId = response?.[0]?.id;
-
-		setImagePickerDownloadedImages(imagePickerDownloadedImages.concat([wpAttachmentId]))
+		const tempIDs = [];
+		for (const image of result) {
+			if ( image?.id ) {
+				tempIDs.push(image.id)
+			}
+		}
+		setImagePickerDownloadedImages(imagePickerDownloadedImages.concat(tempIDs));
 		
 		refreshMediaModal(wpAttachmentId);
 	} else {

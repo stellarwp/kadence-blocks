@@ -248,5 +248,21 @@ jQuery(document).ready(function ($) {
 				}
 			}
 		);
+		// Click Handler
+		$(document).on(
+			"click",
+			".media-frame-menu .media-menu button.media-menu-item",
+			function () {
+				if (!window.kadenceImagePickerFrame?.el) {
+					return false;
+				}
+				const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
+					".media-router button.media-menu-item.active"
+				);
+				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
+					imagePickerMediaTab();
+				}
+			}
+		);
 	}
 });

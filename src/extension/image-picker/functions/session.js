@@ -8,7 +8,7 @@ import { md5Hash } from "./helpers";
  * @return {Array|boolean} Session results.
  */
 export function getSession(url) {
-	if (!url || API.testmode) {
+	if ( !url ) {
 		return false; // Exit if no URL or test mode is enabled.
 	}
 

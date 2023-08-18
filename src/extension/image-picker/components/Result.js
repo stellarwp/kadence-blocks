@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Button } from "@wordpress/components";
+import { Button, Icon } from "@wordpress/components";
 import {
 	download as DownloadIcon,
 	check as CheckIcon
@@ -21,20 +21,21 @@ export default function Result(props) {
 		setInactive,
 		index,
 		currentUserSelectionIndex,
-		setCurrentUserSelectionIndex
+		setCurrentUserSelectionIndex,
+		imagePickerMultiSelection,
+		setImagePickerMultiSelection,
+		isDownloading,
+		setIsDownloading,
 	} = props;
 
 	const {
-		url,
 		alt,
-		avg_color,
-		photographer,
+		id,
 		sizes,
-		photographer_url,
 	} = result;
 
     const [downloadComplete, setDownloadComplete] = useState( false );
-    const [isDownloading, setIsDownloading] = useState( false );
+	const [localIsDownloading, setLocalIsDownloading] = useState( false );
 	
 	const { imagePickerDownloadedImages } = useSelect(
         ( select ) => {
@@ -46,6 +47,7 @@ export default function Result(props) {
         []
     );
 	const { setImagePickerDownloadedImages } = useDispatch( 'kadenceblocks/data' );
+	const isDownloaded = imagePickerDownloadedImages?.length && imagePickerDownloadedImages.includes( id ) ? true : false;
 
 	const handleOnFocus = () => {
 		setCurrentUserSelectionIndex( index );
@@ -56,36 +58,59 @@ export default function Result(props) {
 
 	const isCurrent = index == currentUserSelectionIndex;
 
-	const activeClass = isCurrent ? 'active' : '';
-	const downloadedClass = downloadComplete ? 'downloaded' : '';
+	const isSelected = imagePickerMultiSelection.includes( index );
 
+	const itemClass = classNames( 'result', {
+		'active': isCurrent,
+		'downloaded': downloadComplete,
+		'is-selected': isSelected,
+	} );
+	const buttonClass = classNames( 'download-button', {
+		'btn-already-downloaded': isDownloaded,
+	} );
 	const handleDownload = () => {
 		if ( ! isDownloading ) {
-			downloadToMediaLibrary(result, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages)
+			setLocalIsDownloading( true );
+			downloadToMediaLibrary( [result], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages)
+		}
+	}
+	const handleSelection = () => {
+		if ( isDownloading ) {
+			return;
+		}
+		setCurrentUserSelectionIndex( index );
+		if ( ! isSelected ) {
+			setImagePickerMultiSelection( [...imagePickerMultiSelection, index] )
+		} else {
+			setImagePickerMultiSelection( imagePickerMultiSelection.filter( item => item !== index ) )
 		}
 	}
 
 	return (
-		<article className={classNames('result', activeClass, downloadedClass)}>
-			<button
-				ref={resultButton}
-				className='image-wrap'
-				data-alt={alt}
-				title={__( 'Select Image' )}
-				onFocus={handleOnFocus}
-				onBlur={handleOnBlur}
-			>
-				<img src={sizes[1].src} alt={alt} className={'img'} />
+		<article className={itemClass}>
+			<div className="result-wrap">
+				<Button
+					ref={resultButton}
+					className='image-wrap'
+					label={__( 'Select Image' )}
+					onClick={handleSelection}
+				>
+					<img src={sizes[1].src} alt={alt} className={'img'} />
+					<div class="image-select-container">
+						<div className={'kb-image-selection-button'}>{ isSelected ? <Icon icon={ CheckIcon }></Icon> : '' }</div>
+					</div>
+				</Button>
 				<div class="image-hover-container">
-					<Button 
-						icon={downloadComplete ? CheckIcon : DownloadIcon}
-						size={'small'}
-						onClick={handleDownload}
-						className={'download-button'}
-						isBusy={isDownloading}
-					/>
 				</div>
-			</button>
+				<Button 
+					icon={downloadComplete || isDownloaded ? CheckIcon : DownloadIcon}
+					size={'small'}
+					label={ isDownloaded ? __( 'Already Downloaded', 'kadence-blocks' ) : __( 'Download Image', 'kadence-blocks' ) }
+					onClick={handleDownload}
+					className={buttonClass}
+					isBusy={localIsDownloading}
+				/>
+			</div>
 		</article>
 	);
 }

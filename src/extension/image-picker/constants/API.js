@@ -4,7 +4,6 @@ import {
 
 export const API = {
 	proxy: "https://content.startertemplatecloud.com/",
-	testmode: false,
 	defaults: {
 		provider: "pexels",
 		order: "latest",

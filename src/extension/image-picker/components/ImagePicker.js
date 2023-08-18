@@ -34,15 +34,19 @@ export default function ImagePicker(props) {
 	} = props;
 
     const [isLoading, setIsLoading] = useState( false );
+    const [isSearching, setIsSearching] = useState( false );
+    const [isDownloading, setIsDownloading] = useState( false );
 
-    const { imagePickerQuery, imagePickerSelection, imagePickerResults } = useSelect(
+    const { imagePickerQuery, imagePickerSelection, imagePickerResults, imagePickerMultiSelection } = useSelect(
         ( select ) => {
             const imagePickerQuery = typeof select( 'kadenceblocks/data' ).getImagePickerQuery === "function" ? select( 'kadenceblocks/data' ).getImagePickerQuery() : '';
             const imagePickerSelection = typeof select( 'kadenceblocks/data' ).getImagePickerSelection === "function" ? select( 'kadenceblocks/data' ).getImagePickerSelection() : '';
+            const imagePickerMultiSelection = typeof select( 'kadenceblocks/data' ).getImagePickerMultiSelection === "function" ? select( 'kadenceblocks/data' ).getImagePickerMultiSelection() : '';
             const imagePickerResults = typeof select( 'kadenceblocks/data' ).getImagePickerResults === "function" ? select( 'kadenceblocks/data' ).getImagePickerResults() : '';
             return {
                 imagePickerQuery: imagePickerQuery,
                 imagePickerSelection: imagePickerSelection,
+                imagePickerMultiSelection: imagePickerMultiSelection,
                 imagePickerResults: imagePickerResults,
             };
         },
@@ -50,26 +54,40 @@ export default function ImagePicker(props) {
     );
 	const { setImagePickerQuery } = useDispatch( 'kadenceblocks/data' );
 	const { setImagePickerSelection } = useDispatch( 'kadenceblocks/data' );
+    const { setImagePickerMultiSelection } = useDispatch( 'kadenceblocks/data' );
 	const { setImagePickerResults } = useDispatch( 'kadenceblocks/data' );
-
+    function extractByIndices( sourceArray, indices ) {
+        if ( ! sourceArray?.length || ! indices?.length ) {
+            return [];
+        }
+        return indices.map(index => sourceArray[index]);
+    }
 
     const totalImages = 'undefined' != typeof( imagePickerResults.total ) ? imagePickerResults.total : 0;
     const page = 'undefined' != typeof( imagePickerResults.page ) ? imagePickerResults.page : 1;
     const hasMore = 'undefined' != typeof( imagePickerResults.images ) ? imagePickerResults.images.length < totalImages : false;
 
-    const currentSelectedImage = 'undefined' != typeof( imagePickerResults.images ) ? ( ! isNaN( imagePickerSelection ) ? imagePickerResults.images[imagePickerSelection] : imagePickerResults.images[0] ) : {};
-
+    const currentSelectedImage = imagePickerResults?.images?.length && ! isNaN( imagePickerSelection ) && imagePickerResults?.images?.[imagePickerSelection] ? imagePickerResults.images[imagePickerSelection] : ( imagePickerResults?.images?.length && imagePickerResults?.images?.[0] ? imagePickerResults.images[0] : {} );
+    const currentSelectedMulti = imagePickerResults?.images?.length && imagePickerMultiSelection?.length ? extractByIndices( imagePickerResults.images, imagePickerMultiSelection ) : [];
+    
 	useEffect( () => {
         if ( isEmpty( imagePickerResults ) || isEmpty( imagePickerQuery ) ) {
             setImagePickerQuery( '' );
             setImagePickerSelection( 0 );
+            setImagePickerMultiSelection( [] );
             setImagePickerResults( props.data.data );
         }
 	}, [] );
+    // useEffect( () => {
+    //     const totalImages = 'undefined' != typeof( imagePickerResults.total ) ? imagePickerResults.total : 0;
+    //     console.log( 'total images', totalImages );
+    //     setHasMore( 'undefined' != typeof( imagePickerResults.images ) && imagePickerResults.images.length < totalImages ? true : false );
+    //     console.log( 'has more', hasMore );
+	// }, [ imagePickerResults ] );
 
-	useEffect( () => {
-        debouncedHandleSearch( imagePickerQuery );
-	}, [ imagePickerQuery ] );
+	// useEffect( () => {
+    //     debouncedHandleSearch( imagePickerQuery );
+	// }, [ imagePickerQuery ] );
 
 	/**
 	 * Search submit handler.
@@ -77,12 +95,16 @@ export default function ImagePicker(props) {
 	 * @param string query The query to search for.
 	 */
 	function handleSearch( query ) {
-		if ( query && ! isLoading ) {
-			getImageDataSearch( provider, imagePickerResults, query, setImagePickerResults, setIsLoading );
+		if ( query && ! isLoading && ! isSearching ) {
+            setImagePickerQuery( query );
+            setImagePickerSelection( 0 );
+            setImagePickerMultiSelection( [] );
+            setImagePickerResults( {} );
+			getImageDataSearch( provider, imagePickerResults, query, setImagePickerResults, setIsLoading, setIsSearching );
 		}
 	}
 
-    const debouncedHandleSearch = useCallback( debounce( handleSearch, 500), [imagePickerResults, provider] );
+    //const debouncedHandleSearch = useCallback( debounce( handleSearch, 500), [imagePickerResults, provider] );
 
 	const loadMore = () => {
 		if ( hasMore && ! isLoading ) {
@@ -92,7 +114,7 @@ export default function ImagePicker(props) {
         }
 	};
 
-    const debouncedLoadMore = useCallback( debounce( loadMore, 500), [imagePickerResults, imagePickerQuery, provider] );
+    //const debouncedLoadMore = useCallback( debounce( loadMore, 500), [imagePickerResults, imagePickerQuery, provider] );
 
     const breakpointCols = {
 		default: 5,
@@ -106,22 +128,22 @@ export default function ImagePicker(props) {
     // By looking for the create gallery button in our media frame.
     const mediaFrame = container.closest(".media-frame");
 	const isGalleryPicker = 'undefined' != typeof( mediaFrame ) && mediaFrame ? Boolean(mediaFrame.querySelector("#menu-item-gallery")) : false;
-
 	return (
         <Fragment>
             <div class="kadence-blocks-image-picker-contents">
                 <div className="kadence-blocks-image-picker-search-container">
                     <SearchForm 
                         query={imagePickerQuery}
-                        setQuery={setImagePickerQuery}
+                        handleSearch={handleSearch}
+                        isSearching={isSearching}
                     />
                 </div>
                 <div className="kadence-blocks-image-picker-scroll-container">
-                    { 'undefined' != typeof( imagePickerResults.images ) && (
+                    { 'undefined' != typeof( imagePickerResults.images ) && ! isSearching && (
                         <InfiniteScroll
                             className="block-editor-block-patterns-list-wrap"
                             pageStart={0}
-                            loadMore={debouncedLoadMore}
+                            loadMore={loadMore}
                             hasMore={hasMore}
                             loader={<Spinner />}
                             useWindow={false}
@@ -139,20 +161,34 @@ export default function ImagePicker(props) {
                                                 index={ index }
                                                 currentUserSelectionIndex={ imagePickerSelection }
                                                 setCurrentUserSelectionIndex={ setImagePickerSelection }
+                                                imagePickerMultiSelection={ imagePickerMultiSelection }
+                                                setImagePickerMultiSelection={ setImagePickerMultiSelection }
+                                                isDownloading={ isDownloading }
+                                                setIsDownloading={ ( value ) => setIsDownloading( value ) }
                                             />
                                         );
                                     })}
                                 </Masonry>
                         </InfiniteScroll>
                     )}
-                    { 'undefined' == typeof( imagePickerResults.images ) && (
+                    { 'undefined' == typeof( imagePickerResults.images ) && ! isSearching && (
                         <div>No Results found for this search</div>
+                    )}
+                    { isSearching && (
+                        <Spinner />
                     )}
                 </div>
                 <div class="kadence-blocks-image-picker-sidebar">
-                    <ResultDetails
-                        result={ currentSelectedImage }
-                    />
+                    { currentSelectedImage && currentSelectedImage?.url && (
+                        <ResultDetails
+                            result={ currentSelectedImage }
+                            multiResult={ currentSelectedMulti }
+                            index={ imagePickerSelection }
+                            imagePickerMultiSelection={ imagePickerMultiSelection }
+                            isDownloading={ isDownloading }
+                            setIsDownloading={ ( value ) => setIsDownloading( value ) }
+                        />
+                    ) }
                 </div>
             </div>
 
