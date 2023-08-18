@@ -10,7 +10,7 @@ exports.clean = clean;
 exports.webpack = webpack;
 exports.watch = watch;
 
-exports.standaloneJs = jsTasks.standaloneJs;
+exports.miscJs = jsTasks.miscJs;
 exports.js = jsTasks.js;
 
 exports.miscStyles = stylesTasks.miscStyle;

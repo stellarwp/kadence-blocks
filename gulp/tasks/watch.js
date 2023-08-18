@@ -3,14 +3,12 @@ const jsTasks = require( './js' );
 const stylesTasks = require( './styles' );
 
 function miscStyles() {
-	watch( [ 'src/assets/*.scss' ], function() {
-		return stylesTasks.miscStyles();
-	} );
+	stylesTasks.miscStyles();
+	watch( [ 'src/assets/css/*.scss' ], stylesTasks.miscStyles );
 }
-function standaloneJs() {
-	watch( [ 'src/assets/*.js' ], function() {
-		return jsTasks.standaloneJs();
-	} );
+function miscJs() {
+	jsTasks.miscJs();
+	watch( [ 'src/assets/js/*.js' ], jsTasks.miscJs );
 }
 
-exports.watch = parallel( miscStyles, standaloneJs );
+exports.watch = parallel( miscStyles, miscJs );

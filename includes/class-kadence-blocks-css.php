@@ -787,7 +787,7 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'font-style', $font['style'] );
 		}
 		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$this->add_property( 'font-weight', $font['weight'] );
+			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'] ) );
 		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );

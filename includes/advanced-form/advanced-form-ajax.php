@@ -285,7 +285,7 @@ class KB_Ajax_Advanced_Form {
 				);
 				if ( isset( $file_upload['url'] ) ) {
 					$this->add_htaccess_to_uploads_root();
-					$value = $this->get_downloader_url( $file_upload['url'] );
+					$value = $file_upload['url'];
 				} else {
 					if ( ! empty( $file_upload['error'] ) ) {
 						$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );
@@ -302,6 +302,7 @@ class KB_Ajax_Advanced_Form {
 				'value'    => $value,
 				'uniqueID' => $field['uniqueID'],
 				'name'     => $expected_field,
+				'file_name'=> !empty( $_FILES[ $expected_field ]['name'] ) ? $_FILES[ $expected_field ]['name'] : '',
 			);
 		}
 
@@ -496,8 +497,8 @@ class KB_Ajax_Advanced_Form {
 	 */
 	public function set_custom_upload_directory( $param ) {
 		$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' );
-		$param['url']  = $param['baseurl'] . $subfolder;
-		$param['path'] = $param['basedir'] . $subfolder;
+		$param['url']  = isset( $param['baseurl'] ) ? $param['baseurl'] . $subfolder : $subfolder;
+		$param['path'] = isset( $param['basedir'] ) ? $param['basedir'] . $subfolder : $subfolder;
 		return apply_filters( 'kadence_blocks_advanced_form_upload_directory', $param );
 	}
 	/**

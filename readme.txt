@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.11
+Stable tag: 3.1.12
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -75,11 +75,36 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 6. Editor Width settings inside Gutenberg
 
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the
+Kadence Blocks plugin through the Patchstack
+Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The
+Patchstack team will assist you with verification, CVE assignment, and
+notify the developers of this plugin.
+
+== Security Policy ==
+
+= Reporting Security Bugs =
+
+Please report security bugs found in the
+Kadence Blocks plugin's source code through the
+Patchstack Vulnerability Disclosure
+Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will
+assist you with verification, CVE assignment, and notify the
+developers of this plugin.
+
 == Changelog ==
 
 = 3.1.12 =
-Release Date: August TBD, 2023
-* Fix: Previewing Advanced Forms in transforms
+Release Date: August 17th, 2023
+* Fix: Previewing Advanced Forms in transforms.
+* Fix: Advanced form file size limit not saving.
+* Fix: Block defaults not applying on Table of Contents.
+* Fix: ReCAPTCHA v2 on advanced forms.
+* Fix: Possible issue with custom svg icon and simplexml_load_file.
+* Fix: Issue with advanced form message styling.
 
 = 3.1.11 =
 Release Date: August 8th, 2023

@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.1.11' );
+define( 'KADENCE_BLOCKS_VERSION', '3.1.12' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -88,7 +88,6 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	// Advanced Form.
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
-	Kadence_Blocks_Form_File_Downloader::check_download_request();
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-pexels.php';
