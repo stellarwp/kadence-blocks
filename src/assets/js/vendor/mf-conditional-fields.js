@@ -161,7 +161,6 @@ const mfConditionalFields = (forms, options = {}) => {
 			}
 			// Toggle the fields based on the value of `isConditionMet`
 			if (isConditionMet) {
-				console.log(5)
 				self.toggleField(field, action, depthLevel);
 			} else {
 				console.log(6)

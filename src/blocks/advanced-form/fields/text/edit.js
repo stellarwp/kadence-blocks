@@ -86,8 +86,8 @@ function FieldText( { attributes, setAttributes, isSelected, clientId, context, 
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-text-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-text'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>
