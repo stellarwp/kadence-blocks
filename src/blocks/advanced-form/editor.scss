@@ -657,3 +657,31 @@
 		}
 	}
 }
+
+// Conditional Fields
+.kb-field-rules-label {
+    color: #1e1e1e;
+    font-weight: 500;
+    font-size: 13px;
+}
+.kb-field-rules {
+	background-color: rgba( 0, 88, 176, .075 );
+	border-radius: 5px;
+	padding: 7px;
+	margin-top: 8px;
+
+	.kb-field-rule {
+		border: 1px solid gray;
+		border-radius: 5px;
+		padding: 7px;
+		margin-bottom: 7px;
+
+		.components-base-control {
+			margin-bottom: 15px;
+		}
+	}
+
+	.kb-field-rule-add {
+		margin-top: 10px;
+	}
+}
