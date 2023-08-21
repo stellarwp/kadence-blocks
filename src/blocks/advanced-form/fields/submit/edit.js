@@ -380,8 +380,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 							parentSlug={ 'kadence/advanced-form' }
 						/>
 						<InspectorControlTabs
-							panelName={'singlebtn'}
-							setActiveTab={( value ) => setActiveTab( value )}
+							panelName={'advanced-form-submit'}
+							setActiveTab={ setActiveTab }
 							activeTab={ activeTab}
 						/>
 

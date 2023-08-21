@@ -84,6 +84,8 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"kbContentLabel": "label"

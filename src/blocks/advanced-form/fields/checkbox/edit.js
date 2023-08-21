@@ -166,8 +166,8 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-checkbox-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-checkbox'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>

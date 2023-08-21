@@ -372,6 +372,10 @@ const mfConditionalFields = (forms, options = {}) => {
 					return isNaN(searchVal) || isNaN(targetVal) ? false : Number(searchVal) > Number(targetVal);
 				case "lessthan":
 					return isNaN(searchVal) || isNaN(targetVal) ? false : Number(searchVal) < Number(targetVal);
+				case "equalgreaterthan":
+					return isNaN(searchVal) || isNaN(targetVal) ? false : Number(searchVal) >= Number(targetVal);
+				case "equallessthan":
+					return isNaN(searchVal) || isNaN(targetVal) ? false : Number(searchVal) <= Number(targetVal);
 				case "contains":
 					return searchVal.includes(targetVal);
 				case "doesnotcontain":
