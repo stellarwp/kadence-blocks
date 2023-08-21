@@ -495,7 +495,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'mf-conditional-fields', KADENCE_BLOCKS_URL . 'includes/assets/js/mf-conditional-fields.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 		wp_localize_script(
 			'kadence-blocks-' . $this->block_name,
@@ -532,10 +531,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
 				$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
 			}
-		}
-
-		if ( true ) {
-			$this->enqueue_script( 'mf-conditional-fields' );
 		}
 	}
 }
