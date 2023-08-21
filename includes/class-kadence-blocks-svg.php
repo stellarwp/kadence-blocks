@@ -194,7 +194,7 @@ class Kadence_Blocks_Svg_Render {
 			if ( is_array( $size ) ) {
 				$image[1] = $size[0];
 				$image[2] = $size[1];
-			} elseif ( ini_get('allow_url_fopen') && ( $xml = simplexml_load_file( $image[0] ) ) !== false ) {
+			} elseif ( ini_get( 'allow_url_fopen' ) && ( $xml = simplexml_load_file( $image[0] ) ) !== false ) {
 				$attr = $xml->attributes();
 				$viewbox = explode( ' ', $attr->viewBox );
 				$image[1] = isset( $attr->width ) && preg_match( '/\d+/', $attr->width, $value ) ? (int) $value[0] : ( count( $viewbox ) == 4 ? (int) $viewbox[2] : null );

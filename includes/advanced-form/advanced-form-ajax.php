@@ -285,7 +285,7 @@ class KB_Ajax_Advanced_Form {
 				);
 				if ( isset( $file_upload['url'] ) ) {
 					$this->add_htaccess_to_uploads_root();
-					$value = $this->get_downloader_url( $file_upload['url'] );
+					$value = $file_upload['url'];
 				} else {
 					if ( ! empty( $file_upload['error'] ) ) {
 						$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );

@@ -208,6 +208,8 @@ function KadenceTableOfContents( props ) {
 	const titleMouseOver = mouseOverVisualizer();
 	const contentMouseOver = mouseOverVisualizer();
 	useEffect( () => {
+		setBlockDefaults( 'kadence/tableofcontents', attributes);
+
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {

@@ -106,8 +106,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_color_output( $background_style, 'background', 'background' );
 		}
-		$maxWidthUnit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit']  : 'px';
-		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $maxWidthUnit );
+		$max_width_unit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit'] : 'px';
+		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $max_width_unit );
 
 		// Input Styles
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form' );
@@ -305,8 +305,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'mobileMessageBorderSuccess' => array( ! empty( $form_attributes['mobileMessageBorderSuccess'] ) ? $form_attributes['mobileMessageBorderSuccess'] : array() ),
 		);
 		$css->render_border_styles( $border_style, 'messageBorderSuccess' );
-		$css->render_color_output( $form_attributes, 'messageColorSuccess', 'color' );
-		$css->render_color_output( $form_attributes, 'messageBackgroundSuccess', 'background' );
+		$css->render_color_output( $form_attributes, 'messageColor', 'color' );
+		$css->render_color_output( $form_attributes, 'messageBackground', 'background' );
 		// Error.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-warning' );
 		$border_style = array(
