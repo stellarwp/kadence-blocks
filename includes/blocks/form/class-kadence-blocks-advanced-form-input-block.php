@@ -274,58 +274,6 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	}
 
 	/**
-	 * Build the conditional attribute from an input attribtues
-	 *
-	 * @param array $attributes The block attributes.
-	 *
-	 * @return string
-	 */
-	public function build_conditional_attribute( $attributes ) {
-
-		$name = 'field5040e6-c9';
-		$operator = 'is';
-		$value = 'yes';
-		$logic = 'or';
-		$container = '';
-
-		$conditions_string = $this->get_conditional_rules_string(
-			'hide',
-			array(
-				'name' => $name,
-				'operator' => $operator,
-				'value' => $value,
-			),
-			$logic,
-			$container,
-		);
-
-		return 'data-conditional-rules="' . $conditions_string . '" ';
-	}
-
-	/**
-	 * Build a formatted, json encoded string for the conditional rules.
-	 *
-	 * @param string $action The action to execture when the rules match.
-	 * @param array  $rules The rules that trigger the action. should contain a 'name', 'operator', and 'value'.
-	 * @param string $logic The logic to combine the rules together.
-	 * @param string $container An optional container query selector to apply the action to in place of the field.
-	 *
-	 * @return string
-	 */
-	public function get_conditional_rules_string( $action, $rules, $logic = 'or', $container = '' ) {
-		return htmlspecialchars(
-			json_encode(
-				array(
-					'container' => $container,
-					'action' => $action,
-					'logic' => $logic,
-					'rules' => $rules,
-				)
-			)
-		);
-	}
-
-	/**
 	 * Get any additonal attributes to be applied to the form <input /> element
 	 *
 	 * @param array $attributes The block attributes.
@@ -335,7 +283,6 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function additional_field_attributes( $attributes ) {
 		$additional_attributes = '';
 		$additional_attributes .= $this->a11y_helpers( $attributes );
-		$additional_attributes .= $this->build_conditional_attribute( $attributes );
 
 		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
 	}

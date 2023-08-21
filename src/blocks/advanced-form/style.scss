@@ -228,6 +228,10 @@
 		&.kb-submit-field {
 			flex-direction: initial;
 		}
+
+		&[hidden] {
+			display: none;
+		}
 	}
 
 	.kb-form-multi {
