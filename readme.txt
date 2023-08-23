@@ -101,6 +101,8 @@ developers of this plugin.
 Release Date: August 23rd, 2023
 * Fix: Some row layouts in forms.
 * Fix: Issue when using URL parameters in advanced forms.
+* Fix: Issue with gradient shape select.
+* Fix: Notice on widgets page.
 
 = 3.1.12 =
 Release Date: August 17th, 2023
