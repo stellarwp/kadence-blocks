@@ -17,12 +17,15 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 } from '@kadence/components';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	store as editorStore,
+	useBlockProps,
+	InspectorControls
+} from '@wordpress/block-editor';
 import {
 	Placeholder,
 	Spinner,
