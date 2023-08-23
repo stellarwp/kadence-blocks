@@ -22,7 +22,6 @@ import {
 	KadencePanelBody,
 } from '@kadence/components';
 import {
-	store as editorStore,
 	useBlockProps,
 	InspectorControls
 } from '@wordpress/block-editor';
@@ -67,8 +66,8 @@ export function Edit( props ) {
 		( select ) => {
 			return {
 				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_form', id ),
-				currentPostType: select( editorStore ).getCurrentPostType(),
-				postId: select( editorStore ).getCurrentPostId(),
+				currentPostType: select( 'core/editor' ).getCurrentPostType(),
+				postId: select( 'core/editor' ).getCurrentPostId(),
 			}
 		},
 		[ id ],
