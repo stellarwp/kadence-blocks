@@ -155,7 +155,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		if ( ! empty( $attributes['defaultParameter'] ) ) {
 			if ( isset( $_GET[ $attributes['defaultParameter'] ] ) ) {
-				$default = sanitize_text_field( wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
+				$default = sanitize_text_field( kadence_blocks_wc_clean( wp_unslash( $_GET[ $attributes['defaultParameter'] ] ) ) );
 			}
 		}
 

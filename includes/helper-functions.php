@@ -116,3 +116,18 @@ function kadence_apply_aos_wrapper_args( $attributes, &$wrapper_args ) {
 
 	return $wrapper_args;
 }
+
+/**
+ * Clone of WooCommerce wc_clean function.
+ *
+ * @param $var
+ *
+ * @return array|mixed
+ */
+function kadence_blocks_wc_clean( $var ) {
+	if ( is_array( $var ) ) {
+		return array_map( 'kadence_blocks_wc_clean', $var );
+	} else {
+		return is_scalar( $var ) ? sanitize_text_field( $var ) : $var;
+	}
+}
