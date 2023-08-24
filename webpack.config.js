@@ -32,6 +32,7 @@ module.exports = {
 		'blocks-accordion': './src/blocks/accordion/block.js',
 		'blocks-iconlist': './src/blocks/iconlist/block.js',
 		'blocks-advancedgallery': './src/blocks/advancedgallery/block.js',
+		'blocks-advancednavigation': './src/blocks/advancednavigation/block.js',
 		'blocks-form': './src/blocks/form/block.js',
 		'blocks-tableofcontents': './src/blocks/tableofcontents/index.js',
 		'blocks-posts': './src/blocks/posts/block.js',

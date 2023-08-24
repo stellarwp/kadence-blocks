@@ -64,6 +64,7 @@ function kadence_gutenberg_editor_assets() {
 		'advancedbtn',
 		'advancedgallery',
 		'advancedheading',
+		'advancednavigation',
 		'column',
 		'countup',
 		'countdown',

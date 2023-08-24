@@ -1,0 +1,89 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "title": "Advanced Navigation",
+  "description": "Create an advanced navigation menu for your website.",
+  "name": "kadence/advancednavigation",
+  "category": "kadence-blocks",
+  "attributes": {
+	"uniqueID": {
+	  "type": "string"
+	},
+	"inQueryBlock": {
+		"type": "boolean",
+		"default": false
+	},
+	"anchor": {
+		"type": "string"
+	},
+	"padding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"tabletPadding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"mobilePadding": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"paddingType": {
+		"type": "string",
+		"default": "px"
+	},
+	"margin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"tabletMargin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"mobileMargin": {
+		"type": "array",
+		"default": [
+			"",
+			"",
+			"",
+			""
+		]
+	},
+	"marginType": {
+		"type": "string",
+		"default": "px"
+	}
+  },
+  "supports": {
+	"html": false,
+	"className": true,
+	"anchor": true,
+    "kbMetadata": true,
+	"ktdynamic": true
+  }
+}
