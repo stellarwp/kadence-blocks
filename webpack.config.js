@@ -46,6 +46,7 @@ module.exports = {
 		'early-filters': './src/early-filters.js',
 		'extension-kadence-base': './src/extension/kadence-base/index.js',
 		'extension-stores': './src/extension/stores/index.js',
+		'navigation-store': './src/extension/navigation-store/index.js',
 		'extension-block-css': './src/extension/block-css/index.js',
 	},
 	output: {

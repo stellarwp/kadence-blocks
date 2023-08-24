@@ -56,6 +56,11 @@ import {
 	BlockControls,
 } from '@wordpress/block-editor';
 
+import { 
+	store as editNavigationStore,
+	useNavigationEditor 
+} from '../../extension/navigation-store';
+
 /**
  * Build Kadence Navigation Block.
  */
@@ -110,6 +115,22 @@ function KadenceAdvancedNavigation( props ) {
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
+
+	const { saveNavigationPost } = useDispatch( editNavigationStore );
+
+	const {
+		menus,
+		hasLoadedMenus,
+		hasFinishedInitialLoad,
+		selectedMenuId,
+		navigationPost,
+		isMenuBeingDeleted,
+		selectMenu,
+		deleteMenu,
+		isMenuSelected,
+	} = useNavigationEditor();
+
+	const savePost = () => saveNavigationPost( navigationPost );
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
