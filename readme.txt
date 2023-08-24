@@ -98,11 +98,12 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.13 =
-Release Date: August 23rd, 2023
+Release Date: August 24th, 2023
 * Fix: Some row layouts in forms.
 * Fix: Issue when using URL parameters in advanced forms.
 * Fix: Issue with gradient shape select.
-* Fix: Notice on widgets page.
+* Fix: WP notice about wp-editor on widgets page.
+* Fix: Issue with not being able to select a gallery photo in the editor when caption covered.
 
 = 3.1.12 =
 Release Date: August 17th, 2023

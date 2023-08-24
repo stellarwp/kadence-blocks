@@ -232,6 +232,10 @@
 	left: 0px;
 }
 
+.kb-gallery-figure:not(.is-selected) .kb-gal-image-radius .kadence-blocks-gallery-item__caption {
+    pointer-events: none;
+}
+
 .kadence-blocks-gallery-item__move-backward,
 .kadence-blocks-gallery-item__move-forward,
 .kadence-blocks-gallery-item__remove {
