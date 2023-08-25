@@ -500,7 +500,6 @@ export function Edit( props ) {
 								max={1000}
 								step={( decimal === 'two' ? 0.01 : ( decimal === 'one' ? 0.1 : 1 ) ) }
 							/>
-
 						</KadencePanelBody>
 
 						<KadencePanelBody
