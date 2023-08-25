@@ -1171,7 +1171,7 @@ function KadenceCountdown( props ) {
 							<>
 								<KadencePanelBody panelName={'kb-countdown-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Container Padding', 'kadence-blocks' )}
+										label={__( 'Padding', 'kadence-blocks' )}
 										value={containerPadding}
 										tabletValue={containerTabletPadding}
 										mobileValue={containerMobilePadding}
@@ -1188,7 +1188,7 @@ function KadenceCountdown( props ) {
 										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Container Margin', 'kadence-blocks' )}
+										label={__( 'Margin', 'kadence-blocks' )}
 										value={containerMargin}
 										tabletValue={containerTabletMargin}
 										mobileValue={containerMobileMargin}
