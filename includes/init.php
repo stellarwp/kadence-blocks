@@ -28,10 +28,10 @@ function kadence_gutenberg_editor_assets() {
 
 	$kadence_base = kadence_blocks_get_asset_file( 'dist/extension-kadence-base' );
 	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/extension-kadence-base.js', array_merge( $kadence_base['dependencies'], array( 'wp-api' ) ), $kadence_base['version'], true );
-	// Block CSS Scripts & Styles.
+
+	// Block data store.
 	$kadence_stores_meta = kadence_blocks_get_asset_file( 'dist/extension-stores' );
 	wp_register_script( 'kadence-extension-stores', KADENCE_BLOCKS_URL . 'dist/extension-stores.js', array_merge( $kadence_stores_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_stores_meta['version'], true );
-	// wp_register_style( 'kadence-extension-stores', KADENCE_BLOCKS_URL . 'dist/extension/stores.css', array( 'wp-edit-blocks' ), $kadence_stores_meta['version'] );
 	wp_set_script_translations( 'kadence-extension-stores', 'kadence-blocks' );
 
 	// Helpers Scripts & Styles.

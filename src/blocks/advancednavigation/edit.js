@@ -42,7 +42,7 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
-	CopyPasteAttributes
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 import {
@@ -51,15 +51,22 @@ import {
 } from '@wordpress/element';
 
 import {
+	Button
+} from '@wordpress/components';
+
+import {
 	useBlockProps,
 	InspectorControls,
 	BlockControls,
+	RichText
 } from '@wordpress/block-editor';
 
 import { 
 	store as editNavigationStore,
 	useNavigationEditor 
 } from '../../extension/navigation-store';
+
+import { store as coreStore, useEntityRecords } from '@wordpress/core-data';
 
 /**
  * Build Kadence Navigation Block.
@@ -81,6 +88,9 @@ function KadenceAdvancedNavigation( props ) {
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ menuTitleState, setMenuTitleState ] = useState( '' );
+	const [ menuItemTitleState, setMenuItemTitleState ] = useState( '' );
+	const [ selectedMenuId, setSelectedMenuId ] = useState( 0 );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -117,20 +127,80 @@ function KadenceAdvancedNavigation( props ) {
 	}, [] );
 
 	const { saveNavigationPost } = useDispatch( editNavigationStore );
+	const { editEntityRecord } = useDispatch( coreStore );
+	const { saveEditedEntityRecord } = useDispatch( coreStore );
 
-	const {
-		menus,
-		hasLoadedMenus,
-		hasFinishedInitialLoad,
-		selectedMenuId,
-		navigationPost,
-		isMenuBeingDeleted,
-		selectMenu,
-		deleteMenu,
-		isMenuSelected,
-	} = useNavigationEditor();
+	const { menus } = useSelect(
+		( select ) => {
+			const { getMenus } = select( coreStore );
 
-	const savePost = () => saveNavigationPost( navigationPost );
+			return {
+				menus: getMenus()
+			}
+		},
+		[]
+	);
+
+	const { menuItems, hasResolvedMenuItems = false } = useSelect(
+		( select ) => {
+			if ( ! selectedMenuId ) {
+				return {};
+			}
+
+			const { getMenuItems, hasFinishedResolution } = select( coreStore );
+
+			const query = {
+				menus: selectedMenuId,
+				per_page: -1,
+			};
+
+			return {
+				menuItems: getMenuItems( query ),
+				hasResolvedMenuItems: hasFinishedResolution( 'getMenuItems', [
+					query,
+				] ),
+			};
+		},
+		[ selectedMenuId ]
+	);	
+	
+	useEffect( () => {
+		if ( ! selectedMenuId && menus?.length ) {
+			//selectMenu( menus[ 0 ].id );
+			setSelectedMenuId( menus[0].id );
+		}
+	}, [ selectedMenuId, menus ] );
+
+
+	const saveMenuItem = () => {
+		console.log('saving');
+
+		if ( menus?.[0] && menuItems?.[0] ) {
+			const menu = menus?.[0];
+			const menuItem = menuItems?.[0];
+
+			var newMenu = { ...menu};
+			var newMenuItem = { ...menuItem};
+
+			newMenu.name = menuTitleState;
+			newMenuItem.title.raw = menuItemTitleState;
+
+			console.log('recording', newMenu, newMenuItem )
+
+			editEntityRecord( 'root', 'menu', newMenu.id, newMenu, {
+				undoIgnore: true,
+			} );
+			editEntityRecord( 'root', 'menuItem', newMenuItem.id, newMenuItem, {
+				undoIgnore: true,
+			} );
+
+			saveEditedEntityRecord( 'root', 'menu', menu.id )
+			saveEditedEntityRecord( 'root', 'menuItem', menuItem.id )
+		}
+	}
+
+	console.log(1, menus, menuItems)
+	console.log(2, menuItems?.[0].meta['_kad_mega_menu_width'])
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -162,16 +232,7 @@ function KadenceAdvancedNavigation( props ) {
 	} );
 
 	return (
-		<div {...blockProps} style={ {
-			paddingLeft: ( undefined !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) : undefined ),
-			paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingType ) : undefined ),
-			paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingType ) : undefined ),
-			paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ) : undefined ),
-			marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
-			marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
-			marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
-			marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
-		} }>
+		<div {...blockProps} >
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={ attributes }
@@ -247,8 +308,40 @@ function KadenceAdvancedNavigation( props ) {
 					</>
 				)}
 			</InspectorControls>
+			<div style={ {
+				paddingLeft: ( undefined !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, previewPaddingType ) : undefined ),
+				paddingRight: ( undefined !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, previewPaddingType ) : undefined ),
+				paddingTop: ( undefined !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, previewPaddingType ) : undefined ),
+				paddingBottom: ( undefined !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, previewPaddingType ) : undefined ),
+				marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, previewMarginType ) : undefined ),
+				marginRight: ( undefined !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, previewMarginType ) : undefined ),
+				marginTop: ( undefined !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, previewMarginType ) : undefined ),
+				marginBottom: ( undefined !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, previewMarginType ) : undefined ),
+			} } >
 			
-			Block Content
+				Menu Name:
+				<RichText
+					onChange={( value ) => {
+						setMenuTitleState(value)
+					}}
+					placeholder={__( 'Menu Name', 'kadence-blocks' )}
+					value={menus?.[0]?.name}
+				/>
+				Menu Item Title:
+				<RichText
+					onChange={( value ) => {
+						setMenuItemTitleState(value)
+					}}
+					placeholder={__( 'Menu Item Title', 'kadence-blocks' )}
+					value={menuItems?.[0]?.title?.rendered}
+				/>
+				<Button
+					onClick={ saveMenuItem } 
+					variant="primary"
+				>
+					Save
+				</Button>
+			</div>
 
 			<SpacingVisualizer
 				type="outside"

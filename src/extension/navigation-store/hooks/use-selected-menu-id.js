@@ -17,7 +17,7 @@ export default function useSelectedMenuId() {
 		useSelect(
 			( select ) =>
 				select( preferencesStore ).get(
-					'core/edit-navigation',
+					'kadence/edit-navigation',
 					'selectedMenuId'
 				),
 			[]
@@ -25,7 +25,7 @@ export default function useSelectedMenuId() {
 
 	const { set } = useDispatch( preferencesStore );
 	const setSelectedMenuId = useCallback(
-		( menuId ) => set( 'core/edit-navigation', 'selectedMenuId', menuId ),
+		( menuId ) => set( 'kadence/edit-navigation', 'selectedMenuId', menuId ),
 		[ set ]
 	);
 

@@ -36,7 +36,7 @@ export const NAVIGATION_POST_POST_TYPE = 'navigationPost';
  *
  * @type {string}
  */
-export const SIDEBAR_SCOPE = 'core/edit-navigation';
+export const SIDEBAR_SCOPE = 'kadence/edit-navigation';
 
 /**
  * The identifier of the editor's menu complementary area.
