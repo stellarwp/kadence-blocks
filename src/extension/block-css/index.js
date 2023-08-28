@@ -107,6 +107,7 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 							enableSnippets: true,
 							showLineNumbers: true,
 							tabSize: 2,
+							useWorker: false,
 						} }
 					/>
 					{ /* translators: The %s is for selector code */ }
@@ -168,6 +169,7 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 										enableSnippets: true,
 										showLineNumbers: true,
 										tabSize: 2,
+										useWorker: false,
 									} }
 								/>
 								<p style={ { marginBottom: 20 } } />
