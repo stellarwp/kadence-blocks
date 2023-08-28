@@ -5,6 +5,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-css";
 import 'ace-builds/src-noconflict/snippets/css';
 import "ace-builds/src-noconflict/theme-textmate";
+import "ace-builds/src-noconflict/ext-language_tools";
 import { assign } from 'lodash';
  /**
  * Import WordPress Internals
@@ -100,14 +101,13 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 						maxLines={ undefined }
 						minLines={ undefined }
 						width="100%"
-						height="calc( 100% - 50px)"
+						height="calc(55vh - 50px)"
 						setOptions={ {
 							enableBasicAutocompletion: true,
 							enableLiveAutocompletion: true,
 							enableSnippets: true,
 							showLineNumbers: true,
-							tabSize: 2,
-							useWorker: false,
+							tabSize: 2
 						} }
 					/>
 					{ /* translators: The %s is for selector code */ }
@@ -168,8 +168,7 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 										enableLiveAutocompletion: true,
 										enableSnippets: true,
 										showLineNumbers: true,
-										tabSize: 2,
-										useWorker: false,
+										tabSize: 2
 									} }
 								/>
 								<p style={ { marginBottom: 20 } } />
