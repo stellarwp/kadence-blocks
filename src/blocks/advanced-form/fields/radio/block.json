@@ -82,6 +82,7 @@
 	"html": false,
 	"reusable": false,
 	"kbMetadata": true,
+	"ktdynamic": true,
 	"kbContentLabel": "label"
   },
   "parent": [ "kadence/advanced-form" ]

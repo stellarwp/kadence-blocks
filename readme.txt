@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.14 =
+Release Date: September TBD, 2023
+* Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
+
 = 3.1.13 =
 Release Date: August 24th, 2023
 * Fix: Some row layouts in forms.
