@@ -684,4 +684,18 @@
 	.kb-field-rule-add {
 		margin-top: 10px;
 	}
+
+	.kb-time-only {
+		.components-datetime__time {
+			.components-datetime__time-field .components-base-control {
+				margin-bottom: 0;
+			}
+			.components-button-group button {
+				padding: 5px;
+			}
+			fieldset:nth-child(2) {
+				display: none;
+			}
+		}
+	}
 }

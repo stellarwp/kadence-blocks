@@ -222,7 +222,7 @@ export function EditInner( props ) {
 	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
 	useEffect( () => {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
-			let currentFields = getFormFields( formInnerBlocks );
+			let currentFields = getFormFields( formInnerBlocks, id );
 			if ( ! isEqual( fields, currentFields ) ) {
 				setMetaAttribute( currentFields, 'fields' );
 			}
