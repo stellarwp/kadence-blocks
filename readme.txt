@@ -102,6 +102,7 @@ Release Date: September TBD, 2023
 * Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
 * Fix: Editing custom CSS in modal for Kadence Blocks Pro
 * Fix: Autocomplete in CSS editor for Kadence Blocks Pro
+* Fix: Accept field recording in advanced forms.
 
 = 3.1.13 =
 Release Date: August 24th, 2023
