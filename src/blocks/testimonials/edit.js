@@ -716,6 +716,8 @@ function KadenceTestimonials( props ) {
         if( style === 'bubble' || style === 'inlineimage' ) {
             applyTo = '.kt-testimonial-text-wrap';
         }
+        let shadowCarousel = ( displayShadow && layout && layout === 'carousel' );
+        let wrapperPaddingTopBottomApplyTo =  shadowCarousel ? '.kt-blocks-testimonials-wrap' + uniqueID + ' .splide__slide' : '.kt-blocks-testimonials-wrap' + uniqueID;
 
         return (
             <style>
@@ -739,10 +741,12 @@ function KadenceTestimonials( props ) {
                         ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
                         ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
 					}
+                    ${wrapperPaddingTopBottomApplyTo} {
+						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-top: .5rem;' : '' }
+						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-bottom: .5rem;' : '' }
+                    }
 					.kt-blocks-testimonials-wrap${uniqueID} {
-						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
-						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                         ${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
 						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
