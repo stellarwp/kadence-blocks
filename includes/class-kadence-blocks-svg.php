@@ -47,7 +47,12 @@ class Kadence_Blocks_Svg_Render {
 	 */
 	public function __construct() {
 		add_filter( 'render_block', array( $this, 'render_icons_dynamically' ), 10, 2 );
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+
+		$svg_settings = get_option( 'kadence_blocks_svg_settings' );
+		$svg_fix_setting = ( $svg_settings && isset( $svg_settings['svg_fix'] ) && 'true' == $svg_settings['svg_fix'] );
+		if ( apply_filters( 'kadence_blocks_fix_svg_dimensions', $svg_fix_setting ) ) {
+			add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		}
 	}
 	/**
 	 * On build convert icons into svgs.
