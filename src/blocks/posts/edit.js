@@ -43,7 +43,8 @@ import {
 	InspectorControlTabs,
 	KadenceInspectorControls,
 	KadenceBlockDefaults,
-	CopyPasteAttributes
+	CopyPasteAttributes,
+	TaxonomySelect
 } from '@kadence/components';
 import { dateI18n, format, getSettings as getDateSettings } from '@wordpress/date';
 import {
@@ -73,7 +74,7 @@ import { decodeEntities } from '@wordpress/html-entities';
  * Build Kadence Posts Block.
  */
 function KadencePosts( props ) {
-	const { attributes, className, setAttributes, taxList, taxOptions, taxFilterOptions, getPreviewDevice, clientId } = props;
+	const { attributes, className, setAttributes, taxFilterOptions, getPreviewDevice, clientId } = props;
 
 	const {
 		uniqueID,
@@ -166,6 +167,37 @@ function KadencePosts( props ) {
 			} );
 	};
 
+	const getTaxonomyTerms = ( taxonomy ) => {
+		if(taxonomy && typeof(window.kbpData.taxonomies[taxonomy]) == 'undefined' && ! window.kbpData.taxonomies[taxonomy]){
+			setFilterLoaded( false );
+
+			const options = {
+				source: taxonomy,
+				page: 1,
+				per_page: 50,
+			};
+			apiFetch( {
+				path: addQueryArgs(
+					window.kbpData.termEndpoint,
+					options
+				),
+			} )
+			.then( ( taxonomyItems ) => {
+				if ( ! taxonomyItems ) {
+					window.kbpData.taxonomies[taxonomy] = [];
+				} else {
+					window.kbpData.taxonomies[taxonomy] = taxonomyItems;
+				}
+				setFilterLoaded( true );
+			} )
+			.catch( () => {
+				window.kbpData.taxonomies[taxonomy] = [];
+				setFilterLoaded( true );
+			} );
+		}
+	}
+	const debouncedGetTaxonomyTerms = debounce( getTaxonomyTerms, 200 );
+
 	useEffect( () => {
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
@@ -178,6 +210,10 @@ function KadencePosts( props ) {
 		}
 
 		getPosts();
+		
+		if ( filterTaxType ) {
+			getTaxonomyTerms( filterTaxType );
+		}
 	}, [] );
 
 	useEffect( () => {
@@ -185,26 +221,83 @@ function KadencePosts( props ) {
 		getPosts();
 	}, [ postType, taxType, offsetQuery, postTax, excludeTax, allowSticky, orderBy, order, categories, tags, postsToShow ] );
 
+	useEffect( () => {
+		debouncedGetTaxonomyTerms( attributes['filterTaxType'] );
+	}, [ filterTaxType, filterTaxSelect ] );
+
 	const blockProps = useBlockProps();
 
-	const taxonomyList = [];
-	const taxonomyOptions = [];
+
 	const taxonomyFilterOptions = [];
-	if ( undefined !== taxList && 0 !== Object.keys( taxList ).length ) {
-		Object.keys( taxList ).map( ( item, theindex ) => {
-			return taxonomyList.push( { value: taxList[ item ].name, label: taxList[ item ].label } );
-		} );
-	}
-	if ( undefined !== taxOptions && 0 !== Object.keys( taxOptions ).length ) {
-		Object.keys( taxOptions ).map( ( item, theindex ) => {
-			return taxonomyOptions.push( { value: taxOptions[ item ].value, label: taxOptions[ item ].label } );
-		} );
-	}
+
 	if ( undefined !== taxFilterOptions && 0 !== Object.keys( taxFilterOptions ).length ) {
 		Object.keys( taxFilterOptions ).map( ( item, theindex ) => {
 			return taxonomyFilterOptions.push( { value: taxFilterOptions[ item ].value, label: taxFilterOptions[ item ].label } );
 		} );
 	}
+
+	const getTaxSelectValue = ( forFilter = false ) => {
+		let tempCategories = [];
+		if ( forFilter ) {
+			if( filterTaxSelect.length == 0 ) {
+				return filterTaxType;
+			}
+
+			tempCategories = filterTaxSelect.map( (category) => {
+				return {
+					value: filterTaxType + '|' + category.value,
+					label: category.label
+				}
+			});
+		} else {
+			tempCategories = categories.map( (category) => {
+				return {
+					value: taxType + '|' + category.value,
+					label: category.label
+				}
+			});
+		}
+		return tempCategories;
+	};
+
+	const saveTaxSelectValue = ( value, forFilter = false ) => {
+		if ( value && typeof(value) == 'object' ) {
+			let tempTax = '';
+			let tempCategories = [];
+			value.forEach(term => {
+				let tempTerm = [];
+				[tempTax, tempTerm]= term.value.split('|');
+				let tempCategory = {
+					value: tempTerm,
+					label: term.label
+				}
+				tempCategories.push(tempCategory);
+			});
+			if ( forFilter ) {
+				setAttributes({filterTaxType: tempTax});
+				setAttributes({filterTaxSelect: tempCategories});
+			} else {
+				setAttributes({taxType: tempTax});
+				setAttributes({categories: tempCategories});
+			}
+		} else if ( value && typeof(value) == 'string' ) {
+			if ( forFilter ) {
+				setAttributes({filterTaxType: value});
+				setAttributes({filterTaxSelect: []});
+			} else {
+				setAttributes({taxType: value});
+				setAttributes({categories: []});
+			}
+		} else {
+			if ( forFilter ) {
+				setAttributes({filterTaxType: ''});
+				setAttributes({filterTaxSelect: []});
+			} else {
+				setAttributes({taxType: ''});
+				setAttributes({categories: []});
+			}
+		}
+	};
 
 	let aboveSymbol;
 	if ( 'dash' === categoriesDivider ) {
@@ -355,55 +448,31 @@ function KadencePosts( props ) {
 							/>
 							{( ( postType && postType !== 'post' ) || postTax ) && (
 								<>
-									{( undefined !== taxonomyList && 0 !== taxonomyList.length ) && (
+									<Fragment>
 										<div className="term-select-form-row">
-											<label htmlFor={'tax-selection'} className="screen-reader-text">
-												{__( 'Select Taxonomy', 'kadence-blocks' )}
-											</label>
-											<Select
-												value={taxonomyList.filter( ( { value } ) => value === taxType )}
-												onChange={( select ) => {
-													setAttributes( { taxType: ( select && select.value ? select.value : '' ), categories: [] } );
-												}}
-												id={'tax-selection'}
-												options={taxonomyList}
-												isMulti={false}
-												isClearable={true}
-												maxMenuHeight={300}
-												placeholder={__( 'Select Taxonomy', 'kadence-blocks' )}
+											<TaxonomySelect
+												label={ __( 'Select Taxonomy', 'kadence-blocks-pro' ) }
+												value={ getTaxSelectValue( true ) }
+												source={ postType }
+												termIsMulti={ true }
+												termIsOptional={ false }
+												onChange={ ( val ) => {
+													saveTaxSelectValue( val, true );
+												} }
 											/>
 										</div>
-									)}
-									{( undefined !== taxonomyOptions && 0 !== taxonomyOptions.length ) && (
-										<>
-											<div className="term-select-form-row">
-												<label htmlFor={'terms-selection'} className="screen-reader-text">
-													{__( 'Select Terms', 'kadence-blocks' )}
-												</label>
-												<Select
-													value={categories}
-													onChange={( value ) => {
-														setAttributes( { categories: ( value ? value : [] ) } );
-													}}
-													id={'terms-selection'}
-													options={taxonomyOptions}
-													isMulti={true}
-													isClearable={true}
-													maxMenuHeight={300}
-													placeholder={__( 'Select', 'kadence-blocks' )}
-												/>
-											</div>
-											<RadioControl
-												help={__( 'Whether to include or exclude items from selected terms.', 'kadence-blocks' )}
-												selected={( undefined !== excludeTax ? excludeTax : 'include' )}
-												options={[
-													{ label: __( 'Include', 'kadence-blocks' ), value: 'include' },
-													{ label: __( 'Exclude', 'kadence-blocks' ), value: 'exclude' },
-												]}
-												onChange={( value ) => setAttributes( { excludeTax: value } )}
-											/>
-										</>
-									)}
+									</Fragment>
+									<Fragment>
+										<RadioControl
+											help={__( 'Whether to include or exclude items from selected terms.', 'kadence-blocks' )}
+											selected={( undefined !== excludeTax ? excludeTax : 'include' )}
+											options={[
+												{ label: __( 'Include', 'kadence-blocks' ), value: 'include' },
+												{ label: __( 'Exclude', 'kadence-blocks' ), value: 'exclude' },
+											]}
+											onChange={( value ) => setAttributes( { excludeTax: value } )}
+										/>
+									</Fragment>
 									{( !postType || postType === 'post' ) && (
 										<ToggleControl
 											label={__( 'Select the post Taxonomy', 'kadence-blocks' )}
@@ -1111,23 +1180,8 @@ function KadencePosts( props ) {
 }
 
 export default withSelect( ( select, props ) => {
-	const { postTax, postType, taxType } = props.attributes;
-	const theType = ( postType ? postType : 'post' );
-	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
-	let taxonomyOptions = [];
-	if ( theType !== 'post' || postTax ) {
-		if ( 'undefined' !== typeof taxonomies[ theType ] ) {
-			if ( taxType ) {
-				if ( taxonomies[ theType ].terms && taxonomies[ theType ].terms[ taxType ] ) {
-					taxonomyOptions = taxonomies[ theType ].terms[ taxType ];
-				}
-			}
-		}
-	}
 
 	return {
-		taxList         : taxonomyList,
-		taxOptions      : taxonomyOptions,
 		getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 	};
 } )( KadencePosts );

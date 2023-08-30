@@ -262,7 +262,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'bodyWeights'    => apply_filters( 'kadence_blocks_default_body_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_body_weights() : null ) ),
 			'buttonWeights'  => apply_filters( 'kadence_blocks_default_button_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null ) ),
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'taxonomies'     => kadence_blocks_get_taxonomies(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
