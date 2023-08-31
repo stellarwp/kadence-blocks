@@ -345,39 +345,6 @@ function kadence_blocks_get_asset_file( $filepath ) {
 }
 
 /**
- * Setup the post type taxonomies for post blocks.
- *
- * @return array
- */
-function kadence_blocks_get_taxonomies() {
-	$post_types = kadence_blocks_get_post_types();
-	$output = array();
-	foreach ( $post_types as $key => $post_type ) {
-		$taxonomies = get_object_taxonomies( $post_type['value'], 'objects' );
-		$taxs = array();
-		foreach ( $taxonomies as $term_slug => $term ) {
-			if ( ! $term->public || ! $term->show_ui ) {
-				continue;
-			}
-			$taxs[ $term_slug ] = $term;
-			$terms = get_terms( $term_slug );
-			$term_items = array();
-			if ( ! empty( $terms ) ) {
-				foreach ( $terms as $term_key => $term_item ) {
-					$term_items[] = array(
-						'value' => $term_item->term_id,
-						'label' => $term_item->name,
-					);
-				}
-				$output[ $post_type['value'] ]['terms'][ $term_slug ] = $term_items;
-			}
-		}
-		$output[ $post_type['value'] ]['taxonomy'] = $taxs;
-	}
-	return apply_filters( 'kadence_blocks_taxonomies', $output );
-}
-
-/**
  * Setup the post type options for post blocks.
  *
  * @return array
