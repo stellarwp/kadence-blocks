@@ -43,7 +43,7 @@ export default function TaxonomySelect( {
 	useEffect( () => {
 		let theSource = source ? source : contextPost;
 		if ( wp.data.select( 'core/editor' ) && ! theSource ) {
-			if ( kbpData.isKadenceE && kadenceElementParams.previewPostID ) {
+			if ( kadence_blocks_params.isKadenceE && kadenceElementParams.previewPostID ) {
 				const postId = TryParseJSON( kadenceElementParams.previewPostID );
 				theSource = postId && postId.id ? postId.id : '';
 			} else {
@@ -56,7 +56,7 @@ export default function TaxonomySelect( {
 		setIsLoading( true );
 		apiFetch( {
 			path: addQueryArgs(
-				window.kbpData.taxonomiesEndpoint,
+				window.kadence_blocks_params.taxonomiesEndpoint,
 				options
 			),
 		} )
@@ -106,7 +106,7 @@ export default function TaxonomySelect( {
 				menuPortalTarget={ document.body }
 				styles={ customStyles }
 				maxMenuHeight={ 200 }
-				placeholder={ __( 'Select Taxonomy', 'kadence-blocks-pro' ) }
+				placeholder={ __( 'Select Taxonomy', 'kadence-blocks' ) }
 				onChange={ ( val ) => {
 					if ( taxOnly || termIsOptional ) {
 						if ( ! val ) {

@@ -169,7 +169,7 @@ function KadencePosts( props ) {
 	};
 
 	const getTaxonomyTerms = ( taxonomy ) => {
-		if ( taxonomy && typeof( window.kbpData.taxonomies[ taxonomy ] ) == 'undefined' && ! window.kbpData.taxonomies[ taxonomy ] ){
+		if ( taxonomy && typeof( window.kadence_blocks_params.taxonomies[ taxonomy ] ) == 'undefined' && ! window.kadence_blocks_params.taxonomies[ taxonomy ] ){
 			const options = {
 				source: taxonomy,
 				page: 1,
@@ -177,19 +177,19 @@ function KadencePosts( props ) {
 			};
 			apiFetch( {
 				path: addQueryArgs(
-					window.kbpData.termEndpoint,
+					window.kadence_blocks_params.termEndpoint,
 					options
 				),
 			} )
 			.then( ( taxonomyItems ) => {
 				if ( ! taxonomyItems ) {
-					window.kbpData.taxonomies[taxonomy] = [];
+					window.kadence_blocks_params.taxonomies[taxonomy] = [];
 				} else {
-					window.kbpData.taxonomies[taxonomy] = taxonomyItems;
+					window.kadence_blocks_params.taxonomies[taxonomy] = taxonomyItems;
 				}
 			} )
 			.catch( () => {
-				window.kbpData.taxonomies[taxonomy] = [];
+				window.kadence_blocks_params.taxonomies[taxonomy] = [];
 			} );
 		}
 	}
