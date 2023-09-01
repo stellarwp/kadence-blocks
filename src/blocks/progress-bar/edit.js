@@ -402,7 +402,7 @@ export function Edit( props ) {
 		var maskUrlToUse = maskBaseUrl + mask + '.svg';
 
 		if ( 'custom' === maskSvg ) {
-			if ( ! empty( maskUrl ) ) {
+			if ( maskUrl ) {
 				maskUrlToUse = maskUrl;
 			} else {
 				maskUrlToUse = maskBaseUrl + 'star.svg';
