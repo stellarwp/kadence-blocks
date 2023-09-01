@@ -11,7 +11,8 @@
 	gap:0.3em 0.5em;
 }
 
-.kb-progress-bar-type-line .kt-progress-label-inside {
+.kb-progress-bar-type-line .kt-progress-label-inside,
+.kb-progress-bar-type-line-mask .kt-progress-label-inside {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-55%)
@@ -29,4 +30,15 @@
 	left: 50%;
 	top: 50%;
 	transform: translateX(-50%) translateY(-50%);
+}
+
+.kb-progress-bar-type-line-mask {
+	.kb-progress-bar {
+		height: 80px;
+		
+		& > svg {
+			height: 100%;
+			width: 100%;
+		}
+	}
 }

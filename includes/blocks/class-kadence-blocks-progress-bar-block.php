@@ -55,6 +55,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array              $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
 	 * @param string             $unique_id  the blocks attr ID.
+	 * @param string             $unique_style_id  the blocks style ID.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
@@ -68,7 +69,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_responsive_size( $attributes, array( 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ), 'width', 'containerMaxWidthUnits' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
-		if ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && $attributes['barType'] === 'line' ) ) {
+		if ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && 'line' === $attributes['barType'] ) ) {
 			$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' svg' );
 
 			if ( ! empty( $attributes['progressBorderRadius'][0] ) ) {
@@ -116,14 +117,12 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 
-
 		if ( isset( $attributes['labelLayout'] ) && ( $attributes['labelLayout'] === 'lt' || $attributes['labelLayout'] === 'lb' ) ) {
 			$css->add_property( 'flex-direction', 'column' );
 		}
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap .kt-progress-label' );
 		$css->render_typography( $attributes, 'labelFont' );
-
 
 		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-label-wrap .kt-progress-percent' );
 
@@ -137,6 +136,45 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_typography( $attributes, 'numberFont' );
 		} else if ( isset( $attributes['labelFont'] ) ) {
 			$css->render_typography( $attributes, 'labelFont' );
+		}
+
+		if ( isset( $attributes['barType'] ) && 'line-mask' == $attributes['barType'] ) {
+			$iterations = $attributes['maskIterations'] ?? 5;
+			$mask = $attributes['maskSvg'] ?? 'star';
+			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
+			$mask_url = $mask_base_url . $mask . '.svg';
+
+			if ( 'custom' === $attributes['maskSvg'] ) {
+				if ( ! empty( $attributes['maskUrl'] ) ) {
+					$mask_url = $attributes['maskUrl'];
+				} else {
+					$mask_url = $mask_base_url . 'star.svg';
+				}
+			}
+
+			$mask_image_string = trim( str_repeat( 'url(' . $mask_url . '),', $iterations ), ',' );
+			$mask_repeat_string = trim( str_repeat( 'no-repeat,', $iterations ), ',' );
+			$mask_position_array = $iterations > 1 ? range( 0, 100, 100 / ( $iterations - 1 ) ) : array( 0 );
+			$mask_position_string = trim( implode( '%,', $mask_position_array ) . '%', ',' );
+			$mask_aspect_ratio_string = $iterations . '/1';
+			$mask_height_string = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) . 'px' : '80px';
+
+			$css->set_selector( '#kb-progress-bar' . $unique_id );
+			$css->add_property( '-webkit-mask-image', $mask_image_string );
+			$css->add_property( 'mask-image', $mask_image_string );
+
+			$css->add_property( '-webkit-mask-size', 'contain' );
+			$css->add_property( 'mask-size', 'contain' );
+
+			$css->add_property( '-webkit-mask-repeat', $mask_repeat_string );
+			$css->add_property( 'mask-repeat', $mask_repeat_string );
+
+			$css->add_property( '-webkit-mask-position', $mask_position_string );
+			$css->add_property( 'mask-position', $mask_position_string );
+
+			$css->add_property( 'aspect-ratio', $mask_aspect_ratio_string );
+
+			$css->add_property( 'height', $mask_height_string );
 		}
 
 		return $css->css_output();
@@ -177,16 +215,18 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= $this->get_label( $attributes, 'above' );
 
 		// aria-valuenow="50"
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" role="progressbar" aria-label="' . $attributes['label'] .'" aria-valuemin="'. $progress .'" aria-valuemax="'. ( $is_relative ? 100 : $progress_max ) .'">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] .'" aria-valuemin="'. $progress .'" aria-valuemax="'. ( $is_relative ? 100 : $progress_max ) .'">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 
 		$content .= '</div>';
 
+		$bar_type_for_script = $attributes['barType'] == 'line-mask' ? 'line' : $attributes['barType'];
+
 		$content .= '<script>
 			function reportWindowSize() {
 			  let barContainer = document.querySelector("#kb-progress-bar' . $unique_id . '");
-			  let type = "' . $attributes['barType'] . '";
+			  let type = "' . $bar_type_for_script . '";
 			  let barSvg = barContainer.querySelector("svg");
 			  if ( ! barSvg ) {
 			  	return;
@@ -234,7 +274,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				    } else {
                         initialStroke = responsiveStrokeSizes[0];
                     }
-					let progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $attributes['barType'] ] . '("#kb-progress-bar' . $unique_id . '", {
+					let progressBar' . $simple_id . ' = new ProgressBar.' . $bar_types[ $bar_type_for_script ] . '("#kb-progress-bar' . $unique_id . '", {
 						color: "' . $progress_color . '",
 						trailColor: "' . $bar_background . '",
 						duration: "' . ( $attributes['duration'] * 1000 ) . '",
