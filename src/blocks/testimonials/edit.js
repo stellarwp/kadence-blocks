@@ -243,7 +243,7 @@ function KadenceTestimonials( props ) {
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -716,6 +716,8 @@ function KadenceTestimonials( props ) {
         if( style === 'bubble' || style === 'inlineimage' ) {
             applyTo = '.kt-testimonial-text-wrap';
         }
+        let shadowCarousel = ( displayShadow && layout && layout === 'carousel' );
+        let wrapperPaddingTopBottomApplyTo =  shadowCarousel ? '.kt-blocks-testimonials-wrap' + uniqueID + ' .splide__slide' : '.kt-blocks-testimonials-wrap' + uniqueID;
 
         return (
             <style>
@@ -739,10 +741,12 @@ function KadenceTestimonials( props ) {
                         ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
                         ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
 					}
+                    ${wrapperPaddingTopBottomApplyTo} {
+						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-top: .5rem;' : '' }
+						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-bottom: .5rem;' : '' }
+                    }
 					.kt-blocks-testimonials-wrap${uniqueID} {
-						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
-						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                         ${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
 						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }

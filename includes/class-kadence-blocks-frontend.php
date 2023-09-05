@@ -433,6 +433,18 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'kadence/advanced-form' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['id'] ) ) {
+								$form_block = get_post( $blockattr['id'] );
+								if ( $form_block && 'kadence_form' == $form_block->post_type ) {
+									$form_data_block = parse_blocks( $form_block->post_content );
+									$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
+								}
+							}
+						}
+					}
 					if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 						$this->blocks_cycle_through( $block['innerBlocks'], $kadence_blocks );
 					}
@@ -474,6 +486,18 @@ class Kadence_Blocks_Frontend {
 									return;
 								}
 								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+							}
+						}
+					}
+				}
+				if ( 'kadence/advanced-form' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['id'] ) ) {
+							$form_block = get_post( $blockattr['id'] );
+							if ( $form_block && 'kadence_form' == $form_block->post_type ) {
+								$form_data_block = parse_blocks( $form_block->post_content );
+								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
 							}
 						}
 					}

@@ -763,48 +763,48 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-				'kadence_blocks_convertkit_api',
-				'kadence_blocks_convertkit_api',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_convertkit_api',
+			'kadence_blocks_convertkit_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_key',
-				'kadence_blocks_activecampaign_api_key',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_key',
+			'kadence_blocks_activecampaign_api_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_base',
-				'kadence_blocks_activecampaign_api_base',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_base',
+			'kadence_blocks_activecampaign_api_base',
+			array(
+					'type'              => 'string',
+					'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+					'sanitize_callback' => 'sanitize_text_field',
+					'show_in_rest'      => true,
+					'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_prophecy',
-				'kadence_blocks_prophecy',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'Config Kadence Block Prophecy AI', 'kadence-blocks' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => TRUE,
-						'default'           => '',
-				)
+			'kadence_blocks_prophecy',
+			'kadence_blocks_prophecy',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Prophecy AI', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => TRUE,
+				'default'           => '',
+			)
 		);
 	}
 	/**
@@ -834,6 +834,9 @@ class Kadence_Blocks_Settings {
 		add_settings_section( 'kt_blocks_image_picker_sec', '', array( $this, 'maxwidths_callback' ), 'kt_blocks_image_picker_section' );
 		add_settings_field( 'enable_image_picker', __( 'Enable Pexels Image Picker', 'kadence-blocks' ), array( $this, 'enabled_image_picker_callback' ), 'kt_blocks_image_picker_section', 'kt_blocks_image_picker_sec' );
 
+		register_setting( 'kadence_blocks_svg_settings', 'kadence_blocks_svg_settings', array( $this, 'validate_options' ) );
+		add_settings_section( 'kt_blocks_svg_sec', '', array( $this, 'svg_fix_section_callback' ), 'kt_blocks_svg_section' );
+		add_settings_field( 'svg_fix', __( 'Attempt to patch missing svg dimensions', 'kadence-blocks' ), array( $this, 'svg_fix_field_callback' ), 'kt_blocks_svg_section', 'kt_blocks_svg_sec' );
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -908,12 +911,24 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs Limited Margins Field
+	 * Outputs font settings field
 	 */
 	public function load_fonts_local_callback() {
 		$data = self::get_data_options( 'kadence_blocks_font_settings' );
 		$default = ( isset( $data['load_fonts_local'] ) ? $data['load_fonts_local'] : 'false' );
 		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_font_settings[load_fonts_local]">';
+			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
+	}
+
+	/**
+	 * Outputs svg fix field
+	 */
+	public function svg_fix_field_callback() {
+		$data = self::get_data_options( 'kadence_blocks_svg_settings' );
+		$default = ( isset( $data['svg_fix'] ) ? $data['svg_fix'] : 'false' );
+		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_svg_settings[svg_fix]">';
 			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
 			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
@@ -946,6 +961,11 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+	 * Outputs title for fonts local.
+	 */
+	public function svg_fix_section_callback() {
+	}
+
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
 	 *
@@ -1069,6 +1089,20 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kt_blocks_image_picker' );
 									do_settings_sections( 'kt_blocks_image_picker_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_svg_settings', true ) ) { ?>
+							<h2><?php echo esc_html__( 'SVG Settings', 'kadence-blocks' ); ?></h2>
+							<?php global $content_width; ?>
+								<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kadence_blocks_svg_settings' );
+									do_settings_sections( 'kt_blocks_svg_section' );
 									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>

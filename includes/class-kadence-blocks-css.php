@@ -1577,15 +1577,16 @@ class Kadence_Blocks_CSS {
 		}
 	}
 	/**
-	 * Generates the responsive range output.
+	 * Generates the responsive size output.
 	 *
 	 * @param array  $attributes an array of attributes.
 	 * @param string $name an string of the attribute name.
 	 * @param string $property an string of the attribute name.
 	 * @param string $unit an string of the attribute name.
+	 * @param string $defaults Optional defaults to fallback if the responsive value is empty.
 	 * @return string
 	 */
-	public function render_responsive_size( $attributes, $name = array( 'width', 'tabletWidth', 'mobileWidth' ), $property = 'width', $unit = '' ) {
+	public function render_responsive_size( $attributes, $name = array( 'width', 'tabletWidth', 'mobileWidth' ), $property = 'width', $unit = '', $defaults = array( '', '', '' ) ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1596,16 +1597,24 @@ class Kadence_Blocks_CSS {
 			$unit = $name[0] . 'Type';
 		}
 		$unit = ! empty( $attributes[ $unit ] ) ? $attributes[ $unit ] : 'px';
+
+		$this->set_media_state( 'desktop' );
 		if ( ! empty( $attributes[ $name[0] ] ) ) {
 			$this->add_property( $property, $attributes[ $name[0] ] . $unit );
+		} else if ( $defaults[0] ) {
+			$this->add_property( $property, $defaults[0] . $unit );
 		}
+		$this->set_media_state( 'tablet' );
 		if ( ! empty( $attributes[ $name[1] ] ) ) {
-			$this->set_media_state( 'tablet' );
 			$this->add_property( $property, $attributes[ $name[1] ] . $unit );
+		} else if ( $defaults[1] ) {
+			$this->add_property( $property, $defaults[1] . $unit );
 		}
+		$this->set_media_state( 'mobile' );
 		if ( ! empty( $attributes[ $name[2] ] ) ) {
-			$this->set_media_state( 'mobile' );
 			$this->add_property( $property, $attributes[ $name[2] ] . $unit );
+		} else if ( $defaults[2] ) {
+			$this->add_property( $property, $defaults[2] . $unit );
 		}
 		$this->set_media_state( 'desktop' );
 	}

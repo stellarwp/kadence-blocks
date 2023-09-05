@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.12
+Stable tag: 3.1.13
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,22 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.1.14 =
+Release Date: September TBD, 2023
+* Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
+* Fix: Editing custom CSS in modal for Kadence Blocks Pro
+* Fix: Autocomplete in CSS editor for Kadence Blocks Pro
+* Fix: Accept field recording in advanced forms.
+* Fix: Advanced Text icon padding unit not saving.
+
+= 3.1.13 =
+Release Date: August 24th, 2023
+* Fix: Some row layouts in forms.
+* Fix: Issue when using URL parameters in advanced forms.
+* Fix: Issue with gradient shape select.
+* Fix: WP notice about wp-editor on widgets page.
+* Fix: Issue with not being able to select a gallery photo in the editor when caption covered.
 
 = 3.1.12 =
 Release Date: August 17th, 2023
