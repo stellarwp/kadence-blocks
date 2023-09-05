@@ -961,6 +961,7 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+	/**
 	 * Outputs title for fonts local.
 	 */
 	public function svg_fix_section_callback() {
@@ -1069,7 +1070,6 @@ class Kadence_Blocks_Settings {
 							</div>
 							<div class="kt-dashboard-spacer"></div>
 						<?php } ?>
-						<div class="kt-promo-row-area">
 						<?php if ( apply_filters( 'kadence_blocks_show_local_fonts', ! defined( 'KADENCE_VERSION' ) ) ) { ?>
 								<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row-area">
@@ -1097,7 +1097,6 @@ class Kadence_Blocks_Settings {
 						<?php } ?>
 						<?php if ( apply_filters( 'kadence_blocks_show_svg_settings', true ) ) { ?>
 							<h2><?php echo esc_html__( 'SVG Settings', 'kadence-blocks' ); ?></h2>
-							<?php global $content_width; ?>
 								<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
