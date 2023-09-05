@@ -200,7 +200,6 @@ function GalleryImage( props ) {
 			onChange={( newCaption ) => setAttributes( { caption: newCaption } )}
 			inlineToolbar
 			keepPlaceholderOnFocus
-			unstableOnFocus={ () => { onSelectImage(); }}
 			style={{
 				fontWeight   : '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,
 				fontStyle    : '' !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined,
@@ -239,7 +238,7 @@ function GalleryImage( props ) {
 	} );
 
 	return (
-		<Fragment>
+		<>
 			<figure className={className}>
 				<div className="kb-gal-image-radius" style={{
 					maxWidth: ( ( type === 'masonry' && width && height ) ? width + 'px' : undefined ),
@@ -329,7 +328,7 @@ function GalleryImage( props ) {
 					)}
 				</>
 			)}
-		</Fragment>
+		</>
 	);
 
 }

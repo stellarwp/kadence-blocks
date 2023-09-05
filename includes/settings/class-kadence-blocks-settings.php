@@ -819,6 +819,9 @@ class Kadence_Blocks_Settings {
 			add_settings_section( 'kt_blocks_fonts_sec', '', array( $this, 'fonts_local_callback' ), 'kt_blocks_fonts_section' );
 			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Localy', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
 		}
+		register_setting( 'kadence_blocks_svg_settings', 'kadence_blocks_svg_settings', array( $this, 'validate_options' ) );
+		add_settings_section( 'kt_blocks_svg_sec', '', array( $this, 'svg_fix_section_callback' ), 'kt_blocks_svg_section' );
+		add_settings_field( 'svg_fix', __( 'Attempt to patch missing svg dimensions', 'kadence-blocks' ), array( $this, 'svg_fix_field_callback' ), 'kt_blocks_svg_section', 'kt_blocks_svg_sec' );
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -893,12 +896,24 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs Limited Margins Field
+	 * Outputs font settings field
 	 */
 	public function load_fonts_local_callback() {
 		$data = self::get_data_options( 'kadence_blocks_font_settings' );
 		$default = ( isset( $data['load_fonts_local'] ) ? $data['load_fonts_local'] : 'false' );
 		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_font_settings[load_fonts_local]">';
+			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
+	}
+
+	/**
+	 * Outputs svg fix field
+	 */
+	public function svg_fix_field_callback() {
+		$data = self::get_data_options( 'kadence_blocks_svg_settings' );
+		$default = ( isset( $data['svg_fix'] ) ? $data['svg_fix'] : 'false' );
+		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_svg_settings[svg_fix]">';
 			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
 			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
@@ -917,6 +932,12 @@ class Kadence_Blocks_Settings {
 	 * Outputs title for fonts local.
 	 */
 	public function fonts_local_callback() {
+	}
+
+	/**
+	 * Outputs title for fonts local.
+	 */
+	public function svg_fix_section_callback() {
 	}
 
 	/**
@@ -1030,6 +1051,20 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_svg_settings', true ) ) { ?>
+							<h2><?php echo esc_html__( 'SVG Settings', 'kadence-blocks' ); ?></h2>
+							<?php global $content_width; ?>
+								<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kadence_blocks_svg_settings' );
+									do_settings_sections( 'kt_blocks_svg_section' );
 									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>

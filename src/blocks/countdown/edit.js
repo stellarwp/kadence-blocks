@@ -200,7 +200,7 @@ function KadenceCountdown( props ) {
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -1171,7 +1171,7 @@ function KadenceCountdown( props ) {
 							<>
 								<KadencePanelBody panelName={'kb-countdown-spacing-settings'}>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Container Padding', 'kadence-blocks' )}
+										label={__( 'Padding', 'kadence-blocks' )}
 										value={containerPadding}
 										tabletValue={containerTabletPadding}
 										mobileValue={containerMobilePadding}
@@ -1188,7 +1188,7 @@ function KadenceCountdown( props ) {
 										onMouseOut={ paddingMouseOver.onMouseOut }
 									/>
 									<ResponsiveMeasureRangeControl
-										label={__( 'Container Margin', 'kadence-blocks' )}
+										label={__( 'Margin', 'kadence-blocks' )}
 										value={containerMargin}
 										tabletValue={containerTabletMargin}
 										mobileValue={containerMobileMargin}

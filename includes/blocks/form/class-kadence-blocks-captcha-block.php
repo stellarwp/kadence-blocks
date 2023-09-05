@@ -159,8 +159,8 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 			return;
 		}
 
-		wp_register_script( 'kadence-blocks-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-hcaptcha', 'https://js.hcaptcha.com/1/api.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, true );
+		wp_register_script( 'kadence-blocks-hcaptcha', 'https://js.hcaptcha.com/1/api.js', array(), null, true );
 
 		$recaptcha_url     = 'https://www.google.com/recaptcha/api.js';
 		$recaptcha_net_url = 'https://www.recaptcha.net/recaptcha/api.js';
@@ -177,7 +177,7 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 			$recaptcha_url = add_query_arg( array( 'render' => $captcha_settings->public_key ), $recaptcha_url );
 		}
 
-		wp_register_script( 'kadence-blocks-recaptcha', $recaptcha_url, array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-recaptcha', $recaptcha_url, array(), null, true );
 	}
 
 }

@@ -22,7 +22,7 @@ import {
 } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
-import { times } from 'lodash';
+import { times, filter } from 'lodash';
 import { plus } from '@wordpress/icons';
 
 function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, context, name } ) {

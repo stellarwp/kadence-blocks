@@ -415,6 +415,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			case 'normal':
 				if ( ! empty( $attributes['backgroundHover'] ) ) {
 					$css->render_color_output( $attributes, 'backgroundHover', 'background-color' );
+					$css->add_property( 'background-image', 'none' );
 				}
 				if ( ! empty( $attributes['backgroundImgHover'][0]['bgImg'] ) ) {
 					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImgHover'][0]['bgImg'] ) );
@@ -472,6 +473,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			case 'normal':
 				if ( ! empty( $attributes['overlayHover'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['overlayHover'] ) );
+					$css->add_property( 'background-image', 'none' );
 				}
 				if ( ! empty( $attributes['overlayImgHover'][0]['bgImg'] ) ) {
 					$bg_img_hover = $attributes['overlayImgHover'][0];
@@ -482,6 +484,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
 					$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
 				}
+				break;
 			case 'gradient':
 				if ( ! empty( $attributes['overlayGradientHover'] ) ) {
 					$css->add_property( 'background-image', $attributes['overlayGradientHover'] );

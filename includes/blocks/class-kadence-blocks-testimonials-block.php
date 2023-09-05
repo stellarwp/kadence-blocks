@@ -201,14 +201,21 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_media_state( 'desktop' );
+
 		/*
-		 * If the layout style is carousel, we set the top & bottom wrapper padding on the carousel item instead of the wrapper
+		 * If the layout style is carousel, we set the top & bottom wrapper padding on the carousel item instead of the wrapper.
 		 */
 		if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
+
+			// If a box shadow is enabled with a carousel, lets give some padding by default, they can override with a value from the wrapper section.
+			if ( isset( $attributes['displayShadow'] ) && $attributes['displayShadow'] ) {
+				$css->add_property( 'padding-top', 'var(--global-kb-spacing-xxs, .5rem)' );
+				$css->add_property( 'padding-bottom', 'var(--global-kb-spacing-xxs, .5rem)' );
+			}
 		}
 
-		// Desktop wrapper padding T/B
+		// Desktop wrapper padding T/B.
 		if ( isset( $attributes['wrapperPadding'][0] ) ) {
 			$css->add_property( 'padding-top', $this->get_usable_value( $css, $attributes['wrapperPadding'][0], $wrapper_padding_type ) );
 		}
