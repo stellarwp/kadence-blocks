@@ -77,6 +77,8 @@ import {
 	Fragment,
 } from '@wordpress/element';
 
+import { store as coreStore } from '@wordpress/core-data';
+
 import {
 	MediaUpload,
 	RichText,
@@ -1116,6 +1118,27 @@ function KadenceInfoBox( props ) {
 		}
 	}
 
+    const { editPost } = useDispatch('core/editor');
+	const { editEntityRecord } = useDispatch( coreStore );
+
+	const updateMediaImageAlt = ( alt ) => {
+		console.log('updateing', alt)
+		
+        // editPost({
+        //     meta: { …meta, [META_KEY]: newValue },
+        // });
+		editEntityRecord(
+			'postType',
+			'attachment',
+			3242,
+			{ meta: {
+				title: 'new title' },
+			}
+		).catch( () => {
+			console.log('error');
+		} );
+	}
+
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 	const renderCSS = (
 		<style>
@@ -1211,6 +1234,7 @@ function KadenceInfoBox( props ) {
 	if ( showImageToolbar && kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
 		showImageToolbar = false;
 	}
+	console.log('edit', mediaImage)
 
 	const mediaSettingsMobile = <>
 		<SelectControl
@@ -1650,9 +1674,12 @@ function KadenceInfoBox( props ) {
 											/>
 											<TextareaControl
 												label={ __( 'Alt text' ) }
-												value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].altOverride ? mediaImage[ 0 ].altOverride : '' }
-												onChange={ value => saveMediaImage( { altOverride: value } ) }
-												help={ 'override this images default alt text' }
+												value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' }
+												onChange={ value => saveMediaImage( { alt: value } ) }
+											/>
+											<Button
+												text={ __( 'Update this images alt text' ) }
+												onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' ) } }
 											/>
 											<SelectControl
 												label={__( 'Image ratio', 'kadence-blocks' )}
@@ -1729,8 +1756,8 @@ function KadenceInfoBox( props ) {
 													/>
 													<TextareaControl
 														label={ __( 'Alt text' ) }
-														value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAltOverride ? mediaImage[ 0 ].flipAltOverride : '' }
-														onChange={ value => saveMediaImage( { flipAltOverride: value } ) }
+														value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '' }
+														onChange={ value => saveMediaImage( { flipAlt: value } ) }
 														help={ 'override this images default alt text' }
 													/>
 													{mediaImage[ 0 ].flipId && 'svg+xml' !== mediaImage[ 0 ].flipSubtype && (
@@ -2571,7 +2598,7 @@ function KadenceInfoBox( props ) {
 										<div className="kadence-info-box-image-inner-intrisic">
 											<img
 												src={mediaImage[ 0 ].url}
-												alt={mediaImage[ 0 ].altOverride ? mediaImage[ 0 ].altOverride : mediaImage[ 0 ].alt}
+												alt={mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : mediaImage[ 0 ].alt}
 												width={( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width )}
 												height={mediaImage[ 0 ].height}
 												className={`${( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${mediaImage[ 0 ].id}` : 'kt-info-box-image wp-image-offsite' )} ${( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' )}`}
@@ -2579,7 +2606,7 @@ function KadenceInfoBox( props ) {
 											{mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
 												<img
 													src={mediaImage[ 0 ].flipUrl}
-													alt={mediaImage[ 0 ].flipAltOverride ? mediaImage[ 0 ].flipAltOverride : mediaImage[ 0 ].flipAlt}
+													alt={mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : mediaImage[ 0 ].flipAlt}
 													width={( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth )}
 													height={mediaImage[ 0 ].flipHeight}
 													className={`${( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${mediaImage[ 0 ].flipId}` : 'kt-info-box-image-flip wp-image-offsite' )} ${( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' )}`}
