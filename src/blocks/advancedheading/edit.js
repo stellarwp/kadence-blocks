@@ -48,6 +48,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
+	getPostOrFseId
 } from '@kadence/helpers';
 
 /**
@@ -224,12 +225,18 @@ function KadenceAdvancedHeading( props ) {
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'style' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -241,7 +248,8 @@ function KadenceAdvancedHeading( props ) {
 	useEffect( () => {
 		setBlockDefaults( 'kadence/advancedheading', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -692,9 +700,19 @@ function KadenceAdvancedHeading( props ) {
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
 					}`}
-				{ ( previewMaxWidth ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:auto; }` : '' ) }
-				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID } { margin-left: auto; margin-right:0; }` : '' ) }
+				{ ( previewMaxWidth ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }` : '' ) }
+				{ ( previewMaxWidth && previewAlign === 'right' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:0; }` : '' ) }
+				{linkStyle && (
+					`.kt-adv-heading${uniqueID} a, #block-${clientId} a {
+							${ linkStyle === 'underline' ? 'text-decoration: underline;' : '' }
+							${ linkStyle === 'none' ? 'text-decoration: none;' : '' }
+					}
+					.kt-adv-heading${uniqueID} a, #block-${clientId} a:hover {
+							${ linkStyle === 'hover_underline' ? 'text-decoration: underline;' : '' }
+					}
+					`
+				)}
 				{linkColor && (
 					`.kt-adv-heading${uniqueID} a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput( linkColor )} !important;
@@ -927,7 +945,7 @@ function KadenceAdvancedHeading( props ) {
 											onChangeMobile={( value ) => setAttributes( { fontSize: [( undefined !== fontSize[0] ? fontSize[0] : '' ),( undefined !== fontSize[1] ? fontSize[1] : '' ),value] } )}
 											min={0}
 											max={( sizeType === 'px' ? 200 : 12 )}
-											step={( sizeType === 'px' ? 1 : 0.1 )}
+											step={( sizeType === 'px' ? 1 : 0.001 )}
 											unit={ sizeType ? sizeType : 'px' }
 											onUnit={( value ) => {
 												setAttributes( { sizeType: value } );
@@ -1163,7 +1181,7 @@ function KadenceAdvancedHeading( props ) {
 							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
-									title={__( 'Highlight Settings', 'kadence-blocks' )}
+									title={__( 'Advanced Highlight Settings', 'kadence-blocks' )}
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
@@ -1192,7 +1210,7 @@ function KadenceAdvancedHeading( props ) {
 										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
 									/>
 									<TypographyControls
-										fontGroup={'mark-heading'}
+										fontGroup={'heading'}
 										fontSize={markSize}
 										onFontSize={( value ) => setAttributes( { markSize: value } )}
 										fontSizeType={markSizeType}

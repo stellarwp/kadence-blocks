@@ -29,7 +29,8 @@ import {
 	getFontSizeOptionOutput,
 	getBorderStyle,
 	setBlockDefaults,
-	getUniqueId
+	getUniqueId,
+	getPostOrFseId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -121,8 +122,8 @@ const getPanesTemplate = memoize( ( panes ) => {
 /**
  * Build the row edit
  */
-function KadenceTabs( { attributes, clientId, className, isSelected, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } ) {
-
+function KadenceTabs( props ) {
+	const { attributes, clientId, className, isSelected, setAttributes, tabsBlock, realTabsCount, tabsInner, resetOrder, moveTab, insertTab, removeTab, previewDevice } = props;
 	const {
 		uniqueID,
 		showPresets,
@@ -214,11 +215,17 @@ function KadenceTabs( { attributes, clientId, className, isSelected, setAttribut
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -249,7 +256,8 @@ function KadenceTabs( { attributes, clientId, className, isSelected, setAttribut
 			} );
 		}
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -1252,7 +1260,11 @@ function KadenceTabs( { attributes, clientId, className, isSelected, setAttribut
 												<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 														  activeClass="active-tab"
 														  initialTabName={widthType}
-														  onSelect={value => setAttributes({widthType: value})}
+														  onSelect={(value) => {
+															if( value !== widthType) {
+																setAttributes({widthType: value});
+															}
+														  }}
 														  tabs={[
 															  {
 																  name: 'normal',
@@ -1434,6 +1446,7 @@ function KadenceTabs( { attributes, clientId, className, isSelected, setAttribut
 										panelName={'kb-tab-title-font'}
 									>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={ [ size, tabSize, mobileSize ] }
 											onFontSize={(value) => saveFontAttribute( 'size', value )}
 											fontSizeType={ sizeType ? sizeType : 'px'}
@@ -1508,6 +1521,7 @@ function KadenceTabs( { attributes, clientId, className, isSelected, setAttribut
 										/>
 										{enableSubtitle && (
 											<TypographyControls
+												fontGroup={'body'}
 												fontSize={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].size ? subtitleFont[0].size : ['', '', ''])}
 												onFontSize={(value) => saveSubtitleFont({size: value})}
 												fontSizeType={(subtitleFont && undefined !== subtitleFont[0] && undefined !== subtitleFont[0].sizeType ? subtitleFont[0].sizeType : 'px')}

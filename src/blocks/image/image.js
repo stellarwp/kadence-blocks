@@ -90,6 +90,7 @@ import {
 
 export default function Image( {
 	temporaryURL,
+	dynamicURL,
 	attributes,
 	setAttributes,
 	isSelected,
@@ -168,6 +169,8 @@ export default function Image( {
 		overlayOpacity,
 		overlayBlendMode,
 	} = attributes;
+
+	const previewURL = dynamicURL ? dynamicURL : url;
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -251,6 +254,7 @@ export default function Image( {
 	const { createErrorNotice, createSuccessNotice } = useDispatch(
 		noticesStore
 	);
+
 	const isLargeViewport = useViewportMatch( 'medium' );
 	const isWideAligned = includes( [ 'wide', 'full' ], align );
 	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
@@ -258,7 +262,7 @@ export default function Image( {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ externalBlob, setExternalBlob ] = useState();
 	const clientWidth = useClientWidth( containerRef, [ align ] );
-	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
+	const isSVG = previewURL && previewURL.endsWith( '.svg' ) ? true : false;
 	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport ) && ! ( isSVG && ! previewMaxWidth );
 	const showMaxWidth = allowResize && ! isWideAligned;
 	const {
@@ -936,6 +940,7 @@ export default function Image( {
 										onChange={ value => saveCaptionFont( { color: value } ) }
 									/>
 									<TypographyControls
+										fontGroup={'body'}
 										fontSize={ captionStyles[ 0 ].size }
 										onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
 										fontSizeType={ captionStyles[ 0 ].sizeType }
@@ -1195,7 +1200,7 @@ export default function Image( {
 			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 		<div className={ `${ ( ! useRatio && useOverlay ? 'kb-image-has-overlay' : '' ) }` }>
 			<img
-				src={ temporaryURL || url }
+				src={ temporaryURL || previewURL }
 				alt={ defaultedAlt }
 				width={ undefined !== naturalWidth && naturalWidth && isSVG && ! previewMaxWidth ? naturalWidth : undefined }
 				height={ undefined !== naturalHeight && naturalHeight && isSVG && ! previewMaxWidth ? naturalHeight : undefined }
@@ -1270,7 +1275,7 @@ export default function Image( {
 		img = (
 			<ImageEditor
 				id={ id }
-				url={ url }
+				url={ previewURL }
 				width={ width }
 				height={ height }
 				clientWidth={ clientWidth }

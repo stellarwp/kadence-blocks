@@ -6,7 +6,7 @@
  * @package Kadence Blocks
  */
 
-include 'advanced-form/advanced-form-frontend.php';
+use function KadenceWP\KadenceBlocks\get_webfont_url;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -368,7 +368,13 @@ class Kadence_Blocks_Frontend {
 		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
 			$link .= '&amp;display=swap';
 		}
-		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
+
+		$full_link = 'https://fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) );
+		$local_font_settings = get_option( 'kadence_blocks_font_settings' );
+		if ( $local_font_settings && isset( $local_font_settings['load_fonts_local'] ) && $local_font_settings['load_fonts_local'] == 'true' && function_exists( 'KadenceWP\KadenceBlocks\get_webfont_url' )) {
+			$full_link = get_webfont_url( htmlspecialchars_decode( $full_link ) );
+		}
+		echo '<link href="' . $full_link . '" rel="stylesheet">'; //phpcs:ignore
 	}
 
 	/**
@@ -427,6 +433,18 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'kadence/advanced-form' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['id'] ) ) {
+								$form_block = get_post( $blockattr['id'] );
+								if ( $form_block && 'kadence_form' == $form_block->post_type ) {
+									$form_data_block = parse_blocks( $form_block->post_content );
+									$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
+								}
+							}
+						}
+					}
 					if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 						$this->blocks_cycle_through( $block['innerBlocks'], $kadence_blocks );
 					}
@@ -468,6 +486,18 @@ class Kadence_Blocks_Frontend {
 									return;
 								}
 								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+							}
+						}
+					}
+				}
+				if ( 'kadence/advanced-form' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['id'] ) ) {
+							$form_block = get_post( $blockattr['id'] );
+							if ( $form_block && 'kadence_form' == $form_block->post_type ) {
+								$form_data_block = parse_blocks( $form_block->post_content );
+								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
 							}
 						}
 					}

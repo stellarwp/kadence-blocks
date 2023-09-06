@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Advanced Gallery",
   "name": "kadence/advancedgallery",
   "category": "kadence-blocks",
@@ -417,10 +417,14 @@
 	  "right"
 	],
 	"html": false,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow"
   ]
 }

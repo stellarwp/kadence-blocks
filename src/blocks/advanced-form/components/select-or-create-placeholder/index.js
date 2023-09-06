@@ -8,18 +8,18 @@ import { Placeholder, Button, SelectControl } from '@wordpress/components';
 import { advancedFormIcon } from '@kadence/icons';
 
 export default function SelectOrCreatePlaceholder( {
-													   onSelect,
-													   isSelecting,
-													   onAdd,
-													   isAdding,
-													   postType = 'post',
-													   label = __( 'Post' ),
-													   instructions = __(
-														   'Select an existing post or create a new one.',
-														   'kadence-blocks'
-													   ),
-													   placeholder = __( 'Select Post', 'kadence-blocks' ),
-												   } ) {
+	onSelect,
+	isSelecting,
+	onAdd,
+	isAdding,
+	postType = 'post',
+	label = __( 'Post' ),
+	instructions = __(
+		'Select an existing post or create a new one.',
+		'kadence-blocks'
+	),
+	placeholder = __( 'Select Post', 'kadence-blocks' ),
+} ) {
 	const [ selected, setSelected ] = useState( 0 );
 	const { posts } = useSelect(
 		( selectData ) => ( {
@@ -42,6 +42,35 @@ export default function SelectOrCreatePlaceholder( {
 			value: post.id,
 		} ) ),
 	];
+	if ( typeof pagenow !== 'undefined' && ( 'widgets' === pagenow || 'customize' === pagenow ) ) {
+		return (
+			<Placeholder
+				className="kb-select-or-create-placeholder"
+				icon={ advancedFormIcon }
+				label={ label }
+				instructions={ instructions }
+			>
+				<form className="kb-select-or-create-placeholder__actions">
+					<SelectControl
+						label={ label }
+						hideLabelFromVision
+						options={ options }
+						onChange={ setSelected }
+						value={ selected }
+					/>
+					<Button
+						variant="primary"
+						type="submit"
+						disabled={ ! selected || isAdding }
+						isBusy={ isSelecting }
+						onClick={ () => onSelect( Number.parseInt( selected ) ) }
+					>
+						{ __( 'Select', 'kadence-blocks' ) }
+					</Button>
+				</form>
+			</Placeholder>
+		);
+	}
 
 	return (
 		<Placeholder
@@ -59,21 +88,21 @@ export default function SelectOrCreatePlaceholder( {
 					value={ selected }
 				/>
 				<Button
-					isPrimary
+					variant="primary"
 					type="submit"
 					disabled={ ! selected || isAdding }
 					isBusy={ isSelecting }
 					onClick={ () => onSelect( Number.parseInt( selected ) ) }
 				>
-					{ __( 'Select' ) }
+					{ __( 'Select', 'kadence-blocks' ) }
 				</Button>
 				<Button
-					isSecondary
+					variant="secondary"
 					onClick={ onAdd }
 					disabled={ isSelecting }
 					isBusy={ isAdding }
 				>
-					{ __( 'Create New' ) }
+					{ __( 'Create New', 'kadence-blocks' ) }
 				</Button>
 			</form>
 		</Placeholder>

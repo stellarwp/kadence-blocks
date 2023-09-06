@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Advanced Text",
   "name": "kadence/advancedheading",
   "category": "kadence-blocks",
@@ -471,6 +471,10 @@
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
 	},
+	"iconPaddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"iconSize": {
 	  "type": "array",
 	  "default": [ "", "", "" ]
@@ -532,12 +536,17 @@
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow" 
   ],
   "supports": {
 	"ktanimate": true,
 	"ktanimatereveal": true,
 	"ktanimatepreview": true,
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true,
+	"kbContentLabel": "content"
   }
 }

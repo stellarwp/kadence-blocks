@@ -5,12 +5,12 @@ import {
 	Tooltip,
 	ResizableBox,
 } from '@wordpress/components';
-import { getGutterPercentUnit, getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
+import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import ContainerDimensions from 'react-container-dimensions';
 export default function TwoColumnResizer( {
 	setAttributes,

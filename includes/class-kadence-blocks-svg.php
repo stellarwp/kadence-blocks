@@ -47,6 +47,12 @@ class Kadence_Blocks_Svg_Render {
 	 */
 	public function __construct() {
 		add_filter( 'render_block', array( $this, 'render_icons_dynamically' ), 10, 2 );
+
+		$svg_settings = get_option( 'kadence_blocks_svg_settings' );
+		$svg_fix_setting = ( $svg_settings && isset( $svg_settings['svg_fix'] ) && 'true' == $svg_settings['svg_fix'] );
+		if ( apply_filters( 'kadence_blocks_fix_svg_dimensions', $svg_fix_setting ) ) {
+			add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		}
 	}
 	/**
 	 * On build convert icons into svgs.
@@ -67,15 +73,19 @@ class Kadence_Blocks_Svg_Render {
 					$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
 					$args = array( 'title' => '' );
 					foreach ( $options as $key => $value ) {
-						$value = trim($value);
+						$value = trim( $value );
 						if ( empty( $value ) ) {
 							continue;
 						}
 						$data_split = explode( '=', $value, 2 );
-						if ( $data_split[0] === 'title' || $data_split[0] === 'class' ) {
-							$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+						if ( ! empty( $data_split[0] ) && ( $data_split[0] === 'title' || $data_split[0] === 'class' ) ) {
+							if ( ! empty( $data_split[1] ) ) {
+								$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+							}
 						}
-						$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
+						if ( ! empty( $data_split[1] ) ) {
+							$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
+						}
 					}
 					$type = substr( $args['name'] , 0, 2 );
 					$type_fas = ( 'fas' === substr( $args['name'] , 0, 3 ) ? true : false );
@@ -170,6 +180,36 @@ class Kadence_Blocks_Svg_Render {
 		$faico = include KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
 
 		return apply_filters( 'kadence_svg_icons', array_merge( $ico, $faico ) );
+	}
+
+	/**
+	 * Fix an issue where wp_get_attachment_source returns non-values for width and height on svg's
+	 *
+	 * @param string  $image the image retrieved.
+	 * @param boolean $attachment_id The attachment id.
+	 * @param boolean $size The size request.
+	 * @param boolean $icon If it was requested as an icon.
+	 *
+	 * @return array|boolean
+	 */
+	public function fix_wp_get_attachment_image_svg( $image, $attachment_id, $size, $icon ) {
+		// If the image requested is an svg and the width is unset (1 or less in this case).
+		if ( is_array( $image ) && preg_match( '/\.svg$/i', $image[0] ) && $image[1] <= 1 ) {
+			// Use the requested size's dimensions first if available.
+			if ( is_array( $size ) ) {
+				$image[1] = $size[0];
+				$image[2] = $size[1];
+			} elseif ( ini_get( 'allow_url_fopen' ) && ( $xml = simplexml_load_file( $image[0], SimpleXMLElement::class, LIBXML_NOWARNING ) ) !== false ) {
+				$attr = $xml->attributes();
+				$viewbox = explode( ' ', $attr->viewBox );
+				$image[1] = isset( $attr->width ) && preg_match( '/\d+/', $attr->width, $value ) ? (int) $value[0] : ( count( $viewbox ) == 4 ? (int) $viewbox[2] : null );
+				$image[2] = isset( $attr->height ) && preg_match( '/\d+/', $attr->height, $value ) ? (int) $value[0] : ( count( $viewbox ) == 4 ? (int) $viewbox[3] : null );
+			} else {
+				$image[1] = null;
+				$image[2] = null;
+			}
+		}
+		return $image;
 	}
 
 }

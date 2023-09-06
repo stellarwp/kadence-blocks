@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Pane",
   "category": "kadence-blocks",
   "parent": [ "kadence/accordion" ],
@@ -45,6 +45,8 @@
 	"reusable": false,
 	"html": false,
 	"anchor": true,
-	"lock":false
+	"lock":false,
+	"kbMetadata": true,
+	"kbContentLabel": "title"
   }
 }

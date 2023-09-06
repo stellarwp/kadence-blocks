@@ -1,12 +1,15 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/rowlayout",
   "title": "Row Layout",
   "category": "kadence-blocks",
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow"
   ],
   "textdomain": "kadence-blocks",
   "attributes": {
@@ -782,6 +785,7 @@
 	"anchor": true,
 	"ktdynamic": true,
 	"kbcss": true,
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

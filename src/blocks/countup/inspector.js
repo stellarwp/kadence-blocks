@@ -336,7 +336,7 @@ function Inspector( {
 									}
 								</TabPanel>
 								<TypographyControls
-									fontGroup={'countup-heading'}
+									fontGroup={'heading'}
 									tagLowLevel={2}
 									tagHighLevel={7}
 									otherTags={{ 'p': true, 'span': true, 'div': true }}
@@ -502,7 +502,7 @@ function Inspector( {
 							}
 						</TabPanel>
 						<TypographyControls
-							fontGroup={'number'}
+							fontGroup={'body'}
 							fontSize={numberFont[ 0 ].size}
 							onFontSize={( value ) => saveNumberFont( { size: value } )}
 							fontSizeType={numberFont[ 0 ].sizeType}

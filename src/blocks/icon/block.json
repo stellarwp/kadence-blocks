@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Icon",
   "name": "kadence/icon",
   "category": "kadence-blocks",
@@ -81,7 +81,8 @@
 	}
   },
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   },
   "usesContext": [
 	"postId",

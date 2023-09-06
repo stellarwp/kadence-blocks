@@ -11,7 +11,7 @@
 	"require": {
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.0",
-		"stellarwp/telemetry": "dev-main",
+		"stellarwp/telemetry": "^2.0",
 		"stellarwp/container-contract": "^1.0"
 	},
 	"autoload": {
@@ -23,6 +23,10 @@
 		"strauss": [
 			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
 			"@php bin/strauss.phar"
+		],
+		"pup": [
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.1/pup.phar",
+			"@php bin/pup.phar"
 		],
 		"post-install-cmd": [
 			"@strauss",
@@ -46,10 +50,10 @@
 			  "file_patterns": []
 			},
 			"packages": [
+				"psr/container",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
-				"lucatume/di52",
-				"psr/container"
+				"lucatume/di52"
 			]
 		}
 	}

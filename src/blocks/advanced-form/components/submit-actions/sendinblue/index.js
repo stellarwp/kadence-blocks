@@ -29,26 +29,26 @@ import {
 import { KadencePanelBody } from '@kadence/components';
 import { getFormFields } from '../../';
 
-const RETRIEVE_API_URL = 'https://account.sendinblue.com/advanced/api/';
-const HELP_URL = 'https://help.sendinblue.com/hc/en-us/articles/209467485-What-s-an-API-key-and-how-can-I-get-mine-';
+const RETRIEVE_API_URL = 'https://app.brevo.com/settings/keys/smtp';
+const HELP_URL = 'https://help.brevo.com/hc/en-us/articles/209467485-What-s-an-API-key-and-how-can-I-get-mine-';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function SendInBlueControls( { parentClientId, settings, save } ) {
+function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
-	const [ list, setList ] = useState( false );
+	const [ lists, setLists ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ listsLoaded, setListsLoaded ] = useState( false );
 	const [ isFetchingAttributes, setIsFetchingAttributes ] = useState( false );
 	const [ listAttr, setListAttr ] = useState( false );
 	const [ listAttrLoaded, setListAttrLoaded ] = useState( false );
 
-	const fields = useMemo( () => getFormFields( parentClientId ), [ parentClientId ] );
+	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
 
 	useEffect( () => {
 		apiFetch( {
@@ -64,7 +64,7 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 
 	const getSendInBlueList = () => {
 		if ( !api ) {
-			setList( [] );
+			setLists( [] );
 			setListsLoaded( true );
 			return;
 		}
@@ -76,18 +76,18 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 				{ apikey: api, endpoint: 'contacts/lists', queryargs: [ 'limit=50', 'offset=0' ] },
 			),
 		} )
-			.then( ( list ) => {
+			.then( ( lists ) => {
 				const theLists = [];
-				list.lists.map( ( item ) => {
+				lists.lists.map( ( item ) => {
 					theLists.push( { value: item.id, label: item.name } );
 				} );
 
-				setList( theLists );
+				setLists( theLists );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} )
 			.catch( () => {
-				setList( [] );
+				setLists( [] );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} );
@@ -163,28 +163,18 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 		} );
 	};
 
-	const saveMap = ( value, index ) => {
-		const newItems = fields.map( ( item, thisIndex ) => {
-			let newString = '';
-			if ( index === thisIndex ) {
-				newString = value;
-			} else if ( undefined !== settings.map && undefined !== settings.map[ thisIndex ] ) {
-				newString = settings.map[ thisIndex ];
-			} else {
-				newString = '';
-			}
-
-			return newString;
-		} );
-		save( { map: newItems } );
+	const saveMap = ( value, uniqueID ) => {
+		let updatedMap = { ...settings.map }
+		updatedMap[uniqueID] = value;
+		save( { map: updatedMap } );
 	};
 
-	const hasList = Array.isArray( list ) && list.length;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length;
+	const hasLists = Array.isArray( lists ) && lists.length > 0;
+	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
 
 	return (
 		<KadencePanelBody
-			title={__( 'SendInBlue Settings', 'kadence-blocks-pro' )}
+			title={__( 'Brevo (SendInBlue) Settings', 'kadence-blocks-pro' )}
 			initialOpen={false}
 		>
 			<p>
@@ -224,34 +214,34 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 					{isFetching && (
 						<Spinner/>
 					)}
-					{!isFetching && !hasList && (
+					{!isFetching && !hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
+							<h2 className="kt-heading-size-title">{__( 'Select Lists', 'kadence-blocks' )}</h2>
 							{( !listsLoaded ? getSendInBlueList() : '' )}
-							{!Array.isArray( list ) ?
+							{!Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No list found.', 'kadence-blocks-pro' )}
 						</Fragment>
 
 					)}
-					{!isFetching && hasList && (
+					{!isFetching && hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
+							<h2 className="kt-heading-size-title">{__( 'Select Lists', 'kadence-blocks' )}</h2>
 							<Select
-								value={( undefined !== settings.list ? settings.list : '' )}
+								value={( settings && undefined !== settings.lists ? settings.lists : '' )}
 								onChange={( value ) => {
-									save( { list: ( value ? value : [] ) } );
+									save( { lists: ( value ? value : [] ) } );
 								}}
 								id={'snb-list-selection'}
-								options={list}
+								options={lists}
 								isMulti={true}
 								maxMenuHeight={200}
-								placeholder={__( 'Select List' )}
+								placeholder={__( 'Select Lists' )}
 							/>
-							{!settings.list && (
+							{!settings.lists && (
 								<div style={{ height: '100px' }}></div>
 							)}
-							{settings.list && (
+							{settings.lists && (
 								<Fragment>
 									{isFetchingAttributes && (
 										<Spinner/>
@@ -280,9 +270,9 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 															<SelectControl
 																label={__( 'Select Field:' )}
 																options={listAttr}
-																value={( undefined !== settings.map && undefined !== settings.map[ index ] && settings.map[ index ] ? settings.map[ index ] : '' )}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
 																onChange={( value ) => {
-																	saveMap( value, index );
+																	saveMap( value, item.uniqueID );
 																}}
 															/>
 														</div>
@@ -323,4 +313,4 @@ function SendInBlueControls( { parentClientId, settings, save } ) {
 	);
 }
 
-export default ( SendInBlueControls );
+export default ( SendInBlueOptions );

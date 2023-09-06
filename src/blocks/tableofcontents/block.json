@@ -1,13 +1,14 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/tableofcontents",
   "title": "Table of Contents",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "icon": "smile",
   "supports": {
-	"html": false
+	"html": false,
+	"kbMetadata": true
   },
   "attributes": {
 	"uniqueID": {

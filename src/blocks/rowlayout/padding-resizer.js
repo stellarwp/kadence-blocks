@@ -1,17 +1,13 @@
 import {
-	Button,
-	Tooltip,
 	ResizableBox,
 } from '@wordpress/components';
-import classnames from 'classnames';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
 import { PADDING_RESIZE_MAP } from './constants';
-import { getGutterTotal, getPreviewGutterSize, getSpacingOptionName, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './utils';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { getSpacingOptionName, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './utils';
+import { getPreviewSize, showSettings } from '@kadence/helpers';
 export default function PaddingResizer( {
 	previewDevice = 'Desktop',
 	edge = 'top',
@@ -129,7 +125,7 @@ export default function PaddingResizer( {
 						topLeft: false,
 					} }
 					snap={ {
-						y:PADDING_RESIZE_MAP 
+						y:PADDING_RESIZE_MAP
 					} }
 					snapGap={ 16 }
 					grid={ [1, 8] }

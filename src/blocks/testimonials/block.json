@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Testimonials",
   "name": "kadence/testimonials",
   "category": "kadence-blocks",
@@ -799,6 +799,10 @@
 	  "type": "boolean",
 	  "default": true
 	},
+	"carouselType": {
+		"type": "string",
+		"default": "loop"
+	},
 	"kbVersion": {
 		"type": "number",
 		"default": ""
@@ -810,6 +814,7 @@
   ],
   "supports": {
 	"anchor": true,
-	"html": false
+	"html": false,
+    "kbMetadata": true
   }
 }

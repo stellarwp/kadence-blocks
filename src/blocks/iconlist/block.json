@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Icon List",
   "name": "kadence/iconlist",
   "category": "kadence-blocks",
@@ -170,6 +170,18 @@
 	"style": {
 		"type": "string",
 		"default": "default"
+	},
+	"linkUnderline": {
+		"type": "string",
+		"default": "inherit"
+	},
+	"linkColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"linkHoverColor": {
+	  "type": "string",
+	  "default": ""
 	}
   },
   "providesContext": {
@@ -177,6 +189,7 @@
 	"kadence/listIconWidth": "width"
   },
   "supports": {
-	"ktdynamic": true
+	"ktdynamic": true,
+	"kbMetadata": true
   }
 }

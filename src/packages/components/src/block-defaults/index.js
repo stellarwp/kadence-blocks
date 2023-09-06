@@ -40,8 +40,6 @@ export default function KadenceBlockDefaults( {
 		return null;
 	}
 
-	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor' ];
-
 	const {createErrorNotice} = useDispatch(noticesStore);
 
 	const [isOpenResetConfirm, setIsOpenResetConfirm] = useState(false);

@@ -5,7 +5,7 @@
 /**
  * Import External
  */
-import { isEqual, uniqueId } from 'lodash';
+import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import {
 	KadenceColorOutput,
@@ -16,6 +16,8 @@ import {
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
 	getBorderStyle,
+	getPostOrFseId,
+	getUniqueId
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -90,7 +92,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Build the TOC edit
  */
-function KadenceTableOfContents( { attributes, setAttributes, clientId, className, isSelected, pageIndex, postContent, blockOrder, isTyping } ) {
+function KadenceTableOfContents( props ) {
+	const { attributes, setAttributes, clientId, className, isSelected, pageIndex, postContent, blockOrder, isTyping } = props;
 	const {
 		uniqueID,
 		allowedHeaders,
@@ -184,12 +187,18 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const [ showContent, setShowContent ] = useState( true );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
@@ -199,25 +208,18 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 	const titleMouseOver = mouseOverVisualizer();
 	const contentMouseOver = mouseOverVisualizer();
 	useEffect( () => {
-		let smallID = '_' + clientId.substr( 2, 9 );
-		if ( ! uniqueID ) {
-			attributes = setBlockDefaults( 'kadence/tableofcontents', attributes);
-			if ( ! isUniqueID( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
-			setAttributes( {
-				uniqueID: smallID,
-			} );
-			addUniqueID( smallID, clientId );
-		} else if ( ! isUniqueID( uniqueID ) ) {
-			// This checks if we are just switching views, client ID the same means we don't need to update.
-			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
-				attributes.uniqueID = smallID;
-				addUniqueID( smallID, clientId );
-			}
+		setBlockDefaults( 'kadence/tableofcontents', attributes);
+
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, clientId );
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
+
 		if ( undefined !== startClosed && startClosed ) {
 			setShowContent( false );
 		}
@@ -780,6 +782,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 											onChange={(value) => setAttributes({titleColor: value})}
 										/>
 										<TypographyControls
+											fontGroup={'body'}
 											fontSize={titleSize}
 											onFontSize={(value) => setAttributes({titleSize: value})}
 											fontSizeType={titleSizeType}
@@ -886,6 +889,7 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 									onChange={value => setAttributes({linkStyle: value})}
 								/>
 								<TypographyControls
+									fontGroup={'body'}
 									fontSize={contentSize}
 									onFontSize={(value) => setAttributes({contentSize: value})}
 									fontSizeType={contentSizeType}

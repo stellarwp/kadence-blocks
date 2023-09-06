@@ -104,7 +104,8 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 		if ( isset( $attributes['maxWidth'] ) && ! empty( $attributes['maxWidth'] ) ) {
-			$css->add_property( 'max-width', $css->render_number( $attributes['maxWidth'], 'px' ) );
+			$maxWidthType = ( isset( $attributes['maxWidthType'] ) ? $attributes['maxWidthType'] : 'px' );
+			$css->add_property( 'max-width', $css->render_number( $attributes['maxWidth'], $maxWidthType ) );
 		}
 		// Title.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title-wrap' );

@@ -38,13 +38,16 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 				onLineHeightType={( value ) => saveHelpFont( { lineType: value } )}
 			/>
 			<KadencePanelBody
-				title={__( 'Advanced Label Settings', 'kadence-blocks' )}
+				title={__( 'Advanced Help Text Settings', 'kadence-blocks' )}
 				initialOpen={false}
 				panelName={'kb-form-advanced-label-settings'}
 			>
 				<TypographyControls
-					letterSpacing={helpFont.letterSpacing}
-					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value.toString() } )}
+					fontGroup={'body'}
+					reLetterSpacing={helpFont.letterSpacing}
+					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value } )}
+					letterSpacingType={helpFont.letterType}
+					onLetterSpacingType={( value ) => saveHelpFont( { letterType: value } )}
 					textTransform={helpFont.textTransform}
 					onTextTransform={( value ) => saveHelpFont( { textTransform: value } )}
 					fontFamily={helpFont.family}

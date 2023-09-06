@@ -11,9 +11,9 @@ import LazyLoad from 'react-lazy-load';
 /**
  * WordPress dependencies
  */
- const {
+import {
 	applyFilters,
-} = wp.hooks;
+} from '@wordpress/hooks';
 import {
 	Component,
 	Fragment,

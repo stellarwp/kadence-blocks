@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Posts",
   "name": "kadence/posts",
   "category": "kadence-blocks",
@@ -219,6 +219,7 @@
 	}
   },
   "supports": {
-	"html": false
+	"html": false,
+	"kbMetadata": true
   }
 }

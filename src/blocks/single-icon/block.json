@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Single Icon",
   "name": "kadence/single-icon",
   "parent": [
@@ -124,7 +124,8 @@
   "supports": {
     "ktdynamic": true,
     "html": false,
-    "reusable": false
+    "reusable": false,
+    "kbMetadata": true
   },
   "usesContext": [
     "postId",

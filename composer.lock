@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "90dc1333231b6d4792369abca476c75b",
+    "content-hash": "ed2b7eb0929c6dab71e133d9a5b5e548",
     "packages": [
         {
             "name": "lucatume/di52",
-            "version": "3.1.1",
+            "version": "3.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/di52.git",
-                "reference": "6d1e3641d02995c78027a565e8d205d9b6e73eca"
+                "reference": "a86c6d38bb932bb70995143ca47212af73fc79da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/di52/zipball/6d1e3641d02995c78027a565e8d205d9b6e73eca",
-                "reference": "6d1e3641d02995c78027a565e8d205d9b6e73eca",
+                "url": "https://api.github.com/repos/lucatume/di52/zipball/a86c6d38bb932bb70995143ca47212af73fc79da",
+                "reference": "a86c6d38bb932bb70995143ca47212af73fc79da",
                 "shasum": ""
             },
             "require": {
@@ -26,13 +26,10 @@
                 "psr/container": "^1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "*"
+                "phpunit/phpunit": "<10.0"
             },
             "type": "library",
             "autoload": {
-                "files": [
-                    "aliases.php"
-                ],
                 "psr-4": {
                     "lucatume\\DI52\\": "src/"
                 }
@@ -50,9 +47,9 @@
             "description": "A PHP 5.6 compatible dependency injection container.",
             "support": {
                 "issues": "https://github.com/lucatume/di52/issues",
-                "source": "https://github.com/lucatume/di52/tree/3.1.1"
+                "source": "https://github.com/lucatume/di52/tree/3.3.4"
             },
-            "time": "2023-02-16T16:19:29+00:00"
+            "time": "2023-06-20T06:50:28+00:00"
         },
         {
             "name": "psr/container",
@@ -151,16 +148,16 @@
         },
         {
             "name": "stellarwp/telemetry",
-            "version": "dev-main",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4"
+                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4",
-                "reference": "3a0a1c40e44bc56776f77b23f78bb8ecbb3a8cb4",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/cccdf75a925547d25222a2fa92a3c357a952069b",
+                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b",
                 "shasum": ""
             },
             "require": {
@@ -185,7 +182,6 @@
                 "the-events-calendar/coding-standards": "dev-master",
                 "wp-coding-standards/wpcs": "^2.3"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -201,17 +197,15 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/1.0.5"
+                "source": "https://github.com/stellarwp/telemetry/tree/2.0.1"
             },
-            "time": "2023-02-16T17:29:53+00:00"
+            "time": "2023-06-01T14:25:43+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "stellarwp/telemetry": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
@@ -219,5 +213,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

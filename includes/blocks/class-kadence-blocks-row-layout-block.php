@@ -352,8 +352,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Padding, check for old attributes and use if present.
 		if ( empty( $attributes['kbVersion'] ) ) {
 			// Add old defaults back in.
-			$css->add_property( 'padding-top', '25px' );
-			$css->add_property( 'padding-bottom', '25px' );
+			$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, 25px )' );
+			$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, 25px )' );
 		}
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
@@ -401,9 +401,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			);
 			// If no padding is set, use the default.
 			if ( ! isset( $attributes['padding'] ) ) {
-				$attributes['padding'] = [
-					'sm', '', 'sm', ''
-				];
+				// $attributes['padding'] = [
+				// 	'sm', '', 'sm', ''
+				// ];
+				$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, var(--global-kb-spacing-sm, 1.5rem) )' );
+				$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, var(--global-kb-spacing-sm, 1.5rem) )' );
 			}
 			$css->render_measure_output( $attributes, 'padding', 'padding', $args );
 		}
@@ -1321,20 +1323,49 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes for the block.
 	 */
 	public function get_video_render( $attributes ) {
-		if ( empty( $attributes['backgroundVideo'][0]['local'] ) ) {
+		if ( empty( $attributes['backgroundVideo'][0]['local'] ) && empty( $attributes['backgroundVideo'][0]['vimeo'] ) && empty( $attributes['backgroundVideo'][0]['youTube'] ) ) {
 			return '';
 		}
 		$output = '';
 		$video_attributes = $attributes['backgroundVideo'][0];
+		$background_video_type = isset( $attributes['backgroundVideoType'] ) && $attributes['backgroundVideoType'] ? $attributes['backgroundVideoType'] : 'local';
 		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
-		$video_args = array(
-			'class' => 'kb-blocks-bg-video',
-			'id' => 'bg-row-video-' . $attributes['uniqueID'],
-			'playsinline' => '',
-			'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
-			'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
-			'src' => $video_attributes['local'],
-		);
+
+		if ( 'local' == $background_video_type ) {
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video',
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'playsinline' => '',
+				'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
+				'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
+				'src' => $video_attributes['local'],
+			);
+		} else {
+			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
+			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
+
+			// Vimeo and youtube share a bunch of params, that's convienent.
+			$src_query_string = '?' . http_build_query(
+				array(
+					'autoplay' => 1,
+					'controls' => 0,
+					'mute' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 0 : 1 ),
+					'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 0 : 1 ),
+					'playlist' => $video_id,
+					'disablekb' => 1,
+					'modestbranding' => 1,
+					'playsinline' => 1,
+					'rel' => 0,
+				)
+			);
+
+			$video_args = array(
+				'class' => 'kb-blocks-bg-video ' . $background_video_type,
+				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'src' => $src_base . $video_id . $src_query_string,
+			);
+		}
 		if ( ! empty( $attributes['bgImg'] ) ) {
 			$video_args['poster'] = $attributes['bgImg'];
 		}
@@ -1344,10 +1375,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! $prevent_preload ) {
 			$video_args['autoplay'] = '';
 		}
-		if( $video_args['loop'] == 'false' ) {
+		if ( isset( $video_args['loop'] ) && $video_args['loop'] == 'false' ) {
 			unset( $video_args['loop'] );
 		}
-		if( $video_args['muted'] == 'false' ) {
+		if ( isset( $video_args['muted'] ) && $video_args['muted'] == 'false' ) {
 			unset( $video_args['muted'] );
 		}
 		$video_html_attributes = array();
@@ -1371,7 +1402,12 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$btns_output .= '</div>';
 		}
 
-		$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		// if ( 'local' == $attributes['backgroundVideoType'] ) {
+		if ( 'local' == $background_video_type ) {
+			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+		} else {
+			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><iframe %1$s></iframe></div>', implode( ' ', $video_html_attributes ) );
+		}
 		return $output;
 	}
 	/**
@@ -1506,8 +1542,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'speed' => apply_filters( 'kadence_blocks_parallax_speed', -0.1 ),
 			)
 		);
-		wp_register_style( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-kb-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kadence-splide.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-splide', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-blocks-splide.min.css', array( 'kadence-kb-splide' ), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );

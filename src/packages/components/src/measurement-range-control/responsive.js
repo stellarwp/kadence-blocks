@@ -190,6 +190,19 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange( deskDefault );
 		}
 	}
+	let mobilePlaceholder = tabletValue ? JSON.parse( JSON.stringify( tabletValue ) ) : [ '', '', '', '' ];
+	if ( ! mobilePlaceholder?.[0] ) {
+		mobilePlaceholder[0] = value?.[0] ? value[0] : '';
+	}
+	if ( ! mobilePlaceholder?.[1] ) {
+		mobilePlaceholder[1] = value?.[1] ? value[1] : '';
+	}
+	if ( ! mobilePlaceholder?.[2] ) {
+		mobilePlaceholder[2] = value?.[2] ? value[2] : '';
+	}
+	if ( ! mobilePlaceholder?.[3] ) {
+		mobilePlaceholder[3] = value?.[3] ? value[3] : '';
+	}
 	const output = {};
 	output.Mobile = (
 		<MeasureRangeControl
@@ -198,6 +211,7 @@ export default function ResponsiveMeasureRangeControl( {
 			parentLabel={ label }
 			label={ ( subLabel ? __( 'Mobile:', 'kadence-blocks' ) + subLabel : undefined ) }
 			value={ ( mobileValue ? mobileValue : [ '', '', '', '' ] ) }
+			placeholder={ mobilePlaceholder }
 			onChange={ ( size ) => onChangeMobile( clearNonMatchingValues( mobileValue, size ) ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }
@@ -230,6 +244,7 @@ export default function ResponsiveMeasureRangeControl( {
 			parentLabel={ label }
 			label={ ( subLabel ? __( 'Tablet:', 'kadence-blocks' ) + subLabel : undefined ) }
 			value={ ( tabletValue ? tabletValue : [ '', '', '', '' ] ) }
+			placeholder={ ( value ? value : [ '', '', '', '' ] ) }
 			onChange={ ( size ) => onChangeTablet( clearNonMatchingValues( tabletValue, size ) ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }

@@ -9,7 +9,7 @@ const name = 'kadence/mark';
 const allowedBlocks = [ 'kadence/advancedheading' ];
 
 const kadenceMarkHighlight = {
-	title: __( 'Highlight' ),
+	title: __( 'Adv Highlight' ),
 	tagName: 'mark',
 	className: 'kt-highlight',
 	edit( { isActive, value, onChange } ) {
@@ -33,7 +33,7 @@ const kadenceMarkHighlight = {
 				/>
 				<RichTextToolbarButton
 					icon={ icon }
-					title={ __( 'Highlight' ) }
+					title={ __( 'Adv Highlight' ) }
 					onClick={ onToggle }
 					isActive={ isActive }
 					shortcutType="access"

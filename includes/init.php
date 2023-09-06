@@ -76,11 +76,13 @@ function kadence_gutenberg_editor_assets() {
 		'lottie',
 		'posts',
 		'rowlayout',
+		'progress-bar',
 		'show-more',
 		'spacer',
 		'tableofcontents',
 		'tabs',
 		'testimonials',
+		'advanced-form',
 	);
 	foreach ( $blocks as $block ) {
 		$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
@@ -257,9 +259,12 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'editor_width'   => $enable_editor_width,
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
 			'headingWeights' => apply_filters( 'kadence_blocks_default_heading_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null ) ),
-			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
+			'bodyWeights'    => apply_filters( 'kadence_blocks_default_body_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_body_weights() : null ) ),
+			'buttonWeights'  => apply_filters( 'kadence_blocks_default_button_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null ) ),
+			'termEndpoint'   => '/kbp/v1/term-select',
+			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'taxonomies'     => kadence_blocks_get_taxonomies(),
+			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
@@ -290,6 +295,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
 			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
+			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
+			'adminUrl' => get_admin_url(),
 		)
 	);
 	wp_localize_script(
@@ -318,6 +325,10 @@ function kadence_blocks_gutenberg_editor_plugin_enqueue() {
 		wp_enqueue_script( 'kadence-blocks-plugin-js' );
 		wp_enqueue_style( 'kadence-blocks-plugin-css' );
 	}
+
+	$asset_meta = kadence_blocks_get_asset_file( 'dist/early-filters' );
+	//wp_register_script( 'kadence-blocks-pro-early-filters-vendor-js', KBP_URL . 'includes/assets/js/vendors/blocks_early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
+	wp_enqueue_script( 'kadence-blocks-early-filters-js', KADENCE_BLOCKS_URL . 'dist/early-filters.js', array_merge( $asset_meta['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element' ) ), $asset_meta['version'], true );
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );
 /**
@@ -334,39 +345,6 @@ function kadence_blocks_get_asset_file( $filepath ) {
 			'dependencies' => array( 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ),
 			'version'      => KADENCE_BLOCKS_VERSION,
 		);
-}
-
-/**
- * Setup the post type taxonomies for post blocks.
- *
- * @return array
- */
-function kadence_blocks_get_taxonomies() {
-	$post_types = kadence_blocks_get_post_types();
-	$output = array();
-	foreach ( $post_types as $key => $post_type ) {
-		$taxonomies = get_object_taxonomies( $post_type['value'], 'objects' );
-		$taxs = array();
-		foreach ( $taxonomies as $term_slug => $term ) {
-			if ( ! $term->public || ! $term->show_ui ) {
-				continue;
-			}
-			$taxs[ $term_slug ] = $term;
-			$terms = get_terms( $term_slug );
-			$term_items = array();
-			if ( ! empty( $terms ) ) {
-				foreach ( $terms as $term_key => $term_item ) {
-					$term_items[] = array(
-						'value' => $term_item->term_id,
-						'label' => $term_item->name,
-					);
-				}
-				$output[ $post_type['value'] ]['terms'][ $term_slug ] = $term_items;
-			}
-		}
-		$output[ $post_type['value'] ]['taxonomy'] = $taxs;
-	}
-	return apply_filters( 'kadence_blocks_taxonomies', $output );
 }
 
 /**
@@ -464,6 +442,33 @@ function kadence_blocks_get_headings_weights() {
 /**
  * Get an array font weight options.
  */
+function kadence_blocks_get_body_weights() {
+	$weights = array();
+	if ( function_exists( 'Kadence\kadence' ) ) {
+		$base_font = \Kadence\kadence()->option( 'base_font' );
+		if ( is_array( $base_font ) ) {
+			if ( isset( $base_font['family'] ) && ! empty( $base_font['family'] ) && substr( $base_font['family'], 0, strlen( '-apple-system' ) ) === '-apple-system' ) {
+				// System Font.
+				$weights = array(
+					array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) ),
+					array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) ),
+					array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) ),
+					array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) ),
+					array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) ),
+					array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) ),
+					array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) ),
+					array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) ),
+					array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) ),
+					array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) ),
+				);
+			}
+		}
+	}
+	return apply_filters( 'kadence_blocks_body_weight_options', $weights );
+}
+/**
+ * Get an array font weight options.
+ */
 function kadence_blocks_get_button_weights() {
 	$weights = array();
 	if ( function_exists( 'Kadence\kadence' ) ) {
@@ -531,7 +536,6 @@ function kadence_blocks_get_button_weights() {
 				);
 			}
 		}
-		//print_r( $button_font );
 	}
 	return apply_filters( 'kadence_blocks_button_weight_options', $weights );
 }

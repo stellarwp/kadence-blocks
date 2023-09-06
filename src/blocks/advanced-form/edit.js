@@ -6,6 +6,10 @@
  * Import Css
  */
 import './editor.scss';
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
 
 /**
  * Internal block libraries
@@ -13,10 +17,14 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { advancedFormIcon } from '@kadence/icons';
-
-import { useBlockProps } from '@wordpress/block-editor';
+import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
+import {
+	KadencePanelBody,
+} from '@kadence/components';
+import {
+	useBlockProps,
+	InspectorControls
+} from '@wordpress/block-editor';
 import {
 	Placeholder,
 	Spinner,
@@ -27,8 +35,8 @@ import {
 } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
-import { SelectOrCreatePlaceholder } from './components';
-import { getUniqueId } from '@kadence/helpers';
+import { SelectOrCreatePlaceholder, SelectForm } from './components';
+import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 
 /**
@@ -47,35 +55,53 @@ export function Edit( props ) {
 
 	const { id, uniqueID } = attributes;
 
-	const blockProps = useBlockProps();
-
-	const { post, currentPostType } = useSelect(
-		( select ) => ( {
-			post:
-				id &&
-				select( coreStore ).getEditedEntityRecord(
-					'postType',
-					'kadence_form',
-					id,
-				),
-			currentPostType: select( editorStore ).getCurrentPostType(),
-		} ),
+	const blockClasses = classnames( {
+		'wp-block-kadence-advanced-form'                : true,
+		[ `wp-block-kadence-advanced-form${uniqueID}` ] : uniqueID,
+	} );
+	const blockProps = useBlockProps( {
+		className: blockClasses
+	} );
+	const { post, currentPostType, postId } = useSelect(
+		( select ) => {
+			return {
+				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_form', id ),
+				currentPostType: select( 'core/editor' )?.getCurrentPostType() ? select( 'core/editor' )?.getCurrentPostType() : '',
+				postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+			}
+		},
 		[ id ],
 	);
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				isPreviewMode: select( 'core/block-editor' ).getSettings().__unstableIsPreviewMode,
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 
+	if( isPreviewMode ) {
+		return(
+			<>
+				{formTemplateContactIcon}
+			</>
+		);
+	}
+
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -83,21 +109,24 @@ export function Edit( props ) {
 		} else {
 			addUniqueID( uniqueId, clientId );
 		}
+		if ( currentPostType === 'kadence_form' ) {
+			// Lame workaround for gutenberg to prevent showing the block Validity error.
+			window.wp.data.dispatch( 'core/block-editor' ).setTemplateValidity( true );
+		}
 	}, [] );
 
 	{/* Directly editing from via kadence_form post type */}
 	if ( currentPostType === 'kadence_form' ) {
 		return (
 			<div {...blockProps}>
-				<EditInner {...props} direct={true} id={ id }/>
+				<EditInner {...props} direct={true} id={ postId }/>
 			</div>
 		);
 	}
-
 	return (
 		<div {...blockProps}>
 			{/* No form selected, display chooser */}
-			{id === 0 && (
+			{ id === 0 && (
 				<Chooser
 					id={id}
 					post={post}
@@ -107,29 +136,69 @@ export function Edit( props ) {
 
 			{/* Form selected but not loaded yet, show spinner */}
 			{id > 0 && isEmpty( post ) && (
-				<Placeholder
-					className="kb-select-or-create-placeholder"
-					label={__( 'Kadence Form', 'kadence-form' )}
-					icon={ advancedFormIcon }
-				>
-					<Spinner/>
-				</Placeholder>
+				<>
+					<Placeholder
+						className="kb-select-or-create-placeholder"
+						label={__( 'Kadence Form', 'kadence-blocks' )}
+						icon={ formBlockIcon }
+					>
+						<Spinner/>
+					</Placeholder>
+					<InspectorControls>
+						<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Selected Form', 'kadence-blocks' ) }
+							>
+							<SelectForm
+								postType="kadence_form"
+								label={__( 'Selected Form', 'kadence-blocks' )}
+								hideLabelFromVision={ true }
+								onChange={ ( nextId ) => {
+									setAttributes( { id: parseInt( nextId ) } ) 
+								} }
+								value={ id }
+							/>
+						</KadencePanelBody>
+					</InspectorControls>
+				</>
 			)}
-
+			{id > 0 && !isEmpty( post ) && ( isEmpty(post.content ) && isEmpty( post.blocks ) ) && (
+				<Chooser
+					id={id}
+					post={post}
+					commit={( nextId ) => setAttributes( { id: parseInt( nextId ) } )}
+				/>
+			)}
 			{id > 0 && !isEmpty( post ) && post.status === "trash" && (
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"
 						label={__( 'Kadence Form', 'kadence-blocks' )}
-						icon={ advancedFormIcon }
+						icon={ formBlockIcon }
 					>
 						{ __( 'The selected from is in the trash.', 'kadence-blocks' ) }
 					</Placeholder>
+					<InspectorControls>
+						<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={ __( 'Selected Form', 'kadence-blocks' ) }
+							>
+							<SelectForm
+								postType="kadence_form"
+								label={__( 'Selected Form', 'kadence-blocks' )}
+								hideLabelFromVision={ true }
+								onChange={ ( nextId ) => {
+									setAttributes( { id: parseInt( nextId ) } ) 
+								} }
+								value={ id }
+							/>
+						</KadencePanelBody>
+					</InspectorControls>
 				</>
 			)}
 
 			{/* Form selected and loaded, display form */}
-			{id > 0 && !isEmpty( post ) && post.status !== 'trash' && (
+			{id > 0 && !isEmpty( post ) && post.status !== 'trash' && ( ! isEmpty( post.content ) || !isEmpty (post.blocks ) ) && (
 				<EntityProvider kind="postType" type="kadence_form" id={id}>
 					<EditInner {...props} direct={false} id={id}/>
 				</EntityProvider>
@@ -154,11 +223,8 @@ function Chooser( { id, post, commit } ) {
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_form"
-			label={__( 'Kadence Form', 'kadence-blocks' )}
-			instructions={__(
-				'Select an existing form or create a new one.',
-				'kadence-blocks',
-			)}
+			label={__( 'Advanced Form', 'kadence-blocks' )}
+			instructions={__( 'Select an existing form or create a new one.', 'kadence-blocks' )}
 			placeholder={__( 'Select Form', 'kadence-blocks' )}
 			onSelect={commit}
 			isSelecting={id && isEmpty( post )}

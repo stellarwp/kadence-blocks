@@ -11,8 +11,8 @@
 		},
 		markError( item, error_type, form ) {
 			var error_string = '';
-			if ( ! form.classList.contains( 'kb-form-has-error' ) ) {
-				form.classList.add( 'kb-form-has-error' );
+			if ( ! form.classList.contains( 'kb-adv-form-has-error' ) ) {
+				form.classList.add( 'kb-adv-form-has-error' );
 			}
 			item.classList.add( 'has-error' );
 			if ( error_type ) {
@@ -22,9 +22,9 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'mismatch' :
@@ -32,9 +32,9 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'validation' :
@@ -42,13 +42,13 @@
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');
 							if ( ! error_string || '' === error_string || undefined === error_string ) {
-								error_string = kadence_blocks_form_params[ 'item' ];
+								error_string = kb_adv_form_params[ 'item' ];
 							}
-							error_string = error_string + ' ' + kadence_blocks_form_params[error_type];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break
 				}
-				var next = item.parentNode.querySelector( '.kb-form-error-msg' );
+				var next = item.parentNode.querySelector( '.kb-adv-form-error-msg' );
 				if ( next ) {
 					next.remove();
 				}
@@ -57,11 +57,14 @@
 				item.setAttribute( 'aria-invalid', 'true' );
 				var el = document.createElement('div');
 				el.id = error_id;
-				el.classList.add( 'kb-form-error-msg' );
-				el.classList.add( 'kadence-blocks-form-warning' );
+				el.classList.add( 'kb-adv-form-error-msg' );
+				el.classList.add( 'kb-adv-form-message' );
+				el.classList.add( 'kb-adv-form-warning' );
 				el.setAttribute( 'role', 'alert' );
 				el.innerHTML = error_string;
-				if ( item.classList.contains( 'kb-checkbox-style' ) ) {
+				if ( item.classList.contains( 'kb-accept-field' ) ) {
+					item.parentNode.parentNode.append( el );
+				} else if ( item.classList.contains( 'kb-checkbox-field' ) || item.classList.contains( 'kb-radio-field' ) ) {
 					item.parentNode.append( el );
 				} else {
 					window.kadenceAdvancedForm.insertAfter( el, item );
@@ -75,11 +78,11 @@
 		addErrorNotice( form ) {
 			var error_message = form.getAttribute('data-error-message');
 			if ( ! error_message || '' === error_message || undefined === error_message ) {
-				error_message = kadence_blocks_form_params.error_message;
+				error_message = kb_adv_form_params.error_message;
 			}
 			var el = document.createElement('div');
-			el.classList.add( 'kadence-blocks-form-message' );
-			el.classList.add( 'kadence-blocks-form-warning' );
+			el.classList.add( 'kb-adv-form-message' );
+			el.classList.add( 'kb-adv-form-warning' );
 			el.innerHTML = error_message;
 			window.kadenceAdvancedForm.insertAfter( el, form );
 		},
@@ -96,8 +99,8 @@
 			return telregex.test( tel );
 		},
 		removeErrors( item ) {
-			if ( item.classList.contains( 'kb-form-has-error' ) ) {
-				item.classList.remove( 'kb-form-has-error' );
+			if ( item.classList.contains( 'kb-adv-form-has-error' ) ) {
+				item.classList.remove( 'kb-adv-form-has-error' );
 			}
 			var errors = item.querySelectorAll( '.has-error' );
 			if ( errors.length ) {
@@ -105,19 +108,19 @@
 					errors[n].classList.remove( 'has-error' );
 					errors[n].removeAttribute( 'aria-describedby' );
 					errors[n].removeAttribute( 'aria-invalid' );
-					var next = errors[n].parentNode.querySelector( '.kb-form-error-msg' );
+					var next = errors[n].parentNode.querySelector( '.kb-adv-form-error-msg' );
 					if ( next ) {
 						next.remove();
 					}
 				}
 			}
-			var message = document.querySelectorAll( '.kadence-blocks-form-message' );
+			var message = document.querySelectorAll( '.kb-adv-form-message' );
 			if ( message.length ) {
 				for ( var n = 0; n < message.length; n++ ) {
 					message[n].remove();
 				}
 			}
-			var notices = item.querySelectorAll( '.kb-form-errors' );
+			var notices = item.querySelectorAll( '.kb-adv-form-errors' );
 			if ( notices.length ) {
 				for ( var n = 0; n < notices.length; n++ ) {
 					notices[n].remove();
@@ -155,7 +158,7 @@
 
 							val = required[n].value.trim();
 
-							if ( val === '') {
+							if ( val === '' ) {
 								error = true;
 								error_type = 'required';
 
@@ -166,7 +169,16 @@
 						case 'tel':
 
 							val = required[n].value.trim();
-							if ( val === '') {
+							if ( val !== '' ) {
+								//run the validation
+								// if( ! window.kadenceAdvancedForm.isValidTel( val ) ) {
+								// 	error = true;
+								// 	error_type = 'validation';
+
+								// 	// mark the error in the field.
+								// 	window.kadenceAdvancedForm.markError( required[n], error_type, self );
+								// }
+							} else if ( val === '' ) {
 								error = true;
 								error_type = 'required';
 
@@ -222,7 +234,7 @@
 						case 'checkbox':
 							var length = required[n].querySelector('input:checked');
 
-							if ( !length ) {
+							if ( ! length ) {
 								error = true;
 								error_type = 'required';
 
@@ -286,10 +298,10 @@
 			}
 			//var form_data = self.serialize();
 			var form_data = new FormData(self);
-			form_data.set( '_kb_form_verify', kadence_blocks_form_params.nonce );
+			form_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
 			//form_data = window.kadenceAdvancedForm.serialize( form_data );
-			form_data = new URLSearchParams(form_data);
-			//form_data = form_data + '&_kb_form_verify=' + kadence_blocks_form_params.nonce;
+			// form_data = new URLSearchParams(form_data);
+			//form_data = form_data + '&_kb_form_verify=' + kb_adv_form_params.nonce;
 			return form_data;
 		},
 		createElementFromHTML( htmlString ) {
@@ -301,82 +313,77 @@
 		},
 		submit( e, form ) {
 			e.preventDefault();
-			var event = new Event( 'kb-form-start-submit' );
+			var event = new Event( 'kb-adv-form-start-submit' );
 			// Dispatch the event.
 			window.document.body.dispatchEvent(event);
-			var submitButton = form.querySelector('.kb-advanced-form-submit-button');
+			var submitButton = form.querySelector('.kb-adv-form-submit-button');
 			var form_data = window.kadenceAdvancedForm.validateForm( form );
 			if ( form_data ) {
 				var el = document.createElement('div');
-				el.classList.add( 'kb-form-loading' );
-				el.innerHTML = '<div class="kb-form-loading-spin"><div></div><div></div><div></div><div></div></div>';
+				el.classList.add( 'kb-adv-form-loading' );
+				el.innerHTML = '<div class="kb-adv-form-loading-spin"><div></div><div></div><div></div><div></div></div>';
 				form.append( el );
 				submitButton.setAttribute( 'disabled', 'disabled' )
 				submitButton.classList.add( 'button-primary-disabled' );
-				var request = new XMLHttpRequest();
-				request.open( 'POST', kadence_blocks_form_params.ajaxurl, true );
-				request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-				request.onload = function () {
-					if ( this.status >= 200 && this.status < 400 ) {
-						// If successful
-						//console.log( JSON.parse( this.response ) );
-						var response = JSON.parse( this.response );
-						if ( response.success ) {
-							var event = new CustomEvent( 'kb-advanced-form-success', {
-								'detail': ( form.querySelector( 'input[name="_kb_form_id"]' ) ? form.querySelector( 'input[name="_kb_form_id"]' ).value : '' ),
-							} );
-							// Dispatch the event.
-							window.document.body.dispatchEvent(event);
-							if ( response.redirect ) {
-								window.location = response.redirect;
-							} else {
-								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
-								if ( form.querySelector('.g-recaptcha') ) {
-									grecaptcha.reset();
-								}
-								window.kadenceAdvancedForm.clearForm( form );
-							}
-						} else {
-							if ( response.data ) {
-								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
-								if ( response.data.required ) {
-									if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
-										window.kadenceAdvancedForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
-									}
-								}
-							}
-						}
-					}
-					if ( form.querySelector('.g-recaptcha') ) {
+
+				let fetchOptions = {
+					method: 'POST',
+					body  : form_data,
+				};
+
+				fetch( kb_adv_form_params.ajaxurl, fetchOptions ).then( ( response ) => {
+					if ( form.querySelector( '.g-recaptcha' ) ) {
 						grecaptcha.reset();
 					}
 					submitButton.removeAttribute( 'disabled' );
 					submitButton.classList.remove( 'button-primary-disabled' );
-					form.querySelector( '.kb-form-loading' ).remove();
-				};
-				request.onerror = function() {
-					// Connection error
-					console.log('Connection error');
-				};
-				request.send( form_data.toString() );
+					form.querySelector( '.kb-adv-form-loading' ).remove();
+
+					if ( response.status >= 200 && response.status < 400 ) {
+						return response.json();
+					}
+
+				} ).then( ( body ) => {
+
+					var response = body;
+
+					if ( response.success ) {
+						const submissionResults = response?.submissionResults;
+						var event = new CustomEvent( 'kb-advanced-form-success', {
+							'detail': {
+								'uniqueId'         : ( form.querySelector( 'input[name="_kb_adv_form_id"]' ) ? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value : '' ),
+								'submissionResults': submissionResults,
+							},
+						} );
+						// Dispatch the event.
+						window.document.body.dispatchEvent( event );
+						if ( response.redirect ) {
+							window.location.replace( response.redirect );
+						} else {
+							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
+							if ( response?.hide ) {
+								form.remove();
+							} else {
+								window.kadenceAdvancedForm.clearForm( form );
+							}
+						}
+					} else {
+						if ( response.data ) {
+							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
+							if ( response.data.required ) {
+								if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
+									window.kadenceAdvancedForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
+								}
+							}
+						}
+					}
+
+				} ).catch( function( error ) {
+					console.log( 'Connection error' );
+				} );
+
 			}
 
-		},
-		checkParentClass( element, classname ) {
-			if ( element.className.split(' ').indexOf( classname ) >=0 ) return element.id;
-			return element.parentNode && window.kadenceAdvancedForm.checkParentClass( element.parentNode, classname );
-		},
-		verifySource( form ) {
-			var input = form.querySelector( 'input[name="_kb_form_post_id"]' );
-			if ( ! input ) {
-				return;
-			}
-			if ( ! input.value || 'block-unknown' === input.value ) {
-				var theID = window.kadenceAdvancedForm.checkParentClass( form.parentNode, 'widget_block' );
-				if ( theID ) {
-					input.value = theID;
-				}
-			}
 		},
 		initForms() {
 			var forms = document.querySelectorAll( 'form.kb-advanced-form' );
@@ -389,15 +396,40 @@
 				}
 			}
 			for ( var n = 0; n < forms.length; n++ ) {
-				window.kadenceAdvancedForm.verifySource( forms[n] );
 				forms[n].addEventListener('submit', click_function( forms[n] ) );
 			}
 		},
+		initFloatingLabels() {
+			var inputs = document.querySelectorAll( '.kb-adv-form-label-style-float .kb-adv-form-text-type-input input, .kb-adv-form-label-style-float .kb-adv-form-text-type-input textarea' );
+			if ( ! inputs.length ) {
+				return;
+			}
+			var focus_function = function( input ) {
+				return function curried_func(e) {
+					input.parentNode.classList.add( 'kb-form-field-focus' );
+				}
+			}
+			var blur_function = function( input ) {
+				return function curried_func(e) {
+					if ( ! input.value ) {
+						input.parentNode.classList.remove( 'kb-form-field-focus' );
+					}
+				}
+			}
+			for ( var n = 0; n < inputs.length; n++ ) {
+				if ( inputs[n].value ) {
+					inputs[n].parentNode.classList.add( 'kb-form-field-focus' );
+				}
+				inputs[n].addEventListener('focus', focus_function( inputs[n] ) );
+				inputs[n].addEventListener('blur', blur_function( inputs[n] ) );
+			}
+		},
 		init: function() {
-			if ( typeof kadence_blocks_form_params === 'undefined' ) {
+			if ( typeof kb_adv_form_params === 'undefined' ) {
 				return false;
 			}
 			window.kadenceAdvancedForm.initForms();
+			window.kadenceAdvancedForm.initFloatingLabels();
 		}
 	}
 	if ( 'loading' === document.readyState ) {

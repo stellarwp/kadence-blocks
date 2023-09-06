@@ -7,17 +7,8 @@
  */
 import {
 	rowIcon,
-	collapseRowIcon,
-	collapseRowThreeIcon,
-	collapseRowFourIcon,
-	collapseRowFiveIcon,
-	collapseRowSixIcon,
 	twoColIcon,
-	gridIcon,
 	threeColIcon,
-	threeGridIcon,
-	lastRowIcon,
-	firstRowIcon,
 	twoLeftGoldenIcon,
 	twoRightGoldenIcon,
 	leftHalfIcon,
@@ -29,14 +20,7 @@ import {
 	lFourFortyIcon,
 	rFourFortyIcon,
 	fiveColIcon,
-	sixColIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon,
-	topLeftIcon,
-	topRightIcon,
-	bottomLeftIcon,
-	bottomRightIcon,
-	video
+	sixColIcon
 } from '@kadence/icons';
 
 /**
@@ -53,14 +37,23 @@ import {
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
 	KadencePanelBody,
-	VerticalAlignmentIcon,
-	BackgroundControl as KadenceBackgroundControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings, mouseOverVisualizer, setBlockDefaults, getUniqueId, getInQueryBlock, isRTL } from '@kadence/helpers';
+
+import {
+	KadenceColorOutput,
+	getPreviewSize,
+	showSettings,
+	mouseOverVisualizer,
+	setBlockDefaults,
+	getUniqueId,
+	getInQueryBlock,
+	setDynamicState,
+	getPostOrFseId
+} from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -88,12 +81,10 @@ import metadata from './block.json';
  */
 import { useEffect, useState, useRef } from '@wordpress/element';
 import {
-	MediaUpload,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
 	InspectorAdvancedControls,
-	useBlockProps,
 	useInnerBlocksProps,
 	BlockVerticalAlignmentControl,
 	store as blockEditorStore,
@@ -101,32 +92,20 @@ import {
 import {
 	Button,
 	ButtonGroup,
-	Tooltip,
-	TabPanel,
 	Popover,
 	ToolbarGroup,
 	ToolbarButton,
-	TextControl,
-	Dashicon,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
-	GradientPicker
 } from '@wordpress/components';
 import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	blockDefault,
-	styles,
 	brush,
-	image,
 	settings,
-	plusCircleFilled,
 	plusCircle,
-	closeSmall,
 } from '@wordpress/icons';
-import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal block libraries
  */
@@ -136,17 +115,18 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 /**
  * Build the row edit
  */
- function RowLayoutEditContainer( {
-	attributes,
-	setAttributes,
-	updateAlignment,
-	insertSection,
-	context,
-	updateColumns,
-	toggleSelection,
-	isSelected,
-	clientId,
-} ) {
+function RowLayoutEditContainer( props ) {
+	const {
+		attributes,
+		setAttributes,
+		updateAlignment,
+		insertSection,
+		context,
+		updateColumns,
+		toggleSelection,
+		isSelected,
+		clientId,
+	} = props;
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, gradient, overlayGradient, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS, customGutter, gutterType, padding, mobilePadding, margin, tabletMargin, mobileMargin, customRowGutter, rowType, tabletGutter, mobileGutter, mobileRowGutter, tabletRowGutter, templateLock, kbVersion, borderStyle, mobileBorderStyle, tabletBorderStyle, inQueryBlock, breakoutLeft, breakoutRight, topSepHeightUnit, bottomSepHeightUnit } = attributes;
 	const { isPreviewMode } = useSelect( ( _select ) => {
 		const { __unstableIsPreviewMode } =
@@ -156,45 +136,28 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		};
 	}, [] );
 
-	const getDynamic = () => {
-		let contextPost = null;
-		if ( context && ( context.queryId || Number.isFinite( context.queryId ) ) && context.postId ) {
-			contextPost = context.postId;
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['bgImg'] && attributes.kadenceDynamic['bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['overlayBgImg'] && attributes.kadenceDynamic['overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'overlayBgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['tabletBackground:0:bgImg'] && attributes.kadenceDynamic['tabletBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'tabletBackground:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'] && attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'tabletOverlay:0:overlayBgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['mobileBackground:0:bgImg'] && attributes.kadenceDynamic['mobileBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'mobileBackground:0:bgImg', contextPost );
-		}
-		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'] && attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'mobileOverlay:0:overlayBgImg', contextPost );
-		}
-	}
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount, parentData } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
+				parentData: {
+					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
+				}
 			};
 		},
 		[ clientId ]
 	);
 	useEffect( () => {
 		setBlockDefaults( 'kadence/rowlayout', attributes);
-		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		const postOrFseId = getPostOrFseId( props, parentData );
+		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -206,9 +169,6 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		if ( attributes.inQueryBlock !== isInQueryBlock ) {
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes( { inQueryBlock: isInQueryBlock } );
-		}
-		if ( ! isPreviewMode ) {
-			debounce( getDynamic, 200 );
 		}
 		// Update from old gutter settings.
 		if ( columnGutter == 'wide' ) {
@@ -367,6 +327,11 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 			updateColumns( innerItemCount, defaults.columns );
 		}
 	}, [ innerItemCount, columns ] );
+
+	useEffect( () => {
+		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, context, setDynamicBackgroundImg, bgImg ? false : true );
+	}, [ 'bgImg' ] );
+
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
 	const [ resizingVisually, setResizingVisually ] = useState( false );
 	const timeoutRef = useRef();
@@ -376,6 +341,9 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 		}
 	};
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
+	const debouncedSetDynamicState = debounce( setDynamicState, 200 );
+
 	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	const hasBG = ( bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '' );
 	const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
@@ -712,6 +680,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 								attributes={ attributes }
 								setAttributes={setAttributes}
 								isSelected={ isSelected }
+								context={ context }
 							/>
 						) }
 						{ ( activeTab === 'advanced' ) && (
@@ -751,8 +720,8 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 											onChangeMobile={ ( value ) => {
 												setAttributes( { mobileMargin: [ value[ 0 ], '', value[ 2 ], '' ] } );
 											} }
-											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400 ) }
-											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400 ) }
+											min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -25 : -800 ) }
+											max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 25 : 800 ) }
 											step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 											unit={ marginUnit }
 											allowEmpty={ true }
@@ -944,6 +913,7 @@ const ALLOWED_BLOCKS = [ 'kadence/column' ];
 				backgroundClasses={ classes }
 				attributes={ attributes }
 				previewDevice={ previewDevice }
+				dynamicBackgroundImg={ dynamicBackgroundImg }
 			>
 				<style>
 					{ ( textColor ? `.kb-row-id-${ uniqueID }, .kb-row-id-${ uniqueID } p:not(.use-for-specificity), .kb-row-id-${ uniqueID } h1:not(.use-for-specificity), .kb-row-id-${ uniqueID } h2:not(.use-for-specificity), .kb-row-id-${ uniqueID } h3:not(.use-for-specificity), .kb-row-id-${ uniqueID } h4:not(.use-for-specificity), .kb-row-id-${ uniqueID } h5:not(.use-for-specificity), .kb-row-id-${ uniqueID } h6:not(.use-for-specificity) { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }

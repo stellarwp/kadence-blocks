@@ -3,120 +3,45 @@
  */
 
 /**
- * Import Icons
- */
-import {
-	rowIcon,
-	collapseRowIcon,
-	collapseRowThreeIcon,
-	collapseRowFourIcon,
-	collapseRowFiveIcon,
-	collapseRowSixIcon,
-	twoColIcon,
-	gridIcon,
-	threeColIcon,
-	threeGridIcon,
-	lastRowIcon,
-	firstRowIcon,
-	twoLeftGoldenIcon,
-	twoRightGoldenIcon,
-	leftHalfIcon,
-	rightHalfIcon,
-	centerHalfIcon,
-	wideCenterIcon,
-	exWideCenterIcon,
-	fourColIcon,
-	lFourFortyIcon,
-	rFourFortyIcon,
-	fiveColIcon,
-	sixColIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon,
-	topLeftIcon,
-	topRightIcon,
-	bottomLeftIcon,
-	bottomRightIcon
-} from '@kadence/icons';
-
-/**
  * Import External
  */
-import Select from 'react-select';
-import { times, dropRight, debounce, map } from 'lodash';
-import classnames from 'classnames';
-import memoize from 'memize';
-import ContainerDimensions from 'react-container-dimensions';
+import { times } from 'lodash';
+
 /**
  * Import Kadence Components
  */
 import {
 	PopColorControl,
 	SmallResponsiveControl,
-	ResponsiveControl,
 	RangeControl,
-	MeasurementControls,
 	ResponsiveMeasurementControls,
-	ResponsiveRangeControls,
 	KadencePanelBody,
-	StepControls,
 	KadenceRadioButtons,
 	KadenceImageControl,
-	VerticalAlignmentIcon,
-	ResponsiveRadioRangeControls,
 	BackgroundControl as KadenceBackgroundControl,
 	BackgroundTypeControl,
 	GradientControl,
 	KadenceVideoControl,
 	SubsectionWrap,
 	ColorGroup,
-	InspectorControlTabs,
-	BorderControl,
 	ResponsiveBorderControl,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { showSettings } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
  */
-import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
-import Overlay from './row-overlay';
-import RowBackground from './row-background';
-import ContentWidthIcon from './content-width-icons';
-import renderSVGDivider from './render-svg-divider';
 import { BLEND_OPTIONS } from './constants';
 /**
  * Import WordPress Internals
  */
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import {
-	MediaUpload,
-	InspectorControls,
-	BlockControls,
-	BlockAlignmentToolbar,
-	useBlockProps,
-	useInnerBlocksProps,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-import {
-	Button,
-	ButtonGroup,
-	Tooltip,
-	TabPanel,
-	Popover,
-	ToolbarGroup,
 	TextControl,
-	Dashicon,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
 } from '@wordpress/components';
-import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
-import { createBlock } from '@wordpress/blocks';
-import {
-	image,
-} from '@wordpress/icons';
-import { applyFilters } from '@wordpress/hooks';
+
 /**
  * Internal block libraries
  */
@@ -130,6 +55,7 @@ import { __ } from '@wordpress/i18n';
 	attributes,
 	setAttributes,
 	isSelected,
+	context,
 } ) {
 	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, customGutter, customRowGutter, collapseGutter, tabletGutter, mobileGutter, tabletRowGutter, mobileRowGutter, gutterType, rowGutterType, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, gradient, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlayGradient, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, borderStyle, tabletBorderStyle, mobileBorderStyle, borderRadiusUnit, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS } = attributes;
 
@@ -847,7 +773,7 @@ import { __ } from '@wordpress/i18n';
 			) }
 			{ 'video' === backgroundSettingTab && (
 				<>
-					{/* <SelectControl
+					<SelectControl
 						label={ __( 'Background Video Type' ) }
 						options={ [
 							{
@@ -865,7 +791,7 @@ import { __ } from '@wordpress/i18n';
 						] }
 						value={ backgroundVideoType }
 						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-					/> */}
+					/>
 					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
 						<Fragment>
 							<KadenceVideoControl
@@ -894,11 +820,21 @@ import { __ } from '@wordpress/i18n';
 							/>
 						</Fragment>
 					) }
+					{ ( undefined !== backgroundVideoType && 'local' !== backgroundVideoType ) && (
+						<div class="components-base-control">Warning: Embedded videos are not ideal for background content. Consider self hosting instead.</div>
+					) }
 					{ 'youtube' === backgroundVideoType && (
 						<TextControl
-							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-							onChange={ value => saveVideoSettings( { youtube: value } ) }
+							label={ __( 'YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youTube ? backgroundVideo[ 0 ].youTube : '' ) }
+							onChange={ value => saveVideoSettings( { youTube: value } ) }
+						/>
+					) }
+					{ 'vimeo' === backgroundVideoType && (
+						<TextControl
+							label={ __( 'Vimeo ID ( example: 789006133 )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].vimeo ? backgroundVideo[ 0 ].vimeo : '' ) }
+							onChange={ value => saveVideoSettings( { vimeo: value } ) }
 						/>
 					) }
 					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
@@ -932,11 +868,13 @@ import { __ } from '@wordpress/i18n';
 						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
 						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
 					/>
-					<ToggleControl
-						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-					/>
+					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+						<ToggleControl
+							label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+							checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+							onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+						/>
+					) }
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
 						value={ ( bgColor ? bgColor : '' ) }
@@ -1024,6 +962,7 @@ import { __ } from '@wordpress/i18n';
 						setAttributes={ setAttributes }
 						name={ 'kadence/rowlayout' }
 						clientId={ clientId }
+						context={context}
 					/>
 				</>
 			)}

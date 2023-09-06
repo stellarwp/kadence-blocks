@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Single Button",
   "name": "kadence/singlebtn",
   "parent": [ "kadence/advancedbtn" ],
@@ -285,13 +285,13 @@
 				"",
 				""
 			],
-			"sizetype": "px",
+			"sizeType": "px",
 			"lineHeight": [
 				"",
 				"",
 				""
 			],
-			"linetype": "",
+			"lineType": "",
 			"letterSpacing": [
 				"",
 				"",
@@ -364,7 +364,9 @@
 	"ktanimatepreview": true,
 	"ktdynamic": true,
 	"html": false,
-	"reusable": false
+	"reusable": false,
+	"kbMetadata": true,
+	"kbContentLabel": "text"
   },
   "usesContext": [
 	"postId",
