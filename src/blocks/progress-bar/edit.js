@@ -34,7 +34,7 @@ import {
 	lineBar,
 	circleBar,
 	semiCircleBar,
-	lineBar as lineMask,
+	lineMask,
 } from '@kadence/icons';
 
 /**
