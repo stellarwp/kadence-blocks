@@ -104,6 +104,7 @@ Release Date: September TBD, 2023
 * Fix: Autocomplete in CSS editor for Kadence Blocks Pro
 * Fix: Accept field recording in advanced forms.
 * Fix: Advanced Text icon padding unit not saving.
+* Fix: Icon list link color issue.
 
 = 3.1.13 =
 Release Date: August 24th, 2023
