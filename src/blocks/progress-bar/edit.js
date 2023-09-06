@@ -164,6 +164,21 @@ export function Edit( props ) {
 
 	}, [] );
 
+	useEffect( () => {
+		if ( barType == 'line-mask' ) {
+			// Update from default if they choose the line mask option
+			if ( 100 == progressMax && 90 == progressAmount ) {
+				setAttributes( { progressMax: 5 } );
+				setAttributes( { progressAmount: 4 } );
+				setAttributes( { displayPercent: false } );
+				setAttributes( { decimal: 'one' } );
+			}
+			if ( '' ==label ) {
+				setAttributes( { displayLabel: false } );
+			}
+		}
+	}, [barType] );
+
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
 			labelFont: JSON.parse( JSON.stringify( { ...labelFont, ...value } ) ),
@@ -498,6 +513,26 @@ export function Edit( props ) {
 												value: 'star',
 											},
 											{
+												label: __( 'Heart', 'kadence-blocks' ),
+												value: 'heart-solid',
+											},
+											{
+												label: __( 'Smile', 'kadence-blocks' ),
+												value: 'face-smile-beam-solid',
+											},
+											{
+												label: __( 'Thumbs Up', 'kadence-blocks' ),
+												value: 'thumbs-up-solid',
+											},
+											{
+												label: __( 'Thumbs Down', 'kadence-blocks' ),
+												value: 'thumbs-down-solid',
+											},
+											{
+												label: __( 'Mug', 'kadence-blocks' ),
+												value: 'mug-hot-solid',
+											},
+											{
 												label: __( 'Circle', 'kadence-blocks' ),
 												value: 'circle',
 											},
@@ -506,32 +541,16 @@ export function Edit( props ) {
 												value: 'diamond',
 											},
 											{
-												label: __( 'Hexagon', 'kadence-blocks' ),
-												value: 'hexagon',
-											},
-											{
 												label: __( 'Rounded', 'kadence-blocks' ),
 												value: 'rounded',
 											},
 											{
 												label: __( 'Cat', 'kadence-blocks' ),
-												value: 'cat',
+												value: 'cat-solid',
 											},
 											{
 												label: __( 'Dog', 'kadence-blocks' ),
-												value: 'dog',
-											},
-											{
-												label: __( 'Blob 1', 'kadence-blocks' ),
-												value: 'blob1',
-											},
-											{
-												label: __( 'Blob 2', 'kadence-blocks' ),
-												value: 'blob2',
-											},
-											{
-												label: __( 'Blob 3', 'kadence-blocks' ),
-												value: 'blob3',
+												value: 'dog-solid',
 											},
 											{
 												label: __( 'Custom', 'kadence-blocks' ),
@@ -542,7 +561,7 @@ export function Edit( props ) {
 										onChange={ ( value ) => setAttributes( { maskSvg: value } ) }
 									/>
 									{ ( maskSvg === 'custom' ) && (
-										<>
+										<div class="components-base-control">
 											<KadenceImageControl
 												label={ __( 'Custom Mask Image', 'kadence-blocks' ) }
 												hasImage={ ( maskUrl ? true : false ) }
@@ -560,14 +579,15 @@ export function Edit( props ) {
 												} }
 												disableMediaButtons={ ( maskUrl ? true : false ) }
 											/>
-										</>
+											Square, solid black images work best for this mask.
+										</div>
 									) }
 									<RangeControl
 										label={__( 'Mask Iterations', 'kadence-blocks' )}
 										value={maskIterations}
 										onChange={( value ) => setAttributes( { maskIterations: value } )}
 										min={1}
-										max={10}
+										max={100}
 									/>
 								</>
 							) }

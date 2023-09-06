@@ -139,10 +139,15 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( isset( $attributes['barType'] ) && 'line-mask' == $attributes['barType'] ) {
+			// We assume square masks for all this math.
+
 			$iterations = $attributes['maskIterations'] ?? 5;
 			$mask = $attributes['maskSvg'] ?? 'star';
 			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 			$mask_url = $mask_base_url . $mask . '.svg';
+			// $mask_gap = $attributes['maskGap'] ?? 10;
+			$mask_height = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) : 80;
+			$mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
 
 			if ( 'custom' === $attributes['maskSvg'] ) {
 				if ( ! empty( $attributes['maskUrl'] ) ) {
@@ -156,8 +161,10 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_repeat_string = trim( str_repeat( 'no-repeat,', $iterations ), ',' );
 			$mask_position_array = $iterations > 1 ? range( 0, 100, 100 / ( $iterations - 1 ) ) : array( 0 );
 			$mask_position_string = trim( implode( '%,', $mask_position_array ) . '%', ',' );
+			// $mask_position_string = 'calc(0% + ' . $mask_gap . 'px), calc(25% + ' . ( $mask_gap * 2 ) . 'px), calc(50% + ' . ( $mask_gap * 3 ) . 'px), calc(75% + ' . ( $mask_gap * 4 ) . 'px), calc(100% + ' . ( $mask_gap * 5 ) . 'px)';
 			$mask_aspect_ratio_string = $iterations . '/1';
-			$mask_height_string = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) . 'px' : '80px';
+			// $mask_aspect_ratio_string = $iterations + $mask_gap_aspect_ratio_adjustment . '/1';
+			$mask_height_string = $mask_height . 'px';
 
 			$css->set_selector( '#kb-progress-bar' . $unique_id );
 			$css->add_property( '-webkit-mask-image', $mask_image_string );
@@ -192,14 +199,13 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			'semicircle' => 'SemiCircle'
 		);
 
-
-
 		$progress_color = !empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
 		$bar_background = !empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
 		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
 		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
-		$progress = isset( $attributes['progress'] ) ? $attributes['progress'] : 0;
+		$progress_min = 0;
+		$progress_amount = isset( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
 		$decimal      = ! empty( $attributes['decimal'] ) ? $attributes['decimal'] : 'none';
@@ -292,7 +298,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$content .= 'progressBar' . $simple_id . '.animate(
-							' . $attributes['progressAmount'] / $attributes['progressMax'] . ' ,
+							' . $progress_amount / $progress_max . ' ,
 				            {
 								 duration: ' . ( $attributes['duration'] * 1000 ) . ',
 	                             step: function(state, bar) {

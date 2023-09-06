@@ -35,6 +35,7 @@
 .kb-progress-bar-type-line-mask {
 	.kb-progress-bar {
 		height: 80px;
+		max-width: 100%;
 		
 		& > svg {
 			height: 100%;
