@@ -97,10 +97,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		// Container
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
+		// Container.
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ', .wp-block-kadence-advanced-form' . $unique_id . '.kb-form-has-background' );
 		$css->render_measure_output( $form_attributes, 'padding', 'padding', array( 'desktop_key' => 'padding', 'tablet_key' => 'tabletPadding', 'mobile_key' => 'mobilePadding' ) );
 		$css->render_measure_output( $form_attributes, 'margin', 'margin', array( 'desktop_key' => 'margin', 'tablet_key' => 'tabletMargin', 'mobile_key' => 'mobileMargin' ) );
+
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
 		if ( isset( $background_style['backgroundType'] ) && $background_style['backgroundType'] === 'gradient' ) {
 			$css->add_property( 'background', $background_style['gradient'] );
 		} else {
@@ -109,7 +111,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$max_width_unit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit'] : 'px';
 		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $max_width_unit );
 
-		// Input Styles
+		// Input Styles.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form' );
 		$css->render_gap( $field_style );
 

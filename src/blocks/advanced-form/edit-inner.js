@@ -788,6 +788,38 @@ export function EditInner( props ) {
 						>
 							<MessageStyling setMetaAttribute={setMetaAttribute} useFormMeta={ useFormMeta } />
 						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__( 'Background', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-background'}
+						>
+							<BackgroundTypeControl
+								label={ __( 'Background Type', 'kadence-blocks' ) }
+								type={ background?.backgroundType ? background.backgroundType : 'normal' }
+								onChange={ value => saveBackgroundStyle( { backgroundType: value } ) }
+								allowedTypes={ [ 'normal', 'gradient' ] }
+							/>
+							{'gradient' !== background?.backgroundType && (
+								<PopColorControl
+									label={__( 'Background', 'kadence-blocks' )}
+									value={( background?.background ? background.background : '' )}
+									default={''}
+									onChange={ ( value ) => {
+										saveBackgroundStyle( { background: value } );
+									}}
+								/>
+							)}
+							{'gradient' === background?.backgroundType && (
+								<GradientControl
+									value={ background?.gradient }
+									onChange={ value => {
+										saveBackgroundStyle( { gradient: value } );
+									}}
+									gradients={ [] }
+								/>
+							)}
+						</KadencePanelBody>
 					</>
 				}
 
@@ -841,36 +873,10 @@ export function EditInner( props ) {
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
 						</KadencePanelBody>
-						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody
 							initialOpen={true}
 							panelName={ 'kb-adv-form-max-width' }
 						>
-							<BackgroundTypeControl
-								label={ __( 'Background Type', 'kadence-blocks' ) }
-								type={ background?.backgroundType ? background.backgroundType : 'normal' }
-								onChange={ value => saveBackgroundStyle( { backgroundType: value } ) }
-								allowedTypes={ [ 'normal', 'gradient' ] }
-							/>
-							{'gradient' !== background?.backgroundType && (
-								<PopColorControl
-									label={__( 'Background', 'kadence-blocks' )}
-									value={( background?.background ? background.background : '' )}
-									default={''}
-									onChange={ ( value ) => {
-										saveBackgroundStyle( { background: value } );
-									}}
-								/>
-							)}
-							{'gradient' === background?.backgroundType && (
-								<GradientControl
-									value={ background?.gradient }
-									onChange={ value => {
-										saveBackgroundStyle( { gradient: value } );
-									}}
-									gradients={ [] }
-								/>
-							)}
 							<ResponsiveRangeControls
 								label={__( 'Max Width', 'kadence-blocks' )}
 								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
