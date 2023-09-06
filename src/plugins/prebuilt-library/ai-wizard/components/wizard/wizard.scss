@@ -41,14 +41,18 @@
 	/* Container */
 	.components-guide__container {
 		margin-top: 0;
-		margin-bottom: 69px;
+		margin-bottom: 0;
 		flex-grow: 1;
-		min-height: auto;
+		min-height:calc(95vh - 136px);
+		height: calc(95vh - 136px);
+		overflow-y: auto;
 	}
 
 	/* Container: Page */
 	.components-guide__page {
 		flex-grow: 1;
+		display: block;
+		padding: 20px 0;
 	}
 
 	/* Footer */

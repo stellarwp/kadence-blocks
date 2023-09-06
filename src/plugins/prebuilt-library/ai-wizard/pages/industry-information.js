@@ -39,7 +39,7 @@ import {
 
 const styles = {
 	container: {
-		flexGrow: 1,
+		height: "100%",
 	},
 	leftContent: {
 		maxWidth: 640,

@@ -11,7 +11,7 @@ import AiModalIntro from '../../../../../includes/assets/images/ai-modal-intro.p
 
 const styles = {
 	background: {
-		flexGrow: 1,
+		height: "100%",
 		background: 'linear-gradient(90deg, rgba(0, 115, 230, 0) 0, rgba(0, 115, 230, 0) 60%, #0073E6 99.44%)',
 	},
 	headline: {

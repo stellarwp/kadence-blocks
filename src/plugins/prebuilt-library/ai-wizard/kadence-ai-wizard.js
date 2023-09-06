@@ -151,7 +151,7 @@ export function KadenceAiWizard( props ) {
 			onPrimaryClick={ handleOnPrimaryClick }
 			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate Content', 'kadence-blocks' ) }
 			primaryButtonDisabled={ isFinishButtonDisabled() }
-			onSecondaryClick={ isSubmitted && ! photographyOnly ? handleOnSecondaryClick : null }
+			onSecondaryClick={ ! photographyOnly ? handleOnSecondaryClick : null }
 			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }
 			credits={ credits }
 			photographyOnly={ photographyOnly }

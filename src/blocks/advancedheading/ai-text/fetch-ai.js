@@ -52,6 +52,9 @@ export function getAIContentHelper() {
 				}
 			);
 			if (!(response?.status === 200)) {
+				if ( ( response?.status === 423 ) ) {
+					return Promise.reject('credits');
+				}
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}
@@ -82,11 +85,14 @@ export function getAIContentHelper() {
 					},
 					body: JSON.stringify({
 						text: content,
-						stream: true,
+						stream: false,
 					}),
 				}
 			);
 			if (!(response?.status === 200)) {
+				if ( ( response?.status === 423 ) ) {
+					return Promise.reject('credits');
+				}
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}
@@ -128,6 +134,9 @@ export function getAIContentHelper() {
 				}
 			);
 			if (!(response?.status === 200)) {
+				if ( ( response?.status === 423 ) ) {
+					return Promise.reject('credits');
+				}
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}

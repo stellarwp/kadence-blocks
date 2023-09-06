@@ -18,6 +18,7 @@ export const SelectControl = forwardRef(
     const {
       maxMenuHeight,
       menuPlacement,
+	  menuPosition = "absolute",
 	  isClearable,
       label,
       options,
@@ -38,6 +39,7 @@ export const SelectControl = forwardRef(
 				    classNamePrefix="stellarwp-select"
 					maxMenuHeight={ maxMenuHeight }
 					menuPlacement={ menuPlacement }
+					menuPosition={ menuPosition }
 				    styles={{
 				      control: (baseStyles, state) => ({
                 		...baseStyles,

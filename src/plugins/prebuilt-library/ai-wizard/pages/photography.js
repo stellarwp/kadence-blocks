@@ -22,7 +22,6 @@ const styles = {
 		marginBottom: '40px',
 		paddingBottom: '24px',
 		position: 'relative',
-		top: '-32px'
 	},
 	selectWrapper: {
 		maxWidth: 500,

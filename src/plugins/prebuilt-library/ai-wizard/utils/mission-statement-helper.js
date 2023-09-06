@@ -27,6 +27,9 @@ export function missionStatementHelper() {
 				}
 			);
 			if (!(response?.status === 200)) {
+				if ( ( response?.status === 424 ) ) {
+					return Promise.reject('license');
+				}
 				const message = response?.message ? response.message : response;
 				return Promise.reject(message);
 			}

@@ -37,7 +37,7 @@ import { useKadenceAi } from "../context/kadence-ai-provider";
 
 const styles = {
 	container: {
-		flexGrow: 1,
+		height: "100%",
 	},
 	leftContent: {
 		maxWidth: 640,
@@ -99,6 +99,7 @@ export function AboutYourSite() {
 	const [showTooltip, setShowTooltip] = useState(false);
 	const [aiSuggestion, setAiSuggestion] = useState("");
 	const [aiLoading, setAiLoading] = useState(false);
+	const [ error, setError] = useState('');
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, companyName } = state;
 	const title = sprintf(
@@ -139,6 +140,7 @@ export function AboutYourSite() {
 
 	function handleMissionStatement(value) {
 		setAiLoading(true);
+		setError( '' );
 
 		getMissionStatement(value)
 			.then((readableStream) => {
@@ -163,6 +165,11 @@ export function AboutYourSite() {
 				setAiLoading(false);
 			})
 			.catch((error) => {
+				if ( error === 'license' ) {
+					setError( 'license' );
+				} else {
+					setError( 'error' );
+				}
 				console.log(error);
 				setAiLoading(false);
 			});
@@ -223,6 +230,14 @@ export function AboutYourSite() {
 								)}
 							</View>
 							{!aiSuggestion && !aiLoading && (
+								<>
+								{ error && (
+									<div className='stellarwp-ai-error-text'>
+										<div className={ 'stellarwp-ai-error-content' }>
+											{ error === 'license' ? __( 'Error, license key invalid.') : __( 'Error, AI improve failed, please try again.') }
+										</div>
+									</div>
+								) }
 								<Flex justify="space-between">
 									<FlexItem>
 										{progress == 100 && (
@@ -231,7 +246,7 @@ export function AboutYourSite() {
 												icon={Ai}
 												onClick={() => handleMissionStatement(missionStatement)}
 											>
-												{__("Improve my Mission Statement", "kadence-blocks")}
+												{__("Improve with AI", "kadence-blocks")}
 											</Button>
 										)}
 									</FlexItem>
@@ -251,6 +266,7 @@ export function AboutYourSite() {
 										</Button>
 									</FlexItem>
 								</Flex>
+								</>
 							)}
 						</FormSection>
 					</FlexBlock>

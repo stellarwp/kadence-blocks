@@ -74,7 +74,7 @@ import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceNewIcon, aiIcon, aiSettings, eye } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
-import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES } from './data-fetch/constants';
+import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES, CONTEXT_PROMPTS } from './data-fetch/constants';
 
 // @todo: Get page style terms dynamically.
 const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
@@ -216,7 +216,7 @@ function PatternLibrary( {
 	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
 	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
 	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'value-prop' );
-	const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
+	const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
 	const currentCredits = ( '' !== credits ? credits : savedCredits );
 	const selectedCategory = ( category ? category : savedSelectedCategory );
 	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
@@ -395,6 +395,7 @@ function PatternLibrary( {
 			setLocalContexts( tempLocalContexts );
 		}
 		const response = await getAIContentDataReload( tempContext );
+		console.log( response );
 		if ( response === 'processing' ) {
 			console.log( 'Is processing AI' );
 			setTimeout( () => {
@@ -403,7 +404,10 @@ function PatternLibrary( {
 			getRemoteAvailableCredits();
 		} else if ( response === 'credits' ) {
 			console.log( 'Error not enough credits to reload.' );
-			updateContextState( tempContext, false );
+			updateContextState( tempContext, 'credits' );
+			setTimeout( () => {
+				forceRefreshLibrary();
+			}, 500 );
 			getRemoteAvailableCredits();
 		} else {
 			console.log( 'Error getting New AI Job.' );
@@ -522,12 +526,15 @@ function PatternLibrary( {
 	async function getRemoteAvailableCredits() {
 		const response = await getAvailableCredits();
 		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		console.log( response );
 		if ( response === 'error' ) {
 			console.log( 'Error getting credits' );
 			tempActiveStorage['credits'] = 'fetch';
 			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 			setCredits(0);
+		} else if ( response === '' ) {
+			tempActiveStorage['credits'] = 0;
+			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+			setCredits( 0 );
 		} else {
 			tempActiveStorage['credits'] = parseInt( response );
 			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
@@ -756,7 +763,7 @@ function PatternLibrary( {
 								}}
 							/>
 					</div>
-					<div className="kb-library-sidebar-context-choices">
+					{/* <div className="kb-library-sidebar-context-choices">
 						<Button
 							className={ 'kb-context-tab-button kb-trigger-patterns' + ( selectedSubTab === 'patterns' ? ' is-pressed' : '' ) }
 							aria-pressed={ selectedSubTab === 'patterns' }
@@ -781,7 +788,7 @@ function PatternLibrary( {
 						>
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
-					</div>
+					</div> */}
 					
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>
@@ -897,7 +904,11 @@ function PatternLibrary( {
 																	onClose={ debounce( toggleReloadVisible, 100 ) }
 																	anchor={ popoverContextAnchor }
 																>
-																	<p>{__('You can regenerate ai content for this context. This will use one credit and your current ai text will be forever lost. Would you like to regenerate ai content for this context?', 'kadence-blocks')}</p>
+																	<p>{ sprintf(
+																		/* translators: %s is the credit amount */
+																		__( 'You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?', 'kadence-blocks' ),
+																		CONTEXT_PROMPTS?.[contextCategory.value] ? CONTEXT_PROMPTS[contextCategory.value] : '1'
+																	) }</p>
 																	<div className='kt-remaining-credits'>{ currentCredits } { __( 'Credits Remaining', 'kadence-blocks' ) }</div>
 																	<Button
 																		variant='primary'
@@ -905,7 +916,11 @@ function PatternLibrary( {
 																		iconSize={ 16 }
 																		disabled={ isContextRunning( contextCategory.value ) }
 																		iconPosition='right'
-																		text={ __( 'Regenerate AI Content', 'kadence-blocks' ) }
+																		text={ sprintf(
+																			/* translators: %s is the credit amount */
+																			__( 'Regenerate Content (%s Credits)', 'kadence-blocks' ),
+																			CONTEXT_PROMPTS?.[contextCategory.value] ? CONTEXT_PROMPTS[contextCategory.value] : '1'
+																		) }
 																		className={ 'kb-reload-context-confirm' }
 																		onClick={ () => {
 																			setIsContextReloadVisible(false);

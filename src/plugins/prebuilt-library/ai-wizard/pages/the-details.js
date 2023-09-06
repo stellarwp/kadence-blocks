@@ -35,7 +35,7 @@ import { handle } from "@wordpress/icons";
 
 const styles = {
 	container: {
-		flexGrow: 1,
+		height: "100%",
 	},
 	leftContent: {
 		maxWidth: 640,

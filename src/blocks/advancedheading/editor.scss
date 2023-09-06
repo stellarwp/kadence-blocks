@@ -403,6 +403,7 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
     width: 540px;
     width: 640px;
     max-width: 100%;
+    min-height: 90px;
     .kb-ai-suggesed-text {
         display: flex;
         align-items: center;
@@ -488,6 +489,9 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .components-popover.kb-ai-quick-prompt-icon-dropdown {
     margin-top: 16px;
     margin-left: -6px;
+    .components-popover__content {
+        min-height: 160px;
+    }
 }
 .kb-ai-quick-prompt-icon-dropdown .components-button.components-menu-item__button.kb-ai-quick-prompt-change-tone {
     gap: 8px;
@@ -532,4 +536,16 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
     text-align: right;
     font-size: 11px;
     border-top: 1px solid #DFDFDF;
+}
+.kb-ai-credits.kb-ai-credits-out {
+    color: #c53030;
+}
+.kb-ai-error-text {
+    padding: 4px;
+    background: #fff5f5;
+    white-space: nowrap;
+    color: #c53030;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    border: 1px solid #fc8181;
 }

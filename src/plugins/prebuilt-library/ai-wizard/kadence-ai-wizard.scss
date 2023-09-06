@@ -51,6 +51,8 @@
 		.stellarwp-ai-photography-library {
 			padding: 0 42px;
 			height: 100%;
+			display: flex;
+    		flex-direction: column;
 		}
 
 		.stellarwp-ai-photography-library__selection {
@@ -81,6 +83,15 @@
 				text-decoration: none;
 			}
 		}
+	}
+	.stellarwp-ai-error-text {
+		padding: 4px;
+		background: #fff5f5;
+		white-space: nowrap;
+		color: #c53030;
+		overflow: hidden !important;
+		text-overflow: ellipsis;
+		border: 1px solid #fc8181;
 	}
 }
 

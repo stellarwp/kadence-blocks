@@ -42,6 +42,7 @@ import deleteContent from './replace/remove-content';
 import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { CONTEXT_PROMPTS } from './data-fetch/constants';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -114,7 +115,15 @@ function LoadingHeader( { type } ) {
 		</Heading>
 	);
 }
-function GenerateHeader( { context, contextLabel, generateContext } ) {
+function GenerateHeader( { context, contextLabel, contextState, generateContext } ) {
+	const [ loading, setLoading ] = useState( false );
+	const [ btnDisabled, setBtnDisabled ] = useState( false );
+	useEffect( () => {
+		setLoading( false );
+		if ( 'credits' === contextState || 'error' === contextState || 'failed' === contextState ) {
+			setBtnDisabled( true );
+		}
+	}, [ context, contextState ] );
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
 	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
 	return (
@@ -128,7 +137,7 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 				{ sprintf(
 				/* translators: %s: the current context */
 				__(
-					'Would you like to generate copy for the %s context', 'kadence Blocks'
+					'Would you like to generate AI powered content for the %s context?', 'kadence Blocks'
 				),
 				contextLabel,
 			) }
@@ -136,7 +145,7 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 			<p>
 				{ sprintf(
 					/* translators: %s: the current context */
-				__('Using the site information provided we will generate copy for the %s context.', 'kadence Blocks' ),
+				__('Using the site information you provided we will generate copy for the %s context.', 'kadence Blocks' ),
 				contextLabel,
 				) }
 			</p>
@@ -152,16 +161,25 @@ function GenerateHeader( { context, contextLabel, generateContext } ) {
 					disabled={ true }
 				/>
 			)}
-			{ hasPro && data_key && (
+			{ hasPro && data_key && ! loading && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Generate Copy', 'kadence-blocks') }
+					disabled={ btnDisabled }
+					text={ sprintf(
+						/* translators: %s is the credit amount */
+						__( 'Generate Content (%s Credits)', 'kadence-blocks' ),
+						CONTEXT_PROMPTS?.[context] ? CONTEXT_PROMPTS[context] : '1'
+					) }
 					onClick={ () => {
+						setLoading( true );
 						generateContext( context );
 					}}
 				/>
+			)}
+			{ loading && (
+				<Spinner />
 			)}
 		</div>
 	);
@@ -209,6 +227,17 @@ function LoadingFailedHeader( { type } ) {
 				className="kb-patterns-banner-notice ai-failed-loading"
 			>
 				{ __( 'Error Generating AI Content, verify license and available credits.', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
+	if ( 'credits' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice ai-failed-loading"
+			>
+				{ __( 'Error, Can not generate AI Content because of insufficient credits.', 'kadence Blocks' ) }
 			</Heading>
 		);
 	}
@@ -325,6 +354,10 @@ function PatternList( {
 				console.log( 'Error Generating AI Content' );
 				setFailedAI( true );
 				setFailedAIType( 'license' );
+			} else if ( 'credits' === getContextState(aiContext) ) {
+				console.log( 'Error not enough credits' );
+				setFailedAI( true );
+				setFailedAIType( 'credits' );
 			} else if ( getContextContent(aiContext) === 'failed' ){
 				console.log( 'AI Content has failed' );
 				setFailedAI( true );
@@ -541,10 +574,10 @@ function PatternList( {
 				{ contextTab === 'context' && ! aINeedsData && ( 'processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext) ) && (
 					<LoadingHeader type={getContextState(aiContext)} />
 				) }
-				{ contextTab === 'context' && ! aINeedsData && ! getContextState(aiContext) && (
-					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
+				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
+					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
-				{ hasItems && (
+				{ hasItems && !failedAI && (
 					<KadenceBlockPatternList
 						selectedCategory={ selectedCategory }
 						blockPatterns={ filteredBlockPatterns }

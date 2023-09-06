@@ -860,6 +860,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$data = json_decode( $response, true );
 			if ( $response === 'error' ) {
 				return wp_send_json( 'error' );
+			} else if ( $response === 'credits' ) {
+				return wp_send_json( 'credits' );
 			} else if ( isset( $data['data']['job_id'] ) ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', array() );
 				$current_prompts[ $context ] = $data['data']['job_id'];
@@ -1315,6 +1317,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			//error_log( print_r( $response, true ) );
+			$contents = wp_remote_retrieve_body( $response );
+			if ( ! empty( $contents ) && is_string( $contents ) && json_decode( $contents, true ) ) {
+				$error_message = json_decode( $contents, true );
+				if ( ! empty( $error_message['detail'] ) && 'Failed, unable to use credits.' === $error_message['detail'] ) {
+					return 'credits';
+				}
+			}
 			return 'error';
 		}
 

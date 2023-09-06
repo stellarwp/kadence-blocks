@@ -65,6 +65,7 @@ export const AIText = {
 		const [ isToggled, setIsToggled ] = useState(false);
 		const [ credits, setCredits ] = useState( '' );
 		const [ tempCredits, setTempCredits ] = useState( '' );
+		const [ error, setError] = useState('');
 		const [ popoverAnchor, setPopoverAnchor] = useState();
 		const [ popoverToneAnchor, setPopoverToneAnchor] = useState();
 		const [ popoverMainAnchor, setPopoverMainAnchor] = useState();
@@ -74,7 +75,7 @@ export const AIText = {
 		const [ isOpen, setIsOpen ] = useState(false);
 		const [ isToneOpen, setIsToneOpen ] = useState(false);
 		const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
+		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
 		const currentCredits = ( '' !== credits ? credits : savedCredits );
 		async function getRemoteAvailableCredits() {
 			const response = await getAvailableCredits();
@@ -118,6 +119,7 @@ export const AIText = {
 		function handleGettingContent(value) {
 			setIsLoading(true);
 			setAiSuggestion( '' );
+			setError('');
 			getAIContent(value)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
@@ -146,11 +148,17 @@ export const AIText = {
 				.catch((error) => {
 					console.log(error);
 					setIsLoading(false);
+					if ( error === 'credits' ) {
+						setError('credits');
+					} else {
+						setError('failed');
+					}
 				});
 		}
 		function handleEditingContent(value, prompt, type) {
 			setIsLoading(true);
 			setAiSuggestion( '' );
+			setError('');
 			getAIEdit(value, prompt, type)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
@@ -178,11 +186,17 @@ export const AIText = {
 				.catch((error) => {
 					console.log(error);
 					setIsLoading(false);
+					if ( error === 'credits' ) {
+						setError('credits');
+					} else {
+						setError('failed');
+					}
 				});
 		}
 		function handleTransformingContent(value, type) {
 			setIsLoading(true);
 			setAiSuggestion( '' );
+			setError('');
 			getAITransform(value, type)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
@@ -210,6 +224,11 @@ export const AIText = {
 				.catch((error) => {
 					console.log(error);
 					setIsLoading(false);
+					if ( error === 'credits' ) {
+						setError('credits');
+					} else {
+						setError('failed');
+					}
 				});
 		}
 		return (
@@ -231,6 +250,7 @@ export const AIText = {
 							onClose={ () => {
 								setIsToggled( false );
 							}}
+							flip={false}
 							placement="bottom"
 							anchor={popoverMainAnchor}
 							className={ 'kb-ai-dropdown-container-content' }
@@ -271,6 +291,13 @@ export const AIText = {
 												setIsToggled( false );
 											} }
 										/>
+									</div>
+								) }
+								{ error && (
+									<div className='kb-ai-error-text'>
+										<div className={ 'kb-ai-error-content' }>
+											{ error === 'credits' ? __( 'Error, Can not generate AI content because of insufficient credits.') : __( 'Error, AI content generation failed, please try again.') }
+										</div>
 									</div>
 								) }
 								<div className="kb-ai-prompt-wrap">
@@ -354,6 +381,7 @@ export const AIText = {
 																	//setIsOpen( false );
 																}}
 																focusOnMount={ false }
+																flip={false}
 																placement="bottom-start"
 																anchor={popoverSecondAnchor}
 																className={ 'kb-ai-quick-prompt-icon-dropdown' }
@@ -497,6 +525,7 @@ export const AIText = {
 																onClose={ () => {
 																	//setIsOpen( false );
 																}}
+																flip={false}
 																placement="bottom-start"
 																anchor={popoverAnchor}
 																focusOnMount={ false }
@@ -629,11 +658,10 @@ export const AIText = {
 										) }
 									</div>
 								</div>
-								{ currentCredits && (
-									<div className="kb-ai-credits">
-										{ __( 'Credits Remaining:', 'kadence-blocks' ) } { 'fetch' !== currentCredits ? currentCredits : tempCredits }
-									</div>
-								) }
+								<div className={ `kb-ai-credits${ ( 0 === currentCredits ? ' kb-ai-credits-out' : '' ) }` }>
+									{ __( 'Credits Remaining:', 'kadence-blocks' ) } { 'fetch' !== currentCredits ? currentCredits : tempCredits }
+								</div>
+								<style>{'.edit-post-visual-editor .edit-post-visual-editor__content-area > div {padding-bottom:300px;}'}</style>
 							</div>
 						</Popover>
 					) }
