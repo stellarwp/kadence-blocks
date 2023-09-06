@@ -511,28 +511,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			)
 		);
 	}
-
-	/**
-	 * Render for block scripts block.
-	 *
-	 * @param array   $attributes the blocks attributes.
-	 * @param boolean $inline true or false based on when called.
-	 */
-	public function render_scripts( $attributes, $inline = false ) {
-		if ( $this->has_style ) {
-			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
-				if ( $inline ) {
-					$this->should_render_inline_stylesheet( 'kadence-blocks-' . $this->block_name );
-				}
-			}
-		}
-		if ( $this->has_script ) {
-			if ( ! wp_script_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
-				$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
-			}
-		}
-	}
 }
 
 Kadence_Blocks_Advanced_Form_Block::get_instance();
