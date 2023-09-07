@@ -95,8 +95,8 @@ function FieldNumber( { attributes, setAttributes, isSelected, clientId, context
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-number-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-number'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>

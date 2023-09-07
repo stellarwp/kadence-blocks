@@ -27,7 +27,6 @@
   "supports": {
 	"anchor": true,
 	"html": false,
-	"ktdynamic": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"kbContentLabel": "label"

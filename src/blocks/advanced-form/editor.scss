@@ -657,3 +657,71 @@
 		}
 	}
 }
+
+// Conditional Fields
+.kb-conditional-field {
+	.kb-field-rules-label {
+		color: #1e1e1e;
+		font-weight: 500;
+		font-size: 13px;
+	}
+	.components-base-control.action {
+		display: flex;
+		align-items: flex-end;
+		gap: 10px;
+
+		& > .components-base-control {
+			margin-bottom: 0;
+
+			.components-base-control__field {
+				margin-bottom: 0;
+			}
+		}
+	}
+	.kb-field-rules {
+		margin-top: 8px;
+		.kb-field-rule {
+			position: relative;
+			border: 1px solid var(--kb-border-color, #859CB6);
+			padding: 0.5em;
+			margin-bottom: 7px;
+
+			.components-base-control {
+				margin-bottom: 15px;
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+			.kb-field-rule-remove {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+		}
+
+		.combine {
+			margin-bottom: 7px;
+			margin-left: 7px;
+
+			text-transform: uppercase;
+		}
+
+		.kb-field-rule-add {
+			margin-top: 10px;
+		}
+
+		.kb-time-only {
+			.components-datetime__time {
+				.components-datetime__time-field .components-base-control {
+					margin-bottom: 0;
+				}
+				.components-button-group button {
+					padding: 5px;
+				}
+				fieldset:nth-child(2) {
+					display: none;
+				}
+			}
+		}
+	}
+}

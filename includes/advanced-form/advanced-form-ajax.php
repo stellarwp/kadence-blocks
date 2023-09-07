@@ -223,13 +223,18 @@ class KB_Ajax_Advanced_Form {
 
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
-			// Fail if required field is missing.
-			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
-				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
-				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+			// Skip proccessing this field if it's misssing (usually because hidden frontend).
+			if ( empty( $_POST[ $expected_field ] ) ) {
+				continue;
 			}
 
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
+
+			// Fail if this field is empty and is required.
+			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
+				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+			}
 
 			// If field is file, verify and process the file.
 			if ( $field['type'] === 'file' ) {

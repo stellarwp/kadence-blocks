@@ -428,6 +428,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $content;
 	}
+
 	/**
 	 * Get form fields.
 	 *
@@ -496,6 +497,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
 		wp_localize_script(
 			'kadence-blocks-' . $this->block_name,
 			'kb_adv_form_params',
