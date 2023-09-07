@@ -679,28 +679,23 @@
 		}
 	}
 	.kb-field-rules {
-		background-color: rgba( 0, 88, 176, .075 );
-		border-radius: 5px;
-		padding: 7px;
 		margin-top: 8px;
-
 		.kb-field-rule {
-			border: 1px solid gray;
-			border-radius: 5px;
-			padding: 7px;
-			margin-bottom: 7px;
 			position: relative;
+			border: 1px solid var(--kb-border-color, #859CB6);
+			padding: 0.5em;
+			margin-bottom: 7px;
 
 			.components-base-control {
 				margin-bottom: 15px;
+				&:last-child {
+					margin-bottom: 0;
+				}
 			}
-
 			.kb-field-rule-remove {
 				position: absolute;
 				top: 0;
 				right: 0;
-				// height: 20px;
-				// padding: 6px;
 			}
 		}
 

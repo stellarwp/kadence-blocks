@@ -259,7 +259,6 @@ class Kadence_Blocks_Form_CPT_Controller {
 							'type'       => 'object',
 							'properties' => array(
 								'uniqueID' => array( 'type' => 'string' ),
-								'postId'   => array( 'type' => 'number' ),
 								'name'     => array( 'type' => 'string' ),
 								'label'    => array( 'type' => 'string' ),
 								'type'     => array( 'type' => 'string' ),
