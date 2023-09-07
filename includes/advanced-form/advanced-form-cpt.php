@@ -531,7 +531,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'boolean',
-				'default'       => true
+				'default'       => true,
 			)
 		);
 		register_post_meta(
@@ -542,7 +542,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
-				'default'       => ''
+				'default'       => '',
 			)
 		);
 		register_post_meta(

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.13
+Stable tag: 3.1.14
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,7 +98,9 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.14 =
-Release Date: September TBD, 2023
+Release Date: September 7th, 2023
+* Add: Option to disable browser validation on form.
+* Update: Rely on rest endpoints for taxonomy selection in posts block.
 * Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
 * Fix: Editing custom CSS in modal for Kadence Blocks Pro
 * Fix: Autocomplete in CSS editor for Kadence Blocks Pro

@@ -908,7 +908,7 @@ export function EditInner( props ) {
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__( 'Validation', 'kadence-blocks' )}
-							initialOpen={true}
+							initialOpen={false}
 							panelName={ 'kb-adv-form-browser-validation' }
 						>
 							<ToggleControl
