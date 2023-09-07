@@ -412,6 +412,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => implode( ' ', $inner_classes ),
 			'method' => 'post',
 		);
+		if( isset( $form_attributes['browserValidation'] ) && !$form_attributes['browserValidation'] ){
+			$inner_args['novalidate'] = 'true';
+		}
 		$inner_wrap_attributes = array();
 		foreach ( $inner_args as $key => $value ) {
 			$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
