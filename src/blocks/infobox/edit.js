@@ -22,7 +22,7 @@ import {
 } from '@kadence/icons';
 import classnames from 'classnames';
 
-import { debounce, map, get, has } from 'lodash';
+import { debounce, map, get, has, isEmpty } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -1119,24 +1119,48 @@ function KadenceInfoBox( props ) {
 	}
 
     const { editPost } = useDispatch('core/editor');
-	const { editEntityRecord } = useDispatch( coreStore );
+	const { editEntityRecord, saveEditedEntityRecord } = useDispatch( coreStore );
 
-	const updateMediaImageAlt = ( alt ) => {
-		console.log('updateing', alt)
-		
-        // editPost({
-        //     meta: { …meta, [META_KEY]: newValue },
-        // });
-		editEntityRecord(
-			'postType',
-			'attachment',
-			3242,
-			{ meta: {
-				title: 'new title' },
+	const { mediaImageRecord, mediaImageFlipRecord } = useSelect(
+		( select ) => {
+			var rec, flipRec;
+
+			if ( mediaImage[0] && mediaImage[0].id ) {
+				rec = select( coreStore ).getEntityRecord(
+					'postType',
+					'attachment',
+					mediaImage[0].id
+				);
 			}
-		).catch( () => {
-			console.log('error');
-		} );
+			
+			if ( mediaImage[0] && mediaImage[0].flipId ) {
+				flipRec = select( coreStore ).getEntityRecord(
+					'postType',
+					'attachment',
+					mediaImage[0].flipId
+				);
+			}
+
+			return { 
+				mediaImageRecord: rec,
+				mediaImageFlipRecord: flipRec
+			};
+	} );
+
+	const updateMediaImageAlt = ( alt, id ) => {
+
+		if ( id ) {
+			editEntityRecord(
+				'postType',
+				'attachment',
+				id,
+				{ alt_text: alt },
+			).catch( () => {
+				console.log('error');
+			} );
+
+			saveEditedEntityRecord( 'postType', 'attachment', id );
+		}
 	}
 
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
@@ -1234,7 +1258,6 @@ function KadenceInfoBox( props ) {
 	if ( showImageToolbar && kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
 		showImageToolbar = false;
 	}
-	console.log('edit', mediaImage)
 
 	const mediaSettingsMobile = <>
 		<SelectControl
@@ -1672,15 +1695,20 @@ function KadenceInfoBox( props ) {
 												max={800}
 												step={1}
 											/>
-											<TextareaControl
-												label={ __( 'Alt text' ) }
-												value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' }
-												onChange={ value => saveMediaImage( { alt: value } ) }
-											/>
-											<Button
-												text={ __( 'Update this images alt text' ) }
-												onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' ) } }
-											/>
+											<div className='components-base-control'>
+												<TextareaControl
+													label={ __( 'Alt text', 'kadence-blocks' ) }
+													value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' }
+													onChange={ value => saveMediaImage( { alt: value } ) }
+													className={'mb-0'}
+												/>
+												<Button
+													text={ __( "Use as this image's default alt text", 'kadence-blocks' ) }
+													variant={'link'}
+													onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '', mediaImage[ 0 ].id ) } }
+													disabled={ isEmpty( mediaImageRecord ) }
+												/>
+											</div>
 											<SelectControl
 												label={__( 'Image ratio', 'kadence-blocks' )}
 												options={[
@@ -1754,12 +1782,6 @@ function KadenceInfoBox( props ) {
 														setAttributes={setAttributes}
 														{...attributes}
 													/>
-													<TextareaControl
-														label={ __( 'Alt text' ) }
-														value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '' }
-														onChange={ value => saveMediaImage( { flipAlt: value } ) }
-														help={ 'override this images default alt text' }
-													/>
 													{mediaImage[ 0 ].flipId && 'svg+xml' !== mediaImage[ 0 ].flipSubtype && (
 														<ImageSizeControl
 															label={__( 'Image File Size', 'kadence-blocks' )}
@@ -1768,6 +1790,20 @@ function KadenceInfoBox( props ) {
 															onChange={changeFlipImageSize}
 														/>
 													)}
+													<div className='components-base-control'>
+														<TextareaControl
+															label={ __( 'Alt text', 'kadence-blocks' ) }
+															value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '' }
+															onChange={ value => saveMediaImage( { flipAlt: value } ) }
+															className={'mb-0'}
+														/>
+														<Button
+															text={ __( "Use as this image's default alt text", 'kadence-blocks' ) }
+															variant={'link'}
+															onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '', mediaImage[ 0 ].flipId ) } }
+															disabled={ isEmpty( mediaImageFlipRecord ) }
+														/>
+													</div>
 												</>
 											)}
 											<MeasurementControls
