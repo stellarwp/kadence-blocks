@@ -561,7 +561,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][1] ) && is_numeric( $attributes['rowGap'][1] ) ? $attributes['rowGap'][1] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
-				$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
 
 				// The previous condition might have set us to block so we need to use margin instead of gap.
 				if ( $desktop_direction === 'horizontal' ) {
