@@ -20,7 +20,7 @@ function Save( { attributes, className } ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
 	const WrapperTag = link ? 'a' : 'span';
-	console.log('save', mediaImage)
+
 	const image = (
 		<div className={ `kadence-info-box-image-inner-intrisic-container${ ( kadenceDynamic && kadenceDynamic['mediaImage:0:url'] && kadenceDynamic['mediaImage:0:url'].enable ? ' kadence-info-dynamic-image' : '' ) }` }>
 			<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }${ imageRatio && 'inherit' !== imageRatio ? ' kb-info-box-image-ratio kb-info-box-image-ratio-' + imageRatio : '' }` }>

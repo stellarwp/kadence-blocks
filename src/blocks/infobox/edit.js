@@ -22,6 +22,8 @@ import {
 } from '@kadence/icons';
 import classnames from 'classnames';
 
+import { store as noticesStore } from '@wordpress/notices';
+
 import { debounce, map, get, has, isEmpty } from 'lodash';
 import {
 	PopColorControl,
@@ -202,6 +204,8 @@ function KadenceInfoBox( props ) {
 	const [ mediaPaddingControl, setMediaPaddingControl ] = useState( 'linked' );
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+    const { createSuccessNotice } = useDispatch( noticesStore );
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -1159,7 +1163,12 @@ function KadenceInfoBox( props ) {
 				console.log('error');
 			} );
 
-			saveEditedEntityRecord( 'postType', 'attachment', id );
+			saveEditedEntityRecord( 'postType', 'attachment', id ).then( () => {
+				createSuccessNotice( __( 'Media default alt text updated.' ), {
+					type: 'snackbar',
+				} )
+			});
+
 		}
 	}
 
