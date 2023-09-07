@@ -100,6 +100,7 @@ developers of this plugin.
 = 3.1.14 =
 Release Date: September 7th, 2023
 * Add: Option to disable browser validation on form.
+* Update: Youtube background video cover css.
 * Update: Rely on rest endpoints for taxonomy selection in posts block.
 * Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
 * Fix: Editing custom CSS in modal for Kadence Blocks Pro
