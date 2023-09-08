@@ -98,7 +98,7 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.14 =
-Release Date: September 7th, 2023
+Release Date: September 11th, 2023
 * Add: Option to disable browser validation on form.
 * Update: Youtube background video cover css.
 * Update: Rely on rest endpoints for taxonomy selection in posts block.
