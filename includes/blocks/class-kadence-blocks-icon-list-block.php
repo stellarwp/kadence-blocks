@@ -117,7 +117,7 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .kb-svg-icon-wrap' );
-		$css->render_responsive_range( $attributes, 'iconSize', 'font-size');
+		$css->render_responsive_range( $attributes, 'iconSize', 'font-size' );
 		if ( ! empty( $attributes['color'] ) ) {
 			$css->add_property( 'color', $css->sanitize_color( $attributes['color'] ) );
 		}
@@ -125,7 +125,7 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['listLabelGap'] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single' );
 
-			if( is_rtl() ){
+			if ( is_rtl() ) {
 				$css->add_property( 'margin-left', $attributes['listLabelGap'] . 'px' );
 			} else {
 				$css->add_property( 'margin-right', $attributes['listLabelGap'] . 'px' );
@@ -140,10 +140,10 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_typography( $attributes, 'listStyles' );
 		}
 
-		// Support SVG sizes for icon lists made pre-3.0 that have not been updated
+		// Support SVG sizes for icon lists made pre-3.0 that have not been updated.
 		if( ! empty( $attributes['items'] ) && is_array( $attributes['items'] ) ) {
-			foreach( $attributes['items'] as $level => $item ) {
-				if( isset( $item['size'] ) && is_numeric( $item['size'] ) ) {
+			foreach ( $attributes['items'] as $level => $item ) {
+				if ( isset( $item['size'] ) && is_numeric( $item['size'] ) ) {
 					$css->set_selector( '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-level-' . $level . ' .kt-svg-icon-list-single svg' );
 					$css->add_property( 'font-size', $item['size'] . 'px' );
 				}
@@ -151,21 +151,20 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		/* Stacked display style */
-		if( isset( $attributes['style'] ) && $attributes['style'] === 'stacked' ) {
+		if ( isset( $attributes['style'] ) && $attributes['style'] === 'stacked' ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-single' );
 
-			if( isset( $attributes['background'] )) {
+			if ( isset( $attributes['background'] ) ) {
 				$css->add_property( 'background-color', $css->sanitize_color( $attributes['background'] ) );
 			}
 
-			if( isset( $attributes['borderRadius'] ) ){
-				$css->add_property( 'border-radius',  $attributes['borderRadius'] . '%' );
+			if ( isset( $attributes['borderRadius'] ) ){
+				$css->add_property( 'border-radius', $attributes['borderRadius'] . '%' );
 			}
 
-			if( isset( $attributes['border'] )) {
-				$css->add_property( 'border-color',  $css->sanitize_color( $attributes['border'] ) );
+			if ( isset( $attributes['border'] ) ) {
+				$css->add_property( 'border-color', $css->sanitize_color( $attributes['border'] ) );
 			}
-
 			if( isset( $attributes['borderWidth'] ) ) {
 				$css->add_property( 'border-width',  $attributes['borderWidth'] . 'px' );
 			}
@@ -189,11 +188,11 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		if( !empty( $attributes['linkColor']) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a' );
-			$css->add_property('color', $attributes['linkColor'] );
+			$css->add_property( 'color', $css->sanitize_color( $attributes['linkColor'] ) );
 		}
 		if( !empty( $attributes['linkHoverColor']) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a:hover' );
-			$css->add_property('color', $attributes['linkHoverColor'] );
+			$css->add_property('color', $css->sanitize_color( $attributes['linkHoverColor'] ) );
 		}
 
 		return $css->css_output();

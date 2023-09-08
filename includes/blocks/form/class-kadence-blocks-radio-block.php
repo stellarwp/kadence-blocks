@@ -78,30 +78,34 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content  = '';
-		$inner_content .= $this->field_label( $attributes );
-		$inner_content .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<div class="kb-radio-check-item-wrap">';
+		$radio_label = $attributes;
+		$radio_label['inputName'] = 'rb' . $unique_id;
 
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '">';
+		$inner_content      .= $this->field_legend( $radio_label );
+		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
-			$id         = $unique_id . '_' . $key;
-			$is_checked = ! empty( $option['selected'] );
+			$id         = 'field' . $unique_id . '_' . $key;
+			$is_checked_from_param = ! empty( $option['value'] ) && $option['value'] && $option['value'] == $this->get_default( $attributes );
+			$is_checked_from_editor = ! empty( $option['selected'] );
+			$is_checked = $is_checked_from_editor || $is_checked_from_param;
 
 			$inner_content .= '<div class="kb-radio-check-item">';
-			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $this->a11y_helpers( $attributes ) . '>';
+			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" ' . $this->additional_field_attributes( $attributes ) . '>';
 
 			$inner_content .= '<label for="' . $id . '">' . $option['label'] . '</label>';
 
 			$description   = array(
 				'uniqueID' => $id,
-				'label'    => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : ''
+				'label'    => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : '',
 			);
 			$inner_content .= $this->field_label( $description );
 
 			$inner_content .= '</div>';
 		}
 
-		$inner_content .= '</div>';
+		$inner_content .= '</fieldset>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

@@ -127,7 +127,7 @@
 		color: currentColor;
 		width: .9em;
 		height: .9em;
-		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		border: max( var(--kb-form-border-width, 1px ), 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
 		border-radius: 50%;
 		transform: translateY(-0.18em);
 		display: grid;
@@ -228,6 +228,10 @@
 		&.kb-submit-field {
 			flex-direction: initial;
 		}
+
+		&[hidden] {
+			display: none;
+		}
 	}
 
 	.kb-form-multi {
@@ -285,6 +289,15 @@
 			left: 45px;
 			animation: kb-adv-form-ellipses3 0.6s infinite;
 		}
+	}
+	fieldset.kb-radio-check-item-wrap {
+		padding: 0;
+		margin: 0;
+		border: 0;
+	}
+	legend.kb-adv-form-label {
+		font-weight: inherit;
+		display: block;
 	}
 }
 .wp-block-kadence-advanced-form.kb-form-is-dark {
@@ -360,14 +373,14 @@
 	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], input[type="file"], textarea, select {
 		padding-top: calc(1em + var( --kb-form-v-padding, 0.4em ));
 	}
-	label.kb-adv-form-label {
+	.kb-adv-form-label {
 		line-height: 1;
 		font-size: 75%;
 		padding: var( --kb-form-v-padding, 0.4em ) 0;
 	}
 	.kb-adv-form-infield-type-input {
 		position: relative;
-		label.kb-adv-form-label {
+		.kb-adv-form-label {
 			position: absolute;
 			left: 0;
 			top: 0;
@@ -379,7 +392,7 @@
 .no-js {
 	.kb-adv-form-label-style-float .kb-adv-form-text-type-input {
 		&:not( .kb-form-field-focus ) {
-			label.kb-adv-form-label {
+			.kb-adv-form-label {
 				cursor: pointer;
 				transform: translate(0, 0) scale(0.75);
 			}
@@ -387,7 +400,7 @@
 	}
 }
 .kb-adv-form-label-style-float .kb-adv-form-field {
-	label.kb-adv-form-label {
+	.kb-adv-form-label {
 		cursor: pointer;
 		opacity: 1;
 		transform: translate(0, 0) scale(0.75);
@@ -400,7 +413,7 @@
 }
 .kb-adv-form-label-style-float .kb-adv-form-text-type-input {
 	&:not( .kb-form-field-focus ) {
-		label.kb-adv-form-label {
+		.kb-adv-form-label {
 			cursor: text;
 			transform: translate( var( --kb-form-h-padding, 0.5em ), calc(100% + var(--kb-form-border-width, 1px ) ) ) scale(1);
 		}

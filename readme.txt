@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.13
+Stable tag: 3.1.14
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,12 +98,21 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.14 =
-Release Date: September TBD, 2023
+Release Date: September 11th, 2023
+* Add: Option to disable browser validation on form.
+* Update: Youtube background video cover css.
+* Update: Rely on rest endpoints for taxonomy selection in posts block.
 * Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
-* Fix: Editing custom CSS in modal for Kadence Blocks Pro
-* Fix: Autocomplete in CSS editor for Kadence Blocks Pro
+* Fix: Editing custom CSS in modal.
+* Fix: Autocomplete in CSS editor.
+* Fix: Issue with multiple dynamic galleries all showing in single lightbox.
 * Fix: Accept field recording in advanced forms.
 * Fix: Advanced Text icon padding unit not saving.
+* Fix: Icon list link color issue.
+* Fix: Issue with section background color override.
+* Fix: Possible issue with svg filter.
+* Fix: Issue with countdown container padding and margin.
+* Fix: Issue with missing custom class in lottie block.
 
 = 3.1.13 =
 Release Date: August 24th, 2023

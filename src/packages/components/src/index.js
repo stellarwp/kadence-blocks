@@ -1,7 +1,8 @@
 /**
  * Import General Editor CSS
  */
- import './editor.scss';
+import './editor.scss';
+
 export { default as PopColorControl } from './pop-color-control';
 export { default as SinglePopColorControl } from './single-pop-color-control';
 export { default as ColorIcons } from './color-icons';
@@ -37,6 +38,7 @@ export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
 export { default as KadenceInspectorControls } from './inspector-controls';
 export { default as KadenceSelectTerms } from './select-terms-control';
+export { default as KadencePostSelectTerms } from './post-select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
 export { default as StepControls } from './step-control';
@@ -97,5 +99,7 @@ export { default as BorderColorControls } from './color/border-color-control'
 export { default as KadenceBlockDefaults } from './block-defaults';
 
 export { default as KadenceIconPicker } from './icon-picker';
+
+export { default as TaxonomySelect } from './taxonomy-select';
 
 export { default as SelectParentBlock } from './select-parent-block';

@@ -161,6 +161,7 @@ export function EditInner( props ) {
 	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 	const [ submitHide ] = useFormMeta( '_kad_form_submitHide' );
+	const [ browserValidation ] = useFormMeta( '_kad_form_browserValidation' );
 
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
@@ -903,6 +904,18 @@ export function EditInner( props ) {
 									setMetaAttribute( value, 'maxWidthUnit' );
 								}}
 								units={[ 'px', '%', 'vw' ]}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__( 'Validation', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={ 'kb-adv-form-browser-validation' }
+						>
+							<ToggleControl
+								label={ __( 'Use Browser Validation', 'kadence-blocks' ) }
+								checked={ browserValidation }
+								onChange={ ( value ) => { setMetaAttribute( value, 'browserValidation' ) } }
+								help={ __( 'This will use the browsers default validation for required fields. If disabled, custom error message will be displayed.', 'kadence-blocks' ) }
 							/>
 						</KadencePanelBody>
 					</>

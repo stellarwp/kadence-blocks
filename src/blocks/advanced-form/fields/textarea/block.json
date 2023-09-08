@@ -84,10 +84,11 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"ktdynamic": true,
-	  "kbContentLabel": "label"
+	"kbContentLabel": "label"
   },
   "ancestor": [ "kadence/advanced-form" ],
   "parent": [ "kadence/advanced-form", "kadence/column" ]
