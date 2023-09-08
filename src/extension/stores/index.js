@@ -6,6 +6,11 @@ const DEFAULT_STATE = {
 	uniqueIDs: {},
 	uniquePanes: {},
 	webFonts: {},
+	imagePickerQuery: '',
+	imagePickerSelection: 0,
+	imagePickerMultiSelection: [],
+	imagePickerResults: {},
+	imagePickerDownloadedImages: [],
 };
 
 const actions = {
@@ -55,6 +60,36 @@ const actions = {
 			type: 'ADD_WEBFONT',
 			font,
 			frame
+		};
+	},
+	setImagePickerQuery( query ) {
+		return {
+			type: 'SET_IMAGE_PICKER_QUERY',
+			query
+		};
+	},
+	setImagePickerSelection( index ) {
+		return {
+			type: 'SET_IMAGE_PICKER_SELECTION',
+			index
+		};
+	},
+	setImagePickerMultiSelection( selection ) {
+		return {
+			type: 'SET_IMAGE_PICKER_MULTI_SELECTION',
+			selection
+		};
+	},
+	setImagePickerResults( results ) {
+		return {
+			type: 'SET_IMAGE_PICKER_RESULTS',
+			results
+		};
+	},
+	setImagePickerDownloadedImages( images ) {
+		return {
+			type: 'SET_IMAGE_PICKER_DOWNLOADED_IMAGES',
+			images
 		};
 	}
 };
@@ -160,6 +195,31 @@ const store = createReduxStore( 'kadenceblocks/data', {
 					...state,
 					webFonts:updatedFonts,
 				};
+			case 'SET_IMAGE_PICKER_QUERY':
+				return {
+					...state,
+					imagePickerQuery:action.query,
+				};
+			case 'SET_IMAGE_PICKER_SELECTION':
+				return {
+					...state,
+					imagePickerSelection:action.index,
+				};
+			case 'SET_IMAGE_PICKER_MULTI_SELECTION':
+				return {
+					...state,
+					imagePickerMultiSelection:action.selection,
+				};
+			case 'SET_IMAGE_PICKER_RESULTS':
+				return {
+					...state,
+					imagePickerResults:action.results,
+				};
+			case 'SET_IMAGE_PICKER_DOWNLOADED_IMAGES':
+				return {
+					...state,
+					imagePickerDownloadedImages:action.images,
+				};
 			default:
 				return state;
 		}
@@ -235,6 +295,26 @@ const store = createReduxStore( 'kadenceblocks/data', {
 			return (
 				get( panels, [ panelName ], defaultValue )
 			);
+		},
+		getImagePickerQuery( state ) {
+			const { imagePickerQuery } = state;
+			return imagePickerQuery;
+		},
+		getImagePickerSelection( state ) {
+			const { imagePickerSelection } = state;
+			return imagePickerSelection;
+		},
+		getImagePickerMultiSelection( state ) {
+			const { imagePickerMultiSelection } = state;
+			return imagePickerMultiSelection;
+		},
+		getImagePickerResults( state ) {
+			const { imagePickerResults } = state;
+			return imagePickerResults;
+		},
+		getImagePickerDownloadedImages( state ) {
+			const { imagePickerDownloadedImages } = state;
+			return imagePickerDownloadedImages;
 		},
 	},
 } );
