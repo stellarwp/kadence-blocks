@@ -28,6 +28,8 @@
 	"anchor": true,
 	"html": false,
 	"reusable": false,
+	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"kbMetadata": true,
 	"kbContentLabel": "label"
   },

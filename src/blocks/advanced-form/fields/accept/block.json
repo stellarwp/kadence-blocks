@@ -81,6 +81,7 @@
 	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
+	"ktdynamic": true,
 	"kbContentLabel": "label"
   },
   "ancestor": [ "kadence/advanced-form" ],
