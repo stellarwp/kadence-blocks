@@ -78,13 +78,15 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content  = '';
-		$inner_content .= $this->field_label( $attributes );
-		$inner_content .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<div class="kb-radio-check-item-wrap">';
+		$radio_label = $attributes;
+		$radio_label['inputName'] = 'rb' . $unique_id;
 
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '">';
+		$inner_content      .= $this->field_legend( $radio_label );
+		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
-			$id         = $unique_id . '_' . $key;
+			$id         = 'field' . $unique_id . '_' . $key;
 			$is_checked = ! empty( $option['selected'] );
 
 			$inner_content .= '<div class="kb-radio-check-item">';
@@ -101,7 +103,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 			$inner_content .= '</div>';
 		}
 
-		$inner_content .= '</div>';
+		$inner_content .= '</fieldset>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

@@ -225,7 +225,16 @@ class KB_Ajax_Advanced_Form {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
 			// Skip proccessing this field if it's misssing (usually because hidden frontend).
 			if ( empty( $_POST[ $expected_field ] ) ) {
-				continue;
+				if ( ! empty( $field['required'] ) && $field['required'] ) {
+					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
+						continue;
+					} else {
+						$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+					}
+				} else {
+					continue;
+				}
 			}
 
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );

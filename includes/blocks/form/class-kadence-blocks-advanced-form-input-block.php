@@ -77,13 +77,33 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function field_label( $attributes ) {
 		$html = '';
 		if ( ! empty( $this->get_label( $attributes ) ) && ( ! isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
-			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . $this->field_name( $attributes ) . '">' . $this->get_label( $attributes );
+			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . $this->field_id( $attributes ) . '">' . $this->get_label( $attributes );
 
 			if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
 				$html .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
 			}
 
 			$html .= '</label>';
+		}
+		return $html;
+	}
+	/**
+	 * Add the label to the HTML response if it should be shown
+	 *
+	 * @param $attributes array
+	 *
+	 * @return void
+	 */
+	public function field_legend( $attributes ) {
+		$html = '';
+		if ( ! empty( $this->get_label( $attributes ) ) && ( ! isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
+			$html .= '<legend class="' . self::LABEL_CLASS_NAME . '">' . $this->get_label( $attributes );
+
+			if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
+				$html .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
+			}
+
+			$html .= '</legend>';
 		}
 		return $html;
 	}
@@ -218,12 +238,15 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		$is_required_bool = $this->is_required( $attributes, true, false );
 		if ( $is_required_bool ) {
-			$response .= 'required aria-required="true" ';
+			$response .= 'required aria-required="true"';
 		}
 
 		// if label is hidden and not empty, add as aria-label to input.
 		if ( isset( $attributes['showLabel'] ) && ! $attributes['showLabel'] && ! empty( $attributes['label'] ) ) {
-			$response .= 'aria-label="' . $attributes['label'] . '" ';
+			if ( ! empty( $response ) ) {
+				$response .= ' ';
+			}
+			$response .= 'aria-label="' . $attributes['label'] . '"';
 		}
 
 		return $response;
