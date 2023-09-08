@@ -87,7 +87,9 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 
 		foreach ( $attributes['options'] as $key => $option ) {
 			$id         = $unique_id . '_' . $key;
-			$is_checked = ! empty( $option['selected'] );
+			$is_checked_from_param = ! empty( $option['value'] ) && $option['value'] && in_array( $option['value'], explode( ',', $this->get_default( $attributes ) ) );
+			$is_checked_from_editor = ! empty( $option['selected'] );
+			$is_checked = $is_checked_from_editor || $is_checked_from_param;
 
 			$inner_content .= '<div class="kb-radio-check-item">';
 			$inner_content .= '<input class="kb-checkbox-style" type="checkbox" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '[]"' . ( $is_checked ? ' checked' : '' ) . ' value="' . $this->get_option_value( $option ) . '">';
@@ -96,7 +98,7 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 
 			$description   = array(
 				'uniqueID' => $id,
-				'label'    => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : ''
+				'label'    => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : '',
 			);
 			$inner_content .= $this->field_label( $description );
 
