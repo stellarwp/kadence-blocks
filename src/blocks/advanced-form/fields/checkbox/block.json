@@ -29,6 +29,9 @@
 	  "type": "string",
 	  "default": ""
 	},
+	"inputName": {
+	  "type": "string"
+	},
 	"helpText": {
 	  "type": "string",
 	  "default": ""
@@ -77,6 +80,7 @@
 	"anchor": true,
 	"html": false,
 	"ktfieldconditional": true,
+	"ktdynamic": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"kbContentLabel": "label"

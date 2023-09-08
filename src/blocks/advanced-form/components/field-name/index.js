@@ -37,7 +37,6 @@ export default function FieldName( {
 			setConflictFields( [] );
 		}
 	}, [ value ] );
-	console.log(conflictFields );
 	return (
 		<div className={`kb-form-field-name-wrap ${ ! hasUniqueFieldName ? 'kb-field-has-warning' : '' }`}>
 			<TextControl

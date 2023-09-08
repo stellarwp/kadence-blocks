@@ -103,11 +103,16 @@ Release Date: September 7th, 2023
 * Update: Youtube background video cover css.
 * Update: Rely on rest endpoints for taxonomy selection in posts block.
 * Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
-* Fix: Editing custom CSS in modal for Kadence Blocks Pro
-* Fix: Autocomplete in CSS editor for Kadence Blocks Pro
+* Fix: Editing custom CSS in modal.
+* Fix: Autocomplete in CSS editor.
+* Fix: Issue with multiple dynamic galleries all showing in single lightbox.
 * Fix: Accept field recording in advanced forms.
 * Fix: Advanced Text icon padding unit not saving.
 * Fix: Icon list link color issue.
+* Fix: Issue with section background color override.
+* Fix: Possible issue with svg filter.
+* Fix: Issue with countdown container padding and margin.
+* Fix: Issue with missing custom class in lottie block.
 
 = 3.1.13 =
 Release Date: August 24th, 2023
