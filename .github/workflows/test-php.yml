@@ -9,8 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         test: ["wpunit"]
-        wordpress: ["6.0"]
-        # wordpress: ["nightly", "5.9"]
+        wordpress: ["nightly"]
 
     steps:
 
@@ -28,8 +27,8 @@ jobs:
 
       - run: npm rebuild && npm run prepare --if-present
 
-      #- name: Build NPM packages
-      #  run: npm run build
+      - name: Build NPM packages
+        run: npm run build
 
       - name: Install composer
         run: sudo composer self-update --stable
