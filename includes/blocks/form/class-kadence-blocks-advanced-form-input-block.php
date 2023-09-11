@@ -104,6 +104,8 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 			}
 
 			$html .= '</legend>';
+		} elseif ( ! empty( $this->get_label( $attributes ) ) ) {
+			$html .= '<legend class="screen-reader-text">' . $this->get_label( $attributes ) . '</legend>';
 		}
 		return $html;
 	}
