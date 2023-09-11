@@ -20,16 +20,16 @@
 	"paths": {
 		"build_dir": ".pup-build",
 		"changelog": "readme.txt",
-		"css": [
-			"dist/"
-		],
-		"js": [
-			"dist/"
-		],
+		"css": [],
+		"js": [],
 		"versions": [
 			{
 				"file": "kadence-blocks.php",
 				"regex": "(define\\( +['\"]KADENCE_BLOCKS_VERSION['\"], +['\"])([^'\"]+)"
+			},
+			{
+				"file": "kadence-blocks.php",
+				"regex": "(Version: +)(.+)"
 			},
 			{
 				"file": "readme.txt",

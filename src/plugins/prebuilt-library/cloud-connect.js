@@ -1,40 +1,21 @@
 import { withSelect, withDispatch } from '@wordpress/data';
-const {
-	rawHandler,
-} = wp.blocks;
-const {
-	Component,
+import { rawHandler } from '@wordpress/blocks';
+import {
 	Fragment,
-} = wp.element;
-const { apiFetch } = wp;
-const {
-	localStorage,
-} = window;
+	Component,
+} from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	Button,
-	ButtonGroup,
-	Tooltip,
 	TextControl,
-	SelectControl,
 	ExternalLink,
 	Spinner,
 } from '@wordpress/components';
 import {
-	arrowLeft,
-	download,
-	previous,
-	update,
-	next,
-	chevronLeft,
 	trash,
-	chevronDown,
 } from '@wordpress/icons';
-const {
-	applyFilters,
-} = wp.hooks;
 import { compose } from '@wordpress/compose';
-import { __, sprintf } from '@wordpress/i18n';
-import { debounce, map } from 'lodash';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

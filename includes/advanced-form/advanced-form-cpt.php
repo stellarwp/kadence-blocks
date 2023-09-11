@@ -525,13 +525,24 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_browserValidation',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => true,
+			)
+		);
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_redirect',
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
-				'default'       => ''
+				'default'       => '',
 			)
 		);
 		register_post_meta(

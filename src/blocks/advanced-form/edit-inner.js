@@ -161,6 +161,7 @@ export function EditInner( props ) {
 	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 	const [ submitHide ] = useFormMeta( '_kad_form_submitHide' );
+	const [ browserValidation ] = useFormMeta( '_kad_form_browserValidation' );
 
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
@@ -788,6 +789,38 @@ export function EditInner( props ) {
 						>
 							<MessageStyling setMetaAttribute={setMetaAttribute} useFormMeta={ useFormMeta } />
 						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__( 'Background', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-background'}
+						>
+							<BackgroundTypeControl
+								label={ __( 'Background Type', 'kadence-blocks' ) }
+								type={ background?.backgroundType ? background.backgroundType : 'normal' }
+								onChange={ value => saveBackgroundStyle( { backgroundType: value } ) }
+								allowedTypes={ [ 'normal', 'gradient' ] }
+							/>
+							{'gradient' !== background?.backgroundType && (
+								<PopColorControl
+									label={__( 'Background', 'kadence-blocks' )}
+									value={( background?.background ? background.background : '' )}
+									default={''}
+									onChange={ ( value ) => {
+										saveBackgroundStyle( { background: value } );
+									}}
+								/>
+							)}
+							{'gradient' === background?.backgroundType && (
+								<GradientControl
+									value={ background?.gradient }
+									onChange={ value => {
+										saveBackgroundStyle( { gradient: value } );
+									}}
+									gradients={ [] }
+								/>
+							)}
+						</KadencePanelBody>
 					</>
 				}
 
@@ -841,36 +874,10 @@ export function EditInner( props ) {
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
 						</KadencePanelBody>
-						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody
 							initialOpen={true}
 							panelName={ 'kb-adv-form-max-width' }
 						>
-							<BackgroundTypeControl
-								label={ __( 'Background Type', 'kadence-blocks' ) }
-								type={ background?.backgroundType ? background.backgroundType : 'normal' }
-								onChange={ value => saveBackgroundStyle( { backgroundType: value } ) }
-								allowedTypes={ [ 'normal', 'gradient' ] }
-							/>
-							{'gradient' !== background?.backgroundType && (
-								<PopColorControl
-									label={__( 'Background', 'kadence-blocks' )}
-									value={( background?.background ? background.background : '' )}
-									default={''}
-									onChange={ ( value ) => {
-										saveBackgroundStyle( { background: value } );
-									}}
-								/>
-							)}
-							{'gradient' === background?.backgroundType && (
-								<GradientControl
-									value={ background?.gradient }
-									onChange={ value => {
-										saveBackgroundStyle( { gradient: value } );
-									}}
-									gradients={ [] }
-								/>
-							)}
 							<ResponsiveRangeControls
 								label={__( 'Max Width', 'kadence-blocks' )}
 								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
@@ -897,6 +904,18 @@ export function EditInner( props ) {
 									setMetaAttribute( value, 'maxWidthUnit' );
 								}}
 								units={[ 'px', '%', 'vw' ]}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__( 'Validation', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={ 'kb-adv-form-browser-validation' }
+						>
+							<ToggleControl
+								label={ __( 'Use Browser Validation', 'kadence-blocks' ) }
+								checked={ browserValidation }
+								onChange={ ( value ) => { setMetaAttribute( value, 'browserValidation' ) } }
+								help={ __( 'This will use the browsers default validation for required fields. If disabled, custom error message will be displayed.', 'kadence-blocks' ) }
 							/>
 						</KadencePanelBody>
 					</>

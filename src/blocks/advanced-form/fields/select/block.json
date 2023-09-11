@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-select",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -87,6 +87,7 @@
 	"anchor": true,
 	"html": false,
 	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"reusable": false,
     "kbMetadata": true,
     "kbContentLabel": "label"

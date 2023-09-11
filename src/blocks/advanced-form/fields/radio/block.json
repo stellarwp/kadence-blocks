@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-radio",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -80,8 +80,10 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
+	"ktdynamic": true,
 	"kbContentLabel": "label"
   },
   "parent": [ "kadence/advanced-form" ]

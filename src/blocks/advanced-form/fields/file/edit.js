@@ -12,6 +12,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
+import { without } from 'lodash';
 import {
 	getUniqueId,
 	getPreviewSize,
@@ -44,6 +45,11 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );
+	useEffect( () => {
+		if ( maxSizeMb > wpMaxUploadSizeMb ) {
+			setAttributes( { maxSizeMb: wpMaxUploadSizeMb } );
+		}
+	}, [wpMaxUploadSizeMb] );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
@@ -82,12 +88,6 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 		setAttributes( { allowedTypes: newTypes } );
 	};
 
-	{/* Lower the max file size if the max upload size is ever lowered */
-	}
-	if ( maxSizeMb > wpMaxUploadSizeMb ) {
-		setAttributes( { maxSizeMb: wpMaxUploadSizeMb } );
-	}
-
 	return (
 		<>
 			<style>
@@ -110,8 +110,8 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-text-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-file'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>
@@ -154,7 +154,7 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 									label={__( 'File Size Limit', 'kadence-blocks' )}
 									value={maxSizeMb}
 									onChange={value => {
-										setAttributes( { maxSizeMb: value } );
+										setAttributes( { maxSizeMb: parseInt( value ) } );
 									}}
 									options={getSizeOptions()}
 									max={wpMaxUploadSizeMb}

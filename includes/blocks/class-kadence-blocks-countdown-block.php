@@ -132,7 +132,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		}
-
+		$css->set_selector( '.kb-countdown-container-' . $unique_id );
 		$css->render_measure_output( $attributes, 'containerPadding', 'padding', [ 'unit_key' => 'paddingType', 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ] );
 
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', [ 'unit_key' => 'marginType', 'tablet_key' => 'containerTabletMargin', 'mobile_key' => 'containerMobileMargin' ] );

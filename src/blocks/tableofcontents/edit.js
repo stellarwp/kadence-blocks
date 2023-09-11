@@ -195,7 +195,7 @@ function KadenceTableOfContents( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -208,6 +208,8 @@ function KadenceTableOfContents( props ) {
 	const titleMouseOver = mouseOverVisualizer();
 	const contentMouseOver = mouseOverVisualizer();
 	useEffect( () => {
+		setBlockDefaults( 'kadence/tableofcontents', attributes);
+
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {

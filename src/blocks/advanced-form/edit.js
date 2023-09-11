@@ -17,12 +17,14 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { formBlockIcon } from '@kadence/icons';
+import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 } from '@kadence/components';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls
+} from '@wordpress/block-editor';
 import {
 	Placeholder,
 	Spinner,
@@ -64,22 +66,23 @@ export function Edit( props ) {
 		( select ) => {
 			return {
 				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_form', id ),
-				currentPostType: select( editorStore ).getCurrentPostType(),
-				postId: select( editorStore ).getCurrentPostId(),
+				currentPostType: select( 'core/editor' )?.getCurrentPostType() ? select( 'core/editor' )?.getCurrentPostType() : '',
+				postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 			}
 		},
 		[ id ],
 	);
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				isPreviewMode: select( 'core/block-editor' ).getSettings().__unstableIsPreviewMode,
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -87,6 +90,14 @@ export function Edit( props ) {
 		},
 		[ clientId ]
 	);
+
+	if( isPreviewMode ) {
+		return(
+			<>
+				{formTemplateContactIcon}
+			</>
+		);
+	}
 
 	useEffect( () => {
 		const postOrFseId = getPostOrFseId( props, parentData );

@@ -29,85 +29,38 @@ import {
 	lFourFortyIcon,
 	rFourFortyIcon,
 	fiveColIcon,
-	sixColIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon,
-	topLeftIcon,
-	topRightIcon,
-	bottomLeftIcon,
-	bottomRightIcon
+	sixColIcon
 } from '@kadence/icons';
 
-/**
- * Import External
- */
-import Select from 'react-select';
-import { times, dropRight, debounce, map } from 'lodash';
-import classnames from 'classnames';
-import memoize from 'memize';
-import ContainerDimensions from 'react-container-dimensions';
 /**
  * Import Kadence Components
  */
 import {
 	PopColorControl,
 	SmallResponsiveControl,
-	ResponsiveControl,
-	RangeControl,
-	MeasurementControls,
 	KadenceIconPicker,
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	StepControls,
 	KadenceRadioButtons,
-	VerticalAlignmentIcon,
 	ResponsiveRadioRangeControls,
-	BackgroundControl as KadenceBackgroundControl,
-	InspectorControlTabs
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { showSettings } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
  */
-import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
-import Overlay from './row-overlay';
-import RowBackground from './row-background';
-import ContentWidthIcon from './content-width-icons';
 import renderSVGDivider from './render-svg-divider';
 /**
  * Import WordPress Internals
  */
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
+
 import {
-	MediaUpload,
-	InspectorControls,
-	BlockControls,
-	BlockAlignmentToolbar,
-	useBlockProps,
-	useInnerBlocksProps,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-import {
-	Button,
-	ButtonGroup,
-	Tooltip,
-	TabPanel,
-	Popover,
-	ToolbarGroup,
-	TextControl,
-	Dashicon,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
 } from '@wordpress/components';
-import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
-import { createBlock } from '@wordpress/blocks';
-import {
-	image,
-} from '@wordpress/icons';
-import { applyFilters } from '@wordpress/hooks';
+
 /**
  * Internal block libraries
  */

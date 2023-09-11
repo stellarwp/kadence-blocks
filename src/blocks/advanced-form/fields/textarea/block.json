@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-textarea",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -84,8 +84,10 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
+	"ktdynamic": true,
 	"kbContentLabel": "label"
   },
   "ancestor": [ "kadence/advanced-form" ],

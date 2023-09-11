@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.8
+Stable tag: 3.1.14
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -75,10 +75,79 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 6. Editor Width settings inside Gutenberg
 
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the
+Kadence Blocks plugin through the Patchstack
+Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The
+Patchstack team will assist you with verification, CVE assignment, and
+notify the developers of this plugin.
+
+== Security Policy ==
+
+= Reporting Security Bugs =
+
+Please report security bugs found in the
+Kadence Blocks plugin's source code through the
+Patchstack Vulnerability Disclosure
+Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will
+assist you with verification, CVE assignment, and notify the
+developers of this plugin.
+
 == Changelog ==
 
+= 3.1.14 =
+Release Date: September 11th, 2023
+* Add: Option to disable browser validation on form.
+* Update: Youtube background video cover css.
+* Update: Rely on rest endpoints for taxonomy selection in posts block.
+* Fix: Ability to add dynamic values to radio and textarea fields in advanced forms.
+* Fix: Editing custom CSS in modal.
+* Fix: Autocomplete in CSS editor.
+* Fix: Issue with multiple dynamic galleries all showing in single lightbox.
+* Fix: Accept field recording in advanced forms.
+* Fix: Advanced Text icon padding unit not saving.
+* Fix: Icon list link color issue.
+* Fix: Issue with section background color override.
+* Fix: Possible issue with svg filter.
+* Fix: Issue with countdown container padding and margin.
+* Fix: Issue with missing custom class in lottie block.
+
+= 3.1.13 =
+Release Date: August 24th, 2023
+* Fix: Some row layouts in forms.
+* Fix: Issue when using URL parameters in advanced forms.
+* Fix: Issue with gradient shape select.
+* Fix: WP notice about wp-editor on widgets page.
+* Fix: Issue with not being able to select a gallery photo in the editor when caption covered.
+
+= 3.1.12 =
+Release Date: August 17th, 2023
+* Fix: Previewing Advanced Forms in transforms.
+* Fix: Advanced form file size limit not saving.
+* Fix: Block defaults not applying on Table of Contents.
+* Fix: ReCAPTCHA v2 on advanced forms.
+* Fix: Possible issue with custom svg icon and simplexml_load_file.
+* Fix: Issue with advanced form message styling.
+
+= 3.1.11 =
+Release Date: August 8th, 2023
+* Fix: Possible security issue with form uploads.
+
+= 3.1.10 =
+Release Date: August 7th, 2023
+* Update: More details error message on advanced form submission failure.
+* Fix: Required checkboxes wanting all boxes selected.
+* Fix: Advanced forms number field not displaying min/max value in editor.
+* Fix: Toggling allowed file types in advanced form.
+* Fix: Allowing multiple file types in advanced form upload.
+
 = 3.1.9 =
+Release Date: August 4th, 2023
+* Update: Allow additional field replacements to the email post submit action.
 * Fix: Disk space & multisite quota check on Form file uploads.
+* Fix: Form render issue on windows servers.
 
 = 3.1.8 =
 Release Date: August 3rd, 2023
@@ -88,7 +157,7 @@ Release Date: August 3rd, 2023
 * Fix: Potential advanced forms conflict with with third-party plugins.
 * Fix: Possible issue with slider flickering on some mobile browsers.
 * Fix: Metadata being included in block defaults.
-* Fix: Issue with progress bar rendering. 
+* Fix: Issue with progress bar rendering.
 * Fix: Issue where shorter youtube videos would not loop unless in a playlist.
 * Fix: CountUp block issue with font family in editor.
 

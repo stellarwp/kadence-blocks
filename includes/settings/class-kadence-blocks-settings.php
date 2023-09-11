@@ -763,37 +763,37 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-				'kadence_blocks_convertkit_api',
-				'kadence_blocks_convertkit_api',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_convertkit_api',
+			'kadence_blocks_convertkit_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_key',
-				'kadence_blocks_activecampaign_api_key',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_key',
+			'kadence_blocks_activecampaign_api_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_base',
-				'kadence_blocks_activecampaign_api_base',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_base',
+			'kadence_blocks_activecampaign_api_base',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 	}
 	/**
@@ -893,7 +893,7 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs Limited Margins Field
+	 * Outputs font settings field
 	 */
 	public function load_fonts_local_callback() {
 		$data = self::get_data_options( 'kadence_blocks_font_settings' );
@@ -918,7 +918,6 @@ class Kadence_Blocks_Settings {
 	 */
 	public function fonts_local_callback() {
 	}
-
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
 	 *

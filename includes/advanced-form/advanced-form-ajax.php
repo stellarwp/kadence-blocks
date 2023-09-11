@@ -24,15 +24,9 @@ class KB_Ajax_Advanced_Form {
 
 	private static $redirect = false;
 
-	private static $actions = [];
-
 	private static $fields = [];
 
-	private static $messages = [];
-
 	private static $captcha_attrs = false;
-
-	private static $errors = [];
 
 	/**
 	 * Instance Control
@@ -167,7 +161,7 @@ class KB_Ajax_Advanced_Form {
 				$value = sanitize_email( trim( $value ) );
 				break;
 			case 'accept':
-				$value = esc_html__( 'Accept', 'kadence-blocks' );
+				$value = !empty( $value) ? esc_html__( 'Accept', 'kadence-blocks' ) : esc_html__( 'Did not accept', 'kadence-blocks' ) ;
 				break;
 			default:
 				/**
@@ -184,7 +178,7 @@ class KB_Ajax_Advanced_Form {
 	}
 	/**
 	 * Process the submit actions.
-	 * 
+	 *
 	 * @param array $form_args the form args.
 	 * @param array $processed_fields the processed fields.
 	 * @param int   $post_id the post id.
@@ -229,13 +223,27 @@ class KB_Ajax_Advanced_Form {
 
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
-			// Fail if required field is missing.
-			if ( empty( $_POST[ $expected_field ] ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
-				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
-				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+			// Skip proccessing this field if it's misssing (usually because hidden frontend).
+			if ( empty( $_POST[ $expected_field ] ) ) {
+				if ( ! empty( $field['required'] ) && $field['required'] ) {
+					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
+						continue;
+					} else {
+						$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+					}
+				} else {
+					continue;
+				}
 			}
 
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
+
+			// Fail if this field is empty and is required.
+			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
+				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+			}
 
 			// If field is file, verify and process the file.
 			if ( $field['type'] === 'file' ) {
@@ -253,23 +261,15 @@ class KB_Ajax_Advanced_Form {
 
 				// Was file too big
 				if ( $_FILES[ $expected_field ]['size'] > $max_upload_size_bytes ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
+					$this->process_bail( __( 'Submission Failed. File too Large', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
 				}
-
 
 				if ( ! is_uploaded_file( $_FILES[ $expected_field ]['tmp_name'] ) ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
+					$this->process_bail( __( 'Submission Failed. File could not be uploaded', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
 				}
-
 
 				$allowed_file_categories = empty( $field['allowedTypes'] ) ? array( 'images' ) : $field['allowedTypes'];
-				$allowed_file_types      = $this->get_allowed_mine_types( $allowed_file_categories );
-
-				$mime_type = mime_content_type( $_FILES[ $expected_field ]['tmp_name'] );
-
-				if ( ! in_array( $mime_type, $allowed_file_types ) ) {
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'File type not allowed', 'kadence-blocks' ) );
-				}
+				$allowed_file_mimes      = $this->get_allowed_mimes( $allowed_file_categories );
 
 				$file_size = filesize( $_FILES[ $expected_field ]['tmp_name'] );
 
@@ -278,38 +278,36 @@ class KB_Ajax_Advanced_Form {
 					require_once( ABSPATH . 'wp-includes/ms-functions.php' );
 					require_once( ABSPATH . 'wp-admin/includes/ms.php' );
 
-					$space     = get_upload_space_available();
+					$space = get_upload_space_available();
 					if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
+						$this->process_bail( __( 'Submission Failed. Not enough disk quota on this website.', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
 					}
 				}
-
-				$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
-				$destination   = wp_upload_dir()['basedir'] . $subfolder;
-
-				$upload_filename = wp_unique_filename( $destination, time() . '_' . $_FILES[ $expected_field ]['name'] );
-				$abs_file_path = $destination . $upload_filename;
-				$rel_file_path = '/uploads' . $subfolder . $upload_filename;
-
-				// Create folder if not exist
-				if ( ! is_dir( $destination ) ) {
-					wp_mkdir_p( $destination );
+				if ( ! function_exists( 'wp_handle_upload' ) ) {
+					require_once( ABSPATH . 'wp-admin/includes/file.php' );
 				}
-
-				if ( move_uploaded_file( $_FILES[ $expected_field ]['tmp_name'], $abs_file_path ) ) {
-					$this->set_permissions( $abs_file_path );
-
-					$value = content_url( $rel_file_path );
+				add_filter( 'kb_process_advanced_form_submit_prefilter', array( $this, 'override_upload_directory' ) );
+				$file_upload = wp_handle_upload(
+					$_FILES[ $expected_field ],
+					array(
+						'action'                   => 'kb_process_advanced_form_submit',
+						'unique_filename_callback' => array( $this, 'set_custom_upload_unique_filename' ),
+						'test_form'                => false,
+						'test_type'                => true,
+						'mimes'                    => $allowed_file_mimes,
+					)
+				);
+				if ( isset( $file_upload['url'] ) ) {
+					$this->add_htaccess_to_uploads_root();
+					$value = $file_upload['url'];
 				} else {
-					// Was disk space an issue?
-					if ( disk_free_space( ABSPATH ) < $file_size ) {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Not enough disk space on the server.', 'kadence-blocks' ) );
+					if ( ! empty( $file_upload['error'] ) ) {
+						$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );
 					} else {
-						$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+						$this->process_bail( __( 'Submission Failed. Failed to upload file', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
 					}
 				}
 			}
-
 
 			$processed_fields[] = array(
 				'label'    => ( ! empty( $field['label'] ) ? $field['label'] : '' ),
@@ -318,6 +316,7 @@ class KB_Ajax_Advanced_Form {
 				'value'    => $value,
 				'uniqueID' => $field['uniqueID'],
 				'name'     => $expected_field,
+				'file_name'=> !empty( $_FILES[ $expected_field ]['name'] ) ? $_FILES[ $expected_field ]['name'] : '',
 			);
 		}
 
@@ -405,68 +404,139 @@ class KB_Ajax_Advanced_Form {
 			wp_send_json_error( $data );
 		}
 	}
-
-	public function get_allowed_mine_types( $categories ) {
+	/**
+	 * Get Allowed Mime Types.
+	 *
+	 * @param array $categories an array of category names.
+	 */
+	public function get_allowed_mimes( $categories ) {
 		$allowed_mime_types = array();
-
 		$mimtypes = array(
+			'image'     => array(
+				'jpg|jpeg|jpe' => 'image/jpeg',
+				'gif'          => 'image/gif',
+				'png'          => 'image/png',
+			),
 			'images'     => array(
-				'image/gif',
-				'image/jpeg',
-				'image/png',
+				'jpg|jpeg|jpe' => 'image/jpeg',
+				'gif'          => 'image/gif',
+				'png'          => 'image/png',
 			),
 			'pdf'       => array(
-				'application/pdf',
+				'pdf' => 'application/pdf',
 			),
 			'video'     => array(
-				'video/mp4',
-				'video/mpg',
-				'video/mpeg',
-				'video/quicktime',
-				'video/x-ms-wmv'
+				'mp4|m4v'      => 'video/mp4',
+				'mpeg|mpg|mpe' => 'video/mpeg',
+				'mov|qt'       => 'video/quicktime',
+				'wmv'          => 'video/x-ms-wmv',
 			),
 			'audio'     => array(
-				'audio/mpeg',
-				'audio/mp3',
-				'audio/wav',
-				'audio/x-wav',
-				'audio/x-m4a',
-				'audio/aac',
-				'audio/mp4',
-				'audio/x-ms-wma',
-				'audio/webm',
-				'audio/ogg',
+				'mp3|m4a|m4b' => 'audio/mpeg',
+				'aac'         => 'audio/aac',
+				'wav'         => 'audio/wav',
+				'ra|ram'      => 'audio/x-realaudio',
+				'mid|midi'    => 'aaudio/midi',
+				'mka'         => 'audio/x-matroska',
+				'wma'         => 'audio/x-ms-wma',
+				'wax'         => 'audio/x-ms-wax',
+				'ogg|oga'     => 'audio/ogg',
 			),
 			'documents' => array(
-				'text/plain',
-				'text/csv',
-				'application/msword',
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'application/vnd.ms-excel',
-				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				'application/vnd.ms-powerpoint',
-				'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-			)
+				'txt|asc|c|cc|h|srt'           => 'text/plain',
+				'csv'                          => 'text/csv',
+				'doc'                          => 'application/msword',
+				'pot|pps|ppt'                  => 'application/vnd.ms-powerpoint',
+				'xla|xls|xlt|xlw'              => 'application/vnd.ms-excel',
+				'docx'                         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'docm'                         => 'application/vnd.ms-word.document.macroEnabled.12',
+				'dotx'                         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+				'dotm'                         => 'application/vnd.ms-word.template.macroEnabled.12',
+				'xlsx'                         => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				'xlsm'                         => 'application/vnd.ms-excel.sheet.macroEnabled.12',
+				'xlsb'                         => 'application/vnd.ms-excel.sheet.binary.macroEnabled.12',
+				'xltx'                         => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+				'xltm'                         => 'application/vnd.ms-excel.template.macroEnabled.12',
+				'xlam'                         => 'application/vnd.ms-excel.addin.macroEnabled.12',
+				'pptx'                         => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+				'pptm'                         => 'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+				'ppsx'                         => 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+				'ppsm'                         => 'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+				'potx'                         => 'application/vnd.openxmlformats-officedocument.presentationml.template',
+				'potm'                         => 'application/vnd.ms-powerpoint.template.macroEnabled.12',
+				'ppam'                         => 'application/vnd.ms-powerpoint.addin.macroEnabled.12',
+				'sldx'                         => 'application/vnd.openxmlformats-officedocument.presentationml.slide',
+				'sldm'                         => 'application/vnd.ms-powerpoint.slide.macroEnabled.12',
+				'onetoc|onetoc2|onetmp|onepkg' => 'application/onenote',
+				'oxps'                         => 'application/oxps',
+				'xps'                          => 'application/vnd.ms-xpsdocument',
+				'odt'                          => 'application/vnd.oasis.opendocument.text',
+				'odp'                          => 'application/vnd.oasis.opendocument.presentation',
+				'ods'                          => 'application/vnd.oasis.opendocument.spreadsheet',
+				'odg'                          => 'application/vnd.oasis.opendocument.graphics',
+				'odc'                          => 'application/vnd.oasis.opendocument.chart',
+				'odb'                          => 'application/vnd.oasis.opendocument.database',
+				'odf'                          => 'application/vnd.oasis.opendocument.formula',
+				'wp|wpd'                       => 'application/wordperfect',
+				'key'                          => 'application/vnd.apple.keynote',
+				'numbers'                      => 'application/vnd.apple.numbers',
+				'pages'                        => 'application/vnd.apple.pages',
+			),
+			'archive' => array(
+				'zip'  => 'application/zip',
+			),
 		);
-
 		foreach ( $categories as $category ) {
-			$allowed_mime_types = array_merge( $allowed_mime_types, $mimtypes[ $category ] );
+			if ( isset( $mimtypes[ $category ] ) ) {
+				$allowed_mime_types = array_merge( $allowed_mime_types, $mimtypes[ $category ] );
+			}
 		}
 
 		return $allowed_mime_types;
 	}
 	/**
-	 * Upload file
+	 * Add filter to override the upload directory for form submissions.
 	 *
-	 * @param array $file_data the file data.
+	 * @param array $file the file.
 	 */
-	private function set_permissions( $file ) {
-		$permission = apply_filters( 'kadence_form_upload_permissions', 0644, $file );
-
-		if ( $permission ) {
-			@chmod( $file, $permission );
-		}
+	public function override_upload_directory( $file ) {
+		add_filter( 'upload_dir', array( $this, 'set_custom_upload_directory' ), 10 );
+		add_filter( 'wp_handle_upload', array( $this, 'remove_set_custom_upload_directory' ), 10, 2 );
+		return $file;
 	}
+	/**
+	 * Set the custom upload directory.
+	 *
+	 * @param array $param the upload directory params.
+	 */
+	public function set_custom_upload_directory( $param ) {
+		$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' );
+		$param['url']  = isset( $param['baseurl'] ) ? $param['baseurl'] . $subfolder : $subfolder;
+		$param['path'] = isset( $param['basedir'] ) ? $param['basedir'] . $subfolder : $subfolder;
+		return apply_filters( 'kadence_blocks_advanced_form_upload_directory', $param );
+	}
+	/**
+	 * Remove the filter to override the upload directory for form submissions.
+	 *
+	 * @param array $fileinfo the file info.
+	 * @param array $param the upload directory params.
+	 */
+	public function remove_set_custom_upload_directory( $fileinfo, $param ) {
+		remove_filter( 'upload_dir', array( $this, 'set_custom_upload_directory' ), 10 );
+		return $fileinfo;
+	}
+	/**
+	 * Set custom file name with timestamp included.
+	 *
+	 * @param string $dir the upload directory.
+	 * @param string $name the file name.
+	 * @param string $ext the file extension.
+	 */
+	public function set_custom_upload_unique_filename( $dir, $name, $ext ) {
+		$time_name = apply_filters( 'kadence_blocks_advanced_form_upload_file_name', time() . '_' . wp_generate_password( 16, false ) . '.' . $ext, $dir, $name );
+		return wp_unique_filename( $dir, $time_name );
+	}
+
 
 	/**
 	 * Get form details
@@ -475,7 +545,7 @@ class KB_Ajax_Advanced_Form {
 	 * @param string  $form_id the form id.
 	 */
 	private function get_form( $post_id ) {
-		$form_args = [];
+		$form_args = array();
 		$blocks    = '';
 
 		$post_data = get_post( absint( $post_id ) );
@@ -557,6 +627,74 @@ class KB_Ajax_Advanced_Form {
 		return $messages;
 	}
 
+	/**
+	 * Create .htaccess in uploads folder to prevent PHP execution.
+	 * This security precaution exists in case the server was misconfigured to execute unintended file extensions.
+	 *
+	 * @return void
+	 */
+	public function add_htaccess_to_uploads_root() {
+		$wp_uploads = wp_upload_dir();
+		$kadence_form_root_upload_dir = $this->get_kadence_form_root_upload_dir();
+
+		if ( ! $wp_uploads['error'] ) {
+			$htaccess_file = $wp_uploads['basedir'] . '/'. $kadence_form_root_upload_dir .'/.htaccess';
+			$content       = '# Prevent PHP execution in this folder for all files in case server is misconfigured to execute unintended file extensions.
+<Files *>
+SetHandler none
+SetHandler default-handler
+Options -ExecCGI
+RemoveHandler .cgi .php .php3 .php4 .php5 .phtml .pl .py .pyc .pyo
+</Files>
+<IfModule headers_module>
+Header set X-Robots-Tag "noindex"
+</IfModule>';
+			$content_array = explode( "\n", $content );
+			$content_array = apply_filters( 'kadence_blocks_form_upload_htaccess_rules', $content_array );
+			insert_with_markers( $htaccess_file, 'Kadence Blocks', $content_array );
+		}
+	}
+
+	/**
+	 * Given the direct link to a file, return the url to the downloader.
+	 *
+	 * @param $file_url
+	 *
+	 * @return mixed
+	 */
+	public function get_downloader_url( $file_url ) {
+		$kadence_form_root_upload_dir = $this->get_kadence_form_root_upload_dir();
+		$file_path = explode($kadence_form_root_upload_dir, $file_url, 2);
+
+		// Couldn't find the root directory just return the url
+		if( !isset( $file_path[1]) ) {
+			return $file_url;
+		}
+
+		$query_args = array(
+			'kadence-form-download' => $kadence_form_root_upload_dir . $file_path[1]
+		);
+
+		return add_query_arg( $query_args, home_url() );
+	}
+
+	/**
+	 * Given the direct link to a file, return the url to the downloader.
+	 *
+	 * @return mixed|string
+	 */
+	public function get_kadence_form_root_upload_dir() {
+		$root_dir = 'kadence_form';
+
+		$kadence_form_upload_dir = $this->set_custom_upload_directory( array() );
+		if( !empty( $kadence_form_upload_dir['path'] ) ){
+			$upload_dir_parts = explode( '/', $kadence_form_upload_dir['path'] );
+			$upload_dir_parts = array_values( array_filter($upload_dir_parts) );
+			$root_dir = $upload_dir_parts[0];
+		}
+
+		return $root_dir;
+	}
 }
 
 KB_Ajax_Advanced_Form::get_instance();

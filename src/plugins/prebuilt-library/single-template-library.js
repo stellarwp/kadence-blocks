@@ -7,9 +7,6 @@
  /**
   * WordPress dependencies
   */
-  const {
-	 applyFilters,
- } = wp.hooks;
  import {
 	withSelect,
 	withDispatch,
@@ -27,12 +24,7 @@ import { compose } from '@wordpress/compose';
  } from '@wordpress/components';
  import {
 	arrowLeft,
-	download,
-	previous,
 	update,
-	next,
-	chevronLeft,
-	chevronDown,
 } from '@wordpress/icons';
  import { __, sprintf } from '@wordpress/i18n';
 

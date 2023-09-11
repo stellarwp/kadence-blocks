@@ -3,120 +3,45 @@
  */
 
 /**
- * Import Icons
- */
-import {
-	rowIcon,
-	collapseRowIcon,
-	collapseRowThreeIcon,
-	collapseRowFourIcon,
-	collapseRowFiveIcon,
-	collapseRowSixIcon,
-	twoColIcon,
-	gridIcon,
-	threeColIcon,
-	threeGridIcon,
-	lastRowIcon,
-	firstRowIcon,
-	twoLeftGoldenIcon,
-	twoRightGoldenIcon,
-	leftHalfIcon,
-	rightHalfIcon,
-	centerHalfIcon,
-	wideCenterIcon,
-	exWideCenterIcon,
-	fourColIcon,
-	lFourFortyIcon,
-	rFourFortyIcon,
-	fiveColIcon,
-	sixColIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon,
-	topLeftIcon,
-	topRightIcon,
-	bottomLeftIcon,
-	bottomRightIcon
-} from '@kadence/icons';
-
-/**
  * Import External
  */
-import Select from 'react-select';
-import { times, dropRight, debounce, map } from 'lodash';
-import classnames from 'classnames';
-import memoize from 'memize';
-import ContainerDimensions from 'react-container-dimensions';
+import { times } from 'lodash';
+
 /**
  * Import Kadence Components
  */
 import {
 	PopColorControl,
 	SmallResponsiveControl,
-	ResponsiveControl,
 	RangeControl,
-	MeasurementControls,
 	ResponsiveMeasurementControls,
-	ResponsiveRangeControls,
 	KadencePanelBody,
-	StepControls,
 	KadenceRadioButtons,
 	KadenceImageControl,
-	VerticalAlignmentIcon,
-	ResponsiveRadioRangeControls,
 	BackgroundControl as KadenceBackgroundControl,
 	BackgroundTypeControl,
 	GradientControl,
 	KadenceVideoControl,
 	SubsectionWrap,
 	ColorGroup,
-	InspectorControlTabs,
-	BorderControl,
 	ResponsiveBorderControl,
 } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+import { showSettings } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
  */
-import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
-import Overlay from './row-overlay';
-import RowBackground from './row-background';
-import ContentWidthIcon from './content-width-icons';
-import renderSVGDivider from './render-svg-divider';
 import { BLEND_OPTIONS } from './constants';
 /**
  * Import WordPress Internals
  */
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import {
-	MediaUpload,
-	InspectorControls,
-	BlockControls,
-	BlockAlignmentToolbar,
-	useBlockProps,
-	useInnerBlocksProps,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-import {
-	Button,
-	ButtonGroup,
-	Tooltip,
-	TabPanel,
-	Popover,
-	ToolbarGroup,
 	TextControl,
-	Dashicon,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-	ResizableBox,
 } from '@wordpress/components';
-import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
-import { createBlock } from '@wordpress/blocks';
-import {
-	image,
-} from '@wordpress/icons';
-import { applyFilters } from '@wordpress/hooks';
+
 /**
  * Internal block libraries
  */

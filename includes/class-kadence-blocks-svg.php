@@ -47,7 +47,9 @@ class Kadence_Blocks_Svg_Render {
 	 */
 	public function __construct() {
 		add_filter( 'render_block', array( $this, 'render_icons_dynamically' ), 10, 2 );
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		if ( apply_filters( 'kadence_blocks_fix_svg_dimensions', false ) ) {
+			add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		}
 	}
 	/**
 	 * On build convert icons into svgs.
@@ -194,7 +196,7 @@ class Kadence_Blocks_Svg_Render {
 			if ( is_array( $size ) ) {
 				$image[1] = $size[0];
 				$image[2] = $size[1];
-			} elseif ( ( $xml = simplexml_load_file( $image[0] ) ) !== false ) {
+			} elseif ( ini_get( 'allow_url_fopen' ) && ( $xml = simplexml_load_file( $image[0], SimpleXMLElement::class, LIBXML_NOWARNING ) ) !== false ) {
 				$attr = $xml->attributes();
 				$viewbox = explode( ' ', $attr->viewBox );
 				$image[1] = isset( $attr->width ) && preg_match( '/\d+/', $attr->width, $value ) ? (int) $value[0] : ( count( $viewbox ) == 4 ? (int) $viewbox[2] : null );

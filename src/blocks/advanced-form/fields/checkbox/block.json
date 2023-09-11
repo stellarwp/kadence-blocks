@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-checkbox",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -28,6 +28,9 @@
 	"ariaDescription": {
 	  "type": "string",
 	  "default": ""
+	},
+	"inputName": {
+	  "type": "string"
 	},
 	"helpText": {
 	  "type": "string",
@@ -76,6 +79,7 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"ktdynamic": true,
 	"reusable": false,
 	"kbMetadata": true,

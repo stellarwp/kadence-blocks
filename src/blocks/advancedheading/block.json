@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Advanced Text",
   "name": "kadence/advancedheading",
   "category": "kadence-blocks",
@@ -470,6 +470,10 @@
 	"mobileIconPadding": {
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
+	},
+	"iconPaddingUnit": {
+	  "type": "string",
+	  "default": "px"
 	},
 	"iconSize": {
 	  "type": "array",

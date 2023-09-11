@@ -325,7 +325,7 @@ const GradientPositionPicker = ( { gradientAST, hasGradient, onChange } ) => {
 };
 const GradientShapePicker = ( { gradientAST, hasGradient, onChange } ) => {
 	let shape = DEFAULT_RADIAL_GRADIENT_SHAPE;
-	if ( gradientAST?.orientation && gradientAST?.orientation[0]?.type && 'shape' === gradientAST?.orientation && gradientAST?.orientation[0]?.type && gradientAST?.orientation && gradientAST?.orientation[0]?.value ) {
+	if ( gradientAST?.orientation && gradientAST?.orientation[0]?.type && 'shape' === gradientAST?.orientation[0]?.type && gradientAST?.orientation[0]?.value ) {
 		shape = gradientAST?.orientation && gradientAST?.orientation[0]?.value;
 	}
 	const onShapeChange = ( newShape ) => {

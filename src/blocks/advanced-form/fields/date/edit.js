@@ -88,8 +88,8 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-date-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-date'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>
