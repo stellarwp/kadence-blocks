@@ -1048,6 +1048,9 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_conteoller_get->register_routes();
 	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_conteoller_upload->register_routes();
+
+	$image_picker_conteoller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
+	$image_picker_conteoller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

@@ -16,7 +16,8 @@ import {
 	ResponsiveAlignControls,
 	InspectorControlTabs,
 	KadencePanelBody,
-	KadenceRadioButtons
+	KadenceRadioButtons,
+	KadenceImageControl,
 } from '@kadence/components';
 
 import {
@@ -33,7 +34,9 @@ import {
 	lineBar,
 	circleBar,
 	semiCircleBar,
+	lineMask,
 } from '@kadence/icons';
+
 /**
  * Internal block libraries
  */
@@ -45,7 +48,7 @@ import {
 	Fragment,
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import { map } from 'lodash';
+import { map, range } from 'lodash';
 import {
 	RichText,
 	InspectorControls,
@@ -123,6 +126,9 @@ export function Edit( props ) {
 		mhAlign,
 		delayUntilInView,
 		decimal,
+		maskIterations,
+		maskSvg,
+		maskUrl,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -157,6 +163,21 @@ export function Edit( props ) {
 		}
 
 	}, [] );
+
+	useEffect( () => {
+		if ( barType == 'line-mask' ) {
+			// Update from default if they choose the line mask option
+			if ( 100 == progressMax && 90 == progressAmount ) {
+				setAttributes( { progressMax: 5 } );
+				setAttributes( { progressAmount: 4 } );
+				setAttributes( { displayPercent: false } );
+				setAttributes( { decimal: 'one' } );
+			}
+			if ( '' ==label ) {
+				setAttributes( { displayLabel: false } );
+			}
+		}
+	}, [barType] );
 
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
@@ -209,6 +230,7 @@ export function Edit( props ) {
 		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: lineBar },
 		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: circleBar },
 		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
+		{ key: 'line-mask', name: __( 'Masked Line', 'kadence-blocks' ), icon: lineMask },
 
 	];
 	const labelFontConfigObj = {
@@ -292,7 +314,7 @@ export function Edit( props ) {
 		},
 	};
 
-	const container = '#progress-item' + uniqueID;
+	const container = '#kb-progress-bar' + uniqueID;
 	const iFrameSelector = document.getElementsByName( 'editor-canvas' );
 	const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
 	let progressItem = null;
@@ -302,7 +324,7 @@ export function Edit( props ) {
 		if ( containerDiv === null ) {
 			return;
 		}
-		if ( barType === 'line' ) {
+		if ( barType === 'line' || barType === 'line-mask' ) {
 			progressItem = new Line( containerDiv, progressAttributes );
 		} else if ( barType === 'circle' ) {
 			progressItem = new Circle( containerDiv, progressAttributes );
@@ -355,7 +377,7 @@ export function Edit( props ) {
 			wrapperLayoutStyles.left = '50%';
 		}
 
-		if ( barType === 'line' && labelPosition === 'inside' && previewAlign === 'space-between' ) {
+		if ( ( barType === 'line' || barType === 'line-mask' ) && labelPosition === 'inside' && previewAlign === 'space-between' ) {
 			wrapperLayoutStyles.width = '100%';
 		}
 
@@ -385,6 +407,54 @@ export function Edit( props ) {
 			</div>
 		);
 	};
+
+	var maskStyles = '';
+
+	if ( 'line-mask' == barType ) {
+		var iterations = maskIterations ?? 5;
+		var mask = maskSvg ?? 'star';
+		var maskBaseUrl = kadence_blocks_params.svgMaskPath;
+		var maskUrlToUse = maskBaseUrl + mask + '.svg';
+
+		if ( 'custom' === maskSvg ) {
+			if ( maskUrl ) {
+				maskUrlToUse = maskUrl;
+			} else {
+				maskUrlToUse = maskBaseUrl + 'star.svg';
+			}
+		}
+
+		var maskImageString = ('url(' + maskUrlToUse + '),').repeat( iterations ).replace(/(^,)|(,$)/g, "");
+		var maskRepeatString = ('no-repeat,').repeat( iterations ).replace(/(^,)|(,$)/g, "");
+		var maskPositionArray = iterations > 1 ? range( 0, 100.1, 100 / ( iterations - 1) ) : [0];
+		var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
+		var maskAspectRatioString = iterations + '/1';
+		var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
+
+		maskStyles = ( 
+			<style>
+				{`
+				#kb-progress-bar${uniqueID} {
+					-webkit-mask-image: ${maskImageString};
+					mask-image: ${maskImageString};
+
+					-webkit-mask-size: contain;
+					mask-size: contain;
+
+					-webkit-mask-repeat: ${maskRepeatString};
+					mask-repeat: ${maskRepeatString};
+
+					-webkit-mask-position: ${maskPositionString};
+					mask-position: ${maskPositionString};
+
+					aspect-ratio: ${maskAspectRatioString};
+
+					height: ${maskHeightString};
+				}
+				`}
+			</style> 
+		)
+	}
 
 	return (
 		<div {...blockProps}>
@@ -433,6 +503,94 @@ export function Edit( props ) {
 
 						{/* These are the wordpress and Kadence components mostly that are imported at the top */}
 						<KadencePanelBody>
+							{ ( barType == 'line-mask' ) && (
+								<>
+									<SelectControl
+										label={ __( 'Mask Shape', 'kadence-blocks' ) }
+										options={ [
+											{
+												label: __( 'Star', 'kadence-blocks' ),
+												value: 'star',
+											},
+											{
+												label: __( 'Heart', 'kadence-blocks' ),
+												value: 'heart-solid',
+											},
+											{
+												label: __( 'Smile', 'kadence-blocks' ),
+												value: 'face-smile-beam-solid',
+											},
+											{
+												label: __( 'Thumbs Up', 'kadence-blocks' ),
+												value: 'thumbs-up-solid',
+											},
+											{
+												label: __( 'Thumbs Down', 'kadence-blocks' ),
+												value: 'thumbs-down-solid',
+											},
+											{
+												label: __( 'Mug', 'kadence-blocks' ),
+												value: 'mug-hot-solid',
+											},
+											{
+												label: __( 'Circle', 'kadence-blocks' ),
+												value: 'circle',
+											},
+											{
+												label: __( 'Diamond', 'kadence-blocks' ),
+												value: 'diamond',
+											},
+											{
+												label: __( 'Rounded', 'kadence-blocks' ),
+												value: 'rounded',
+											},
+											{
+												label: __( 'Cat', 'kadence-blocks' ),
+												value: 'cat-solid',
+											},
+											{
+												label: __( 'Dog', 'kadence-blocks' ),
+												value: 'dog-solid',
+											},
+											{
+												label: __( 'Custom', 'kadence-blocks' ),
+												value: 'custom',
+											},
+										] }
+										value={ maskSvg }
+										onChange={ ( value ) => setAttributes( { maskSvg: value } ) }
+									/>
+									{ ( maskSvg === 'custom' ) && (
+										<div class="components-base-control">
+											<KadenceImageControl
+												label={ __( 'Custom Mask Image', 'kadence-blocks' ) }
+												hasImage={ ( maskUrl ? true : false ) }
+												imageURL={ ( maskUrl ? maskUrl : '' ) }
+												imageID={ '' }
+												onRemoveImage={ () => {
+													setAttributes( {
+														maskUrl: undefined,
+													} );
+												} }
+												onSaveImage={ ( image ) => {
+													setAttributes( {
+														maskUrl: image.url,
+													} )
+												} }
+												disableMediaButtons={ ( maskUrl ? true : false ) }
+											/>
+											Square, solid black images work best for this mask.
+										</div>
+									) }
+									<RangeControl
+										label={__( 'Mask Iterations', 'kadence-blocks' )}
+										value={maskIterations}
+										onChange={( value ) => setAttributes( { maskIterations: value } )}
+										min={1}
+										max={100}
+									/>
+								</>
+							) }
 							<ResponsiveRangeControls
 								label={__( 'Progress Thickness', 'kadence-blocks' )}
 								value={progressWidth}
@@ -848,6 +1006,7 @@ export function Edit( props ) {
 				)}
 
 			</InspectorControls>
+			{maskStyles}
 			<div style={
 				{
 					position    : 'relative',
@@ -861,7 +1020,7 @@ export function Edit( props ) {
 
 				{RenderLabel( 'above' )}
 
-				<div id={'progress-item' + uniqueID }></div>
+				<div id={'kb-progress-bar' + uniqueID } class="kb-progress-bar"></div>
 
 				{RenderLabel( 'inside' )}
 
