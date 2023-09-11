@@ -16,6 +16,7 @@ import {
 	useState,
 	useMemo,
 } from '@wordpress/element';
+import { ENTER } from '@wordpress/keycodes';
 import {
 	getUniqueId,
 	getPreviewSize,
@@ -393,8 +394,24 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 								<div className={'inline-option-add-item'} key={n}>
 									<input key={'cb' + n} type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} onChange={( value ) => toggleSelected( n, value.target.value )}
 										   checked={options[ n ].selected}/>
-									<input key={'text' + n} type={'text'} value={options[ n ].label} className={'ignore-field-styles'}
-										   onChange={( value ) => updateOption( n, { label: value.target.value } )}/>
+									<input
+										key={'text' + n}
+										type={'text'}
+										value={options[ n ].label}
+										className={'ignore-field-styles'}
+										onChange={( value ) => updateOption( n, { label: value.target.value } )}
+										// onKeyDown={ ( e ) => {
+										// 	if ( e.keyCode === ENTER ) {
+										// 		const newOptions = options;
+										// 		newOptions.push( {
+										// 			value: '',
+										// 			label: '',
+										// 		} );
+										// 		setAttributes( { options: newOptions } );
+										// 		setRerender( Math.random() );
+										// 	}
+										// }}
+										/>
 									<Button onClick={() => removeOptionItem( n )}>
 										<span className="dashicons dashicons-trash"></span>
 									</Button>

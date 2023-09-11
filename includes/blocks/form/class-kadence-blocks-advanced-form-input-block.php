@@ -309,5 +309,17 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
 	}
+	/**
+	 * Get any additonal attributes to be applied to the form <fieldset /> element
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string
+	 */
+	public function additional_fieldset_attributes( $attributes ) {
+		$additional_attributes = '';
+
+		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
+	}
 }
 
