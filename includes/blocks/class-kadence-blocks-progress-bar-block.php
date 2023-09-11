@@ -142,14 +142,14 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			// We assume square masks for all this math.
 
 			$iterations = $attributes['maskIterations'] ?? 5;
-			$mask = $attributes['maskSvg'] ?? 'star';
+			$mask = ! empty( $attributes['maskSvg'] ) ? $attributes['maskSvg'] : 'star';
 			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 			$mask_url = $mask_base_url . $mask . '.svg';
 			// $mask_gap = $attributes['maskGap'] ?? 10;
 			$mask_height = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) : 80;
-			$mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
+			//$mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
 
-			if ( 'custom' === $attributes['maskSvg'] ) {
+			if ( 'custom' === $mask ) {
 				if ( ! empty( $attributes['maskUrl'] ) ) {
 					$mask_url = $attributes['maskUrl'];
 				} else {
