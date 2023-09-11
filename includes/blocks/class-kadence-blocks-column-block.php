@@ -551,27 +551,37 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$tablet_direction = ( isset( $attributes['direction'] ) && is_array( $attributes['direction'] ) && ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : '' );
 		}
 		if ( 'vertical' === $tablet_direction ) {
-			// If desktop horizonal remove margin.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'flex-direction', 'column' );
 			if ( $desktop_direction === 'horizontal' ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-				$css->add_property( 'display', 'block' );
+				$css->add_property( 'align-items', 'flex-start' );
 			}
-
-			if ( !empty( $attributes['rowGap'][1] ) ) {
+			if ( ! empty( $attributes['justifyContent'][1] ) ) {
+				$css->add_property( 'align-items', $attributes['justifyContent'][1] );
+			} else if ( ! empty( $attributes['textAlign'][1] ) ) {
+				switch ( $attributes['textAlign'][1] ) {
+					case 'left':
+						$justify = 'flex-start';
+						break;
+					case 'right':
+						$justify = 'flex-end';
+						break;
+					default:
+						$justify = 'center';
+						break;
+				}
+				$css->add_property( 'align-items', $justify );
+			}
+			if ( ! empty( $attributes['rowGap'][1] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][1] ) && is_numeric( $attributes['rowGap'][1] ) ? $attributes['rowGap'][1] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
-
-				// The previous condition might have set us to block so we need to use margin instead of gap.
-				if ( $desktop_direction === 'horizontal' ) {
-					$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *:not(:last-child)' );
-					$css->add_property( 'margin-bottom', $row_gap . $row_gap_unit );
-				} else {
-					$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
-				}
+				$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
 			}
 		} elseif ( 'horizontal' === $tablet_direction ) {
-			if( !empty( $attributes['flexBasis'][1] ) ) {
+			if ( ! empty( $attributes['flexBasis'][1] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][1] . $basis_unit );
@@ -672,27 +682,19 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$mobile_direction = ( isset( $attributes['direction'] ) && is_array( $attributes['direction'] ) && ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : '' );
 		}
 		if ( 'vertical' === $mobile_direction ) {
-			// If desktop horizonal remove margin.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'flex-direction', 'column' );
 			if ( $desktop_direction === 'horizontal' || $tablet_direction === 'horizontal' ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-				$css->add_property( 'display', 'block' );
-				$css->add_property( 'margin-left', '0px' );
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
-				$css->add_property( 'margin-left', '0px' );
+				$css->add_property( 'align-items', 'flex-start' );
 			}
 
 			if ( ! empty( $attributes['rowGap'][2] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][2] ) && is_numeric( $attributes['rowGap'][2] ) ? $attributes['rowGap'][2] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
-
-				// The previous condition might have set us to block so we need to use margin instead of gap.
-				if ( $desktop_direction === 'horizontal' || $tablet_direction === 'horizontal' ) {
-					$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *:not(:last-child)' );
-					$css->add_property( 'margin-bottom', $row_gap . $row_gap_unit );
-				} else {
-					$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
-				}
+				$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
 			}
 		} elseif ( 'horizontal' === $mobile_direction ) {
 

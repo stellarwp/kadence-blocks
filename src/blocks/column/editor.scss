@@ -19,6 +19,13 @@
 	margin-top: 0px;
     margin-bottom: 0px;
 	width: 100%;
+	.kadence-inner-column-inner {
+		display: flex;
+		flex-direction: column;
+		border: 0 solid transparent;
+		position: relative;
+		transition: all 0.3s ease;
+	}
 }
 .wp-block-kadence-column * {
 	box-sizing: border-box;
@@ -110,6 +117,60 @@
 	}
 	&.kadence-inner-column-text-align-right {
 		justify-content: flex-end;
+	}
+}
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical {
+	display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+	gap:0;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+	> .block-editor-block-list__block[data-type="core/embed"] {
+		flex: 1;
+	}
+	>.wp-block-kadence-column {
+		flex: 1;
+		min-width: 0;
+		max-width: none;
+	}
+	 // Makes svg images work in flex area.
+	> .wp-block-kadence-image.image-is-svg {
+		width: auto;
+	}
+	> .block-list-appender {
+		margin: 0;
+		.block-editor-default-block-appender {
+			display: flex;
+			p.block-editor-default-block-appender__content {
+				margin: 0;
+			}
+			.block-editor-inserter {
+				position: static;
+			}
+		}
+	}
+	&.kadence-inner-column-vertical-align-top {
+		justify-content: flex-start;
+	}
+	&.kadence-inner-column-vertical-align-middle {
+		justify-content: center;
+		margin-bottom: auto;
+    	margin-top: auto;
+	}
+	&.kadence-inner-column-vertical-align-bottom {
+		justify-content: flex-end;
+	}
+	&.kadence-inner-column-text-align-left {
+		align-items: flex-start;
+	}
+	&.kadence-inner-column-text-align-center {
+		align-items: center;
+	}
+	&.kadence-inner-column-text-align-right {
+		align-items: flex-end;
 	}
 }
 .wp-block-kadence-rowlayout .innerblocks-wrap > .kadence-section-sticky > .kadence-inner-column-inner, .wp-block-kadence-rowlayout .kadence-inner-column-inner > .kadence-section-sticky {

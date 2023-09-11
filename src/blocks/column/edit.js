@@ -539,8 +539,9 @@ function SectionEdit( props ) {
 				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
 				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > * { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
 				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
-				{ ( '' !== previewRowGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { display: flex; flex-direction: column; row-gap: ${ previewRowGap + ( rowGapUnit ? rowGapUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewRowGap && null !== previewRowGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { display: flex; flex-direction: column; row-gap: ${ previewRowGap + ( rowGapUnit ? rowGapUnit : 'px' )}; }` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
+				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { align-items: ${ previewJustify }; }` : '' ) }
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( textColorHover ? `.kadence-column-${ uniqueID }:hover, .kadence-column-${ uniqueID }:hover .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID }:hover p, .kadence-column-${ uniqueID }:hover h1, .kadence-column-${ uniqueID }:hover h2, .kadence-column-${ uniqueID }:hover h3, .kadence-column-${ uniqueID }:hover h4, .kadence-column-${ uniqueID }:hover h5, .kadence-column-${ uniqueID }:hover h6 { color: ${ KadenceColorOutput( textColorHover ) }; }` : '' ) }
 				{ ( linkColorHover ? `.kadence-column-${ uniqueID }:hover a { color: ${ KadenceColorOutput( linkColorHover ) }; }` : '' ) }
@@ -649,7 +650,7 @@ function SectionEdit( props ) {
 											/>}
 										/>
 										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' ? (
-											<Fragment>
+											<>
 												<ResponsiveRangeControls
 													label={__( 'Gap', 'kadence-blocks' )}
 													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
@@ -668,7 +669,6 @@ function SectionEdit( props ) {
 												<SmallResponsiveControl
 													label={__( 'Justify Content', 'kadence-blocks' )}
 													desktopChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -682,7 +682,6 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
 													/>}
 													tabletChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -696,7 +695,6 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
 													/>}
 													mobileChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -713,7 +711,7 @@ function SectionEdit( props ) {
 												<SmallResponsiveControl
 													label={__( 'Wrap Content', 'kadence-blocks' )}
 													desktopChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														//label={ __( 'Wrap Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -724,7 +722,7 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { wrapContent: [ value, ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
 													/>}
 													tabletChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														//label={ __( 'Wrap Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -735,7 +733,7 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), value, ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
 													/>}
 													mobileChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														//label={ __( 'Wrap Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -764,9 +762,9 @@ function SectionEdit( props ) {
 														units={[ '%', 'px' ]}
 													/>
 												)}
-											</Fragment>
+											</>
 										) : (
-											<Fragment>
+											<>
 												<ResponsiveRangeControls
 													label={__( 'Row Gap', 'kadence-blocks' )}
 													value={( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : 0 )}
@@ -782,8 +780,49 @@ function SectionEdit( props ) {
 													onUnit={( value ) => setAttributes( { rowGapUnit: value } )}
 													units={[ 'px', 'em', 'rem' ]}
 												/>
-
-											</Fragment>
+												<SmallResponsiveControl
+													label={__( 'Justify Content', 'kadence-blocks' )}
+													desktopChildren={<SelectControl
+														value={( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
+													/>}
+													tabletChildren={<SelectControl
+														value={( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
+													/>}
+													mobileChildren={<SelectControl
+														value={( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } )}
+													/>}
+												/>
+											</>
 										)}
 										<SelectControl
 											label={__( 'Vertical Alignment', 'kadence-blocks' )}
