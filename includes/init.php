@@ -180,6 +180,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
 			$access_levels[] = array(
 				'value' => $key,
+				/* translators: %s is the access level name. */
 				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
 			);
 		}

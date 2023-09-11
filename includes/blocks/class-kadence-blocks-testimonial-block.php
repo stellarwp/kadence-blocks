@@ -273,6 +273,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$extras = '';
 		}
+		// translators: %d is the number for the star rating.
 		$svg_title = sprintf( esc_html__( '%d star rating', 'kadence-blocks' ), $attributes['rating'] );
 		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty(  $ratingStyles[ 0 ]['size'] ) ? $ratingStyles[ 0 ]['size'] : '' ), $svg_title, false, $extras );
 
