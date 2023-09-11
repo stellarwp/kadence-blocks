@@ -15,7 +15,6 @@
  */
 export function convertStreamDataToJson(data) {
 	const decodedValue = new TextDecoder().decode(data);
-
 	const lines = decodedValue.split("\n");
 
 	let eventData = {
@@ -26,7 +25,6 @@ export function convertStreamDataToJson(data) {
 		if (colonIndex !== -1) {
 			const key = line.slice(0, colonIndex).trim();
 			const value = line.slice(colonIndex + 1).trim();
-
 			if (key === "data" && value !== "content") {
 				try {
 					const jsonData = JSON.parse(value);

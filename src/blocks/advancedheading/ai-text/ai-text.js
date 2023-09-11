@@ -131,7 +131,6 @@ export const AIText = {
 							setIsOpen( true );
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
-							console.log('Stream complete');
 							return;
 						}
 
@@ -212,7 +211,6 @@ export const AIText = {
 						}
 
 						const eventData = convertStreamDataToJson(value);
-						
 						if (eventData?.content) {
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;

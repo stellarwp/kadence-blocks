@@ -85,7 +85,7 @@ export function getAIContentHelper() {
 					},
 					body: JSON.stringify({
 						text: content,
-						stream: false,
+						stream: true,
 					}),
 				}
 			);
