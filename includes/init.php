@@ -178,9 +178,9 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$level_ids = false;
 	if ( function_exists( 'rcp_get_access_levels' ) ) {
 		foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
-			// Translators: %s is the access level name.
 			$access_levels[] = array(
 				'value' => $key,
+				/* translators: %s is the access level name. */
 				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
 			);
 		}
