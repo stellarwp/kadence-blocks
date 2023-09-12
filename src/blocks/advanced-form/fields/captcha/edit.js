@@ -11,7 +11,7 @@ import {
 	useState,
 } from '@wordpress/element';
 import {
-	getUniqueIdNoRegeneration,
+	getUniqueId,
 	getPreviewSize,
 } from '@kadence/helpers';
 import apiFetch from '@wordpress/api-fetch';
@@ -46,21 +46,27 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, formParent } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID   : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				formParent: select( 'core/block-editor' ).getBlockParentsByBlockName( clientId, 'kadence/advanced-form'),
 			};
 		},
 		[ clientId ],
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		let uniqueId = getUniqueId( uniqueID, formParent?.[0], isUniqueID, isUniqueBlock, '', true );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, formParent?.[0] );
+		} else {
+			addUniqueID( uniqueId, formParent?.[0] );
+		}
 
 		const neededFields = [
 			'kadence_blocks_recaptcha_site_key',

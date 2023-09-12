@@ -14,7 +14,7 @@ import {
 	getBorderStyle,
 	setBlockDefaults,
 	getBorderColor,
-	getUniqueIdNoRegeneration,
+	getUniqueId,
 } from '@kadence/helpers';
 
 import {
@@ -139,12 +139,13 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, formParent } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				formParent: select( 'core/block-editor' ).getBlockParentsByBlockName( clientId, 'kadence/advanced-form'),
 			};
 		},
 		[ clientId ]
@@ -153,11 +154,15 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
-
-		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
-
+		
+		let uniqueId = getUniqueId( uniqueID, formParent?.[0], isUniqueID, isUniqueBlock, '', true );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, formParent?.[0] );
+		} else {
+			addUniqueID( uniqueId, formParent?.[0] );
+		}
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 

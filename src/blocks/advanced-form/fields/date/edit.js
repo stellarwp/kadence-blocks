@@ -18,7 +18,7 @@ import {
 	useMemo,
 } from '@wordpress/element';
 import {
-	getUniqueIdNoRegeneration,
+	getUniqueId,
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
@@ -28,21 +28,27 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, formParent } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				formParent: select( 'core/block-editor' ).getBlockParentsByBlockName( clientId, 'kadence/advanced-form'),
 			};
 		},
 		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		let uniqueId = getUniqueId( uniqueID, formParent?.[0], isUniqueID, isUniqueBlock, '', true );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+			addUniqueID( uniqueId, formParent?.[0] );
+		} else {
+			addUniqueID( uniqueId, formParent?.[0] );
+		}
 	}, [] );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
