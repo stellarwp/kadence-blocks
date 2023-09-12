@@ -11,7 +11,7 @@ import {
 	useState,
 } from '@wordpress/element';
 import {
-	getUniqueId,
+	getUniqueIdNoRegeneration,
 	getPreviewSize,
 } from '@kadence/helpers';
 import apiFetch from '@wordpress/api-fetch';
@@ -58,7 +58,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 

@@ -14,7 +14,7 @@ import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, Select
 import { useEffect, useState } from '@wordpress/element';
 import { without } from 'lodash';
 import {
-	getUniqueId,
+	getUniqueIdNoRegeneration,
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
@@ -41,7 +41,7 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );

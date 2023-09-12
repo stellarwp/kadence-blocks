@@ -18,7 +18,7 @@ import {
 } from '@wordpress/element';
 import { ENTER } from '@wordpress/keycodes';
 import {
-	getUniqueId,
+	getUniqueIdNoRegeneration,
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
@@ -63,7 +63,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [ rerender ] );

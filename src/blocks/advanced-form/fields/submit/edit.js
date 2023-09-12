@@ -14,7 +14,7 @@ import {
 	getBorderStyle,
 	setBlockDefaults,
 	getBorderColor,
-	getUniqueId,
+	getUniqueIdNoRegeneration,
 } from '@kadence/helpers';
 
 import {
@@ -154,7 +154,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
 
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 

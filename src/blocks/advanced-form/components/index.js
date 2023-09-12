@@ -1,4 +1,5 @@
 export { default as getFormFields } from './get-form-fields';
+export { default as dedupeFormFieldUniqueIds } from './dedupe-form-field-unique-ids';
 export { default as verifyUniqueFieldName } from './verify-unique-field-name';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';

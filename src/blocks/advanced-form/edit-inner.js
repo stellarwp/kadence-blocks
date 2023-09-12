@@ -83,6 +83,7 @@ import {
 	MessageOptions,
 	MessageStyling,
 	getFormFields,
+	dedupeFormFieldUniqueIds,
 	FieldBlockAppender,
 	SelectForm,
 } from './components';
@@ -180,6 +181,7 @@ export function EditInner( props ) {
 	const saveLabelFont = ( value ) => {
 		setMetaAttribute( { ...labelFont, ...value }, 'labelFont' );
 	};
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
@@ -219,16 +221,22 @@ export function EditInner( props ) {
 	);
 	const {
 		insertBlocks,
+		updateBlockAttributes
 	} = useDispatch( editorStore );
+
 	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
 	useEffect( () => {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
+			dedupeFormFieldUniqueIds( formInnerBlocks, updateBlockAttributes );
+
 			let currentFields = getFormFields( formInnerBlocks );
+
 			if ( ! isEqual( fields, currentFields ) ) {
 				setMetaAttribute( currentFields, 'fields' );
 			}
 		}
 	}, [formInnerBlocks] );
+
 	let newBlock = get( blocks, [ 0 ], {} );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
@@ -449,6 +457,7 @@ export function EditInner( props ) {
 			renderAppender: formInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
+
 	if ( formInnerBlocks.length === 0 ) {
 		return (
 			<>

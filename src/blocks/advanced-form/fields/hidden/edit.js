@@ -15,7 +15,7 @@ import {
 	useState,
 	useMemo,
 } from '@wordpress/element';
-import { getUniqueId } from '@kadence/helpers';
+import { getUniqueIdNoRegeneration } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
 
@@ -35,7 +35,7 @@ function FieldHidden( { attributes, setAttributes, isSelected, clientId, context
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );

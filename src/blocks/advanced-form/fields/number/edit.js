@@ -23,7 +23,7 @@ import {
 	useMemo,
 } from '@wordpress/element';
 import {
-	getUniqueId,
+	getUniqueIdNoRegeneration,
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
@@ -47,7 +47,7 @@ function FieldNumber( { attributes, setAttributes, isSelected, clientId, context
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
+		let uniqueId = getUniqueIdNoRegeneration( uniqueID, clientId, isUniqueID, isUniqueBlock );
 		setAttributes( { uniqueID: uniqueId } );
 		addUniqueID( uniqueId, clientId );
 	}, [] );
