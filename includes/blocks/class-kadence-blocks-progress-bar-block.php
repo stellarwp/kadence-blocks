@@ -147,9 +147,11 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_url = $mask_base_url . $mask . '.svg';
 			// $mask_gap = $attributes['maskGap'] ?? 10;
 			$mask_height = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) : 80;
-			$mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
+			$mask_height_tablet = isset( $attributes['progressWidthTablet'] ) ? ( $attributes['progressWidthTablet'] * 11.5 ) : 0;
+			$mask_height_mobile = isset( $attributes['progressWidthMobile'] ) ? ( $attributes['progressWidthMobile'] * 11.5 ) : 0;
+			// $mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
 
-			if ( 'custom' === $attributes['maskSvg'] ) {
+			if ( 'custom' === $mask ) {
 				if ( ! empty( $attributes['maskUrl'] ) ) {
 					$mask_url = $attributes['maskUrl'];
 				} else {
@@ -165,6 +167,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_aspect_ratio_string = $iterations . '/1';
 			// $mask_aspect_ratio_string = $iterations + $mask_gap_aspect_ratio_adjustment . '/1';
 			$mask_height_string = $mask_height . 'px';
+			$mask_height_tablet_string = $mask_height_tablet ? $mask_height_tablet . 'px' : '';
+			$mask_height_mobile_string = $mask_height_mobile ? $mask_height_mobile . 'px' : '';
 
 			$css->set_selector( '#kb-progress-bar' . $unique_id );
 			$css->add_property( '-webkit-mask-image', $mask_image_string );
@@ -182,6 +186,15 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'aspect-ratio', $mask_aspect_ratio_string );
 
 			$css->add_property( 'height', $mask_height_string );
+
+			if ( $mask_height_tablet_string ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'height', $mask_height_tablet_string );
+			}
+			if ( $mask_height_mobile_string ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'height', $mask_height_mobile_string );
+			}
 		}
 
 		return $css->css_output();
@@ -221,7 +234,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= $this->get_label( $attributes, 'above' );
 
 		// aria-valuenow="50"
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] .'" aria-valuemin="'. $progress .'" aria-valuemax="'. ( $is_relative ? 100 : $progress_max ) .'">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="0" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 

@@ -430,6 +430,9 @@ export function Edit( props ) {
 		var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
 		var maskAspectRatioString = iterations + '/1';
 		var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
+		var maskHeightStringTablet = progressWidthTablet ? ( progressWidthTablet * 11.5 ) + 'px' : '';
+		var maskHeightStringMobile = progressWidthMobile ? ( progressWidthMobile * 11.5 ) + 'px' : '';
+		var previewMaskHeightString = getPreviewSize( previewDevice, maskHeightString, maskHeightStringTablet, maskHeightStringMobile );
 
 		maskStyles = ( 
 			<style>
@@ -449,7 +452,7 @@ export function Edit( props ) {
 
 					aspect-ratio: ${maskAspectRatioString};
 
-					height: ${maskHeightString};
+					height: ${previewMaskHeightString};
 				}
 				`}
 			</style> 
@@ -579,7 +582,7 @@ export function Edit( props ) {
 												} }
 												disableMediaButtons={ ( maskUrl ? true : false ) }
 											/>
-											Square, solid black images work best for this mask.
+											Square images that are black on a transparent background work best for this mask.
 										</div>
 									) }
 									<RangeControl
