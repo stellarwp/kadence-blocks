@@ -161,7 +161,6 @@ export function Edit( props ) {
 		} else {
 			addUniqueID( uniqueID, clientId );
 		}
-
 	}, [] );
 
 	useEffect( () => {
@@ -341,7 +340,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID ] );
+	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID, selector, displayPercent, numberPrefix, numberSuffix ] );
 
 	const RenderLabel = ( currentPosition ) => {
 		if ( currentPosition !== labelPosition || ( !displayLabel && !displayPercent ) ) {
@@ -430,6 +429,9 @@ export function Edit( props ) {
 		var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
 		var maskAspectRatioString = iterations + '/1';
 		var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
+		var maskHeightStringTablet = progressWidthTablet ? ( progressWidthTablet * 11.5 ) + 'px' : '';
+		var maskHeightStringMobile = progressWidthMobile ? ( progressWidthMobile * 11.5 ) + 'px' : '';
+		var previewMaskHeightString = getPreviewSize( previewDevice, maskHeightString, maskHeightStringTablet, maskHeightStringMobile );
 
 		maskStyles = ( 
 			<style>
@@ -449,7 +451,7 @@ export function Edit( props ) {
 
 					aspect-ratio: ${maskAspectRatioString};
 
-					height: ${maskHeightString};
+					height: ${previewMaskHeightString};
 				}
 				`}
 			</style> 
@@ -579,7 +581,7 @@ export function Edit( props ) {
 												} }
 												disableMediaButtons={ ( maskUrl ? true : false ) }
 											/>
-											Square, solid black images work best for this mask.
+											Square images that are black on a transparent background work best for this mask.
 										</div>
 									) }
 									<RangeControl
