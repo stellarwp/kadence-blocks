@@ -340,7 +340,7 @@ export function Edit( props ) {
 				progressItem.destroy();
 			}
 		};
-	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID, selector ] );
+	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID, selector, displayPercent, numberPrefix, numberSuffix ] );
 
 	const RenderLabel = ( currentPosition ) => {
 		if ( currentPosition !== labelPosition || ( !displayLabel && !displayPercent ) ) {
