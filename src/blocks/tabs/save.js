@@ -46,6 +46,7 @@ function KadenceTabsSave( { attributes } ) {
 					{( !enableSubtitle || ( undefined !== titles[ index ] && undefined === titles[ index ].subText ) || ( undefined !== titles[ index ] && undefined !== titles[ index ].subText && '' === titles[ index ].subText ) ) && (
 						<RichText.Content
 							tagName="span"
+							// Translators: %d is the tab number.
 							value={( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) )}
 							className={'kt-title-text'}
 						/>
@@ -54,6 +55,7 @@ function KadenceTabsSave( { attributes } ) {
 						<div className="kb-tab-titles-wrap">
 							<RichText.Content
 								tagName="span"
+								// Translators: %d is the tab number.
 								value={( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) )}
 								className={'kt-title-text'}
 							/>

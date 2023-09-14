@@ -817,7 +817,7 @@ class Kadence_Blocks_Settings {
 		if ( ! defined( 'KADENCE_VERSION' ) ) {
 			register_setting( 'kadence_blocks_font_settings', 'kadence_blocks_font_settings', array( $this, 'validate_options' ) );
 			add_settings_section( 'kt_blocks_fonts_sec', '', array( $this, 'fonts_local_callback' ), 'kt_blocks_fonts_section' );
-			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Localy', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
+			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Locally', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
 		}
 	}
 	/**

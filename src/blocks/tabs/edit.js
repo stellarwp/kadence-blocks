@@ -1078,6 +1078,7 @@ function KadenceTabs( props ) {
 								insertTab( newBlock );
 								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 								const newtabs = titles;
+								// Translators: %d is the tab number.
 								newtabs.push( {
 									text: sprintf( __( 'Tab %d', 'kadence-blocks' ), tabCount + 1 ),
 									icon: titles[ 0 ].icon,

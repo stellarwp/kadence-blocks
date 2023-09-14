@@ -142,7 +142,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			// We assume square masks for all this math.
 
 			$iterations = $attributes['maskIterations'] ?? 5;
-			$mask = $attributes['maskSvg'] ?? 'star';
+			$mask = ! empty( $attributes['maskSvg'] ) ? $attributes['maskSvg'] : 'star';
 			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 			$mask_url = $mask_base_url . $mask . '.svg';
 			// $mask_gap = $attributes['maskGap'] ?? 10;
@@ -233,8 +233,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$content .= $this->get_label( $attributes, 'above' );
 
-		// aria-valuenow="50"
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="0" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		// aria-valuenow="50".
+		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="'. $progress_min .'" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 

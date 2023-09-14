@@ -97,6 +97,11 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.15 =
+Release Date: September 13th, 2023
+* Add: Option to search and add from pexels from within the media library popup.
+* Add: Option to use a mask in progress bar.
+
 = 3.1.14 =
 Release Date: September 11th, 2023
 * Add: Option to disable browser validation on form.

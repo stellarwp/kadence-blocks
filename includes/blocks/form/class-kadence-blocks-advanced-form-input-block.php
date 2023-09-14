@@ -104,6 +104,8 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 			}
 
 			$html .= '</legend>';
+		} elseif ( ! empty( $this->get_label( $attributes ) ) ) {
+			$html .= '<legend class="screen-reader-text">' . $this->get_label( $attributes ) . '</legend>';
 		}
 		return $html;
 	}
@@ -306,6 +308,18 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function additional_field_attributes( $attributes ) {
 		$additional_attributes = '';
 		$additional_attributes .= $this->a11y_helpers( $attributes );
+
+		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
+	}
+	/**
+	 * Get any additonal attributes to be applied to the form <fieldset /> element
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string
+	 */
+	public function additional_fieldset_attributes( $attributes ) {
+		$additional_attributes = '';
 
 		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
 	}
