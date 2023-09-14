@@ -65,6 +65,7 @@ import {
 	BlockControls,
 	JustifyContentControl,
 	useBlockProps,
+	store as blockEditorStore
 } from '@wordpress/block-editor';
 import {
 	TextControl,
@@ -74,7 +75,7 @@ import {
 import {
 	applyFilters,
 } from '@wordpress/hooks';
-
+import { getUniqueFieldId } from '../../components';
 
 export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId, name } ) {
 	const {
@@ -138,31 +139,27 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		mhAlign
 	} = attributes;
 
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, formParent } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				formParent: select( 'core/block-editor' ).getBlockParentsByBlockName( clientId, 'kadence/advanced-form'),
 			};
 		},
 		[ clientId ]
 	);
+
+	useEffect( () => {
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
+	}, [] );
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
-		
-		let uniqueId = getUniqueId( uniqueID, formParent?.[0], isUniqueID, isUniqueBlock, '', true );
-		if ( uniqueId !== uniqueID ) {
-			attributes.uniqueID = uniqueId;
-			setAttributes( { uniqueID: uniqueId } );
-			addUniqueID( uniqueId, formParent?.[0] );
-		} else {
-			addUniqueID( uniqueId, formParent?.[0] );
-		}
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 

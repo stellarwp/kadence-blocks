@@ -227,7 +227,7 @@ export function EditInner( props ) {
 	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
 	useEffect( () => {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
-			dedupeFormFieldUniqueIds( formInnerBlocks, updateBlockAttributes );
+			dedupeFormFieldUniqueIds( formInnerBlocks, updateBlockAttributes, id );
 
 			let currentFields = getFormFields( formInnerBlocks );
 

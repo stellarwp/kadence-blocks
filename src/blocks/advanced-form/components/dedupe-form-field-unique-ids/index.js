@@ -1,5 +1,5 @@
 import { fieldBlocks } from "../../constants";
-import { uniqueId } from 'lodash';
+import { getUniqueFieldId } from "../../components";
 
 function getFormFields( blocks ) {
 	if ( Array.isArray( blocks ) && blocks.length ) {
@@ -9,6 +9,7 @@ function getFormFields( blocks ) {
 			if ( fieldBlocks.includes( block.name ) ) {
 				fields.push( {
 					uniqueID: block?.attributes?.uniqueID || '',
+					formID:  block?.attributes?.formID || '',
 					clientId: block?.clientId || '',
 				} );
 			}
@@ -24,18 +25,27 @@ function getFormFields( blocks ) {
 	}
 }
 
-function dedupeFormFieldUniqueIds( blocks, updateBlockAttributes ) {
+function dedupeFormFieldUniqueIds( blocks, updateBlockAttributes, formBlockID ) {
 	const currentFields = getFormFields( blocks );
+	const formIDString = formBlockID.toString();
 
 	if ( Array.isArray( currentFields ) && currentFields.length ) {
-		var fieldUniqueIDs = []
+		const fieldUniqueIDs = []
 		currentFields.forEach( ( field ) => {
-			var fieldUniqueID = field.uniqueID
+			let fieldUniqueID = field.uniqueID
+			let fieldFormID = field.formID;
+			let updateField = false;
 			if ( fieldUniqueIDs.includes( fieldUniqueID ) ) {
-				const smallID = field.clientId.substr( 2, 9 );
-				fieldUniqueID = uniqueId( smallID );
+				fieldUniqueID = getUniqueFieldId( '', field.clientId );
 				// set this blocks uniqueId attribute
-				updateBlockAttributes(field.clientId, { uniqueID: fieldUniqueID } );
+				updateField = true;
+			}
+			if ( formIDString !== fieldFormID ) {
+				fieldFormID = formIDString;
+				updateField = true;
+			}
+			if ( updateField ) {
+				updateBlockAttributes( field.clientId, { uniqueID: fieldUniqueID, formID: fieldFormID } );
 			}
 
 			fieldUniqueIDs.push( fieldUniqueID );

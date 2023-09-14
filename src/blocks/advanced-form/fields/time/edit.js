@@ -8,7 +8,7 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, TextareaControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
@@ -21,31 +21,25 @@ import {
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
-import { DuplicateField, FieldBlockAppender } from '../../components';
+import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 function FieldTime( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice, formParent } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-				formParent: select( 'core/block-editor' ).getBlockParentsByBlockName( clientId, 'kadence/advanced-form'),
 			};
 		},
 		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, formParent?.[0], isUniqueID, isUniqueBlock, '', true );
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
-			addUniqueID( uniqueId, formParent?.[0] );
-		} else {
-			addUniqueID( uniqueId, formParent?.[0] );
 		}
 	}, [] );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
@@ -203,10 +197,9 @@ function FieldTime( { attributes, setAttributes, isSelected, clientId, context, 
 								initialOpen={false}
 								panelName={ 'kb-adv-form-time-extra-settings' }
 							>
-								<TextControl
-									label={__( 'Field Name', 'kadence-blocks' )}
-									help={ __( 'This is the name attribute that is applied to the html input tag. Names must be unique', 'kadence-blocks' ) }
+								<FieldName
 									value={inputName}
+									uniqueID={uniqueID}
 									onChange={( value ) => setAttributes( { inputName: value.replace(/[^a-z0-9-_]/gi, '') } ) }
 								/>
 								<SelectControl
