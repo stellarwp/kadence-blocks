@@ -11,9 +11,6 @@ import {
 	useEntityBlockEditor,
 	useEntityProp,
 } from '@wordpress/core-data';
-import {
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
 import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 export default function FieldName( {
 		value,

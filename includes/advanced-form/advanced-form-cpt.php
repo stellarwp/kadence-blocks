@@ -50,6 +50,9 @@ class Kadence_Blocks_Form_CPT_Controller {
 				10,
 				2
 			);
+			if ( class_exists( 'Kadence_Blocks_Duplicate_Form' ) ) {
+				new Kadence_Blocks_Duplicate_Form( self::SLUG );
+			}
 		}
 	}
 	/**
