@@ -87,11 +87,14 @@ export function preMadeCollectionsHelper() {
 
 				if (responseData && responseData?.data) {
 					// PreMade vertical don't have the galleries key
-					const parsedVerticals = responseData.data.reduce((acc, item) => {
-						const subVerticals = item.sub_verticals.map((vert) => ({
-							label: vert,
-							value: vert,
-						}));
+					let parsedVerticals = responseData.data.reduce((acc, item) => {
+						
+						const subVerticals = item.sub_verticals.map((vert) => {
+							return {
+								label: vert,
+								value: vert,
+							}
+						});
 						return [
 							...acc,
 							...subVerticals
@@ -107,7 +110,7 @@ export function preMadeCollectionsHelper() {
 						}
 						return 0;
 					});
-
+					parsedVerticals = parsedVerticals.filter(item => item.value !== 'Other');
 					parsedVerticals.unshift({
 						label: __('AI Search Collection', 'kadence-blocks'),
 						value: "aiGenerated",
@@ -182,7 +185,6 @@ export function preMadeCollectionsHelper() {
 		loading,
 		verticals,
 		getPreMadeCollectionByIndustry,
-
 	}
 }
 

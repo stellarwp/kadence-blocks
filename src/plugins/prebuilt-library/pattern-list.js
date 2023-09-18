@@ -266,6 +266,7 @@ function PatternList( {
 	aINeedsData,
 	contextTab,
 	imageCollection,
+	teamCollection,
 	contextStatesRef,
 	useImageReplace,
 	generateContext,
@@ -391,10 +392,10 @@ function PatternList( {
 					variation = 0;
 				}
 				if ( item?.html ) {
-					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.name, variation);
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.name, variation);
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.name, variation, teamCollection);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.name, variation, teamCollection);
 				} else {
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation, teamCollection);
 				}
 				variation ++;
 				return item;

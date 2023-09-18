@@ -14,7 +14,7 @@ const getStringBetween = (str, start, end) => {
 	const pos = startpos + start.length;
     return str.substring(pos, str.indexOf(end, pos));
 }
-export default function replaceImages( content, images, categories, context, variation ) {
+export default function replaceImages( content, images, categories, context, variation, teamCollection = '' ) {
 	if ( ! content ) {
 		return content;
 	}
@@ -23,7 +23,13 @@ export default function replaceImages( content, images, categories, context, var
 	}
 	const aRoll = images.data?.[0]?.images;
 	const bRoll = images.data?.[1]?.images || images.data?.[0]?.images;
-	const pRoll = images.data?.[2]?.images || images.data?.[1]?.images || images.data?.[0]?.images;
+	let pRoll = images.data?.[2]?.images;
+	if ( ! pRoll && categories?.[0] == 'team' && teamCollection?.data?.[0]?.images ) {
+		pRoll = teamCollection?.data?.[0]?.images;
+	}
+	if ( ! pRoll ) {
+		pRoll = images.data?.[1]?.images || images.data?.[0]?.images
+	}
 	const resetVariation = 0;
 	let bvariation = variation;
 	if ( bvariation > bRoll.length ) {

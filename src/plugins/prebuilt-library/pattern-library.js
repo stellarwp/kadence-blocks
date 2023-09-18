@@ -102,6 +102,7 @@ function PatternLibrary( {
 	const [ aIUserData, setAIUserData ] = useState( false );
 	const [ localContexts, setLocalContexts ] = useState( false );
 	const [ imageCollection, setImageCollection ] = useState( {} );
+	const [ teamCollection, setTeamCollection ] = useState( {} );
 	const [ categories, setCategories ] = useState( PATTERN_CATEGORIES );
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
 	const [ contextOptions, setContextOptions ] = useState( PATTERN_CONTEXTS );
@@ -482,6 +483,14 @@ function PatternLibrary( {
 		}
 	}
 	async function getImageCollection() {
+		const tempUser = JSON.parse(JSON.stringify( aIUserData ) );
+		tempUser.photoLibrary = 'Other';
+		const teamResponse = await getCollectionByIndustry( tempUser );
+		if ( ! isEqual( teamResponse, teamCollection ) ) {
+			console.log( 'Image Team Collection Updating' );
+			console.log( teamResponse );
+			setTeamCollection(teamResponse);
+		}
 		const response = await getCollectionByIndustry( aIUserData );
 		if ( ! isEqual( response, imageCollection ) ) {
 			console.log( 'Image Collection Updating' );
@@ -1131,6 +1140,7 @@ function PatternLibrary( {
 							contextLabel={ selectedContextLabel }
 							previewMode={ savedPreviewMode }
 							imageCollection={ imageCollection }
+							teamCollection={ teamCollection }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 							contextStatesRef={ contextStatesRef }
 							useImageReplace={ selectedReplaceImages }
