@@ -180,7 +180,7 @@ export function Wizard({
 				) }
 				{ ! canGoForward && (
 					<div className='components-wizard__finish-button-container'>
-						{ onSecondaryClick && typeof onSecondaryClick === 'function' ? (
+						{/* { onSecondaryClick && typeof onSecondaryClick === 'function' ? (
 							<Button
 								variant="link"
 								className={ 'components-wizard__secondary-button' }
@@ -188,7 +188,7 @@ export function Wizard({
 								>
 								{ secondaryButtonText ? secondaryButtonText : '' }
 							</Button>
-						) : null }
+						) : null } */}
 						{ photographyOnly && (
 							<Button
 								variant="primary"
@@ -201,14 +201,13 @@ export function Wizard({
 						) }
 						{ ! photographyOnly && (
 							<div className='kt-generate-wrap'>
-								<div className='kt-remaining-credits'>{ credits } { __( 'Credits Remaining', 'kadence-blocks' ) }</div>
 								<Button
 									variant="primary"
 									className={ 'components-wizard__primary-button' }
 									disabled={ primaryButtonDisabled }
-									onClick={ onPrimaryClick }
-									>
-									{ primaryButtonText + ' ' + __( '(96 Credits)', 'kadence-blocks' ) }
+									onClick={ onSecondaryClick }
+								>
+								{ secondaryButtonText ? secondaryButtonText : '' }
 								</Button>
 							</div>
 						) }
