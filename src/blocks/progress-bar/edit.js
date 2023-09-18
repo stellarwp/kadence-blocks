@@ -163,21 +163,6 @@ export function Edit( props ) {
 		}
 	}, [] );
 
-	useEffect( () => {
-		if ( barType == 'line-mask' ) {
-			// Update from default if they choose the line mask option
-			if ( 100 == progressMax && 90 == progressAmount ) {
-				setAttributes( { progressMax: 5 } );
-				setAttributes( { progressAmount: 4 } );
-				setAttributes( { displayPercent: false } );
-				setAttributes( { decimal: 'one' } );
-			}
-			if ( '' ==label ) {
-				setAttributes( { displayLabel: false } );
-			}
-		}
-	}, [barType] );
-
 	const saveLabelFont = ( value ) => {
 		setAttributes( {
 			labelFont: JSON.parse( JSON.stringify( { ...labelFont, ...value } ) ),
@@ -228,9 +213,8 @@ export function Edit( props ) {
 	const layoutPresetOptions = [
 		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: lineBar },
 		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: circleBar },
-		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
 		{ key: 'line-mask', name: __( 'Masked Line', 'kadence-blocks' ), icon: lineMask },
-
+		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
 	];
 	const labelFontConfigObj = {
 		google: {
@@ -238,6 +222,12 @@ export function Edit( props ) {
 		},
 	};
 	const labelFontConfig = ( labelFont.google ? labelFontConfigObj : '' );
+	const numberFontConfigObj = {
+		google: {
+			families: [ numberFont.family + ( numberFont.variant ? ':' + numberFont.variant : '' ) ],
+		},
+	};
+	const numberFontConfig = ( numberFont.google ? numberFontConfigObj : '' );
 
 	const progressLabelStyles = {
 		fontWeight   : labelFont?.weight ? labelFont.weight : undefined,
@@ -343,9 +333,6 @@ export function Edit( props ) {
 	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID, selector, displayPercent, numberPrefix, numberSuffix ] );
 
 	const RenderLabel = ( currentPosition ) => {
-		if ( currentPosition !== labelPosition || ( !displayLabel && !displayPercent ) ) {
-			return null;
-		}
 
 		let wrapperLayoutStyles = {
 			paddingTop   : ( '' !== previewLabelPaddingTop ? getSpacingOptionOutput( previewLabelPaddingTop, labelPaddingType ) : undefined ),
@@ -386,7 +373,9 @@ export function Edit( props ) {
 				style={wrapperLayoutStyles}
 			>
 
-				{displayPercent && ( labelLayout === 'lb' || labelLayout === 'pl' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span> : null}
+				{ displayPercent && ( labelLayout === 'lb' || labelLayout === 'pl' ) && (
+					<span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span>
+				) }
 
 				{displayLabel &&
 					<RichText
@@ -400,42 +389,39 @@ export function Edit( props ) {
 						className={'kt-progress-label'}
 					/>
 				}
-
-				{displayPercent && ( labelLayout === 'lt' || labelLayout === 'lp' ) ? <span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span> : null}
-
+				{ displayPercent && ( labelLayout === 'lt' || labelLayout === 'lp' ) && (
+					<span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span>
+				) }
 			</div>
 		);
 	};
 
 	var maskStyles = '';
+	var iterations = maskIterations ?? 5;
+	var mask = maskSvg ?? 'star';
+	var maskBaseUrl = kadence_blocks_params.svgMaskPath;
+	var maskUrlToUse = maskBaseUrl + mask + '.svg';
+
+	if ( 'custom' === maskSvg ) {
+		if ( maskUrl ) {
+			maskUrlToUse = maskUrl;
+		} else {
+			maskUrlToUse = maskBaseUrl + 'star.svg';
+		}
+	}
+
+	var maskImageString = ('url(' + maskUrlToUse + '),').repeat( iterations ).replace(/(^,)|(,$)/g, "");
+	var maskRepeatString = ('no-repeat,').repeat( iterations ).replace(/(^,)|(,$)/g, "");
+	var maskPositionArray = iterations > 1 ? range( 0, 100.1, 100 / ( iterations - 1) ) : [0];
+	var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
+	var maskAspectRatioString = iterations + '/1';
+	var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
+	var maskHeightStringTablet = progressWidthTablet ? ( progressWidthTablet * 11.5 ) + 'px' : '';
+	var maskHeightStringMobile = progressWidthMobile ? ( progressWidthMobile * 11.5 ) + 'px' : '';
+	var previewMaskHeightString = getPreviewSize( previewDevice, maskHeightString, maskHeightStringTablet, maskHeightStringMobile );
 
 	if ( 'line-mask' == barType ) {
-		var iterations = maskIterations ?? 5;
-		var mask = maskSvg ?? 'star';
-		var maskBaseUrl = kadence_blocks_params.svgMaskPath;
-		var maskUrlToUse = maskBaseUrl + mask + '.svg';
-
-		if ( 'custom' === maskSvg ) {
-			if ( maskUrl ) {
-				maskUrlToUse = maskUrl;
-			} else {
-				maskUrlToUse = maskBaseUrl + 'star.svg';
-			}
-		}
-
-		var maskImageString = ('url(' + maskUrlToUse + '),').repeat( iterations ).replace(/(^,)|(,$)/g, "");
-		var maskRepeatString = ('no-repeat,').repeat( iterations ).replace(/(^,)|(,$)/g, "");
-		var maskPositionArray = iterations > 1 ? range( 0, 100.1, 100 / ( iterations - 1) ) : [0];
-		var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
-		var maskAspectRatioString = iterations + '/1';
-		var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
-		var maskHeightStringTablet = progressWidthTablet ? ( progressWidthTablet * 11.5 ) + 'px' : '';
-		var maskHeightStringMobile = progressWidthMobile ? ( progressWidthMobile * 11.5 ) + 'px' : '';
-		var previewMaskHeightString = getPreviewSize( previewDevice, maskHeightString, maskHeightStringTablet, maskHeightStringMobile );
-
-		maskStyles = ( 
-			<style>
-				{`
+		maskStyles = `
 				#kb-progress-bar${uniqueID} {
 					-webkit-mask-image: ${maskImageString};
 					mask-image: ${maskImageString};
@@ -453,9 +439,7 @@ export function Edit( props ) {
 
 					height: ${previewMaskHeightString};
 				}
-				`}
-			</style> 
-		)
+				`;
 	}
 
 	return (
@@ -476,25 +460,39 @@ export function Edit( props ) {
 				{( activeTab === 'general' ) && (
 					<>
 						<PanelBody>
-							<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
+							<ButtonGroup className="kt-style-btn-group" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
 								{map( layoutPresetOptions, ( { name, key, icon } ) => (
 									<Button
 										key={key}
 										className="kt-style-btn"
 										isSmall
-										isPrimary={false}
 										label={name}
 										aria-pressed={false}
 										onClick={ () => {
+											const attributeUpdates = { barType: key };
 											if ( key !== 'line' && labelPosition === 'inside' ) {
-												setAttributes( { hAlign: 'center', thAlign: '', mhAlign: '' } );
+												attributeUpdates.hAlign = 'center';
+												attributeUpdates.thAlign = '';
+												attributeUpdates.mhAlign = '';
 											}
-											setAttributes( { barType: key } );
+											// Update from default if they choose the line mask option
+											if ( key === 'line-mask' ) {
+												if ( 100 == progressMax && 90 == progressAmount ) {
+													attributeUpdates.progressMax = 5;
+													attributeUpdates.progressAmount = 4;
+													attributeUpdates.displayPercent = false;
+													attributeUpdates.decimal = 'one';
+												}
+												if ( '' == label ) {
+													attributeUpdates.displayLabel = false;
+												}
+											}
+											setAttributes( attributeUpdates );
 										} }
 										style={{
 											border     : ( barType === key ? '2px solid #2B6CB0' : '0' ),
-											marginRight: '4px',
-											width      : '75px',
+											//marginRight: '4px',
+											//width      : '75px',
 										}}
 									>
 										{icon}
@@ -1008,7 +1006,7 @@ export function Edit( props ) {
 				)}
 
 			</InspectorControls>
-			{maskStyles}
+			<style>{maskStyles}</style>
 			<div style={
 				{
 					position    : 'relative',
@@ -1020,20 +1018,22 @@ export function Edit( props ) {
 				}
 			}>
 
-				{RenderLabel( 'above' )}
+				{ 'above' === labelPosition && ( displayLabel || displayPercent ) &&
+					RenderLabel( 'above' )
+				}
 
 				<div id={'kb-progress-bar' + uniqueID } class="kb-progress-bar"></div>
-
-				{RenderLabel( 'inside' )}
-
-				{RenderLabel( 'below' )}
+				{ 'inside' === labelPosition && ( displayLabel || displayPercent ) &&
+					RenderLabel( 'inside' )
+				}
+				{ 'below' === labelPosition && ( displayLabel || displayPercent ) &&
+					RenderLabel( 'below' )
+				}
 			</div>
 
 			{labelFont.google && ( <WebfontLoader config={labelFontConfig}></WebfontLoader> )}
 
-			{displayPercent && labelFont.google ?
-				( <WebfontLoader config={labelFontConfig}></WebfontLoader> ) : null
-			}
+			{displayPercent && numberFont.google && ( <WebfontLoader config={numberFontConfig}></WebfontLoader> )}
 		</div>
 	);
 }

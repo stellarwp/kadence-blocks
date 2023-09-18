@@ -146,9 +146,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 			$mask_url = $mask_base_url . $mask . '.svg';
 			// $mask_gap = $attributes['maskGap'] ?? 10;
-			$mask_height = isset( $attributes['progressWidth'] ) ? ( $attributes['progressWidth'] * 11.5 ) : 80;
-			$mask_height_tablet = isset( $attributes['progressWidthTablet'] ) ? ( $attributes['progressWidthTablet'] * 11.5 ) : 0;
-			$mask_height_mobile = isset( $attributes['progressWidthMobile'] ) ? ( $attributes['progressWidthMobile'] * 11.5 ) : 0;
+			$mask_height = ! empty( $attributes['progressWidth'] ) ? ( absint( $attributes['progressWidth'] ) * 11.5 ) : 80;
+			$mask_height_tablet = ! empty( $attributes['progressWidthTablet'] ) ? ( absint( $attributes['progressWidthTablet'] ) * 11.5 ) : 0;
+			$mask_height_mobile = ! empty( $attributes['progressWidthMobile'] ) ? ( absint( $attributes['progressWidthMobile'] ) * 11.5 ) : 0;
 			// $mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
 
 			if ( 'custom' === $mask ) {
@@ -199,7 +199,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
-
+	/**
+	 * Builds HTML for block.
+	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		$css = new Kadence_Blocks_CSS();
@@ -212,21 +214,21 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			'semicircle' => 'SemiCircle'
 		);
 
-		$progress_color = !empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
-		$bar_background = !empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
+		$progress_color = ! empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
+		$bar_background = ! empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
 		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
 		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
 		$progress_min = 0;
-		$progress_amount = isset( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
-		$progress_max = isset( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
+		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
+		$progress_max = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
 		$is_relative  = isset( $attributes['numberIsRelative'] ) ? $attributes['numberIsRelative'] : false;
 		$decimal      = ! empty( $attributes['decimal'] ) ? $attributes['decimal'] : 'none';
 		$delay        = isset( $attributes['delayUntilInView'] ) ? $attributes['delayUntilInView'] : true;
-		$strokeWidths = array(
-			!empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2,
-			!empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( !empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ),
-			!empty( $attributes['progressWidthMobile'] ) ? $attributes['progressWidthMobile'] : ( !empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( !empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ) ),
+		$stroke_widths = array(
+			! empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2,
+			! empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( ! empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ),
+			! empty( $attributes['progressWidthMobile'] ) ? $attributes['progressWidthMobile'] : ( ! empty( $attributes['progressWidthTablet'] ) ? $attributes['progressWidthTablet'] : ( ! empty( $attributes['progressWidth'] ) ? $attributes['progressWidth'] : 2 ) ),
 		);
 
 		$content = '<div class="kb-progress-bar-container kb-progress-bar-container' . $unique_id . ' kb-progress-bar-type-' . $attributes['barType'] . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ) . '">';
@@ -234,7 +236,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= $this->get_label( $attributes, 'above' );
 
 		// aria-valuenow="50".
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="'. $progress_min .'" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 
@@ -253,7 +255,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			  let barPaths = barSvg.querySelectorAll("path");
 			  let path1 = barPaths[0];
 			  let path2 = barPaths[1];
-			  let stokeWidths = [' . implode( ',', $strokeWidths ) . '];
+			  let stokeWidths = [' . implode( ',', $stroke_widths ) . '];
 			  if( window.innerWidth < 768 ) {
 			    if( type === "line" ){
 			        barSvg.setAttribute( "viewBox", "0 0 100 " + stokeWidths[2]);
@@ -284,7 +286,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			var waitForProgressBar' . $simple_id . ' = setInterval(function () {
 				if (typeof ProgressBar !== "undefined" ) {
 					clearInterval(waitForProgressBar' . $simple_id . ');
-					let responsiveStrokeSizes = [' . implode( ',', $strokeWidths ) . '];
+					let responsiveStrokeSizes = [' . implode( ',', $stroke_widths ) . '];
 					let initialStroke;
 				    if( window.innerWidth < 768 ) {
 				        initialStroke = responsiveStrokeSizes[2];

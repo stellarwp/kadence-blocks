@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.14
+Stable tag: 3.1.16
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,10 +97,14 @@ developers of this plugin.
 
 == Changelog ==
 
-= 3.1.15 =
-Release Date: September 13th, 2023
+= 3.1.16 =
+Release Date: September 19th, 2023
 * Add: Option to search and add from pexels from within the media library popup.
 * Add: Option to use a mask in progress bar.
+
+= 3.1.15 =
+Release Date: September 14th, 2023
+* Fix: Issue with form file uploads.
 
 = 3.1.14 =
 Release Date: September 11th, 2023
