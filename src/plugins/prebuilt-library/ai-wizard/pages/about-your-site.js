@@ -83,7 +83,7 @@ const styles = {
 };
 
 const content = __(
-	"Compose a concise paragraph that explains who you are, your primary attributes and highlight what differentiates you.",
+	"Craft a brief description that explains who you are, your primary attributes and highlight what differentiates you.",
 	"kadence-blocks"
 );
 const titlePartial = {

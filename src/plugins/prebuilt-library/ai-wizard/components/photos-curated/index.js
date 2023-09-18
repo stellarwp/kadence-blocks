@@ -14,9 +14,9 @@ import { PhotoCollection } from '..';
 
 const content = {
 	featuredTitle: __('Featured Images', 'kadence'),
-	featuredDescription: __('We\'ll need some copy here that explains that these are from keywords or that its a pre-made collection for them to use.', 'kadence'),
+	featuredDescription: __('Featured images are meant to draw attention, they are used to represent the content on your website.', 'kadence'),
 	backgroundTitle: __('Background Images', 'kadence'),
-	backgroundDescription: __('We\'ll need some copy here explaining the premise of background images and what users should look for when choosing them.', 'kadence')
+	backgroundDescription: __('Background images are meant to enhance the overall look and feel, styling the background of sections in your website.', 'kadence')
 }
 
 const styles = {
@@ -46,7 +46,7 @@ export function PhotosCurated({ loading, featured, background, updateCollection 
 							isLocal={featured?.isLocal}
 							collectionLink={featured?.pexelLink}
 							title={content.featuredTitle}
-							description={content.featuredDescription}
+							description={ content.featuredDescription}
 							updateCollection={saveUpdatedPhotos(0)}
 						/>
 					</FlexBlock>

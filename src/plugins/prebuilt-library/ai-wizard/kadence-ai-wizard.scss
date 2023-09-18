@@ -112,9 +112,16 @@
     width: 60%;
     padding: 1em;
 }
-.ai-generated-search-edit-wrap {
+.kb-photography-explained-wrap {
     text-align: center;
     margin-bottom: 1em;
 	margin-top: calc(-1em - 19px);
-    height: 19px;
+	p {
+		margin-bottom: 0.8em;
+	}
+}
+.ai-generated-search-edit-text {
+	.components-button.is-link {
+		margin: 0 0.4em;
+	}
 }

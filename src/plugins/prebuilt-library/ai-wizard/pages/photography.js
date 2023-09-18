@@ -3,7 +3,7 @@
  */
 import { useState, useEffect } from '@wordpress/element';
 import { Flex, FlexBlock, Popover, TextareaControl, Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -36,7 +36,8 @@ const styles = {
 	}
 }
 
-export function Photography() {
+export function Photography(props) {
+	const { photographyOnly } = props;
 	const { state: { photoLibrary, imageSearchQuery }, dispatch } = useKadenceAi();
 	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading,
 		updateGalleries, createCollection, updateCollectionName, deleteCollection } = collectionsHelper();
@@ -155,6 +156,7 @@ export function Photography() {
 		deleteCollection(collectionId);
 
 	}
+	const isPremade = photoLibrary && preMadeCollections && preMadeCollections.filter( ( collection ) => collection.value === photoLibrary );
 
 	return (
 		<div className="stellarwp-ai-photography-library">
@@ -175,16 +177,50 @@ export function Photography() {
 					</Flex>
 				</FlexBlock>
 			</Flex>
+			{ photoLibrary !== 'aiGenerated' && (
+				<>
+				{ isPremade && (
+					<div className='kb-photography-explained-wrap'>
+						<p>
+							{ __( "Fine-tune your collection by selecting 'Edit Collection' below.", 'kadence-blocks') }
+						</p>
+						<p>{__("or -", 'kadence-blocks')}</p>
+						<p>{__("Kickstart your collection with the 'AI Search Collection' or create your own from scratch using the drop-down menu above.", 'kadence-blocks')}</p>
+					</div>
+				)}
+				{ ! isPremade && (
+					<div className='kb-photography-explained-wrap'>
+						<p>
+							{ __( "Fine-tune your collection by selecting 'Edit Collection' below.", 'kadence-blocks') }
+						</p>
+						<p>{__("or -", 'kadence-blocks')}</p>
+						<p>{__("Kickstart your collection with the 'AI Search Collection' or explore our pre-made collections using the drop-down menu above.", 'kadence-blocks')}</p>
+					</div>
+				)}
+				</>
+			) }
 			{ photoLibrary === 'aiGenerated' && (
-				<div className='ai-generated-search-edit-wrap'>
-					<Button
-						variant="link"
-						disabled={ isOpen }
-						ref={ setPopoverAnchor }
-						text={__( 'Edit AI Search Query', 'kadence-blocks' )}
-						onClick={ () => setIsOpen( true ) }
-						style={{ fontSize: '14px'}}
-					/>
+				<div className='kb-photography-explained-wrap ai-generated-search-edit-wrap'>
+					<p className='ai-generated-search-edit-text'>
+						{ ! photographyOnly &&
+							__( "Ta-Da! We searched the Pexels Image Library to find royalty-free images for your site.", 'kadence-blocks' )
+						}
+						{ ! photographyOnly && (
+							<br></br>
+						)}
+						{ __( "You can adjust search terms by clicking", 'kadence-blocks' ) }
+						<Button
+							variant="link"
+							disabled={ isOpen }
+							ref={ setPopoverAnchor }
+							text={__( 'Edit AI Search Query', 'kadence-blocks' )}
+							onClick={ () => setIsOpen( true ) }
+							style={{ fontSize: '14px'}}
+						/>
+						{ __( "or fine-tune your collection by selecting 'Edit Collection' below.", 'kadence-blocks') }
+					</p>
+					<p>{__("or -", 'kadence-blocks')}</p>
+					<p>{__("Explore our pre-made collections or create your own from scratch using the drop-down menu above.", 'kadence-blocks')}</p>
 					{ isOpen && (
 						<Popover
 							onClose={ () => {

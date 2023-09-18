@@ -45,12 +45,19 @@ const pages = [
 		required: []
 	},
 ];
-
+const photographyOnlyPages = [
+	{
+		id: 'photography',
+		content: <Photography photographyOnly={true} />,
+		step: 'Photography',
+		required: []
+	},
+];
 function getPages(photographyOnly) {
 	const { state: { firstTime } } = useKadenceAi();
 
 	if (photographyOnly) {
-		return pages.filter((page) => page.id === 'photography');
+		return photographyOnlyPages;
 	}
 
 	return ! firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
