@@ -613,7 +613,18 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_settings_blocks',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'Config Kadence Block Settings View', 'kadence-blocks' ),
+				'description'       => __( 'Config Kadence Block visibility settings', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_settings',
+			'kadence_blocks_settings',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Settings', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',

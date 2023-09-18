@@ -58,7 +58,10 @@ class Kadence_Blocks_Image_Picker {
 	 */
 	public function enqueue_media() {
 		// Check if the Kadence setting to enable this picker is on and we're on the right screen.
-		$kadence_blocks_settings  = get_option( 'kadence_blocks_settings', array() );
+		$kadence_blocks_settings = get_option( 'kadence_blocks_settings', '' );
+		if ( ! empty( $kadence_blocks_settings ) && ! is_array( $kadence_blocks_settings ) ) {
+			$kadence_blocks_settings = json_decode( $kadence_blocks_settings, true );
+		}
 		$is_option_enabled = apply_filters( 'kadence_blocks_show_image_picker', true );
 		if ( $is_option_enabled && defined( 'KADENCE_BLOCKS_DISABLE_IMAGE_SEARCH' ) && KADENCE_BLOCKS_DISABLE_IMAGE_SEARCH ) {
 			$is_option_enabled = false;

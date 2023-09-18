@@ -254,6 +254,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
+			'globalSettings' => get_option( 'kadence_blocks_settings' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
