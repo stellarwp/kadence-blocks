@@ -176,7 +176,7 @@ class Kadence_Blocks_Image_Picker_REST_Controller extends WP_REST_Controller {
 			$filename = basename( $image_path );
 		}
 		// Custom filename if passed as data.
-		$filename = isset( $image_data['filename'] ) && $image_data['filename'] ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
+		$filename = ! empty( $image_data['filename'] ) ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
 
 		$upload = wp_upload_bits( $filename, null, $file_content );
 		$post = array(
