@@ -488,7 +488,6 @@ function PatternLibrary( {
 		const teamResponse = await getCollectionByIndustry( tempUser );
 		if ( ! isEqual( teamResponse, teamCollection ) ) {
 			console.log( 'Image Team Collection Updating' );
-			console.log( teamResponse );
 			setTeamCollection(teamResponse);
 		}
 		const response = await getCollectionByIndustry( aIUserData );

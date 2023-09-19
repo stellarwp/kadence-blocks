@@ -117,7 +117,7 @@ export function getAsyncData() {
 		if ( ! userData?.photoLibrary ) {
 			return [];
 		}
-		console.log(userData);
+		// console.log(userData);
 		const localGallery = userData?.customCollections && userData?.customCollections.some(item => item.value === userData?.photoLibrary) ? userData?.customCollections.find(item => item.value === userData?.photoLibrary) : false;
 		if ( localGallery ) {
 			const myImages = { data: [] };
@@ -178,7 +178,7 @@ export function getAsyncData() {
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
-			console.log(responseData);
+			// console.log(responseData);
 			if ( responseData ) {
 				return responseData;
 			}
