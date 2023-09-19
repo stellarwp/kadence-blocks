@@ -544,15 +544,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $images ) ) {
 			foreach ( $images as $image_data ) {
 				$image = array();
-
+				$alt                        = ! empty( $image_data['alt'] ) ? $image_data['alt'] : '';
 				$image['url']               = $this->get_src_from_image_data( $image_data );
-				$image['id']                = $image_data['id'];
-				$image['filename']          = $image_data['filename'] ?? '';
-				$image['photographer']      = $image_data['photographer'];
-				$image['photographer_url']  = $image_data['photographer_url'];
-				$image['alt']               = $image_data['alt'];
-				$image['title']             = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
-
+				$image['id']                = ! empty( $image_data['id'] ) ? $image_data['id'] : '';
+				$image['filename']          = ! empty( $image_data['filename'] ) ? $image_data['filename'] : $this->create_filename_from_alt( $alt );
+				$image['photographer']      = ! empty( $image_data['photographer'] ) ? $image_data['photographer'] : '';
+				$image['photographer_url']  = ! empty( $image_data['photographer_url'] ) ? $image_data['photographer_url'] : '';
+				$image['photograph_url']    = ! empty( $image_data['url'] ) ? $image_data['url'] : '';
+				$image['alt']               = $alt;
+				$image['title']             = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image['photographer'];
 				// Download remote image.
 				$downloaded_images[] = $this->import_image( $image );
 			}
@@ -606,14 +606,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'url' => $image_url,
 					'id'  => 0,
 				);
-				if ( strpos( $image_url, 'prophecyimg.fly.dev' ) !== false || strpos( $image_url, 'images.pexels.com' ) !== false ) {
+				if ( strpos( $image_url, 'images.pexels.com' ) !== false ) {
 					$image_data = $this->get_image_info( $image_library, $image_url );
 					if ( $image_data ) {
-						$image['alt']  = $image_data['alt'];
-						$image['photographer']  = $image_data['photographer'];
-						$image['photographer_url']  = $image_data['photographer_url'];
-						$image['alt']  = $image_data['alt'];
-						$image['title'] = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image_data['photographer'];
+						$alt                        = ! empty( $image_data['alt'] ) ? $image_data['alt'] : '';
+						$image['filename']          = ! empty( $image_data['filename'] ) ? $image_data['filename'] : $this->create_filename_from_alt( $alt );
+						$image['photographer']      = ! empty( $image_data['photographer'] ) ? $image_data['photographer'] : '';
+						$image['photographer_url']  = ! empty( $image_data['photographer_url'] ) ? $image_data['photographer_url'] : '';
+						$image['photograph_url']    = ! empty( $image_data['url'] ) ? $image_data['url'] : '';
+						$image['alt']               = $alt;
+						$image['title']             = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image['photographer'];
 					}
 				}
 				$downloaded_image       = $this->import_image( $image );
@@ -1970,7 +1972,21 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string a sanitized filename.
 	 */
 	public function sanitize_jpeg_filename( $filename ) {
-		return preg_replace( '/[^a-zA-Z0-9_-]+/', '-', strtolower( $filename ) ) . '.jpeg';
+		return sanitize_file_name( $filename ) . '.jpeg';
+	}
+	/**
+	 * Create a filename from alt text.
+	 */
+	public function create_filename_from_alt( $alt ) {
+		if ( empty( $alt ) ) {
+			return '';
+		}
+		// Split the string into words.
+		$words = explode( ' ', strtolower( $alt ) );
+		// Limit to the first 7 words.
+		$limited_words = array_slice( $words, 0, 7 );
+		// Join the words with dashes.
+		return implode( '-', $limited_words );
 	}
 	/**
 	 * Sanitizes an array of sizes.
@@ -2010,15 +2026,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return $image_data;
 		}
 		$filename = basename( $image_data['url'] );
-		if ( strpos( $image_data['url'], 'prophecyimg.fly.dev' ) !== false ) {
-			$filename = $this->get_name_from_url( $image_data['url'] ) . '.jpg';
-		}
 		if ( strpos( $image_data['url'], 'images.pexels.com' ) !== false ) {
 			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
 			$filename = basename( $image_path );
 		}
 		// Custom filename if passed as data.
-		$filename = isset( $image_data['filename'] ) && $image_data['filename'] ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
+		$filename = ! empty( $image_data['filename'] ) ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
 
 		$upload = wp_upload_bits( $filename, null, $file_content );
 		$post = array(
@@ -2047,6 +2060,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		if ( ! empty( $image_data['photographer_url'] ) ) {
 			update_post_meta( $post_id, '_pexels_photographer_url', $image_data['photographer_url'] );
+		}
+		if ( ! empty( $image_data['photograph_url'] ) ) {
+			update_post_meta( $post_id, '_pexels_photograph_url', $image_data['photograph_url'] );
 		}
 		update_post_meta( $post_id, '_kadence_blocks_image_hash', sha1( $image_data['url'] ) );
 
