@@ -514,23 +514,23 @@ export function Edit( props ) {
 											},
 											{
 												label: __( 'Heart', 'kadence-blocks' ),
-												value: 'heart-solid',
+												value: 'heart',
 											},
 											{
 												label: __( 'Smile', 'kadence-blocks' ),
-												value: 'face-smile-beam-solid',
+												value: 'smile-beam',
 											},
 											{
 												label: __( 'Thumbs Up', 'kadence-blocks' ),
-												value: 'thumbs-up-solid',
+												value: 'thumbs-up',
 											},
 											{
 												label: __( 'Thumbs Down', 'kadence-blocks' ),
-												value: 'thumbs-down-solid',
+												value: 'thumbs-down',
 											},
 											{
 												label: __( 'Mug', 'kadence-blocks' ),
-												value: 'mug-hot-solid',
+												value: 'mug-hot',
 											},
 											{
 												label: __( 'Circle', 'kadence-blocks' ),
@@ -546,11 +546,11 @@ export function Edit( props ) {
 											},
 											{
 												label: __( 'Cat', 'kadence-blocks' ),
-												value: 'cat-solid',
+												value: 'cat',
 											},
 											{
 												label: __( 'Dog', 'kadence-blocks' ),
-												value: 'dog-solid',
+												value: 'dog',
 											},
 											{
 												label: __( 'Custom', 'kadence-blocks' ),
