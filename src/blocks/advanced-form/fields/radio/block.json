@@ -7,6 +7,9 @@
 	"uniqueID": {
 		"type": "string"
 	},
+	"formID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -80,6 +83,7 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"ktdynamic": true,

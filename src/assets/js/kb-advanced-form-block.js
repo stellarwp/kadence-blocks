@@ -147,7 +147,7 @@
 			// remove all initial errors if any.
 			window.kadenceAdvancedForm.removeErrors( self );
 			// ===== Validate: Text and Textarea ========
-			var required = self.querySelectorAll( '[data-required="yes"]' );
+			var required = self.querySelectorAll( '[data-required="yes"]:not([disabled])' );
 			if ( required.length ) {
 				for ( var n = 0; n < required.length; n++ ) {
 					var data_type = required[n].getAttribute('data-type'),

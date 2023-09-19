@@ -226,3 +226,4 @@ export { default as progressIcon } from './block-icons/progress-bar/primary-icon
 export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
 export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
 export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'
+export { default as lineMask } from './block-icons/progress-bar/line-mask-layout'

@@ -7,6 +7,9 @@
 	"uniqueID": {
 		"type": "string"
 	},
+	"formID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -28,6 +31,9 @@
 	"ariaDescription": {
 	  "type": "string",
 	  "default": ""
+	},
+	"inputName": {
+	  "type": "string"
 	},
 	"helpText": {
 	  "type": "string",
@@ -76,6 +82,7 @@
   "supports": {
 	"anchor": true,
 	"html": false,
+	"ktfieldconditional": true,
 	"ktdynamic": true,
 	"reusable": false,
 	"kbMetadata": true,

@@ -1389,6 +1389,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$video_html_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 			}
 		}
+		$ratio = '16-9';
+		if ( ! empty( $video_attributes['ratio'] ) ) {
+			$ratio = str_replace( '/', '-', $video_attributes['ratio'] );
+		}
 
 		$btns_output = '';
 		if ( isset( $video_attributes['btns'] ) && $video_attributes['btns'] ) {
@@ -1406,7 +1410,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'local' == $background_video_type ) {
 			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
 		} else {
-			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><iframe %1$s></iframe></div>', implode( ' ', $video_html_attributes ) );
+			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><div class="kb-bg-video-iframe kb-bg-video-ratio-%1$s"><iframe frameborder="0" %2$s></iframe></div></div>', $ratio, implode( ' ', $video_html_attributes ) );
 		}
 		return $output;
 	}

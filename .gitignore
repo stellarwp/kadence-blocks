@@ -4,8 +4,9 @@ node_modules
 dist/
 zip/
 bin/strauss.phar
-vendor/
 .idea
+/vendor/
 bin/pup.phar
+bin/wp-cli.phar
 .pup-build
 .pup-zip

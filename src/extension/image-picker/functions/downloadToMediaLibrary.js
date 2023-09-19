@@ -10,7 +10,7 @@ import apiFetch from '@wordpress/api-fetch';
 async function downloadImage( images ) {
 	try {
 		const response = await apiFetch( {
-			path: '/kb-design-library/v1/process_images',
+			path: '/kb-image-picker/v1/process_images',
 			method: 'POST',
 			data: {
 				images: images,

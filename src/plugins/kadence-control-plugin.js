@@ -20,6 +20,7 @@ import * as BlockIcons from '@kadence/icons';
  * Import Settings
  */
 import KadenceEditorWidth from './editor-width';
+import KadenceSettings from './settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
 
 /*
@@ -575,6 +576,12 @@ function KadenceConfig() {
 						initialOpen={ false }
 					>
 						<ResetDefaults />
+					</PanelBody>
+					<PanelBody
+						title={__('Pexels Library Search', 'kadence-blocks')}
+						initialOpen={ false }
+					>
+						<KadenceSettings />
 					</PanelBody>
 
 

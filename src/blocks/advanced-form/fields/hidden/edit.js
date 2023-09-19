@@ -7,7 +7,7 @@
  */
 import { TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
@@ -15,29 +15,31 @@ import {
 	useState,
 	useMemo,
 } from '@wordpress/element';
-import { getUniqueId } from '@kadence/helpers';
+import { 
+	getUniqueId
+} from '@kadence/helpers';
 import classNames from 'classnames';
-import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
+import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
 function FieldHidden( { attributes, setAttributes, isSelected, clientId, context, name } ) {
 	const { uniqueID, label, defaultValue, defaultParameter, inputName, kadenceDynamic } = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
-		[ clientId, inputName ]
+		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
 	}, [] );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
@@ -74,8 +76,8 @@ function FieldHidden( { attributes, setAttributes, isSelected, clientId, context
 						parentSlug={ 'kadence/advanced-form' }
 					/>
 					<InspectorControlTabs
-						panelName={'advanced-form-hidden-general'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
+						panelName={'advanced-form-hidden'}
+						setActiveTab={ setActiveTab }
 						activeTab={ activeTab }
 						allowedTabs={ [ 'general', 'advanced' ] }
 					/>

@@ -129,7 +129,7 @@ export default function ImagePicker(props) {
     const mediaFrame = container.closest(".media-frame");
 	const isGalleryPicker = 'undefined' != typeof( mediaFrame ) && mediaFrame ? Boolean(mediaFrame.querySelector("#menu-item-gallery")) : false;
 	return (
-        <Fragment>
+        <>
             <div class="kadence-blocks-image-picker-contents">
                 <div className="kadence-blocks-image-picker-search-container">
                     <SearchForm 
@@ -204,6 +204,6 @@ export default function ImagePicker(props) {
                     }
                 </style>
             }
-        </Fragment>
+        </>
     );
 }

@@ -13,16 +13,16 @@ import { useInstanceId } from '@wordpress/compose';
 import { isArrayLike, has, isEmpty } from 'lodash';
 
 export default function TaxonomySelect( {
-											label,
-											value,
-											onChange,
-											source,
-											contextPost = null,
-											className = null,
-											termIsMulti = false,
-											taxOnly = false,
-											termIsOptional = false,
-										} ) {
+		label,
+		value,
+		onChange,
+		source,
+		contextPost = null,
+		className = null,
+		termIsMulti = false,
+		taxOnly = false,
+		termIsOptional = false,
+	} ) {
 	const instanceId = useInstanceId( TaxonomySelect );
 	const id = `inspector-taxonomy-select-control-${ instanceId }`;
 	const [ isLoading, setIsLoading ] = useState( true );

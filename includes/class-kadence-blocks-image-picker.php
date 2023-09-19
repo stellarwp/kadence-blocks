@@ -49,7 +49,7 @@ class Kadence_Blocks_Image_Picker {
 
 		// Block CSS Scripts & Styles.
 		$kadence_image_picker_meta = kadence_blocks_get_asset_file( 'dist/extension-image-picker' );
-		wp_register_script( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.js', array_merge( $kadence_image_picker_meta['dependencies'], array( 'react', 'wp-blocks', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-i18n', 'wp-plugins' ) ), $kadence_image_picker_meta['version'], true );
+		wp_register_script( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.js', $kadence_image_picker_meta['dependencies'], $kadence_image_picker_meta['version'], true );
 		wp_register_style( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.css', array(), $kadence_image_picker_meta['version'] );
 	}
 
@@ -58,8 +58,17 @@ class Kadence_Blocks_Image_Picker {
 	 */
 	public function enqueue_media() {
 		// Check if the Kadence setting to enable this picker is on and we're on the right screen.
-		$image_picker_settings  = get_option( 'kt_blocks_image_picker', array() );
-		$is_option_enabled = ( apply_filters( 'kadence_blocks_show_image_picker', true ) && ( ! isset( $image_picker_settings['enable_image_picker'] ) || 'true' === $image_picker_settings['enable_image_picker'] ) );
+		$kadence_blocks_settings = get_option( 'kadence_blocks_settings', '' );
+		if ( ! empty( $kadence_blocks_settings ) && ! is_array( $kadence_blocks_settings ) ) {
+			$kadence_blocks_settings = json_decode( $kadence_blocks_settings, true );
+		}
+		$is_option_enabled = apply_filters( 'kadence_blocks_show_image_picker', true );
+		if ( $is_option_enabled && defined( 'KADENCE_BLOCKS_DISABLE_IMAGE_SEARCH' ) && KADENCE_BLOCKS_DISABLE_IMAGE_SEARCH ) {
+			$is_option_enabled = false;
+		}
+		if ( $is_option_enabled && isset( $kadence_blocks_settings['enable_image_picker'] ) && false === $kadence_blocks_settings['enable_image_picker'] ) {
+			$is_option_enabled = false;
+		}
 		$current_screen = is_admin() && function_exists( 'get_current_screen' ) ? get_current_screen()->base : '';
 
 		if ( $this->image_picker_has_access() && $is_option_enabled && 'upload' !== $current_screen ) {
