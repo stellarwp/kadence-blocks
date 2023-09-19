@@ -2101,9 +2101,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				foreach ( $image['sizes'] as $size ) {
 					if ( $size['src'] === $target_src ) {
 						return array(
-							'alt' => $image['alt'],
-							'photographer' => $image['photographer'],
-							'photographer_url' => $image['photographer_url'],
+							'alt'              => ! empty( $image['alt'] ) ? $image['alt'] : '',
+							'photographer'     => ! empty( $image['photographer'] ) ? $image['photographer'] : '',
+							'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
+							'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
 						);
 						break;
 					}
