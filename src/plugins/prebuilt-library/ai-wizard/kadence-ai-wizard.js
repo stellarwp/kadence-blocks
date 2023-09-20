@@ -109,7 +109,6 @@ export function KadenceAiWizard( props ) {
 		// Submit wizard data on finish buttton click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
 			handleSave();
-			console.log('handleSave');
 			
 			if ( ! photographyOnly ) {
 				onPrimaryAction(event, true);
@@ -157,7 +156,7 @@ export function KadenceAiWizard( props ) {
 			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
 			onClose={ handleOnClose }
 			onPrimaryClick={ handleOnPrimaryClick }
-			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate Content', 'kadence-blocks' ) }
+			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate All Content', 'kadence-blocks' ) }
 			primaryButtonDisabled={ isFinishButtonDisabled() }
 			onSecondaryClick={ ! photographyOnly ? handleOnSecondaryClick : null }
 			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }

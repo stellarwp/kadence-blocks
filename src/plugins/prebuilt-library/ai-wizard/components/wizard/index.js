@@ -180,7 +180,7 @@ export function Wizard({
 				) }
 				{ ! canGoForward && (
 					<div className='components-wizard__finish-button-container'>
-						{/* { onSecondaryClick && typeof onSecondaryClick === 'function' ? (
+						{ onSecondaryClick && typeof onSecondaryClick === 'function' ? (
 							<Button
 								variant="link"
 								className={ 'components-wizard__secondary-button' }
@@ -188,7 +188,7 @@ export function Wizard({
 								>
 								{ secondaryButtonText ? secondaryButtonText : '' }
 							</Button>
-						) : null } */}
+						) : null }
 						{ photographyOnly && (
 							<Button
 								variant="primary"
@@ -205,9 +205,9 @@ export function Wizard({
 									variant="primary"
 									className={ 'components-wizard__primary-button' }
 									disabled={ primaryButtonDisabled }
-									onClick={ onSecondaryClick }
+									onClick={ onPrimaryClick }
 								>
-								{ secondaryButtonText ? secondaryButtonText : '' }
+								{ primaryButtonText + ' ' + __( '(96 Credits)', 'kadence-blocks' ) }
 								</Button>
 							</div>
 						) }
