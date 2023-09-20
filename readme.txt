@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.19 =
+Release Date: September 20th, 2023
+* Fix: Issue with spacer in a reusable block.
+
 = 3.1.18 =
 Release Date: September 20th, 2023
 * Fix: Issue with radio/checkbox field id output.
