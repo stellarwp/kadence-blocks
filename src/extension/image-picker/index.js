@@ -35,13 +35,13 @@ const kadenceImagePickerInit = () => {
 		// Handlers
 		bindHandlers() {
 			initialMediaFrame.prototype.bindHandlers.apply(this, arguments);
-			this.on("content:create:kadenceimagepicker", this.frameContent, this);
+			this.on("content:create:kadenceimagepicker", this.kadenceFrameContent, this);
 		},
 
 		/**
 		 * Render callback for the content region in the `browse` mode.
 		 */
-		frameContent() {
+		kadenceFrameContent() {
 			const state = this.state();
 			// Get active frame
 			if (state) {
@@ -50,9 +50,6 @@ const kadenceImagePickerInit = () => {
 			}
 		},
 
-		getFrame(id) {
-			return this.states.findWhere({ id });
-		},
 	});
 	// Create Image Picker Tab
 	wp.media.view.MediaFrame.Select = initialMediaFrameSelect.extend({
@@ -70,28 +67,19 @@ const kadenceImagePickerInit = () => {
 		// Handlers
 		bindHandlers() {
 			initialMediaFrameSelect.prototype.bindHandlers.apply(this, arguments);
-			this.on("content:create:kadenceimagepicker", this.frameContent, this);
+			this.on("content:create:kadenceimagepicker", this.kadenceFrameContent, this);
 		},
 
 		/**
 		 * Render callback for the content region in the `browse` mode.
 		 */
-		frameContent() {
+		kadenceFrameContent() {
 			const state = this.state();
 			// Get active frame
 			if (state) {
 				window.kadenceImagePickerId = state.id;
 				window.kadenceImagePickerFrame = state.frame;
 			}
-		},
-
-		/**
-		 * Get the current frame.
-		 *
-		 * @param {string} id The ID.
-		 */
-		getFrame(id) {
-			return this.states.findWhere({ id });
 		},
 	});
 }

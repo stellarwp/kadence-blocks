@@ -12,7 +12,6 @@ import { API } from "../constants/API";
 export default function getQueryOptions( provider, options ) {
 	var headers = new Headers();
 	headers.append("Content-Type", "application/json");
-
 	var body = {
 		query: API.defaults.query,
 		sizes: kadenceExtensionImagePicker.image_sizes,
