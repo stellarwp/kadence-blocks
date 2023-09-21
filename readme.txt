@@ -97,6 +97,11 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.20 =
+Release Date: September TBD, 2023
+* Fix: Issue with setting numeric padding & margin on advanced form.
+* Fix: HTML Anchors and additional CSS classes on advanced form.
+
 = 3.1.19 =
 Release Date: September 20th, 2023
 * Fix: Issue with spacer in a reusable block.
