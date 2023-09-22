@@ -8,7 +8,7 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, TextareaControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, FormInputControl, SelectParentBlock } from '@kadence/components';
 import {
@@ -17,22 +17,18 @@ import {
 	useMemo,
 } from '@wordpress/element';
 import {
-	getUniqueId,
 	getPreviewSize,
 } from '@kadence/helpers';
 import classNames from 'classnames';
-import { DuplicateField, FieldBlockAppender, FieldName } from '../../components';
+import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
 function FieldEmail( { attributes, setAttributes, isSelected, clientId, context, name  } ) {
 	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
@@ -40,9 +36,12 @@ function FieldEmail( { attributes, setAttributes, isSelected, clientId, context,
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
 	}, [] );
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ) , ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );

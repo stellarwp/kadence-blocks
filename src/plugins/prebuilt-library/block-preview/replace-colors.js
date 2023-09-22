@@ -21,7 +21,7 @@ const getStringBetweenWhen = (str, start, end, verify, from ) => {
 	// Check if form is there?
 	if ( ! str.includes( verify ) ) {
 		return '';
-	}	
+	}
 	// get the start of the submit button.
 	const startpos = str.indexOf( start, from );
 	if ( ! startpos ) {
@@ -59,6 +59,8 @@ export default function replaceColors( content, style ) {
 	content = content.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
 	content = content.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
 
+	let replacements = [];
+
 	if ( 'dark' === style ) {
 		// Handle tabs.
 		let tab_content = getStringBetween( content, 'wp:kadence/tabs', 'wp:kadence/tab', 'kb-pattern-active-tab-highlight' );
@@ -68,7 +70,7 @@ export default function replaceColors( content, style ) {
 			tab_content =  tab_content.replace( /"titleColorHover":"palette9"/g, '"titleColorHover":"ph-kb-pal9"' );
 			content = content.replace( tab_content_org, tab_content );
 		}
-		
+
 		// Special testimonial issue.
 		let white_text_content = getStringBetweenWhen( content, '<!-- wp:kadence/column', 'kt-inside-inner-col', 'kb-pattern-light-color', 0 );
 		if ( white_text_content ) {
@@ -86,27 +88,28 @@ export default function replaceColors( content, style ) {
 		// 7 => 3
 		// 8 => 3
 		// 9 => 4
-		content = content.replace( /has-theme-palette-3/g, "ph-kb-class9");
-		content = content.replace( /has-theme-palette-4/g, "ph-kb-class8");
-		content = content.replace( /has-theme-palette-5/g, "ph-kb-class7");
-		content = content.replace( /has-theme-palette-6/g, "ph-kb-class7");
-		content = content.replace( /has-theme-palette-7/g, "ph-kb-class3");
-		content = content.replace( /has-theme-palette-8/g, "ph-kb-class3");
-		content = content.replace( /has-theme-palette-9/g, "ph-kb-class4");
-		content = content.replace( /theme-palette3/g, "ph-class-kb-pal9");
-		content = content.replace( /theme-palette4/g, "ph-class-kb-pal8");
-		content = content.replace( /theme-palette5/g, "ph-class-kb-pal7");
-		content = content.replace( /theme-palette6/g, "ph-class-kb-pal7");
-		content = content.replace( /theme-palette7/g, "ph-class-kb-pal3");
-		content = content.replace( /theme-palette8/g, "ph-class-kb-pal3");
-		content = content.replace( /theme-palette9/g, "ph-class-kb-pal4");
-		content = content.replace( /palette3/g, "ph-kb-pal9");
-		content = content.replace( /palette4/g, "ph-kb-pal8");
-		content = content.replace( /palette5/g, "ph-kb-pal7");
-		content = content.replace( /palette6/g, "ph-kb-pal7");
-		content = content.replace( /palette7/g, "ph-kb-pal3");
-		content = content.replace( /palette8/g, "ph-kb-pal3");
-		content = content.replace( /palette9/g, "ph-kb-pal4");
+		replacements.push( { from: 'has-theme-palette-3', to: 'ph-kb-class9' } );
+		replacements.push( { from: 'has-theme-palette-4', to: 'ph-kb-class8' } );
+		replacements.push( { from: 'has-theme-palette-5', to: 'ph-kb-class7' } );
+		replacements.push( { from: 'has-theme-palette-6', to: 'ph-kb-class7' } );
+		replacements.push( { from: 'has-theme-palette-7', to: 'ph-kb-class3' } );
+		replacements.push( { from: 'has-theme-palette-8', to: 'ph-kb-class3' } );
+		replacements.push( { from: 'has-theme-palette-9', to: 'ph-kb-class4' } );
+		replacements.push( { from: 'theme-palette3', to: 'ph-class-kb-pal9' } );
+		replacements.push( { from: 'theme-palette4', to: 'ph-class-kb-pal8' } );
+		replacements.push( { from: 'theme-palette5', to: 'ph-class-kb-pal7' } );
+		replacements.push( { from: 'theme-palette6', to: 'ph-class-kb-pal7' } );
+		replacements.push( { from: 'theme-palette7', to: 'ph-class-kb-pal3' } );
+		replacements.push( { from: 'theme-palette8', to: 'ph-class-kb-pal3' } );
+		replacements.push( { from: 'theme-palette9', to: 'ph-class-kb-pal4' } );
+		replacements.push( { from: 'palette3', to: 'ph-kb-pal9' } );
+		replacements.push( { from: 'palette4', to: 'ph-kb-pal8' } );
+		replacements.push( { from: 'palette5', to: 'ph-kb-pal7' } );
+		replacements.push( { from: 'palette6', to: 'ph-kb-pal7' } );
+		replacements.push( { from: 'palette7', to: 'ph-kb-pal3' } );
+		replacements.push( { from: 'palette8', to: 'ph-kb-pal3' } );
+		replacements.push( { from: 'palette9', to: 'ph-kb-pal4' } );
+
 	} else if ( 'highlight' === style ) {
 		// Handle Forms.
 		let form_content = getStringBetween( content, '"submit":[{', ']}', 'wp:kadence/form' );
@@ -120,7 +123,7 @@ export default function replaceColors( content, style ) {
 		}
 		// Handle Buttons differently.
 		content = content.replace( /"inheritStyles":"inherit"/g, '"color":"ph-kb-pal9","background":"ph-kb-pal3","colorHover":"ph-kb-pal9","backgroundHover":"ph-kb-pal4","inheritStyles":"inherit"' );
-		// Outline Buttons.
+		// // Outline Buttons.
 		content = content.replace( /"inheritStyles":"outline"/g, '"color":"ph-kb-pal3","colorHover":"ph-kb-pal4","borderStyle":[{"top":["ph-kb-pal3","",""],"right":["ph-kb-pal3","",""],"bottom":["ph-kb-pal3","",""],"left":["ph-kb-pal3","",""],"unit":"px"}],"borderHoverStyle":[{"top":["ph-kb-pal4","",""],"right":["ph-kb-pal4","",""],"bottom":["ph-kb-pal4","",""],"left":["ph-kb-pal4","",""],"unit":"px"}],"inheritStyles":"outline"' );
 
 		// Color Map Switch
@@ -133,62 +136,71 @@ export default function replaceColors( content, style ) {
 		// 7 => 2
 		// 8 => 2
 		// 9 => 1
-		content = content.replace( /has-theme-palette-1/g, "ph-kb-class9");
-		content = content.replace( /has-theme-palette-2/g, "ph-kb-class8");
-		content = content.replace( /has-theme-palette-3/g, "ph-kb-class9");
-		content = content.replace( /has-theme-palette-4/g, "ph-kb-class9");
-		content = content.replace( /has-theme-palette-5/g, "ph-kb-class8");
-		content = content.replace( /has-theme-palette-6/g, "ph-kb-class7");
-		content = content.replace( /has-theme-palette-7/g, "ph-kb-class2");
-		content = content.replace( /has-theme-palette-8/g, "ph-kb-class2");
-		content = content.replace( /has-theme-palette-9/g, "ph-kb-class1");
-		content = content.replace( /theme-palette1/g, "ph-class-kb-pal9");
-		content = content.replace( /theme-palette2/g, "ph-class-kb-pal8");
-		content = content.replace( /theme-palette3/g, "ph-class-kb-pal9");
-		content = content.replace( /theme-palette4/g, "ph-class-kb-pal9");
-		content = content.replace( /theme-palette5/g, "ph-class-kb-pal8");
-		content = content.replace( /theme-palette6/g, "ph-class-kb-pal8");
-		content = content.replace( /theme-palette7/g, "ph-class-kb-pal2");
-		content = content.replace( /theme-palette8/g, "ph-class-kb-pal2");
-		content = content.replace( /theme-palette9/g, "ph-class-kb-pal1");
-		content = content.replace( /palette1/g, "ph-kb-pal9");
-		content = content.replace( /palette2/g, "ph-kb-pal8");
-		content = content.replace( /palette3/g, "ph-kb-pal9");
-		content = content.replace( /palette4/g, "ph-kb-pal9");
-		content = content.replace( /palette5/g, "ph-kb-pal8");
-		content = content.replace( /palette6/g, "ph-kb-pal7");
-		content = content.replace( /palette7/g, "ph-kb-pal2");
-		content = content.replace( /palette8/g, "ph-kb-pal2");
-		content = content.replace( /palette9/g, "ph-kb-pal1");
+		replacements.push( { from: 'has-theme-palette-1', to: 'ph-kb-class9' } );
+		replacements.push( { from: 'has-theme-palette-2', to: 'ph-kb-class8' } );
+		replacements.push( { from: 'has-theme-palette-3', to: 'ph-kb-class9' } );
+		replacements.push( { from: 'has-theme-palette-4', to: 'ph-kb-class9' } );
+		replacements.push( { from: 'has-theme-palette-5', to: 'ph-kb-class8' } );
+		replacements.push( { from: 'has-theme-palette-6', to: 'ph-kb-class7' } );
+		replacements.push( { from: 'has-theme-palette-7', to: 'ph-kb-class2' } );
+		replacements.push( { from: 'has-theme-palette-8', to: 'ph-kb-class2' } );
+		replacements.push( { from: 'has-theme-palette-9', to: 'ph-kb-class1' } );
+		replacements.push( { from: 'theme-palette1', to: 'ph-class-kb-pal9' } );
+		replacements.push( { from: 'theme-palette2', to: 'ph-class-kb-pal8' } );
+		replacements.push( { from: 'theme-palette3', to: 'ph-class-kb-pal9' } );
+		replacements.push( { from: 'theme-palette4', to: 'ph-class-kb-pal9' } );
+		replacements.push( { from: 'theme-palette5', to: 'ph-class-kb-pal8' } );
+		replacements.push( { from: 'theme-palette6', to: 'ph-class-kb-pal8' } );
+		replacements.push( { from: 'theme-palette7', to: 'ph-class-kb-pal2' } );
+		replacements.push( { from: 'theme-palette8', to: 'ph-class-kb-pal2' } );
+		replacements.push( { from: 'theme-palette9', to: 'ph-class-kb-pal1' } );
+		replacements.push( { from: 'palette1', to: 'ph-kb-pal9' } );
+		replacements.push( { from: 'palette2', to: 'ph-kb-pal8' } );
+		replacements.push( { from: 'palette3', to: 'ph-kb-pal9' } );
+		replacements.push( { from: 'palette4', to: 'ph-kb-pal9' } );
+		replacements.push( { from: 'palette5', to: 'ph-kb-pal8' } );
+		replacements.push( { from: 'palette6', to: 'ph-kb-pal7' } );
+		replacements.push( { from: 'palette7', to: 'ph-kb-pal2' } );
+		replacements.push( { from: 'palette8', to: 'ph-kb-pal2' } );
+		replacements.push( { from: 'palette9', to: 'ph-kb-pal1' } );
+
 	}
 	// Convert Placeholders
-	content = content.replace( /ph-kb-class1/g, "has-theme-palette-1");
-	content = content.replace( /ph-kb-class2/g, "has-theme-palette-2");
-	content = content.replace( /ph-kb-class3/g, "has-theme-palette-3");
-	content = content.replace( /ph-kb-class4/g, "has-theme-palette-4");
-	content = content.replace( /ph-kb-class5/g, "has-theme-palette-5");
-	content = content.replace( /ph-kb-class6/g, "has-theme-palette-6");
-	content = content.replace( /ph-kb-class7/g, "has-theme-palette-7");
-	content = content.replace( /ph-kb-class8/g, "has-theme-palette-8");
-	content = content.replace( /ph-kb-class9/g, "has-theme-palette-9");
-	content = content.replace( /ph-class-kb-pal1/g, "theme-palette1");
-	content = content.replace( /ph-class-kb-pal2/g, "theme-palette2");
-	content = content.replace( /ph-class-kb-pal3/g, "theme-palette3");
-	content = content.replace( /ph-class-kb-pal4/g, "theme-palette4");
-	content = content.replace( /ph-class-kb-pal5/g, "theme-palette5");
-	content = content.replace( /ph-class-kb-pal6/g, "theme-palette6");
-	content = content.replace( /ph-class-kb-pal7/g, "theme-palette7");
-	content = content.replace( /ph-class-kb-pal8/g, "theme-palette8");
-	content = content.replace( /ph-class-kb-pal9/g, "theme-palette9");
-	content = content.replace( /ph-kb-pal1/g, "palette1");
-	content = content.replace( /ph-kb-pal2/g, "palette2");
-	content = content.replace( /ph-kb-pal3/g, "palette3");
-	content = content.replace( /ph-kb-pal4/g, "palette4");
-	content = content.replace( /ph-kb-pal5/g, "palette5");
-	content = content.replace( /ph-kb-pal6/g, "palette6");
-	content = content.replace( /ph-kb-pal7/g, "palette7");
-	content = content.replace( /ph-kb-pal8/g, "palette8");
-	content = content.replace( /ph-kb-pal9/g, "palette9");
+	const finalReplacements = [
+		{from: 'ph-kb-class1', to: 'has-theme-palette-1'},
+		{from: 'ph-kb-class2', to: 'has-theme-palette-2'},
+		{from: 'ph-kb-class3', to: 'has-theme-palette-3'},
+		{from: 'ph-kb-class4', to: 'has-theme-palette-4'},
+		{from: 'ph-kb-class5', to: 'has-theme-palette-5'},
+		{from: 'ph-kb-class6', to: 'has-theme-palette-6'},
+		{from: 'ph-kb-class7', to: 'has-theme-palette-7'},
+		{from: 'ph-kb-class8', to: 'has-theme-palette-8'},
+		{from: 'ph-kb-class9', to: 'has-theme-palette-9'},
+		{from: 'ph-class-kb-pal1', to: 'theme-palette1'},
+		{from: 'ph-class-kb-pal2', to: 'theme-palette2'},
+		{from: 'ph-class-kb-pal3', to: 'theme-palette3'},
+		{from: 'ph-class-kb-pal4', to: 'theme-palette4'},
+		{from: 'ph-class-kb-pal5', to: 'theme-palette5'},
+		{from: 'ph-class-kb-pal6', to: 'theme-palette6'},
+		{from: 'ph-class-kb-pal7', to: 'theme-palette7'},
+		{from: 'ph-class-kb-pal8', to: 'theme-palette8'},
+		{from: 'ph-class-kb-pal9', to: 'theme-palette9'},
+		{from: 'ph-kb-pal1', to: 'palette1'},
+		{from: 'ph-kb-pal2', to: 'palette2'},
+		{from: 'ph-kb-pal3', to: 'palette3'},
+		{from: 'ph-kb-pal4', to: 'palette4'},
+		{from: 'ph-kb-pal5', to: 'palette5'},
+		{from: 'ph-kb-pal6', to: 'palette6'},
+		{from: 'ph-kb-pal7', to: 'palette7'},
+		{from: 'ph-kb-pal8', to: 'palette8'},
+		{from: 'ph-kb-pal9', to: 'palette9'},
+	];
+
+	replacements.push(...finalReplacements);
+
+	for (const replacement of replacements) {
+		content = content.replace(new RegExp(replacement.from, 'g'), replacement.to);
+	}
 
 	return content;
 }

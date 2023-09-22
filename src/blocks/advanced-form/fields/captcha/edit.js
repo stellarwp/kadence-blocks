@@ -3,7 +3,7 @@
  */
 import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spinner, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import {
@@ -17,7 +17,7 @@ import {
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
-import { FieldBlockAppender } from '../../components';
+import { FieldBlockAppender, getUniqueFieldId } from '../../components';
 import { get } from 'lodash';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Turnstile from 'react-turnstile';
@@ -45,23 +45,25 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 		requiredMessage,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID   : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
-		[ clientId ],
+		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
+	}, [] );
 
+	useEffect( () => {
 		const neededFields = [
 			'kadence_blocks_recaptcha_site_key',
 			'kadence_blocks_recaptcha_secret_key',

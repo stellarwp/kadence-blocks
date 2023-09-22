@@ -180,6 +180,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
 			$access_levels[] = array(
 				'value' => $key,
+				/* translators: %s is the access level name. */
 				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
 			);
 		}
@@ -253,6 +254,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
+			'globalSettings' => get_option( 'kadence_blocks_settings' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
@@ -1047,6 +1049,9 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_conteoller_get->register_routes();
 	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_conteoller_upload->register_routes();
+
+	$image_picker_conteoller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
+	$image_picker_conteoller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

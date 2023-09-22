@@ -47,8 +47,9 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $unique_style_id );
+		$class_id = $this->class_id( $attributes );
+		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
@@ -69,8 +70,8 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$is_required = $this->is_required( $attributes, 'required', '' );
 		$is_multiselect = ( isset( $attributes['multiSelect'] ) && $attributes['multiSelect'] === true ) ? 'multiple' : '';
-
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $unique_id );
+		$class_id = $this->class_id( $attributes );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}

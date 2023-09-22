@@ -1121,8 +1121,6 @@ function KadenceInfoBox( props ) {
 			setAttributes( attributesToPaste );
 		}
 	}
-
-    const { editPost } = useDispatch('core/editor');
 	const { editEntityRecord, saveEditedEntityRecord } = useDispatch( coreStore );
 
 	const { mediaImageRecord, mediaImageFlipRecord } = useSelect(

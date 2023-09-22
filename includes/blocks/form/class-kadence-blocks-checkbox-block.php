@@ -47,8 +47,9 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $unique_style_id );
+		$class_id = $this->class_id( $attributes );
+		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
@@ -68,7 +69,8 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$is_required   = $this->is_required( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $unique_id );
+		$class_id = $this->class_id( $attributes );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $class_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -78,13 +80,13 @@ class Kadence_Blocks_Checkbox_Block extends Kadence_Blocks_Advanced_Form_Input_B
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content      = '';
 		$check_label = $attributes;
-		$check_label['inputName'] = 'cb' . $unique_id;
+		$check_label['inputName'] = 'cb' . $class_id;
 
-		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $check_label ) . '" data-type="checkbox" data-required="' . $is_required . '">';
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $check_label ) . '" data-type="checkbox" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
 		$inner_content      .= $this->field_legend( $check_label );
 		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
-			$id         = 'field' . $unique_id . '_' . $key;
+			$id         = 'field' . $class_id . '_' . $key;
 			$is_checked_from_param = ! empty( $option['value'] ) && $option['value'] && in_array( $option['value'], explode( ',', $this->get_default( $attributes ) ) );
 			$is_checked_from_editor = ! empty( $option['selected'] );
 			$is_checked = $is_checked_from_editor || $is_checked_from_param;

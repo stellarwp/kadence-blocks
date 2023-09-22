@@ -50,6 +50,9 @@ class Kadence_Blocks_Form_CPT_Controller {
 				10,
 				2
 			);
+			if ( class_exists( 'Kadence_Blocks_Duplicate_Form' ) ) {
+				new Kadence_Blocks_Duplicate_Form( self::SLUG );
+			}
 		}
 	}
 	/**
@@ -1224,6 +1227,16 @@ class Kadence_Blocks_Form_CPT_Controller {
 		);
 
 		$register_meta = array(
+			array(
+				'key'     => '_kad_form_anchor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_form_className',
+				'default' => '',
+				'type'    => 'string'
+			),
 			array(
 				'key'           => '_kad_form_actions',
 				'default'       => array( 'email' ),

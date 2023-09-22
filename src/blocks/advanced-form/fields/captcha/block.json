@@ -10,6 +10,9 @@
 		"type": "string",
 		"default": ""
 	  },
+	  "formID": {
+		"type": "string"
+	  },
 	  "type": {
 		  "type": "string",
 		  "default": "googlev2"
