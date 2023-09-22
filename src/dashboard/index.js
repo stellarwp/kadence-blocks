@@ -15,6 +15,13 @@ import { aiIcon, autoFix, notes, subject, check, playlist, chatBubble } from '@k
  */
 export default function KadenceBlocksHome() {
 	const [ wizardState, setWizardState ] = useState( false );
+	const queryParameters = new URLSearchParams(window.location.search);
+	const wizard = queryParameters.get("wizard");
+	useEffect( () => {
+		if ( wizard ) {
+			setWizardState( true );
+		}
+	}, [] );
 	const closeAiWizard = () => {
 		setWizardState( false );
 		console.log( 'closeAiWizard - Need to trigger something' );
@@ -30,6 +37,7 @@ export default function KadenceBlocksHome() {
 					onPrimaryAction={ handleAiWizardPrimaryAction }
 					photographyOnly={ false }
 					credits={ false }
+					isFullScreen={ true }
 				/>
 			) }
 			<Button

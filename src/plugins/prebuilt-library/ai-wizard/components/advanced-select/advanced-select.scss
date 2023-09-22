@@ -16,7 +16,9 @@
 	.stellarwp-advancedSelect {
 		width: 100%;
 		flex: 1;
-
+		button {
+			text-align: left;
+		}
 		button.stellarwp.components-button {
 			border: 1px solid;
 			border-color: $color-gray-300;

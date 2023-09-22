@@ -51,9 +51,7 @@ export function preMadeCollectionsHelper() {
 		try {
 			let collections = [];
 			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_COLLECTIONS, {
-					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
-				} ),
+				path: addQueryArgs( API_ROUTE_GET_COLLECTIONS ),
 			} );
 			const responseData = SafeParseJSON( response, false );
 
@@ -147,11 +145,11 @@ export function preMadeCollectionsHelper() {
 				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 					industries: industries,
 					industry: search,
-					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
 					image_sizes: COLLECTION_REQUEST_IMAGE_SIZES,
 				} ),
 			} );
+			console.log(response);
 			const responseData = SafeParseJSON( response, false );
 			if ( responseData && responseData?.data ) {
 				if ( 'aiGenerated' === industry ) {

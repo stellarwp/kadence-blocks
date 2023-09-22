@@ -70,6 +70,7 @@ export function KadenceAiWizard( props ) {
 		onPrimaryAction,
 		photographyOnly,
 		credits,
+		isFullScreen,
 	} = props;
 
 	const { state, dispatch } = useKadenceAi();
@@ -162,6 +163,7 @@ export function KadenceAiWizard( props ) {
 			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }
 			credits={ credits }
 			photographyOnly={ photographyOnly }
+			isFullScreen={ isFullScreen }
 		/>
 	)
 }
