@@ -288,6 +288,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				case 'bottom':
 					$align = 'flex-end';
 					break;
+				case 'space-between':
+					$align = 'space-between';
+					break;
+				case 'space-around':
+					$align = 'space-around';
+					break;
+				case 'space-evenly':
+					$align = 'space-evenly';
+					break;
 				default:
 					$align = 'center';
 					break;
@@ -296,6 +305,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['justifyContent'] ) && is_array( $attributes['justifyContent'] ) && ! empty( $attributes['justifyContent'][0] ) ) {
 				$css->add_property( 'justify-content', $attributes['justifyContent'][0] );
 			} else if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && ! empty( $attributes['textAlign'][0] ) ) {
+				// Fall Back for the old way of doing things.
 				switch ( $attributes['textAlign'][0] ) {
 					case 'left':
 						$justify = 'flex-start';
@@ -327,24 +337,35 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			if ( ! empty( $attributes['verticalAlignment'] ) ) {
 				switch ( $attributes['verticalAlignment'] ) {
-					case 'top':
-						$align = 'flex-start';
+					case 'center':
+						$align = 'center';
 						break;
 					case 'bottom':
 						$align = 'flex-end';
 						break;
+					case 'space-between':
+						$align = 'space-between';
+						break;
+					case 'space-around':
+						$align = 'space-around';
+						break;
+					case 'space-evenly':
+						$align = 'space-evenly';
+						break;
 					default:
-						$align = 'center';
+						$align = 'flex-start';
 						break;
 				}
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'justify-content', $align );
-				$css->add_property( 'flex-direction', 'column' );
-				$css->add_property( 'display', 'flex' );
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
 				$css->add_property( 'width', '100%' );
 			}
-			if ( !empty( $attributes['rowGap'][0] ) ) {
+			if ( ! empty( $attributes['justifyContent'][0] ) && ( 'flex-start' === $attributes['justifyContent'][0] || 'center' === $attributes['justifyContent'][0] || 'flex-end' === $attributes['justifyContent'][0] ) ) {
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'align-items', $attributes['justifyContent'][0] );
+			}
+			if ( ! empty( $attributes['rowGap'][0] ) ) {
 				$row_gap      = isset( $attributes['rowGap'] ) && is_array( $attributes['rowGap'] ) && isset( $attributes['rowGap'][0] ) && is_numeric( $attributes['rowGap'][0] ) ? $attributes['rowGap'][0] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
 
