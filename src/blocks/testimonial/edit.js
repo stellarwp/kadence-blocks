@@ -187,7 +187,7 @@ function KadenceTestimonials( props ) {
 
     const previewIconSize = getPreviewSize( previewDevice, ( undefined !== isize ? isize : ''), ( undefined !== tabletIsize ? tabletIsize : ''), ( undefined !== mobileIsize ? mobileIsize : '') );
 
-    const nonTransAttrs = [ 'url', 'media', 'title', 'content' ];
+    const nonTransAttrs = [ 'url', 'title', 'content' ];
 
     const blockProps = useBlockProps({});
 
