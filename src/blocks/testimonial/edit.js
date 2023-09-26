@@ -160,6 +160,8 @@ function KadenceTestimonials( props ) {
     );
 
     useEffect(() => {
+		setBlockDefaults( metadata['name'], attributes);
+
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {

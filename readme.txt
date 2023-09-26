@@ -101,6 +101,7 @@ developers of this plugin.
 Release Date: September TBD, 2023
 * Fix: Issue with setting numeric padding & margin on advanced form.
 * Fix: HTML Anchors and additional CSS classes on advanced form.
+* Fix: Block defaults not applying on Testimonial blocks.
 * Add: Advanced buttons support Rank Math content analysis.
 
 = 3.1.19 =
