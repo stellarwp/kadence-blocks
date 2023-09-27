@@ -166,7 +166,7 @@ export function EditInner( props ) {
 
 	const [ className ] = useFormMeta( '_kad_form_className' );
 	const [ anchor ] = useFormMeta( '_kad_form_anchor' );
-	
+
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
@@ -223,7 +223,6 @@ export function EditInner( props ) {
 		id,
 	);
 	const {
-		insertBlocks,
 		updateBlockAttributes
 	} = useDispatch( editorStore );
 
@@ -287,8 +286,7 @@ export function EditInner( props ) {
 			if ( response.id ) {
 				switch ( template ) {
 					case 'contact':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
@@ -299,15 +297,10 @@ export function EditInner( props ) {
 								] ),
 								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
-							],
-							0,
-							clientId,
-							false
-						);
+							] } ], clientId );
 						break;
 					case 'contactAdvanced':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
@@ -326,15 +319,10 @@ export function EditInner( props ) {
 								] ),
 								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
-							],
-							0,
-							clientId,
-							false
-						);
+							] } ], clientId );
 						break;
 					case 'subscribeAdvanced':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
@@ -344,15 +332,10 @@ export function EditInner( props ) {
 									] )
 								] ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
-							],
-							0,
-							clientId,
-							false
-						);
+							] } ], clientId );
 						break;
 					case 'subscribe':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'left-golden', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
@@ -360,23 +343,14 @@ export function EditInner( props ) {
 									createBlock( 'kadence/column', { verticalAlignment: 'bottom' }, [
 										createBlock( 'kadence/advanced-form-submit', buttonAttributes )
 									] )
-								] ),
-							],
-							0,
-							clientId,
-							false
-						);
+								] )
+							] } ], clientId );
 						break;
 					default:
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'core/paragraph', {} ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ),
-							],
-							0,
-							clientId,
-							false
-						);
+						] } ], clientId );
 						break;
 				}
 				setTitle(title);
@@ -541,7 +515,11 @@ export function EditInner( props ) {
 							<KadencePanelBody
 								panelName={'kb-advanced-form-selected-switch'}
 								title={ __( 'Selected Form', 'kadence-blocks' ) }
-							>
+						<KadencePanelBody
+							panelName={'kb-advanced-form-selected-switch'}
+							title={ __( 'Form', 'kadence-blocks' ) }
+						>
+							{ ! direct && (
 								<SelectForm
 									postType="kadence_form"
 									label={__( 'Selected Form', 'kadence-blocks' )}
@@ -549,29 +527,15 @@ export function EditInner( props ) {
 									onChange={ ( nextId ) => setAttributes( { id: parseInt( nextId ) } ) }
 									value={ id }
 								/>
-								<TextareaControl
-									label={__( 'Form Description', 'kadence-blocks' )}
-									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
-									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
-									value={( undefined !== description ? description : '' )}
-									onChange={value => setMetaAttribute( value, 'description' )}
-								/>
-							</KadencePanelBody>
-						) }
-						{ direct && (
-							<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Form', 'kadence-blocks' ) }
-							>
-								<TextareaControl
-									label={__( 'Form Description', 'kadence-blocks' )}
-									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
-									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
-									value={( undefined !== description ? description : '' )}
-									onChange={value => setMetaAttribute( value, 'description' )}
-								/>
-							</KadencePanelBody>
-						) }
+							)}
+							<TextareaControl
+								label={__( 'Form Description', 'kadence-blocks' )}
+								placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
+								help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
+								value={( undefined !== description ? description : '' )}
+								onChange={value => setMetaAttribute( value, 'description' )}
+							/>
+						</KadencePanelBody>
 						<KadencePanelBody
 							panelName={'kb-advanced-form-submit-actions'}
 							title={__( 'Submit Actions', 'kadence-blocks' )}
