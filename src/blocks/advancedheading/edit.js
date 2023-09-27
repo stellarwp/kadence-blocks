@@ -33,8 +33,13 @@ import {
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
 	KadenceIconPicker,
-	IconRender
+	IconRender,
+	DynamicTextControl
 } from '@kadence/components';
+
+import {
+	dynamicIcon
+} from '@kadence/icons';
 
 import {
 	KadenceColorOutput,
@@ -48,7 +53,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
-	getPostOrFseId
+	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -93,6 +98,9 @@ import {
 	SelectControl,
 	ToolbarDropdownMenu,
 	TextControl,
+	ToolbarButton,
+	Toolbar,
+	Button,
 } from '@wordpress/components';
 
 import {
@@ -222,8 +230,11 @@ function KadenceAdvancedHeading( props ) {
 		tabletBorderRadius,
 		mobileBorderRadius,
 		borderRadiusUnit,
+		shouldDynamicReplace,
 	} = attributes;
+
 	const [ activeTab, setActiveTab ] = useState( 'style' );
+
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
@@ -259,6 +270,10 @@ function KadenceAdvancedHeading( props ) {
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
+		if ( attributes.inQueryBlock && null === shouldDynamicReplace ) {
+			setAttributes( { shouldDynamicReplace: 1 } )
+		}
 
 		// Update Old Styles
 		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
@@ -503,44 +518,11 @@ function KadenceAdvancedHeading( props ) {
 				paddingLeft  : ( previewIconPaddingLeft ? getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) : undefined ),
 			}}/>
 		);
-
 	}
-	const dynamicHeadingContent = (
-			<TagHTML
-				style={{
-					display: icon ? 'flex' : undefined,
-					alignItems: icon ? iconVerticalAlign : undefined,
-					gap: icon ? '0.25em' : undefined,
-					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
-					textAlign: previewAlign ? previewAlign : undefined,
-					backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput( background ) : undefined,
-					color          : color ? KadenceColorOutput( color ) : undefined,
-					fontWeight     : fontWeight,
-					fontStyle      : fontStyle,
-					fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-					lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
-					letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
-					textTransform  : ( textTransform ? textTransform : undefined ),
-					fontFamily     : ( typography ? renderTypography : '' ),
-					paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
-					paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
-					paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
-					paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
-					marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-					marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-					marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-					marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-					textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-				}}
-				className={classes}
-			>
-					{iconSide === 'left' && renderIcon()}
 
-					{applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content' )}
+	const isHeadingDynamic = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
+	const richTextFormats = ! shouldDynamicReplace ? ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'] : ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
 
-					{iconSide === 'right' && renderIcon()}
-		</TagHTML>
-	);
 	const headingContent = (
 			<TagHTML
 			className={classes}
@@ -573,35 +555,42 @@ function KadenceAdvancedHeading( props ) {
 			}}>
 				{iconSide === 'left' && renderIcon()}
 
-				<RichText
-					id={ 'adv-heading' + uniqueID }
-					tagName="span"
-					className={'kb-adv-heading-inner'}
-					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
-					value={content}
-					onChange={(value) => setAttributes({content: value})}
-					onMerge={mergeBlocks}
-					onSplit={(value) => {
-						if (!value) {
-							return createBlock('core/paragraph');
-						}
-						return createBlock('kadence/advancedheading', {
-							...attributes,
-							content: value,
-						});
-					}}
-					onReplace={onReplace}
-					onRemove={() => onReplace([])}
-					style={{
-						fontWeight: fontWeight,
-						fontStyle: fontStyle,
-						letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
-						textTransform: (textTransform ? textTransform : undefined),
-						fontFamily: (typography ? renderTypography : ''),
-						textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
-					}}
-					placeholder={__('Write something…', 'kadence-blocks')}
-				/>
+				{ ! isHeadingDynamic && (
+					<RichText
+						id={ 'adv-heading' + uniqueID }
+						tagName="span"
+						className={'kb-adv-heading-inner'}
+						allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', richTextFormats, 'kadence/advancedheading') : undefined)}
+						value={content}
+						onChange={(value) => setAttributes({content: value})}
+						onMerge={mergeBlocks}
+						onSplit={(value) => {
+							if (!value) {
+								return createBlock('core/paragraph');
+							}
+							return createBlock('kadence/advancedheading', {
+								...attributes,
+								content: value,
+							});
+						}}
+						onReplace={onReplace}
+						onRemove={() => onReplace([])}
+						style={{
+							fontWeight: fontWeight,
+							fontStyle: fontStyle,
+							letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
+							textTransform: (textTransform ? textTransform : undefined),
+							fontFamily: (typography ? renderTypography : ''),
+							textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
+						}}
+						placeholder={__('Write something…', 'kadence-blocks')}
+					/>
+				) }
+				{ isHeadingDynamic && (
+					<>
+						{ applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content', setAttributes, context ) }
+					</>
+				) }
 
 				{iconSide === 'right' && renderIcon()}
 
@@ -616,7 +605,7 @@ function KadenceAdvancedHeading( props ) {
 				event.preventDefault();
 			}}
 		>
-			{undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable ? dynamicHeadingContent : headingContent}
+			{headingContent}
 		</a>
 	);
 	const wrapperClasses = classnames({
@@ -677,6 +666,9 @@ function KadenceAdvancedHeading( props ) {
 		}
 
 	}, [ isSelected ] );
+
+	//console.log('heading', isHeadingDynamic, kadenceDynamic, attributes)
+	//console.log(1, shouldDynamicReplace, richTextFormats )
 
 	return (
 		<div {...blockProps}>
@@ -806,6 +798,21 @@ function KadenceAdvancedHeading( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
+				{ ! isHeadingDynamic && (
+					<Toolbar>
+						<Button
+							className="kb-dynamic-menu"
+							icon={ dynamicIcon }
+							onClick={ () => setAttributes( { shouldDynamicReplace: shouldDynamicReplace ? 0 : 1 } ) }
+							isPressed={ ( shouldDynamicReplace ) }
+							label={  __( 'Dynamic Replace Mode', 'kadence-blocks-pro' ) }
+							showTooltip={ true }
+						/>
+					</Toolbar>
+				)}
+				{ Boolean( shouldDynamicReplace ) && (
+					<DynamicTextControl dynamicAttribute={'content'} {...props} />
+				)}
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/advancedheading' ) && (
 				<InspectorControls>

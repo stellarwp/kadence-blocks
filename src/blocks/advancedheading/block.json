@@ -532,6 +532,10 @@
 	"borderRadiusUnit": {
 	  "type": "string",
 	  "default": "px"
+	},
+	"shouldDynamicReplace": {
+		"type": "integer",
+		"default": null
 	}
   },
   "usesContext": [
