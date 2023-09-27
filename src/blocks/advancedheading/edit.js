@@ -98,9 +98,7 @@ import {
 	SelectControl,
 	ToolbarDropdownMenu,
 	TextControl,
-	ToolbarButton,
-	Toolbar,
-	Button,
+	ToggleControl,
 } from '@wordpress/components';
 
 import {
@@ -560,7 +558,8 @@ function KadenceAdvancedHeading( props ) {
 						id={ 'adv-heading' + uniqueID }
 						tagName="span"
 						className={'kb-adv-heading-inner'}
-						allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', richTextFormats, 'kadence/advancedheading') : undefined)}
+						allowedFormats={richTextFormats}
+						withoutInteractiveFormatting={true}
 						value={content}
 						onChange={(value) => setAttributes({content: value})}
 						onMerge={mergeBlocks}
@@ -668,7 +667,6 @@ function KadenceAdvancedHeading( props ) {
 	}, [ isSelected ] );
 
 	//console.log('heading', isHeadingDynamic, kadenceDynamic, attributes)
-	//console.log(1, shouldDynamicReplace, richTextFormats )
 
 	return (
 		<div {...blockProps}>
@@ -798,18 +796,6 @@ function KadenceAdvancedHeading( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
-				{ ! isHeadingDynamic && (
-					<Toolbar>
-						<Button
-							className="kb-dynamic-menu"
-							icon={ dynamicIcon }
-							onClick={ () => setAttributes( { shouldDynamicReplace: shouldDynamicReplace ? 0 : 1 } ) }
-							isPressed={ ( shouldDynamicReplace ) }
-							label={  __( 'Dynamic Replace Mode', 'kadence-blocks-pro' ) }
-							showTooltip={ true }
-						/>
-					</Toolbar>
-				)}
 				{ Boolean( shouldDynamicReplace ) && (
 					<DynamicTextControl dynamicAttribute={'content'} {...props} />
 				)}
@@ -1338,7 +1324,17 @@ function KadenceAdvancedHeading( props ) {
 						setAttributes( {
 							anchor: nextValue,
 						} );
-					}}/>
+					}}
+				/>
+
+				{ ! isHeadingDynamic && (
+					<ToggleControl
+						label={__( 'Dynamic Replace Mode', 'kadence-blocks' )}
+						help={__( 'Sets the dynamic content to replace the blocks content, rather than inserting it inline.', 'kadence-blocks' )}
+						checked={shouldDynamicReplace}
+						onChange={(val) => setAttributes( { shouldDynamicReplace: shouldDynamicReplace ? 0 : 1 } )}
+					/>
+				)}
 			</InspectorAdvancedControls>
 			{kadenceAnimation && (
 				<div className={`kt-animation-wrap-${kadenceAnimation}`}>
