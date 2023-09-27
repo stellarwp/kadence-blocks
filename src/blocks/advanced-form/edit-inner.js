@@ -511,10 +511,6 @@ export function EditInner( props ) {
 				{( activeTab === 'general' ) &&
 
 					<>
-						{ ! direct && (
-							<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Selected Form', 'kadence-blocks' ) }
 						<KadencePanelBody
 							panelName={'kb-advanced-form-selected-switch'}
 							title={ __( 'Form', 'kadence-blocks' ) }
