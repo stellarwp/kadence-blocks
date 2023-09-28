@@ -97,7 +97,7 @@ export function KadenceAiWizard( props ) {
 		});
 
 		if (saveStatus) {
-			onWizardClose();
+			onWizardClose( 'saved' );
 		}
 	}
 

@@ -149,7 +149,6 @@ export function preMadeCollectionsHelper() {
 					image_sizes: COLLECTION_REQUEST_IMAGE_SIZES,
 				} ),
 			} );
-			console.log(response);
 			const responseData = SafeParseJSON( response, false );
 			if ( responseData && responseData?.data ) {
 				if ( 'aiGenerated' === industry ) {
