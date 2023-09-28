@@ -355,6 +355,10 @@
 	"noCustomDefaults": {
 		"type": "boolean",
 		"default": false
+	},
+	"shouldDynamicReplace": {
+		"type": "integer",
+		"default": null
 	}
   },
   "supports": {
@@ -370,6 +374,9 @@
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow" 
   ]
 }

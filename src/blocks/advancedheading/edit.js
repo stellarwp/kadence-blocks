@@ -344,6 +344,10 @@ function KadenceAdvancedHeading( props ) {
 		} );
 	};
 
+	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
+	const richTextFormatsBase = ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
+	const richTextFormats = ! shouldDynamicReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
+
 	const renderTypography = typography && !typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
 	const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 	const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
@@ -492,7 +496,7 @@ function KadenceAdvancedHeading( props ) {
 	const classes = classnames( {
 		[ `kt-adv-heading${uniqueID}` ]: uniqueID,
 		[ 'kadence-advancedheading-text' ]                  : true,
-		'kb-content-is-dynamic'        : undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable,
+		'kb-content-is-dynamic'        : isDynamicReplaced,
 		[ textColorClass ]             : textColorClass,
 		'has-text-color'               : textColorClass,
 		[ textBackgroundColorClass ]   : textBackgroundColorClass,
@@ -517,9 +521,6 @@ function KadenceAdvancedHeading( props ) {
 			}}/>
 		);
 	}
-
-	const isHeadingDynamic = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
-	const richTextFormats = ! shouldDynamicReplace ? ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'] : ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
 
 	const headingContent = (
 			<TagHTML
@@ -553,12 +554,12 @@ function KadenceAdvancedHeading( props ) {
 			}}>
 				{iconSide === 'left' && renderIcon()}
 
-				{ ! isHeadingDynamic && (
+				{ ! isDynamicReplaced && (
 					<RichText
 						id={ 'adv-heading' + uniqueID }
 						tagName="span"
 						className={'kb-adv-heading-inner'}
-						allowedFormats={richTextFormats}
+						allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', richTextFormats, 'kadence/advancedheading' )}
 						withoutInteractiveFormatting={true}
 						value={content}
 						onChange={(value) => setAttributes({content: value})}
@@ -585,7 +586,7 @@ function KadenceAdvancedHeading( props ) {
 						placeholder={__('Write something…', 'kadence-blocks')}
 					/>
 				) }
-				{ isHeadingDynamic && (
+				{ isDynamicReplaced && (
 					<>
 						{ applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content', setAttributes, context ) }
 					</>
@@ -665,8 +666,6 @@ function KadenceAdvancedHeading( props ) {
 		}
 
 	}, [ isSelected ] );
-
-	//console.log('heading', isHeadingDynamic, kadenceDynamic, attributes)
 
 	return (
 		<div {...blockProps}>
@@ -1307,12 +1306,9 @@ function KadenceAdvancedHeading( props ) {
 							)}
 
 							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
-
 						</>
-
 					)}
-
-						</InspectorControls>
+				</InspectorControls>
 			)}
 			<InspectorAdvancedControls>
 				<TextControl
@@ -1326,8 +1322,7 @@ function KadenceAdvancedHeading( props ) {
 						} );
 					}}
 				/>
-
-				{ ! isHeadingDynamic && (
+				{ ! isDynamicReplaced && (
 					<ToggleControl
 						label={__( 'Dynamic Replace Mode', 'kadence-blocks' )}
 						help={__( 'Sets the dynamic content to replace the blocks content, rather than inserting it inline.', 'kadence-blocks' )}
