@@ -98,13 +98,14 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.20 =
-Release Date: September TBD, 2023
+Release Date: October 2nd, 2023
 * Fix: Issue with setting numeric padding & margin on advanced form.
 * Fix: HTML Anchors and additional CSS classes on advanced form.
 * Fix: Block defaults not applying on Testimonial blocks.
 * Fix: Issue when skipping advanced form layout settings.
 * Fix: Custom "required" error messages not displaying for advanced form.
 * Add: Advanced buttons support Rank Math content analysis.
+* Add: Option to choose heading font family when using Kadence Theme.
 
 = 3.1.19 =
 Release Date: September 20th, 2023
