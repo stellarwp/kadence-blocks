@@ -269,9 +269,6 @@ function KadenceAdvancedHeading( props ) {
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 
-		if ( attributes.inQueryBlock && null === shouldDynamicReplace ) {
-			setAttributes( { shouldDynamicReplace: 1 } )
-		}
 
 		// Update Old Styles
 		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
@@ -330,6 +327,12 @@ function KadenceAdvancedHeading( props ) {
 			setAttributes( { mobileMarkBorderStyles: tempBorderStyle } );
 		}
 	}, [] );
+
+	useEffect( () => {
+		if ( inQueryBlock && null === shouldDynamicReplace ) {
+			setAttributes( { shouldDynamicReplace: 1 } )
+		}
+	}, [ inQueryBlock ] );
 
 	const saveShadow = ( value ) => {
 		const newItems = textShadow.map( ( item, thisIndex ) => {

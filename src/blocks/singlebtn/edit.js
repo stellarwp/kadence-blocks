@@ -310,13 +310,15 @@ export default function KadenceButtonEdit( props ) {
 			addUniqueID( uniqueID, clientId );
 		}
 
-		let iqb = getInQueryBlock( context, inQueryBlock )
-		setAttributes( { inQueryBlock: iqb } );
+		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+	}, [] );
 
-		if ( iqb && null === shouldDynamicReplace ) {
+	useEffect( () => {
+		if ( inQueryBlock && null === shouldDynamicReplace ) {
 			setAttributes( { shouldDynamicReplace: 1 } )
 		}
-	}, [] );
+	}, [ inQueryBlock ] );
+
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );
 	useEffect( () => {
