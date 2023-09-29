@@ -461,7 +461,8 @@ export function ImageEdit( props ) {
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
 		'image-is-svg': url && url.endsWith( '.svg' ),
-		[ `kadence-image${ uniqueID }` ]: uniqueID
+		[ `kadence-image${ uniqueID }` ]: uniqueID,
+		'kb-image-max-width-set' : imgMaxWidth,
 	} );
 
 	// const blockProps = useBlockProps( {

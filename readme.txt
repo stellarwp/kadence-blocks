@@ -97,6 +97,11 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.0 =
+Release Date: October TBD, 2023
+* Add: New Flex control options in section block.
+* Add: New auto option for margin controls.
+
 = 3.1.20 =
 Release Date: September TBD, 2023
 * Fix: Issue with setting numeric padding & margin on advanced form.

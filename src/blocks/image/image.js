@@ -1115,6 +1115,7 @@ export default function Image( {
 								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
+								allowAuto={ true }
 							/>
 						</KadencePanelBody>
 
@@ -1383,7 +1384,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: previewMaxWidth ?? backupWidth,
+					width: previewMaxWidth && '' !== previewMaxWidth ? previewMaxWidth : backupWidth,
 					height: 'auto',
 				} }
 				showHandle={ isSelected }

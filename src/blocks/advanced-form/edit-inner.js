@@ -884,6 +884,7 @@ export function EditInner( props ) {
 								onUnit={(value) => setMetaAttribute( value, 'marginUnit' )}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
+								allowAuto={ true}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody

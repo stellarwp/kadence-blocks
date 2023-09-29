@@ -1,5 +1,5 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"title": "Section",
 	"name": "kadence/column",
 	"category": "kadence-blocks",
@@ -249,6 +249,10 @@
 			"type": "string",
 			"default": "px"
 		},
+		"gutterVariable": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
 		"rowGap": {
 			"type": "array",
 			"default": [ "", "", "" ]
@@ -256,6 +260,10 @@
 		"rowGapUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"rowGapVariable": {
+			"type": "array",
+			"default": [ "", "", "" ]
 		},
 		"flexBasis": {
 			"type": "array",

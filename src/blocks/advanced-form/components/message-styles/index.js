@@ -204,6 +204,7 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 				unit={ messageMarginUnit }
 				units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 				onUnit={ ( value ) => setMetaAttribute( value, 'messageMarginUnit' ) }
+				allowAuto={ true }
 			/>
 		</>
 	);

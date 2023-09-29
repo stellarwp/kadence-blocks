@@ -677,6 +677,7 @@ function KadenceTableOfContents( props ) {
 									onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
 									onMouseOver={ marginMouseOver.onMouseOver }
 									onMouseOut={ marginMouseOver.onMouseOut }
+									allowAuto={ true }
 								/>
 								<ResponsiveRangeControls
 									label={__( 'Max Width', 'kadence-blocks' )}
@@ -939,6 +940,7 @@ function KadenceTableOfContents( props ) {
 									onUnit={( value ) => setAttributes( { contentMarginType: value } )}
 									onMouseOver={ contentMouseOver.onMouseOver }
 									onMouseOut={ contentMouseOver.onMouseOut }
+									allowAuto={ true }
 								/>
 							</KadencePanelBody>
 							<KadencePanelBody

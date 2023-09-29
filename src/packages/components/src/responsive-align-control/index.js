@@ -190,12 +190,12 @@ export default function ResponsiveAlignControls( {
 			{
 				icon: arrowUp,
 				title: __( 'Vertical Reverse', 'kadence-blocks' ),
-				align: 'horizontal-reverse',
+				align: 'vertical-reverse',
 			},
 			{
 				icon: arrowLeft,
 				title: __( 'Horizontal Reverse', 'kadence-blocks' ),
-				align: 'vertical-reverse',
+				align: 'horizontal-reverse',
 			},
 		]
 	} else if ( type === 'justify-align' ) {

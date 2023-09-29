@@ -2550,6 +2550,7 @@ function KadenceInfoBox( props ) {
 									onUnit={(value) => setAttributes({containerMarginUnit: value})}
 									onMouseOver={marginMouseOver.onMouseOver}
 									onMouseOut={marginMouseOver.onMouseOut}
+									allowAuto={ true }
 								/>
 								<ResponsiveRangeControls
 									label={__( 'Max Width', 'kadence-blocks' )}

@@ -1321,6 +1321,7 @@ function KadenceTabs( props ) {
 																				unit={titleMarginUnit}
 																				units={[ 'px', 'em', 'rem' ]}
 																				onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+																				allowAuto={ true }
 																			/>
 																			{ __('Left & right title margins are ignored in % width tabs', 'kadence-blocks') }
 
@@ -1402,6 +1403,7 @@ function KadenceTabs( props ) {
 													unit={titleMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+													allowAuto={ true }
 												/>
 											</Fragment>
 										)}

@@ -1306,6 +1306,7 @@ function KadenceAdvancedHeading( props ) {
 											onUnit={(value) => setAttributes({marginType: value})}
 											onMouseOver={marginMouseOver.onMouseOver}
 											onMouseOut={marginMouseOver.onMouseOut}
+											allowAuto={ true }
 										/>
 									</KadencePanelBody>
 
