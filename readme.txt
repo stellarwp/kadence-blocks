@@ -103,6 +103,7 @@ Release Date: September TBD, 2023
 * Fix: HTML Anchors and additional CSS classes on advanced form.
 * Fix: Block defaults not applying on Testimonial blocks.
 * Fix: Issue when skipping advanced form layout settings.
+* Fix: Custom "required" error messages not displaying for advanced form.
 * Add: Advanced buttons support Rank Math content analysis.
 
 = 3.1.19 =

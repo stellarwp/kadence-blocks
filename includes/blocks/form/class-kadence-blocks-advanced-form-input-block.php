@@ -314,7 +314,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	}
 
 	/**
-	 * Get any additonal attributes to be applied to the form <input /> element
+	 * Get any additional attributes to be applied to the form <input /> element
 	 *
 	 * @param array $attributes The block attributes.
 	 *
@@ -323,11 +323,12 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function additional_field_attributes( $attributes ) {
 		$additional_attributes = '';
 		$additional_attributes .= $this->a11y_helpers( $attributes );
+		$additional_attributes .= $this->custom_required_message( $attributes );
 
 		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
 	}
 	/**
-	 * Get any additonal attributes to be applied to the form <fieldset /> element
+	 * Get any additional attributes to be applied to the form <fieldset /> element
 	 *
 	 * @param array $attributes The block attributes.
 	 *
@@ -335,8 +336,22 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function additional_fieldset_attributes( $attributes ) {
 		$additional_attributes = '';
+		$additional_attributes .= $this->custom_required_message( $attributes );
 
 		return apply_filters( 'kadence_advanced_form_input_attributes', $additional_attributes, $attributes );
+	}
+	/**
+	 * Generates data attribute for the users custom "required" error message
+	 * @param $attributes
+	 *
+	 * @return string
+	 */
+	public function custom_required_message( $attributes ) {
+		if( !empty( $attributes['requiredMessage'] ) ){
+			return ' data-kb-required-message="' . esc_attr( $attributes['requiredMessage'] ) . '" ';
+		}
+
+		return '';
 	}
 }
 
