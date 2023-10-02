@@ -108,6 +108,7 @@ Release Date: October 3rd, 2023
 * Fix: HTML Anchors and additional CSS classes on advanced form.
 * Fix: Block defaults not applying on Testimonial blocks.
 * Fix: Issue when skipping advanced form layout settings.
+* Fix: Issue with email dynamic replacements.
 * Fix: Custom "required" error messages not displaying for advanced form.
 
 = 3.1.19 =
