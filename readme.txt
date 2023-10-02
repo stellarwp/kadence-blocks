@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.19
+Stable tag: 3.1.20
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,14 +98,17 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.20 =
-Release Date: October 2nd, 2023
+Release Date: October 3rd, 2023
+* Add: Advanced buttons support Rank Math content analysis.
+* Add: Option to choose heading font family when using Kadence Theme.
+* Update: Brand icons, add threads, and a square x icon.
+* Fix: Issue with some brand icons not being center.
+* Fix: Issue with icon list margin not working in mega menu.
 * Fix: Issue with setting numeric padding & margin on advanced form.
 * Fix: HTML Anchors and additional CSS classes on advanced form.
 * Fix: Block defaults not applying on Testimonial blocks.
 * Fix: Issue when skipping advanced form layout settings.
 * Fix: Custom "required" error messages not displaying for advanced form.
-* Add: Advanced buttons support Rank Math content analysis.
-* Add: Option to choose heading font family when using Kadence Theme.
 
 = 3.1.19 =
 Release Date: September 20th, 2023
