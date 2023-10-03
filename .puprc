@@ -3,8 +3,8 @@
 		"composer install --no-dev",
 		"npm install --legacy-peer-deps",
 		"npm run build",
-		"composer wp-cli",
-		"composer wp i18n make-pot ./ languages/kadence-blocks.pot -- --include=includes,dist --debug"
+		"composer wp",
+		"composer wp i18n make-pot ../ languages/kadence-blocks.pot -- --include=includes,dist --debug"
 	],
 	"build_dev": [
 		"composer install --no-dev",
