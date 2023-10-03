@@ -110,6 +110,7 @@ Release Date: October 3rd, 2023
 * Fix: Issue when skipping advanced form layout settings.
 * Fix: Issue with email dynamic replacements.
 * Fix: Custom "required" error messages not displaying for advanced form.
+* Fix: Support conditional logic on file upload fields in advanced form.
 
 = 3.1.19 =
 Release Date: September 20th, 2023
