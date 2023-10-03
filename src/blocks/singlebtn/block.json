@@ -355,10 +355,6 @@
 	"noCustomDefaults": {
 		"type": "boolean",
 		"default": false
-	},
-	"shouldDynamicReplace": {
-		"type": "integer",
-		"default": null
 	}
   },
   "supports": {

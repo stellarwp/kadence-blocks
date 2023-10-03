@@ -34,7 +34,8 @@ import {
 	CopyPasteAttributes,
 	KadenceIconPicker,
 	IconRender,
-	DynamicTextControl
+	DynamicTextControl,
+	DynamicInlineReplaceControl,
 } from '@kadence/components';
 
 import {
@@ -228,7 +229,6 @@ function KadenceAdvancedHeading( props ) {
 		tabletBorderRadius,
 		mobileBorderRadius,
 		borderRadiusUnit,
-		shouldDynamicReplace,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'style' );
@@ -328,12 +328,6 @@ function KadenceAdvancedHeading( props ) {
 		}
 	}, [] );
 
-	useEffect( () => {
-		if ( inQueryBlock && null === shouldDynamicReplace ) {
-			setAttributes( { shouldDynamicReplace: 1 } )
-		}
-	}, [ inQueryBlock ] );
-
 	const saveShadow = ( value ) => {
 		const newItems = textShadow.map( ( item, thisIndex ) => {
 			if ( 0 === thisIndex ) {
@@ -349,7 +343,7 @@ function KadenceAdvancedHeading( props ) {
 
 	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
 	const richTextFormatsBase = ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
-	const richTextFormats = ! shouldDynamicReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
+	const richTextFormats = ! kadenceDynamic?.['content']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
 
 	const renderTypography = typography && !typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
 	const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
@@ -798,7 +792,7 @@ function KadenceAdvancedHeading( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
-				{ Boolean( shouldDynamicReplace ) && (
+				{ Boolean( kadenceDynamic?.['content']?.shouldReplace ) && (
 					<DynamicTextControl dynamicAttribute={'content'} {...props} />
 				)}
 			</BlockControls>
@@ -1313,6 +1307,9 @@ function KadenceAdvancedHeading( props ) {
 					)}
 				</InspectorControls>
 			)}
+
+			<DynamicInlineReplaceControl dynamicAttribute={'content'} {...props} />
+
 			<InspectorAdvancedControls>
 				<TextControl
 					label={__( 'HTML Anchor', 'kadence-blocks' )}
@@ -1325,15 +1322,8 @@ function KadenceAdvancedHeading( props ) {
 						} );
 					}}
 				/>
-				{ ! isDynamicReplaced && (
-					<ToggleControl
-						label={__( 'Dynamic Replace Mode', 'kadence-blocks' )}
-						help={__( 'Sets the dynamic content to replace the blocks content, rather than inserting it inline.', 'kadence-blocks' )}
-						checked={shouldDynamicReplace}
-						onChange={(val) => setAttributes( { shouldDynamicReplace: shouldDynamicReplace ? 0 : 1 } )}
-					/>
-				)}
 			</InspectorAdvancedControls>
+
 			{kadenceAnimation && (
 				<div className={`kt-animation-wrap-${kadenceAnimation}`}>
 					<div id={`animate-id${uniqueID}`} className={'aos-animate kt-animation-wrap'} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}

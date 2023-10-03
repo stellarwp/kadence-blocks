@@ -17,6 +17,7 @@ export { default as HeadingLevelIcon } from './heading-level-icon';
 export { default as BoxShadowControl } from './box-shadow-control';
 export { default as DynamicImageControl } from './dynamic-image-control';
 export { default as DynamicTextControl } from './dynamic-text-control';
+export { default as DynamicInlineReplaceControl } from './dynamic-inline-replace-control';
 export { default as DynamicBackgroundControl } from './dynamic-background-control';
 export { default as DynamicGalleryControl } from './dynamic-gallery-control';
 export { default as DropShadowControl } from './drop-shadow-control';

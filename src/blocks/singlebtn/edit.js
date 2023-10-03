@@ -43,7 +43,8 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
-	DynamicTextControl
+	DynamicTextControl,
+	DynamicInlineReplaceControl,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
@@ -255,7 +256,6 @@ export default function KadenceButtonEdit( props ) {
 		hideLink,
 		inQueryBlock,
 		kadenceDynamic,
-		shouldDynamicReplace
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -312,12 +312,6 @@ export default function KadenceButtonEdit( props ) {
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
-
-	useEffect( () => {
-		if ( inQueryBlock && null === shouldDynamicReplace ) {
-			setAttributes( { shouldDynamicReplace: 1 } )
-		}
-	}, [ inQueryBlock ] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );
@@ -530,7 +524,7 @@ export default function KadenceButtonEdit( props ) {
 
 	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'text' ] && undefined !== kadenceDynamic[ 'text' ].enable && kadenceDynamic[ 'text' ].enable );
 	const richTextFormatsBase = [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ];
-	const richTextFormats = ! shouldDynamicReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
+	const richTextFormats = ! kadenceDynamic?.['text']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
 
 	return (
 		<div {...blockProps}>
@@ -580,7 +574,7 @@ export default function KadenceButtonEdit( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
-				{ Boolean( shouldDynamicReplace ) && (
+				{ Boolean( kadenceDynamic?.['text']?.shouldReplace ) && (
 					<DynamicTextControl dynamicAttribute={'text'} {...props} />
 				)}
 			</BlockControls>
@@ -1179,16 +1173,7 @@ export default function KadenceButtonEdit( props ) {
 						)}
 					</InspectorControls>
 
-					<InspectorAdvancedControls>
-						{ ! isDynamicReplaced && (
-							<ToggleControl
-								label={__( 'Dynamic Replace Mode', 'kadence-blocks' )}
-								help={__( 'Sets the dynamic content to replace the blocks content, rather than inserting it inline.', 'kadence-blocks' )}
-								checked={shouldDynamicReplace}
-								onChange={(val) => setAttributes( { shouldDynamicReplace: shouldDynamicReplace ? 0 : 1 } )}
-							/>
-						)}
-					</InspectorAdvancedControls>
+					<DynamicInlineReplaceControl dynamicAttribute={'text'} {...props} />
 				</>
 			)}
 			<div
