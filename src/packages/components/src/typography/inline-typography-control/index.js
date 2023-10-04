@@ -112,11 +112,25 @@ class InlineTypographyControls extends Component {
 			const custom_fonts = [
 				{
 					type: 'group',
-					label: __( 'Custom Fonts', 'kadence-custom-fonts' ),
+					label: __( 'Custom Fonts', 'kadence-blocks' ),
 					options: newOptions,
 				},
 			];
 			options = custom_fonts.concat( options );
+		}
+		if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params?.isKadenceT ) {
+			const themeOptions = [
+				{ label: 'Inherit Heading Font Family', value: 'var( --global-heading-font-family, inherit )', google: false },
+				{ label: 'Inherit Body Font Family', value: 'var( --global-body-font-family, inherit )', google: false },
+			];
+			const theme_fonts = [
+				{
+					type: 'group',
+					label: __( 'Theme Global Fonts', 'kadence-blocks' ),
+					options: themeOptions,
+				},
+			];
+			options = theme_fonts.concat( options );
 		}
 		let typographyOptions = applyFilters( 'kadence.typography_options', options );
 		let typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );

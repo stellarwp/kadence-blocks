@@ -2,14 +2,14 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.1.14\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.1.20\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kadence-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-11T16:15:27+00:00\n"
+"POT-Creation-Date: 2023-10-03T18:47:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: kadence-blocks\n"
@@ -151,28 +151,49 @@ msgstr ""
 msgid "Submission Failed, reCaptcha spam prevention. Please reload your page and try again."
 msgstr ""
 
+#: includes/advanced-form/advanced-form-duplicate.php:55
+msgid "Make a duplicate from this."
+msgstr ""
+
+#: includes/advanced-form/advanced-form-duplicate.php:56
+msgid "Duplicate"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-duplicate.php:66
+msgid "No post to duplicate has been supplied!"
+msgstr ""
+
+#. translators: %s: product id
+#: includes/advanced-form/advanced-form-duplicate.php:76
+msgid "Post creation failed, could not find original post: %s"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-duplicate.php:95
+msgid "%s (Copy)"
+msgstr ""
+
 #: includes/advanced-form/advanced-form-rest-api.php:45
 #: includes/advanced-form/advanced-form-rest-api.php:53
 msgid "You do not have permission to view these posts."
 msgstr ""
 
-#: includes/advanced-form/advanced-form-submit-actions.php:117
+#: includes/advanced-form/advanced-form-submit-actions.php:116
 #: includes/form-ajax.php:65
 #: includes/form-ajax.php:207
 msgid "Submission"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-submit-actions.php:212
+#: includes/advanced-form/advanced-form-submit-actions.php:209
 #: includes/form-ajax.php:369
 msgid "No Response from MailerLite"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-submit-actions.php:217
+#: includes/advanced-form/advanced-form-submit-actions.php:214
 #: includes/form-ajax.php:373
 msgid "MailerLite Misconfiguration"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-submit-actions.php:217
+#: includes/advanced-form/advanced-form-submit-actions.php:214
 #: includes/form-ajax.php:373
 msgid "MailerLite Failed"
 msgstr ""
@@ -182,7 +203,7 @@ msgstr ""
 msgid "[block rendering halted]"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:509
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:512
 #: includes/blocks/class-kadence-blocks-form-block.php:807
 #: dist/blocks-advanced-form.js:3
 #: dist/blocks-form.js:3
@@ -191,46 +212,46 @@ msgstr ""
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:511
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:514
 #: includes/blocks/class-kadence-blocks-form-block.php:809
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:242
+#: src/blocks/advanced-form/fields/accept/edit.js:241
 #: src/blocks/advanced-form/fields/checkbox/edit.js:367
-#: src/blocks/advanced-form/fields/date/edit.js:242
-#: src/blocks/advanced-form/fields/email/edit.js:242
+#: src/blocks/advanced-form/fields/date/edit.js:237
+#: src/blocks/advanced-form/fields/email/edit.js:241
 #: src/blocks/advanced-form/fields/file/edit.js:283
 #: src/blocks/advanced-form/fields/number/edit.js:261
 #: src/blocks/advanced-form/fields/radio/edit.js:370
 #: src/blocks/advanced-form/fields/select/edit.js:363
 #: src/blocks/advanced-form/fields/telephone/edit.js:239
 #: src/blocks/advanced-form/fields/text/edit.js:239
-#: src/blocks/advanced-form/fields/textarea/edit.js:246
-#: src/blocks/advanced-form/fields/time/edit.js:237
+#: src/blocks/advanced-form/fields/textarea/edit.js:247
+#: src/blocks/advanced-form/fields/time/edit.js:231
 #: src/blocks/form/edit.js:1185
 msgid "is required"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:512
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:515
 #: includes/blocks/class-kadence-blocks-form-block.php:810
 msgid "does not match"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:513
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:516
 #: includes/blocks/class-kadence-blocks-form-block.php:811
 #: dist/blocks-form.js:1
 #: src/blocks/form/edit.js:1193
 msgid "is not valid"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:514
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:517
 #: includes/blocks/class-kadence-blocks-form-block.php:812
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:515
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:518
 #: includes/blocks/class-kadence-blocks-form-block.php:813
 msgid "Item"
 msgstr ""
@@ -324,14 +345,14 @@ msgstr ""
 #: dist/blocks-form.js:1
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:183
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:199
-#: src/blocks/advanced-form/fields/date/edit.js:217
-#: src/blocks/advanced-form/fields/email/edit.js:217
+#: src/blocks/advanced-form/fields/date/edit.js:212
+#: src/blocks/advanced-form/fields/email/edit.js:216
 #: src/blocks/advanced-form/fields/number/edit.js:236
 #: src/blocks/advanced-form/fields/radio/edit.js:345
 #: src/blocks/advanced-form/fields/telephone/edit.js:214
 #: src/blocks/advanced-form/fields/text/edit.js:214
-#: src/blocks/advanced-form/fields/textarea/edit.js:221
-#: src/blocks/advanced-form/fields/time/edit.js:212
+#: src/blocks/advanced-form/fields/textarea/edit.js:222
+#: src/blocks/advanced-form/fields/time/edit.js:206
 #: src/blocks/form/edit.js:1061
 msgid "First Name"
 msgstr ""
@@ -343,14 +364,14 @@ msgstr ""
 #: dist/blocks-form.js:1
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:184
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:200
-#: src/blocks/advanced-form/fields/date/edit.js:218
-#: src/blocks/advanced-form/fields/email/edit.js:218
+#: src/blocks/advanced-form/fields/date/edit.js:213
+#: src/blocks/advanced-form/fields/email/edit.js:217
 #: src/blocks/advanced-form/fields/number/edit.js:237
 #: src/blocks/advanced-form/fields/radio/edit.js:346
 #: src/blocks/advanced-form/fields/telephone/edit.js:215
 #: src/blocks/advanced-form/fields/text/edit.js:215
-#: src/blocks/advanced-form/fields/textarea/edit.js:222
-#: src/blocks/advanced-form/fields/time/edit.js:213
+#: src/blocks/advanced-form/fields/textarea/edit.js:223
+#: src/blocks/advanced-form/fields/time/edit.js:207
 #: src/blocks/form/edit.js:1062
 msgid "Last Name"
 msgstr ""
@@ -367,10 +388,10 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:222
-#: src/blocks/advanced-form/fields/date/edit.js:223
+#: src/blocks/advanced-form/fields/date/edit.js:217
+#: src/blocks/advanced-form/fields/date/edit.js:218
+#: src/blocks/advanced-form/fields/email/edit.js:221
 #: src/blocks/advanced-form/fields/email/edit.js:222
-#: src/blocks/advanced-form/fields/email/edit.js:223
 #: src/blocks/advanced-form/fields/number/edit.js:241
 #: src/blocks/advanced-form/fields/number/edit.js:242
 #: src/blocks/advanced-form/fields/radio/edit.js:350
@@ -379,10 +400,10 @@ msgstr ""
 #: src/blocks/advanced-form/fields/telephone/edit.js:220
 #: src/blocks/advanced-form/fields/text/edit.js:219
 #: src/blocks/advanced-form/fields/text/edit.js:220
-#: src/blocks/advanced-form/fields/textarea/edit.js:226
 #: src/blocks/advanced-form/fields/textarea/edit.js:227
-#: src/blocks/advanced-form/fields/time/edit.js:217
-#: src/blocks/advanced-form/fields/time/edit.js:218
+#: src/blocks/advanced-form/fields/textarea/edit.js:228
+#: src/blocks/advanced-form/fields/time/edit.js:211
+#: src/blocks/advanced-form/fields/time/edit.js:212
 #: src/blocks/form/edit.js:1066
 #: src/blocks/form/edit.js:1067
 msgid "Address Line 1"
@@ -404,14 +425,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:225
-#: src/blocks/advanced-form/fields/email/edit.js:225
+#: src/blocks/advanced-form/fields/date/edit.js:220
+#: src/blocks/advanced-form/fields/email/edit.js:224
 #: src/blocks/advanced-form/fields/number/edit.js:244
 #: src/blocks/advanced-form/fields/radio/edit.js:353
 #: src/blocks/advanced-form/fields/telephone/edit.js:222
 #: src/blocks/advanced-form/fields/text/edit.js:222
-#: src/blocks/advanced-form/fields/textarea/edit.js:229
-#: src/blocks/advanced-form/fields/time/edit.js:220
+#: src/blocks/advanced-form/fields/textarea/edit.js:230
+#: src/blocks/advanced-form/fields/time/edit.js:214
 #: src/blocks/form/edit.js:1069
 msgid "Postal Code"
 msgstr ""
@@ -429,6 +450,23 @@ msgstr ""
 
 #: includes/class-fluentcrm-form-rest-api.php:132
 msgid "Source"
+msgstr ""
+
+#: includes/class-kadence-blocks-image-picker-rest.php:88
+msgid "Photo by"
+msgstr ""
+
+#: includes/class-kadence-blocks-image-picker-rest.php:107
+#: includes/class-kadence-blocks-image-picker-rest.php:112
+msgid "The Image type to return"
+msgstr ""
+
+#: includes/class-kadence-blocks-image-picker.php:141
+msgid "Photo by:"
+msgstr ""
+
+#: includes/class-kadence-blocks-image-picker.php:144
+msgid "View on Pexels"
 msgstr ""
 
 #: includes/class-kadence-blocks-posts-rest-api.php:427
@@ -519,11 +557,11 @@ msgstr ""
 
 #: includes/class-kadence-blocks-table-of-contents.php:827
 #: includes/class-kadence-blocks-table-of-contents.php:835
-#: includes/settings/class-kadence-blocks-settings.php:1174
+#: includes/settings/class-kadence-blocks-settings.php:1185
 #: dist/blocks-tableofcontents.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/tableofcontents/index.js:19
-#: src/plugins/kadence-control-plugin.js:446
+#: src/plugins/kadence-control-plugin.js:447
 msgid "Table of Contents"
 msgstr ""
 
@@ -562,11 +600,11 @@ msgstr ""
 msgid "%s and higher"
 msgstr ""
 
-#: includes/init.php:399
-#: includes/init.php:427
-#: includes/init.php:454
-#: includes/init.php:498
-#: includes/init.php:527
+#: includes/init.php:400
+#: includes/init.php:428
+#: includes/init.php:455
+#: includes/init.php:499
+#: includes/init.php:528
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-advancedgallery.js:1
@@ -578,8 +616,8 @@ msgstr ""
 #: dist/components.js:14
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/blocks/advanced-form/fields/submit/edit.js:702
-#: src/blocks/advanced-form/fields/submit/edit.js:719
+#: src/blocks/advanced-form/fields/submit/edit.js:704
+#: src/blocks/advanced-form/fields/submit/edit.js:721
 #: src/blocks/advancedgallery/edit.js:771
 #: src/blocks/advancedgallery/edit.js:820
 #: src/blocks/column/edit.js:674
@@ -590,134 +628,134 @@ msgstr ""
 #: src/blocks/column/edit.js:741
 #: src/blocks/column/edit.js:792
 #: src/blocks/iconlist/edit.js:550
-#: src/blocks/infobox/edit.js:1725
+#: src/blocks/infobox/edit.js:1723
 #: src/blocks/listitem/edit.js:249
 #: src/blocks/posts/edit.js:599
-#: src/blocks/singlebtn/edit.js:972
-#: src/blocks/singlebtn/edit.js:989
+#: src/blocks/singlebtn/edit.js:978
+#: src/blocks/singlebtn/edit.js:995
 #: src/packages/components/src/font-size/index.js:142
 #: src/packages/components/src/font-size/index.js:143
 #: src/packages/components/src/gap-controls/index.js:142
 #: src/packages/components/src/gap-controls/index.js:143
-#: src/packages/components/src/typography/inline-typography-control/index.js:141
-#: src/packages/components/src/typography/inline-typography-control/index.js:146
-#: src/packages/components/src/typography/typography-control/index.js:140
-#: src/packages/components/src/typography/typography-control/index.js:145
+#: src/packages/components/src/typography/inline-typography-control/index.js:155
+#: src/packages/components/src/typography/inline-typography-control/index.js:160
+#: src/packages/components/src/typography/typography-control/index.js:154
+#: src/packages/components/src/typography/typography-control/index.js:159
 msgid "Inherit"
 msgstr ""
 
-#: includes/init.php:402
-#: includes/init.php:428
-#: includes/init.php:455
-#: includes/init.php:501
-#: includes/init.php:528
-#: dist/components.js:16
-#: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:147
-#: src/packages/components/src/typography/typography-control/index.js:146
-msgid "Thin 100"
-msgstr ""
-
-#: includes/init.php:404
+#: includes/init.php:403
 #: includes/init.php:429
 #: includes/init.php:456
-#: includes/init.php:503
+#: includes/init.php:502
 #: includes/init.php:529
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:148
-#: src/packages/components/src/typography/typography-control/index.js:147
-msgid "Extra-Light 200"
+#: src/packages/components/src/typography/inline-typography-control/index.js:161
+#: src/packages/components/src/typography/typography-control/index.js:160
+msgid "Thin 100"
 msgstr ""
 
-#: includes/init.php:406
+#: includes/init.php:405
 #: includes/init.php:430
 #: includes/init.php:457
-#: includes/init.php:505
+#: includes/init.php:504
 #: includes/init.php:530
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:149
-#: src/packages/components/src/typography/typography-control/index.js:148
-msgid "Light 300"
+#: src/packages/components/src/typography/inline-typography-control/index.js:162
+#: src/packages/components/src/typography/typography-control/index.js:161
+msgid "Extra-Light 200"
 msgstr ""
 
-#: includes/init.php:408
-#: includes/init.php:410
+#: includes/init.php:407
 #: includes/init.php:431
 #: includes/init.php:458
-#: includes/init.php:507
-#: includes/init.php:509
+#: includes/init.php:506
 #: includes/init.php:531
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:150
-#: src/packages/components/src/typography/typography-control/index.js:149
-msgid "Regular"
+#: src/packages/components/src/typography/inline-typography-control/index.js:163
+#: src/packages/components/src/typography/typography-control/index.js:162
+msgid "Light 300"
 msgstr ""
 
-#: includes/init.php:412
+#: includes/init.php:409
+#: includes/init.php:411
 #: includes/init.php:432
 #: includes/init.php:459
-#: includes/init.php:511
+#: includes/init.php:508
+#: includes/init.php:510
 #: includes/init.php:532
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:151
-#: src/packages/components/src/typography/typography-control/index.js:150
-msgid "Medium 500"
+#: src/packages/components/src/typography/inline-typography-control/index.js:164
+#: src/packages/components/src/typography/typography-control/index.js:163
+msgid "Regular"
 msgstr ""
 
-#: includes/init.php:414
+#: includes/init.php:413
 #: includes/init.php:433
 #: includes/init.php:460
-#: includes/init.php:513
+#: includes/init.php:512
 #: includes/init.php:533
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:152
-#: src/packages/components/src/typography/typography-control/index.js:151
-msgid "Semi-Bold 600"
+#: src/packages/components/src/typography/inline-typography-control/index.js:165
+#: src/packages/components/src/typography/typography-control/index.js:164
+msgid "Medium 500"
 msgstr ""
 
-#: includes/init.php:416
+#: includes/init.php:415
 #: includes/init.php:434
 #: includes/init.php:461
-#: includes/init.php:515
+#: includes/init.php:514
 #: includes/init.php:534
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:153
-#: src/packages/components/src/typography/typography-control/index.js:152
-msgid "Bold 700"
+#: src/packages/components/src/typography/inline-typography-control/index.js:166
+#: src/packages/components/src/typography/typography-control/index.js:165
+msgid "Semi-Bold 600"
 msgstr ""
 
-#: includes/init.php:418
+#: includes/init.php:417
 #: includes/init.php:435
 #: includes/init.php:462
-#: includes/init.php:517
+#: includes/init.php:516
 #: includes/init.php:535
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:154
-#: src/packages/components/src/typography/typography-control/index.js:153
-msgid "Extra-Bold 800"
+#: src/packages/components/src/typography/inline-typography-control/index.js:167
+#: src/packages/components/src/typography/typography-control/index.js:166
+msgid "Bold 700"
 msgstr ""
 
-#: includes/init.php:420
+#: includes/init.php:419
 #: includes/init.php:436
 #: includes/init.php:463
-#: includes/init.php:519
+#: includes/init.php:518
 #: includes/init.php:536
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:155
-#: src/packages/components/src/typography/typography-control/index.js:154
+#: src/packages/components/src/typography/inline-typography-control/index.js:168
+#: src/packages/components/src/typography/typography-control/index.js:167
+msgid "Extra-Bold 800"
+msgstr ""
+
+#: includes/init.php:421
+#: includes/init.php:437
+#: includes/init.php:464
+#: includes/init.php:520
+#: includes/init.php:537
+#: dist/components.js:16
+#: dist/components.js:18
+#: src/packages/components/src/typography/inline-typography-control/index.js:169
+#: src/packages/components/src/typography/typography-control/index.js:168
 msgid "Ultra-Bold 900"
 msgstr ""
 
-#: includes/init.php:812
-#: includes/init.php:839
+#: includes/init.php:813
+#: includes/init.php:840
 #: includes/settings/class-kadence-blocks-settings.php:503
 #: includes/settings/class-kadence-blocks-site-health.php:150
 msgid "Kadence Blocks"
@@ -816,9 +854,9 @@ msgstr ""
 #: dist/components.js:18
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:271
-#: src/blocks/advanced-form/fields/captcha/edit.js:265
-#: src/blocks/advanced-form/fields/captcha/edit.js:298
-#: src/blocks/advanced-form/fields/captcha/edit.js:330
+#: src/blocks/advanced-form/fields/captcha/edit.js:267
+#: src/blocks/advanced-form/fields/captcha/edit.js:300
+#: src/blocks/advanced-form/fields/captcha/edit.js:332
 #: src/blocks/form/edit.js:1826
 #: src/packages/components/src/block-defaults/index.js:200
 #: src/plugins/block-rename/block-rename.js:84
@@ -862,106 +900,110 @@ msgid "Config Kadence Block Defaults"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:616
-msgid "Config Kadence Block Settings View"
+msgid "Config Kadence Block visibility settings"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:627
-msgid "Config Kadence Blocks Color Palette"
+msgid "Config Kadence Block Settings"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:638
-msgid "Config Kadence Blocks Global Settings"
+msgid "Config Kadence Blocks Color Palette"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:649
-msgid "Google reCaptcha Site Key"
+msgid "Config Kadence Blocks Global Settings"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:660
-msgid "Google reCaptcha Secret Key"
+msgid "Google reCaptcha Site Key"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:671
-msgid "Google reCaptcha Language"
+msgid "Google reCaptcha Secret Key"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:682
-msgid "Cloudflare Turnstile Site Key"
+msgid "Google reCaptcha Language"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:693
-msgid "Cloudflare Turnstile Secret Key"
+msgid "Cloudflare Turnstile Site Key"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:704
-msgid "hCaptcha Turnstile Site Key"
+msgid "Cloudflare Turnstile Secret Key"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-settings.php:715
+msgid "hCaptcha Turnstile Site Key"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:726
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:313
+#: src/blocks/advanced-form/fields/captcha/edit.js:315
 msgid "hCaptcha Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:748
+#: includes/settings/class-kadence-blocks-settings.php:759
 msgid "Config Kadence Blocks Cloud"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:759
+#: includes/settings/class-kadence-blocks-settings.php:770
 msgid "Subscribe to Wireframe library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:808
+#: includes/settings/class-kadence-blocks-settings.php:819
 msgid "Small Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:809
+#: includes/settings/class-kadence-blocks-settings.php:820
 msgid "Large Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:811
+#: includes/settings/class-kadence-blocks-settings.php:822
 msgid "Post default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:812
+#: includes/settings/class-kadence-blocks-settings.php:823
 msgid "Page Default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:814
+#: includes/settings/class-kadence-blocks-settings.php:825
 msgid "Enable Editor Width"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:820
+#: includes/settings/class-kadence-blocks-settings.php:831
 msgid "Load Google Fonts Locally"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:829
+#: includes/settings/class-kadence-blocks-settings.php:840
 msgid "Allows for changes to the editor width on per page/post basis with preset defaults."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:831
-#: includes/settings/class-kadence-blocks-settings.php:844
-#: includes/settings/class-kadence-blocks-settings.php:902
+#: includes/settings/class-kadence-blocks-settings.php:842
+#: includes/settings/class-kadence-blocks-settings.php:855
+#: includes/settings/class-kadence-blocks-settings.php:913
 msgid "False"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:832
-#: includes/settings/class-kadence-blocks-settings.php:845
-#: includes/settings/class-kadence-blocks-settings.php:903
+#: includes/settings/class-kadence-blocks-settings.php:843
+#: includes/settings/class-kadence-blocks-settings.php:856
+#: includes/settings/class-kadence-blocks-settings.php:914
 msgid "True"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:842
+#: includes/settings/class-kadence-blocks-settings.php:853
 msgid "Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:856
-#: includes/settings/class-kadence-blocks-settings.php:866
+#: includes/settings/class-kadence-blocks-settings.php:867
+#: includes/settings/class-kadence-blocks-settings.php:877
 msgid "px"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:876
-#: includes/settings/class-kadence-blocks-settings.php:889
+#: includes/settings/class-kadence-blocks-settings.php:887
+#: includes/settings/class-kadence-blocks-settings.php:900
 #: dist/blocks-column.js:1
 #: dist/blocks-rowlayout.js:17
 #: dist/components.js:14
@@ -977,8 +1019,8 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:877
-#: includes/settings/class-kadence-blocks-settings.php:890
+#: includes/settings/class-kadence-blocks-settings.php:888
+#: includes/settings/class-kadence-blocks-settings.php:901
 #: dist/blocks-column.js:1
 #: dist/blocks-posts.js:9
 #: dist/blocks-rowlayout.js:17
@@ -996,113 +1038,113 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:878
-#: includes/settings/class-kadence-blocks-settings.php:891
+#: includes/settings/class-kadence-blocks-settings.php:889
+#: includes/settings/class-kadence-blocks-settings.php:902
 msgid "Fullwidth"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:993
-#: includes/settings/class-kadence-blocks-settings.php:994
+#: includes/settings/class-kadence-blocks-settings.php:1004
+#: includes/settings/class-kadence-blocks-settings.php:1005
 msgid "Activate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:994
-#: includes/settings/class-kadence-blocks-settings.php:996
+#: includes/settings/class-kadence-blocks-settings.php:1005
+#: includes/settings/class-kadence-blocks-settings.php:1007
 msgid "Deactivate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:994
+#: includes/settings/class-kadence-blocks-settings.php:1005
 msgid "Activating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:994
+#: includes/settings/class-kadence-blocks-settings.php:1005
 msgid "Activated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:994
+#: includes/settings/class-kadence-blocks-settings.php:1005
 msgid "Deactivating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:994
+#: includes/settings/class-kadence-blocks-settings.php:1005
 msgid "Deactivated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1000
+#: includes/settings/class-kadence-blocks-settings.php:1011
 msgid "Manage Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1009
+#: includes/settings/class-kadence-blocks-settings.php:1020
 msgid "Editor Max Widths"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1009
+#: includes/settings/class-kadence-blocks-settings.php:1020
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1011
+#: includes/settings/class-kadence-blocks-settings.php:1022
 msgid "Note: The current active themes \"content_width\" is set to:"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1018
-#: includes/settings/class-kadence-blocks-settings.php:1032
+#: includes/settings/class-kadence-blocks-settings.php:1029
+#: includes/settings/class-kadence-blocks-settings.php:1043
 msgid "Save Changes"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1025
+#: includes/settings/class-kadence-blocks-settings.php:1036
 #: dist/components.js:16
 #: src/packages/components/src/typography/typography-control/index.js:81
 msgid "Google Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1045
+#: includes/settings/class-kadence-blocks-settings.php:1056
 msgid "Web Creators Community"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1046
+#: includes/settings/class-kadence-blocks-settings.php:1057
 msgid "Join our community of fellow kadence users creating effective websites! Share your site, ask a question and help others."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1047
+#: includes/settings/class-kadence-blocks-settings.php:1058
 msgid "Join our Facebook Group"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1052
+#: includes/settings/class-kadence-blocks-settings.php:1063
 msgid "Documentation"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1053
+#: includes/settings/class-kadence-blocks-settings.php:1064
 msgid "Need help? We have a knowledge base full of articles to get you started."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1054
+#: includes/settings/class-kadence-blocks-settings.php:1065
 msgid "Browse Docs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1059
+#: includes/settings/class-kadence-blocks-settings.php:1070
 msgid "Support"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1060
+#: includes/settings/class-kadence-blocks-settings.php:1071
 msgid "Have a question, we are happy to help! Get in touch with our support team."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1061
+#: includes/settings/class-kadence-blocks-settings.php:1072
 msgid "Submit a Ticket"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1081
+#: includes/settings/class-kadence-blocks-settings.php:1092
 msgid "Kadence Blocks Pro"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1083
+#: includes/settings/class-kadence-blocks-settings.php:1094
 msgid "10 Pro Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1084
+#: includes/settings/class-kadence-blocks-settings.php:1095
 msgid "Pro Block Addons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1085
+#: includes/settings/class-kadence-blocks-settings.php:1096
 #: dist/components.js:7
 #: dist/components.js:16
 #: src/packages/components/src/dynamic-form-input/index.js:33
@@ -1110,41 +1152,43 @@ msgstr ""
 msgid "Dynamic Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1086
+#: includes/settings/class-kadence-blocks-settings.php:1097
 msgid "Custom Icons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1087
+#: includes/settings/class-kadence-blocks-settings.php:1098
 #: dist/components.js:16
+#: dist/components.js:18
+#: src/packages/components/src/typography/inline-typography-control/index.js:115
 #: src/packages/components/src/typography/typography-control/index.js:114
 msgid "Custom Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1088
+#: includes/settings/class-kadence-blocks-settings.php:1099
 msgid "Premium Design Library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1090
+#: includes/settings/class-kadence-blocks-settings.php:1101
 msgid "Upgrade Kadence Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1103
+#: includes/settings/class-kadence-blocks-settings.php:1114
 #: dist/blocks-rowlayout.js:17
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/rowlayout/index.js:26
-#: src/plugins/kadence-control-plugin.js:363
+#: src/plugins/kadence-control-plugin.js:364
 msgid "Row Layout"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1104
+#: includes/settings/class-kadence-blocks-settings.php:1115
 msgid "Create rows with nested blocks either in columns or as a container. Give style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1109
+#: includes/settings/class-kadence-blocks-settings.php:1120
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
 #: dist/blocks-rowlayout.js:9
-#: src/blocks/advanced-form/edit-inner.js:552
+#: src/blocks/advanced-form/edit-inner.js:516
 #: src/blocks/form/block.js:44
 #: src/plugins/prebuilt-library/pattern-library.js:88
 #: src/plugins/prebuilt-library/pattern-library.js:200
@@ -1152,39 +1196,39 @@ msgstr ""
 msgid "Form"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1110
+#: includes/settings/class-kadence-blocks-settings.php:1121
 msgid "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1115
+#: includes/settings/class-kadence-blocks-settings.php:1126
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:139
+#: src/plugins/kadence-control-plugin.js:140
 msgid "Advanced Gallery"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1116
+#: includes/settings/class-kadence-blocks-settings.php:1127
 msgid "Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1121
+#: includes/settings/class-kadence-blocks-settings.php:1132
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:109
+#: src/plugins/kadence-control-plugin.js:110
 msgid "Advanced Button"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1122
+#: includes/settings/class-kadence-blocks-settings.php:1133
 msgid "Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1127
+#: includes/settings/class-kadence-blocks-settings.php:1138
 msgid "Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1128
+#: includes/settings/class-kadence-blocks-settings.php:1139
 msgid "Add an extra \"wow\" factor to your site with engaging Lottie animations."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1132
+#: includes/settings/class-kadence-blocks-settings.php:1143
 #: dist/blocks-icon.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
@@ -1193,135 +1237,135 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/icon/block.js:44
-#: src/blocks/infobox/edit.js:1666
+#: src/blocks/infobox/edit.js:1664
 #: src/blocks/single-icon/advanced-settings.js:23
 #: src/blocks/tabs/edit.js:846
-#: src/blocks/testimonial/edit.js:202
-#: src/plugins/kadence-control-plugin.js:267
+#: src/blocks/testimonial/edit.js:204
+#: src/plugins/kadence-control-plugin.js:268
 msgid "Icon"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1133
+#: includes/settings/class-kadence-blocks-settings.php:1144
 msgid "Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1138
+#: includes/settings/class-kadence-blocks-settings.php:1149
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:427
+#: src/plugins/kadence-control-plugin.js:428
 msgid "Spacer/Divider"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1139
+#: includes/settings/class-kadence-blocks-settings.php:1150
 msgid "Easily create a divider and determine the space around it or just create some space in your content."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1144
+#: includes/settings/class-kadence-blocks-settings.php:1155
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:169
+#: src/plugins/kadence-control-plugin.js:170
 msgid "Advanced Text"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1145
+#: includes/settings/class-kadence-blocks-settings.php:1156
 #: dist/blocks-advancedheading.js:1
 #: src/blocks/advancedheading/block.js:41
 msgid "Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1150
+#: includes/settings/class-kadence-blocks-settings.php:1161
 #: dist/blocks-rowlayout.js:9
 #: dist/blocks-tabs.js:2
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/tabs/block.js:55
-#: src/plugins/kadence-control-plugin.js:474
+#: src/plugins/kadence-control-plugin.js:475
 #: src/plugins/prebuilt-library/pattern-library.js:99
 #: src/plugins/prebuilt-library/pattern-library.js:211
 #: src/plugins/prebuilt-library/pattern-library.js:333
 msgid "Tabs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1151
+#: includes/settings/class-kadence-blocks-settings.php:1162
 msgid "Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1156
+#: includes/settings/class-kadence-blocks-settings.php:1167
 #: dist/blocks-infobox.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/infobox/block.js:41
-#: src/plugins/kadence-control-plugin.js:300
+#: src/plugins/kadence-control-plugin.js:301
 msgid "Info Box"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1157
+#: includes/settings/class-kadence-blocks-settings.php:1168
 msgid "Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1162
+#: includes/settings/class-kadence-blocks-settings.php:1173
 #: dist/blocks-accordion.js:1
 #: dist/blocks-rowlayout.js:9
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/accordion/block.js:51
-#: src/plugins/kadence-control-plugin.js:73
+#: src/plugins/kadence-control-plugin.js:74
 #: src/plugins/prebuilt-library/pattern-library.js:90
 #: src/plugins/prebuilt-library/pattern-library.js:202
 #: src/plugins/prebuilt-library/pattern-library.js:324
 msgid "Accordion"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1163
+#: includes/settings/class-kadence-blocks-settings.php:1174
 #: dist/blocks-accordion.js:1
 #: src/blocks/accordion/block.js:52
 msgid "Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1168
+#: includes/settings/class-kadence-blocks-settings.php:1179
 #: dist/blocks-iconlist.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/iconlist/block.js:44
-#: src/plugins/kadence-control-plugin.js:280
+#: src/plugins/kadence-control-plugin.js:281
 msgid "Icon List"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1169
+#: includes/settings/class-kadence-blocks-settings.php:1180
 msgid "Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1175
+#: includes/settings/class-kadence-blocks-settings.php:1186
 msgid "Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1179
+#: includes/settings/class-kadence-blocks-settings.php:1190
 #: dist/blocks-posts.js:9
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/posts/block.js:39
 #: src/blocks/posts/edit.js:909
 #: src/blocks/posts/edit.js:923
-#: src/plugins/kadence-control-plugin.js:339
+#: src/plugins/kadence-control-plugin.js:340
 msgid "Posts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1180
+#: includes/settings/class-kadence-blocks-settings.php:1191
 msgid "Display a clean grid of posts anywhere on your site, great for your home page where you want to tease your blog."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1184
+#: includes/settings/class-kadence-blocks-settings.php:1195
 #: dist/blocks-countdown.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/countdown/block.js:45
-#: src/plugins/kadence-control-plugin.js:212
+#: src/plugins/kadence-control-plugin.js:213
 msgid "Countdown"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1185
+#: includes/settings/class-kadence-blocks-settings.php:1196
 msgid "Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1189
+#: includes/settings/class-kadence-blocks-settings.php:1200
 #: dist/blocks-rowlayout.js:9
 #: dist/blocks-rowlayout.js:11
 #: dist/blocks-testimonials.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/testimonials/block.js:25
-#: src/plugins/kadence-control-plugin.js:493
+#: src/plugins/kadence-control-plugin.js:494
 #: src/plugins/prebuilt-library/pattern-library.js:100
 #: src/plugins/prebuilt-library/pattern-library.js:212
 #: src/plugins/prebuilt-library/pattern-library.js:334
@@ -1329,23 +1373,23 @@ msgstr ""
 msgid "Testimonials"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1190
+#: includes/settings/class-kadence-blocks-settings.php:1201
 msgid "Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1201
+#: includes/settings/class-kadence-blocks-settings.php:1212
 msgid "Invalid nonce"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1204
+#: includes/settings/class-kadence-blocks-settings.php:1215
 msgid "Missing Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1210
+#: includes/settings/class-kadence-blocks-settings.php:1221
 msgid "Nothing to Save"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1328
+#: includes/settings/class-kadence-blocks-settings.php:1339
 #: dist/blocks-form.js:1
 #: dist/blocks-rowlayout.js:17
 #: src/blocks/advancedbtn/editOld.js:435
@@ -1409,10 +1453,10 @@ msgstr ""
 #: src/blocks/iconlist/edit.js:553
 #: src/blocks/image/image.js:817
 #: src/blocks/image/image.js:991
-#: src/blocks/infobox/edit.js:1669
-#: src/blocks/infobox/edit.js:1772
-#: src/blocks/infobox/edit.js:1968
-#: src/blocks/infobox/edit.js:2117
+#: src/blocks/infobox/edit.js:1667
+#: src/blocks/infobox/edit.js:1770
+#: src/blocks/infobox/edit.js:1966
+#: src/blocks/infobox/edit.js:2115
 #: src/blocks/rowlayout/constants.js:25
 #: src/blocks/rowlayout/constants.js:27
 #: src/blocks/rowlayout/layout-controls.js:259
@@ -1422,11 +1466,11 @@ msgstr ""
 #: src/blocks/rowlayout/utils.js:66
 #: src/blocks/rowlayout/utils.js:72
 #: src/blocks/tableofcontents/edit.js:442
-#: src/blocks/testimonials/edit.js:1294
-#: src/blocks/testimonials/edit.js:1321
+#: src/blocks/testimonials/edit.js:1295
+#: src/blocks/testimonials/edit.js:1322
 #: src/packages/components/src/measurement-range-control/constants.js:8
 #: src/packages/components/src/measurement-range-control/constants.js:10
-#: src/packages/components/src/typography/typography-control/index.js:448
+#: src/packages/components/src/typography/typography-control/index.js:462
 #: src/packages/helpers/src/constants/index.js:6
 #: src/packages/helpers/src/constants/index.js:8
 #: src/packages/helpers/src/constants/index.js:130
@@ -1485,14 +1529,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:227
-#: src/blocks/advanced-form/fields/email/edit.js:227
+#: src/blocks/advanced-form/fields/date/edit.js:222
+#: src/blocks/advanced-form/fields/email/edit.js:226
 #: src/blocks/advanced-form/fields/number/edit.js:246
 #: src/blocks/advanced-form/fields/radio/edit.js:355
 #: src/blocks/advanced-form/fields/telephone/edit.js:224
 #: src/blocks/advanced-form/fields/text/edit.js:224
-#: src/blocks/advanced-form/fields/textarea/edit.js:231
-#: src/blocks/advanced-form/fields/time/edit.js:222
+#: src/blocks/advanced-form/fields/textarea/edit.js:232
+#: src/blocks/advanced-form/fields/time/edit.js:216
 #: src/blocks/form/edit.js:1071
 msgid "Off"
 msgstr ""
@@ -1568,9 +1612,9 @@ msgstr ""
 #: dist/components.js:14
 #: dist/components.js:16
 #: src/blocks/accordion/pane/edit.js:165
-#: src/blocks/infobox/edit.js:1277
-#: src/blocks/infobox/edit.js:1289
-#: src/blocks/infobox/edit.js:1301
+#: src/blocks/infobox/edit.js:1275
+#: src/blocks/infobox/edit.js:1287
+#: src/blocks/infobox/edit.js:1299
 #: src/blocks/tabs/edit.js:861
 #: src/packages/components/src/measurement-range-control/index.js:242
 #: src/packages/components/src/measurement/measurement-control/index.js:166
@@ -1585,9 +1629,9 @@ msgstr ""
 #: dist/components.js:16
 #: src/blocks/accordion/pane/edit.js:166
 #: src/blocks/infobox/edit.js:383
-#: src/blocks/infobox/edit.js:1276
-#: src/blocks/infobox/edit.js:1288
-#: src/blocks/infobox/edit.js:1300
+#: src/blocks/infobox/edit.js:1274
+#: src/blocks/infobox/edit.js:1286
+#: src/blocks/infobox/edit.js:1298
 #: src/blocks/posts/edit.js:524
 #: src/blocks/tabs/edit.js:862
 #: src/packages/components/src/gradient-control/index.js:297
@@ -1689,15 +1733,15 @@ msgstr ""
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/accordion/edit.js:1089
-#: src/blocks/advanced-form/fields/submit/edit.js:769
+#: src/blocks/advanced-form/fields/submit/edit.js:771
 #: src/blocks/advancedbtn/editOld.js:1157
 #: src/blocks/advancedheading/edit.js:1152
 #: src/blocks/iconlist/edit.js:405
-#: src/blocks/infobox/edit.js:2025
+#: src/blocks/infobox/edit.js:2023
 #: src/blocks/listitem/edit.js:238
 #: src/blocks/single-icon/edit.js:244
-#: src/blocks/singlebtn/edit.js:1039
-#: src/blocks/testimonial/edit.js:242
+#: src/blocks/singlebtn/edit.js:1045
+#: src/blocks/testimonial/edit.js:244
 msgid "Icon Color"
 msgstr ""
 
@@ -1718,13 +1762,13 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-tabs.js:1
 #: src/blocks/accordion/edit.js:1138
-#: src/blocks/advanced-form/fields/submit/edit.js:775
+#: src/blocks/advanced-form/fields/submit/edit.js:777
 #: src/blocks/advancedheading/edit.js:879
 #: src/blocks/advancedheading/edit.js:1158
 #: src/blocks/iconlist/edit.js:540
 #: src/blocks/rowlayout/style-controls.js:1081
 #: src/blocks/single-icon/edit.js:250
-#: src/blocks/singlebtn/edit.js:1045
+#: src/blocks/singlebtn/edit.js:1051
 #: src/blocks/tableofcontents/edit.js:876
 #: src/blocks/tabs/edit.js:904
 msgid "Hover Color"
@@ -1736,7 +1780,7 @@ msgstr ""
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-tabs.js:1
 #: src/blocks/accordion/edit.js:1143
-#: src/blocks/infobox/edit.js:1476
+#: src/blocks/infobox/edit.js:1474
 #: src/blocks/single-icon/edit.js:266
 #: src/blocks/tabs/edit.js:910
 msgid "Hover Background"
@@ -1763,7 +1807,7 @@ msgstr ""
 #: dist/blocks-tabs.js:1
 #: src/blocks/accordion/edit.js:1168
 #: src/blocks/countup/inspector.js:264
-#: src/blocks/infobox/edit.js:2230
+#: src/blocks/infobox/edit.js:2228
 #: src/blocks/tableofcontents/edit.js:779
 #: src/blocks/tabs/edit.js:882
 msgid "Title Color"
@@ -1811,22 +1855,22 @@ msgstr ""
 #: src/blocks/accordion/edit.js:1357
 #: src/blocks/advanced-form/components/message-styles/index.js:68
 #: src/blocks/advanced-form/components/style-options/field/index.js:274
-#: src/blocks/advanced-form/fields/submit/edit.js:503
-#: src/blocks/advanced-form/fields/submit/edit.js:601
+#: src/blocks/advanced-form/fields/submit/edit.js:505
+#: src/blocks/advanced-form/fields/submit/edit.js:603
 #: src/blocks/advancedheading/edit.js:1032
 #: src/blocks/advancedheading/edit.js:1204
 #: src/blocks/column/edit.js:1385
 #: src/blocks/column/edit.js:1456
 #: src/blocks/image/image.js:705
-#: src/blocks/infobox/edit.js:1482
-#: src/blocks/infobox/edit.js:1561
+#: src/blocks/infobox/edit.js:1480
+#: src/blocks/infobox/edit.js:1559
 #: src/blocks/rowlayout/style-controls.js:1129
-#: src/blocks/singlebtn/edit.js:773
-#: src/blocks/singlebtn/edit.js:871
+#: src/blocks/singlebtn/edit.js:779
+#: src/blocks/singlebtn/edit.js:877
 #: src/blocks/tableofcontents/edit.js:837
 #: src/blocks/tableofcontents/edit.js:957
 #: src/blocks/tabs/edit.js:1151
-#: src/blocks/testimonials/edit.js:1355
+#: src/blocks/testimonials/edit.js:1356
 msgid "Border"
 msgstr ""
 
@@ -1850,8 +1894,8 @@ msgstr ""
 #: src/blocks/accordion/edit.js:1366
 #: src/blocks/advanced-form/components/message-styles/index.js:116
 #: src/blocks/advanced-form/components/style-options/field/index.js:283
-#: src/blocks/advanced-form/fields/submit/edit.js:512
-#: src/blocks/advanced-form/fields/submit/edit.js:610
+#: src/blocks/advanced-form/fields/submit/edit.js:514
+#: src/blocks/advanced-form/fields/submit/edit.js:612
 #: src/blocks/advancedbtn/editOld.js:1060
 #: src/blocks/advancedgallery/edit.js:1336
 #: src/blocks/advancedheading/edit.js:1041
@@ -1863,15 +1907,15 @@ msgstr ""
 #: src/blocks/form/edit.js:2556
 #: src/blocks/form/edit.js:3383
 #: src/blocks/image/image.js:714
-#: src/blocks/infobox/edit.js:1491
-#: src/blocks/infobox/edit.js:1570
-#: src/blocks/progress-bar/edit.js:459
+#: src/blocks/infobox/edit.js:1489
+#: src/blocks/infobox/edit.js:1568
+#: src/blocks/progress-bar/edit.js:617
 #: src/blocks/rowlayout/style-controls.js:1138
-#: src/blocks/singlebtn/edit.js:782
-#: src/blocks/singlebtn/edit.js:880
+#: src/blocks/singlebtn/edit.js:788
+#: src/blocks/singlebtn/edit.js:886
 #: src/blocks/tableofcontents/edit.js:966
 #: src/blocks/tabs/edit.js:1160
-#: src/blocks/testimonials/edit.js:1364
+#: src/blocks/testimonials/edit.js:1365
 msgid "Border Radius"
 msgstr ""
 
@@ -1897,8 +1941,8 @@ msgstr ""
 #: src/blocks/column/edit.js:1537
 #: src/blocks/column/edit.js:1559
 #: src/blocks/form/edit.js:3182
-#: src/blocks/infobox/edit.js:2321
-#: src/blocks/infobox/edit.js:2411
+#: src/blocks/infobox/edit.js:2319
+#: src/blocks/infobox/edit.js:2409
 #: src/blocks/rowlayout/style-controls.js:1071
 msgid "Text Color"
 msgstr ""
@@ -1928,15 +1972,15 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/accordion/edit.js:1351
-#: src/blocks/advanced-form/edit-inner.js:794
-#: src/blocks/advanced-form/edit-inner.js:806
+#: src/blocks/advanced-form/edit-inner.js:766
+#: src/blocks/advanced-form/edit-inner.js:778
 #: src/blocks/advancedheading/edit.js:1195
 #: src/blocks/column/edit.js:1066
-#: src/blocks/infobox/edit.js:1555
-#: src/blocks/infobox/edit.js:2421
+#: src/blocks/infobox/edit.js:1553
+#: src/blocks/infobox/edit.js:2419
 #: src/blocks/rowlayout/style-controls.js:1098
 #: src/blocks/tableofcontents/edit.js:951
-#: src/blocks/testimonials/edit.js:1344
+#: src/blocks/testimonials/edit.js:1345
 msgid "Background"
 msgstr ""
 
@@ -1969,8 +2013,8 @@ msgstr ""
 #: src/blocks/accordion/edit.js:1395
 #: src/blocks/accordion/edit.js:1435
 #: src/blocks/advanced-form/components/message-styles/index.js:167
-#: src/blocks/advanced-form/edit-inner.js:831
-#: src/blocks/advanced-form/fields/submit/edit.js:855
+#: src/blocks/advanced-form/edit-inner.js:803
+#: src/blocks/advanced-form/fields/submit/edit.js:857
 #: src/blocks/advancedbtn/edit.js:362
 #: src/blocks/advancedbtn/editOld.js:848
 #: src/blocks/advancedgallery/edit.js:1515
@@ -1983,18 +2027,18 @@ msgstr ""
 #: src/blocks/googlemaps/edit.js:581
 #: src/blocks/iconlist/edit.js:565
 #: src/blocks/image/image.js:1084
-#: src/blocks/infobox/edit.js:2511
+#: src/blocks/infobox/edit.js:2509
 #: src/blocks/lottie/edit.js:549
-#: src/blocks/progress-bar/edit.js:786
+#: src/blocks/progress-bar/edit.js:944
 #: src/blocks/rowlayout/edit.js:691
 #: src/blocks/show-more/edit.js:301
-#: src/blocks/singlebtn/edit.js:1125
+#: src/blocks/singlebtn/edit.js:1131
 #: src/blocks/tableofcontents/edit.js:648
 #: src/blocks/tableofcontents/edit.js:820
 #: src/blocks/tabs/edit.js:1587
-#: src/blocks/testimonials/edit.js:1597
-#: src/blocks/testimonials/edit.js:2057
-#: src/blocks/testimonials/edit.js:2134
+#: src/blocks/testimonials/edit.js:1598
+#: src/blocks/testimonials/edit.js:2058
+#: src/blocks/testimonials/edit.js:2135
 #: src/plugins/block-globals/typography.js:214
 msgid "Padding"
 msgstr ""
@@ -2047,26 +2091,26 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-tabs.js:2
 #: src/blocks/accordion/edit.js:1500
-#: src/blocks/advanced-form/edit-inner.js:882
-#: src/blocks/advanced-form/fields/accept/edit.js:175
-#: src/blocks/advanced-form/fields/captcha/edit.js:405
+#: src/blocks/advanced-form/edit-inner.js:854
+#: src/blocks/advanced-form/fields/accept/edit.js:174
+#: src/blocks/advanced-form/fields/captcha/edit.js:407
 #: src/blocks/advanced-form/fields/checkbox/edit.js:300
-#: src/blocks/advanced-form/fields/date/edit.js:155
-#: src/blocks/advanced-form/fields/email/edit.js:155
+#: src/blocks/advanced-form/fields/date/edit.js:150
+#: src/blocks/advanced-form/fields/email/edit.js:154
 #: src/blocks/advanced-form/fields/file/edit.js:216
 #: src/blocks/advanced-form/fields/number/edit.js:174
 #: src/blocks/advanced-form/fields/radio/edit.js:283
 #: src/blocks/advanced-form/fields/select/edit.js:296
 #: src/blocks/advanced-form/fields/telephone/edit.js:152
 #: src/blocks/advanced-form/fields/text/edit.js:152
-#: src/blocks/advanced-form/fields/textarea/edit.js:159
-#: src/blocks/advanced-form/fields/time/edit.js:149
+#: src/blocks/advanced-form/fields/textarea/edit.js:160
+#: src/blocks/advanced-form/fields/time/edit.js:144
 #: src/blocks/advancedheading/edit.js:844
 #: src/blocks/column/edit.js:817
 #: src/blocks/googlemaps/edit.js:546
-#: src/blocks/infobox/edit.js:2557
+#: src/blocks/infobox/edit.js:2555
 #: src/blocks/lottie/edit.js:585
-#: src/blocks/progress-bar/edit.js:832
+#: src/blocks/progress-bar/edit.js:990
 #: src/blocks/tableofcontents/edit.js:682
 #: src/blocks/tabs/edit.js:1620
 msgid "Max Width"
@@ -2089,7 +2133,7 @@ msgstr ""
 #: src/blocks/accordion/edit.js:1539
 #: src/blocks/advanced-form/components/form-title/index.js:165
 #: src/blocks/tabs/edit.js:1659
-#: src/blocks/testimonials/edit.js:2180
+#: src/blocks/testimonials/edit.js:2181
 msgid "Initial Style"
 msgstr ""
 
@@ -2184,7 +2228,7 @@ msgstr ""
 #: src/blocks/rowlayout/layout-controls.js:203
 #: src/blocks/tabs/edit.js:609
 #: src/blocks/tabs/edit.js:1111
-#: src/blocks/testimonials/edit.js:1157
+#: src/blocks/testimonials/edit.js:1158
 msgid "Layout"
 msgstr ""
 
@@ -2206,7 +2250,7 @@ msgstr ""
 #: dist/blocks-infobox.js:1
 #: dist/components.js:16
 #: src/blocks/advanced-form/components/form-title/index.js:46
-#: src/blocks/infobox/edit.js:2720
+#: src/blocks/infobox/edit.js:2718
 #: src/packages/components/src/links/image-url-input-link-controls/index.js:277
 #: src/packages/components/src/links/link-control/index.js:154
 msgid "Title"
@@ -2244,10 +2288,10 @@ msgstr ""
 #: dist/blocks-rowlayout.js:17
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advanced-form/components/form-title/index.js:85
-#: src/blocks/advanced-form/fields/captcha/edit.js:380
+#: src/blocks/advanced-form/fields/captcha/edit.js:382
 #: src/blocks/advancedgallery/edit.js:1133
 #: src/blocks/rowlayout/style-controls.js:749
-#: src/blocks/testimonials/edit.js:1305
+#: src/blocks/testimonials/edit.js:1306
 #: src/plugins/prebuilt-library/pattern-library.js:458
 #: src/plugins/prebuilt-library/section-library.js:335
 msgid "Dark"
@@ -2270,7 +2314,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:1
 #: dist/blocks-advanced-form.js:11
 #: src/blocks/advanced-form/components/form-title/index.js:95
-#: src/blocks/advanced-form/edit-inner.js:475
+#: src/blocks/advanced-form/edit-inner.js:461
 #: src/blocks/advanced-form/edit.js:142
 #: src/blocks/advanced-form/edit.js:176
 msgid "Kadence Form"
@@ -2305,7 +2349,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:3
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advanced-form/components/form-title/index.js:163
-#: src/blocks/testimonials/edit.js:2178
+#: src/blocks/testimonials/edit.js:2179
 msgid "Select Initial Style"
 msgstr ""
 
@@ -2323,24 +2367,21 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: src/blocks/advanced-form/components/form-title/index.js:194
 #: src/blocks/advanced-form/components/form-title/index.js:202
-#: src/blocks/advanced-form/edit-inner.js:543
-#: src/blocks/advanced-form/edit-inner.js:557
+#: src/blocks/advanced-form/edit-inner.js:530
 msgid "This is used for your reference only."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
 #: dist/blocks-advanced-form.js:11
 #: src/blocks/advanced-form/components/form-title/index.js:200
-#: src/blocks/advanced-form/edit-inner.js:541
-#: src/blocks/advanced-form/edit-inner.js:555
+#: src/blocks/advanced-form/edit-inner.js:528
 msgid "Form Description"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
 #: dist/blocks-advanced-form.js:11
 #: src/blocks/advanced-form/components/form-title/index.js:201
-#: src/blocks/advanced-form/edit-inner.js:542
-#: src/blocks/advanced-form/edit-inner.js:556
+#: src/blocks/advanced-form/edit-inner.js:529
 msgid "Optionally add an description about your form"
 msgstr ""
 
@@ -2350,29 +2391,25 @@ msgid "Create"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
-#: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/components/field-name/index.js:43
-#: src/blocks/advanced-form/fields/time/edit.js:201
+#: src/blocks/advanced-form/components/field-name/index.js:40
 #: src/blocks/form/edit.js:860
 #: src/blocks/form/edit.js:861
 msgid "Field Name"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
-#: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/components/field-name/index.js:44
-#: src/blocks/advanced-form/fields/time/edit.js:202
+#: src/blocks/advanced-form/components/field-name/index.js:41
 msgid "This is the name attribute that is applied to the html input tag. Names must be unique"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
-#: src/blocks/advanced-form/components/field-name/index.js:54
+#: src/blocks/advanced-form/components/field-name/index.js:51
 msgid "Field name must be unique, Conflicts:"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:3
-#: src/blocks/advanced-form/components/field-name/index.js:57
+#: src/blocks/advanced-form/components/field-name/index.js:54
 msgid "Field Label:"
 msgstr ""
 
@@ -2416,8 +2453,8 @@ msgstr ""
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 #: src/blocks/advanced-form/components/message-styles/index.js:59
-#: src/blocks/advanced-form/fields/submit/edit.js:496
-#: src/blocks/advanced-form/fields/submit/edit.js:594
+#: src/blocks/advanced-form/fields/submit/edit.js:498
+#: src/blocks/advanced-form/fields/submit/edit.js:596
 #: src/blocks/advancedbtn/editOld.js:1340
 #: src/blocks/advancedbtn/editOld.js:1538
 #: src/blocks/advancedheading/edit.js:928
@@ -2433,8 +2470,8 @@ msgstr ""
 #: src/blocks/rowlayout/style-controls.js:879
 #: src/blocks/rowlayout/style-controls.js:916
 #: src/blocks/single-icon/edit.js:260
-#: src/blocks/singlebtn/edit.js:766
-#: src/blocks/singlebtn/edit.js:864
+#: src/blocks/singlebtn/edit.js:772
+#: src/blocks/singlebtn/edit.js:870
 msgid "Background Color"
 msgstr ""
 
@@ -2492,8 +2529,8 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advanced-form/components/message-styles/index.js:188
-#: src/blocks/advanced-form/edit-inner.js:854
-#: src/blocks/advanced-form/fields/submit/edit.js:872
+#: src/blocks/advanced-form/edit-inner.js:826
+#: src/blocks/advanced-form/fields/submit/edit.js:874
 #: src/blocks/advancedbtn/edit.js:379
 #: src/blocks/advancedgallery/edit.js:1538
 #: src/blocks/advancedheading/edit.js:1292
@@ -2505,16 +2542,16 @@ msgstr ""
 #: src/blocks/googlemaps/edit.js:598
 #: src/blocks/iconlist/edit.js:582
 #: src/blocks/image/image.js:1101
-#: src/blocks/infobox/edit.js:2534
+#: src/blocks/infobox/edit.js:2532
 #: src/blocks/lottie/edit.js:566
-#: src/blocks/progress-bar/edit.js:813
+#: src/blocks/progress-bar/edit.js:971
 #: src/blocks/rowlayout/edit.js:710
 #: src/blocks/show-more/edit.js:318
-#: src/blocks/singlebtn/edit.js:1142
+#: src/blocks/singlebtn/edit.js:1148
 #: src/blocks/tableofcontents/edit.js:665
 #: src/blocks/tableofcontents/edit.js:927
-#: src/blocks/testimonials/edit.js:1612
-#: src/blocks/testimonials/edit.js:2149
+#: src/blocks/testimonials/edit.js:1613
+#: src/blocks/testimonials/edit.js:2150
 #: src/plugins/block-globals/typography.js:239
 msgid "Margin"
 msgstr ""
@@ -2535,10 +2572,10 @@ msgstr ""
 #: dist/components.js:14
 #: dist/helpers.js:1
 #: src/blocks/advanced-form/components/style-options/field/index.js:47
-#: src/blocks/advanced-form/fields/submit/edit.js:199
+#: src/blocks/advanced-form/fields/submit/edit.js:201
 #: src/blocks/rowlayout/constants.js:47
 #: src/blocks/rowlayout/layout-controls.js:260
-#: src/blocks/singlebtn/edit.js:369
+#: src/blocks/singlebtn/edit.js:375
 #: src/packages/components/src/font-size/constants.js:10
 #: src/packages/components/src/measurement-range-control/constants.js:30
 #: src/packages/helpers/src/constants/index.js:28
@@ -2556,10 +2593,10 @@ msgstr ""
 #: dist/components.js:14
 #: dist/helpers.js:1
 #: src/blocks/advanced-form/components/style-options/field/index.js:48
-#: src/blocks/advanced-form/fields/submit/edit.js:200
+#: src/blocks/advanced-form/fields/submit/edit.js:202
 #: src/blocks/rowlayout/constants.js:54
 #: src/blocks/rowlayout/layout-controls.js:261
-#: src/blocks/singlebtn/edit.js:370
+#: src/blocks/singlebtn/edit.js:376
 #: src/packages/components/src/font-size/constants.js:17
 #: src/packages/components/src/measurement-range-control/constants.js:37
 #: src/packages/helpers/src/constants/index.js:35
@@ -2577,10 +2614,10 @@ msgstr ""
 #: dist/components.js:14
 #: dist/helpers.js:1
 #: src/blocks/advanced-form/components/style-options/field/index.js:49
-#: src/blocks/advanced-form/fields/submit/edit.js:201
+#: src/blocks/advanced-form/fields/submit/edit.js:203
 #: src/blocks/rowlayout/constants.js:61
 #: src/blocks/rowlayout/layout-controls.js:262
-#: src/blocks/singlebtn/edit.js:371
+#: src/blocks/singlebtn/edit.js:377
 #: src/packages/components/src/font-size/constants.js:24
 #: src/packages/components/src/measurement-range-control/constants.js:44
 #: src/packages/helpers/src/constants/index.js:42
@@ -2659,7 +2696,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/style-options/field/index.js:208
-#: src/blocks/advanced-form/edit-inner.js:799
+#: src/blocks/advanced-form/edit-inner.js:771
 #: src/blocks/advancedbtn/editOld.js:1321
 #: src/blocks/advancedbtn/editOld.js:1322
 #: src/blocks/advancedbtn/editOld.js:1519
@@ -2729,21 +2766,21 @@ msgstr ""
 #: dist/components.js:16
 #: dist/components.js:18
 #: src/blocks/advanced-form/components/style-options/label/index.js:29
-#: src/blocks/advanced-form/fields/captcha/edit.js:388
+#: src/blocks/advanced-form/fields/captcha/edit.js:390
 #: src/blocks/advancedbtn/editOld.js:1133
 #: src/blocks/form/edit.js:2151
 #: src/blocks/form/edit.js:2978
 #: src/blocks/image/image.js:53
-#: src/blocks/infobox/edit.js:1841
-#: src/blocks/infobox/edit.js:1985
-#: src/blocks/infobox/edit.js:2127
+#: src/blocks/infobox/edit.js:1839
+#: src/blocks/infobox/edit.js:1983
+#: src/blocks/infobox/edit.js:2125
 #: src/blocks/posts/edit.js:686
 #: src/blocks/rowlayout/constants.js:7
 #: src/packages/components/src/hover-toggle/index.js:39
-#: src/packages/components/src/typography/inline-typography-control/index.js:142
-#: src/packages/components/src/typography/inline-typography-control/index.js:158
-#: src/packages/components/src/typography/typography-control/index.js:141
-#: src/packages/components/src/typography/typography-control/index.js:170
+#: src/packages/components/src/typography/inline-typography-control/index.js:156
+#: src/packages/components/src/typography/inline-typography-control/index.js:172
+#: src/packages/components/src/typography/typography-control/index.js:155
+#: src/packages/components/src/typography/typography-control/index.js:184
 #: src/plugins/prebuilt-library/pattern-library.js:463
 msgid "Normal"
 msgstr ""
@@ -2807,14 +2844,14 @@ msgstr ""
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:182
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:198
 #: src/blocks/advanced-form/components/submit-actions/options/index.js:8
-#: src/blocks/advanced-form/fields/date/edit.js:219
-#: src/blocks/advanced-form/fields/email/edit.js:219
+#: src/blocks/advanced-form/fields/date/edit.js:214
+#: src/blocks/advanced-form/fields/email/edit.js:218
 #: src/blocks/advanced-form/fields/number/edit.js:238
 #: src/blocks/advanced-form/fields/radio/edit.js:347
 #: src/blocks/advanced-form/fields/telephone/edit.js:216
 #: src/blocks/advanced-form/fields/text/edit.js:216
-#: src/blocks/advanced-form/fields/textarea/edit.js:223
-#: src/blocks/advanced-form/fields/time/edit.js:214
+#: src/blocks/advanced-form/fields/textarea/edit.js:224
+#: src/blocks/advanced-form/fields/time/edit.js:208
 #: src/blocks/form/edit.js:87
 #: src/blocks/form/edit.js:846
 #: src/blocks/form/edit.js:886
@@ -3090,9 +3127,9 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/active-campaign/index.js:271
-#: src/blocks/advanced-form/fields/captcha/edit.js:265
-#: src/blocks/advanced-form/fields/captcha/edit.js:298
-#: src/blocks/advanced-form/fields/captcha/edit.js:330
+#: src/blocks/advanced-form/fields/captcha/edit.js:267
+#: src/blocks/advanced-form/fields/captcha/edit.js:300
+#: src/blocks/advanced-form/fields/captcha/edit.js:332
 #: src/blocks/form/edit.js:1826
 msgid "Saving"
 msgstr ""
@@ -3159,7 +3196,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:31
-#: src/blocks/advanced-form/edit-inner.js:596
+#: src/blocks/advanced-form/edit-inner.js:568
 #: src/blocks/form/edit.js:1697
 msgid "Email Subject"
 msgstr ""
@@ -3183,8 +3220,8 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:43
-#: src/blocks/advanced-form/edit-inner.js:601
-#: src/blocks/advanced-form/edit-inner.js:615
+#: src/blocks/advanced-form/edit-inner.js:573
+#: src/blocks/advanced-form/edit-inner.js:587
 #: src/blocks/form/edit.js:1702
 #: src/blocks/form/edit.js:1716
 msgid "From Email"
@@ -3194,7 +3231,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:48
-#: src/blocks/advanced-form/edit-inner.js:606
+#: src/blocks/advanced-form/edit-inner.js:578
 #: src/blocks/form/edit.js:1707
 msgid "From Name"
 msgstr ""
@@ -3203,7 +3240,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:53
-#: src/blocks/advanced-form/edit-inner.js:611
+#: src/blocks/advanced-form/edit-inner.js:583
 #: src/blocks/form/edit.js:1712
 msgid "Reply To"
 msgstr ""
@@ -3212,7 +3249,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:58
-#: src/blocks/advanced-form/edit-inner.js:622
+#: src/blocks/advanced-form/edit-inner.js:594
 #: src/blocks/form/edit.js:1723
 msgid "Cc"
 msgstr ""
@@ -3221,7 +3258,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:63
-#: src/blocks/advanced-form/edit-inner.js:627
+#: src/blocks/advanced-form/edit-inner.js:599
 #: src/blocks/form/edit.js:1728
 msgid "Bcc"
 msgstr ""
@@ -3230,7 +3267,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:68
-#: src/blocks/advanced-form/edit-inner.js:632
+#: src/blocks/advanced-form/edit-inner.js:604
 #: src/blocks/form/edit.js:1733
 msgid "Send as HTML email?"
 msgstr ""
@@ -3239,7 +3276,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
 #: src/blocks/advanced-form/components/submit-actions/auto-email/index.js:69
-#: src/blocks/advanced-form/edit-inner.js:633
+#: src/blocks/advanced-form/edit-inner.js:605
 #: src/blocks/form/edit.js:1734
 msgid "If off plain text is used."
 msgstr ""
@@ -3319,20 +3356,20 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:101
-#: src/blocks/advanced-form/fields/captcha/edit.js:203
+#: src/blocks/advanced-form/fields/accept/edit.js:100
+#: src/blocks/advanced-form/fields/captcha/edit.js:205
 #: src/blocks/advanced-form/fields/checkbox/edit.js:165
 #: src/blocks/advanced-form/fields/date/edit.js:86
-#: src/blocks/advanced-form/fields/email/edit.js:87
+#: src/blocks/advanced-form/fields/email/edit.js:86
 #: src/blocks/advanced-form/fields/file/edit.js:108
-#: src/blocks/advanced-form/fields/hidden/edit.js:72
+#: src/blocks/advanced-form/fields/hidden/edit.js:74
 #: src/blocks/advanced-form/fields/number/edit.js:93
 #: src/blocks/advanced-form/fields/radio/edit.js:149
 #: src/blocks/advanced-form/fields/select/edit.js:149
-#: src/blocks/advanced-form/fields/submit/edit.js:378
+#: src/blocks/advanced-form/fields/submit/edit.js:380
 #: src/blocks/advanced-form/fields/telephone/edit.js:84
 #: src/blocks/advanced-form/fields/text/edit.js:84
-#: src/blocks/advanced-form/fields/textarea/edit.js:84
+#: src/blocks/advanced-form/fields/textarea/edit.js:85
 #: src/blocks/advanced-form/fields/time/edit.js:81
 msgid "View Form Settings"
 msgstr ""
@@ -3340,18 +3377,18 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:114
+#: src/blocks/advanced-form/fields/accept/edit.js:113
 #: src/blocks/advanced-form/fields/checkbox/edit.js:245
 #: src/blocks/advanced-form/fields/date/edit.js:99
-#: src/blocks/advanced-form/fields/email/edit.js:100
+#: src/blocks/advanced-form/fields/email/edit.js:99
 #: src/blocks/advanced-form/fields/file/edit.js:123
-#: src/blocks/advanced-form/fields/hidden/edit.js:85
+#: src/blocks/advanced-form/fields/hidden/edit.js:87
 #: src/blocks/advanced-form/fields/number/edit.js:106
 #: src/blocks/advanced-form/fields/radio/edit.js:228
 #: src/blocks/advanced-form/fields/select/edit.js:240
 #: src/blocks/advanced-form/fields/telephone/edit.js:97
 #: src/blocks/advanced-form/fields/text/edit.js:97
-#: src/blocks/advanced-form/fields/textarea/edit.js:97
+#: src/blocks/advanced-form/fields/textarea/edit.js:98
 #: src/blocks/advanced-form/fields/time/edit.js:94
 msgid "Field Controls"
 msgstr ""
@@ -3359,17 +3396,17 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:119
+#: src/blocks/advanced-form/fields/accept/edit.js:118
 #: src/blocks/advanced-form/fields/checkbox/edit.js:250
 #: src/blocks/advanced-form/fields/date/edit.js:104
-#: src/blocks/advanced-form/fields/email/edit.js:105
+#: src/blocks/advanced-form/fields/email/edit.js:104
 #: src/blocks/advanced-form/fields/file/edit.js:128
 #: src/blocks/advanced-form/fields/number/edit.js:111
 #: src/blocks/advanced-form/fields/radio/edit.js:233
 #: src/blocks/advanced-form/fields/select/edit.js:245
 #: src/blocks/advanced-form/fields/telephone/edit.js:102
 #: src/blocks/advanced-form/fields/text/edit.js:102
-#: src/blocks/advanced-form/fields/textarea/edit.js:109
+#: src/blocks/advanced-form/fields/textarea/edit.js:110
 #: src/blocks/advanced-form/fields/time/edit.js:99
 msgid "Required"
 msgstr ""
@@ -3378,18 +3415,18 @@ msgstr ""
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:124
+#: src/blocks/advanced-form/fields/accept/edit.js:123
 #: src/blocks/advanced-form/fields/checkbox/edit.js:255
 #: src/blocks/advanced-form/fields/date/edit.js:109
-#: src/blocks/advanced-form/fields/email/edit.js:110
+#: src/blocks/advanced-form/fields/email/edit.js:109
 #: src/blocks/advanced-form/fields/file/edit.js:133
-#: src/blocks/advanced-form/fields/hidden/edit.js:90
+#: src/blocks/advanced-form/fields/hidden/edit.js:92
 #: src/blocks/advanced-form/fields/number/edit.js:116
 #: src/blocks/advanced-form/fields/radio/edit.js:238
 #: src/blocks/advanced-form/fields/select/edit.js:250
 #: src/blocks/advanced-form/fields/telephone/edit.js:107
 #: src/blocks/advanced-form/fields/text/edit.js:107
-#: src/blocks/advanced-form/fields/textarea/edit.js:114
+#: src/blocks/advanced-form/fields/textarea/edit.js:115
 #: src/blocks/advanced-form/fields/time/edit.js:104
 #: src/blocks/form/edit.js:1019
 #: src/blocks/form/edit.js:1020
@@ -3400,48 +3437,48 @@ msgstr ""
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:129
+#: src/blocks/advanced-form/fields/accept/edit.js:128
 #: src/blocks/advanced-form/fields/checkbox/edit.js:260
 #: src/blocks/advanced-form/fields/date/edit.js:114
-#: src/blocks/advanced-form/fields/email/edit.js:115
+#: src/blocks/advanced-form/fields/email/edit.js:114
 #: src/blocks/advanced-form/fields/file/edit.js:138
 #: src/blocks/advanced-form/fields/number/edit.js:121
 #: src/blocks/advanced-form/fields/radio/edit.js:243
 #: src/blocks/advanced-form/fields/select/edit.js:255
 #: src/blocks/advanced-form/fields/telephone/edit.js:112
 #: src/blocks/advanced-form/fields/text/edit.js:112
-#: src/blocks/advanced-form/fields/textarea/edit.js:119
+#: src/blocks/advanced-form/fields/textarea/edit.js:120
 #: src/blocks/advanced-form/fields/time/edit.js:109
 #: src/blocks/form/edit.js:1025
-#: src/blocks/progress-bar/edit.js:640
+#: src/blocks/progress-bar/edit.js:798
 msgid "Show Label"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/accept/edit.js:134
+#: src/blocks/advanced-form/fields/accept/edit.js:133
 msgid "Accept Statement"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/accept/edit.js:136
-#: src/blocks/advanced-form/fields/accept/edit.js:280
+#: src/blocks/advanced-form/fields/accept/edit.js:135
+#: src/blocks/advanced-form/fields/accept/edit.js:279
 msgid "Opt me in!"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:140
+#: src/blocks/advanced-form/fields/accept/edit.js:139
 #: src/blocks/advanced-form/fields/checkbox/edit.js:265
 #: src/blocks/advanced-form/fields/date/edit.js:119
-#: src/blocks/advanced-form/fields/email/edit.js:120
+#: src/blocks/advanced-form/fields/email/edit.js:119
 #: src/blocks/advanced-form/fields/file/edit.js:143
 #: src/blocks/advanced-form/fields/number/edit.js:126
 #: src/blocks/advanced-form/fields/radio/edit.js:248
 #: src/blocks/advanced-form/fields/select/edit.js:260
 #: src/blocks/advanced-form/fields/telephone/edit.js:117
 #: src/blocks/advanced-form/fields/text/edit.js:117
-#: src/blocks/advanced-form/fields/textarea/edit.js:124
+#: src/blocks/advanced-form/fields/textarea/edit.js:125
 #: src/blocks/advanced-form/fields/time/edit.js:114
 msgid "Description"
 msgstr ""
@@ -3449,24 +3486,24 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:141
+#: src/blocks/advanced-form/fields/accept/edit.js:140
 #: src/blocks/advanced-form/fields/checkbox/edit.js:266
 #: src/blocks/advanced-form/fields/date/edit.js:120
-#: src/blocks/advanced-form/fields/email/edit.js:121
+#: src/blocks/advanced-form/fields/email/edit.js:120
 #: src/blocks/advanced-form/fields/file/edit.js:144
 #: src/blocks/advanced-form/fields/number/edit.js:127
 #: src/blocks/advanced-form/fields/radio/edit.js:249
 #: src/blocks/advanced-form/fields/select/edit.js:261
 #: src/blocks/advanced-form/fields/telephone/edit.js:118
 #: src/blocks/advanced-form/fields/text/edit.js:118
-#: src/blocks/advanced-form/fields/textarea/edit.js:125
+#: src/blocks/advanced-form/fields/textarea/edit.js:126
 #: src/blocks/advanced-form/fields/time/edit.js:115
 msgid "This will be displayed under the input and can be used to provide direction on how the field should be filled out."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:146
+#: src/blocks/advanced-form/fields/accept/edit.js:145
 #: src/blocks/form/edit.js:1013
 msgid "Start checked?"
 msgstr ""
@@ -3474,75 +3511,75 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:151
+#: src/blocks/advanced-form/fields/accept/edit.js:150
 #: src/blocks/advanced-form/fields/checkbox/edit.js:276
-#: src/blocks/advanced-form/fields/date/edit.js:130
-#: src/blocks/advanced-form/fields/email/edit.js:131
-#: src/blocks/advanced-form/fields/hidden/edit.js:95
+#: src/blocks/advanced-form/fields/date/edit.js:125
+#: src/blocks/advanced-form/fields/email/edit.js:130
+#: src/blocks/advanced-form/fields/hidden/edit.js:97
 #: src/blocks/advanced-form/fields/number/edit.js:137
 #: src/blocks/advanced-form/fields/radio/edit.js:259
 #: src/blocks/advanced-form/fields/select/edit.js:271
 #: src/blocks/advanced-form/fields/telephone/edit.js:128
 #: src/blocks/advanced-form/fields/text/edit.js:128
-#: src/blocks/advanced-form/fields/textarea/edit.js:135
-#: src/blocks/advanced-form/fields/time/edit.js:125
+#: src/blocks/advanced-form/fields/textarea/edit.js:136
+#: src/blocks/advanced-form/fields/time/edit.js:120
 msgid "Default Value"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:170
-#: src/blocks/advanced-form/fields/captcha/edit.js:400
+#: src/blocks/advanced-form/fields/accept/edit.js:169
+#: src/blocks/advanced-form/fields/captcha/edit.js:402
 #: src/blocks/advanced-form/fields/checkbox/edit.js:295
-#: src/blocks/advanced-form/fields/date/edit.js:150
-#: src/blocks/advanced-form/fields/email/edit.js:150
+#: src/blocks/advanced-form/fields/date/edit.js:145
+#: src/blocks/advanced-form/fields/email/edit.js:149
 #: src/blocks/advanced-form/fields/file/edit.js:211
 #: src/blocks/advanced-form/fields/number/edit.js:169
 #: src/blocks/advanced-form/fields/radio/edit.js:278
 #: src/blocks/advanced-form/fields/select/edit.js:291
 #: src/blocks/advanced-form/fields/telephone/edit.js:147
 #: src/blocks/advanced-form/fields/text/edit.js:147
-#: src/blocks/advanced-form/fields/textarea/edit.js:154
-#: src/blocks/advanced-form/fields/time/edit.js:144
+#: src/blocks/advanced-form/fields/textarea/edit.js:155
+#: src/blocks/advanced-form/fields/time/edit.js:139
 msgid "Field Width"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:198
-#: src/blocks/advanced-form/fields/captcha/edit.js:428
+#: src/blocks/advanced-form/fields/accept/edit.js:197
+#: src/blocks/advanced-form/fields/captcha/edit.js:430
 #: src/blocks/advanced-form/fields/checkbox/edit.js:323
-#: src/blocks/advanced-form/fields/date/edit.js:178
-#: src/blocks/advanced-form/fields/email/edit.js:178
+#: src/blocks/advanced-form/fields/date/edit.js:173
+#: src/blocks/advanced-form/fields/email/edit.js:177
 #: src/blocks/advanced-form/fields/file/edit.js:239
 #: src/blocks/advanced-form/fields/number/edit.js:197
 #: src/blocks/advanced-form/fields/radio/edit.js:306
 #: src/blocks/advanced-form/fields/select/edit.js:319
 #: src/blocks/advanced-form/fields/telephone/edit.js:175
 #: src/blocks/advanced-form/fields/text/edit.js:175
-#: src/blocks/advanced-form/fields/textarea/edit.js:182
-#: src/blocks/advanced-form/fields/time/edit.js:172
+#: src/blocks/advanced-form/fields/textarea/edit.js:183
+#: src/blocks/advanced-form/fields/time/edit.js:167
 msgid "Min Width"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:222
+#: src/blocks/advanced-form/fields/accept/edit.js:221
 #: src/blocks/advanced-form/fields/checkbox/edit.js:347
-#: src/blocks/advanced-form/fields/date/edit.js:202
-#: src/blocks/advanced-form/fields/email/edit.js:202
+#: src/blocks/advanced-form/fields/date/edit.js:197
+#: src/blocks/advanced-form/fields/email/edit.js:201
 #: src/blocks/advanced-form/fields/file/edit.js:263
-#: src/blocks/advanced-form/fields/hidden/edit.js:114
+#: src/blocks/advanced-form/fields/hidden/edit.js:116
 #: src/blocks/advanced-form/fields/number/edit.js:221
 #: src/blocks/advanced-form/fields/radio/edit.js:330
 #: src/blocks/advanced-form/fields/select/edit.js:343
 #: src/blocks/advanced-form/fields/telephone/edit.js:199
 #: src/blocks/advanced-form/fields/text/edit.js:199
-#: src/blocks/advanced-form/fields/textarea/edit.js:206
-#: src/blocks/advanced-form/fields/time/edit.js:196
+#: src/blocks/advanced-form/fields/textarea/edit.js:207
+#: src/blocks/advanced-form/fields/time/edit.js:191
 msgid "Extra Settings"
 msgstr ""
 
@@ -3550,18 +3587,18 @@ msgstr ""
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:232
+#: src/blocks/advanced-form/fields/accept/edit.js:231
 #: src/blocks/advanced-form/fields/checkbox/edit.js:357
-#: src/blocks/advanced-form/fields/date/edit.js:232
-#: src/blocks/advanced-form/fields/email/edit.js:232
+#: src/blocks/advanced-form/fields/date/edit.js:227
+#: src/blocks/advanced-form/fields/email/edit.js:231
 #: src/blocks/advanced-form/fields/file/edit.js:273
 #: src/blocks/advanced-form/fields/number/edit.js:251
 #: src/blocks/advanced-form/fields/radio/edit.js:360
 #: src/blocks/advanced-form/fields/select/edit.js:353
 #: src/blocks/advanced-form/fields/telephone/edit.js:229
 #: src/blocks/advanced-form/fields/text/edit.js:229
-#: src/blocks/advanced-form/fields/textarea/edit.js:236
-#: src/blocks/advanced-form/fields/time/edit.js:227
+#: src/blocks/advanced-form/fields/textarea/edit.js:237
+#: src/blocks/advanced-form/fields/time/edit.js:221
 #: src/blocks/form/edit.js:1049
 msgid "Input aria description"
 msgstr ""
@@ -3569,18 +3606,18 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:235
+#: src/blocks/advanced-form/fields/accept/edit.js:234
 #: src/blocks/advanced-form/fields/checkbox/edit.js:360
-#: src/blocks/advanced-form/fields/date/edit.js:235
-#: src/blocks/advanced-form/fields/email/edit.js:235
+#: src/blocks/advanced-form/fields/date/edit.js:230
+#: src/blocks/advanced-form/fields/email/edit.js:234
 #: src/blocks/advanced-form/fields/file/edit.js:276
 #: src/blocks/advanced-form/fields/number/edit.js:254
 #: src/blocks/advanced-form/fields/radio/edit.js:363
 #: src/blocks/advanced-form/fields/select/edit.js:356
 #: src/blocks/advanced-form/fields/telephone/edit.js:232
 #: src/blocks/advanced-form/fields/text/edit.js:232
-#: src/blocks/advanced-form/fields/textarea/edit.js:239
-#: src/blocks/advanced-form/fields/time/edit.js:230
+#: src/blocks/advanced-form/fields/textarea/edit.js:240
+#: src/blocks/advanced-form/fields/time/edit.js:224
 msgid "This content will be hidden by default and exposed to screen readers as the aria-describedby attribute for this form field. Note that the normal description field will no longer be used for aria-describedby."
 msgstr ""
 
@@ -3588,18 +3625,18 @@ msgstr ""
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/accept/edit.js:239
+#: src/blocks/advanced-form/fields/accept/edit.js:238
 #: src/blocks/advanced-form/fields/checkbox/edit.js:364
-#: src/blocks/advanced-form/fields/date/edit.js:239
-#: src/blocks/advanced-form/fields/email/edit.js:239
+#: src/blocks/advanced-form/fields/date/edit.js:234
+#: src/blocks/advanced-form/fields/email/edit.js:238
 #: src/blocks/advanced-form/fields/file/edit.js:280
 #: src/blocks/advanced-form/fields/number/edit.js:258
 #: src/blocks/advanced-form/fields/radio/edit.js:367
 #: src/blocks/advanced-form/fields/select/edit.js:360
 #: src/blocks/advanced-form/fields/telephone/edit.js:236
 #: src/blocks/advanced-form/fields/text/edit.js:236
-#: src/blocks/advanced-form/fields/textarea/edit.js:243
-#: src/blocks/advanced-form/fields/time/edit.js:234
+#: src/blocks/advanced-form/fields/textarea/edit.js:244
+#: src/blocks/advanced-form/fields/time/edit.js:228
 #: src/blocks/form/edit.js:1182
 msgid "Field error message when required"
 msgstr ""
@@ -3607,36 +3644,36 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:246
+#: src/blocks/advanced-form/fields/accept/edit.js:245
 #: src/blocks/advanced-form/fields/checkbox/edit.js:371
-#: src/blocks/advanced-form/fields/date/edit.js:246
-#: src/blocks/advanced-form/fields/email/edit.js:246
-#: src/blocks/advanced-form/fields/hidden/edit.js:124
+#: src/blocks/advanced-form/fields/date/edit.js:241
+#: src/blocks/advanced-form/fields/email/edit.js:245
+#: src/blocks/advanced-form/fields/hidden/edit.js:126
 #: src/blocks/advanced-form/fields/number/edit.js:265
 #: src/blocks/advanced-form/fields/radio/edit.js:374
 #: src/blocks/advanced-form/fields/select/edit.js:367
 #: src/blocks/advanced-form/fields/telephone/edit.js:243
 #: src/blocks/advanced-form/fields/text/edit.js:243
-#: src/blocks/advanced-form/fields/textarea/edit.js:250
-#: src/blocks/advanced-form/fields/time/edit.js:241
+#: src/blocks/advanced-form/fields/textarea/edit.js:251
+#: src/blocks/advanced-form/fields/time/edit.js:235
 msgid "Populate with Parameter"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/fields/accept/edit.js:247
+#: src/blocks/advanced-form/fields/accept/edit.js:246
 #: src/blocks/advanced-form/fields/checkbox/edit.js:372
-#: src/blocks/advanced-form/fields/date/edit.js:247
-#: src/blocks/advanced-form/fields/email/edit.js:247
-#: src/blocks/advanced-form/fields/hidden/edit.js:125
+#: src/blocks/advanced-form/fields/date/edit.js:242
+#: src/blocks/advanced-form/fields/email/edit.js:246
+#: src/blocks/advanced-form/fields/hidden/edit.js:127
 #: src/blocks/advanced-form/fields/number/edit.js:266
 #: src/blocks/advanced-form/fields/radio/edit.js:375
 #: src/blocks/advanced-form/fields/select/edit.js:368
 #: src/blocks/advanced-form/fields/telephone/edit.js:244
 #: src/blocks/advanced-form/fields/text/edit.js:244
-#: src/blocks/advanced-form/fields/textarea/edit.js:251
-#: src/blocks/advanced-form/fields/time/edit.js:242
+#: src/blocks/advanced-form/fields/textarea/edit.js:252
+#: src/blocks/advanced-form/fields/time/edit.js:236
 msgid "Enter a parameter that can be used in the page url to dynamically populate the field."
 msgstr ""
 
@@ -3651,120 +3688,120 @@ msgid "Kadence Form Captcha Block"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:189
+#: src/blocks/advanced-form/fields/captcha/edit.js:191
 msgid "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:221
+#: src/blocks/advanced-form/fields/captcha/edit.js:223
 msgid "Use Kadence Captcha Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:224
+#: src/blocks/advanced-form/fields/captcha/edit.js:226
 msgid "Use settings from Kadence Captcha Plugin"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:230
+#: src/blocks/advanced-form/fields/captcha/edit.js:232
 msgid "Modify Kadence Captcha settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:234
+#: src/blocks/advanced-form/fields/captcha/edit.js:236
 msgid "Captcha Type"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:237
+#: src/blocks/advanced-form/fields/captcha/edit.js:239
 msgid "Google V2"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:238
+#: src/blocks/advanced-form/fields/captcha/edit.js:240
 msgid "Google V3"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:239
+#: src/blocks/advanced-form/fields/captcha/edit.js:241
 msgid "Turnstile"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:240
+#: src/blocks/advanced-form/fields/captcha/edit.js:242
 msgid "hCaptcha"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:248
+#: src/blocks/advanced-form/fields/captcha/edit.js:250
 msgid "Turnstile Site Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:254
+#: src/blocks/advanced-form/fields/captcha/edit.js:256
 msgid "Turnstile Secret Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:274
+#: src/blocks/advanced-form/fields/captcha/edit.js:276
 msgid "Recaptcha Site Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:280
+#: src/blocks/advanced-form/fields/captcha/edit.js:282
 msgid "Recaptcha Secret Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/fields/captcha/edit.js:286
-#: src/blocks/advanced-form/fields/captcha/edit.js:319
+#: src/blocks/advanced-form/fields/captcha/edit.js:288
+#: src/blocks/advanced-form/fields/captcha/edit.js:321
 #: src/blocks/form/edit.js:1806
 msgid "Force Specific Language"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:290
+#: src/blocks/advanced-form/fields/captcha/edit.js:292
 msgid "View language codes here"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:307
+#: src/blocks/advanced-form/fields/captcha/edit.js:309
 msgid "hCaptcha Site Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:347
+#: src/blocks/advanced-form/fields/captcha/edit.js:349
 msgid "Hide reCAPTCHA badge"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:350
+#: src/blocks/advanced-form/fields/captcha/edit.js:352
 msgid "Hiding requires that information about recaptcha be added to your form"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:356
+#: src/blocks/advanced-form/fields/captcha/edit.js:358
 msgid "Add reCAPTCHA notice info to form"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:359
+#: src/blocks/advanced-form/fields/captcha/edit.js:361
 msgid "This will add the required reCAPTCHA version 3 informtion to your form."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:364
+#: src/blocks/advanced-form/fields/captcha/edit.js:366
 msgid "Optional - Custom reCaptcha notice"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:367
+#: src/blocks/advanced-form/fields/captcha/edit.js:369
 msgid "If left empty then \"This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply\" is used."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:376
+#: src/blocks/advanced-form/fields/captcha/edit.js:378
 msgid "Color Theme"
 msgstr ""
 
@@ -3773,10 +3810,10 @@ msgstr ""
 #: dist/blocks-rowlayout.js:9
 #: dist/blocks-rowlayout.js:17
 #: dist/blocks-testimonials.js:1
-#: src/blocks/advanced-form/fields/captcha/edit.js:379
+#: src/blocks/advanced-form/fields/captcha/edit.js:381
 #: src/blocks/advancedgallery/edit.js:1137
 #: src/blocks/rowlayout/style-controls.js:753
-#: src/blocks/testimonials/edit.js:1309
+#: src/blocks/testimonials/edit.js:1310
 #: src/plugins/prebuilt-library/pattern-library.js:457
 #: src/plugins/prebuilt-library/section-library.js:334
 msgid "Light"
@@ -3785,40 +3822,40 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-infobox.js:1
 #: dist/components.js:18
-#: src/blocks/advanced-form/fields/captcha/edit.js:386
-#: src/blocks/infobox/edit.js:2060
-#: src/packages/components/src/typography/inline-typography-control/index.js:542
+#: src/blocks/advanced-form/fields/captcha/edit.js:388
+#: src/blocks/infobox/edit.js:2058
+#: src/packages/components/src/typography/inline-typography-control/index.js:556
 msgid "Size"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:389
+#: src/blocks/advanced-form/fields/captcha/edit.js:391
 msgid "Compact"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:470
-#: src/blocks/advanced-form/fields/captcha/edit.js:536
+#: src/blocks/advanced-form/fields/captcha/edit.js:472
+#: src/blocks/advanced-form/fields/captcha/edit.js:538
 msgid "Please Add API Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:490
+#: src/blocks/advanced-form/fields/captcha/edit.js:492
 msgid "Please Add API Keys"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:499
+#: src/blocks/advanced-form/fields/captcha/edit.js:501
 msgid "Google V3 reCAPTCHA"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:502
+#: src/blocks/advanced-form/fields/captcha/edit.js:504
 msgid "Placeholder for hidden Google V3 reCaptcha"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/captcha/edit.js:544
+#: src/blocks/advanced-form/fields/captcha/edit.js:546
 msgid " Loading Captcha Settings"
 msgstr ""
 
@@ -3887,14 +3924,12 @@ msgstr ""
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
 #: src/blocks/advanced-form/fields/checkbox/edit.js:271
-#: src/blocks/advanced-form/fields/date/edit.js:125
-#: src/blocks/advanced-form/fields/email/edit.js:126
+#: src/blocks/advanced-form/fields/email/edit.js:125
 #: src/blocks/advanced-form/fields/number/edit.js:132
 #: src/blocks/advanced-form/fields/radio/edit.js:254
 #: src/blocks/advanced-form/fields/telephone/edit.js:123
 #: src/blocks/advanced-form/fields/text/edit.js:123
-#: src/blocks/advanced-form/fields/textarea/edit.js:130
-#: src/blocks/advanced-form/fields/time/edit.js:120
+#: src/blocks/advanced-form/fields/textarea/edit.js:131
 #: src/blocks/form/edit.js:1031
 msgid "Field Placeholder"
 msgstr ""
@@ -3912,21 +3947,21 @@ msgid "Kadence Form date"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
-#: src/blocks/advanced-form/fields/date/edit.js:143
+#: src/blocks/advanced-form/fields/date/edit.js:138
 msgid "Set to \"today\" to fill with the current date"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:212
-#: src/blocks/advanced-form/fields/email/edit.js:212
+#: src/blocks/advanced-form/fields/date/edit.js:207
+#: src/blocks/advanced-form/fields/email/edit.js:211
 #: src/blocks/advanced-form/fields/number/edit.js:231
 #: src/blocks/advanced-form/fields/radio/edit.js:340
 #: src/blocks/advanced-form/fields/telephone/edit.js:209
 #: src/blocks/advanced-form/fields/text/edit.js:209
-#: src/blocks/advanced-form/fields/textarea/edit.js:216
-#: src/blocks/advanced-form/fields/time/edit.js:207
+#: src/blocks/advanced-form/fields/textarea/edit.js:217
+#: src/blocks/advanced-form/fields/time/edit.js:201
 #: src/blocks/form/edit.js:1056
 msgid "Field Auto Fill"
 msgstr ""
@@ -3938,14 +3973,14 @@ msgstr ""
 #: dist/blocks-iconlist.js:1
 #: dist/blocks-single-icon.js:1
 #: dist/plugin-kadence-control.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:215
-#: src/blocks/advanced-form/fields/email/edit.js:215
+#: src/blocks/advanced-form/fields/date/edit.js:210
+#: src/blocks/advanced-form/fields/email/edit.js:214
 #: src/blocks/advanced-form/fields/number/edit.js:234
 #: src/blocks/advanced-form/fields/radio/edit.js:343
 #: src/blocks/advanced-form/fields/telephone/edit.js:212
 #: src/blocks/advanced-form/fields/text/edit.js:212
-#: src/blocks/advanced-form/fields/textarea/edit.js:219
-#: src/blocks/advanced-form/fields/time/edit.js:210
+#: src/blocks/advanced-form/fields/textarea/edit.js:220
+#: src/blocks/advanced-form/fields/time/edit.js:204
 #: src/blocks/advancedbtn/editOld.js:717
 #: src/blocks/advancedbtn/editOld.js:1047
 #: src/blocks/form/edit.js:1059
@@ -3959,14 +3994,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:216
-#: src/blocks/advanced-form/fields/email/edit.js:216
+#: src/blocks/advanced-form/fields/date/edit.js:211
+#: src/blocks/advanced-form/fields/email/edit.js:215
 #: src/blocks/advanced-form/fields/number/edit.js:235
 #: src/blocks/advanced-form/fields/radio/edit.js:344
 #: src/blocks/advanced-form/fields/telephone/edit.js:213
 #: src/blocks/advanced-form/fields/text/edit.js:213
-#: src/blocks/advanced-form/fields/textarea/edit.js:220
-#: src/blocks/advanced-form/fields/time/edit.js:211
+#: src/blocks/advanced-form/fields/textarea/edit.js:221
+#: src/blocks/advanced-form/fields/time/edit.js:205
 #: src/blocks/form/edit.js:1060
 msgid "Name"
 msgstr ""
@@ -3974,14 +4009,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:220
-#: src/blocks/advanced-form/fields/email/edit.js:220
+#: src/blocks/advanced-form/fields/date/edit.js:215
+#: src/blocks/advanced-form/fields/email/edit.js:219
 #: src/blocks/advanced-form/fields/number/edit.js:239
 #: src/blocks/advanced-form/fields/radio/edit.js:348
 #: src/blocks/advanced-form/fields/telephone/edit.js:217
 #: src/blocks/advanced-form/fields/text/edit.js:217
-#: src/blocks/advanced-form/fields/textarea/edit.js:224
-#: src/blocks/advanced-form/fields/time/edit.js:215
+#: src/blocks/advanced-form/fields/textarea/edit.js:225
+#: src/blocks/advanced-form/fields/time/edit.js:209
 #: src/blocks/form/edit.js:1064
 msgid "Organization"
 msgstr ""
@@ -3989,14 +4024,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:221
-#: src/blocks/advanced-form/fields/email/edit.js:221
+#: src/blocks/advanced-form/fields/date/edit.js:216
+#: src/blocks/advanced-form/fields/email/edit.js:220
 #: src/blocks/advanced-form/fields/number/edit.js:240
 #: src/blocks/advanced-form/fields/radio/edit.js:349
 #: src/blocks/advanced-form/fields/telephone/edit.js:218
 #: src/blocks/advanced-form/fields/text/edit.js:218
-#: src/blocks/advanced-form/fields/textarea/edit.js:225
-#: src/blocks/advanced-form/fields/time/edit.js:216
+#: src/blocks/advanced-form/fields/textarea/edit.js:226
+#: src/blocks/advanced-form/fields/time/edit.js:210
 #: src/blocks/form/edit.js:1065
 msgid "Street Address"
 msgstr ""
@@ -4004,14 +4039,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:224
-#: src/blocks/advanced-form/fields/email/edit.js:224
+#: src/blocks/advanced-form/fields/date/edit.js:219
+#: src/blocks/advanced-form/fields/email/edit.js:223
 #: src/blocks/advanced-form/fields/number/edit.js:243
 #: src/blocks/advanced-form/fields/radio/edit.js:352
 #: src/blocks/advanced-form/fields/telephone/edit.js:221
 #: src/blocks/advanced-form/fields/text/edit.js:221
-#: src/blocks/advanced-form/fields/textarea/edit.js:228
-#: src/blocks/advanced-form/fields/time/edit.js:219
+#: src/blocks/advanced-form/fields/textarea/edit.js:229
+#: src/blocks/advanced-form/fields/time/edit.js:213
 #: src/blocks/form/edit.js:1068
 msgid "Country Name"
 msgstr ""
@@ -4019,14 +4054,14 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/fields/date/edit.js:226
-#: src/blocks/advanced-form/fields/email/edit.js:226
+#: src/blocks/advanced-form/fields/date/edit.js:221
+#: src/blocks/advanced-form/fields/email/edit.js:225
 #: src/blocks/advanced-form/fields/number/edit.js:245
 #: src/blocks/advanced-form/fields/radio/edit.js:354
 #: src/blocks/advanced-form/fields/telephone/edit.js:223
 #: src/blocks/advanced-form/fields/text/edit.js:223
-#: src/blocks/advanced-form/fields/textarea/edit.js:230
-#: src/blocks/advanced-form/fields/time/edit.js:221
+#: src/blocks/advanced-form/fields/textarea/edit.js:231
+#: src/blocks/advanced-form/fields/time/edit.js:215
 #: src/blocks/form/edit.js:850
 #: src/blocks/form/edit.js:890
 #: src/blocks/form/edit.js:1070
@@ -4036,7 +4071,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:614
+#: src/blocks/advanced-form/edit-inner.js:586
 #: src/blocks/advanced-form/fields/email/index.js:25
 #: src/blocks/form/edit.js:1715
 msgid "Email Field"
@@ -4126,7 +4161,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:7
 #: dist/blocks-infobox.js:1
 #: src/blocks/advanced-form/fields/number/index.js:22
-#: src/blocks/infobox/edit.js:1668
+#: src/blocks/infobox/edit.js:1666
 msgid "Number"
 msgstr ""
 
@@ -4206,9 +4241,9 @@ msgstr ""
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:14
 #: dist/helpers.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:202
+#: src/blocks/advanced-form/fields/submit/edit.js:204
 #: src/blocks/rowlayout/constants.js:68
-#: src/blocks/singlebtn/edit.js:372
+#: src/blocks/singlebtn/edit.js:378
 #: src/packages/components/src/font-size/constants.js:31
 #: src/packages/components/src/measurement-range-control/constants.js:51
 #: src/packages/helpers/src/constants/index.js:49
@@ -4223,11 +4258,11 @@ msgstr ""
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:7
-#: src/blocks/advanced-form/fields/submit/edit.js:205
+#: src/blocks/advanced-form/fields/submit/edit.js:207
 #: src/blocks/image/image.js:879
 #: src/blocks/rowlayout/style-controls.js:643
-#: src/blocks/singlebtn/edit.js:375
-#: src/blocks/testimonials/edit.js:1888
+#: src/blocks/singlebtn/edit.js:381
+#: src/blocks/testimonials/edit.js:1889
 #: src/packages/components/src/background-control/index.js:148
 #: src/packages/components/src/background-size-control/index.js:50
 msgid "Auto"
@@ -4237,8 +4272,8 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:7
-#: src/blocks/advanced-form/fields/submit/edit.js:206
-#: src/blocks/singlebtn/edit.js:376
+#: src/blocks/advanced-form/fields/submit/edit.js:208
+#: src/blocks/singlebtn/edit.js:382
 #: src/packages/components/src/background-control/index.js:71
 #: src/packages/components/src/background-control/index.js:76
 msgid "Fixed"
@@ -4248,51 +4283,51 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-posts.js:9
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:207
+#: src/blocks/advanced-form/fields/submit/edit.js:209
 #: src/blocks/posts/edit.js:658
-#: src/blocks/singlebtn/edit.js:377
+#: src/blocks/singlebtn/edit.js:383
 msgid "Full"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:211
-#: src/blocks/singlebtn/edit.js:389
+#: src/blocks/advanced-form/fields/submit/edit.js:213
+#: src/blocks/singlebtn/edit.js:395
 msgid "Fill"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:212
-#: src/blocks/singlebtn/edit.js:390
+#: src/blocks/advanced-form/fields/submit/edit.js:214
+#: src/blocks/singlebtn/edit.js:396
 msgid "Outline"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:213
+#: src/blocks/advanced-form/fields/submit/edit.js:215
 #: src/blocks/advancedbtn/editOld.js:718
-#: src/blocks/singlebtn/edit.js:391
+#: src/blocks/singlebtn/edit.js:397
 msgid "Theme"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:391
-#: src/blocks/singlebtn/edit.js:626
+#: src/blocks/advanced-form/fields/submit/edit.js:393
+#: src/blocks/singlebtn/edit.js:632
 msgid "Button Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:399
+#: src/blocks/advanced-form/fields/submit/edit.js:401
 #: src/blocks/advancedbtn/editOld.js:741
-#: src/blocks/singlebtn/edit.js:669
+#: src/blocks/singlebtn/edit.js:675
 msgid "Button Inherit Styles"
 msgstr ""
 
@@ -4300,45 +4335,45 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-form.js:3
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:412
+#: src/blocks/advanced-form/fields/submit/edit.js:414
 #: src/blocks/advancedbtn/editOld.js:831
 #: src/blocks/form/edit.js:2798
-#: src/blocks/singlebtn/edit.js:682
+#: src/blocks/singlebtn/edit.js:688
 msgid "Button Size"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:423
+#: src/blocks/advanced-form/fields/submit/edit.js:425
 #: src/blocks/advancedbtn/editOld.js:950
 #: src/blocks/advancedbtn/editOld.js:951
-#: src/blocks/singlebtn/edit.js:693
+#: src/blocks/singlebtn/edit.js:699
 msgid "Button Width"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:433
+#: src/blocks/advanced-form/fields/submit/edit.js:435
 #: src/blocks/advancedbtn/editOld.js:976
-#: src/blocks/singlebtn/edit.js:703
+#: src/blocks/singlebtn/edit.js:709
 msgid "Fixed Width"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:468
-#: src/blocks/singlebtn/edit.js:738
+#: src/blocks/advanced-form/fields/submit/edit.js:470
+#: src/blocks/singlebtn/edit.js:744
 msgid "Button Styles"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:476
-#: src/blocks/singlebtn/edit.js:746
+#: src/blocks/advanced-form/fields/submit/edit.js:478
+#: src/blocks/singlebtn/edit.js:752
 msgid "Color Hover"
 msgstr ""
 
@@ -4346,10 +4381,10 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:482
+#: src/blocks/advanced-form/fields/submit/edit.js:484
 #: src/blocks/column/edit.js:1074
 #: src/blocks/column/edit.js:1212
-#: src/blocks/singlebtn/edit.js:752
+#: src/blocks/singlebtn/edit.js:758
 msgid "Hover Type"
 msgstr ""
 
@@ -4362,19 +4397,19 @@ msgstr ""
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:529
-#: src/blocks/advanced-form/fields/submit/edit.js:627
+#: src/blocks/advanced-form/fields/submit/edit.js:531
+#: src/blocks/advanced-form/fields/submit/edit.js:629
 #: src/blocks/advancedbtn/editOld.js:1663
 #: src/blocks/advancedgallery/edit.js:1464
 #: src/blocks/column/edit.js:1411
 #: src/blocks/column/edit.js:1482
 #: src/blocks/image/image.js:731
-#: src/blocks/infobox/edit.js:1509
-#: src/blocks/infobox/edit.js:1588
-#: src/blocks/singlebtn/edit.js:799
-#: src/blocks/singlebtn/edit.js:897
+#: src/blocks/infobox/edit.js:1507
+#: src/blocks/infobox/edit.js:1586
+#: src/blocks/singlebtn/edit.js:805
+#: src/blocks/singlebtn/edit.js:903
 #: src/blocks/tableofcontents/edit.js:983
-#: src/blocks/testimonials/edit.js:1383
+#: src/blocks/testimonials/edit.js:1384
 msgid "Box Shadow"
 msgstr ""
 
@@ -4388,7 +4423,7 @@ msgstr ""
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:18
-#: src/blocks/advanced-form/fields/submit/edit.js:574
+#: src/blocks/advanced-form/fields/submit/edit.js:576
 #: src/blocks/advancedheading/edit.js:789
 #: src/blocks/advancedheading/edit.js:921
 #: src/blocks/advancedheading/edit.js:1189
@@ -4399,12 +4434,12 @@ msgstr ""
 #: src/blocks/image/image.js:65
 #: src/blocks/image/image.js:1061
 #: src/blocks/rowlayout/constants.js:19
-#: src/blocks/singlebtn/edit.js:844
-#: src/blocks/testimonials/edit.js:1459
-#: src/blocks/testimonials/edit.js:1659
-#: src/blocks/testimonials/edit.js:1721
-#: src/blocks/testimonials/edit.js:1946
-#: src/blocks/testimonials/edit.js:2005
+#: src/blocks/singlebtn/edit.js:850
+#: src/blocks/testimonials/edit.js:1460
+#: src/blocks/testimonials/edit.js:1660
+#: src/blocks/testimonials/edit.js:1722
+#: src/blocks/testimonials/edit.js:1947
+#: src/blocks/testimonials/edit.js:2006
 #: src/packages/components/src/typography/text-shadow-control/index.js:38
 msgid "Color"
 msgstr ""
@@ -4415,15 +4450,15 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-rowlayout.js:17
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:580
+#: src/blocks/advanced-form/fields/submit/edit.js:582
 #: src/blocks/column/edit.js:1138
 #: src/blocks/column/edit.js:1295
 #: src/blocks/image/image.js:1034
-#: src/blocks/progress-bar/edit.js:569
+#: src/blocks/progress-bar/edit.js:727
 #: src/blocks/rowlayout/style-controls.js:296
 #: src/blocks/rowlayout/style-controls.js:428
 #: src/blocks/rowlayout/style-controls.js:597
-#: src/blocks/singlebtn/edit.js:850
+#: src/blocks/singlebtn/edit.js:856
 msgid "Type"
 msgstr ""
 
@@ -4435,46 +4470,46 @@ msgstr ""
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:674
+#: src/blocks/advanced-form/fields/submit/edit.js:676
 #: src/blocks/advancedbtn/editOld.js:1095
 #: src/blocks/advancedheading/edit.js:1090
-#: src/blocks/infobox/edit.js:1343
+#: src/blocks/infobox/edit.js:1341
 #: src/blocks/single-icon/edit.js:190
-#: src/blocks/singlebtn/edit.js:944
-#: src/blocks/testimonials/edit.js:1421
+#: src/blocks/singlebtn/edit.js:950
+#: src/blocks/testimonials/edit.js:1422
 msgid "Icon Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:688
-#: src/blocks/singlebtn/edit.js:958
+#: src/blocks/advanced-form/fields/submit/edit.js:690
+#: src/blocks/singlebtn/edit.js:964
 msgid "Icon and Text Display"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:692
-#: src/blocks/advanced-form/fields/submit/edit.js:703
-#: src/blocks/advanced-form/fields/submit/edit.js:720
-#: src/blocks/singlebtn/edit.js:962
-#: src/blocks/singlebtn/edit.js:973
-#: src/blocks/singlebtn/edit.js:990
+#: src/blocks/advanced-form/fields/submit/edit.js:694
+#: src/blocks/advanced-form/fields/submit/edit.js:705
+#: src/blocks/advanced-form/fields/submit/edit.js:722
+#: src/blocks/singlebtn/edit.js:968
+#: src/blocks/singlebtn/edit.js:979
+#: src/blocks/singlebtn/edit.js:996
 msgid "Show Icon and Text"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:693
-#: src/blocks/advanced-form/fields/submit/edit.js:704
-#: src/blocks/advanced-form/fields/submit/edit.js:721
+#: src/blocks/advanced-form/fields/submit/edit.js:695
+#: src/blocks/advanced-form/fields/submit/edit.js:706
+#: src/blocks/advanced-form/fields/submit/edit.js:723
 #: src/blocks/advancedbtn/editOld.js:1171
-#: src/blocks/singlebtn/edit.js:963
-#: src/blocks/singlebtn/edit.js:974
-#: src/blocks/singlebtn/edit.js:991
+#: src/blocks/singlebtn/edit.js:969
+#: src/blocks/singlebtn/edit.js:980
+#: src/blocks/singlebtn/edit.js:997
 msgid "Show Only Icon"
 msgstr ""
 
@@ -4483,10 +4518,10 @@ msgstr ""
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tabs.js:2
-#: src/blocks/advanced-form/fields/submit/edit.js:735
+#: src/blocks/advanced-form/fields/submit/edit.js:737
 #: src/blocks/advancedbtn/editOld.js:1207
 #: src/blocks/advancedheading/edit.js:1104
-#: src/blocks/singlebtn/edit.js:1005
+#: src/blocks/singlebtn/edit.js:1011
 #: src/blocks/tabs/edit.js:858
 msgid "Icon Location"
 msgstr ""
@@ -4502,19 +4537,19 @@ msgstr ""
 #: dist/blocks-tabs.js:2
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:746
+#: src/blocks/advanced-form/fields/submit/edit.js:748
 #: src/blocks/advancedbtn/editOld.js:1105
 #: src/blocks/advancedheading/edit.js:1129
 #: src/blocks/iconlist/edit.js:372
-#: src/blocks/infobox/edit.js:1354
-#: src/blocks/infobox/edit.js:1925
+#: src/blocks/infobox/edit.js:1352
+#: src/blocks/infobox/edit.js:1923
 #: src/blocks/listitem/edit.js:217
 #: src/blocks/single-icon/edit.js:203
-#: src/blocks/singlebtn/edit.js:1016
+#: src/blocks/singlebtn/edit.js:1022
 #: src/blocks/tabs/edit.js:1493
-#: src/blocks/testimonial/edit.js:215
-#: src/blocks/testimonials/edit.js:1439
-#: src/blocks/testimonials/edit.js:1665
+#: src/blocks/testimonial/edit.js:217
+#: src/blocks/testimonials/edit.js:1440
+#: src/blocks/testimonials/edit.js:1666
 msgid "Icon Size"
 msgstr ""
 
@@ -4525,38 +4560,38 @@ msgstr ""
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:783
+#: src/blocks/advanced-form/fields/submit/edit.js:785
 #: src/blocks/advancedbtn/editOld.js:1191
 #: src/blocks/advancedheading/edit.js:1166
 #: src/blocks/single-icon/advanced-settings.js:30
-#: src/blocks/singlebtn/edit.js:1053
-#: src/blocks/testimonials/edit.js:1505
+#: src/blocks/singlebtn/edit.js:1059
+#: src/blocks/testimonials/edit.js:1506
 msgid "Icon Padding"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:801
-#: src/blocks/singlebtn/edit.js:1071
+#: src/blocks/advanced-form/fields/submit/edit.js:803
+#: src/blocks/singlebtn/edit.js:1077
 msgid "Typography Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:889
+#: src/blocks/advanced-form/fields/submit/edit.js:891
 #: src/blocks/advancedbtn/editOld.js:1302
-#: src/blocks/singlebtn/edit.js:1159
+#: src/blocks/singlebtn/edit.js:1165
 msgid "Add Aria Label"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:9
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/advanced-form/fields/submit/edit.js:945
+#: src/blocks/advanced-form/fields/submit/edit.js:947
 #: src/blocks/advancedbtn/editOld.js:540
-#: src/blocks/singlebtn/edit.js:1221
+#: src/blocks/singlebtn/edit.js:1227
 msgid "Button..."
 msgstr ""
 
@@ -4598,20 +4633,19 @@ msgid "Kadence Form time input field"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:478
+#: src/blocks/advanced-form/edit-inner.js:464
 msgid "Advanced forms can not be edited within the widgets screen."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:480
+#: src/blocks/advanced-form/edit-inner.js:466
 msgid "Edit Form"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:486
-#: src/blocks/advanced-form/edit-inner.js:490
-#: src/blocks/advanced-form/edit-inner.js:531
-#: src/blocks/advanced-form/edit-inner.js:535
+#: src/blocks/advanced-form/edit-inner.js:472
+#: src/blocks/advanced-form/edit-inner.js:476
+#: src/blocks/advanced-form/edit-inner.js:521
 #: src/blocks/advanced-form/edit.js:150
 #: src/blocks/advanced-form/edit.js:154
 #: src/blocks/advanced-form/edit.js:184
@@ -4620,115 +4654,115 @@ msgid "Selected Form"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:565
+#: src/blocks/advanced-form/edit-inner.js:537
 msgid "Submit Actions"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:569
+#: src/blocks/advanced-form/edit-inner.js:541
 msgid "Hide form after submit?"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:584
+#: src/blocks/advanced-form/edit-inner.js:556
 #: src/blocks/form/edit.js:1685
 msgid "Email Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:589
+#: src/blocks/advanced-form/edit-inner.js:561
 #: src/blocks/form/edit.js:1690
 msgid "Email To Address"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:590
+#: src/blocks/advanced-form/edit-inner.js:562
 #: src/blocks/form/edit.js:1691
 msgid "name@example.com"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:593
+#: src/blocks/advanced-form/edit-inner.js:565
 #: src/blocks/form/edit.js:1694
 msgid "Seperate with comma for more then one email address."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:642
+#: src/blocks/advanced-form/edit-inner.js:614
 #: src/blocks/form/edit.js:1742
 msgid "Redirect Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:647
+#: src/blocks/advanced-form/edit-inner.js:619
 #: src/blocks/form/edit.js:1747
 msgid "Redirect to"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:3
-#: src/blocks/advanced-form/edit-inner.js:740
+#: src/blocks/advanced-form/edit-inner.js:712
 #: src/blocks/form/edit.js:1844
 msgid "Message Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:753
+#: src/blocks/advanced-form/edit-inner.js:725
 msgid "Input Fields"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-countdown.js:1
-#: src/blocks/advanced-form/edit-inner.js:762
+#: src/blocks/advanced-form/edit-inner.js:734
 #: src/blocks/countdown/edit.js:855
 msgid "Labels"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:770
+#: src/blocks/advanced-form/edit-inner.js:742
 msgid "Radio/Checkbox Labels"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
 #: dist/blocks-form.js:1
-#: src/blocks/advanced-form/edit-inner.js:778
+#: src/blocks/advanced-form/edit-inner.js:750
 #: src/blocks/form/edit.js:1044
 msgid "Help Text"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:786
+#: src/blocks/advanced-form/edit-inner.js:758
 msgid "Message Styling"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:910
+#: src/blocks/advanced-form/edit-inner.js:882
 msgid "Validation"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:915
+#: src/blocks/advanced-form/edit-inner.js:887
 msgid "Use Browser Validation"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:918
+#: src/blocks/advanced-form/edit-inner.js:890
 msgid "This will use the browsers default validation for required fields. If disabled, custom error message will be displayed."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:927
+#: src/blocks/advanced-form/edit-inner.js:899
 msgid "Form Styles"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:11
-#: src/blocks/advanced-form/edit-inner.js:928
+#: src/blocks/advanced-form/edit-inner.js:900
 msgid "Only disable if you intend to control form styles through custom css or theme"
 msgstr ""
 
@@ -4874,17 +4908,17 @@ msgstr ""
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
-#: src/blocks/infobox/edit.js:1411
+#: src/blocks/infobox/edit.js:1409
 #: src/blocks/listitem/edit.js:165
 #: src/blocks/single-icon/edit.js:308
-#: src/blocks/singlebtn/edit.js:566
+#: src/blocks/singlebtn/edit.js:572
 msgid "Link"
 msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-singlebtn.js:1
 #: src/blocks/advancedbtn/editOld.js:776
-#: src/blocks/singlebtn/edit.js:632
+#: src/blocks/singlebtn/edit.js:638
 msgid "Button Link"
 msgstr ""
 
@@ -4909,7 +4943,7 @@ msgstr ""
 #: dist/components.js:7
 #: dist/components.js:14
 #: src/blocks/advancedgallery/gallery-image.js:286
-#: src/blocks/testimonial/edit.js:360
+#: src/blocks/testimonial/edit.js:362
 #: src/packages/components/src/background-control/index.js:128
 #: src/packages/components/src/common/image-controls/index.js:98
 #: src/packages/components/src/common/video-control/index.js:91
@@ -4973,6 +5007,7 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: src/blocks/advancedgallery/edit.js:118
 #: src/blocks/image/image.js:849
+#: src/blocks/progress-bar/edit.js:556
 msgid "Custom"
 msgstr ""
 
@@ -4984,14 +5019,14 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:123
-#: src/blocks/testimonials/edit.js:1160
+#: src/blocks/testimonials/edit.js:1161
 msgid "Grid"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:124
-#: src/blocks/testimonials/edit.js:1161
+#: src/blocks/testimonials/edit.js:1162
 msgid "Carousel"
 msgstr ""
 
@@ -5030,7 +5065,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:577
 #: src/blocks/countdown/edit.js:930
 #: src/blocks/countdown/edit.js:1256
-#: src/blocks/testimonials/edit.js:704
+#: src/blocks/testimonials/edit.js:705
 #: src/packages/components/src/border/border-control/index.js:158
 #: src/packages/components/src/border/responsive-border-control/index.js:269
 #: src/packages/components/src/color/border-color-control/index.js:112
@@ -5050,7 +5085,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:578
 #: src/blocks/countdown/edit.js:931
 #: src/blocks/countdown/edit.js:1257
-#: src/blocks/testimonials/edit.js:705
+#: src/blocks/testimonials/edit.js:706
 #: src/packages/components/src/border/border-control/index.js:158
 #: src/packages/components/src/border/responsive-border-control/index.js:269
 #: src/packages/components/src/color/border-color-control/index.js:102
@@ -5069,7 +5104,7 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-infobox.js:1
 #: src/blocks/advancedgallery/edit.js:732
-#: src/blocks/infobox/edit.js:1722
+#: src/blocks/infobox/edit.js:1720
 msgid "Image ratio"
 msgstr ""
 
@@ -5080,8 +5115,8 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:735
 #: src/blocks/advancedgallery/edit.js:784
 #: src/blocks/image/image.js:576
-#: src/blocks/infobox/edit.js:1729
-#: src/blocks/testimonials/edit.js:1907
+#: src/blocks/infobox/edit.js:1727
+#: src/blocks/testimonials/edit.js:1908
 msgid "Landscape 4:3"
 msgstr ""
 
@@ -5092,8 +5127,8 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:739
 #: src/blocks/advancedgallery/edit.js:788
 #: src/blocks/image/image.js:580
-#: src/blocks/infobox/edit.js:1733
-#: src/blocks/testimonials/edit.js:1903
+#: src/blocks/infobox/edit.js:1731
+#: src/blocks/testimonials/edit.js:1904
 msgid "Landscape 3:2"
 msgstr ""
 
@@ -5103,7 +5138,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:743
 #: src/blocks/advancedgallery/edit.js:792
 #: src/blocks/image/image.js:584
-#: src/blocks/infobox/edit.js:1737
+#: src/blocks/infobox/edit.js:1735
 msgid "Landscape 16:9"
 msgstr ""
 
@@ -5113,7 +5148,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:747
 #: src/blocks/advancedgallery/edit.js:796
 #: src/blocks/image/image.js:588
-#: src/blocks/infobox/edit.js:1741
+#: src/blocks/infobox/edit.js:1739
 msgid "Landscape 2:1"
 msgstr ""
 
@@ -5123,7 +5158,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:751
 #: src/blocks/advancedgallery/edit.js:800
 #: src/blocks/image/image.js:592
-#: src/blocks/infobox/edit.js:1745
+#: src/blocks/infobox/edit.js:1743
 msgid "Landscape 3:1"
 msgstr ""
 
@@ -5133,7 +5168,7 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:755
 #: src/blocks/advancedgallery/edit.js:804
 #: src/blocks/image/image.js:596
-#: src/blocks/infobox/edit.js:1749
+#: src/blocks/infobox/edit.js:1747
 msgid "Landscape 4:1"
 msgstr ""
 
@@ -5144,8 +5179,8 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:759
 #: src/blocks/advancedgallery/edit.js:808
 #: src/blocks/image/image.js:600
-#: src/blocks/infobox/edit.js:1753
-#: src/blocks/testimonials/edit.js:1911
+#: src/blocks/infobox/edit.js:1751
+#: src/blocks/testimonials/edit.js:1912
 msgid "Portrait 3:4"
 msgstr ""
 
@@ -5156,8 +5191,8 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:763
 #: src/blocks/advancedgallery/edit.js:812
 #: src/blocks/image/image.js:604
-#: src/blocks/infobox/edit.js:1757
-#: src/blocks/testimonials/edit.js:1915
+#: src/blocks/infobox/edit.js:1755
+#: src/blocks/testimonials/edit.js:1916
 msgid "Portrait 2:3"
 msgstr ""
 
@@ -5168,8 +5203,8 @@ msgstr ""
 #: src/blocks/advancedgallery/edit.js:767
 #: src/blocks/advancedgallery/edit.js:816
 #: src/blocks/image/image.js:608
-#: src/blocks/infobox/edit.js:1761
-#: src/blocks/testimonials/edit.js:1919
+#: src/blocks/infobox/edit.js:1759
+#: src/blocks/testimonials/edit.js:1920
 msgid "Square 1:1"
 msgstr ""
 
@@ -5181,7 +5216,7 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:830
-#: src/blocks/testimonials/edit.js:927
+#: src/blocks/testimonials/edit.js:928
 msgid "Column Control Type"
 msgstr ""
 
@@ -5196,8 +5231,8 @@ msgstr ""
 #: src/blocks/posts/edit.js:500
 #: src/blocks/rowlayout/layout-controls.js:185
 #: src/blocks/tabs/edit.js:949
-#: src/blocks/testimonials/edit.js:945
-#: src/blocks/testimonials/edit.js:954
+#: src/blocks/testimonials/edit.js:946
+#: src/blocks/testimonials/edit.js:955
 #: src/plugins/prebuilt-library/pattern-library.js:85
 #: src/plugins/prebuilt-library/pattern-library.js:197
 #: src/plugins/prebuilt-library/pattern-library.js:319
@@ -5208,7 +5243,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:859
 #: src/blocks/advancedgallery/edit.js:935
-#: src/blocks/testimonials/edit.js:956
+#: src/blocks/testimonials/edit.js:957
 msgid "Screen Above 1500px"
 msgstr ""
 
@@ -5216,7 +5251,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:866
 #: src/blocks/advancedgallery/edit.js:942
-#: src/blocks/testimonials/edit.js:963
+#: src/blocks/testimonials/edit.js:964
 msgid "Screen 1200px - 1499px"
 msgstr ""
 
@@ -5224,7 +5259,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:873
 #: src/blocks/advancedgallery/edit.js:949
-#: src/blocks/testimonials/edit.js:970
+#: src/blocks/testimonials/edit.js:971
 msgid "Screen 992px - 1199px"
 msgstr ""
 
@@ -5232,7 +5267,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:880
 #: src/blocks/advancedgallery/edit.js:956
-#: src/blocks/testimonials/edit.js:977
+#: src/blocks/testimonials/edit.js:978
 msgid "Screen 768px - 991px"
 msgstr ""
 
@@ -5240,7 +5275,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:887
 #: src/blocks/advancedgallery/edit.js:963
-#: src/blocks/testimonials/edit.js:984
+#: src/blocks/testimonials/edit.js:985
 msgid "Screen 544px - 767px"
 msgstr ""
 
@@ -5248,7 +5283,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:894
 #: src/blocks/advancedgallery/edit.js:970
-#: src/blocks/testimonials/edit.js:991
+#: src/blocks/testimonials/edit.js:992
 msgid "Screen Below 543px"
 msgstr ""
 
@@ -5292,14 +5327,14 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1040
-#: src/blocks/testimonials/edit.js:1217
+#: src/blocks/testimonials/edit.js:1218
 msgid "Carousel Settings"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1045
-#: src/blocks/testimonials/edit.js:1237
+#: src/blocks/testimonials/edit.js:1238
 msgid "Carousel Auto Play"
 msgstr ""
 
@@ -5308,7 +5343,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1051
 #: src/blocks/rowlayout/style-controls.js:681
-#: src/blocks/testimonials/edit.js:1243
+#: src/blocks/testimonials/edit.js:1244
 msgid "Autoplay Speed"
 msgstr ""
 
@@ -5337,14 +5372,14 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1077
-#: src/blocks/testimonials/edit.js:1252
+#: src/blocks/testimonials/edit.js:1253
 msgid "Carousel Slide Transition Speed"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1086
-#: src/blocks/testimonials/edit.js:1260
+#: src/blocks/testimonials/edit.js:1261
 msgid "Slides to Scroll"
 msgstr ""
 
@@ -5353,7 +5388,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1102
 #: src/blocks/rowlayout/style-controls.js:719
-#: src/blocks/testimonials/edit.js:1275
+#: src/blocks/testimonials/edit.js:1276
 msgid "Arrow Style"
 msgstr ""
 
@@ -5362,7 +5397,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1105
 #: src/blocks/rowlayout/style-controls.js:722
-#: src/blocks/testimonials/edit.js:1278
+#: src/blocks/testimonials/edit.js:1279
 msgid "White on Dark"
 msgstr ""
 
@@ -5371,7 +5406,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1109
 #: src/blocks/rowlayout/style-controls.js:726
-#: src/blocks/testimonials/edit.js:1282
+#: src/blocks/testimonials/edit.js:1283
 msgid "Black on Light"
 msgstr ""
 
@@ -5380,7 +5415,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1113
 #: src/blocks/rowlayout/style-controls.js:730
-#: src/blocks/testimonials/edit.js:1286
+#: src/blocks/testimonials/edit.js:1287
 msgid "Outline Black"
 msgstr ""
 
@@ -5389,14 +5424,14 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1117
 #: src/blocks/rowlayout/style-controls.js:734
-#: src/blocks/testimonials/edit.js:1290
+#: src/blocks/testimonials/edit.js:1291
 msgid "Outline White"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1130
-#: src/blocks/testimonials/edit.js:1302
+#: src/blocks/testimonials/edit.js:1303
 msgid "Dot Style"
 msgstr ""
 
@@ -5405,7 +5440,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1141
 #: src/blocks/rowlayout/style-controls.js:757
-#: src/blocks/testimonials/edit.js:1313
+#: src/blocks/testimonials/edit.js:1314
 msgid "Outline Dark"
 msgstr ""
 
@@ -5414,7 +5449,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedgallery/edit.js:1145
 #: src/blocks/rowlayout/style-controls.js:761
-#: src/blocks/testimonials/edit.js:1317
+#: src/blocks/testimonials/edit.js:1318
 msgid "Outline Light"
 msgstr ""
 
@@ -5789,7 +5824,7 @@ msgstr ""
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:456
 #: src/packages/components/src/tag-select/index.js:108
-#: src/packages/components/src/typography/typography-control/index.js:307
+#: src/packages/components/src/typography/typography-control/index.js:321
 msgid "Paragraph"
 msgstr ""
 
@@ -5798,7 +5833,7 @@ msgstr ""
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:464
 #: src/packages/components/src/tag-select/index.js:116
-#: src/packages/components/src/typography/typography-control/index.js:317
+#: src/packages/components/src/typography/typography-control/index.js:331
 msgid "Span"
 msgstr ""
 
@@ -5822,8 +5857,8 @@ msgstr ""
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:824
-#: src/packages/components/src/typography/typography-control/index.js:494
-#: src/packages/components/src/typography/typography-control/index.js:507
+#: src/packages/components/src/typography/typography-control/index.js:508
+#: src/packages/components/src/typography/typography-control/index.js:521
 msgid "HTML Tag"
 msgstr ""
 
@@ -5835,8 +5870,8 @@ msgstr ""
 #: src/blocks/column/edit.js:800
 #: src/blocks/countup/inspector.js:270
 #: src/blocks/countup/inspector.js:436
-#: src/blocks/infobox/edit.js:1451
-#: src/blocks/progress-bar/edit.js:615
+#: src/blocks/infobox/edit.js:1449
+#: src/blocks/progress-bar/edit.js:773
 msgid "Text Alignment"
 msgstr ""
 
@@ -5895,72 +5930,72 @@ msgstr ""
 #: dist/components.js:18
 #: src/blocks/advancedbtn/editOld.js:807
 #: src/blocks/advancedheading/edit.js:939
-#: src/packages/components/src/typography/typography-control/index.js:521
+#: src/packages/components/src/typography/typography-control/index.js:535
 msgid "Font Size"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:957
-#: src/packages/components/src/typography/typography-control/index.js:538
-#: src/packages/components/src/typography/typography-control/index.js:556
+#: src/packages/components/src/typography/typography-control/index.js:552
+#: src/packages/components/src/typography/typography-control/index.js:570
 msgid "Line Height"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:973
-#: src/packages/components/src/typography/typography-control/index.js:572
-#: src/packages/components/src/typography/typography-control/index.js:583
+#: src/packages/components/src/typography/typography-control/index.js:586
+#: src/packages/components/src/typography/typography-control/index.js:597
 msgid "Letter Case"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:977
-#: src/packages/components/src/typography/typography-control/index.js:448
+#: src/packages/components/src/typography/typography-control/index.js:462
 msgid "-"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:978
-#: src/packages/components/src/typography/typography-control/index.js:449
+#: src/packages/components/src/typography/typography-control/index.js:463
 msgid "AB"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:978
-#: src/packages/components/src/typography/typography-control/index.js:449
+#: src/packages/components/src/typography/typography-control/index.js:463
 msgid "Uppercase"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:979
-#: src/packages/components/src/typography/typography-control/index.js:450
+#: src/packages/components/src/typography/typography-control/index.js:464
 msgid "ab"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:979
-#: src/packages/components/src/typography/typography-control/index.js:450
+#: src/packages/components/src/typography/typography-control/index.js:464
 msgid "Lowercase"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:980
-#: src/packages/components/src/typography/typography-control/index.js:451
+#: src/packages/components/src/typography/typography-control/index.js:465
 msgid "Ab"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 #: dist/components.js:18
 #: src/blocks/advancedheading/edit.js:980
-#: src/packages/components/src/typography/typography-control/index.js:451
+#: src/packages/components/src/typography/typography-control/index.js:465
 msgid "Capitalize"
 msgstr ""
 
@@ -6249,7 +6284,7 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/column/index.js:23
-#: src/plugins/kadence-control-plugin.js:393
+#: src/plugins/kadence-control-plugin.js:394
 msgid "Section"
 msgstr ""
 
@@ -6392,13 +6427,13 @@ msgstr ""
 #: dist/components.js:16
 #: src/blocks/column/edit.js:793
 #: src/blocks/iconlist/edit.js:216
-#: src/blocks/infobox/edit.js:1275
-#: src/blocks/infobox/edit.js:1287
-#: src/blocks/infobox/edit.js:1299
-#: src/blocks/infobox/edit.js:1654
+#: src/blocks/infobox/edit.js:1273
+#: src/blocks/infobox/edit.js:1285
+#: src/blocks/infobox/edit.js:1297
+#: src/blocks/infobox/edit.js:1652
 #: src/blocks/posts/edit.js:520
 #: src/blocks/tabs/edit.js:863
-#: src/blocks/testimonials/edit.js:708
+#: src/blocks/testimonials/edit.js:709
 #: src/packages/components/src/gradient-control/index.js:306
 #: src/packages/components/src/measurement-range-control/index.js:216
 #: src/packages/components/src/measurement/measurement-control/index.js:153
@@ -6411,8 +6446,8 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/column/edit.js:794
 #: src/blocks/iconlist/edit.js:217
-#: src/blocks/infobox/edit.js:1655
-#: src/blocks/testimonials/edit.js:709
+#: src/blocks/infobox/edit.js:1653
+#: src/blocks/testimonials/edit.js:710
 msgid "Middle"
 msgstr ""
 
@@ -6424,8 +6459,8 @@ msgstr ""
 #: dist/components.js:16
 #: src/blocks/column/edit.js:795
 #: src/blocks/iconlist/edit.js:218
-#: src/blocks/infobox/edit.js:1656
-#: src/blocks/testimonials/edit.js:710
+#: src/blocks/infobox/edit.js:1654
+#: src/blocks/testimonials/edit.js:711
 #: src/packages/components/src/measurement-range-control/index.js:266
 #: src/packages/components/src/measurement/measurement-control/index.js:179
 msgid "Bottom"
@@ -6463,8 +6498,8 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/blocks-infobox.js:1
 #: src/blocks/column/edit.js:951
-#: src/blocks/infobox/edit.js:2288
-#: src/blocks/infobox/edit.js:2377
+#: src/blocks/infobox/edit.js:2286
+#: src/blocks/infobox/edit.js:2375
 msgid "Min Height"
 msgstr ""
 
@@ -6797,7 +6832,7 @@ msgstr ""
 #: src/blocks/countdown/edit.js:897
 #: src/blocks/countdown/edit.js:1223
 #: src/blocks/iconlist/edit.js:434
-#: src/blocks/infobox/edit.js:2430
+#: src/blocks/infobox/edit.js:2428
 #: src/blocks/listitem/edit.js:269
 #: src/blocks/single-icon/edit.js:274
 msgid "Border Color"
@@ -6817,7 +6852,7 @@ msgstr ""
 #: dist/blocks-countup.js:1
 #: src/blocks/countdown/edit.js:959
 #: src/blocks/countup/inspector.js:424
-#: src/blocks/progress-bar/edit.js:506
+#: src/blocks/progress-bar/edit.js:664
 msgid "Number Settings"
 msgstr ""
 
@@ -6841,9 +6876,9 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/countdown/edit.js:1212
-#: src/blocks/infobox/edit.js:1468
+#: src/blocks/infobox/edit.js:1466
 #: src/blocks/tableofcontents/edit.js:945
-#: src/blocks/testimonials/edit.js:1339
+#: src/blocks/testimonials/edit.js:1340
 msgid "Container Settings"
 msgstr ""
 
@@ -6859,13 +6894,13 @@ msgstr ""
 
 #: dist/blocks-countup.js:1
 #: src/blocks/countup/inspector.js:193
-#: src/blocks/progress-bar/edit.js:519
+#: src/blocks/progress-bar/edit.js:677
 msgid "Number Prefix"
 msgstr ""
 
 #: dist/blocks-countup.js:1
 #: src/blocks/countup/inspector.js:199
-#: src/blocks/progress-bar/edit.js:527
+#: src/blocks/progress-bar/edit.js:685
 msgid "Number Suffix"
 msgstr ""
 
@@ -6894,9 +6929,9 @@ msgstr ""
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/countup/inspector.js:251
-#: src/blocks/infobox/edit.js:2218
+#: src/blocks/infobox/edit.js:2216
 #: src/blocks/tableofcontents/edit.js:766
-#: src/blocks/testimonials/edit.js:1540
+#: src/blocks/testimonials/edit.js:1541
 msgid "Title Settings"
 msgstr ""
 
@@ -6904,8 +6939,8 @@ msgstr ""
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/countup/inspector.js:256
-#: src/blocks/infobox/edit.js:2223
-#: src/blocks/testimonials/edit.js:1545
+#: src/blocks/infobox/edit.js:2221
+#: src/blocks/testimonials/edit.js:1546
 msgid "Show Title"
 msgstr ""
 
@@ -6930,14 +6965,14 @@ msgstr ""
 #: dist/blocks-countup.js:1
 #: dist/blocks-infobox.js:1
 #: src/blocks/countup/inspector.js:430
-#: src/blocks/infobox/edit.js:2167
+#: src/blocks/infobox/edit.js:2165
 msgid "Number Color"
 msgstr ""
 
 #: dist/blocks-countup.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/countup/block.js:51
-#: src/plugins/kadence-control-plugin.js:235
+#: src/plugins/kadence-control-plugin.js:236
 msgid "Count Up"
 msgstr ""
 
@@ -7029,7 +7064,7 @@ msgstr ""
 #: dist/blocks-form.js:1
 #: dist/components.js:14
 #: src/blocks/form/edit.js:764
-#: src/blocks/progress-bar/edit.js:571
+#: src/blocks/progress-bar/edit.js:729
 #: src/packages/components/src/gradient-control/constants.js:37
 msgid "Linear"
 msgstr ""
@@ -7710,12 +7745,12 @@ msgstr ""
 #: dist/components.js:14
 #: src/blocks/advancedbtn/editOld.js:1138
 #: src/blocks/form/edit.js:2983
-#: src/blocks/infobox/edit.js:1846
-#: src/blocks/infobox/edit.js:1990
-#: src/blocks/infobox/edit.js:2132
-#: src/blocks/infobox/edit.js:2234
-#: src/blocks/infobox/edit.js:2325
-#: src/blocks/infobox/edit.js:2415
+#: src/blocks/infobox/edit.js:1844
+#: src/blocks/infobox/edit.js:1988
+#: src/blocks/infobox/edit.js:2130
+#: src/blocks/infobox/edit.js:2232
+#: src/blocks/infobox/edit.js:2323
+#: src/blocks/infobox/edit.js:2413
 #: src/packages/components/src/hover-toggle/index.js:38
 msgid "Hover"
 msgstr ""
@@ -7799,7 +7834,7 @@ msgstr ""
 #: dist/blocks-googlemaps.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/googlemaps/block.js:15
-#: src/plugins/kadence-control-plugin.js:249
+#: src/plugins/kadence-control-plugin.js:250
 msgid "Google Maps"
 msgstr ""
 
@@ -7973,7 +8008,7 @@ msgstr ""
 #: src/blocks/googlemaps/edit.js:530
 #: src/blocks/spacer/edit.js:190
 #: src/packages/components/src/background-size-control/index.js:138
-#: src/packages/components/src/typography/inline-typography-control/index.js:566
+#: src/packages/components/src/typography/inline-typography-control/index.js:580
 msgid "Height"
 msgstr ""
 
@@ -8062,7 +8097,7 @@ msgstr ""
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/single-icon/advanced-settings.js:46
-#: src/blocks/testimonials/edit.js:1520
+#: src/blocks/testimonials/edit.js:1521
 msgid "Icon Margin"
 msgstr ""
 
@@ -8159,8 +8194,8 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/iconlist/edit.js:394
 #: src/blocks/listitem/edit.js:227
-#: src/blocks/testimonial/edit.js:231
-#: src/blocks/testimonials/edit.js:1448
+#: src/blocks/testimonial/edit.js:233
+#: src/blocks/testimonials/edit.js:1449
 msgid "Line Width"
 msgstr ""
 
@@ -8168,9 +8203,9 @@ msgstr ""
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
 #: src/blocks/iconlist/edit.js:426
-#: src/blocks/infobox/edit.js:2031
+#: src/blocks/infobox/edit.js:2029
 #: src/blocks/listitem/edit.js:259
-#: src/blocks/testimonials/edit.js:1492
+#: src/blocks/testimonials/edit.js:1493
 msgid "Icon Background"
 msgstr ""
 
@@ -8178,7 +8213,7 @@ msgstr ""
 #: dist/components.js:18
 #: src/blocks/iconlist/edit.js:465
 #: src/blocks/listitem/edit.js:301
-#: src/packages/components/src/typography/typography-control/index.js:684
+#: src/packages/components/src/typography/typography-control/index.js:698
 msgid "Padding (px)"
 msgstr ""
 
@@ -8233,10 +8268,10 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/image/edit.js:525
 #: src/blocks/image/image.js:540
-#: src/blocks/infobox/edit.js:1667
-#: src/blocks/infobox/edit.js:1676
-#: src/blocks/infobox/edit.js:1784
-#: src/blocks/testimonial/edit.js:201
+#: src/blocks/infobox/edit.js:1665
+#: src/blocks/infobox/edit.js:1674
+#: src/blocks/infobox/edit.js:1782
+#: src/blocks/testimonial/edit.js:203
 #: src/plugins/prebuilt-library/pattern-library.js:91
 #: src/plugins/prebuilt-library/pattern-library.js:203
 #: src/plugins/prebuilt-library/pattern-library.js:325
@@ -8246,8 +8281,8 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
 #: src/blocks/image/image.js:557
-#: src/blocks/infobox/edit.js:1693
-#: src/blocks/infobox/edit.js:1796
+#: src/blocks/infobox/edit.js:1691
+#: src/blocks/infobox/edit.js:1794
 msgid "Image File Size"
 msgstr ""
 
@@ -8264,7 +8299,7 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
 #: src/blocks/image/image.js:617
-#: src/blocks/infobox/edit.js:1700
+#: src/blocks/infobox/edit.js:1698
 msgid "Max Image Width"
 msgstr ""
 
@@ -8320,19 +8355,22 @@ msgstr ""
 
 #: dist/blocks-image.js:1
 #: src/blocks/image/image.js:814
+#: src/blocks/progress-bar/edit.js:509
 msgid "Mask Shape"
 msgstr ""
 
 #: dist/blocks-image.js:1
 #: dist/components.js:14
 #: src/blocks/image/image.js:821
-#: src/blocks/progress-bar/edit.js:210
+#: src/blocks/progress-bar/edit.js:215
+#: src/blocks/progress-bar/edit.js:536
 #: src/packages/components/src/gradient-control/index.js:351
 msgid "Circle"
 msgstr ""
 
 #: dist/blocks-image.js:1
 #: src/blocks/image/image.js:825
+#: src/blocks/progress-bar/edit.js:540
 msgid "Diamond"
 msgstr ""
 
@@ -8343,6 +8381,7 @@ msgstr ""
 
 #: dist/blocks-image.js:1
 #: src/blocks/image/image.js:833
+#: src/blocks/progress-bar/edit.js:544
 msgid "Rounded"
 msgstr ""
 
@@ -8363,6 +8402,7 @@ msgstr ""
 
 #: dist/blocks-image.js:1
 #: src/blocks/image/image.js:859
+#: src/blocks/progress-bar/edit.js:566
 msgid "Custom Mask Image"
 msgstr ""
 
@@ -8377,7 +8417,7 @@ msgstr ""
 #: dist/components.js:7
 #: src/blocks/image/image.js:883
 #: src/blocks/rowlayout/style-controls.js:642
-#: src/blocks/testimonials/edit.js:1884
+#: src/blocks/testimonials/edit.js:1885
 #: src/packages/components/src/background-control/index.js:147
 #: src/packages/components/src/background-size-control/index.js:49
 msgid "Contain"
@@ -8389,7 +8429,7 @@ msgstr ""
 #: dist/components.js:7
 #: src/blocks/image/image.js:887
 #: src/blocks/rowlayout/style-controls.js:641
-#: src/blocks/testimonials/edit.js:1880
+#: src/blocks/testimonials/edit.js:1881
 #: src/packages/components/src/background-control/index.js:146
 #: src/packages/components/src/background-size-control/index.js:48
 msgid "Cover"
@@ -8493,7 +8533,7 @@ msgstr ""
 #: dist/components.js:7
 #: dist/components.js:14
 #: src/blocks/image/edit.js:555
-#: src/blocks/infobox/edit.js:2622
+#: src/blocks/infobox/edit.js:2620
 #: src/packages/components/src/background-control/index.js:90
 #: src/packages/components/src/common/image-controls/index.js:57
 #: src/packages/components/src/common/media-placeholder/index.js:336
@@ -8534,8 +8574,8 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/infobox/edit.js:380
 #: src/blocks/infobox/edit.js:381
-#: src/blocks/testimonials/edit.js:691
-#: src/blocks/testimonials/edit.js:698
+#: src/blocks/testimonials/edit.js:692
+#: src/blocks/testimonials/edit.js:699
 msgid "Basic"
 msgstr ""
 
@@ -8550,294 +8590,294 @@ msgid "Overlay Left"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1329
+#: src/blocks/infobox/edit.js:1327
 msgid "Edit Media"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1392
+#: src/blocks/infobox/edit.js:1390
 msgid "InfoBox Quick Layout Presets"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1393
+#: src/blocks/infobox/edit.js:1391
 msgid "InfoBox Style"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1441
+#: src/blocks/infobox/edit.js:1439
 msgid "Link Content"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1444
+#: src/blocks/infobox/edit.js:1442
 msgid "Entire Box"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1445
+#: src/blocks/infobox/edit.js:1443
 msgid "Only Learn More Text"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1449
+#: src/blocks/infobox/edit.js:1447
 msgid "Content Align"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/infobox/edit.js:1637
-#: src/blocks/testimonials/edit.js:1783
+#: src/blocks/infobox/edit.js:1635
+#: src/blocks/testimonials/edit.js:1784
 msgid "Media Settings"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1642
+#: src/blocks/infobox/edit.js:1640
 msgid "Media Align"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1651
+#: src/blocks/infobox/edit.js:1649
 msgid "Media Vertical Align"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/infobox/edit.js:1663
-#: src/blocks/testimonial/edit.js:198
+#: src/blocks/infobox/edit.js:1661
+#: src/blocks/testimonial/edit.js:200
 msgid "Media Type"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1709
-#: src/blocks/infobox/edit.js:1804
+#: src/blocks/infobox/edit.js:1707
+#: src/blocks/infobox/edit.js:1802
 msgid "Alt text"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1715
-#: src/blocks/infobox/edit.js:1810
+#: src/blocks/infobox/edit.js:1713
+#: src/blocks/infobox/edit.js:1808
 msgid "Use as this image's default alt text"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1769
+#: src/blocks/infobox/edit.js:1767
 msgid "Image Hover Animation"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1773
+#: src/blocks/infobox/edit.js:1771
 msgid "Grayscale to Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1774
-#: src/blocks/infobox/edit.js:1969
-#: src/blocks/infobox/edit.js:2118
+#: src/blocks/infobox/edit.js:1772
+#: src/blocks/infobox/edit.js:1967
+#: src/blocks/infobox/edit.js:2116
 msgid "Border Spin In"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1775
+#: src/blocks/infobox/edit.js:1773
 msgid "Grayscale to Color & Border Spin In"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1776
+#: src/blocks/infobox/edit.js:1774
 msgid "Flip to Another Image"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1782
+#: src/blocks/infobox/edit.js:1780
 msgid "Flip Image (Use same size as start image"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1819
-#: src/blocks/infobox/edit.js:1903
+#: src/blocks/infobox/edit.js:1817
+#: src/blocks/infobox/edit.js:1901
 msgid "Image Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1829
+#: src/blocks/infobox/edit.js:1827
 msgid "Image Border Radius (px)"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1860
+#: src/blocks/infobox/edit.js:1858
 msgid "SVG Hover Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1865
-#: src/blocks/infobox/edit.js:1893
+#: src/blocks/infobox/edit.js:1863
+#: src/blocks/infobox/edit.js:1891
 msgid "*you must force inline svg for this to have effect."
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1869
+#: src/blocks/infobox/edit.js:1867
 msgid "Image Hover Background"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1875
+#: src/blocks/infobox/edit.js:1873
 msgid "Image Hover Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1888
+#: src/blocks/infobox/edit.js:1886
 msgid "SVG Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1897
+#: src/blocks/infobox/edit.js:1895
 msgid "Image Background"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1938
+#: src/blocks/infobox/edit.js:1936
 msgid "Icon Line Width"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/infobox/edit.js:1947
-#: src/blocks/testimonials/edit.js:1466
+#: src/blocks/infobox/edit.js:1945
+#: src/blocks/testimonials/edit.js:1467
 msgid "Icon Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1957
+#: src/blocks/infobox/edit.js:1955
 msgid "Icon Border Radius (px)"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1965
+#: src/blocks/infobox/edit.js:1963
 msgid "Icon Hover Animation"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:1970
+#: src/blocks/infobox/edit.js:1968
 msgid "Flip to Another Icon"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2002
+#: src/blocks/infobox/edit.js:2000
 msgid "Icon Hover Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2008
+#: src/blocks/infobox/edit.js:2006
 msgid "Icon Hover Background"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2014
+#: src/blocks/infobox/edit.js:2012
 msgid "Icon Hover Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2037
+#: src/blocks/infobox/edit.js:2035
 msgid "Icon Border Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2051
+#: src/blocks/infobox/edit.js:2049
 msgid "Icon Title for Accessibility"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2096
+#: src/blocks/infobox/edit.js:2094
 msgid "Number Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2106
+#: src/blocks/infobox/edit.js:2104
 msgid "Number Border Radius (px)"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2114
+#: src/blocks/infobox/edit.js:2112
 msgid "Number Hover Animation"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2144
+#: src/blocks/infobox/edit.js:2142
 msgid "Number Hover Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2150
+#: src/blocks/infobox/edit.js:2148
 msgid "Number Hover Background"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2156
+#: src/blocks/infobox/edit.js:2154
 msgid "Number Hover Border"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2173
+#: src/blocks/infobox/edit.js:2171
 msgid "Number Background"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2179
+#: src/blocks/infobox/edit.js:2177
 msgid "Number Border Color"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/infobox/edit.js:2195
-#: src/blocks/testimonials/edit.js:1845
+#: src/blocks/infobox/edit.js:2193
+#: src/blocks/testimonials/edit.js:1846
 msgid "Media Padding"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/infobox/edit.js:2205
-#: src/blocks/testimonials/edit.js:1860
+#: src/blocks/infobox/edit.js:2203
+#: src/blocks/testimonials/edit.js:1861
 msgid "Media Margin"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2309
+#: src/blocks/infobox/edit.js:2307
 msgid "Text Settings"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2314
+#: src/blocks/infobox/edit.js:2312
 msgid "Show Text"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2398
+#: src/blocks/infobox/edit.js:2396
 msgid "Learn More Settings"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2403
+#: src/blocks/infobox/edit.js:2401
 msgid "Show Learn More"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2440
+#: src/blocks/infobox/edit.js:2438
 msgid "Learn More Border Width (px)"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2450
+#: src/blocks/infobox/edit.js:2448
 msgid "Learn More Border Radius (px)"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2748
+#: src/blocks/infobox/edit.js:2746
 msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo."
 msgstr ""
 
 #: dist/blocks-infobox.js:1
-#: src/blocks/infobox/edit.js:2779
+#: src/blocks/infobox/edit.js:2777
 msgid "Learn More"
 msgstr ""
 
@@ -9196,7 +9236,7 @@ msgstr ""
 #: dist/blocks-posts.js:9
 #: dist/blocks-testimonials.js:1
 #: src/blocks/posts/edit.js:596
-#: src/blocks/testimonials/edit.js:1896
+#: src/blocks/testimonials/edit.js:1897
 msgid "Image Ratio"
 msgstr ""
 
@@ -9243,7 +9283,7 @@ msgstr ""
 #: dist/blocks-posts.js:9
 #: dist/blocks-testimonials.js:1
 #: src/blocks/posts/edit.js:639
-#: src/blocks/testimonials/edit.js:1877
+#: src/blocks/testimonials/edit.js:1878
 msgid "Image Size"
 msgstr ""
 
@@ -9370,7 +9410,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: src/blocks/posts/edit.js:859
 #: src/blocks/tabs/edit.js:1140
-#: src/blocks/testimonials/edit.js:1709
+#: src/blocks/testimonials/edit.js:1710
 msgid "Content Settings"
 msgstr ""
 
@@ -9533,7 +9573,7 @@ msgstr ""
 #: dist/blocks-rowlayout.js:9
 #: dist/blocks-rowlayout.js:15
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1267
+#: src/blocks/testimonials/edit.js:1268
 #: src/plugins/prebuilt-library/cloud-library.js:230
 #: src/plugins/prebuilt-library/pattern-library.js:445
 #: src/plugins/prebuilt-library/pattern-library.js:453
@@ -9555,6 +9595,8 @@ msgstr ""
 
 #: dist/blocks-rowlayout.js:9
 #: dist/blocks-rowlayout.js:15
+#: dist/extension-image-picker.js:1
+#: src/extension/image-picker/components/SearchForm.js:35
 #: src/plugins/prebuilt-library/pattern-library.js:496
 #: src/plugins/prebuilt-library/pattern-library.js:752
 #: src/plugins/prebuilt-library/section-library.js:376
@@ -9768,7 +9810,7 @@ msgstr ""
 #: dist/blocks-rowlayout.js:17
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/rowlayout/edit.js:1022
-#: src/plugins/kadence-control-plugin.js:534
+#: src/plugins/kadence-control-plugin.js:535
 #: src/plugins/prebuilt-library/prebuilt-library.js:164
 #: src/plugins/prebuilt-library/prebuilt-library.js:168
 #: src/plugins/prebuilt-library/toolbar-library.js:74
@@ -9911,7 +9953,7 @@ msgstr ""
 #: dist/blocks-rowlayout.js:17
 #: dist/blocks-testimonials.js:1
 #: src/blocks/rowlayout/layout-controls.js:257
-#: src/blocks/testimonials/edit.js:1195
+#: src/blocks/testimonials/edit.js:1196
 msgid "Column Gutter"
 msgstr ""
 
@@ -10367,7 +10409,7 @@ msgstr ""
 #: dist/blocks-show-more.js:1
 #: dist/plugin-kadence-control.js:3
 #: src/blocks/show-more/edit.js:187
-#: src/plugins/kadence-control-plugin.js:409
+#: src/plugins/kadence-control-plugin.js:410
 msgid "Show More"
 msgstr ""
 
@@ -10901,7 +10943,7 @@ msgstr ""
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:7
 #: dist/components.js:14
-#: src/blocks/testimonial/edit.js:346
+#: src/blocks/testimonial/edit.js:348
 #: src/packages/components/src/background-control/index.js:122
 #: src/packages/components/src/common/image-controls/index.js:92
 msgid "Edit Image"
@@ -10909,221 +10951,221 @@ msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:423
+#: src/blocks/testimonial/edit.js:425
 msgid "Add Image"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:599
+#: src/blocks/testimonial/edit.js:601
 msgid "Individual Settings"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:250
+#: src/blocks/testimonial/edit.js:252
 msgid "Rating"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:464
+#: src/blocks/testimonial/edit.js:466
 msgid "Best product I have ever used!"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:520
+#: src/blocks/testimonial/edit.js:522
 msgid "I have been looking for a product like this for years. I have tried everything and nothing did what I wanted until using this product. I am so glad I found it!"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:540
+#: src/blocks/testimonial/edit.js:542
 msgid "Sophia Reily"
 msgstr ""
 
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonial/edit.js:553
+#: src/blocks/testimonial/edit.js:555
 msgid "CEO of Company"
-msgstr ""
-
-#: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:692
-#: src/blocks/testimonials/edit.js:699
-msgid "Card"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
 #: src/blocks/testimonials/edit.js:693
 #: src/blocks/testimonials/edit.js:700
-msgid "Bubble"
+msgid "Card"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
 #: src/blocks/testimonials/edit.js:694
 #: src/blocks/testimonials/edit.js:701
+msgid "Bubble"
+msgstr ""
+
+#: dist/blocks-testimonials.js:1
+#: src/blocks/testimonials/edit.js:695
+#: src/blocks/testimonials/edit.js:702
 msgid "Image In Content"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:697
+#: src/blocks/testimonials/edit.js:698
 msgid "Skip"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1138
+#: src/blocks/testimonials/edit.js:1139
 msgid "Add Testimonial"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1168
-#: src/blocks/testimonials/edit.js:1170
+#: src/blocks/testimonials/edit.js:1169
+#: src/blocks/testimonials/edit.js:1171
 msgid "Testimonial Style"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1222
+#: src/blocks/testimonials/edit.js:1223
 msgid "Carousel Type"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1225
+#: src/blocks/testimonials/edit.js:1226
 msgid "Infinite Loop"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1229
+#: src/blocks/testimonials/edit.js:1230
 msgid "Rewind"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1263
+#: src/blocks/testimonials/edit.js:1264
 msgid "One"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1426
+#: src/blocks/testimonials/edit.js:1427
 msgid "Show Top Icon"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1475
+#: src/blocks/testimonials/edit.js:1476
 msgid "Icon Border Radius"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
 #: src/blocks/advancedbtn/editOld.js:1004
-#: src/blocks/progress-bar/edit.js:679
-#: src/blocks/progress-bar/edit.js:733
-#: src/blocks/testimonials/edit.js:1552
+#: src/blocks/progress-bar/edit.js:837
+#: src/blocks/progress-bar/edit.js:891
+#: src/blocks/testimonials/edit.js:1553
 msgid "Color Settings"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1627
+#: src/blocks/testimonials/edit.js:1628
 msgid "Title Min Height"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1647
+#: src/blocks/testimonials/edit.js:1648
 msgid "Rating Settings"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1652
+#: src/blocks/testimonials/edit.js:1653
 msgid "Show Rating"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1673
+#: src/blocks/testimonials/edit.js:1674
 msgid "Rating Padding"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1688
+#: src/blocks/testimonials/edit.js:1689
 msgid "Rating Margin"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1714
+#: src/blocks/testimonials/edit.js:1715
 msgid "Show Content"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1763
+#: src/blocks/testimonials/edit.js:1764
 msgid "Content Min Height"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1788
+#: src/blocks/testimonials/edit.js:1789
 msgid "Show Media"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1796
+#: src/blocks/testimonials/edit.js:1797
 msgid "Media Max Size"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1805
+#: src/blocks/testimonials/edit.js:1806
 msgid "Media Border"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1814
+#: src/blocks/testimonials/edit.js:1815
 msgid "Media Border Radius"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1831
+#: src/blocks/testimonials/edit.js:1832
 msgid "Media Background"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1899
+#: src/blocks/testimonials/edit.js:1900
 msgid "Landscape 4:2"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1934
+#: src/blocks/testimonials/edit.js:1935
 msgid "Name Settings"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1939
+#: src/blocks/testimonials/edit.js:1940
 msgid "Show Name"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1993
+#: src/blocks/testimonials/edit.js:1994
 msgid "Occupation Settings"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:1998
+#: src/blocks/testimonials/edit.js:1999
 msgid "Show Occupation"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:2074
+#: src/blocks/testimonials/edit.js:2075
 msgid "Container Max Width (px)"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:2082
+#: src/blocks/testimonials/edit.js:2083
 msgid "Container Min Height"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:2099
-#: src/blocks/testimonials/edit.js:2101
+#: src/blocks/testimonials/edit.js:2100
+#: src/blocks/testimonials/edit.js:2102
 msgid "Inner Content Align"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
-#: src/blocks/testimonials/edit.js:2129
+#: src/blocks/testimonials/edit.js:2130
 msgid "Wrapper"
 msgstr ""
 
@@ -11433,8 +11475,8 @@ msgstr ""
 #: dist/components.js:16
 #: dist/components.js:18
 #: src/packages/components/src/tag-select/index.js:135
-#: src/packages/components/src/typography/typography-control/index.js:272
-#: src/packages/components/src/typography/typography-control/index.js:440
+#: src/packages/components/src/typography/typography-control/index.js:286
+#: src/packages/components/src/typography/typography-control/index.js:454
 msgid "Heading %d"
 msgstr ""
 
@@ -11570,67 +11612,74 @@ msgstr ""
 
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:143
-#: src/packages/components/src/typography/typography-control/index.js:142
+#: src/packages/components/src/typography/inline-typography-control/index.js:129
+#: src/packages/components/src/typography/typography-control/index.js:128
+msgid "Theme Global Fonts"
+msgstr ""
+
+#: dist/components.js:16
+#: dist/components.js:18
+#: src/packages/components/src/typography/inline-typography-control/index.js:157
+#: src/packages/components/src/typography/typography-control/index.js:156
 msgid "Bold"
 msgstr ""
 
 #: dist/components.js:16
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:159
-#: src/packages/components/src/typography/typography-control/index.js:171
+#: src/packages/components/src/typography/inline-typography-control/index.js:173
+#: src/packages/components/src/typography/typography-control/index.js:185
 msgid "Italic"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:327
+#: src/packages/components/src/typography/typography-control/index.js:341
 msgid "Div"
 msgstr ""
 
 #: dist/components.js:18
 #: src/blocks/advancedbtn/editOld.js:1899
-#: src/packages/components/src/typography/typography-control/index.js:595
+#: src/packages/components/src/typography/typography-control/index.js:609
 msgid "Font Family"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:605
+#: src/packages/components/src/typography/typography-control/index.js:619
 msgid "Select a font family"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:622
+#: src/packages/components/src/typography/typography-control/index.js:636
 msgid "Font Weight"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:631
+#: src/packages/components/src/typography/typography-control/index.js:645
 msgid "Font Style"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:640
+#: src/packages/components/src/typography/typography-control/index.js:654
 msgid "Load Google Font on Frontend"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:647
+#: src/packages/components/src/typography/typography-control/index.js:661
 msgid "Load Italic Styles Also"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:654
-#: src/packages/components/src/typography/typography-control/index.js:671
+#: src/packages/components/src/typography/typography-control/index.js:668
+#: src/packages/components/src/typography/typography-control/index.js:685
 msgid "Letter Spacing"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/typography-control/index.js:699
+#: src/packages/components/src/typography/typography-control/index.js:713
 msgid "Margin (px)"
 msgstr ""
 
 #: dist/components.js:18
-#: src/packages/components/src/typography/inline-typography-control/index.js:476
+#: src/packages/components/src/typography/inline-typography-control/index.js:490
 msgid "Weight"
 msgstr ""
 
@@ -11727,6 +11776,28 @@ msgstr ""
 msgid "View Parent Block Settings"
 msgstr ""
 
+#: dist/extension-image-picker.js:1
+#: src/extension/image-picker/components/Result.js:108
+#: src/extension/image-picker/components/ResultDetails.js:82
+msgid "Already Downloaded"
+msgstr ""
+
+#: dist/extension-image-picker.js:1
+#: src/extension/image-picker/components/Result.js:108
+#: src/extension/image-picker/components/ResultDetails.js:74
+msgid "Download Image"
+msgstr ""
+
+#: dist/extension-image-picker.js:1
+#: src/extension/image-picker/components/ResultDetails.js:74
+msgid "Download Selected Images"
+msgstr ""
+
+#: dist/extension-image-picker.js:1
+#: src/extension/image-picker/components/ResultDetails.js:75
+msgid "Download Complete"
+msgstr ""
+
 #: dist/helpers.js:1
 #: src/packages/helpers/src/constants/index.js:114
 msgid "2XL"
@@ -11746,6 +11817,16 @@ msgstr ""
 #: dist/plugin-kadence-control.js:1
 #: src/plugins/editor-width.js:69
 msgid "*Note: You can define these widths in your Kadence Blocks settings."
+msgstr ""
+
+#: dist/plugin-kadence-control.js:1
+#: src/plugins/settings.js:50
+msgid "Enable Pexels Image Picker"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:1
+#: src/plugins/settings.js:37
+msgid "Settings saved"
 msgstr ""
 
 #. translators: %s: color hex code e.g: "#f00".
@@ -11819,7 +11900,7 @@ msgstr ""
 #: dist/plugin-kadence-control.js:3
 #: src/plugins/block-settings/block-visibility-settings.js:112
 #: src/plugins/block-visibility-settings.js:127
-#: src/plugins/kadence-control-plugin.js:369
+#: src/plugins/kadence-control-plugin.js:370
 msgid "Control Individual Settings Groups"
 msgstr ""
 
@@ -11910,7 +11991,7 @@ msgstr ""
 
 #: dist/plugin-kadence-control.js:3
 #: src/plugins/block-defaults/reset-defaults.js:76
-#: src/plugins/kadence-control-plugin.js:574
+#: src/plugins/kadence-control-plugin.js:575
 msgid "Reset Block Defaults"
 msgstr ""
 
@@ -11930,499 +12011,504 @@ msgid "Are you sure you'd like to reset these settings?"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:49
-#: src/plugins/kadence-control-plugin.js:54
+#: src/plugins/kadence-control-plugin.js:50
+#: src/plugins/kadence-control-plugin.js:55
 msgid "Kadence Blocks Controls"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:57
+#: src/plugins/kadence-control-plugin.js:58
 msgid "Color Palette"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:66
+#: src/plugins/kadence-control-plugin.js:67
 msgid "Block Visibility"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:79
+#: src/plugins/kadence-control-plugin.js:80
 msgid "Enable Pane Close/Open Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:83
-#: src/plugins/kadence-control-plugin.js:480
+#: src/plugins/kadence-control-plugin.js:84
+#: src/plugins/kadence-control-plugin.js:481
 msgid "Enable Title Color Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:87
+#: src/plugins/kadence-control-plugin.js:88
 msgid "Enable Title Trigger Icon Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:91
+#: src/plugins/kadence-control-plugin.js:92
 msgid "Enable Title Spacing Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:95
+#: src/plugins/kadence-control-plugin.js:96
 msgid "Enable Title Border Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:97
-#: src/plugins/kadence-control-plugin.js:485
+#: src/plugins/kadence-control-plugin.js:98
+#: src/plugins/kadence-control-plugin.js:486
 msgid "Enable Title Font Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:100
+#: src/plugins/kadence-control-plugin.js:101
 msgid "Enable Inner Content Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:102
+#: src/plugins/kadence-control-plugin.js:103
 msgid "Enable Title Tag Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:103
-#: src/plugins/kadence-control-plugin.js:387
-#: src/plugins/kadence-control-plugin.js:487
+#: src/plugins/kadence-control-plugin.js:104
+#: src/plugins/kadence-control-plugin.js:388
+#: src/plugins/kadence-control-plugin.js:488
 msgid "Enable Structure Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:112
+#: src/plugins/kadence-control-plugin.js:113
 msgid "Enable Count Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:113
-#: src/plugins/kadence-control-plugin.js:189
+#: src/plugins/kadence-control-plugin.js:114
+#: src/plugins/kadence-control-plugin.js:190
 msgid "Enable Size Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:114
-#: src/plugins/kadence-control-plugin.js:185
+#: src/plugins/kadence-control-plugin.js:115
+#: src/plugins/kadence-control-plugin.js:186
 msgid "Enable Color Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:115
-#: src/plugins/kadence-control-plugin.js:197
+#: src/plugins/kadence-control-plugin.js:116
+#: src/plugins/kadence-control-plugin.js:198
 msgid "Enable Icon Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:118
+#: src/plugins/kadence-control-plugin.js:119
 msgid "Enable Font Family Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:143
+#: src/plugins/kadence-control-plugin.js:144
 msgid "Enable Gutter Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:146
+#: src/plugins/kadence-control-plugin.js:147
 msgid "Enable Lightbox Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:150
+#: src/plugins/kadence-control-plugin.js:151
 msgid "Enable Image Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:154
+#: src/plugins/kadence-control-plugin.js:155
 msgid "Enable Caption Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:158
+#: src/plugins/kadence-control-plugin.js:159
 msgid "Enable Image Shadow Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:162
+#: src/plugins/kadence-control-plugin.js:163
 msgid "Enable Gallery Spacing Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:175
+#: src/plugins/kadence-control-plugin.js:176
 msgid "Enable Typography Settings in Toolbar"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:180
+#: src/plugins/kadence-control-plugin.js:181
 msgid "Enable Color Settings in Toolbar"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:193
+#: src/plugins/kadence-control-plugin.js:194
 msgid "Enable Advanced Typography Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:201
+#: src/plugins/kadence-control-plugin.js:202
 msgid "Enable Highlight Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:205
+#: src/plugins/kadence-control-plugin.js:206
 msgid "Enable Margin Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:218
-#: src/plugins/kadence-control-plugin.js:256
+#: src/plugins/kadence-control-plugin.js:219
+#: src/plugins/kadence-control-plugin.js:257
 msgid "Enable Container Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:220
+#: src/plugins/kadence-control-plugin.js:221
 msgid "Enable Item Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:223
-#: src/plugins/kadence-control-plugin.js:242
+#: src/plugins/kadence-control-plugin.js:224
+#: src/plugins/kadence-control-plugin.js:243
 msgid "Enable Number Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:225
+#: src/plugins/kadence-control-plugin.js:226
 msgid "Enable Label Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:228
+#: src/plugins/kadence-control-plugin.js:229
 msgid "Enable Visibility Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:239
-#: src/plugins/kadence-control-plugin.js:351
+#: src/plugins/kadence-control-plugin.js:240
+#: src/plugins/kadence-control-plugin.js:352
 msgid "Enable Title Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:253
+#: src/plugins/kadence-control-plugin.js:254
 msgid "Enable API Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:260
+#: src/plugins/kadence-control-plugin.js:261
 msgid "Enable Map Location Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:273
+#: src/plugins/kadence-control-plugin.js:274
 msgid "Enable Icon Spacing Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:284
+#: src/plugins/kadence-control-plugin.js:285
 msgid "Enable List Column Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:285
+#: src/plugins/kadence-control-plugin.js:286
 msgid "Enable List Spacing Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:286
+#: src/plugins/kadence-control-plugin.js:287
 msgid "Enable Text Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:289
+#: src/plugins/kadence-control-plugin.js:290
 msgid "Enable All List Icon Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:293
+#: src/plugins/kadence-control-plugin.js:294
 msgid "Enable individual List Item Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:306
-#: src/plugins/kadence-control-plugin.js:397
-#: src/plugins/kadence-control-plugin.js:463
-#: src/plugins/kadence-control-plugin.js:502
+#: src/plugins/kadence-control-plugin.js:307
+#: src/plugins/kadence-control-plugin.js:398
+#: src/plugins/kadence-control-plugin.js:464
+#: src/plugins/kadence-control-plugin.js:503
 msgid "Enable Container Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:308
-#: src/plugins/kadence-control-plugin.js:515
+#: src/plugins/kadence-control-plugin.js:309
+#: src/plugins/kadence-control-plugin.js:516
 msgid "Enable Media Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:309
-#: src/plugins/kadence-control-plugin.js:454
-#: src/plugins/kadence-control-plugin.js:509
+#: src/plugins/kadence-control-plugin.js:310
+#: src/plugins/kadence-control-plugin.js:455
+#: src/plugins/kadence-control-plugin.js:510
 msgid "Enable Title Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:310
+#: src/plugins/kadence-control-plugin.js:311
 msgid "Enable Text Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:313
+#: src/plugins/kadence-control-plugin.js:314
 msgid "Enable Learn More Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:315
-#: src/plugins/kadence-control-plugin.js:521
+#: src/plugins/kadence-control-plugin.js:316
+#: src/plugins/kadence-control-plugin.js:522
 msgid "Enable Shadow Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:321
+#: src/plugins/kadence-control-plugin.js:322
 msgid "Lottie"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:325
+#: src/plugins/kadence-control-plugin.js:326
 msgid "Enable Source File Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:328
+#: src/plugins/kadence-control-plugin.js:329
 msgid "Enable Playback Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:332
+#: src/plugins/kadence-control-plugin.js:333
 msgid "Enable Size Control Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:343
-#: src/plugins/kadence-control-plugin.js:478
-#: src/plugins/kadence-control-plugin.js:497
+#: src/plugins/kadence-control-plugin.js:344
+#: src/plugins/kadence-control-plugin.js:479
+#: src/plugins/kadence-control-plugin.js:498
 msgid "Enable Layout Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:344
+#: src/plugins/kadence-control-plugin.js:345
 msgid "Enable Image Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:347
+#: src/plugins/kadence-control-plugin.js:348
 msgid "Enable Category Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:353
+#: src/plugins/kadence-control-plugin.js:354
 msgid "Enable Meta Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:356
-#: src/plugins/kadence-control-plugin.js:479
-#: src/plugins/kadence-control-plugin.js:513
+#: src/plugins/kadence-control-plugin.js:357
+#: src/plugins/kadence-control-plugin.js:480
+#: src/plugins/kadence-control-plugin.js:514
 msgid "Enable Content Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:373
+#: src/plugins/kadence-control-plugin.js:374
 msgid "Enable Basic Layout Controls"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:377
+#: src/plugins/kadence-control-plugin.js:378
 msgid "Enable Padding/Margin Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:379
+#: src/plugins/kadence-control-plugin.js:380
 msgid "Enable Background Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:382
+#: src/plugins/kadence-control-plugin.js:383
 msgid "Enable Background Overlay Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:384
+#: src/plugins/kadence-control-plugin.js:385
 msgid "Enable Border Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:385
+#: src/plugins/kadence-control-plugin.js:386
 msgid "Enable Dividers Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:386
+#: src/plugins/kadence-control-plugin.js:387
 msgid "Enable Text Color Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:398
+#: src/plugins/kadence-control-plugin.js:399
 msgid "Enable Text Align Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:399
+#: src/plugins/kadence-control-plugin.js:400
 msgid "Enable Text Color Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:402
+#: src/plugins/kadence-control-plugin.js:403
 msgid "Enable Padding/Margin Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:415
+#: src/plugins/kadence-control-plugin.js:416
 msgid "Enable Show More Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:419
+#: src/plugins/kadence-control-plugin.js:420
 msgid "Enable Spacing Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:421
+#: src/plugins/kadence-control-plugin.js:422
 msgid "Enable Expand Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:431
+#: src/plugins/kadence-control-plugin.js:432
 msgid "Enable Height Units"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:432
+#: src/plugins/kadence-control-plugin.js:433
 msgid "Enable Height Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:435
+#: src/plugins/kadence-control-plugin.js:436
 msgid "Enable Divider Toggle Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:439
+#: src/plugins/kadence-control-plugin.js:440
 msgid "Enable Divider Styles Control"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:452
+#: src/plugins/kadence-control-plugin.js:453
 msgid "Enable Allowed Headers Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:457
+#: src/plugins/kadence-control-plugin.js:458
 msgid "Enable Collapsible Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:459
+#: src/plugins/kadence-control-plugin.js:460
 msgid "Enable List Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:460
+#: src/plugins/kadence-control-plugin.js:461
 msgid "Enable Scroll Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:467
+#: src/plugins/kadence-control-plugin.js:468
 msgid "Enable Non static Content"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:483
+#: src/plugins/kadence-control-plugin.js:484
 msgid "Enable Title Spacing/Border Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:486
+#: src/plugins/kadence-control-plugin.js:487
 msgid "Enable Title Icon Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:498
+#: src/plugins/kadence-control-plugin.js:499
 msgid "Enable Style Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:499
+#: src/plugins/kadence-control-plugin.js:500
 msgid "Enable Column Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:506
+#: src/plugins/kadence-control-plugin.js:507
 msgid "Enable Carousel Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:508
+#: src/plugins/kadence-control-plugin.js:509
 msgid "Enable Top Icon Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:510
+#: src/plugins/kadence-control-plugin.js:511
 msgid "Enable Rating Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:516
+#: src/plugins/kadence-control-plugin.js:517
 msgid "Enable Name Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:519
+#: src/plugins/kadence-control-plugin.js:520
 msgid "Enable Occupation Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:524
+#: src/plugins/kadence-control-plugin.js:525
 msgid "Enable Individual Item Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:531
+#: src/plugins/kadence-control-plugin.js:532
 msgid "Components"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:541
+#: src/plugins/kadence-control-plugin.js:542
 msgid "Show Design Library Button For"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:545
+#: src/plugins/kadence-control-plugin.js:546
 msgid "Show Kadence Library For"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:550
+#: src/plugins/kadence-control-plugin.js:551
 msgid "Show Starter Packs Library For"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:562
+#: src/plugins/kadence-control-plugin.js:563
 msgid "Import/Export Block Settings"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:3
-#: src/plugins/kadence-control-plugin.js:587
+#: src/plugins/kadence-control-plugin.js:581
+msgid "Pexels Library Search"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:3
+#: src/plugins/kadence-control-plugin.js:594
 msgid "Editor Width"
 msgstr ""
 
@@ -12561,150 +12647,190 @@ msgstr ""
 msgid "theme"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:209
+#: src/blocks/progress-bar/edit.js:214
 msgid "Line"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:211
+#: src/blocks/progress-bar/edit.js:216
+msgid "Masked Line"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:217
 msgid "Semicircle"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:377
-#: src/blocks/progress-bar/edit.js:488
+#: src/blocks/progress-bar/edit.js:387
+#: src/blocks/progress-bar/edit.js:646
 msgid "Progress"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:407
+#: src/blocks/progress-bar/edit.js:463
 msgid "Progress Bar Layout"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:437
-msgid "Progress Thickness"
+#: src/blocks/progress-bar/edit.js:512
+msgid "Star"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:476
-msgid "Number Format"
+#: src/blocks/progress-bar/edit.js:516
+msgid "Heart"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:480
-msgid "1"
+#: src/blocks/progress-bar/edit.js:520
+msgid "Smile"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:480
-msgid "Whole Number"
+#: src/blocks/progress-bar/edit.js:524
+msgid "Thumbs Up"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:481
-msgid "0.1"
+#: src/blocks/progress-bar/edit.js:528
+msgid "Thumbs Down"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:481
-msgid "One Decimal Space"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:482
-msgid "0.01"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:482
-msgid "Two Decimal Spaces"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:496
-msgid "Max Progress"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:511
-#: src/blocks/progress-bar/edit.js:646
-msgid "Show Number"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:536
-msgid "Percentage relative to 100%"
+#: src/blocks/progress-bar/edit.js:532
+msgid "Mug"
 msgstr ""
 
 #: src/blocks/progress-bar/edit.js:548
-msgid "Animation"
+msgid "Cat"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:553
-msgid "Duration"
+#: src/blocks/progress-bar/edit.js:552
+msgid "Dog"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:562
-msgid "Wait until visible to animate"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:563
-msgid "The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:572
-msgid "Ease In"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:573
-msgid "Ease Out"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:574
-msgid "Ease In Out"
-msgstr ""
-
-#: src/blocks/progress-bar/edit.js:592
-msgid "Text Position"
+#: src/blocks/progress-bar/edit.js:586
+msgid "Mask Iterations"
 msgstr ""
 
 #: src/blocks/progress-bar/edit.js:595
+msgid "Progress Thickness"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:634
+msgid "Number Format"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:638
+msgid "1"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:638
+msgid "Whole Number"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:639
+msgid "0.1"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:639
+msgid "One Decimal Space"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:640
+msgid "0.01"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:640
+msgid "Two Decimal Spaces"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:654
+msgid "Max Progress"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:669
+#: src/blocks/progress-bar/edit.js:804
+msgid "Show Number"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:694
+msgid "Percentage relative to 100%"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:706
+msgid "Animation"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:711
+msgid "Duration"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:720
+msgid "Wait until visible to animate"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:721
+msgid "The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:730
+msgid "Ease In"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:731
+msgid "Ease Out"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:732
+msgid "Ease In Out"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:750
+msgid "Text Position"
+msgstr ""
+
+#: src/blocks/progress-bar/edit.js:753
 msgid "Above"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:596
+#: src/blocks/progress-bar/edit.js:754
 msgid "Inside"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:597
+#: src/blocks/progress-bar/edit.js:755
 msgid "Below"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:627
+#: src/blocks/progress-bar/edit.js:785
 msgid "Text Layout"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:629
+#: src/blocks/progress-bar/edit.js:787
 msgid "Label then %"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:630
+#: src/blocks/progress-bar/edit.js:788
 msgid "% then Label"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:631
+#: src/blocks/progress-bar/edit.js:789
 msgid "Label above %"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:632
+#: src/blocks/progress-bar/edit.js:790
 msgid "Label below %"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:653
-#: src/blocks/progress-bar/edit.js:665
+#: src/blocks/progress-bar/edit.js:811
+#: src/blocks/progress-bar/edit.js:823
 msgid "Progress Color"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:658
+#: src/blocks/progress-bar/edit.js:816
 msgid "Progress Background"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:674
+#: src/blocks/progress-bar/edit.js:832
 msgid "Text Styling"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:728
+#: src/blocks/progress-bar/edit.js:886
 msgid "Number Styling"
 msgstr ""
 
-#: src/blocks/progress-bar/edit.js:781
+#: src/blocks/progress-bar/edit.js:939
 msgid "Text and Number Padding"
 msgstr ""
 

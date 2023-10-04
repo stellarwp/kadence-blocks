@@ -25,7 +25,7 @@ import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
 function FieldDate( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { previewDevice } = useSelect(
 		( select ) => {
@@ -120,11 +120,6 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 									help={ __( 'This will be displayed under the input and can be used to provide direction on how the field should be filled out.', 'kadence-blocks' )}
 									value={helpText}
 									onChange={( value ) => setAttributes( { helpText: value } )}
-								/>
-								<TextControl
-									label={__( 'Field Placeholder', 'kadence-blocks' )}
-									value={placeholder}
-									onChange={( value ) => setAttributes( { placeholder: value } )}
 								/>
 								<FormInputControl
 									label={__( 'Default Value', 'kadence-blocks' )}
@@ -265,7 +260,6 @@ function FieldDate( { attributes, setAttributes, isSelected, clientId, context, 
 						type={'date'}
 						className={'kb-field'}
 						value={ defaultPreview }
-						placeholder={placeholder}
 						onChange={( value ) => false}
 					/>
 					{helpText && <span className="kb-adv-form-help">{helpText}</span>}
