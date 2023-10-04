@@ -1,0 +1,84 @@
+@import '../../scss/mixins.scss';
+@import '../../scss/variables.scss';
+
+.stellarwp-chips-input {
+
+	.components-base-control__field {
+		padding: 12px;
+		border: 1px solid $color-gray-300;
+		border-radius: 4px;
+	}
+
+	.stellarwp-chips-input__control {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+
+		&:focus-within {
+			border-color: $color-black;
+		}
+	}
+
+	.stellarwp-chips-input__input {
+		flex: 1 1 auto;
+		border: none;
+		padding: 0;
+		height: 24px;
+		min-height: 24px;
+		outline: none;
+		box-shadow: none;
+		font-size: 14px;
+	}
+}
+
+.stellarwp-chips-input__suggestions {
+	background-color: $color-gray-100;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.stellarwp-chips-input__suggestions-loading {
+	@include loading_indicator;
+}
+
+.stellarwp-chips-input__suggestions-title {
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.stellarwp-chips-input__suggestions-description {
+	font-size: 12px;
+}
+
+.stellarwp-chips-input__suggestions-list {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.stellarwp-chips-input__suggestions-list-item {
+	margin-bottom: 0;
+}
+
+.stellarwp-chips-input__suggestions-button {
+	border-radius: 100px;
+	padding: 5px 10px;
+	border: 1px solid $color-gray-300;
+	font-size: 13px;
+	font-weight: 500;
+	color: $color-gray-500;
+	background-color: #ffffff;
+	cursor: pointer;
+	margin-bottom: 0;
+
+	&:hover,
+	&:focus {
+		border-color: $color-primary;
+		color: $color-primary;
+	}
+}

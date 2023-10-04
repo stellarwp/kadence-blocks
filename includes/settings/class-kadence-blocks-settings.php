@@ -631,6 +631,17 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
+			'kadence_blocks_prophecy',
+			'kadence_blocks_prophecy',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Prophecy AI', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
 			'kadence_blocks_colors',
 			'kadence_blocks_colors',
 			array(
@@ -824,7 +835,6 @@ class Kadence_Blocks_Settings {
 		//add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'enable_editor_width', __( 'Enable Editor Width', 'kadence-blocks' ), array( $this, 'enabled_editor_width_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 
-		$temp = get_registered_settings();
 		if ( ! defined( 'KADENCE_VERSION' ) ) {
 			register_setting( 'kadence_blocks_font_settings', 'kadence_blocks_font_settings', array( $this, 'validate_options' ) );
 			add_settings_section( 'kt_blocks_fonts_sec', '', array( $this, 'fonts_local_callback' ), 'kt_blocks_fonts_section' );
@@ -1019,8 +1029,8 @@ class Kadence_Blocks_Settings {
 						<?php if ( apply_filters( 'kadence_blocks_editor_width', $this->show_editor_width() ) ) { ?>
 							<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></small></h2>
 							<?php global $content_width; ?>
-								<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
-								<div class="kt-promo-row-area">
+							<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
+							<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kt_blocks_editor_width' );
@@ -1033,13 +1043,24 @@ class Kadence_Blocks_Settings {
 							<div class="kt-dashboard-spacer"></div>
 						<?php } ?>
 						<?php if ( apply_filters( 'kadence_blocks_show_local_fonts', ! defined( 'KADENCE_VERSION' ) ) ) { ?>
-							<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
-							<?php global $content_width; ?>
+								<h2><?php echo esc_html__( 'Google Fonts', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_image_picker', true ) ) { ?>
+							<!-- <h2><?php echo esc_html__( 'Use Pexels Image Picker', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Add a Pexels image picker in the media library.', 'kadence-blocks' ); ?></small></h2> -->
+							<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kt_blocks_image_picker' );
+									do_settings_sections( 'kt_blocks_image_picker_section' );
 									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>

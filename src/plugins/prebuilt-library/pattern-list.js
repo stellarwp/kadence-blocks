@@ -15,27 +15,34 @@ import {
 	ExternalLink,
 	Spinner,
 	Tooltip,
+	Icon,
 	__experimentalHeading as Heading,
 } from '@wordpress/components';
 import {
 	arrowLeft,
 	download,
 	previous,
-	update,
 	next,
 	chevronLeft,
 	chevronDown,
+	update,
+	close,
+	plusCircle,
 } from '@wordpress/icons';
+import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
 import { speak } from '@wordpress/a11y';
 import { searchItems } from './search-items';
-import replaceColors from './block-preview/replace-colors';
-import replaceImages from './block-preview/replace-images';
-import replaceContent from './block-preview/replace-content';
-import deleteContent from './block-preview/remove-content';
+import replaceColors from './replace/replace-colors';
+import replaceImages from './replace/replace-images';
+import replaceContent from './replace/replace-content';
+import deleteContent from './replace/remove-content';
+import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { CONTEXT_PROMPTS } from './data-fetch/constants';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -85,10 +92,200 @@ function BannerHeader( { selectedCategory } ) {
 		</Heading>
 	);
 }
+function LoadingHeader( { type } ) {
+	if ( 'error' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice kb-patterns-banner-notice-error"
+			>
+				{ __( 'Error Generating AI Content', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice"
+		>
+			<Spinner />
+			{ 'processing' === type ? __( 'Generating AI Content.', 'kadence Blocks' ) : __( 'Loading AI Content.', 'kadence Blocks' ) }
+		</Heading>
+	);
+}
+function GenerateHeader( { context, contextLabel, contextState, generateContext } ) {
+	const [ loading, setLoading ] = useState( false );
+	const [ btnDisabled, setBtnDisabled ] = useState( false );
+	useEffect( () => {
+		setLoading( false );
+		if ( 'credits' === contextState || 'error' === contextState || 'failed' === contextState ) {
+			setBtnDisabled( true );
+		}
+	}, [ context, contextState ] );
+	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	return (
+		<div className="kb-patterns-banner-generate-notice">
+			<Icon className='kadence-generate-icons' icon={ aiIcon } />
+			<Heading
+				level={ 2 }
+				lineHeight={ '1.2' }
+				className="kb-patterns-heading-notice"
+			>
+				{ sprintf(
+				/* translators: %s: the current context */
+				__(
+					'Would you like to generate AI powered content for the %s context?', 'kadence Blocks'
+				),
+				contextLabel,
+			) }
+			</Heading>
+			<p>
+				{ sprintf(
+					/* translators: %s: the current context */
+				__('Using the site information you provided we will generate copy for the %s context.', 'kadence Blocks' ),
+				contextLabel,
+				) }
+			</p>
+			{ ! hasPro && ! data_key && (
+				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+			)}
+			{ hasPro && ! data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+					disabled={ true }
+				/>
+			)}
+			{ hasPro && data_key && ! loading && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					disabled={ btnDisabled }
+					text={ sprintf(
+						/* translators: %s is the credit amount */
+						__( 'Generate Content (%s Credits)', 'kadence-blocks' ),
+						CONTEXT_PROMPTS?.[context] ? CONTEXT_PROMPTS[context] : '1'
+					) }
+					onClick={ () => {
+						setLoading( true );
+						generateContext( context );
+					}}
+				/>
+			)}
+			{ loading && (
+				<Spinner />
+			)}
+		</div>
+	);
+}
+function LaunchWizard( { launchWizard } ) {
+	const launchWizardHeadline = __( 'Supercharge your web design process with Kadence AI', 'kadence-blocks' );
+	const launchWizardBody = __(
+		`To fill your library with thoughtful, relevant, and unique content, simply enter your site goals and information into our prompt wizard. 
+		Our design library includes context-driven design patterns that are easy to use, saving you time and effort during the design process. It 
+		only takes a few minutes to get started.`,
+		'kadence-blocks'
+	);
+	return (
+		<div className="kb-patterns-banner-generate-notice">
+			<Icon className='kadence-generate-icons' icon={ aiIcon } />
+			<Heading
+				level={ 2 }
+				lineHeight={ '1.2' }
+				className="kb-patterns-heading-notice"
+			>
+				{ launchWizardHeadline }
+			</Heading>
+			<p>
+				{ launchWizardBody }
+			</p>
+			<Button
+				className='kadence-generate-copy-button'
+				iconPosition='right'
+				icon={ aiIcon }
+				text={ __( 'Launch AI Startup', 'kadence-blocks' ) }
+				onClick={ () => {
+					launchWizard();
+				}}
+			/>
+
+		</div>
+	);
+}
+function LoadingFailedHeader( { type } ) {
+	if ( 'license' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice ai-failed-loading"
+			>
+				{ __( 'Error Generating AI Content, verify license and available credits.', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
+	if ( 'credits' === type ) {
+		return (
+			<Heading
+				level={ 2 }
+				lineHeight={ '48px' }
+				className="kb-patterns-banner-notice ai-failed-loading"
+			>
+				{ __( 'Error, Can not generate AI Content because of insufficient credits.', 'kadence Blocks' ) }
+			</Heading>
+		);
+	}
+	return (
+		<Heading
+			level={ 2 }
+			lineHeight={ '48px' }
+			className="kb-patterns-banner-notice ai-failed-loading"
+		>
+			{ 'reload' === type ? __( 'AI Content Failed to Load, Please reload this browser window.', 'kadence Blocks' ) : __( 'AI Content Failed to Load.', 'kadence Blocks' ) }
+		</Heading>
+	);
+}
 
 
-function PatternList( { patterns, filterValue, selectedCategory, patternCategories, selectedStyle = 'light', breakpointCols, onSelect, previewMode = 'iframe', selectedFontSize, savedAI = false } ) {
+function PatternList( {
+	patterns,
+	filterValue,
+	selectedCategory,
+	selectedStyle = 'light',
+	breakpointCols,
+	onSelect,
+	previewMode = 'iframe',
+	selectedFontSize,
+	aiContext,
+	aINeedsData,
+	contextTab,
+	imageCollection,
+	teamCollection,
+	contextStatesRef,
+	useImageReplace,
+	generateContext,
+	contextLabel,
+	launchWizard,
+ } ) {
+	const [ failedAI, setFailedAI ] = useState( false );
+	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const debouncedSpeak = useDebounce( speak, 500 );
+	const { getContextState, getContextContent, getAllContext } = useSelect(
+		( select ) => {
+			return {
+				getContextState: ( value ) => select( 'kadence/library' ).getContextState( value ),
+				getContextContent: ( value ) => select( 'kadence/library' ).getContextContent( value ),
+				getAllContext: () => select( 'kadence/library' ).getAllContext(),
+			};
+		},
+		[]
+	);
 	const onSelectBlockPattern = ( info ) => {
 		const patternSend = {
 			id: info.id,
@@ -108,14 +305,10 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 		patternSend.content = newInfo;
 		onSelect( patternSend );
 	}
-	const filteredBlockPatterns = useMemo( () => {
+	const thePatterns = useMemo( () => {
 		let allPatterns = [];
-		let variation = 1;
 		Object.keys( patterns ).map( function( key, index ) {
 			const temp = [];
-			if ( variation === 4 ) {
-				variation = 1;
-			}
 			temp['title'] = patterns[key].name;
 			temp['name'] = patterns[key].name;
 			temp['image'] = patterns[key].image;
@@ -123,32 +316,110 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 			temp['imageHeight'] = patterns[key].imageH;
 			temp['id'] = patterns[key].id;
 			temp['slug'] = patterns[key].slug;
-			let tempContent = patterns[key].content;
 			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
+			temp['contexts'] = patterns[key].contexts ? Object.keys( patterns[key].contexts ) : [];
+			temp['hpcontexts'] = patterns[key].hpcontexts ? Object.keys( patterns[key].hpcontexts ) : [];
 			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
-			// if ( savedAI ) {
-			// 	tempContent = replaceImages( tempContent, images, temp['categories'], 'general', variation );
-			// 	tempContent = replaceContent( tempContent, aiContent, temp['categories'], 'general', variation );
-			// }
-			temp['content'] = tempContent;
 			if ( patterns[key]?.html) {
-				temp['html'] = patterns[key].html;
+				temp['html'] = replaceMasks( patterns[key].html );
 			}
+			temp['content'] = patterns[key]?.content || '';
 			temp['pro'] = patterns[key].pro;
 			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
-			// temp['proRender'] = ( temp['keywords'].includes('Requires Pro') && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp['proRender'] = false;
 			temp['viewportWidth'] = 1200;
-			variation ++;
 			allPatterns.push( temp );
 		});
-		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
+		return allPatterns;
+	}, [ patterns ] );
+	const filteredBlockPatterns = useMemo( () => {
+		let contextTax = 'contact-form' === aiContext ? 'contact' : aiContext;
+		contextTax = 'subscribe-form' === contextTax ? 'subscribe' : contextTax;
+		contextTax = 'pricing-table' === contextTax ? 'pricing' : contextTax;
+		if ( contextTab === 'context' ) {
+			if ( aINeedsData ) {
+				console.log( 'AI Needed' );
+				return [];
+			} else if ( ! getContextState(aiContext) ) {
+				console.log( 'AI Needed' );
+				return [];
+			} else if ( 'loading' === getContextState(aiContext) ) {
+				console.log( 'Loading AI Content' );
+				setFailedAI( false );
+				return [];
+			} else if ( 'processing' === getContextState(aiContext) ) {
+				console.log( 'Generating AI Content' );
+				setFailedAI( false );
+				return [];
+			} else if ( 'error' === getContextState(aiContext) ) {
+				console.log( 'Error Generating AI Content' );
+				setFailedAI( true );
+				setFailedAIType( 'license' );
+			} else if ( 'credits' === getContextState(aiContext) ) {
+				console.log( 'Error not enough credits' );
+				setFailedAI( true );
+				setFailedAIType( 'credits' );
+			} else if ( getContextContent(aiContext) === 'failed' ){
+				console.log( 'AI Content has failed' );
+				setFailedAI( true );
+				setFailedAIType( 'general' );
+			} else if ( getContextContent(aiContext) === 'failedReload' ){
+				console.log( 'AI Content has failed, reload page required.' );
+				setFailedAI( true );
+				setFailedAIType( 'reload' );
+			}
+		}
+		let allPatterns = thePatterns;
+		if ( ! filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
 			);
 		}
+		if ( contextTab === 'context' && contextTax ) {
+			allPatterns = allPatterns.filter( ( pattern ) =>
+				pattern.contexts?.includes( contextTax )
+			);
+			//allPatterns.reverse();
+
+			allPatterns = allPatterns.sort( ( pattern ) =>
+				pattern?.hpcontexts?.includes( contextTax + '-hp' ) ? -1 : 1
+			);
+		}
+		if ( useImageReplace === 'all' && imageCollection ) {
+			let variation = 0;
+			allPatterns = allPatterns.map( ( item, index ) => {
+				if ( variation === 11 ) {
+					variation = 0;
+				}
+				if ( item?.html ) {
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.name, variation, teamCollection);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.name, variation, teamCollection);
+				} else {
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, aiContext, variation, teamCollection);
+				}
+				variation ++;
+				return item;
+			} );
+		}
+		if ( contextTab === 'context' ) {
+			const allContext = getAllContext();
+			let variation = 0;
+			allPatterns = allPatterns.map( ( item, index ) => {
+				if ( variation === 11 ) {
+					variation = 0;
+				}
+				if ( item?.html) {
+					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, item.name, true );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.name );
+				} else {
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
+				}
+				variation ++;
+				return item;
+			} );
+		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, patterns ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData ] );
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );
@@ -290,12 +561,24 @@ function PatternList( { patterns, filterValue, selectedCategory, patternCategori
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
 					/>
 				) }
-				{ ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
+				{/* { ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
 					<BannerHeader
 						selectedCategory={ selectedCategory }
 					/>
+				) } */}
+				{ contextTab === 'context' && aINeedsData && (
+					<LaunchWizard launchWizard={ () => launchWizard() } />
 				) }
-				{ hasItems && (
+				{ contextTab === 'context' && failedAI && (
+					<LoadingFailedHeader type={ failedAIType } />
+				) }
+				{ contextTab === 'context' && ! aINeedsData && ( 'processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext) ) && (
+					<LoadingHeader type={getContextState(aiContext)} />
+				) }
+				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
+					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
+				) }
+				{ hasItems && !failedAI && (
 					<KadenceBlockPatternList
 						selectedCategory={ selectedCategory }
 						blockPatterns={ filteredBlockPatterns }
