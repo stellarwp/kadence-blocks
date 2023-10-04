@@ -25,7 +25,7 @@
 			"@php bin/strauss.phar"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.1/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
 			"@php bin/pup.phar"
 		],
 		"wp-cli": [

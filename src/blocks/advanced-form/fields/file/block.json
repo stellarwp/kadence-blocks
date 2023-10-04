@@ -42,6 +42,9 @@
 	  "type": "string"
 	}
   },
+  "supports": {
+	  "ktfieldconditional": true
+  },
   "parent": [
 	"kadence/advanced-form"
   ]
