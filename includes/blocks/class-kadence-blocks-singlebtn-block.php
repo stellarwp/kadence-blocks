@@ -199,6 +199,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		// Try to Detect show more button and add an accessable tabbable link.
+		if ( isset( $attributes['lock'] ) && $attributes['lock'] && isset( $attributes['lock']['remove'] ) && $attributes['lock']['remove'] && isset( $attributes['lock']['move'] ) && $attributes['lock']['move'] && empty( $attributes['link'] )) {
+			$attributes['link'] = '#';
+		}
+
 		$classes = array( 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id );
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
