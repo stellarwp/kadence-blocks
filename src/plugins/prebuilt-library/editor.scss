@@ -1158,12 +1158,14 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 	}
 	.kb-library-sidebar-bottom button.components-button.kb-category-button {
 		color: #333;
+		font-weight: 500;
 	}
 	.kb-library-sidebar-bottom .context-category-wrap:not(.has-content) {
 		order: 10;
 	}
 	.kb-library-sidebar-bottom .context-category-wrap:not(.has-content) button.components-button.kb-category-button {
 		color: #777;
+		font-weight: 300;
 	}
 	.kb-library-sidebar-bottom button.components-button.kb-category-button.is-pressed, .kb-library-sidebar-bottom .components-button.is-pressed:hover:not(:disabled) {
 		color: var(--wp-components-color-foreground,#1e1e1e);
