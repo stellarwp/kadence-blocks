@@ -19,7 +19,8 @@ import {store as noticesStore} from '@wordpress/notices';
  */
 import {__} from '@wordpress/i18n';
 
-function KadenceSettings() {
+function KadenceSetting( props ) {
+    const { slug, label, type, theDefault} = props;
 
     const [isSaving, setIsSaving] = useState(false);
     const [settings, setSettings] = useState((kadence_blocks_params.globalSettings ? JSON.parse(kadence_blocks_params.globalSettings) : {}));
@@ -46,15 +47,17 @@ function KadenceSettings() {
 
     return (
         <>
-            <ToggleControl
-				label={__('Enable Pexels Image Picker', 'kadence-blocks')}
-				isBusy={isSaving}
-				checked={ ( undefined !== settings?.enable_image_picker && false === settings?.enable_image_picker ? false : true ) }
-				onChange={ ( value ) => saveConfig('enable_image_picker', value) }
-			/>
+            { type == 'toggle' && (
+                <ToggleControl
+                    label={label}
+                    isBusy={isSaving}
+                    checked={ ( undefined !== settings?.[slug] && ( ! theDefault ) === settings?.[slug] ? ( ! theDefault ) : theDefault ) }
+                    onChange={ ( value ) => saveConfig(slug, value) }
+                />
+            ) }
         </>
-    );
+    )
 
 }
 
-export default KadenceSettings;
+export default KadenceSetting;

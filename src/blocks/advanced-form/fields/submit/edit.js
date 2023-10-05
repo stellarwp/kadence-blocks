@@ -36,7 +36,6 @@ import {
 	ResponsiveAlignControls,
 	GradientControl,
 	BoxShadowControl,
-	DynamicTextControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,

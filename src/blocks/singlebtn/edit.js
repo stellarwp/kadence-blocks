@@ -38,12 +38,13 @@ import {
 	ResponsiveAlignControls,
 	GradientControl,
 	BoxShadowControl,
-	DynamicTextControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	DynamicTextControl,
+	DynamicInlineReplaceControl,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
@@ -154,13 +155,6 @@ import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 
 import {
-	cog,
-	pages,
-	chevronRight,
-	chevronLeft,
-	plus,
-	close,
-	code,
 	link as linkIcon,
 } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
@@ -181,21 +175,12 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
-	Dashicon,
-	TabPanel,
-	Button,
-	PanelRow,
-	RangeControl,
 	TextControl,
 	ToolbarGroup,
-	ButtonGroup,
 	SelectControl,
 	ToggleControl,
-	DropdownMenu,
-	MenuGroup,
-	MenuItem,
 	ToolbarButton,
-	Icon,
+	Spinner,
 } from '@wordpress/components';
 import {
 	addFilter,
@@ -270,6 +255,7 @@ export default function KadenceButtonEdit( props ) {
 		kadenceAnimation,
 		hideLink,
 		inQueryBlock,
+		kadenceDynamic,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -326,6 +312,7 @@ export default function KadenceButtonEdit( props ) {
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 	}, [] );
+
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );
 	useEffect( () => {
@@ -534,6 +521,11 @@ export default function KadenceButtonEdit( props ) {
 			{'}'}
 		</style>
 	);
+
+	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'text' ] && undefined !== kadenceDynamic[ 'text' ].enable && kadenceDynamic[ 'text' ].enable );
+	const richTextFormatsBase = [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ];
+	const richTextFormats = ! kadenceDynamic?.['text']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
+
 	return (
 		<div {...blockProps}>
 			{renderCSS}
@@ -582,6 +574,9 @@ export default function KadenceButtonEdit( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
+				{ Boolean( kadenceDynamic?.['text']?.shouldReplace ) && (
+					<DynamicTextControl dynamicAttribute={'text'} {...props} />
+				)}
 			</BlockControls>
 			{ ! hideLink && isSelected && isEditingURL && (
 				<URLInputInline
@@ -1178,6 +1173,8 @@ export default function KadenceButtonEdit( props ) {
 							</>
 						)}
 					</InspectorControls>
+
+					<DynamicInlineReplaceControl dynamicAttribute={'text'} {...props} />
 				</>
 			)}
 			<div
@@ -1223,15 +1220,22 @@ export default function KadenceButtonEdit( props ) {
 							paddingLeft  : ( previewIconPaddingLeft ? getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) : undefined ),
 						}}/>
 					)}
-					<RichText
-						tagName="div"
-						placeholder={__( 'Button...', 'kadence-blocks' )}
-						value={text}
-						onChange={value => setAttributes( { text: value } ) }
-						allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ], 'kadence/advancedbtn' )}
-						className={'kt-button-text'}
-						keepPlaceholderOnFocus
-					/>
+					{ ! isDynamicReplaced && (
+						<RichText
+							tagName="div"
+							placeholder={__( 'Button...', 'kadence-blocks' )}
+							value={text}
+							onChange={value => setAttributes( { text: value } ) }
+							allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', richTextFormats, 'kadence/advancedbtn' )}
+							className={'kt-button-text'}
+							keepPlaceholderOnFocus
+						/>
+					) }
+					{ isDynamicReplaced && (
+						<>
+							{ applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'text', setAttributes, context ) }
+						</>
+					) }
 					{icon && 'left' !== iconSide && (
 						<IconRender className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`} name={icon} size={'1em'} style={{
 							fontSize     : previewIconSize ? getFontSizeOptionOutput( previewIconSize, ( undefined !== iconSizeUnit ? iconSizeUnit : 'px' ) ) : undefined,
