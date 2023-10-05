@@ -51,6 +51,16 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Style.
+		$is_version_two = ( isset( $attributes['kbVersion'] ) && 2 < $attributes['kbVersion'] ? true : false );
+		$desktop_vertical_align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : '';
+		$tablet_vertical_align = ! empty( $attributes['verticalAlignmentTablet'] ) ? $attributes['verticalAlignmentTablet'] : $desktop_vertical_align;
+		$mobile_vertical_align = ! empty( $attributes['verticalAlignmentMobile'] ) ? $attributes['verticalAlignmentMobile'] : $tablet_vertical_align;
+		$desktop_horizontal_align = ! empty( $attributes['justifyContent'][0] ) ? $attributes['justifyContent'][0] : '';
+		$tablet_horizontal_align = ! empty( $attributes['justifyContent'][1] ) ? $attributes['justifyContent'][1] : $desktop_horizontal_align;
+		$mobile_horizontal_align = ! empty( $attributes['justifyContent'][2] ) ? $attributes['justifyContent'][2] : $tablet_horizontal_align;
+		$desktop_direction = ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : 'vertical';
+		$tablet_direction = ! empty( $attributes['direction'][1] ) ? $attributes['direction'][1] : $desktop_direction;
+		$mobile_direction = ! empty( $attributes['direction'][2] ) ? $attributes['direction'][2] : $tablet_direction;
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
@@ -279,12 +289,41 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_row_gap( $attributes, 'gutterVariable', 'column-gap', 'gutter', 'gutterUnit' );
 
 		// Direction Styles.
-		$desktop_direction = ( isset( $attributes['direction'] ) && is_array( $attributes['direction'] ) && ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : 'vertical' );
-		if ( $desktop_direction === 'horizontal' ) {
+		if ( 'vertical-reverse' === $desktop_direction || 'vertical-reverse' === $desktop_direction ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'flex-direction', ( 'vertical-reverse' === $desktop_direction ? 'column-reverse' : 'column' ) );
+			if ( ! empty( $desktop_vertical_align ) ) {
+				$align = $desktop_vertical_align;
+				switch ( $align ) {
+					case 'top':
+						$align = 'flex-start';
+						break;
+					case 'bottom':
+						$align = 'flex-end';
+						break;
+					case 'space-between':
+						$align = 'space-between';
+						break;
+					case 'space-around':
+						$align = 'space-around';
+						break;
+					case 'space-evenly':
+						$align = 'space-evenly';
+						break;
+					default:
+						$align = 'center';
+						break;
+				}
+				$css->add_property( 'justify-content', $align );
+			}
+			if ( ! empty( $desktop_horizontal_align ) ) {
+				$css->add_property( 'align-items', $desktop_horizontal_align );
+			}
+		} elseif ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', 'row' );
 			$css->add_property( 'flex-wrap', 'wrap' );
-			$align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : 'center';
+			$align = ! empty( $desktop_vertical_align ) ? $desktop_vertical_align : 'center';
 			switch ( $align ) {
 				case 'top':
 					$align = 'flex-start';
@@ -308,7 +347,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'align-items', $align );
 			if ( isset( $attributes['justifyContent'] ) && is_array( $attributes['justifyContent'] ) && ! empty( $attributes['justifyContent'][0] ) ) {
 				$css->add_property( 'justify-content', $attributes['justifyContent'][0] );
-			} else if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && ! empty( $attributes['textAlign'][0] ) ) {
+			} else if ( ! $is_version_two && isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && ! empty( $attributes['textAlign'][0] ) ) {
 				// Fall Back for the old way of doing things.
 				switch ( $attributes['textAlign'][0] ) {
 					case 'left':
@@ -326,10 +365,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['wrapContent'] ) && is_array( $attributes['wrapContent'] ) && ! empty( $attributes['wrapContent'][0] ) ) {
 				$css->add_property( 'flex-wrap', $attributes['wrapContent'][0] );
 			}
+			// Handle Margin issues.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
-
+			// Handle Ratio Images.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
+			$css->add_property( 'flex-grow', 1 );
 			if ( ! empty( $attributes['flexBasis'][0] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
@@ -380,7 +422,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$align = 'center';
 					break;
 			}
-			if ( $desktop_direction === 'horizontal' ) {
+			if ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) {
 				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
 				$css->add_property( 'align-self', $align );
 				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
@@ -563,11 +605,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( empty( $tablet_direction ) ) {
 			$tablet_direction = ( isset( $attributes['direction'] ) && is_array( $attributes['direction'] ) && ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : '' );
 		}
-		if ( 'vertical' === $tablet_direction ) {
+		if ( 'vertical' === $tablet_direction || 'vertical-reverse' === $tablet_direction ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			$css->add_property( 'display', 'flex' );
-			$css->add_property( 'flex-direction', 'column' );
-			if ( $desktop_direction === 'horizontal' ) {
+			$css->add_property( 'flex-direction', ( 'vertical-reverse' === $tablet_direction ? 'column-reverse' : 'column' ) );
+			if ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'align-items', 'flex-start' );
 			}
@@ -587,13 +628,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->add_property( 'align-items', $justify );
 			}
-		} elseif ( 'horizontal' === $tablet_direction ) {
+		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][1] . $basis_unit );
 			}
-			if ( $desktop_direction === 'vertical' && ! empty( $attributes['verticalAlignment'] ) ) {
+			if ( ( 'vertical' === $desktop_direction || 'vertical-reverse' === $desktop_direction ) && ! empty( $attributes['verticalAlignment'] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'justify-content', 'inherit' );
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
@@ -601,27 +642,25 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( isset( $attributes['direction'] ) && is_array( $attributes['direction'] ) && ! empty( $attributes['direction'][0] ) && $attributes['direction'][0] === 'vertical' ) {
-				$css->add_property( 'display', 'flex' );
-				$css->add_property( 'flex-direction', 'row' );
-				$css->add_property( 'flex-wrap', 'wrap' );
-				$align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : 'center';
-				switch ( $align ) {
-					case 'top':
-						$align = 'flex-start';
-						break;
-					case 'bottom':
-						$align = 'flex-end';
-						break;
-					default:
-						$align = 'center';
-						break;
-				}
-				$css->add_property( 'align-items', $align );
+			$css->add_property( 'flex-direction', ( 'horizontal-reverse' === $tablet_direction ? 'row-reverse' : 'row' ) );
+			$css->add_property( 'flex-wrap', 'wrap' );
+			$desk_vertical_align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : 'center';
+			$tablet_vertical_align = ! empty( $attributes['verticalAlignmentTablet'] ) ? $attributes['verticalAlignmentTablet'] : $desk_vertical_align;
+			switch ( $tablet_vertical_align ) {
+				case 'top':
+					$tablet_vertical_align = 'flex-start';
+					break;
+				case 'bottom':
+					$tablet_vertical_align = 'flex-end';
+					break;
+				default:
+					$tablet_vertical_align = 'center';
+					break;
 			}
-			if ( isset( $attributes['justifyContent'] ) && is_array( $attributes['justifyContent'] ) && ! empty( $attributes['justifyContent'][1] ) ) {
+			$css->add_property( 'align-items', $tablet_vertical_align );
+			if ( ! empty( $attributes['justifyContent'][1] ) ) {
 				$css->add_property( 'justify-content', $attributes['justifyContent'][1] );
-			} else if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && ! empty( $attributes['textAlign'][1] ) ) {
+			} else if ( ! $is_version_two && ! empty( $attributes['textAlign'][1] ) ) {
 				switch ( $attributes['textAlign'][1] ) {
 					case 'left':
 						$justify = 'flex-start';
@@ -634,8 +673,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 						break;
 				}
 				$css->add_property( 'justify-content', $justify );
+			} elseif ( ! empty( $attributes['justifyContent'][0] ) ) {
+				$css->add_property( 'justify-content', $attributes['justifyContent'][0] );
 			}
-			if ( isset( $attributes['wrapContent'] ) && is_array( $attributes['wrapContent'] ) && ! empty( $attributes['wrapContent'][1] ) ) {
+			if ( ! empty( $attributes['wrapContent'][1] ) ) {
 				$css->add_property( 'flex-wrap', $attributes['wrapContent'][1] );
 			}
 			$css->set_media_state( 'tabletOnly' );
@@ -686,11 +727,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'display', 'flex' );
 			$css->add_property( 'flex-direction', 'column' );
-			if ( $desktop_direction === 'horizontal' || $tablet_direction === 'horizontal' ) {
+			if ( 'horizontal' === $desktop_direction || 'horizontal' === $tablet_direction ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'align-items', 'flex-start' );
 			}
-		} elseif ( 'horizontal' === $mobile_direction ) {
+		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 
 			if ( ! empty( $attributes['flexBasis'][2] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
@@ -698,7 +739,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'flex', '1 1 ' . $attributes['flexBasis'][2] . $basis_unit );
 			}
 
-			if ( $desktop_direction === 'vertical' && ! empty( $attributes['verticalAlignment'] ) ) {
+			if ( 'vertical' === $desktop_direction && ! empty( $attributes['verticalAlignment'] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'justify-content', 'inherit' );
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
@@ -706,27 +747,26 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-			if ( $desktop_direction === 'vertical' || $tablet_direction === 'vertical' ) {
-				$css->add_property( 'display', 'flex' );
+			if ( 'vertical' === $desktop_direction || 'vertical' === $tablet_direction ) {
 				$css->add_property( 'flex-direction', 'row' );
 				$css->add_property( 'flex-wrap', 'wrap' );
-				$align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : 'center';
-				switch ( $align ) {
+				
+				switch ( $mobile_vertical_align ) {
 					case 'top':
-						$align = 'flex-start';
+						$mobile_vertical_align = 'flex-start';
 						break;
 					case 'bottom':
-						$align = 'flex-end';
+						$mobile_vertical_align = 'flex-end';
 						break;
 					default:
-						$align = 'center';
+						$mobile_vertical_align = 'center';
 						break;
 				}
-				$css->add_property( 'align-items', $align );
+				$css->add_property( 'align-items', $mobile_vertical_align );
 			}
-			if ( isset( $attributes['justifyContent'] ) && is_array( $attributes['justifyContent'] ) && ! empty( $attributes['justifyContent'][2] ) ) {
+			if ( ! empty( $attributes['justifyContent'][2] ) ) {
 				$css->add_property( 'justify-content', $attributes['justifyContent'][2] );
-			} else if ( isset( $attributes['textAlign'] ) && is_array( $attributes['textAlign'] ) && ! empty( $attributes['textAlign'][2] ) ) {
+			} elseif ( ! $is_version_two && ! empty( $attributes['textAlign'][2] ) ) {
 				switch ( $attributes['textAlign'][2] ) {
 					case 'left':
 						$justify = 'flex-start';

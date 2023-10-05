@@ -8,13 +8,13 @@ export function getPreviewGutterSize( previewDevice, columnGutter, customGutter,
 		case 'none':
 			gutter = 0;
 			break;
-		case 'skinny':
+		case 'sm':
 			gutter = 'var(--global-row-gutter-sm, 1rem)';
 			break;
-		case 'medium':
+		case 'md':
 			gutter = 'var(--global-row-gutter-md, 2rem)';
 			break;
-		case 'wider':
+		case 'lg':
 			gutter = 'var(--global-row-gutter-lg, 4rem)';
 			break;
 		case 'custom':

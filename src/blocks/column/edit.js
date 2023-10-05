@@ -276,30 +276,84 @@ function SectionEdit( props ) {
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
 		if ( ! kbVersion || kbVersion < 2 ) {
+			console.log( 'update to V2' );
 			// Update Align and Text Align settings for 3.2.0
-
+			let deskJustifyAlign = ( justifyContent?.[0] ? justifyContent[0] : '' );
+			let tabletJustifyAlign = ( justifyContent?.[1] ? justifyContent[1] : '' );
+			let mobileJustifyAlign = ( justifyContent?.[2] ? justifyContent[2] : '' );
+			let deskDirection = ( direction?.[0] ? direction[0] : '' );
+			let tabletDirection = ( direction?.[1] ? direction[1] : '' );
+			let mobileDirection = ( direction?.[2] ? direction[2] : '' );
+			let updateJustify = false;
+			if ( '' !== textAlign?.[0] && deskDirection === 'horizontal' && deskJustifyAlign === '' ) {
+				switch ( textAlign[0] ) {
+					case 'center':
+						deskJustifyAlign = 'center';
+						break;
+					case 'left':
+						deskJustifyAlign = 'flex-start';
+						break;
+					case 'right':
+						deskJustifyAlign = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			if ( '' !== textAlign?.[1] && ( tabletDirection === 'horizontal' || ( tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
+				switch ( textAlign[1] ) {
+					case 'center':
+						tabletJustifyAlign = 'center';
+						break;
+					case 'left':
+						tabletJustifyAlign = 'flex-start';
+						break;
+					case 'right':
+						tabletJustifyAlign = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			if ( '' !== textAlign?.[2] && ( mobileDirection === 'horizontal' || ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
+				switch ( textAlign[2] ) {
+					case 'center':
+						mobileDirection = 'center';
+						break;
+					case 'left':
+						mobileDirection = 'flex-start';
+						break;
+					case 'right':
+						mobileDirection = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			
+			if ( updateJustify ) {
+				console.log( 'updateJustify', deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign );
+				setAttributes( { justifyContent: [ deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign ] } );
+			}
 			// Update Gutter settings for 3.2.0.
-			// if ( '' !== gutter?.[0] || '' !== gutter?.[1] || '' !== gutter?.[2] ) {
-			// 	setAttributes( { gutterVariable: [ ( '' !== gutter?.[0] ? 'custom' : '' ), ( '' !== gutter?.[1] ? 'custom' : '' ), ( '' !== gutter?.[2] ? 'custom' : '' ) ] } );
-			// }
-			// if ( '' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2] ) {
-			// 	setAttributes( { rowGapVariable: [ ( '' !== rowGap?.[0] ? 'custom' : '' ), ( '' !== rowGap?.[1] ? 'custom' : '' ), ( '' !== rowGap?.[2] ? 'custom' : '' ) ] } );
-			// }
-			// // Update row gap to match gutter if layout is horizontal.
-			// if ( ( direction?.[ 0 ] && direction?.[ 0 ] === 'horizontal' ) || ( direction?.[ 1 ] && direction?.[ 1 ] === 'horizontal' ) || ( direction?.[ 2 ] && direction?.[ 2 ] === 'horizontal' ) ) {
-			// 	let tempRowGap = JSON.parse( JSON.stringify( rowGap ) );
-			// 	if ( direction?.[ 0 ] && direction?.[ 0 ] === 'horizontal' ) {
-			// 		tempRowGap[0] = ( '' !== gutter?.[0] ? gutter[0] : 10 );
-			// 	}
-			// 	if ( ( ( direction?.[ 1 ] === '' && direction?.[ 0 ] === 'horizontal' ) || ( direction?.[ 1 ] === 'horizontal' ) ) && '' !== gutter?.[1] ) {
-			// 		tempRowGap[1] = gutter?.[1];
-			// 	}
-			// 	if ( ( ( direction?.[ 2 ] === '' && direction?.[ 1 ] === 'horizontal' ) || ( direction?.[ 2 ] === '' && direction?.[ 1 ] === '' && direction?.[ 0 ] === 'horizontal' ) || ( direction?.[ 2 ] === 'horizontal' ) ) && '' !== gutter?.[2] ) {
-			// 		tempRowGap[2] = gutter?.[2];
-			// 	}
-			// 	setAttributes( { rowGap: tempRowGap, rowGapUnit: ( gutterUnit ? gutterUnit : 'px' ) } );
-			// }
-			// setAttributes( { kbVersion: 2 } );
+			if ( '' !== gutter?.[0] || '' !== gutter?.[1] || '' !== gutter?.[2] ) {
+				setAttributes( { gutterVariable: [ ( '' !== gutter?.[0] ? 'custom' : '' ), ( '' !== gutter?.[1] ? 'custom' : '' ), ( '' !== gutter?.[2] ? 'custom' : '' ) ] } );
+			}
+			if ( '' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2] ) {
+				setAttributes( { rowGapVariable: [ ( '' !== rowGap?.[0] ? 'custom' : '' ), ( '' !== rowGap?.[1] ? 'custom' : '' ), ( '' !== rowGap?.[2] ? 'custom' : '' ) ] } );
+			}
+			// Update row gap to match gutter if layout is horizontal.
+			if ( ( deskDirection === 'horizontal' ) || tabletDirection === 'horizontal' || mobileDirection === 'horizontal' ) {
+				let tempRowGap = JSON.parse( JSON.stringify( rowGap ) );
+				if ( deskDirection  === 'horizontal' ) {
+					tempRowGap[0] = ( '' !== gutter?.[0] ? gutter[0] : 10 );
+				}
+				if ( ( ( tabletDirection === '' && deskDirection === 'horizontal' ) || ( tabletDirection === 'horizontal' ) ) && '' !== gutter?.[1] ) {
+					tempRowGap[1] = gutter?.[1];
+				}
+				if ( ( ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) || ( mobileDirection === 'horizontal' ) ) && '' !== gutter?.[2] ) {
+					tempRowGap[2] = gutter?.[2];
+				}
+				setAttributes( { rowGap: tempRowGap, rowGapUnit: ( gutterUnit ? gutterUnit : 'px' ) } );
+			}
+			setAttributes( { kbVersion: 2 } );
 		}
 	}, [] );
 
