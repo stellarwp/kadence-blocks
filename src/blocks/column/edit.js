@@ -635,6 +635,7 @@ function SectionEdit( props ) {
 				{ ( '' !== previewFlexBasis ? `.wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > * { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
 				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .wp-block-kadence-image:not(:last-child), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
 				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { flex-grow: 1; }` : '' ) }
+				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { align-self: stretch; }` : '' ) }
 
 				{ ( '' !== verticalGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { row-gap: ${ verticalGap }; }` : '' ) }
 
@@ -775,6 +776,7 @@ function SectionEdit( props ) {
 													setAttributes( { justifyContent: [ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), tempValue ] } );
 												} }
 												type={ 'justify-column' }
+												reverse={ previewDirection === 'horizontal-reverse' ? true : false }
 											/>
 										) }
 										{ ( previewDirection === 'vertical-reverse' || previewDirection === 'vertical' ) && (
@@ -865,6 +867,7 @@ function SectionEdit( props ) {
 													setAttributes( { verticalAlignmentMobile: tempValue } );
 												} }
 												type={ 'justify-vertical' }
+												reverse={ previewDirection === 'vertical-reverse' ? true : false }
 											/>
 										) }
 										{ ( previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal' ) ? (

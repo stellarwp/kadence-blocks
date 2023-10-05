@@ -113,6 +113,7 @@ export default function ResponsiveAlignControls( {
 	value,
 	isCollapsed = false,
 	type = 'textAlign',
+	reverse = false,
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
@@ -199,89 +200,189 @@ export default function ResponsiveAlignControls( {
 			},
 		]
 	} else if ( type === 'justify-align' ) {
-		alignmentControls = [
-			{
-				icon: justifyLeft,
-				title: __( 'Start', 'kadence-blocks' ),
-				align: 'flex-start',
-			},
-			{
-				icon: justifyCenter,
-				title: __( 'Center', 'kadence-blocks' ),
-				align: 'center',
-			},
-			{
-				icon: justifyRight,
-				title: __( 'End', 'kadence-blocks' ),
-				align: 'flex-end',
-			},
-		]
+		if ( reverse ) {
+			alignmentControls = [
+				{
+					icon: justifyRight,
+					title: __( 'Start', 'kadence-blocks' ),
+					align: 'flex-start',
+				},
+				{
+					icon: justifyCenter,
+					title: __( 'Center', 'kadence-blocks' ),
+					align: 'center',
+				},
+				{
+					icon: justifyLeft,
+					title: __( 'End', 'kadence-blocks' ),
+					align: 'flex-end',
+				},
+				{
+					icon: justifyStretch,
+					title: __( 'Stretch', 'kadence-blocks' ),
+					align: 'stretch',
+				},
+			]
+		} else {
+			alignmentControls = [
+				{
+					icon: justifyLeft,
+					title: __( 'Start', 'kadence-blocks' ),
+					align: 'flex-start',
+				},
+				{
+					icon: justifyCenter,
+					title: __( 'Center', 'kadence-blocks' ),
+					align: 'center',
+				},
+				{
+					icon: justifyRight,
+					title: __( 'End', 'kadence-blocks' ),
+					align: 'flex-end',
+				},
+				{
+					icon: justifyStretch,
+					title: __( 'Stretch', 'kadence-blocks' ),
+					align: 'stretch',
+				},
+			]
+		}
 	} else if ( type === 'justify-column' ) {
-		alignmentControls = [
-			{
-				icon: justifyLeft,
-				title: __( 'Start', 'kadence-blocks' ),
-				align: 'flex-start',
-			},
-			{
-				icon: justifyCenter,
-				title: __( 'Center', 'kadence-blocks' ),
-				align: 'center',
-			},
-			{
-				icon: justifyRight,
-				title: __( 'End', 'kadence-blocks' ),
-				align: 'flex-end',
-			},
-			{
-				icon: justifySpaceBetween,
-				title: __( 'Space Between', 'kadence-blocks' ),
-				align: 'space-between',
-			},
-			{
-				icon: spaceAround,
-				title: __( 'Space Around', 'kadence-blocks' ),
-				align: 'space-around',
-			},
-			{
-				icon: spaceEvenly,
-				title: __( 'Space Evenly', 'kadence-blocks' ),
-				align: 'space-evenly',
-			},
-		]
+		if ( reverse ) {
+			alignmentControls = [
+				{
+					icon: justifyRight,
+					title: __( 'Start', 'kadence-blocks' ),
+					align: 'flex-start',
+				},
+				{
+					icon: justifyCenter,
+					title: __( 'Center', 'kadence-blocks' ),
+					align: 'center',
+				},
+				{
+					icon: justifyLeft,
+					title: __( 'End', 'kadence-blocks' ),
+					align: 'flex-end',
+				},
+				{
+					icon: justifySpaceBetween,
+					title: __( 'Space Between', 'kadence-blocks' ),
+					align: 'space-between',
+				},
+				{
+					icon: spaceAround,
+					title: __( 'Space Around', 'kadence-blocks' ),
+					align: 'space-around',
+				},
+				{
+					icon: spaceEvenly,
+					title: __( 'Space Evenly', 'kadence-blocks' ),
+					align: 'space-evenly',
+				},
+			]
+		} else {
+			alignmentControls = [
+				{
+					icon: justifyLeft,
+					title: __( 'Start', 'kadence-blocks' ),
+					align: 'flex-start',
+				},
+				{
+					icon: justifyCenter,
+					title: __( 'Center', 'kadence-blocks' ),
+					align: 'center',
+				},
+				{
+					icon: justifyRight,
+					title: __( 'End', 'kadence-blocks' ),
+					align: 'flex-end',
+				},
+				{
+					icon: justifySpaceBetween,
+					title: __( 'Space Between', 'kadence-blocks' ),
+					align: 'space-between',
+				},
+				{
+					icon: spaceAround,
+					title: __( 'Space Around', 'kadence-blocks' ),
+					align: 'space-around',
+				},
+				{
+					icon: spaceEvenly,
+					title: __( 'Space Evenly', 'kadence-blocks' ),
+					align: 'space-evenly',
+				},
+			]
+		}
 	} else if ( type === 'justify-vertical' ) {
-		alignmentControls = [
-			{
-				icon: alignTop,
-				title: __( 'Top', 'kadence-blocks' ),
-				align: 'top',
-			},
-			{
-				icon: alignCenter,
-				title: __( 'Middle', 'kadence-blocks' ),
-				align: 'middle',
-			},
-			{
-				icon: alignBottom,
-				title: __( 'Bottom', 'kadence-blocks' ),
-				align: 'bottom',
-			},
-			{
-				icon: verticalSpaceBetween,
-				title: __( 'Space Between', 'kadence-blocks' ),
-				align: 'space-between',
-			},
-			{
-				icon: verticalSpaceAround,
-				title: __( 'Space Around', 'kadence-blocks' ),
-				align: 'space-around',
-			},
-			{
-				icon: verticalSpaceEvenly,
-				title: __( 'Space Evenly', 'kadence-blocks' ),
-				align: 'space-evenly',
-			},
-		]
+		if ( reverse ) {
+			alignmentControls = [
+				{
+					icon: alignBottom,
+					title: __( 'Bottom', 'kadence-blocks' ),
+					align: 'top',
+				},
+				{
+					icon: alignCenter,
+					title: __( 'Middle', 'kadence-blocks' ),
+					align: 'middle',
+				},
+				{
+					icon: alignTop,
+					title: __( 'Top', 'kadence-blocks' ),
+					align: 'bottom',
+				},
+				{
+					icon: verticalSpaceBetween,
+					title: __( 'Space Between', 'kadence-blocks' ),
+					align: 'space-between',
+				},
+				{
+					icon: verticalSpaceAround,
+					title: __( 'Space Around', 'kadence-blocks' ),
+					align: 'space-around',
+				},
+				{
+					icon: verticalSpaceEvenly,
+					title: __( 'Space Evenly', 'kadence-blocks' ),
+					align: 'space-evenly',
+				},
+			]
+		} else {
+			alignmentControls = [
+				{
+					icon: alignTop,
+					title: __( 'Top', 'kadence-blocks' ),
+					align: 'top',
+				},
+				{
+					icon: alignCenter,
+					title: __( 'Middle', 'kadence-blocks' ),
+					align: 'middle',
+				},
+				{
+					icon: alignBottom,
+					title: __( 'Bottom', 'kadence-blocks' ),
+					align: 'bottom',
+				},
+				{
+					icon: verticalSpaceBetween,
+					title: __( 'Space Between', 'kadence-blocks' ),
+					align: 'space-between',
+				},
+				{
+					icon: verticalSpaceAround,
+					title: __( 'Space Around', 'kadence-blocks' ),
+					align: 'space-around',
+				},
+				{
+					icon: verticalSpaceEvenly,
+					title: __( 'Space Evenly', 'kadence-blocks' ),
+					align: 'space-evenly',
+				},
+			]
+		}
 	}
 	
 	const devices = [
