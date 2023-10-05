@@ -415,6 +415,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			case 'normal':
 				if ( ! empty( $attributes['backgroundHover'] ) ) {
 					$css->render_color_output( $attributes, 'backgroundHover', 'background-color' );
+					$css->add_property( 'background-image', 'none' );
 				}
 				if ( ! empty( $attributes['backgroundImgHover'][0]['bgImg'] ) ) {
 					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImgHover'][0]['bgImg'] ) );
@@ -472,6 +473,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			case 'normal':
 				if ( ! empty( $attributes['overlayHover'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['overlayHover'] ) );
+					$css->add_property( 'background-image', 'none' );
 				}
 				if ( ! empty( $attributes['overlayImgHover'][0]['bgImg'] ) ) {
 					$bg_img_hover = $attributes['overlayImgHover'][0];
@@ -482,6 +484,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
 					$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
 				}
+				break;
 			case 'gradient':
 				if ( ! empty( $attributes['overlayGradientHover'] ) ) {
 					$css->add_property( 'background-image', $attributes['overlayGradientHover'] );
@@ -558,7 +561,14 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][1] ) && is_numeric( $attributes['rowGap'][1] ) ? $attributes['rowGap'][1] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
-				$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
+
+				// The previous condition might have set us to block so we need to use margin instead of gap.
+				if ( $desktop_direction === 'horizontal' ) {
+					$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *:not(:last-child)' );
+					$css->add_property( 'margin-bottom', $row_gap . $row_gap_unit );
+				} else {
+					$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
+				}
 			}
 		} elseif ( 'horizontal' === $tablet_direction ) {
 			if( !empty( $attributes['flexBasis'][1] ) ) {
@@ -668,14 +678,21 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'display', 'block' );
 				$css->add_property( 'margin-left', '0px' );
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
-				$css->add_property( 'margin-left', '0px' );;
+				$css->add_property( 'margin-left', '0px' );
 			}
 
 			if ( ! empty( $attributes['rowGap'][2] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$row_gap      = isset( $attributes['rowGap'][2] ) && is_numeric( $attributes['rowGap'][2] ) ? $attributes['rowGap'][2] : 0;
 				$row_gap_unit = ! empty( $attributes['rowGapUnit'] ) ? $attributes['rowGapUnit'] : 'px';
-				$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
+
+				// The previous condition might have set us to block so we need to use margin instead of gap.
+				if ( $desktop_direction === 'horizontal' || $tablet_direction === 'horizontal' ) {
+					$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *:not(:last-child)' );
+					$css->add_property( 'margin-bottom', $row_gap . $row_gap_unit );
+				} else {
+					$css->add_property( 'row-gap', $row_gap . $row_gap_unit );
+				}
 			}
 		} elseif ( 'horizontal' === $mobile_direction ) {
 

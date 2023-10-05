@@ -97,10 +97,12 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		// Container
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
+		// Container.
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ', .wp-block-kadence-advanced-form' . $unique_id . '.kb-form-has-background' );
 		$css->render_measure_output( $form_attributes, 'padding', 'padding', array( 'desktop_key' => 'padding', 'tablet_key' => 'tabletPadding', 'mobile_key' => 'mobilePadding' ) );
 		$css->render_measure_output( $form_attributes, 'margin', 'margin', array( 'desktop_key' => 'margin', 'tablet_key' => 'tabletMargin', 'mobile_key' => 'mobileMargin' ) );
+
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
 		if ( isset( $background_style['backgroundType'] ) && $background_style['backgroundType'] === 'gradient' ) {
 			$css->add_property( 'background', $background_style['gradient'] );
 		} else {
@@ -109,7 +111,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$max_width_unit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit'] : 'px';
 		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $max_width_unit );
 
-		// Input Styles
+		// Input Styles.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form' );
 		$css->render_gap( $field_style );
 
@@ -389,6 +391,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $field_style['isDark'] ) && $field_style['isDark'] ) {
 			$outer_classes[] = 'kb-form-is-dark';
 		}
+		if( !empty( $form_attributes['className'] ) ) {
+			$outer_classes[] = $form_attributes['className'];
+		}
 		$background_type = ( ! empty( $background_style['backgroundType'] ) ? $background_style['backgroundType'] : 'normal' );
 		$has_background = false;
 		if ( 'normal' === $background_type && ! empty( $background_style['background'] ) ) {
@@ -403,13 +408,16 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_args = array(
 			'class' => implode( ' ', $outer_classes ),
 		);
-		if ( ! empty( $attributes['anchor'] ) ) {
-			$wrapper_args['id'] = $attributes['anchor'];
+		if ( ! empty( $form_attributes['anchor'] ) ) {
+			$wrapper_args['id'] = $form_attributes['anchor'];
 		}
 		$inner_args = array(
 			'class' => implode( ' ', $inner_classes ),
 			'method' => 'post',
 		);
+		if ( isset( $form_attributes['browserValidation'] ) && ! $form_attributes['browserValidation'] ) {
+			$inner_args['novalidate'] = 'true';
+		}
 		$inner_wrap_attributes = array();
 		foreach ( $inner_args as $key => $value ) {
 			$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
@@ -426,6 +434,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $content;
 	}
+
 	/**
 	 * Get form fields.
 	 *
@@ -494,6 +503,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
 		wp_localize_script(
 			'kadence-blocks-' . $this->block_name,
 			'kb_adv_form_params',

@@ -198,6 +198,7 @@ import {
 	Icon,
 } from '@wordpress/components';
 import {
+	addFilter,
 	applyFilters,
 } from '@wordpress/hooks';
 
@@ -270,6 +271,11 @@ export default function KadenceButtonEdit( props ) {
 		hideLink,
 		inQueryBlock,
 	} = attributes;
+
+	// Support rank math content analysis.
+	const rankMathContent = link !== '' ? '<a href="' + link + '">' + text + '</a>' : text;
+	addFilter( 'rank_math_content', 'kadence/advbtn', () => { return rankMathContent } )
+
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const { btnsBlock, rootID } = useSelect(
 		( select ) => {

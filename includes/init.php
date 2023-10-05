@@ -180,6 +180,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
 			$access_levels[] = array(
 				'value' => $key,
+				/* translators: %s is the access level name. */
 				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
 			);
 		}
@@ -253,6 +254,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
+			'globalSettings' => get_option( 'kadence_blocks_settings' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
@@ -261,8 +263,10 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'headingWeights' => apply_filters( 'kadence_blocks_default_heading_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null ) ),
 			'bodyWeights'    => apply_filters( 'kadence_blocks_default_body_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_body_weights() : null ) ),
 			'buttonWeights'  => apply_filters( 'kadence_blocks_default_button_font_weights', ( class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null ) ),
+			'termEndpoint'   => '/kbp/v1/term-select',
+			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'taxonomies'     => kadence_blocks_get_taxonomies(),
+			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
@@ -343,39 +347,6 @@ function kadence_blocks_get_asset_file( $filepath ) {
 			'dependencies' => array( 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ),
 			'version'      => KADENCE_BLOCKS_VERSION,
 		);
-}
-
-/**
- * Setup the post type taxonomies for post blocks.
- *
- * @return array
- */
-function kadence_blocks_get_taxonomies() {
-	$post_types = kadence_blocks_get_post_types();
-	$output = array();
-	foreach ( $post_types as $key => $post_type ) {
-		$taxonomies = get_object_taxonomies( $post_type['value'], 'objects' );
-		$taxs = array();
-		foreach ( $taxonomies as $term_slug => $term ) {
-			if ( ! $term->public || ! $term->show_ui ) {
-				continue;
-			}
-			$taxs[ $term_slug ] = $term;
-			$terms = get_terms( $term_slug );
-			$term_items = array();
-			if ( ! empty( $terms ) ) {
-				foreach ( $terms as $term_key => $term_item ) {
-					$term_items[] = array(
-						'value' => $term_item->term_id,
-						'label' => $term_item->name,
-					);
-				}
-				$output[ $post_type['value'] ]['terms'][ $term_slug ] = $term_items;
-			}
-		}
-		$output[ $post_type['value'] ]['taxonomy'] = $taxs;
-	}
-	return apply_filters( 'kadence_blocks_taxonomies', $output );
 }
 
 /**
@@ -1078,6 +1049,9 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_conteoller_get->register_routes();
 	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_conteoller_upload->register_routes();
+
+	$image_picker_conteoller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
+	$image_picker_conteoller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

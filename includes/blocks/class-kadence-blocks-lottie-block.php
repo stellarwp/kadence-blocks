@@ -207,12 +207,21 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 				$playerProps['intermission'] = 1000 * $attributes['delay'];
 			}
 
-			$align = '';
-			if( !empty( $attributes['align'] ) ) {
-				$align = 'align' . $attributes['align'];
+			$classes = array(
+				'kb-lottie-container',
+				'kb-lottie-container' . esc_attr( $unique_id ),
+			);
+
+			if ( ! empty( $attributes['align'] ) ) {
+				$classes[] = 'align' . $attributes['align'];
 			}
 
-			$content .= '<div class="kb-lottie-container kb-lottie-container' . esc_attr( $unique_id ) . ' '. $align .'">';
+			// Add custom CSS classes to class string.
+			if ( isset( $attributes['className'] ) ) {
+				$classes[] = $attributes['className'];
+			}
+
+			$content .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 				if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
 					$content .= '<div class="kb-is-ratio-animation">';
 				}

@@ -47,7 +47,9 @@ class Kadence_Blocks_Svg_Render {
 	 */
 	public function __construct() {
 		add_filter( 'render_block', array( $this, 'render_icons_dynamically' ), 10, 2 );
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		if ( apply_filters( 'kadence_blocks_fix_svg_dimensions', false ) ) {
+			add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		}
 	}
 	/**
 	 * On build convert icons into svgs.
@@ -125,9 +127,11 @@ class Kadence_Blocks_Svg_Render {
 			$preserve = '';
 			$vb_array = explode( ' ', $vb );
 			$typeL = substr( $name, 0, 3 );
-			if( $typeL && 'fas' !== $typeL && isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
-				$preserve = 'preserveAspectRatio="xMinYMin meet"';
-			}
+
+			// This was added primiarly to preserve if the inner part of an svg should maintain it's alignment. Like with the old facebook icon. But it's not needed anymore.
+			// if ( $typeL && 'fas' !== $typeL && isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
+			// 	$preserve = 'preserveAspectRatio="xMinYMin meet"';
+			// }
 			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';

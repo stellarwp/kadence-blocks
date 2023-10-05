@@ -613,7 +613,18 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_settings_blocks',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'Config Kadence Block Settings View', 'kadence-blocks' ),
+				'description'       => __( 'Config Kadence Block visibility settings', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_settings',
+			'kadence_blocks_settings',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Settings', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -763,37 +774,37 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-				'kadence_blocks_convertkit_api',
-				'kadence_blocks_convertkit_api',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_convertkit_api',
+			'kadence_blocks_convertkit_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_key',
-				'kadence_blocks_activecampaign_api_key',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_key',
+			'kadence_blocks_activecampaign_api_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_activecampaign_api_base',
-				'kadence_blocks_activecampaign_api_base',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_activecampaign_api_base',
+			'kadence_blocks_activecampaign_api_base',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 	}
 	/**
@@ -817,7 +828,7 @@ class Kadence_Blocks_Settings {
 		if ( ! defined( 'KADENCE_VERSION' ) ) {
 			register_setting( 'kadence_blocks_font_settings', 'kadence_blocks_font_settings', array( $this, 'validate_options' ) );
 			add_settings_section( 'kt_blocks_fonts_sec', '', array( $this, 'fonts_local_callback' ), 'kt_blocks_fonts_section' );
-			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Localy', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
+			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Locally', 'kadence-blocks' ), array( $this, 'load_fonts_local_callback' ), 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
 		}
 	}
 	/**
@@ -893,7 +904,7 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs Limited Margins Field
+	 * Outputs font settings field
 	 */
 	public function load_fonts_local_callback() {
 		$data = self::get_data_options( 'kadence_blocks_font_settings' );
@@ -918,7 +929,6 @@ class Kadence_Blocks_Settings {
 	 */
 	public function fonts_local_callback() {
 	}
-
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
 	 *

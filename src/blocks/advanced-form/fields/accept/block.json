@@ -7,6 +7,9 @@
 	"uniqueID": {
 		"type": "string"
 	},
+	"formID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -78,9 +81,10 @@
   "supports": {
 	"anchor": true,
 	"html": false,
-	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
+	"ktdynamic": true,
 	"kbContentLabel": "label"
   },
   "ancestor": [ "kadence/advanced-form" ],

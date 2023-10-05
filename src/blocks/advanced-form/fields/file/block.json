@@ -7,6 +7,9 @@
 	"uniqueID": {
 		"type": "string"
 	},
+	"formID": {
+		"type": "string"
+	},
 	"label": {
 	  "type": "string",
 	  "default": ""
@@ -38,6 +41,9 @@
 	"anchor": {
 	  "type": "string"
 	}
+  },
+  "supports": {
+	  "ktfieldconditional": true
   },
   "parent": [
 	"kadence/advanced-form"
