@@ -4,7 +4,7 @@
 		"npm install --legacy-peer-deps",
 		"npm run build",
 		"composer wp",
-		"COMPOSER_MEMORY_LIMIT=4G composer wp i18n make-pot ./ ./languages/kadence-blocks.pot -- --include=includes,dist --debug"
+		"composer wp i18n make-pot ./ ./languages/kadence-blocks.pot -- --include=includes,dist --debug"
 	],
 	"build_dev": [
 		"composer install --no-dev",
