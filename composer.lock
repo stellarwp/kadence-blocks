@@ -148,16 +148,16 @@
         },
         {
             "name": "stellarwp/telemetry",
-            "version": "2.0.1",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b"
+                "reference": "067828094c6bee5926417b011e54b7ebda3baa01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/cccdf75a925547d25222a2fa92a3c357a952069b",
-                "reference": "cccdf75a925547d25222a2fa92a3c357a952069b",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/067828094c6bee5926417b011e54b7ebda3baa01",
+                "reference": "067828094c6bee5926417b011e54b7ebda3baa01",
                 "shasum": ""
             },
             "require": {
@@ -197,9 +197,9 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/2.0.1"
+                "source": "https://github.com/stellarwp/telemetry/tree/2.1.0"
             },
-            "time": "2023-06-01T14:25:43+00:00"
+            "time": "2023-08-22T17:03:52+00:00"
         }
     ],
     "packages-dev": [],
@@ -213,5 +213,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
