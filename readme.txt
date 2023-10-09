@@ -97,6 +97,11 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.21 =
+Release Date: October 9th, 2023
+* Fix: Issue where inline style tags could break row layout options.
+* Fix: Issue with rank math score going down when adding Advanced Buttons.
+
 = 3.1.20 =
 Release Date: October 3rd, 2023
 * Add: Advanced buttons support Rank Math content analysis.

@@ -273,8 +273,13 @@ export default function KadenceButtonEdit( props ) {
 	} = attributes;
 
 	// Support rank math content analysis.
-	const rankMathContent = link !== '' ? '<a href="' + link + '">' + text + '</a>' : text;
-	addFilter( 'rank_math_content', 'kadence/advbtn', () => { return rankMathContent } )
+	if( uniqueID !== '' ) {
+		const rankMathContent = '<!-- KB:BTN:' + uniqueID + ' -->' + ( link !== '' ? '<a href="' + link + '">' + text + '</a>' : '<button>' + text + '</button>' ) + '<!-- /KB:BTN:' + uniqueID + ' -->';
+		addFilter( 'rank_math_content', 'kadence/advbtn', ( content ) => {
+			const regex = new RegExp( '<!-- KB:BTN:' + uniqueID + ' -->[^]*?<!-- /KB:BTN:' + uniqueID + ' -->', 'g' );
+			return content.replace( regex, '' ) + rankMathContent
+		} );
+	}
 
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const { btnsBlock, rootID } = useSelect(
