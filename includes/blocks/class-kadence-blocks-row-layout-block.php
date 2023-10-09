@@ -141,13 +141,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 							break;
 						case 'first-row':
 							$grid_layout = 'repeat(2, minmax(0, 1fr))';
-							$css->set_selector( $inner_selector . ' > *:nth-child(3n+1)' );
+							$css->set_selector( $inner_selector . ' > *:nth-child(3n+1 of *:not(style))' );
 							$css->add_property( 'grid-column', '1 / -1' );
 							$css->set_selector( $inner_selector );
 							break;
 						case 'last-row':
 							$grid_layout = 'repeat(2, minmax(0, 1fr))';
-							$css->set_selector( $inner_selector . ' > *:nth-child(3n)' );
+							$css->set_selector( $inner_selector . ' > *:nth-child(3n of *:not(style))' );
 							$css->add_property( 'grid-column', '1 / -1' );
 							$css->set_selector( $inner_selector );
 							break;
@@ -186,13 +186,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				switch ( $layout ) {
 					case 'first-row':
 						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( $inner_selector . ' > *:nth-child(5n+1)' );
+						$css->set_selector( $inner_selector . ' > *:nth-child(5n+1 of *:not(style))' );
 						$css->add_property( 'grid-column', '1 / -1' );
 						$css->set_selector( $inner_selector );
 						break;
 					case 'last-row':
 						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( $inner_selector . ' > *:nth-child(5n)' );
+						$css->set_selector( $inner_selector . ' > *:nth-child(5n of *:not(style))' );
 						$css->add_property( 'grid-column', '1 / -1' );
 						$css->set_selector( $inner_selector );
 						break;
