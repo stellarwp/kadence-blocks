@@ -797,7 +797,7 @@ function PatternLibrary( {
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div> */}
-					
+
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>
 					<div className="kb-library-sidebar-search">
@@ -1153,6 +1153,7 @@ function PatternLibrary( {
 									photographyOnly: false
 								} );
 							} }
+							categories={ categoryListOptions }
 						/>
 					) }
 				</>
