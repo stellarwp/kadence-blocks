@@ -35,6 +35,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 		showLabel,
 		defaultValue,
 		options,
+		inline,
 		helpText,
 		ariaDescription,
 		maxWidth,
@@ -47,7 +48,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 		requiredMessage,
 		kadenceDynamic,
 	} = attributes;
-
+	console.log(inline);
 	const [ rerender, setRerender ] = useState( 0 );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { previewDevice } = useSelect(
@@ -240,6 +241,11 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 								>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
+								<ToggleControl
+									label={__( 'Show inline?', 'kadence-blocks' )}
+									checked={inline}
+									onChange={( value ) => setAttributes( {inline: value} )}
+								/>
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Field Controls', 'kadence-blocks' )}

@@ -26,7 +26,7 @@ import { times, filter } from 'lodash';
 import { plus } from '@wordpress/icons';
 
 function FieldRadio( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, options, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, options, inline, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 	const [ rerender, setRerender ] = useState( 0 );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -223,6 +223,11 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 								>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
+								<ToggleControl
+									label={__( 'Show inline?', 'kadence-blocks' )}
+									checked={inline}
+									onChange={( value ) => setAttributes( {inline: value} )}
+								/>
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Field Controls', 'kadence-blocks' )}
