@@ -225,7 +225,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 								</Button>
 								<ToggleControl
 									label={__( 'Show inline?', 'kadence-blocks' )}
-									checked={inline}
+									checked={ inline }
 									onChange={( value ) => setAttributes( {inline: value} )}
 								/>
 							</KadencePanelBody>
@@ -397,7 +397,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 					/>
 
 					{isSelected ?
-						<div className={'kb-form-multi'}>
+						<div className={`kb-form-multi ${inline === true ? 'kb-radio-check-inline' : ''}`} >
 							{times( options.length, n => (
 								<div className={'inline-option-add-item'} key={n}>
 									<input
@@ -432,7 +432,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 							</Button>
 						</div>
 						:
-						<>
+						<div className={`${inline === true ? 'kb-radio-check-inline' : ''}`}>
 							{times( options.length, n => (
 								<div key={n} className='kb-radio-check-item'>
 									<input
@@ -444,7 +444,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}
-						</>
+						</div>
 					}
 					{helpText && <span className="kb-form-field-help">{helpText}</span>}
 				</>
