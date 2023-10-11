@@ -237,7 +237,7 @@ class KB_Ajax_Advanced_Form {
 				}
 			}
 
-			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
+			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiSelect'] ) ? false : $field['multiSelect'] );
 
 			// Fail if this field is empty and is required.
 			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
