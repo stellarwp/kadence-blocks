@@ -427,9 +427,6 @@
 	&.kb-form-has-background {
 		padding: 1em;
 	}
-	select {
-		max-width: unset;
-	}
 	input, select {
 		margin: 0;
 	}
@@ -440,7 +437,12 @@
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		max-width: 100%;
 		flex: 0 1 100%;
+	}
+
+	select {
+		max-width: unset;
 	}
 
 	.kb-form-multi {

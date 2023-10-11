@@ -215,9 +215,6 @@
 			margin-top: 0;
 		}
 	}
-	select {
-		max-width: unset;
-	}
 	.kb-adv-form-required {
 		margin-left: 2px;
 		color: #b32d2e;
@@ -225,6 +222,8 @@
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		max-width: 100%;
+
 		&.kb-submit-field {
 			flex-direction: initial;
 		}
@@ -232,6 +231,10 @@
 		&[hidden] {
 			display: none;
 		}
+	}
+
+	select {
+		max-width: unset;
 	}
 
 	.kb-form-multi {
