@@ -48,7 +48,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 		requiredMessage,
 		kadenceDynamic,
 	} = attributes;
-	console.log(inline);
+	
 	const [ rerender, setRerender ] = useState( 0 );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { previewDevice } = useSelect(
@@ -442,14 +442,14 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 							</Button>
 						</div>
 						:
-						<>
+						<div className={`${inline === true ? 'kb-radio-check-inline' : ''}`}>
 							{times( options.length, n => (
 								<div className={'kb-radio-check-item'} key={n}>
 									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} checked={options[ n ].selected}/>
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}
-						</>
+						</div>
 					}
 
 					{helpText && <span className="kb-form-field-help">{helpText}</span>}

@@ -397,7 +397,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 					/>
 
 					{isSelected ?
-						<div className={`kb-form-multi ${inline === true ? 'kb-radio-check-inline' : ''}`} >
+						<div className='kb-form-multi' >
 							{times( options.length, n => (
 								<div className={'inline-option-add-item'} key={n}>
 									<input
