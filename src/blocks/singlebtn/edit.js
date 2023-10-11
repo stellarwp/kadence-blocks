@@ -477,9 +477,9 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
+		className                  : className,
 	} );
 	const classes = classnames( {
-		className                  : className,
 		[ `kb-single-btn-${uniqueID}` ]  : true,
 		[ `kt-btn-width-type-${( widthType ? widthType : 'auto' )}` ]   : true,
 	} );
