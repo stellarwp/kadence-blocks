@@ -21,7 +21,7 @@
 	},
 	"scripts": {
 		"strauss": [
-			"test -f bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
 			"@php bin/strauss.phar"
 		],
 		"pup": [
