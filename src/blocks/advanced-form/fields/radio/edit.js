@@ -224,7 +224,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
 								<ToggleControl
-									label={__( 'Show inline?', 'kadence-blocks' )}
+									label={__( 'Display inline?', 'kadence-blocks' )}
 									checked={ inline }
 									onChange={( value ) => setAttributes( {inline: value} )}
 								/>

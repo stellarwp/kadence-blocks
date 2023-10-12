@@ -242,8 +242,8 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
 								<ToggleControl
-									label={__( 'Show inline?', 'kadence-blocks' )}
-									checked={inline}
+									label={__( 'Display inline?', 'kadence-blocks' )}
+									checked={ inline }
 									onChange={( value ) => setAttributes( {inline: value} )}
 								/>
 							</KadencePanelBody>
