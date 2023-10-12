@@ -153,7 +153,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( 'vtabs' === $mobile_layout && ( ! empty( $attributes['verticalTabWidth'][0] ) || ! empty( $attributes['verticalTabWidth'][1] ) || ! empty( $attributes['verticalTabWidth'][2] ) ) ) {
 			$mobile_width = ( ! empty( $attributes['verticalTabWidth'][2] ) ? $attributes['verticalTabWidth'][2] : $attributes['verticalTabWidth'][1] );
-			$css->set_media_state( 'mobileOnly' );
+			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id );
 			$css->add_property( 'display', 'flex' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
