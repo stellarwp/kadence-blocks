@@ -165,8 +165,10 @@
 	input[type="radio"]:focus, input[type="checkbox"]:focus {
 		outline-offset: 3px;
 	}
-	.kb-radio-check-inline{
+	.kb-radio-check-items-inline {
 		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
 	}
 	.kb-radio-check-item {
 		display: flex;
