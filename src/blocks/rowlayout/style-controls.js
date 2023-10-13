@@ -64,6 +64,7 @@ import { __ } from '@wordpress/i18n';
 	const mobileBackgroundType = mobileBackground?.[ 0 ]?.type || 'normal';
 	const mobileAllowForceOverride = ( '' === mobileBackground?.[ 0 ]?.bgImg && ( ( 'normal' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.bgImg ) || ( 'gradient' === tabletBackgroundType && '' !== tabletBackground?.[ 0 ]?.gradient ) || ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
 	const tabletAllowForceOverride = ( '' === tabletBackground?.[ 0 ]?.bgImg && ( ( 'normal' === backgroundSettingTab && '' !== bgImg ) || ( 'gradient' === backgroundSettingTab && '' !== gradient ) ) ? true : false );
+	const hasBackgroundVideoContent = ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] );
 	const saveSlideItem = ( value, thisIndex ) => {
 		let currentItems = backgroundSlider;
 		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
@@ -137,6 +138,7 @@ import { __ } from '@wordpress/i18n';
 				vimeo: '',
 				ratio: '16/9',
 				btns: false,
+				btnsMute: false,
 				loop: true,
 				mute: true,
 			} ];
@@ -163,6 +165,7 @@ import { __ } from '@wordpress/i18n';
 				vimeo: '',
 				ratio: '16/9',
 				btns: false,
+				btnsMute: false,
 				loop: true,
 				mute: true,
 			} ];
@@ -796,7 +799,7 @@ import { __ } from '@wordpress/i18n';
 						<Fragment>
 							<KadenceVideoControl
 								label={__( 'Background Video', 'kadence-blocks' )}
-								hasVideo={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? true : false ) }
+								hasVideo={ ( hasBackgroundVideoContent && backgroundVideo[ 0 ].localID ? true : false ) }
 								videoURL={( backgroundVideo && backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' )}
 								videoID={( backgroundVideo && backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' )}
 								onRemoveVideo={() => {
@@ -811,11 +814,11 @@ import { __ } from '@wordpress/i18n';
 										local: video.url,
 									} );
 								} }
-								disableMediaButtons={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? true : false ) }
+								disableMediaButtons={ ( hasBackgroundVideoContent && backgroundVideo[ 0 ].local ? true : false ) }
 							/>
 							<TextControl
 								label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
-								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
+								value={ ( hasBackgroundVideoContent && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
 								onChange={ value => saveVideoSettings( { local: value } ) }
 							/>
 						</Fragment>
@@ -826,14 +829,14 @@ import { __ } from '@wordpress/i18n';
 					{ 'youtube' === backgroundVideoType && (
 						<TextControl
 							label={ __( 'YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youTube ? backgroundVideo[ 0 ].youTube : '' ) }
+							value={ ( hasBackgroundVideoContent && backgroundVideo[ 0 ].youTube ? backgroundVideo[ 0 ].youTube : '' ) }
 							onChange={ value => saveVideoSettings( { youTube: value } ) }
 						/>
 					) }
 					{ 'vimeo' === backgroundVideoType && (
 						<TextControl
 							label={ __( 'Vimeo ID ( example: 789006133 )', 'kadence-blocks' ) }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].vimeo ? backgroundVideo[ 0 ].vimeo : '' ) }
+							value={ ( hasBackgroundVideoContent && backgroundVideo[ 0 ].vimeo ? backgroundVideo[ 0 ].vimeo : '' ) }
 							onChange={ value => saveVideoSettings( { vimeo: value } ) }
 						/>
 					) }
@@ -854,26 +857,33 @@ import { __ } from '@wordpress/i18n';
 									value: '3/2',
 								},
 							] }
-							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
+							value={ ( hasBackgroundVideoContent && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
 							onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
 						/>
 					) }
 					<ToggleControl
 						label={ __( 'Mute Video', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
+						checked={ ( hasBackgroundVideoContent && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
 						onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
 					/>
 					<ToggleControl
 						label={ __( 'Loop Video', 'kadence-blocks' ) }
-						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
+						checked={ ( hasBackgroundVideoContent && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
 						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
 					/>
 					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
-						<ToggleControl
-							label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-							checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-							onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-						/>
+						<>
+							<ToggleControl
+								label={ __( 'Show Mute Unmute Buttons?', 'kadence-blocks' ) }
+								checked={ ( hasBackgroundVideoContent && undefined !== backgroundVideo[ 0 ].btnsMute ? backgroundVideo[ 0 ].btnsMute : false ) }
+								onChange={ ( value ) => saveVideoSettings( { btnsMute: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+								checked={ ( hasBackgroundVideoContent && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+								onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+							/>
+						</>
 					) }
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
