@@ -1261,14 +1261,14 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] ) {
+		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] && ! is_array( $attributes[ $name ][0] ) ) {
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
 		}
-		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] ) {
+		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] && ! is_array( $attributes[ $name ][1] ) ) {
 			$this->set_media_state( 'tablet' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
 		}
-		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] ) {
+		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] && ! is_array( $attributes[ $name ][2] ) ) {
 			$this->set_media_state( 'mobile' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
 		}
