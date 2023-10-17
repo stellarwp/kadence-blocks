@@ -501,7 +501,9 @@ class Kadence_Blocks_Settings {
 	 */
 	public function add_menu() {
 		add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
-		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ), 0 );
+		$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
+		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ), 1 );
+		add_action( 'admin_print_styles-' . $home_page, array( $this, 'home_scripts' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
@@ -591,6 +593,47 @@ class Kadence_Blocks_Settings {
 				'texts'               => $texts,
 			)
 		);
+	}
+	/**
+	 * Loads admin style sheets and scripts
+	 */
+	public function home_scripts() {
+		// Icons Scripts & Styles.
+		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
+		wp_register_script( 'kadence-icons', KADENCE_BLOCKS_URL . 'dist/icons.js', array_merge( $kadence_icons_meta['dependencies'], array( 'wp-api' ) ), $kadence_icons_meta['version'], true );
+		wp_set_script_translations( 'kadence-icons', 'kadence-blocks' );
+
+		$kadence_base = kadence_blocks_get_asset_file( 'dist/extension-kadence-base' );
+		wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/extension-kadence-base.js', array_merge( $kadence_base['dependencies'], array( 'wp-api' ) ), $kadence_base['version'], true );
+		// Block CSS Scripts & Styles.
+		$kadence_stores_meta = kadence_blocks_get_asset_file( 'dist/extension-stores' );
+		wp_register_script( 'kadence-extension-stores', KADENCE_BLOCKS_URL . 'dist/extension-stores.js', array_merge( $kadence_stores_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_stores_meta['version'], true );
+		// wp_register_style( 'kadence-extension-stores', KADENCE_BLOCKS_URL . 'dist/extension/stores.css', array( 'wp-edit-blocks' ), $kadence_stores_meta['version'] );
+		wp_set_script_translations( 'kadence-extension-stores', 'kadence-blocks' );
+
+		// Helpers Scripts & Styles.
+		$kadence_helpers_meta = kadence_blocks_get_asset_file( 'dist/helpers' );
+		wp_register_script( 'kadence-helpers', KADENCE_BLOCKS_URL . 'dist/helpers.js', array_merge( $kadence_helpers_meta['dependencies'], array( 'wp-api' ) ), $kadence_helpers_meta['version'], true );
+		wp_set_script_translations( 'kadence-helpers', 'kadence-blocks' );
+
+		// Components Scripts & Styles.
+		$kadence_components_meta = kadence_blocks_get_asset_file( 'dist/components' );
+		wp_register_script( 'kadence-components', KADENCE_BLOCKS_URL . 'dist/components.js', array_merge( $kadence_components_meta['dependencies'], array( 'wp-api', 'kadence-extension-stores', 'kadence-blocks-js' ) ), $kadence_components_meta['version'], true );
+		wp_register_style( 'kadence-components', KADENCE_BLOCKS_URL . 'dist/components.css', array( 'wp-edit-blocks' ), $kadence_components_meta['version'] );
+		wp_set_script_translations( 'kadence-components', 'kadence-blocks' );
+		$kadence_home_meta = kadence_blocks_get_asset_file( 'dist/admin-kadence-home' );
+		wp_enqueue_script( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.js', $kadence_home_meta['dependencies'], $kadence_home_meta['version'], true );
+		wp_enqueue_style( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_home_meta['version'] );
+		wp_localize_script(
+			'admin-kadence-home',
+			'kadence_blocks_home',
+			array(
+				'ajaxurl'             => admin_url( 'admin-ajax.php' ),
+				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
+			)
+		);
+		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/assets/css/admin-dashboard.min.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
+		wp_enqueue_media();
 	}
 	/**
 	 * Register settings
@@ -965,7 +1008,33 @@ class Kadence_Blocks_Settings {
 		}
 		return self::$editor_width;
 	}
-
+	/**
+	 * Loads config page
+	 */
+	public function home_page() {
+		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
+		?>
+		<div class="kadence_blocks_dash_head">
+			<div class="kadence_blocks_dash_head_container">
+				<div class="kadence_blocks_dash_logo">
+					<img src="<?php echo esc_url( KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png' ); ?>" alt="Kadence WP">
+				</div>
+				<div class="kadence_blocks_dash_version">
+					<span>
+						<?php echo esc_html( apply_filters( 'kadence_blocks_brand_name', 'Kadence Blocks' ) ) . ' ' . esc_html( KADENCE_BLOCKS_VERSION ); ?>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="wrap kadence_blocks_dash">
+			<div class="kadence_blocks_dash_head_container">
+				<h2 class="notices" style="display:none;"></h2>
+				<div class="kadence_blocks_home_main">
+				</div>
+			</div>
+		</div>
+		<?php
+	}
 	/**
 	 * Loads config page
 	 */
@@ -1049,19 +1118,6 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
-								echo '</form>';
-								?>
-							</div>
-							<div class="kt-dashboard-spacer"></div>
-						<?php } ?>
-						<?php if ( apply_filters( 'kadence_blocks_show_image_picker', true ) ) { ?>
-							<!-- <h2><?php echo esc_html__( 'Use Pexels Image Picker', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Add a Pexels image picker in the media library.', 'kadence-blocks' ); ?></small></h2> -->
-							<div class="kt-promo-row-area">
-								<?php
-								echo '<form action="options.php" method="post">';
-									settings_fields( 'kt_blocks_image_picker' );
-									do_settings_sections( 'kt_blocks_image_picker_section' );
-									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>
 							</div>

@@ -19,6 +19,7 @@ export function AiWizard( {
 	onPrimaryAction,
 	onSecondaryAction,
 	credits = '',
+	isFullScreen = false,
 } ) {
 	const [ wizardData, setWizardData ] = useState();
 	const { loading, getAiWizardData } = useDatabase();
@@ -45,6 +46,7 @@ export function AiWizard( {
 						onSecondaryAction={ onSecondaryAction }
 						photographyOnly={ photographyOnly }
 						credits={ credits }
+						isFullScreen={ isFullScreen }
 					/>
 				</KadenceAiProvider>
 			) }

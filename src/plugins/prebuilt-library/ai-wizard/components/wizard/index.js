@@ -37,7 +37,8 @@ export function Wizard({
 	secondaryButtonText,
 	credits = '',
 	photographyOnly,
-	pages = []
+	pages = [],
+	isFullScreen = false,
 }) {
 	const guideContainer = useRef(null);
 	const [currentPage, setCurrentPage] = useState(0);
@@ -109,7 +110,9 @@ export function Wizard({
 	return (
 		<Modal
 			title={ logo }
-			className={ classnames( 'components-guide', 'stellarwp', className, pageId ) }
+			className={ classnames( 'components-guide', 'stellarwp', className, pageId, {
+				'is-fullscreen': isFullScreen,
+			} ) }
 			contentLabel={ contentLabel }
 			onRequestClose={ onClose }
 			ref={ guideContainer }
