@@ -227,6 +227,11 @@
 			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
 		}
 	}
+	.kb-radio-check-inline {
+		display: flex !important;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
 	input[type="file"]::file-selector-button {
 		margin-right: 1em;
 		border: none;
