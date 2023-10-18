@@ -55,3 +55,4 @@
     document.addEventListener("kadenceJSInitReload", function(){
 		window.kadenceShowMore.init();
 	});
+}());
