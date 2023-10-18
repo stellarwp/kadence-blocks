@@ -103,6 +103,7 @@ Release Date: October 18th, 2023
 * Fix: Initial expand state of accordion toggle.
 * Fix: Media query issue in tabs.
 * Fix: Testimonial block box shadow spacing.
+* Fix: Show more block not initializing in some situations.
 
 = 3.1.21 =
 Release Date: October 11th, 2023
