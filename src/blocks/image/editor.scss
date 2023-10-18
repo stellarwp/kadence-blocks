@@ -183,6 +183,7 @@ figure.wp-block-kadence-image:not(.wp-block) {
 		display: block;
 		width: inherit;
 		height: inherit;
+		box-sizing: border-box;
 	}
 }
 .wp-block-kadence-image.kb-image-is-ratio-size .components-resizable-box__container {

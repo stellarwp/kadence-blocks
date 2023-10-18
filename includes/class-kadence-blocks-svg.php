@@ -128,10 +128,10 @@ class Kadence_Blocks_Svg_Render {
 			$vb_array = explode( ' ', $vb );
 			$typeL = substr( $name, 0, 3 );
 
-			// This was added primiarly to preserve if the inner part of an svg should maintain it's alignment. Like with the old facebook icon. But it's not needed anymore.
-			// if ( $typeL && 'fas' !== $typeL && isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
-			// 	$preserve = 'preserveAspectRatio="xMinYMin meet"';
-			// }
+			// This is added because some people upload icons that have negative values in the viewbox which cause part of the icons to get cut off unless this is added.
+			if ( $typeL && 'fas' !== $typeL && 'fe_' !== $typeL && 'ic_' !== $typeL && ( ( isset( $vb_array[0] ) && absint( $vb_array[0] ) > 0 ) || ( isset( $vb_array[1] ) && absint( $vb_array[1] ) > 0 ) ) ) {
+				$preserve = 'preserveAspectRatio="xMinYMin meet"';
+			}
 			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';

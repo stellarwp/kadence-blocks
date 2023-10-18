@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.20
+Stable tag: 3.1.22
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,18 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.1.22 =
+Release Date: October 16th, 2023
+* Fix: Issue with custom icons that have negative numbers in viewbox.
+
+= 3.1.21 =
+Release Date: October 11th, 2023
+* Update: Settings for ActiveCampaign
+* Update: Add filter for form upload mime types.
+* Update: Add option to allow multiple uploads.
+* Fix: Issue where inline style tags could break row layout options.
+* Fix: Issue with rank math score going down when adding Advanced Buttons.
 
 = 3.1.20 =
 Release Date: October 3rd, 2023
