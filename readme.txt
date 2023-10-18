@@ -100,6 +100,7 @@ developers of this plugin.
 = 3.1.22 =
 Release Date: October 16th, 2023
 * Fix: Issue with custom icons that have negative numbers in viewbox.
+* Fix: Initial expand state of accordion toggle.
 
 = 3.1.21 =
 Release Date: October 11th, 2023
