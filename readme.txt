@@ -99,6 +99,7 @@ developers of this plugin.
 
 = 3.1.22 =
 Release Date: October 18th, 2023
+* Update: Add option for radio fields to be inline.
 * Fix: Issue with custom icons that have negative numbers in viewbox.
 * Fix: Initial expand state of accordion toggle.
 * Fix: Media query issue in tabs.
