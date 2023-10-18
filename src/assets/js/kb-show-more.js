@@ -26,13 +26,13 @@
                     });
                 }
                  // Initialize listener
-                 if ( window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:first-child' ) ) {
-                    window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:first-child' ).addEventListener( 'click', function( e ) {
+                 if ( window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(1)' ) ) {
+                    window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(1)' ).addEventListener( 'click', function( e ) {
                         e.preventDefault();
                         window.kadenceShowMore.cache[n].classList.add('kb-smc-open');
                         return false;
                     });
-                    window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:last-child' ).addEventListener( 'click', function( e ) {
+                    window.kadenceShowMore.cache[n].querySelector( '.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(2)' ).addEventListener( 'click', function( e ) {
                         e.preventDefault();
                         window.kadenceShowMore.cache[n].classList.remove('kb-smc-open');
                         return false;
@@ -55,4 +55,3 @@
     document.addEventListener("kadenceJSInitReload", function(){
 		window.kadenceShowMore.init();
 	});
-}());
