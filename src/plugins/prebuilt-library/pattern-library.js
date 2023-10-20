@@ -771,7 +771,7 @@ function PatternLibrary( {
 								}}
 							/>
 					</div>
-					{/* <div className="kb-library-sidebar-context-choices">
+					<div className="kb-library-sidebar-context-choices">
 						<Button
 							className={ 'kb-context-tab-button kb-trigger-patterns' + ( selectedSubTab === 'patterns' ? ' is-pressed' : '' ) }
 							aria-pressed={ selectedSubTab === 'patterns' }
@@ -796,7 +796,7 @@ function PatternLibrary( {
 						>
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
-					</div> */}
+					</div>
 					
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>

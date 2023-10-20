@@ -1141,7 +1141,7 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 		display: flex;
 		padding-top: var(--kb-patterns-outer-wrap-spacing, 45px );
 		gap: 0px;
-		padding-bottom: var(--kb-patterns-sidebar-general-spacing, 24px ); // Temp add.
+		// padding-bottom: var(--kb-patterns-sidebar-general-spacing, 24px ); // Temp add.
 	}
 	.kb-library-sidebar-context-choices {
 		padding-top: var(--kb-patterns-sidebar-general-spacing, 24px );
@@ -1172,7 +1172,7 @@ button.components-button.kadence-ai-wizard-button.has-icon svg {
 	}
 	.kb-library-sidebar-bottom {
 		max-height: calc(95vh - ( var(--kb-patterns-sidebar-general-spacing, 24px ) + 32px + var(--kb-patterns-outer-wrap-spacing, 45px ) + 32px + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + var(--kb-patterns-sidebar-general-spacing, 24px ) + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + 50px ) );
-		max-height: calc(95vh - ( var(--kb-patterns-sidebar-general-spacing, 24px ) + 32px + var(--kb-patterns-outer-wrap-spacing, 45px ) + 32px + var(--kb-patterns-sidebar-general-spacing, 24px ) + var(--kb-patterns-sidebar-general-spacing, 24px ) + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + 50px ) );
+	//	max-height: calc(95vh - ( var(--kb-patterns-sidebar-general-spacing, 24px ) + 32px + var(--kb-patterns-outer-wrap-spacing, 45px ) + 32px + var(--kb-patterns-sidebar-general-spacing, 24px ) + var(--kb-patterns-sidebar-general-spacing, 24px ) + 36px + var(--kb-patterns-sidebar-general-spacing, 24px ) + 50px ) );
 		// padding-right: var(--kb-patterns-inner-sidebar-spacing, 20px );
 		// padding-bottom: 30px;
 	}
