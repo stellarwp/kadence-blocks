@@ -642,7 +642,7 @@ export function Edit( props ) {
 
 							<iframe width={'100%'} height={'100%'}
 									src={'https://www.google.com/maps/embed/v1/place?' + qs}
-									title={`Google Map of ${ location }`}>
+									title={ __('Google Map of ', 'kadence-blocks') + location }>
 							</iframe>
 						</div> :
 						<div style={{
