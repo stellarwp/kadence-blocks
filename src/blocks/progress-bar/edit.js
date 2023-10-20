@@ -204,7 +204,7 @@ export function Edit( props ) {
 		'kb-progress-bar-container'               : true,
 		[ `kb-progress-bar-container${uniqueID}` ]: true,
 		[ `kb-progress-bar-type-${barType}` ]     : true,
-		[ `kb-progress-bar-align${align}`]		  : true,	
+		[ `kb-progress-bar-align${ undefined !== align && align}`] : true,	
 	} );
 
 	const blockProps = useBlockProps( {
