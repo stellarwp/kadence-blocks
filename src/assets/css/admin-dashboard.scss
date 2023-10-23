@@ -38,10 +38,10 @@ $color-gray-800: #2D3748;
 }
 .kadence_blocks_dash_head {
     background: white;
-    padding: 0px 20px;
+    padding: 0px 45px;
     height: 60px;
-    border-bottom: 1px solid #ebebeb;
-    box-shadow: 0 0 6px -2px rgba(0,0,0,.1);
+    // border-bottom: 1px solid #ebebeb;
+    // box-shadow: 0 0 6px -2px rgba(0,0,0,.1);
     //position: fixed;
     top: 32px;
     left: 160px;
@@ -67,7 +67,7 @@ $color-gray-800: #2D3748;
         display: flex;
         height: 100%;
 		align-items: center;
-		max-width: 1260px;
+		// max-width: 1260px;
 	}
 	.kadence_blocks_dash_logo{
 		width: 50px;
