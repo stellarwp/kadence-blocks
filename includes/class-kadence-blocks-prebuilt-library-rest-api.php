@@ -999,7 +999,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string
 	 */
 	public function get_ai_subfolder_name() {
-		$subfolder_name = apply_filters( 'kadence_block_ai_local_data_subfolder_name', 'kadence_blocks_ai' );
+		$subfolder_name = apply_filters( 'kadence_block_ai_local_data_subfolder_name', 'kadence_ai' );
 		return $subfolder_name;
 	}
 	/**
