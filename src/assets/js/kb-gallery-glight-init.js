@@ -3,9 +3,11 @@
  * File lightbox-init.js.
  * Gets Lightbox working for Kadence Blocks Gallery
  */
+//import { __ } from "@wordpress/i18n";
 
 (function() {
 	'use strict';
+	const { __ } = wp.i18n;
 	var kadenceBlocksGLight = {
 		carouselCache: {},
 		carouselItem: {},
@@ -53,6 +55,11 @@
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
 					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
 					var showCaption = foundGalleries[ i ].getAttribute( 'data-lightbox-caption' );
+					const ariaLabel = __('View this image in lightbox', 'kadence-blocks');
+					let galleryLinks = foundGalleries[i].querySelectorAll( 'a.kb-gallery-item-link' );
+					for(let l = 0; l < galleryLinks.length; l++) {
+						galleryLinks[l].setAttribute('aria-label', ariaLabel);
+					}
 					kadenceBlocksGLight.foundClasses[i] = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
 						if ( galleryClass[ n ].indexOf( 'kb-gallery-id' ) !== -1 ) {
