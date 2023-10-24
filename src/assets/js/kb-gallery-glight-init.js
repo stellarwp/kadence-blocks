@@ -55,7 +55,7 @@
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
 					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
 					var showCaption = foundGalleries[ i ].getAttribute( 'data-lightbox-caption' );
-					const ariaLabel = __('View this image in lightbox', 'kadence-blocks');
+					const ariaLabel = __('Display this image in a lightbox', 'kadence-blocks');
 					let galleryLinks = foundGalleries[i].querySelectorAll( 'a.kb-gallery-item-link' );
 					for(let l = 0; l < galleryLinks.length; l++) {
 						galleryLinks[l].setAttribute('aria-label', ariaLabel);
