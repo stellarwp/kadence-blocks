@@ -71,7 +71,8 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( isset( $attributes['listMargin'] ) && is_array( $attributes['listMargin'] ) && isset( $attributes['listMargin'][0] ) ) {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues)' );
-			$css->add_property( 'margin-top', '0' );
+			$css->add_property( 'margin-top', '0px' );
+			$css->add_property( 'margin-bottom', '0px' );
 		}
 
 		$column_gap_props = array(
