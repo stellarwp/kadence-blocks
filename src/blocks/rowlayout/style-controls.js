@@ -35,7 +35,7 @@ import { BLEND_OPTIONS } from './constants';
 /**
  * Import WordPress Internals
  */
-import { Fragment } from '@wordpress/element';
+import { Fragment, useCallback } from '@wordpress/element';
 import {
 	TextControl,
 	ToggleControl,
@@ -94,7 +94,7 @@ import { __ } from '@wordpress/i18n';
 			tabletBackground: newUpdate,
 		} );
 	};
-	const saveTabletOverlay = ( value ) => {
+	const saveTabletOverlay = useCallback(( value ) => {
 		const newUpdate = tabletOverlay.map( ( item, index ) => {
 			if ( 0 === index ) {
 				item = { ...item, ...value };
@@ -104,7 +104,7 @@ import { __ } from '@wordpress/i18n';
 		setAttributes( {
 			tabletOverlay: newUpdate,
 		} );
-	};
+	}, [tabletOverlay]);
 	const saveMobileBackground = ( value ) => {
 		const newUpdate = mobileBackground.map( ( item, index ) => {
 			if ( 0 === index ) {
@@ -196,7 +196,8 @@ import { __ } from '@wordpress/i18n';
 				imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 				imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 				imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
+				imageAttachmentParallax={ false }
+				imageAttachmentFixed={ false }
 				onRemoveImage={ () => {
 					saveTabletOverlay( {
 						overlayBgImgID: '',
@@ -248,7 +249,8 @@ import { __ } from '@wordpress/i18n';
 				imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 				imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 				imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
+				imageAttachmentParallax={ false }
+				imageAttachmentFixed={ false }
 				onRemoveImage={ () => {
 					saveMobileOverlay( {
 						overlayBgImgID: '',

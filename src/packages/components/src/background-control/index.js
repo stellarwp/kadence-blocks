@@ -61,21 +61,20 @@ class BackgroundControl extends Component {
 			imageRepeat,
 			imageAttachment,
 			imageAttachmentParallax = false,
+			imageAttachmentFixed = true,
 			inlineImage,
 			onSaveInlineImage,
 			dynamicAttribute = '',
 			attributes
 		} = this.props;
 		let attachmentOptions = [
-			{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-			{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+			{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) }
 		];
+		if ( imageAttachmentFixed ) {
+			attachmentOptions.push({ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) });
+		}
 		if ( imageAttachmentParallax ) {
-			attachmentOptions = [
-				{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-				{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-				{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-			];
+			attachmentOptions.push({ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) });
 		}
 		return (
 			<div className="components-base-control kadence-image-background-control">
