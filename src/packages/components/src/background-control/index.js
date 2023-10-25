@@ -169,7 +169,7 @@ class BackgroundControl extends Component {
 						/>
 						{ imageAttachment  && (
 							<p className="kb-sidebar-help">
-								{ __( 'Note: Attachment Fixed works only on desktop.', 'kadence-blocks' ) }
+								{ __( 'Note: Attachment Fixed and Parallax works only on desktop.', 'kadence-blocks' ) }
 							</p>
 						) }
 						{ onSaveInlineImage && (
