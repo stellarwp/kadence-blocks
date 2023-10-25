@@ -35,7 +35,7 @@ import { BLEND_OPTIONS } from './constants';
 /**
  * Import WordPress Internals
  */
-import { Fragment, useCallback } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import {
 	TextControl,
 	ToggleControl,
@@ -94,7 +94,7 @@ import { __ } from '@wordpress/i18n';
 			tabletBackground: newUpdate,
 		} );
 	};
-	const saveTabletOverlay = useCallback(( value ) => {
+	const saveTabletOverlay = ( value ) => {
 		const newUpdate = tabletOverlay.map( ( item, index ) => {
 			if ( 0 === index ) {
 				item = { ...item, ...value };
@@ -104,7 +104,7 @@ import { __ } from '@wordpress/i18n';
 		setAttributes( {
 			tabletOverlay: newUpdate,
 		} );
-	}, [tabletOverlay]);
+	};
 	const saveMobileBackground = ( value ) => {
 		const newUpdate = mobileBackground.map( ( item, index ) => {
 			if ( 0 === index ) {
