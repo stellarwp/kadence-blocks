@@ -25,12 +25,12 @@
 			"@php bin/strauss.phar"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.1/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
 			"@php bin/pup.phar"
 		],
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
-			"@php bin/wp-cli.phar"
+			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
 		"post-install-cmd": [
 			"@strauss",

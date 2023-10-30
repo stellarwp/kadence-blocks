@@ -85,7 +85,7 @@ export default function Result(props) {
 			setImagePickerMultiSelection( imagePickerMultiSelection.filter( item => item !== index ) )
 		}
 	}
-
+	const imageSrc = sizes?.[1]?.src || sizes?.[0]?.src || '';
 	return (
 		<article className={itemClass}>
 			<div className="result-wrap">
@@ -95,7 +95,7 @@ export default function Result(props) {
 					label={__( 'Select Image' )}
 					onClick={handleSelection}
 				>
-					<img src={sizes[1].src} alt={alt} className={'img'} />
+					<img src={imageSrc} alt={alt} className={'img'} />
 					<div class="image-select-container">
 						<div className={'kb-image-selection-button'}>{ isSelected ? <Icon icon={ CheckIcon }></Icon> : '' }</div>
 					</div>

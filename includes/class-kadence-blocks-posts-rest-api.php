@@ -184,8 +184,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	public function get_query_items( $request ) {
 		$prop_type      = $request->get_param( self::PROP_TYPE );
 		$query_type     = $request->get_param( self::PROP_QUERY );
-		// $allow_multiple = $request->get_param( self::PROP_MULTIPLE );
-		// $prop_array     = $request->get_param( self::PROP_TYPE_ARRAY );
+		$allow_multiple = $request->get_param( self::PROP_MULTIPLE );
+		$prop_array     = $request->get_param( self::PROP_TYPE_ARRAY );
 		$tax_type       = $request->get_param( self::PROP_TAX_TYPE );
 		$exclude        = $request->get_param( self::PROP_EXCLUDE );
 		$categories     = ( $request->get_param( self::PROP_CATEGORY ) ? wp_parse_list( $request->get_param( self::PROP_CATEGORY ) ) : array() );
@@ -194,11 +194,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			return array();
 		}
 
-		// $query_args = array(
-		// 	'post_type' => $allow_multiple ? $prop_array : $prop_type,
-		// );
 		$query_args = array(
-			'post_type' => $prop_type,
+			'post_type' => $allow_multiple ? $prop_array : $prop_type,
 		);
 		if ( 'individual' === $query_type ) {
 			$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );

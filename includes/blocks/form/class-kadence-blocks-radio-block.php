@@ -82,13 +82,16 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 		$inner_content  = '';
 
 		$radio_label = $attributes;
-		$radio_label['inputName'] = 'rb' . $unique_id;
-
-		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
+		$radio_label['inputName'] = 'rb' . $class_id;
+		$inline_class = '';
+		if( isset($attributes['inline']) && true === $attributes['inline']) {
+			$inline_class = ' kb-radio-check-items-inline';
+		}
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap' . $inline_class . '" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
 		$inner_content      .= $this->field_legend( $radio_label );
 		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
-			$id         = 'field' . $unique_id . '_' . $key;
+			$id         = 'field' . $class_id . '_' . $key;
 			$is_checked_from_param = ! empty( $option['value'] ) && $option['value'] && $option['value'] == $this->get_default( $attributes );
 			$is_checked_from_editor = ! empty( $option['selected'] );
 			$is_checked = $is_checked_from_editor || $is_checked_from_param;
@@ -106,7 +109,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 
 			$inner_content .= '</div>';
 		}
-
+		
 		$inner_content .= '</fieldset>';
 
 		$inner_content .= $this->field_help_text( $attributes );

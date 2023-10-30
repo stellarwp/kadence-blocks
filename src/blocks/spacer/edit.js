@@ -115,8 +115,8 @@ function KadenceSpacerDivider( props ) {
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
-			setAttributes( { uniqueID: uniqueId } );
 			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
 			addUniqueID( uniqueId, clientId );
 		} else {
 			addUniqueID( uniqueID, clientId );

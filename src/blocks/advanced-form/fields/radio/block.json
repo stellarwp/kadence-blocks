@@ -46,6 +46,10 @@
 		{"value": "", "label": "", "selected": false}
 	  ]
 	},
+	"inline": {
+	  "type": "boolean",
+	  "default": false
+	},
 	"maxWidth": {
 	  "type": "array",
 	  "default": [

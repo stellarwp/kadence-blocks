@@ -111,6 +111,9 @@
 	&.kadence-inner-column-text-align-right {
 		justify-content: flex-end;
 	}
+	.wp-block-kadence-advancedgallery {
+		flex: 1;
+	}
 }
 .wp-block-kadence-rowlayout .innerblocks-wrap > .kadence-section-sticky > .kadence-inner-column-inner, .wp-block-kadence-rowlayout .kadence-inner-column-inner > .kadence-section-sticky {
     position: sticky;

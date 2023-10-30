@@ -227,6 +227,11 @@
 			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
 		}
 	}
+	.kb-radio-check-inline {
+		display: flex !important;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
 	input[type="file"]::file-selector-button {
 		margin-right: 1em;
 		border: none;
@@ -427,9 +432,6 @@
 	&.kb-form-has-background {
 		padding: 1em;
 	}
-	select {
-		max-width: unset;
-	}
 	input, select {
 		margin: 0;
 	}
@@ -440,7 +442,12 @@
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		max-width: 100%;
 		flex: 0 1 100%;
+	}
+
+	select {
+		max-width: unset;
 	}
 
 	.kb-form-multi {

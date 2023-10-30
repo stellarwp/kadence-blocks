@@ -22,6 +22,14 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"multiple": {
+		"type": "boolean",
+		"default": false
+	},
+	"multipleLimit": {
+		"type": "number",
+		"default": 5
+	},
 	"allowedTypes": {
 	  "type": "array",
 	  "default": [ "image" ]
@@ -41,6 +49,9 @@
 	"anchor": {
 	  "type": "string"
 	}
+  },
+  "supports": {
+	  "ktfieldconditional": true
   },
   "parent": [
 	"kadence/advanced-form"

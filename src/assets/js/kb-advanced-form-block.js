@@ -18,6 +18,12 @@
 			if ( error_type ) {
 				switch ( error_type ) {
 					case 'required' :
+						// Check for user provided required message
+						const manual_error_string = item.getAttribute('data-kb-required-message');
+						if( manual_error_string && '' !== manual_error_string ) {
+							error_string = manual_error_string;
+							break;
+						}
 						error_string = item.getAttribute('data-required-message');
 						if ( ! error_string || '' === error_string || undefined === error_string ) {
 							error_string = item.getAttribute('data-label');

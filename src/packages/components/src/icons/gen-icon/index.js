@@ -39,7 +39,7 @@ export const GenIcon = ( props ) => {
 	const viewB = ( props.icon && props.icon.vB ? props.icon.vB.split( ' ' ) : false );
 	return (
 		<HtmlTagOut style={ { display: 'inline-flex', justifyContent: 'center', alignItems: 'center', ...style } } className={ className }>
-			<svg style={ { display: 'inline-block', verticalAlign: 'middle' } } viewBox={ ( ! props.icon ? '0 0 24 24' : props.icon.vB ) } height={ props.size } width={ props.size } fill={ fill } stroke={ stroke } xmlns={ props.xmlns } preserveAspectRatio={ ( typeL && 'fas' !== typeL && viewB && undefined !== viewB[ 2 ] && undefined !== viewB[ 3 ] && viewB[ 2 ] !== viewB[ 3 ] ? 'xMinYMin meet' : undefined ) } stroke-width={ strokeWidth } stroke-linecap={ strokeLinecap } stroke-linejoin={ strokeLinejoin } aria-hidden={ ariaHidden }>
+			<svg style={ { display: 'inline-block', verticalAlign: 'middle' } } viewBox={ ( ! props.icon ? '0 0 24 24' : props.icon.vB ) } height={ props.size } width={ props.size } fill={ fill } stroke={ stroke } xmlns={ props.xmlns } preserveAspectRatio={ ( typeL && 'fas' !== typeL && 'fe_' !== typeL && 'ic_' !== typeL && viewB && ( ( undefined !== viewB[ 0 ] && viewB[ 0 ] !== 0 ) || ( undefined !== viewB[ 1 ] && viewB[ 1 ] !== 0 ) ) ? 'xMinYMin meet' : undefined ) } stroke-width={ strokeWidth } stroke-linecap={ strokeLinecap } stroke-linejoin={ strokeLinejoin } aria-hidden={ ariaHidden }>
 				{ props.title ? <title>{ props.title }</title> : null }
 				{ props.icon && (
 					walkChildren( props.icon.cD )

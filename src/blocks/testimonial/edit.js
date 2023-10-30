@@ -160,6 +160,8 @@ function KadenceTestimonials( props ) {
     );
 
     useEffect(() => {
+		setBlockDefaults( metadata['name'], attributes);
+
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
@@ -185,7 +187,7 @@ function KadenceTestimonials( props ) {
 
     const previewIconSize = getPreviewSize( previewDevice, ( undefined !== isize ? isize : ''), ( undefined !== tabletIsize ? tabletIsize : ''), ( undefined !== mobileIsize ? mobileIsize : '') );
 
-    const nonTransAttrs = [ 'url', 'media', 'title', 'content' ];
+    const nonTransAttrs = [ 'url', 'title', 'content' ];
 
     const blockProps = useBlockProps({});
 

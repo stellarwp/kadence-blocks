@@ -212,6 +212,10 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['displayShadow'] ) && $attributes['displayShadow'] ) {
 				$css->add_property( 'padding-top', 'var(--global-kb-spacing-xxs, .5rem)' );
 				$css->add_property( 'padding-bottom', 'var(--global-kb-spacing-xxs, .5rem)' );
+
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'padding', 'var(--global-kb-spacing-xxs, .5rem)' );
+				$css->set_media_state( 'desktop' );
 			}
 		}
 

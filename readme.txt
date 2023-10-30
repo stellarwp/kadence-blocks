@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.16
+Stable tag: 3.1.23
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,53 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.1.23 =
+* Fix: Issue with icon list margin.
+
+= 3.1.22 =
+Release Date: October 18th, 2023
+* Update: Add option for radio fields to be inline.
+* Fix: Issue with custom icons that have negative numbers in viewbox.
+* Fix: Initial expand state of accordion toggle.
+* Fix: Media query issue in tabs.
+* Fix: Testimonial block box shadow spacing.
+* Fix: Show more block not initializing in some situations.
+
+= 3.1.21 =
+Release Date: October 11th, 2023
+* Update: Settings for ActiveCampaign
+* Update: Add filter for form upload mime types.
+* Update: Add option to allow multiple uploads.
+* Fix: Issue where inline style tags could break row layout options.
+* Fix: Issue with rank math score going down when adding Advanced Buttons.
+
+= 3.1.20 =
+Release Date: October 3rd, 2023
+* Add: Advanced buttons support Rank Math content analysis.
+* Add: Option to choose heading font family when using Kadence Theme.
+* Update: Brand icons, add threads, and a square x icon.
+* Fix: Issue with some brand icons not being center.
+* Fix: Issue with icon list margin not working in mega menu.
+* Fix: Issue with setting numeric padding & margin on advanced form.
+* Fix: HTML Anchors and additional CSS classes on advanced form.
+* Fix: Block defaults not applying on Testimonial blocks.
+* Fix: Issue when skipping advanced form layout settings.
+* Fix: Issue with email dynamic replacements.
+* Fix: Custom "required" error messages not displaying for advanced form.
+* Fix: Support conditional logic on file upload fields in advanced form.
+
+= 3.1.19 =
+Release Date: September 20th, 2023
+* Fix: Issue with spacer in a reusable block.
+
+= 3.1.18 =
+Release Date: September 20th, 2023
+* Fix: Issue with radio/checkbox field id output.
+
+= 3.1.17 =
+Release Date: September 20th, 2023
+* Fix: Issue with medium_large image size being disabled.
 
 = 3.1.16 =
 Release Date: September 19th, 2023

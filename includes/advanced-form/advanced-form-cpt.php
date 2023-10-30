@@ -494,6 +494,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 					'automation' => array(),
 					'tags' => array(),
 					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -520,6 +522,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 									'type' => 'string',
 								),
 							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
 						),
 					),
 				),
@@ -1227,6 +1231,16 @@ class Kadence_Blocks_Form_CPT_Controller {
 		);
 
 		$register_meta = array(
+			array(
+				'key'     => '_kad_form_anchor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_form_className',
+				'default' => '',
+				'type'    => 'string'
+			),
 			array(
 				'key'           => '_kad_form_actions',
 				'default'       => array( 'email' ),

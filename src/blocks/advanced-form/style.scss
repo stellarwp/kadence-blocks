@@ -165,10 +165,16 @@
 	input[type="radio"]:focus, input[type="checkbox"]:focus {
 		outline-offset: 3px;
 	}
+	.kb-radio-check-items-inline {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
 	.kb-radio-check-item {
 		display: flex;
 		margin: 0;
 		align-items: baseline;
+		
 		label {
 			flex-grow: 1;
 			padding-left: 0.4em;
@@ -215,9 +221,6 @@
 			margin-top: 0;
 		}
 	}
-	select {
-		max-width: unset;
-	}
 	.kb-adv-form-required {
 		margin-left: 2px;
 		color: #b32d2e;
@@ -225,6 +228,8 @@
 	.kb-adv-form-field {
 		display: flex;
 		flex-direction: column;
+		max-width: 100%;
+
 		&.kb-submit-field {
 			flex-direction: initial;
 		}
@@ -232,6 +237,10 @@
 		&[hidden] {
 			display: none;
 		}
+	}
+
+	select {
+		max-width: unset;
 	}
 
 	.kb-form-multi {
