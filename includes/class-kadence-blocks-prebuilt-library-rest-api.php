@@ -967,6 +967,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string of the path to local data file.
 	 */
 	public function get_local_data_path( $prompt_data, $path_type = 'content' ) {
+		if ( 'ai' === $path_type ) {
+			return $this->get_block_library_folder( $path_type ) . '/' . $this->get_local_data_ai_filename( $prompt_data ) . '.json';
+		}
 		return $this->get_block_library_folder( $path_type ) . '/' . $this->get_local_data_filename( $prompt_data ) . '.json';
 	}
 	/**
@@ -981,6 +984,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_local_data_filename( $prompt_data ) {
 		return md5( $this->get_base_url() . $this->get_base_path() . $prompt_data );
+	}
+	/**
+	 * Get the local data filename.
+	 *
+	 * This is a hash, generated from the current site url, the wp-content path, the prompt data.
+	 * This way we can avoid issues with sites changing their URL, or the wp-content path etc.
+	 *
+	 * @param array $prompt_data The prompt data.
+	 *
+	 * @return string
+	 */
+	public function get_local_data_ai_filename( $prompt_data ) {
+		return md5( 'kadence-ai-generated-content' . $prompt_data );
 	}
 	/**
 	 * Get the subfolder name.
