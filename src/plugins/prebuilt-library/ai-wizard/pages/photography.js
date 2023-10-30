@@ -154,7 +154,6 @@ export function Photography(props) {
 			handlePhotoLibraryChange(allVerticals[1].options[0]);
 		}
 		deleteCollection(collectionId);
-
 	}
 	const isPremade = photoLibrary && preMadeCollections && preMadeCollections.filter( ( collection ) => collection.value === photoLibrary );
 

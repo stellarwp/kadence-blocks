@@ -26,6 +26,7 @@ define( 'KADENCE_BLOCKS_VERSION', '3.2.0' );
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
+
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
 use KadenceWP\KadenceBlocks\Container;

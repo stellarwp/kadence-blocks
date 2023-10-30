@@ -1153,6 +1153,7 @@ function PatternLibrary( {
 									photographyOnly: false
 								} );
 							} }
+							categories={ categoryListOptions }
 						/>
 					) }
 				</>
