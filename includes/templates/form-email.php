@@ -127,9 +127,22 @@ defined( 'ABSPATH' ) || exit;
 							<tr>
 								<td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-top: 20px;">
 									<p style="font-family: sans-serif; font-size: 14px; font-weight: Bold; margin: 0; Margin-bottom: 15px;"><?php echo esc_html( $data['label'] ); ?></p>
-									<?php if( !empty( $data['type'] ) && $data['type'] === 'file' && !empty( $data['value']) ) { ?>
-										<?php $file_name = !empty( $data['file_name'] ) ? $data['file_name'] : 'View File' ;  ?>
-										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;"><a href="'. esc_html( $data['value'] ) .'">' . esc_html( $file_name ) . '</a></p>' ); ?>
+									<?php if( !empty( $data['type'] ) && $data['type'] === 'file' && ! empty( $data['value'] ) ) { ?>
+										<?php
+										$file_name = ! empty( $data['file_name'] ) ? $data['file_name'] : esc_html__( 'View File', 'kadence-blocks' ); 
+										$file_name_array = explode( ', ', $file_name );
+										if ( count( $file_name_array ) > 1 ) {
+											$file_value_array = explode( ', ', $data['value'] );
+											$value_output = array();
+											foreach ( $file_name_array as $key => $name ) {
+												$value_output[] = '<a href="' . $file_value_array[ $key ] . '" target="_blank">' . $name . '</a>';
+											}
+											$file_output = implode( ', ', $value_output );
+										} else {
+											$file_output = '<a href="' . $data['value'] . '" target="_blank">' . $file_name . '</a>';
+										}
+										?>
+										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' .$file_output . '</p>' ); ?>
 									<?php } else { ?>
 										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . esc_html( $data['value'] ) . '</p>' ); ?>
 									<?php } ?>

@@ -213,6 +213,27 @@ class KB_Ajax_Advanced_Form {
 		return $submission_results;
 	}
 	/**
+	 * Process the uploads into arrays.
+	 *
+	 * @param array $file_post.
+	 */
+	public function rearrange_array_files( $file_post ) {
+		$is_multi    = is_array( $file_post['name'] );
+		$file_count  = $is_multi ? count( $file_post['name'] ) : 1;
+		$file_keys   = array_keys( $file_post );
+		$file_ary    = array();
+		for ( $i = 0; $i < $file_count; $i++ ) {
+			foreach ( $file_keys as $key ) {
+				if ( $is_multi ) {
+					$file_ary[ $i ][ $key ] = $file_post[ $key ][ $i ];
+				} else {
+					$file_ary[ $i ][ $key ] = $file_post[ $key ];
+				}
+			}
+		}
+		return $file_ary;
+	}
+	/**
 	 * Process the fields
 	 *
 	 * @param array $fields the fields.
@@ -237,7 +258,7 @@ class KB_Ajax_Advanced_Form {
 				}
 			}
 
-			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiple'] ) ? false : $field['multiple'] );
+			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiSelect'] ) ? false : $field['multiSelect'] );
 
 			// Fail if this field is empty and is required.
 			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
@@ -246,65 +267,83 @@ class KB_Ajax_Advanced_Form {
 			}
 
 			// If field is file, verify and process the file.
+			$file_array = array();
+			$file_name_array = array();
 			if ( $field['type'] === 'file' ) {
 				// File required & skipped.
-				if ( empty( $_FILES[ $expected_field ]['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
-					$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
-
-					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
-				} else if ( empty( $_FILES[ $expected_field ]['size'] ) ){
-					continue;
-				}
-
-				$max_upload_size_mb    = empty( $field['maxSizeMb'] ) ? 10 : $field['maxSizeMb'];
-				$max_upload_size_bytes = $max_upload_size_mb * pow( 1024, 2 );
-
-				// Was file too big
-				if ( $_FILES[ $expected_field ]['size'] > $max_upload_size_bytes ) {
-					$this->process_bail( __( 'Submission Failed. File too Large', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
-				}
-
-				if ( ! is_uploaded_file( $_FILES[ $expected_field ]['tmp_name'] ) ) {
-					$this->process_bail( __( 'Submission Failed. File could not be uploaded', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
-				}
-
-				$allowed_file_categories = empty( $field['allowedTypes'] ) ? array( 'images' ) : $field['allowedTypes'];
-				$allowed_file_mimes      = $this->get_allowed_mimes( $allowed_file_categories );
-
-				$file_size = filesize( $_FILES[ $expected_field ]['tmp_name'] );
-
-				// Check if multisite has a quota
-				if ( is_multisite() ) {
-					require_once( ABSPATH . 'wp-includes/ms-functions.php' );
-					require_once( ABSPATH . 'wp-admin/includes/ms.php' );
-
-					$space = get_upload_space_available();
-					if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
-						$this->process_bail( __( 'Submission Failed. Not enough disk quota on this website.', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
+				if ( isset( $_FILES[ $expected_field ] ) ) {
+					if ( empty( $file['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
 					}
-				}
-				if ( ! function_exists( 'wp_handle_upload' ) ) {
-					require_once( ABSPATH . 'wp-admin/includes/file.php' );
-				}
-				add_filter( 'kb_process_advanced_form_submit_prefilter', array( $this, 'override_upload_directory' ) );
-				$file_upload = wp_handle_upload(
-					$_FILES[ $expected_field ],
-					array(
-						'action'                   => 'kb_process_advanced_form_submit',
-						'unique_filename_callback' => array( $this, 'set_custom_upload_unique_filename' ),
-						'test_form'                => false,
-						'test_type'                => true,
-						'mimes'                    => $allowed_file_mimes,
-					)
-				);
-				if ( isset( $file_upload['url'] ) ) {
-					$this->add_htaccess_to_uploads_root();
-					$value = $file_upload['url'];
-				} else {
-					if ( ! empty( $file_upload['error'] ) ) {
-						$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );
-					} else {
-						$this->process_bail( __( 'Submission Failed. Failed to upload file', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+					$post_file = $this->rearrange_array_files( $_FILES[ $expected_field ] );
+					if ( is_array( $post_file ) ) {
+						$file_count = count( $post_file );
+						$max_count  = ! empty( $field['multipleLimit'] ) ? absint( $field['multipleLimit'] ) : 5;
+						if ( isset( $field['multiple'] ) && $field['multiple'] && $file_count > $max_count ) {
+							$this->process_bail( __( 'Submission Failed. Trying to include too many files.', 'kadence-blocks' ), __( 'Too many files', 'kadence-blocks' ) );
+						}
+						foreach ( $post_file as $file ) {
+							$file_name_array[] = $file['name'];
+							if ( empty( $file['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
+								$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+
+								$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+							} else if ( empty( $file['size'] ) ) {
+								continue;
+							}
+
+							$max_upload_size_mb    = empty( $field['maxSizeMb'] ) ? 10 : $field['maxSizeMb'];
+							$max_upload_size_bytes = $max_upload_size_mb * pow( 1024, 2 );
+
+							// Is file too big.
+							if ( $file['size'] > $max_upload_size_bytes ) {
+								$this->process_bail( __( 'Submission Failed. File too large', 'kadence-blocks' ), __( 'File too large', 'kadence-blocks' ) );
+							}
+
+							if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
+								$this->process_bail( __( 'Submission Failed. File could not be uploaded', 'kadence-blocks' ), __( 'File was not uploaded', 'kadence-blocks' ) );
+							}
+
+							$allowed_file_categories = empty( $field['allowedTypes'] ) ? array( 'images' ) : $field['allowedTypes'];
+							$allowed_file_mimes      = apply_filters( 'kadence_form_allowed_mime_types', $this->get_allowed_mimes( $allowed_file_categories ), $field );
+
+							$file_size = filesize( $file['tmp_name'] );
+
+							// Check if multisite has a quota.
+							if ( is_multisite() ) {
+								require_once( ABSPATH . 'wp-includes/ms-functions.php' );
+								require_once( ABSPATH . 'wp-admin/includes/ms.php' );
+
+								$space = get_upload_space_available();
+								if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
+									$this->process_bail( __( 'Submission Failed. Not enough disk quota on this website.', 'kadence-blocks' ), __( 'Not enough disk quota on this website.', 'kadence-blocks' ) );
+								}
+							}
+							if ( ! function_exists( 'wp_handle_upload' ) ) {
+								require_once( ABSPATH . 'wp-admin/includes/file.php' );
+							}
+							add_filter( 'kb_process_advanced_form_submit_prefilter', array( $this, 'override_upload_directory' ) );
+							$file_upload = wp_handle_upload(
+								$file,
+								array(
+									'action'                   => 'kb_process_advanced_form_submit',
+									'unique_filename_callback' => array( $this, 'set_custom_upload_unique_filename' ),
+									'test_form'                => false,
+									'test_type'                => true,
+									'mimes'                    => $allowed_file_mimes,
+								)
+							);
+							if ( isset( $file_upload['url'] ) ) {
+								$this->add_htaccess_to_uploads_root();
+								$file_array[] = $file_upload['url'];
+							} else {
+								if ( ! empty( $file_upload['error'] ) ) {
+									$this->process_bail( $file_upload['error'], __( 'Failed to upload file', 'kadence-blocks' ) );
+								} else {
+									$this->process_bail( __( 'Submission Failed. Failed to upload file', 'kadence-blocks' ), __( 'Failed to upload file', 'kadence-blocks' ) );
+								}
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -313,10 +352,10 @@ class KB_Ajax_Advanced_Form {
 				'label'    => ( ! empty( $field['label'] ) ? $field['label'] : '' ),
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
-				'value'    => $value,
+				'value'    => 'file' === $field['type'] ? implode( ', ', $file_array ) : $value,
 				'uniqueID' => $field['uniqueID'],
 				'name'     => $expected_field,
-				'file_name'=> !empty( $_FILES[ $expected_field ]['name'] ) ? $_FILES[ $expected_field ]['name'] : '',
+				'file_name'=> 'file' === $field['type'] ? implode( ', ', $file_name_array ) : '',
 			);
 		}
 

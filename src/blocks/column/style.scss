@@ -6,6 +6,11 @@
 .wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .wp-block-kadence-column {
     flex: 1;
 }
+.wp-block-kadence-column.kb-section-dir-horizontal {
+	.wp-block-kadence-advancedgallery {
+		flex: 1;
+	}
+}
 .wp-block-kadence-column {
     display: flex;
     flex-direction: column;

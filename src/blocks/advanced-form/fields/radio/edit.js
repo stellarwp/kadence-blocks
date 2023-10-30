@@ -26,7 +26,7 @@ import { times, filter } from 'lodash';
 import { plus } from '@wordpress/icons';
 
 function FieldRadio( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, options, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, options, inline, defaultValue, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 	const [ rerender, setRerender ] = useState( 0 );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -223,6 +223,11 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 								>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
+								<ToggleControl
+									label={__( 'Display inline?', 'kadence-blocks' )}
+									checked={ inline }
+									onChange={( value ) => setAttributes( {inline: value} )}
+								/>
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Field Controls', 'kadence-blocks' )}
@@ -392,7 +397,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 					/>
 
 					{isSelected ?
-						<div className={'kb-form-multi'}>
+						<div className='kb-form-multi' >
 							{times( options.length, n => (
 								<div className={'inline-option-add-item'} key={n}>
 									<input
@@ -427,7 +432,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 							</Button>
 						</div>
 						:
-						<>
+						<div className={`${inline === true ? 'kb-radio-check-inline' : ''}`}>
 							{times( options.length, n => (
 								<div key={n} className='kb-radio-check-item'>
 									<input
@@ -439,7 +444,7 @@ function FieldRadio( { attributes, setAttributes, isSelected, clientId, context,
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}
-						</>
+						</div>
 					}
 					{helpText && <span className="kb-form-field-help">{helpText}</span>}
 				</>

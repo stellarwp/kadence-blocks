@@ -30,7 +30,7 @@
 		],
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
-			"@php bin/wp-cli.phar"
+			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
 		"post-install-cmd": [
 			"@strauss",

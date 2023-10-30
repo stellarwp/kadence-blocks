@@ -259,8 +259,13 @@ export default function KadenceButtonEdit( props ) {
 	} = attributes;
 
 	// Support rank math content analysis.
-	const rankMathContent = link !== '' ? '<a href="' + link + '">' + text + '</a>' : text;
-	addFilter( 'rank_math_content', 'kadence/advbtn', () => { return rankMathContent } )
+	if( uniqueID !== '' ) {
+		const rankMathContent = '<!-- KB:BTN:' + uniqueID + ' -->' + ( link !== '' ? '<a href="' + link + '">' + text + '</a>' : '<button>' + text + '</button>' ) + '<!-- /KB:BTN:' + uniqueID + ' -->';
+		addFilter( 'rank_math_content', 'kadence/advbtn', ( content ) => {
+			const regex = new RegExp( '<!-- KB:BTN:' + uniqueID + ' -->[^]*?<!-- /KB:BTN:' + uniqueID + ' -->', 'g' );
+			return content.replace( regex, '' ) + rankMathContent
+		} );
+	}
 
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const { btnsBlock, rootID } = useSelect(
@@ -459,9 +464,9 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
+		className                  : className,
 	} );
 	const classes = classnames( {
-		className                  : className,
 		[ `kb-single-btn-${uniqueID}` ]  : true,
 		[ `kt-btn-width-type-${( widthType ? widthType : 'auto' )}` ]   : true,
 	} );

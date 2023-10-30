@@ -6,7 +6,7 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, TextareaControl, SelectControl, ToggleControl, CheckboxControl } from '@wordpress/components';
+import { TextControl, TextareaControl, SelectControl, ToggleControl, CheckboxControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -21,7 +21,7 @@ import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
 function FieldFile( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, maxSizeMb, allowedTypes, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, inputName, requiredMessage } = attributes;
+	const { uniqueID, required, label, showLabel, maxSizeMb, allowedTypes, helpText, ariaDescription, maxWidth, maxWidthUnit, minWidth, minWidthUnit, inputName, requiredMessage, multiple, multipleLimit } = attributes;
 
 	const wpMaxUploadSizeBytes = kadence_blocks_params.wp_max_upload_size;
 	const wpMaxUploadSizeMb = formatBytesToMb( wpMaxUploadSizeBytes );
@@ -145,6 +145,21 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 									value={helpText}
 									onChange={( value ) => setAttributes( { helpText: value } )}
 								/>
+								<ToggleControl
+									label={__( 'Allow Multiple', 'kadence-blocks' )}
+									checked={multiple}
+									help={ __( 'This will allow users to upload multiple files', 'kadence-blocks' )}
+									onChange={( value ) => setAttributes( { multiple: value } )}
+								/>
+								{ multiple && (
+									<RangeControl
+										label={__( 'Maxim amount of files per form submission', 'kadence-blocks' )}
+										value={ multipleLimit ? multipleLimit : 5 }
+										onChange={( value ) => setAttributes( { multipleLimit: value } )}
+										min={ 0 }
+										max={ 30 }
+									/>
+								) }
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'File Options', 'kadence-blocks' )}
@@ -298,7 +313,7 @@ function FieldFile( { attributes, setAttributes, isSelected, clientId, context, 
 							isSelected={isSelected}
 							name={name}
 						/>
-						<input type={'file'} />
+						<input type={'file'} multiple={ ( multiple ? true : false ) } />
 
 						{helpText && <span className="kb-adv-form-help">{helpText}</span>}
 					</div>

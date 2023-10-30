@@ -97,10 +97,34 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.1 Beta Version 2 =
+Release Date: October 31st, 2023
+
 = 3.2.0 Beta Version 1 =
 Release Date: October 5th, 2023
 * Add: New Flex control options in section block.
 * Add: New auto option for margin controls.
+
+= 3.1.23 =
+Release Date: October 31st, 2023
+* Fix: Issue with icon list margin.
+
+= 3.1.22 =
+Release Date: October 18th, 2023
+* Update: Add option for radio fields to be inline.
+* Fix: Issue with custom icons that have negative numbers in viewbox.
+* Fix: Initial expand state of accordion toggle.
+* Fix: Media query issue in tabs.
+* Fix: Testimonial block box shadow spacing.
+* Fix: Show more block not initializing in some situations.
+
+= 3.1.21 =
+Release Date: October 11th, 2023
+* Update: Settings for ActiveCampaign
+* Update: Add filter for form upload mime types.
+* Update: Add option to allow multiple uploads.
+* Fix: Issue where inline style tags could break row layout options.
+* Fix: Issue with rank math score going down when adding Advanced Buttons.
 
 = 3.1.20 =
 Release Date: October 3rd, 2023

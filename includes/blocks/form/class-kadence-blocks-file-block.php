@@ -72,6 +72,7 @@ class Kadence_Blocks_File_Block extends Kadence_Blocks_Advanced_Form_Input_Block
 		$is_required   = $this->is_required( $attributes );
 		$class_id = $this->class_id( $attributes );
 		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
+		$is_multiple = ( isset( $attributes['multiple'] ) && $attributes['multiple'] ? true : false );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -82,7 +83,7 @@ class Kadence_Blocks_File_Block extends Kadence_Blocks_Advanced_Form_Input_Block
 		$inner_content      = '';
 		$inner_content      .= $this->field_label( $attributes );
 		$inner_content      .= $this->field_aria_label( $attributes );
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
+		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '' . ( $is_multiple ? '[]' : '' ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . '' . ( $is_multiple ? ' multiple' : '' ) . '/>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 
