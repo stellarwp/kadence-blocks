@@ -22,6 +22,9 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"requiredMessage": {
+		"type": "string"
+	},
 	"multiple": {
 		"type": "boolean",
 		"default": false
