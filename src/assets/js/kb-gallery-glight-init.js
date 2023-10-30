@@ -3,11 +3,10 @@
  * File lightbox-init.js.
  * Gets Lightbox working for Kadence Blocks Gallery
  */
-//import { __ } from "@wordpress/i18n";
 
 (function() {
 	'use strict';
-	const { __ } = wp.i18n;
+	
 	var kadenceBlocksGLight = {
 		carouselCache: {},
 		carouselItem: {},
