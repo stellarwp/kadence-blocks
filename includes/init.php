@@ -1045,13 +1045,15 @@ function kadence_blocks_register_api_endpoints() {
 	$mailerlite_controller->register_routes();
 	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
 	$fluentcrm_controller->register_routes();
-	$lottieanimation_conteoller_get = new Kadence_LottieAnimation_get_REST_Controller();
-	$lottieanimation_conteoller_get->register_routes();
-	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
-	$lottieanimation_conteoller_upload->register_routes();
+	$lottieanimation_controller_get = new Kadence_LottieAnimation_get_REST_Controller();
+	$lottieanimation_controller_get->register_routes();
+	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
+	$lottieanimation_controller_upload->register_routes();
 
-	$image_picker_conteoller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
-	$image_picker_conteoller_upload->register_routes();
+	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
+	$design_library_controller_upload->register_routes();
+	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
+	$image_picker_controller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

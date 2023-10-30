@@ -1,0 +1,61 @@
+@import "../../scss/variables.scss";
+
+.stellarwp.components-button {
+	font-size: 14px;
+
+	&.is-primary {
+		background: $color-primary;
+
+		&:hover {
+			background: $color-primary-dark;
+		}
+	}
+
+	&.is-secondary {
+		background: $color-secondary;
+
+		&:hover {
+			background: $color-secondary-dark;
+		}
+	}
+
+	&.is-primary,
+	&.is-secondary,
+	&.is-tertiary {
+		padding: 6px 12px;
+		border-radius: 4px;
+	}
+
+	&.is-primary,
+	&.is-secondary {
+		color: $color-white;
+		box-shadow: none;
+
+		&:hover {
+			color: $color-white;
+			box-shadow: none;
+		}
+
+		&:disabled {
+			background: $color-gray-500;
+			color: $color-white;
+		}
+	}
+
+	&.is-tertiary {
+		box-shadow: inset 0 0 0 1px $color-primary;
+		background: transparent;
+		color: $color-primary;
+
+		&:hover {
+			box-shadow: inset 0 0 0 1px $color-primary-dark;
+			background: $color-primary-dark;
+			color: $color-white;
+		}
+
+		&:disabled {
+			box-shadow: inset 0 0 0 1px $color-gray-500;
+			color: $color-gray-500;
+		}
+	}
+}

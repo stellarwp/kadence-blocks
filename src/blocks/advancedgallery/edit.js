@@ -225,7 +225,6 @@ function GalleryEdit( props ) {
 		} else {
 			addUniqueID( uniqueId, clientId );
 		}
-
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		// Old Static Image source.
 		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {

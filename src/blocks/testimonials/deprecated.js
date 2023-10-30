@@ -272,14 +272,14 @@ const v4 = {
 								<RichText.Content
 									className="kt-testimonial-content"
 									tagName={'div'}
-									value={testimonials[ index ].content}
+									value={testimonials?.[ index ]?.content}
 								/>
 							</div>
 						)}
 					</div>
 					{( ( displayMedia && ( 'card' !== style && 'inlineimage' !== style ) ) || displayOccupation || displayName ) && (
 						<div className="kt-testimonial-meta-wrap">
-							{displayMedia && ( 'card' !== style && 'inlineimage' !== style ) && ( ( 'icon' !== testimonials[ index ].media && testimonials[ index ].url ) || ( 'icon' === testimonials[ index ].media && testimonials[ index ].icon ) ) && (
+							{displayMedia && ( 'card' !== style && 'inlineimage' !== style ) && ( ( 'icon' !== testimonials?.[ index ]?.media && testimonials?.[ index ]?.url ) || ( 'icon' === testimonials?.[ index ]?.media && testimonials?.[ index ]?.icon ) ) && (
 								renderTestimonialMedia( index )
 							)}
 							<div className="kt-testimonial-meta-name-wrap">
@@ -288,7 +288,7 @@ const v4 = {
 										<RichText.Content
 											className="kt-testimonial-name"
 											tagName={'div'}
-											value={testimonials[ index ].name}
+											value={testimonials?.[ index ]?.name}
 										/>
 									</div>
 								)}
@@ -297,7 +297,7 @@ const v4 = {
 										<RichText.Content
 											className="kt-testimonial-occupation"
 											tagName={'div'}
-											value={testimonials[ index ].occupation}
+											value={testimonials?.[ index ]?.occupation}
 										/>
 									</div>
 								)}
@@ -498,14 +498,14 @@ const v3 = {
 								<RichText.Content
 									className="kt-testimonial-content"
 									tagName={ 'div' }
-									value={ testimonials[ index ].content }
+									value={ testimonials?.[ index ]?.content }
 								/>
 							</div>
 						) }
 					</div>
 					{ ( ( displayMedia && ( 'card' !== style && 'inlineimage' !== style ) ) || displayOccupation || displayName ) && (
 						<div className="kt-testimonial-meta-wrap">
-							{ displayMedia && ( 'card' !== style && 'inlineimage' !== style ) && ( ( 'icon' !== testimonials[ index ].media && testimonials[ index ].url ) || ( 'icon' === testimonials[ index ].media && testimonials[ index ].icon ) ) && (
+							{ displayMedia && ( 'card' !== style && 'inlineimage' !== style ) && ( ( 'icon' !== testimonials?.[ index ]?.media && testimonials?.[ index ]?.url ) || ( 'icon' === testimonials?.[ index ]?.media && testimonials?.[ index ]?.icon ) ) && (
 								renderTestimonialMedia( index )
 							) }
 							<div className="kt-testimonial-meta-name-wrap">
@@ -514,7 +514,7 @@ const v3 = {
 										<RichText.Content
 											className="kt-testimonial-name"
 											tagName={ 'div' }
-											value={ testimonials[ index ].name }
+											value={ testimonials?.[ index ]?.name }
 										/>
 									</div>
 								) }
@@ -523,7 +523,7 @@ const v3 = {
 										<RichText.Content
 											className="kt-testimonial-occupation"
 											tagName={ 'div' }
-											value={ testimonials[ index ].occupation }
+											value={ testimonials?.[ index ]?.occupation }
 										/>
 									</div>
 								) }
