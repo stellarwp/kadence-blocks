@@ -108,8 +108,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_color_output( $background_style, 'background', 'background' );
 		}
-		$max_width_unit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit'] : 'px';
-		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $max_width_unit );
+		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 
 		// Input Styles.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form' );

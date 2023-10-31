@@ -99,6 +99,7 @@ developers of this plugin.
 
 = 3.1.23 =
 * Fix: Issue with icon list margin.
+* Fix: Issue with advanced form max width units.
 
 = 3.1.22 =
 Release Date: October 18th, 2023
