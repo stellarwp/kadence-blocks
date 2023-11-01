@@ -25,6 +25,8 @@ import {
 	ResponsiveGapSizeControl,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
+
+import { KadenceColorOutput } from '@kadence/helpers';
 import { useSetting } from '@wordpress/block-editor';
 
 import { default as useColorIsDark } from '../../use-color-is-dark';
@@ -181,7 +183,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 							value={( style?.borderActive ? style.borderActive : '' )}
 							default={''}
 							onChange={ ( value ) => {
-								saveStyle( { borderActive: value } );
+								saveStyle( { borderActive: KadenceColorOutput(value) } );
 							}}
 						/>
 					</>
@@ -275,7 +277,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 							onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
 							onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
 							onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}
-						/>y
+						/>
 						<ResponsiveMeasurementControls
 							label={__( 'Border Radius', 'kadence-blocks' )}
 							value={fieldBorderRadius}
