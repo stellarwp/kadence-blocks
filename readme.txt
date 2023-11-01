@@ -98,8 +98,13 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.23 =
+Release Date: November 1st, 2023
+* Update: Include a tiktok icon.
 * Fix: Issue with icon list margin.
 * Fix: Issue with advanced form max width units.
+* Fix: Progress bar mask align center.
+* Fix: Issue with gallery hidden when added to a horizontal direction.
+* Fix: Issue with required message for file upload in form.
 
 = 3.1.22 =
 Release Date: October 18th, 2023
