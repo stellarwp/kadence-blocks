@@ -32,6 +32,10 @@
     "defaultParameter": {
 	  "type": "string"
     },
+	"allowDecimals": {
+		"type": "boolean",
+		"default": false
+	},
 	"maxValue": {
 	  "type": "number",
 	  "default": ""
