@@ -8,11 +8,26 @@
 			"php": "7.2.34"
 		}
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:stellarwp/prophecy-container.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:stellarwp/prophecy-log.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:stellarwp/prophecy-image-downloader.git"
+		}
+	],
 	"require": {
 		"psr/container": "^1.0",
-		"lucatume/di52": "^3.0",
+		"lucatume/di52": "^3.3",
 		"stellarwp/telemetry": "^2.0",
-		"stellarwp/container-contract": "^1.0"
+		"stellarwp/container-contract": "^1.0",
+		"stellarwp/prophecy-image-downloader": "^1.0.1.72"
 	},
 	"autoload": {
 		"psr-4": {
@@ -22,7 +37,8 @@
 	"scripts": {
 		"strauss": [
 			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
-			"@php bin/strauss.phar"
+			"@php bin/strauss.phar",
+			"@composer dump-autoload"
 		],
 		"pup": [
 			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
@@ -34,12 +50,10 @@
 		],
 		"post-install-cmd": [
 			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
 			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		]
 	},
@@ -48,16 +62,23 @@
 			"target_directory": "vendor/vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
-			"namespace_prefix": "KadenceWP\\KadenceBlocks",
-			"delete_vendor_files": true,
+			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
+			"delete_vendor_packages": true,
 			"exclude_from_prefix": {
-			  "file_patterns": []
+			  "file_patterns": [
+				  "/symfony\\/polyfill-(.*)/"
+			  ]
 			},
 			"packages": [
 				"psr/container",
+				"adbario/php-dot-notation",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
-				"lucatume/di52"
+				"stellarwp/prophecy-monorepo",
+				"stellarwp/prophecy-image-downloader",
+				"lucatume/di52",
+				"symfony/filesystem",
+				"symfony/http-client"
 			]
 		}
 	}
