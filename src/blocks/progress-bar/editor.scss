@@ -5,6 +5,26 @@
  * which makes it higher in priority.
  */
 
+.kb-progress-bar-container {
+	width: fit-content;
+}
+
+.kb-progress-bar-align {
+	float: none;
+}
+
+.kb-progress-bar-alignleft {
+	float: left;
+}
+
+.kb-progress-bar-alignright {
+	float: right;
+}
+
+.kb-progress-bar-aligncenter {
+	margin: 0 auto;
+}
+
 .kb-progress-label-wrap {
 	display: flex;
 	flex-wrap: wrap;
