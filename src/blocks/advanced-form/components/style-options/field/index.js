@@ -25,10 +25,8 @@ import {
 	ResponsiveGapSizeControl,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
-
 import { KadenceColorOutput } from '@kadence/helpers';
 import { useSetting } from '@wordpress/block-editor';
-
 import { default as useColorIsDark } from '../../use-color-is-dark';
 
 export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {

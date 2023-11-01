@@ -10,9 +10,7 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	const [ tabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
 	const [ mobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
 	const [ fieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
-
 	const [ fieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
-	const [ fieldBorderActive ] = useFormMeta( '_kad_form_fieldBorderActive' );
 	const [ tabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
 	const [ mobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
 
