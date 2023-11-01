@@ -646,7 +646,7 @@ function PatternList( {
 
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
-			<div className="block-editor-block-patterns-explorer__list">
+			<div className={ `block-editor-block-patterns-explorer__list${ contextTab === 'context' ? ' kb-ai-patterns-explorer' : '' }`}>
 				{ hasItems && (
 					<PatternsListHeader
 						filterValue={ filterValue }
@@ -670,7 +670,7 @@ function PatternList( {
 				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
-				{ hasItems && !filterValue && (
+				{ contextTab === 'context' && !filterValue && (
 					<PatternFilterDropdown categories={ categories } selectedCategories={ updateFilters } />
 				) }
 				{ hasItems && !failedAI && (

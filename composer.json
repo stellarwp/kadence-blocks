@@ -25,7 +25,8 @@
 	"require": {
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.3",
-		"stellarwp/telemetry": "^2.0",
+		"stellarwp/telemetry": "^2.3",
+		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
 		"stellarwp/prophecy-image-downloader": "^1.0.1.72"
 	},
@@ -48,12 +49,17 @@
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
+		"stellar-uplink": [
+			"vendor/bin/stellar-uplink domain=kadence-blocks"
+		],
 		"post-install-cmd": [
 			"@strauss",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
 			"@strauss",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		]
 	},
@@ -74,6 +80,7 @@
 				"adbario/php-dot-notation",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
+				"stellarwp/uplink",
 				"stellarwp/prophecy-monorepo",
 				"stellarwp/prophecy-image-downloader",
 				"lucatume/di52",
