@@ -183,6 +183,81 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
 
 	/**
+	 * The library folder.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $initial_contexts = array(
+		'about',
+		'achievements',
+		// 'blog',
+		'call-to-action',
+		// 'careers',
+		'contact-form',
+		// 'donate',
+		// 'events',
+		// 'faq',
+		'get-started',
+		// 'history',
+		'industries',
+		'location',
+		'mission',
+		'news',
+		// 'partners',
+		// 'podcast',
+		'pricing-table',
+		// 'product-details',
+		'products-services',
+		// 'profile',
+		'subscribe-form',
+		'support',
+		'team',
+		'testimonials',
+		'value-prop',
+		// 'volunteer',
+		'welcome',
+		'work',
+	);
+	/**
+	 * The library folder.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $all_contexts = array(
+		'about',
+		'achievements',
+		'blog',
+		'call-to-action',
+		'careers',
+		'contact-form',
+		'donate',
+		'events',
+		'faq',
+		'get-started',
+		'history',
+		'industries',
+		'location',
+		'mission',
+		'news',
+		'partners',
+		// 'podcast',
+		'pricing-table',
+		// 'product-details',
+		'products-services',
+		'profile',
+		'subscribe-form',
+		'support',
+		'team',
+		'testimonials',
+		'value-prop',
+		'volunteer',
+		'welcome',
+		'work',
+	);
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -288,6 +363,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_keyword_suggestions' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_initial_jobs',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_initial_jobs' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -806,6 +893,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			foreach ( $available_prompts as $context => $prompt ) {
 				if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) ) {
 					$return_data[ $context ] = json_decode( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ), true );
+				} else {
+					// Check if we have a remote file.
+					$response = $this->get_remote_contents( $available_prompts[ $context ] );
+					$data = json_decode( $response, true );
+					if ( $response === 'error' ) {
+						$has_error = true;
+					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+						$ready = false;
+					} else if ( isset( $data['data']['status'] ) && 409 !== $data['data']['status'] ) {
+						$has_error = true;
+					} else {
+						$this->create_data_file( $response, $available_prompts[ $context ], 'ai' );
+						$return_data[ $context ] = json_decode( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ), true );
+					}
 				}
 			}
 		}
@@ -872,6 +973,44 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			} else {
 				return wp_send_json( 'error' );
 			}
+		}
+	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_initial_jobs( $request ) {
+		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		update_option( 'kb_design_library_prompts', array() );
+		$contexts = $this->initial_contexts;
+		$available_prompts = array();
+		$contexts_available = array();
+		$has_error = false;
+		foreach ( $contexts as $context ) {
+			// Check if we have captured prompt.
+			if ( empty( $available_prompts[ $context ] ) ) {
+				// Create a job.
+				$response = $this->get_new_remote_contents( $context );
+				$data = json_decode( $response, true );
+				if ( $response === 'error' ) {
+					$has_error = true;
+				} else if ( isset( $data['data']['job_id'] ) ) {
+					$available_prompts[ $context ] = $data['data']['job_id'];
+					$contexts_available[] = $context;
+				} else {
+					$has_error = true;
+				}
+			}
+		}
+		update_option( 'kb_design_library_prompts', $available_prompts );
+		if ( ! empty( $contexts_available ) && ! $has_error ) {
+			return rest_ensure_response( $contexts_available );
+		} elseif ( ! empty( $contexts_available ) && $has_error ) {
+			return rest_ensure_response( 'error' );
+		} else {
+			return rest_ensure_response( 'failed' );
 		}
 	}
 	/**

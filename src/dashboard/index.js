@@ -5,6 +5,10 @@ import { AiWizard } from '../plugins/prebuilt-library/ai-wizard';
 import { getAsyncData } from '../plugins/prebuilt-library/data-fetch/get-async-data';
 import Notices from './notices';
 /**
+ * Import Css
+ */
+import './editor.scss';
+/**
  * WordPress dependencies
  */
 import { useMemo, useEffect, useState, render } from '@wordpress/element';

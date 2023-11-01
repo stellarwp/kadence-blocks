@@ -157,7 +157,7 @@ export function KadenceAiWizard( props ) {
 			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
 			onClose={ handleOnClose }
 			onPrimaryClick={ handleOnPrimaryClick }
-			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate All Content', 'kadence-blocks' ) }
+			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate Initial Content', 'kadence-blocks' ) }
 			primaryButtonDisabled={ isFinishButtonDisabled() }
 			onSecondaryClick={ ! photographyOnly ? handleOnSecondaryClick : null }
 			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }

@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.2.0
+ * Version: 3.2.5
  * Requires PHP: 7.2
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.2.0' );
+define( 'KADENCE_BLOCKS_VERSION', '3.2.5' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -30,6 +30,9 @@ require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
 use KadenceWP\KadenceBlocks\Container;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Register;
 /**
  * Add a check before redirecting
  */
@@ -48,6 +51,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-schema-updater.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-google-fonts.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-helper.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-css.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-table-of-contents.php';
@@ -103,11 +107,28 @@ function kadence_blocks_init() {
 	/**
 	 * Telemetry.
 	 */
-	Config::set_container( new Container() );
+	$telemetry_container = new Container();
+	Config::set_container( $telemetry_container );
 	Config::set_server_url( 'https://telemetry.stellarwp.com/api/v1' );
 	Config::set_hook_prefix( 'kadence-blocks' );
 	Config::set_stellar_slug( 'kadence-blocks' );
 	Telemetry::instance()->init( __FILE__ );
+	/**
+	 * Uplink.
+	 */
+	$uplink_container = new Container();
+	UplinkConfig::set_container( $uplink_container );
+	UplinkConfig::set_hook_prefix( 'kadence-blocks' );
+	UplinkConfig::set_token_auth_prefix( 'kadence' );
+	Uplink::init();
+
+	Register::plugin(
+		'kadence-blocks',
+		'Kadence Blocks',
+		KADENCE_BLOCKS_VERSION,
+		'kadence-blocks/kadence-blocks.php',
+		Kadence_Blocks::class,
+	);
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 

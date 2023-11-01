@@ -385,6 +385,7 @@ button.components-button.kb-reload-context-confirm.has-icon svg {
 	position: relative;
 	background:#fff;
     padding: 0 24px;
+	border-bottom: 1px solid #edf2f7;
     height: 80px;
     right: 0;
     top: 0;
@@ -803,7 +804,15 @@ position: relative;
     color: #D8000C;
     background-color: #FFBABA;
 }
-
+.kt-prebuilt-content .block-editor-block-patterns-explorer__wrap .block-editor-block-patterns-explorer__list {
+	overflow-y: scroll;
+	.block-editor-block-patterns-list {
+		max-height: none;
+	}
+	&.kb-ai-patterns-explorer .block-editor-block-patterns-list  {
+		margin-top: 8px;
+	}
+}
 // Iframe.
 .kt-prebuilt-content .block-editor-block-patterns-explorer__list {
     margin: 0;

@@ -11,7 +11,8 @@
 	"require": {
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.0",
-		"stellarwp/telemetry": "^2.0",
+		"stellarwp/telemetry": "^2.3",
+		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0"
 	},
 	"autoload": {
@@ -32,13 +33,18 @@
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
+		"stellar-uplink": [
+			"vendor/bin/stellar-uplink domain=kadence-blocks"
+		],
 		"post-install-cmd": [
 			"@strauss",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
 			"@strauss",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		]
@@ -57,6 +63,7 @@
 				"psr/container",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
+				"stellarwp/uplink",
 				"lucatume/di52"
 			]
 		}
