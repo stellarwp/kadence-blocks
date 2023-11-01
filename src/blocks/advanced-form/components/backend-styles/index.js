@@ -67,6 +67,26 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 
 				${ fieldStyles?.boxShadow ? 'box-shadow: ' + fieldStyles.boxShadow + ';' : '' }
 		}
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="text"]:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="email"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="url"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="password"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="search"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="number"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="tel"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="range"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="date"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="month"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="week"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="time"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime-local"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="color"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="file"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea:focus {
+			${ fieldStyles?.borderActive ? 'border-color: ' + fieldStyles.borderActive + ';' : '' }
+		}
 		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select:not(.ignore-field-styles):focus,
 		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea:focus {
