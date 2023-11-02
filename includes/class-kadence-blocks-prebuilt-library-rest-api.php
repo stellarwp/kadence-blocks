@@ -2300,14 +2300,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		} else {
 			$site_url = get_bloginfo( 'url' );
 		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 
+		$site_url        = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$current_user_id = wp_get_current_user()->ID ?? 0;
+		$site_name       = get_bloginfo( 'name' );
 
 		$defaults = [
 			'domain' => $site_url,
 			'key'  => $this->api_key,
 			'user_id' => $current_user_id,
+			'site_name' => $site_name,
 			'product_slug' => 'kadence-blocks',
 			'product_version' => KADENCE_BLOCKS_VERSION
 		];
