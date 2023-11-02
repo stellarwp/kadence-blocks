@@ -97,6 +97,11 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.1.24 =
+Release Date: November TBD, 2023
+* Fix: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
+* Fix: Google V3 reCAPTCHA not hiding in when set to hide.
+
 = 3.1.23 =
 Release Date: November 1st, 2023
 * Update: Include a tiktok icon.
