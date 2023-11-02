@@ -1210,16 +1210,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_new_remote_contents( $context ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $this->api_key,
-		);
 		$prophecy_data = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 		// Get the response.
 		$body = array(
@@ -1466,7 +1456,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1515,23 +1505,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_contents( $job ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $this->api_key,
-		);
 		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
 		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 				),
 			)
 		);
@@ -1614,16 +1594,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_search_images( $search_query, $image_type = 'JPEG', $sizes = array() ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $this->api_key,
-		);
 		if ( empty( $search_query ) ) {
 			return 'error';
 		}
@@ -1652,7 +1622,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1679,16 +1649,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_industry_images( $industries, $image_type = 'JPEG', $sizes = array() ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $this->api_key,
-		);
 		if ( empty( $industries ) ) {
 			return 'error';
 		}
@@ -1715,7 +1675,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1781,23 +1741,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_image_collections() {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $this->api_key,
-		);
 		$api_url  = $this->remote_ai_url . 'images/collections';
 		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 				),
 			)
 		);
@@ -1826,16 +1776,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $parameters['name'] ) || empty( $parameters['entity_type'] ) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
 			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
 		}
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $request->get_param( self::PROP_API_KEY ),
-		);
 		$api_url  = $this->remote_ai_url . 'proxy/intake/search-query';
 		$body = array(
 			'name' => $parameters['name'],
@@ -1849,7 +1789,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1874,16 +1814,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $parameters['name'] ) || empty($parameters['entity_type']) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
 			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
 		}
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$auth = array(
-			'domain' => $site_url,
-			'key'    => $request->get_param( self::PROP_API_KEY ),
-		);
 		$api_url  = $this->remote_ai_url . 'proxy/intake/suggest-keywords';
 		$body = array(
 			'name' => $parameters['name'],
@@ -1898,7 +1828,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -2355,5 +2285,35 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			WP_Filesystem();
 		}
 		return $wp_filesystem;
+	}
+
+	/**
+	 * Simplifies constructing an X-Prophecy-Token header.
+	 *
+	 * @param array $args An array of arguments to include in the encoded header.
+	 *
+	 * @return string The base64 encoded string.
+	 */
+	protected function get_prophecy_token_header( $args = [] ) {
+		if ( is_callable( 'network_home_url' ) ) {
+			$site_url = network_home_url( '', 'http' );
+		} else {
+			$site_url = get_bloginfo( 'url' );
+		}
+		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+
+		$current_user_id = wp_get_current_user()->ID ?? 0;
+
+		$defaults = [
+			'domain' => $site_url,
+			'key'  => $this->api_key,
+			'user_id' => $current_user_id,
+			'product_slug' => 'kadence-blocks',
+			'product_version' => KADENCE_BLOCKS_VERSION
+		];
+
+		$parsed_args = wp_parse_args( $args, $defaults );
+
+		return base64_encode( json_encode( $parsed_args ) );
 	}
 }
