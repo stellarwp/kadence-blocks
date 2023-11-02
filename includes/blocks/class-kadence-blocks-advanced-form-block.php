@@ -257,8 +257,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
-		//var_dump($help_style);
-		//die();
 		if ( isset( $help_style['lineHeight'] ) ) {
 			$help_font_line_height = array( 
 				'lineHeight' => $help_style['lineHeight'][0],
