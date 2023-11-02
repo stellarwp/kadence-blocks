@@ -196,7 +196,8 @@ import { __ } from '@wordpress/i18n';
 				imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 				imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 				imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
+				imageAttachmentParallax={ false }
+				imageAttachmentFixed={ false }
 				onRemoveImage={ () => {
 					saveTabletOverlay( {
 						overlayBgImgID: '',
@@ -248,7 +249,8 @@ import { __ } from '@wordpress/i18n';
 				imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 				imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 				imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
-				imageAttachmentParallax={ true }
+				imageAttachmentParallax={ false }
+				imageAttachmentFixed={ false }
 				onRemoveImage={ () => {
 					saveMobileOverlay( {
 						overlayBgImgID: '',
