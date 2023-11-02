@@ -2,8 +2,7 @@
 	margin-bottom: 24px;
 }
 .kadence-icon-picker-selection {
-	display: flex;
-	justify-content: space-between;
+	display: block;
 }
 .kadence-icon-picker-search {
 	position: fixed;
@@ -142,4 +141,4 @@
 }
 .kadence-icon-picker-theme-dividers .kadence-icon-picker-selection-value svg.kadence-row-divider-top  {
     transform: rotate(180deg) !important;
-}
+}}
