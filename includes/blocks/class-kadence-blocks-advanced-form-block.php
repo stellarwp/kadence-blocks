@@ -259,14 +259,27 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
 
 		if ( isset( $help_style['lineHeight'] ) ) {
-			$css->render_responsive_size( $help_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
+			$help_font_line_height = array( 
+				'lineHeight' => $help_style['lineHeight'][0],
+				'lineType' => $help_style['lineType'],
+			);
+			$css->render_responsive_size( $help_font_line_height, array( 'lineHeight', 1, 2 ), 'line-height', 'lineType' );
 		}
 
 		if ( isset( $help_style['size'] ) ) {
-			$css->render_responsive_size( $help_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
+			$help_font_size = array( 
+				'size' => $help_style['size'][0],
+				'sizeType' => $help_style['sizeType'],
+			);
+			$css->render_responsive_size( $help_font_size, array( 'size', 1, 2 ), 'font-size', 'sizeType' );
 		}
 		if ( isset( $help_style['letterSpacing'] ) ) {
-			$css->render_responsive_size( $help_style['letterSpacing'], array( 0, 1, 2 ), 'letter-spacing', 'letterType' );
+			$help_font_letter_spacing = array( 
+				'letterSpacing' => $help_style['letterSpacing'][0],
+				'letterType' => $help_style['letterType'],
+			);
+			
+			$css->render_responsive_size( $help_font_letter_spacing, array( 'letterSpacing', 1, 2 ), 'letter-spacing', 'letterType' );
 		}
 
 		$css->render_color_output( $help_style, 'color', 'color' );
