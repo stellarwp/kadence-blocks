@@ -257,7 +257,8 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
-
+		//var_dump($help_style);
+		//die();
 		if ( isset( $help_style['lineHeight'] ) ) {
 			$help_font_line_height = array( 
 				'lineHeight' => $help_style['lineHeight'][0],
@@ -269,16 +270,18 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $help_style['size'] ) ) {
 			$help_font_size = array( 
 				'size' => $help_style['size'][0],
+				'tabletSize' => $help_style['size'][1],
+				'mobileSize' => $help_style['size'][2],
 				'sizeType' => $help_style['sizeType'],
 			);
-			$css->render_responsive_size( $help_font_size, array( 'size', 1, 2 ), 'font-size', 'sizeType' );
+			$css->render_responsive_size( $help_font_size, array( 'size', 'tabletSize', 'mobileSize' ), 'font-size', 'sizeType' );
 		}
 		if ( isset( $help_style['letterSpacing'] ) ) {
 			$help_font_letter_spacing = array( 
 				'letterSpacing' => $help_style['letterSpacing'][0],
 				'letterType' => $help_style['letterType'],
 			);
-			
+
 			$css->render_responsive_size( $help_font_letter_spacing, array( 'letterSpacing', 1, 2 ), 'letter-spacing', 'letterType' );
 		}
 
