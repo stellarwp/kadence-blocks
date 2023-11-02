@@ -54,6 +54,11 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
 
+		if( !empty( $attributes['hideRecaptcha'] )) {
+			$css->set_selector( '.grecaptcha-badge' );
+			$css->add_property( 'visibility', 'hidden' );
+		}
+
 		return $css->css_output();
 	}
 
