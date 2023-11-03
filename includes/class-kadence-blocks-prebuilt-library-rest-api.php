@@ -1456,7 +1456,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1511,7 +1511,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 				),
 			)
 		);
@@ -1622,7 +1622,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1675,7 +1675,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1747,7 +1747,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 				),
 			)
 		);
@@ -1789,7 +1789,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -1828,7 +1828,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( ['key' => $this->api_key] ),
 					'Content-Type' => 'application/json',
 				),
 				'body' => json_encode( $body ),
@@ -2285,38 +2285,5 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			WP_Filesystem();
 		}
 		return $wp_filesystem;
-	}
-
-	/**
-	 * Simplifies constructing an X-Prophecy-Token header.
-	 *
-	 * @param array $args An array of arguments to include in the encoded header.
-	 *
-	 * @return string The base64 encoded string.
-	 */
-	protected function get_prophecy_token_header( $args = [] ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-
-		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$current_user = wp_get_current_user();
-		$site_name    = get_bloginfo( 'name' );
-
-		$defaults = [
-			'domain'          => $site_url,
-			'key'             => $this->api_key,
-			'user_id'         => $current_user->ID,
-			'email'           => $current_user->email,
-			'site_name'       => $site_name,
-			'product_slug'    => 'kadence-blocks',
-			'product_version' => KADENCE_BLOCKS_VERSION
-		];
-
-		$parsed_args = wp_parse_args( $args, $defaults );
-
-		return base64_encode( json_encode( $parsed_args ) );
 	}
 }

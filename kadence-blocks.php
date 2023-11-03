@@ -113,6 +113,14 @@ function kadence_blocks_init() {
 	Config::set_hook_prefix( 'kadence-blocks' );
 	Config::set_stellar_slug( 'kadence-blocks' );
 	Telemetry::instance()->init( __FILE__ );
+
+	/**
+	 * AI-specific analytics.
+	 */
+	require_once KADENCE_BLOCKS_PATH . 'includes/analytics/class-analytics.php';
+	$analytics = new Analytics();
+	$analytics->register();
+
 	/**
 	 * Uplink.
 	 */
