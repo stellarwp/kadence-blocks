@@ -10,12 +10,12 @@ final class WordPress_Importer {
 	/**
 	 * The image data, indexed by Pexels ID.
 	 *
-	 * @var array<int, DownloadedImage[][]>
+	 * @var array<int, DownloadedImage[]>
 	 */
 	private $images = [];
 
 	/**
-	 * @return array<int, DownloadedImage[][]>
+	 * @return array<int, DownloadedImage[]>
 	 */
 	public function images(): array {
 		return $this->images;
