@@ -20,6 +20,8 @@ export const API_ROUTE_GET_COLLECTIONS = '/kb-design-library/v1/get_image_collec
 export const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 export const API_ROUTE_GET_VERTICALS = '/kb-design-library/v1/get_verticals';
 export const COLLECTION_REQUEST_IMAGE_TYPE = 'JPEG';
+
+// TODO: probably need to remove this, or perhaps add medium_square as a real thumbnail size.
 export const COLLECTION_REQUEST_IMAGE_SIZES = [
 	{
 		id: 'medium_square',
