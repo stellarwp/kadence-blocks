@@ -16,6 +16,10 @@ class Container implements ContainerInterface {
 		$this->container = new DI52Container();
 	}
 
+	public function container() {
+		return $this->container;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

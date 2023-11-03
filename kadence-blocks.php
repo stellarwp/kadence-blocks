@@ -47,8 +47,10 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
  * Load Plugin
  */
 function kadence_blocks_init() {
+	$container = new Container();
+
 	// Prophecy Async Image Downloader.
-	Image_Downloader::instance( new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() ) );
+	Image_Downloader::instance( new ContainerAdapter( $container->container() ) );
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';
@@ -112,8 +114,7 @@ function kadence_blocks_init() {
 	/**
 	 * Telemetry.
 	 */
-	$telemetry_container = new Container();
-	Config::set_container( $telemetry_container );
+	Config::set_container( $container );
 	Config::set_server_url( 'https://telemetry.stellarwp.com/api/v1' );
 	Config::set_hook_prefix( 'kadence-blocks' );
 	Config::set_stellar_slug( 'kadence-blocks' );
@@ -121,8 +122,7 @@ function kadence_blocks_init() {
 	/**
 	 * Uplink.
 	 */
-	$uplink_container = new Container();
-	UplinkConfig::set_container( $uplink_container );
+	UplinkConfig::set_container( $container );
 	UplinkConfig::set_hook_prefix( 'kadence-blocks' );
 	UplinkConfig::set_token_auth_prefix( 'kadence' );
 	Uplink::init();
