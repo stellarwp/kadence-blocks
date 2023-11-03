@@ -3,6 +3,8 @@
  * REST API for Kadence prebuilt library.
  */
 
+use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -620,30 +622,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function process_images( $request ) {
 		$parameters = $request->get_json_params();
-		if ( empty( $parameters['images'] ) ) {
-			return rest_ensure_response( 'failed' );
-		}
 
-		$images = $parameters['images'];
-		$downloaded_images = array();
-
-		// Process images.
-		foreach ( $images as $image_data ) {
-			$image = array();
-			$alt                        = ! empty( $image_data['alt'] ) ? $image_data['alt'] : '';
-			$image['url']               = $this->get_src_from_image_data( $image_data );
-			$image['id']                = ! empty( $image_data['id'] ) ? $image_data['id'] : '';
-			$image['filename']          = ! empty( $image_data['filename'] ) ? $image_data['filename'] : $this->create_filename_from_alt( $alt );
-			$image['photographer']      = ! empty( $image_data['photographer'] ) ? $image_data['photographer'] : '';
-			$image['photographer_url']  = ! empty( $image_data['photographer_url'] ) ? $image_data['photographer_url'] : '';
-			$image['photograph_url']    = ! empty( $image_data['url'] ) ? $image_data['url'] : '';
-			$image['alt']               = $alt;
-			$image['title']             = __( 'Photo by', 'kadence-blocks' ) . ' ' . $image['photographer'];
-			// Download remote image.
-			$downloaded_images[] = $this->import_image( $image );
-		}
-
-		return $downloaded_images;
+		return Image_Downloader::instance()->download( $parameters );
 	}
 	/**
 	 * Retrieves a collection of objects.
@@ -2157,6 +2137,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Import an image.
+	 *
+	 * @TODO remove when Async ImageDownloader is complete.
 	 *
 	 * @param array $image_data the image data to import.
 	 */
