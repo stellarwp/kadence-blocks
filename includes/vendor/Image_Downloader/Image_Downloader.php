@@ -7,7 +7,6 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Conta
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\ImageDownloader;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
 use RuntimeException;
 
 final class Image_Downloader {
@@ -40,7 +39,7 @@ final class Image_Downloader {
 	 * @return self
 	 * @throws InvalidArgumentException
 	 */
-	public static function instance( ?Container $container ): Image_Downloader {
+	public static function instance( ?Container $container = null ): Image_Downloader {
 		if ( ! isset( self::$instance ) ) {
 			if ( ! $container ) {
 				throw new InvalidArgumentException( 'You need to provide a concrete Contracts\Container instance!' );
@@ -56,8 +55,12 @@ final class Image_Downloader {
 	 * Download and import a collection of images to the WordPress library.
 	 *
 	 * @param array<array{
-	 *      image_type: string,
+	 *      collection_slug?: string,
+	 *      image_type?: string,
 	 *      images: array<int, array{
+	 *           id: int,
+	 *           width: int,
+	 *           height: int,
 	 *           alt: string,
 	 *           url: string,
 	 *           photographer: string,
@@ -67,11 +70,15 @@ final class Image_Downloader {
 	 *      }>
 	 *     }> $images
 	 *
-	 * @return array<int, array<string, DownloadedImage>>
+	 * @return array<array{id: int, url: string}>
 	 * @throws ImageDownloadException
 	 * @throws \Throwable
 	 */
 	public function download( array $images ): array {
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return [];
+		}
+
 		$path = wp_get_upload_dir()['path'] ?? '';
 
 		if ( ! $path ) {
@@ -82,8 +89,15 @@ final class Image_Downloader {
 			$images['image_type'] = 'jpg';
 		}
 
-		// TODO: this needs to be passed to the WordPress_Imported and brought into the media library.
-		return $this->container->get( ImageDownloader::class )->download( $images, $path );
+		if ( ! isset( $images['collection_slug'] ) ) {
+			$images['collection_slug'] = wp_generate_password( 12, false );
+		}
+
+		$collection[] = $images;
+
+		$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
+
+		return $this->container->get( WordPress_Importer::class )->import( $downloaded );
 	}
 
 	public function container(): Container {
