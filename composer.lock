@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8a18934f7c1cd1b7365c2954ac90bd2",
+    "content-hash": "e3f0d8d47d6e18c1b74be324e9961762",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -490,7 +490,7 @@
         },
         {
             "name": "stellarwp/prophecy-container",
-            "version": "1.0.1.72",
+            "version": "1.0.2.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-container.git",
@@ -525,22 +525,22 @@
             ],
             "description": "The Prophecy DI container and its contracts.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-container/tree/1.0.1.72"
+                "source": "https://github.com/stellarwp/prophecy-container/tree/1.0.2.72"
             },
             "time": "2023-11-01T19:11:17+00:00"
         },
         {
             "name": "stellarwp/prophecy-image-downloader",
-            "version": "1.0.1.72",
+            "version": "1.0.2.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-image-downloader.git",
-                "reference": "bcd448a47b976378377711830e10fb85a5e67497"
+                "reference": "b844a856024752fbfcd849d3d345f9ca0c7d6cef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/bcd448a47b976378377711830e10fb85a5e67497",
-                "reference": "bcd448a47b976378377711830e10fb85a5e67497",
+                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/b844a856024752fbfcd849d3d345f9ca0c7d6cef",
+                "reference": "b844a856024752fbfcd849d3d345f9ca0c7d6cef",
                 "shasum": ""
             },
             "require": {
@@ -566,13 +566,13 @@
             ],
             "description": "A concurrent image downloading library.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.0.1.72"
+                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.0.2.72"
             },
-            "time": "2023-11-01T19:11:18+00:00"
+            "time": "2023-11-02T17:22:01+00:00"
         },
         {
             "name": "stellarwp/prophecy-log",
-            "version": "1.0.1.72",
+            "version": "1.0.2.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-log.git",
@@ -606,7 +606,7 @@
             ],
             "description": "The Prophecy Logger.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-log/tree/1.0.1.72"
+                "source": "https://github.com/stellarwp/prophecy-log/tree/1.0.2.72"
             },
             "time": "2023-11-01T19:11:29+00:00"
         },
@@ -658,6 +658,73 @@
                 "source": "https://github.com/stellarwp/telemetry/tree/2.3.0"
             },
             "time": "2023-10-31T19:07:27+00:00"
+        },
+        {
+            "name": "stellarwp/uplink",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stellarwp/uplink.git",
+                "reference": "3f500360004c631ddf20730e90bee81d7faa41f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/3f500360004c631ddf20730e90bee81d7faa41f2",
+                "reference": "3f500360004c631ddf20730e90bee81d7faa41f2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1",
+                "stellarwp/container-contract": "^1.0"
+            },
+            "require-dev": {
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
+                "codeception/module-rest": "^1.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "lucatume/di52": "^3.0",
+                "lucatume/wp-browser": "^3.0.14",
+                "phpspec/prophecy": "^1.0",
+                "phpspec/prophecy-phpunit": "^1.0|^2.0",
+                "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0",
+                "symfony/event-dispatcher-contracts": "^2.5.1",
+                "symfony/string": "^5.4",
+                "szepeviktor/phpstan-wordpress": "^1.1"
+            },
+            "default-branch": true,
+            "bin": [
+                "bin/stellar-uplink"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\Uplink\\": "src/Uplink/",
+                    "StellarWP\\Uplink\\Views\\": "src/views/",
+                    "StellarWP\\Uplink\\Assets_Dir\\": "src/assets/",
+                    "StellarWP\\Uplink\\Admin_Views\\": "src/admin-views/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "StellarWP",
+                    "homepage": "https://stellarwp.com"
+                }
+            ],
+            "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
+            "support": {
+                "issues": "https://github.com/stellarwp/uplink/issues",
+                "source": "https://github.com/stellarwp/uplink/tree/main"
+            },
+            "time": "2023-11-02T00:01:19+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1457,7 +1524,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "stellarwp/uplink": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

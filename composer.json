@@ -28,7 +28,7 @@
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.0.1.72"
+		"stellarwp/prophecy-image-downloader": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -54,12 +54,10 @@
 		],
 		"post-install-cmd": [
 			"@strauss",
-			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
 			"@strauss",
-			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		]
 	},
