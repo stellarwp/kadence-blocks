@@ -95,6 +95,7 @@ final class Image_Downloader {
 
 		$collection[] = $images;
 
+		// TODO: we should probably check if the images exist already, although this might actually be slower...
 		$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
 
 		return $this->container->get( WordPress_Importer::class )->import( $downloaded );
