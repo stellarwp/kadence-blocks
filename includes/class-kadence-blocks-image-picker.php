@@ -81,7 +81,8 @@ class Kadence_Blocks_Image_Picker {
 				'kadence-extension-image-picker',
 				'kadenceExtensionImagePicker',
 				array(
-					'image_sizes' => $this->get_image_sizes(),
+					'image_sizes'      => $this->get_image_sizes(),
+					'all_image_sizes'  => $this->get_all_image_sizes(),
 					'default_provider' => 'pexels',
 				)
 			);
@@ -112,6 +113,24 @@ class Kadence_Blocks_Image_Picker {
 				'crop' => false,
 			),
 		);
+	}
+
+	/**
+	 * Get all available image sizes, including any custom ones added above.
+	 *
+	 * @return array<array{id: string, width: int, height: int, crop: bool}>
+	 */
+	private function get_all_image_sizes(): array {
+		$registered = wp_get_registered_image_subsizes();
+		$formatted  = [];
+
+		foreach ( $registered as $id => $data ) {
+			$formatted[] = array_merge( [
+				'id' => $id,
+			], $data );
+		}
+
+		return $formatted;
 	}
 
 	/**
