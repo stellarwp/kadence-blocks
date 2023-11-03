@@ -260,9 +260,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $help_style['lineHeight'] ) ) {
 			$help_font_line_height = array( 
 				'lineHeight' => $help_style['lineHeight'][0],
+				'tabletLineHeight' => $help_style['lineHeight'][1],
+				'mobileLineHeight' => $help_style['lineHeight'][2],
 				'lineType' => $help_style['lineType'],
 			);
-			$css->render_responsive_size( $help_font_line_height, array( 'lineHeight', 1, 2 ), 'line-height', 'lineType' );
+			$css->render_responsive_size( $help_font_line_height, array( 'lineHeight', 'tabletLineHeight', 'mobileLineHeight' ), 'line-height', 'lineType' );
 		}
 
 		if ( isset( $help_style['size'] ) ) {
@@ -277,10 +279,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $help_style['letterSpacing'] ) ) {
 			$help_font_letter_spacing = array( 
 				'letterSpacing' => $help_style['letterSpacing'][0],
+				'tabletLetterSpacing' => $help_style['letterSpacing'][1],
+				'mobileLetterSpacing' => $help_style['letterSpacing'][2],
 				'letterType' => $help_style['letterType'],
 			);
-
-			$css->render_responsive_size( $help_font_letter_spacing, array( 'letterSpacing', 1, 2 ), 'letter-spacing', 'letterType' );
+			$css->render_responsive_size( $help_font_letter_spacing, array( 'letterSpacing', 'tabletLetterSpacing', 'mobileLetterSpacing' ), 'letter-spacing', 'letterType' );
 		}
 
 		$css->render_color_output( $help_style, 'color', 'color' );
