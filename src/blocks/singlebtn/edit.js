@@ -200,6 +200,7 @@ import {
 import {
 	addFilter,
 	applyFilters,
+	doAction,
 } from '@wordpress/hooks';
 
 
@@ -330,6 +331,8 @@ export default function KadenceButtonEdit( props ) {
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
+		doAction( 'kadence.triggerDynamicUpdate', 'link', 'link', props );
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ isEditingURL, setIsEditingURL ] = useState( false );
