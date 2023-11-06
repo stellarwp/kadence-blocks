@@ -1482,6 +1482,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return 'error';
 		}
 
+		// Log event for successful context generation.
+		do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
+			'context-name' => $context,
+			'credits-after' => $this->get_remote_remaining_credits(),
+			'key' => $this->api_key,
+			'email' => wp_get_current_user()->user_email,
+		] );
+
 		return $contents;
 	}
 	/**

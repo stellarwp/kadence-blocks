@@ -12,12 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Analytics {
 
 	/**
-	 * The remote URL.
-	 *
-	 * @access protected
-	 * @var string
+	 * The event endpoint.
 	 */
-	protected $event_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/analytics/event';
+	public const ENDPOINT = '/wp-json/prophecy/v1/analytics/event';
+
+	/**
+	 * The API domain.
+	 */
+	public const DOMAIN = 'https://content.startertemplatecloud.com';
 
 	/**
 	 * Registers all necessary hooks.
@@ -31,7 +33,7 @@ class Analytics {
 	}
 
 	/**
-	 * Sends events to Prophecy WP (if the user has opted-in to Telemetry).
+	 * Sends events to Prophecy WP (if the user has installed and activated Kadence Blocks Pro).
 	 *
 	 * @return void
 	 */
@@ -42,18 +44,25 @@ class Analytics {
 			return;
 		}
 
-		wp_remote_post(
-			$this->event_url,
+		/**
+		 * Filters the URL used to send events to.
+		 *
+		 * @param string The URL to use when sending events.
+		 */
+		$url  = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+
+		$response = wp_remote_post(
+			$url,
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type' => 'application/json',
 				),
-				'body' => json_encode( [
+				'body' => wp_json_encode( [
 					'name'    => $name,
 					'context' => $context,
-				] ),
+				]),
 			)
 		);
 	}
