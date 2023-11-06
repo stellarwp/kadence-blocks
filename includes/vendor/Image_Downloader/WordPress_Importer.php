@@ -15,6 +15,20 @@ final class WordPress_Importer {
 	private $images = [];
 
 	/**
+	 * Manages image metadata.
+	 *
+	 * @var Meta
+	 */
+	private $meta;
+
+	/**
+	 * @param Meta $meta
+	 */
+	public function __construct( Meta $meta ) {
+		$this->meta = $meta;
+	}
+
+	/**
 	 * @return array<int, DownloadedImage[]>
 	 */
 	public function images(): array {
@@ -75,7 +89,7 @@ final class WordPress_Importer {
 
 			wp_generate_attachment_metadata( $attachment_id, $largest->file );
 
-			$this->add_metadata( $attachment_id, $largest );
+			$this->meta->add( $attachment_id, $largest );
 
 			$stored[] = [
 				'id'  => $attachment_id,
@@ -100,34 +114,6 @@ final class WordPress_Importer {
 	 */
 	private function get_file_name( DownloadedImage $image ): string {
 		return pathinfo( $image->file, PATHINFO_BASENAME );
-	}
-
-	/**
-	 * Insert additional metadata.
-	 *
-	 * @TODO we need to delete this data when an attachment is deleted.
-	 *
-	 * @param int $attachment_id
-	 * @param DownloadedImage $image
-	 *
-	 * @return void
-	 */
-	private function add_metadata( int $attachment_id,  DownloadedImage $image ): void {
-		$map = [
-			$image->alt              => '_wp_attachment_image_alt',
-			$image->photographer     => '_pexels_photographer',
-			$image->photographer_url => '_pexels_photographer_url',
-		];
-
-		foreach ( $map as $data => $meta_key ) {
-			if ( empty( $data ) ) {
-				continue;
-			}
-
-			update_post_meta( $attachment_id, $meta_key, $data );
-		}
-
-		update_post_meta( $attachment_id, '_kadence_blocks_image_hash', sha1( $image->url ) );
 	}
 
 }
