@@ -1,15 +1,12 @@
-
 .stellarwp.components-button.kb-dashboard-button {
 	padding: 12px 24px 12px 24px;
 	font-size: 14px;
-	line-height: auto;
 	height: auto;
-
-	display: flex;
+	display: inline-flex;
 	gap: 4px;
 
 	svg {
 		height: 22px;
-    	width: auto;
+		width: auto;
 	}
 }

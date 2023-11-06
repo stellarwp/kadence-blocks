@@ -1001,3 +1001,13 @@ h5.kt-main-subtitle {
 	max-width: $container-max-width;
 	margin: auto;
 }
+
+.kb-section {
+	padding: 40px 0;
+}
+
+.kb-auto-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-gap: 24px;
+}
