@@ -187,6 +187,7 @@ export function Edit ( props ) {
 							text: __( 'Show More', 'kadence-blocks' ),
 							sizePreset: 'small',
 							noCustomDefaults: true,
+							link: '#',
 						}],
 						['kadence/singlebtn', {
 							lock: { remove: true, move: true },
@@ -194,6 +195,7 @@ export function Edit ( props ) {
 							text: __( 'Show Less', 'kadence-blocks' ),
 							sizePreset: 'small',
 							noCustomDefaults: true,
+							link: '#',
 						}]
 					]
 				]
