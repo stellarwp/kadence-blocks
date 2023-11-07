@@ -1004,6 +1004,11 @@ h5.kt-main-subtitle {
 
 .kb-section {
 	padding: 40px 0;
+
+	&--dark {
+		background: #161a1e;
+		padding: 64px 0;
+	}
 }
 
 .kb-auto-grid {

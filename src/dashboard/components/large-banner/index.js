@@ -1,6 +1,7 @@
 import { Button, Icon, Tooltip, SVG } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 import logo from "../../../../includes/settings/img/kadence-logo-white.png";
+import { DashboardButton } from "../dashboard-button";
 
 import "./large-banner.scss";
 
@@ -8,8 +9,9 @@ export function LargeBanner({
 	heading,
 	subHeading,
 	imageSrc,
-	button,
+	buttonText,
 	isUserAuthenticated,
+	onClick,
 }) {
 	return (
 		<div className="kb-large-banner">
@@ -19,7 +21,7 @@ export function LargeBanner({
 				{!isUserAuthenticated && (
 					<>
 						<div className="kb-large-banner__subheading">{subHeading}</div>
-						{button}
+						<DashboardButton text={buttonText} onClick={onClick} />
 					</>
 				)}
 			</div>

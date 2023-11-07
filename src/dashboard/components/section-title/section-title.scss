@@ -7,7 +7,16 @@
 	line-height: 130%;
 	letter-spacing: -0.64px;
 	margin-bottom: 32px;
-	color: #000000;
+
+	/* Variant: White */
+	&--white {
+		color: #ffffff;
+	}
+
+	/* Variant: Black */
+	&--black {
+		color: #000000;
+	}
 }
 
 .kb-section-title__icon {
