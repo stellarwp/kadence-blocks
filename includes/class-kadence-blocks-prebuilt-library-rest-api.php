@@ -2091,7 +2091,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'id'     => sanitize_text_field( $value['id'] ),
 					'width'  => absint( $value['width'] ),
 					'height' => absint( $value['height'] ),
-					'crop'   => (bool) $value['crop'],
+					'crop'   => filter_var( $value['crop'], FILTER_VALIDATE_BOOLEAN ),
 				);
 			}
 			return $new_sizes;
