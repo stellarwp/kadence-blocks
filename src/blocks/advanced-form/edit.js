@@ -156,6 +156,7 @@ export function Edit( props ) {
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
+									setAttributes( { id: parseInt( nextId ) } )
 								} }
 								value={ id }
 							/>
@@ -183,6 +184,7 @@ export function Edit( props ) {
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
+									setAttributes( { id: parseInt( nextId ) } )
 								} }
 								value={ id }
 							/>
