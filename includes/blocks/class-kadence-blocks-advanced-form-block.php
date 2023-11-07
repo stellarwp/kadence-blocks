@@ -226,7 +226,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 * Labels
 		 *
 		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-field .kb-adv-form-label' );
 
 		$css->render_measure_output( $label_style, 'padding', 'padding' );
 		$css->render_measure_output( $label_style, 'margin', 'margin' );
