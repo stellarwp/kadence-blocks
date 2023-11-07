@@ -603,13 +603,18 @@ function GalleryEdit( props ) {
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
 		drag     : false,
-		focus        : 0,
 		perPage      : previewColumns,
 		interval     : autoSpeed,
-		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0',
-		direction : ( isRTL ? 'rtl' : 'ltr' )
+		direction : ( isRTL ? 'rtl' : 'ltr' ),
 	};
+
+	if(carouselSettings.perPage === 1 || slidesScroll === "1") {
+		carouselSettings.focus = 0;
+		carouselSettings.perMove = 1;
+		carouselSettings.type = 'loop';
+	}
+	
 	const fluidCarouselSettings = {
 		type         : 'loop',
 		autoplay     : autoPlay,
