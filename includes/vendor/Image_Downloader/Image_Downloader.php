@@ -93,9 +93,15 @@ final class Image_Downloader {
 			$images['collection_slug'] = wp_generate_password( 12, false );
 		}
 
+		$first_url = $images['images'][0]['url'];
+
+		// Images have already been imported.
+		if(!str_contains($first_url, 'pexels.com') ) {
+			return $this->container->get( Response_Formatter::class )->format( $images );
+		}
+
 		$collection[] = $images;
 
-		// TODO: we should probably check if the images exist already, although this might actually be slower...
 		$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
 
 		return $this->container->get( WordPress_Importer::class )->import( $downloaded );
