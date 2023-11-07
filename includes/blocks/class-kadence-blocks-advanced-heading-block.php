@@ -95,7 +95,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
-		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
 
 		// Style.
 		if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {

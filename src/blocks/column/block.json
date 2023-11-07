@@ -249,6 +249,10 @@
 			"type": "string",
 			"default": "px"
 		},
+		"gutterVariable": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
 		"rowGap": {
 			"type": "array",
 			"default": [ "", "", "" ]
@@ -256,6 +260,10 @@
 		"rowGapUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"rowGapVariable": {
+			"type": "array",
+			"default": [ "", "", "" ]
 		},
 		"flexBasis": {
 			"type": "array",
@@ -266,6 +274,12 @@
 			"default": "px"
 		},
 		"verticalAlignment": {
+			"type": "string"
+		},
+		"verticalAlignmentTablet": {
+			"type": "string"
+		},
+		"verticalAlignmentMobile": {
 			"type": "string"
 		},
 		"backgroundImgHover": {
@@ -628,7 +642,11 @@
 	   	},
 	  	"hoverOverlayBlendMode": {
 			"type": "string"
-	  	}
+	  	},
+		"kbVersion": {
+			"type": "number",
+			"default": ""
+		}
 	},
 	"supports": {
 		"anchor": true,

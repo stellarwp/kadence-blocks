@@ -8,7 +8,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\render_authorize_button;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
  * Build Welcome Page class
@@ -1032,6 +1034,25 @@ class Kadence_Blocks_Settings {
 				<div class="kadence_blocks_home_main">
 				</div>
 			</div>
+			<?php
+			// $token = get_authorization_token();
+			// $is_authorized = is_authorized( 'xxx1234xxx', (string) $token, 'uplinksample.lndo.site' );
+			// echo $is_authorized ? esc_html__( 'authorized' ) : esc_html__( 'not authorized' );
+			echo '<div class="test">';
+			render_authorize_button( 'kadence-blocks' );
+			echo '</div>';
+			// $container     = \KadenceWP\KadenceBlocks\StellarWP\Uplink\Config::get_container();
+			// $token_manager = $container->get( \KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager::class );
+			// $token         = $token_manager->get();
+
+			// if ( ! $token ) {
+			// 	return;
+			// }
+
+			// $is_authorized = \KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized( 'customer_license_key', $token, 'customer_domain' );
+
+			// echo $is_authorized ? esc_html__( 'authorized' ) : esc_html__( 'not authorized' );
+			?>
 		</div>
 		<?php
 	}

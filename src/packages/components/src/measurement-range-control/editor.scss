@@ -229,11 +229,31 @@
 		flex: 1;
 	}
 }
+.kadence-range-popover-settings-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 8px;
+}
 
+.kadence-range-popover-settings-inner .components-base-control.components-range-control.components-spacing-sizes-control__range-control {
+    flex-grow: 1;
+}
+
+.kadence-range-popover-settings-inner .components-button.is-secondary {
+    height:30px;
+    min-height:30px;
+    margin-bottom:8px
+}
 .kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-measure-control-select-wrapper {
     height: 32px;
 }
-
+.kadence-range-popover-settings-inner .components-range-control .components-range-control__wrapper {
+    margin-bottom: 0;
+}
+.kadence-range-popover-settings-inner .components-range-control .components-base-control__field {
+    margin-bottom: 0;
+}
 .kadence-measure-range-control .kadence-single-measure-range-control.kb-measure-input-all-inputs .kadence-measure-control-select-wrapper .kadence-measure-control-select {
     width: 26px;
 }

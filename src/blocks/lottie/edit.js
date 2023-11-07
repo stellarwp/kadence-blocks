@@ -580,6 +580,7 @@ export function Edit( props ) {
 								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
+								allowAuto={ true }
 							/>
 							<RangeControl
 								label={ __( 'Max Width', 'kadence-blocks' ) }

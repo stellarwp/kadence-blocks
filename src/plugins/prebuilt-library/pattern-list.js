@@ -9,6 +9,8 @@ import {
 import { parse } from '@wordpress/blocks';
 import {
 	Button,
+	Dropdown,
+	CheckboxControl,
 	TextControl,
 	SelectControl,
 	VisuallyHidden,
@@ -187,8 +189,8 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 function LaunchWizard( { launchWizard } ) {
 	const launchWizardHeadline = __( 'Supercharge your web design process with Kadence AI', 'kadence-blocks' );
 	const launchWizardBody = __(
-		`To fill your library with thoughtful, relevant, and unique content, simply enter your site goals and information into our prompt wizard. 
-		Our design library includes context-driven design patterns that are easy to use, saving you time and effort during the design process. It 
+		`To fill your library with thoughtful, relevant, and unique content, simply enter your site goals and information into our prompt wizard.
+		Our design library includes context-driven design patterns that are easy to use, saving you time and effort during the design process. It
 		only takes a few minutes to get started.`,
 		'kadence-blocks'
 	);
@@ -251,7 +253,78 @@ function LoadingFailedHeader( { type } ) {
 		</Heading>
 	);
 }
+function PatternFilterDropdown( { categories, selectedCategories } ) {
+	const [options, setOptions] = useState(categories.filter((pattern) => pattern.label !== 'All'));
+	const [selectedPatterns, setSelectedPatterns] = useState([]);
 
+	useEffect(() => {
+		if(options && options.length) {
+			const temp = options.filter((pattern) => pattern.checked);
+			setSelectedPatterns(temp);
+
+			if(selectedCategories) {
+				selectedCategories(temp);
+			}
+		}
+	}, [options]);
+
+	const filterIcon = (<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M8.33333 15H11.6667V13.3333H8.33333V15ZM2.5 5V6.66667H17.5V5H2.5ZM5 10.8333H15V9.16667H5V10.8333Z" fill="currentColor"/>
+	</svg>);
+
+	const clearFilter = () => {
+		setOptions(options.map((pattern) => ({...pattern, checked: false})))
+	}
+
+	const updateSelection = (bool, index) => {
+		const cloned = [...options];
+		cloned[index].checked = bool;
+		setOptions(cloned);
+
+	}
+
+	return (
+		<Dropdown
+			variant="unstyled"
+			className="kb-patterns-filter-dropdown"
+			contentClassName="kb-patterns-filter-dropdown-content"
+			popoverProps={ { placement: 'bottom-start' } }
+			renderToggle={ ( { isOpen, onToggle } ) => (
+				<Button
+					onClick={ onToggle }
+					aria-expanded={ isOpen }
+					className="kb-toggle-button"
+				>
+					<div className='kb-toggle-button-wrapper'>
+						<span>
+							Filters {selectedPatterns.length > 0 ? `(${selectedPatterns.length})` : ''}
+						</span>
+						{ filterIcon }
+					</div>
+				</Button>
+			) }
+			renderContent={ () => (
+				<div>
+					<div className="kb-patterns-filter-dropdown-content-inner">
+						{options && options.map((pattern, i) => (
+							<div className='kb-pattern-filter-item' key={ pattern.value }>
+								<CheckboxControl
+									checked={ pattern.checked }
+									id={ pattern.value }
+									label={ pattern.label }
+									onChange={(bool) => updateSelection(bool, i) }
+								/>
+							</div>
+						))}
+					</div>
+					<div className='kb-pattern-filter-dropdown-content-clear' onClick={(_e) => clearFilter()}>
+						Clear
+					</div>
+				</div>
+			) }
+		/>
+	);
+}
 
 function PatternList( {
 	patterns,
@@ -272,9 +345,11 @@ function PatternList( {
 	generateContext,
 	contextLabel,
 	launchWizard,
+	categories
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
+	const [ categoryFilter, setCategoryFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const { getContextState, getContextContent, getAllContext } = useSelect(
 		( select ) => {
@@ -332,6 +407,7 @@ function PatternList( {
 		});
 		return allPatterns;
 	}, [ patterns ] );
+
 	const filteredBlockPatterns = useMemo( () => {
 		let contextTax = 'contact-form' === aiContext ? 'contact' : aiContext;
 		contextTax = 'subscribe-form' === contextTax ? 'subscribe' : contextTax;
@@ -370,6 +446,8 @@ function PatternList( {
 			}
 		}
 		let allPatterns = thePatterns;
+
+
 		if ( ! filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
 				pattern.categories?.includes( selectedCategory )
@@ -385,6 +463,13 @@ function PatternList( {
 				pattern?.hpcontexts?.includes( contextTax + '-hp' ) ? -1 : 1
 			);
 		}
+
+		if(categoryFilter && categoryFilter.length > 0) {
+			allPatterns = allPatterns.filter((pattern) => {
+				return pattern.categories.some((cat) => categoryFilter.includes(cat))
+			});
+		}
+
 		if ( useImageReplace === 'all' && imageCollection ) {
 			let variation = 0;
 			allPatterns = allPatterns.map( ( item, index ) => {
@@ -419,7 +504,13 @@ function PatternList( {
 			} );
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData, categoryFilter ] );
+
+	const updateFilters = (categoryList) => {
+		console.log('cat list', categoryList);
+		setCategoryFilter(categoryList.map((cat) => cat.value) ?? []);
+	};
+
 	const hasHTml = useMemo( () => {
 		return ( patterns[Object.keys( patterns )[0]]?.html ? true : false );
 	}, [ patterns ] );
@@ -552,9 +643,10 @@ function PatternList( {
 		return newStyles;
 	}, [ selectedStyle, selectedFontSize ] );
 	const hasItems = !! filteredBlockPatterns?.length;
+
 	return (
 		<div className="block-editor-block-patterns-explorer__wrap">
-			<div className="block-editor-block-patterns-explorer__list">
+			<div className={ `block-editor-block-patterns-explorer__list${ contextTab === 'context' ? ' kb-ai-patterns-explorer' : '' }`}>
 				{ hasItems && (
 					<PatternsListHeader
 						filterValue={ filterValue }
@@ -577,6 +669,9 @@ function PatternList( {
 				) }
 				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
+				) }
+				{ contextTab === 'context' && !filterValue && (
+					<PatternFilterDropdown categories={ categories } selectedCategories={ updateFilters } />
 				) }
 				{ hasItems && !failedAI && (
 					<KadenceBlockPatternList

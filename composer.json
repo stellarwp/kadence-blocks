@@ -11,7 +11,8 @@
 	"require": {
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.0",
-		"stellarwp/telemetry": "^2.0",
+		"stellarwp/telemetry": "^2.3",
+		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0"
 	},
 	"autoload": {
@@ -20,9 +21,13 @@
 		}
 	},
 	"scripts": {
+		"stellar-uplink": [
+			"vendor/bin/stellar-uplink domain=kadence-blocks"
+		],
 		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.13.0/strauss.phar",
-			"@php bin/strauss.phar"
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+			"@php bin/strauss.phar",
+			"@composer dump-autoload"
 		],
 		"pup": [
 			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
@@ -34,12 +39,12 @@
 		],
 		"post-install-cmd": [
 			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
 			"@strauss",
-			"echo \"<?php\" > vendor/lucatume/di52/aliases.php",
+			"@stellar-uplink",
 			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
 		]
 	},
@@ -48,8 +53,8 @@
 			"target_directory": "vendor/vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
-			"namespace_prefix": "KadenceWP\\KadenceBlocks",
-			"delete_vendor_files": true,
+			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
+			"delete_vendor_packages": false,
 			"exclude_from_prefix": {
 			  "file_patterns": []
 			},
@@ -57,6 +62,7 @@
 				"psr/container",
 				"stellarwp/container-contract",
 				"stellarwp/telemetry",
+				"stellarwp/uplink",
 				"lucatume/di52"
 			]
 		}

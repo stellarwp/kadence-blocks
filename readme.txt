@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.3
-Stable tag: 3.1.23
+Stable tag: 3.2.5
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,7 +97,16 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.1 Beta Version 2 =
+Release Date: October 31st, 2023
+
+= 3.2.0 Beta Version 1 =
+Release Date: October 5th, 2023
+* Add: New Flex control options in section block.
+* Add: New auto option for margin controls.
+
 = 3.1.23 =
+Release Date: October 31st, 2023
 * Fix: Issue with icon list margin.
 
 = 3.1.22 =

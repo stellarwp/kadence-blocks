@@ -36,7 +36,6 @@ import {
 	ResponsiveAlignControls,
 	GradientControl,
 	BoxShadowControl,
-	DynamicTextControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -886,6 +885,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 												onUnit={( value ) => setAttributes( { marginUnit: value } )}
 												onMouseOver={ marginMouseOver.onMouseOver }
 												onMouseOut={ marginMouseOver.onMouseOut }
+												allowAuto={ true }
 											/>
 											<TextControl
 												label={ __( 'Add Aria Label', 'kadence-blocks' )}

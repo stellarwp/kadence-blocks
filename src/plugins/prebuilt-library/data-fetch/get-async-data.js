@@ -232,6 +232,26 @@ export function getAsyncData() {
 		}
 	}
 	/**
+	 * Get the AI content data from the server.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getInitialAIContent() {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_initial_jobs' , {
+					api_key:data_key,
+				} ),
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'failed';
+		}
+	}
+	/**
 	 * Force a reload of the AI content data.
 	 *
 	 * @return {Promise<object>} Promise returns object
@@ -436,6 +456,7 @@ export function getAsyncData() {
 		getPattern,
 		processPattern,
 		getLocalAIContexts,
+		getInitialAIContent,
 		getAIContentRemaining,
 		getAvailableCredits,
 		sendEvent,

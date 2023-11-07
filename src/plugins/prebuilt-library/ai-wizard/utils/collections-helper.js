@@ -177,8 +177,8 @@ export function collectionsHelper() {
 
 		const toUpdate = [...wordpressCollections];
 		toUpdate.splice(matchingIndex, 1);
-
-		sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify(toUpdate));
+		dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: toUpdate });
+		// sessionStorage.setItem(COLLECTIONS_CUSTOM_SESSION_KEY, JSON.stringify(toUpdate));
 		setWordpressCollections(toUpdate);
 	}
 

@@ -263,7 +263,7 @@ function PatternLibrary( {
 
 		setPageStyles( activePageStyles );
 	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getAvailableCredits, sendEvent } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits, sendEvent } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
@@ -378,6 +378,14 @@ function PatternLibrary( {
 			updateContextState( tempContext, false );
 		} else {
 			const o = SafeParseJSON( response, false );
+			let tempLocalContexts = [];
+			if ( false !== localContexts ) {
+				tempLocalContexts = localContexts;
+			}
+			if ( tempLocalContexts.indexOf( tempContext ) !== -1 ) {
+				tempLocalContexts.push( tempContext );
+				setLocalContexts( tempLocalContexts );
+			}
 			updateContext( tempContext, o );
 			setTimeout( () => {
 				forceRefreshLibrary();
@@ -448,7 +456,8 @@ function PatternLibrary( {
 	}
 	async function getAllNewData() {
 		setIsLoading( true );
-		const response = await getAIContentRemaining( true );
+		const response = await getInitialAIContent( true );
+		console.log( response );
 		if ( response === 'error' || response === 'failed' ) {
 			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
 			console.log( 'Error getting AI Content.' );
@@ -1154,6 +1163,7 @@ function PatternLibrary( {
 									photographyOnly: false
 								} );
 							} }
+							categories={ categoryListOptions }
 						/>
 					) }
 				</>
