@@ -771,7 +771,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @return void Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( $request ) {
 		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
@@ -818,18 +818,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Check if we have a local file.
 		if ( ! $reload && file_exists( $this->get_local_data_path( $identifier ) ) ) {
-			return wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
+			wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
 		} else {
 			if ( 'custom' === $library ) {
-				return wp_json_encode( apply_filters( 'kadence_block_library_custom_array', array() ) );
+				wp_json_encode( apply_filters( 'kadence_block_library_custom_array', array() ) );
 			}
 			// Access via remote.
 			$response = $this->get_remote_library_contents( $library, $library_url, $key );
 			if ( 'error' === $response ) {
-				return wp_send_json( 'error' );
+				wp_send_json( 'error' );
 			} else {
 				$this->create_data_file( $response, $identifier );
-				return wp_send_json( $response );
+				wp_send_json( $response );
 			}
 		}
 	}
