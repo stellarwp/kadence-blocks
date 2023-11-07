@@ -49,17 +49,17 @@ class Analytics {
 		 *
 		 * @param string The URL to use when sending events.
 		 */
-		$url  = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
 
 		$response = wp_remote_post(
 			$url,
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
-					'Content-Type' => 'application/json',
+					'X-Prophecy-Token' => $this->get_prophecy_token_header( [ 'key' => $context['key'] ?? '' ] ), // Use the key from the context if it's available.
+					'Content-Type'     => 'application/json',
 				),
-				'body' => wp_json_encode( [
+				'body'    => wp_json_encode( [
 					'name'    => $name,
 					'context' => $context,
 				]),
@@ -82,14 +82,11 @@ class Analytics {
 		}
 
 		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$current_user = wp_get_current_user();
 		$site_name    = get_bloginfo( 'name' );
 
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => '',
-			'user_id'         => $current_user->ID,
-			'email'           => $current_user->email,
 			'site_name'       => $site_name,
 			'product_slug'    => 'kadence-blocks',
 			'product_version' => KADENCE_BLOCKS_VERSION
