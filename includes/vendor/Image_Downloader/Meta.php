@@ -46,9 +46,7 @@ final class Meta {
 	}
 
 	/**
-	 * Delete image metadata when an attachment is deleted.
-	 *
-	 * @action delete_attachment
+	 * Delete image metadata.
 	 *
 	 * @param int $attachment_id
 	 *

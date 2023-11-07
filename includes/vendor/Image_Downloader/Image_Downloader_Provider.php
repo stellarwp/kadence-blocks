@@ -10,9 +10,13 @@ use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\ImageDownloader;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Sanitization\Contracts\Sanitizer;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Sanitization\Sanitizers\WPFileNameSanitizer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Log\Formatters\ColoredLineFormatter;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Log\LogLevel;
 use KadenceWP\KadenceBlocks\Symfony\Component\HttpClient\HttpClient;
+use KadenceWP\KadenceBlocks\Symfony\Component\String\Slugger\AsciiSlugger;
+use KadenceWP\KadenceBlocks\Symfony\Component\String\Slugger\SluggerInterface;
 use KadenceWP\KadenceBlocks\Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class Image_Downloader_Provider extends Provider {
@@ -21,13 +25,8 @@ final class Image_Downloader_Provider extends Provider {
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		$this->register_meta();
 		$this->register_logging();
 		$this->register_image_downloader();
-	}
-
-	private function register_meta(): void {
-		add_action( 'delete_attachment', $this->container->callback( Meta::class, 'delete' ), 10, 1 );
 	}
 
 	private function register_logging(): void {
@@ -68,6 +67,9 @@ final class Image_Downloader_Provider extends Provider {
 	}
 
 	private function register_image_downloader(): void {
+		$this->container->bind( SluggerInterface::class, AsciiSlugger::class );
+		$this->container->bind( Sanitizer::class, WPFileNameSanitizer::class );
+
 		// Ensure we always get the same instance, so the image state is current.
 		$this->container->singleton( WordPress_Importer::class, WordPress_Importer::class );
 
@@ -92,7 +94,7 @@ final class Image_Downloader_Provider extends Provider {
 		 *
 		 * @param int $batch_size The number of download requests per batch.
 		 */
-		$batch_size = absint( apply_filters( 'kadence_blocks_image_download_batch_size', 60 ) );
+		$batch_size = absint( apply_filters( 'kadence_blocks_image_download_batch_size', 100 ) );
 
 		$this->container->when( ImageDownloader::class )
 		                ->needs( '$batch_size' )
