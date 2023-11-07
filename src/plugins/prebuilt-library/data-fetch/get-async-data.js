@@ -399,6 +399,31 @@ export function getAsyncData() {
 		}
 	}
 
+	/**
+	 * Send Event to Backend.
+	 *
+	 * @param {string} event
+	 * @param {object} data
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function sendEvent( event, data ) {
+		try {
+			const response = await apiFetch( {
+				path: '/kb-design-library/v1/handle_event',
+				method: 'POST',
+				data: {
+					event: event,
+					data: data,
+				},
+			} );
+			return response;
+		} catch (error) {
+			console.log(`ERROR: ${ error }`);
+			return 'failed';
+		}
+	}
+
 	return {
 		error,
 		getAIContentData,
@@ -413,6 +438,7 @@ export function getAsyncData() {
 		getLocalAIContexts,
 		getAIContentRemaining,
 		getAvailableCredits,
+		sendEvent,
 	}
 }
 

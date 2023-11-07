@@ -263,7 +263,7 @@ function PatternLibrary( {
 
 		setPageStyles( activePageStyles );
 	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getAvailableCredits } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getAvailableCredits, sendEvent } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
@@ -797,7 +797,7 @@ function PatternLibrary( {
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div>
-					
+
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>
 					<div className="kb-library-sidebar-search">
@@ -1148,6 +1148,7 @@ function PatternLibrary( {
 								reloadAI( tempCon );
 							} }
 							launchWizard={ () => {
+								sendEvent( 'wizard', 'launch');
 								setWizardState( {
 									visible: true,
 									photographyOnly: false
