@@ -28,7 +28,7 @@
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.0"
+		"stellarwp/prophecy-image-downloader": "1.1.0-RC6.72"
 	},
 	"autoload": {
 		"psr-4": {
