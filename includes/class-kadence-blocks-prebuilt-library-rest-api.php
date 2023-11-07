@@ -389,6 +389,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
+		register_rest_route(
+			$this->namespace,
+			'/handle_event',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'handle_event' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				)
+			)
+		);
 	}
 	/**
 	 * Checks if a given request has access to search content.
