@@ -1600,31 +1600,19 @@ class Kadence_Blocks_CSS {
 
 		$this->set_media_state( 'desktop' );
 		if ( ! empty( $attributes[ $name[0] ] ) ) {
-			if($property === 'font-size') {
-				$this->add_property( $property, $this->get_font_size($attributes[ $name[0] ], $unit) );
-			} else {
-				$this->add_property( $property, $attributes[ $name[0] ] . $unit );
-			}
+			$this->add_property( $property, $attributes[ $name[0] ] . $unit );
 		} else if ( $defaults[0] ) {
 			$this->add_property( $property, $defaults[0] . $unit );
 		}
 		$this->set_media_state( 'tablet' );
 		if ( ! empty( $attributes[ $name[1] ] ) ) {
-			if($property === 'font-size') {
-				$this->add_property( $property, $this->get_font_size($attributes[ $name[1] ], $unit) );
-			} else {
-				$this->add_property( $property, $attributes[ $name[1] ] . $unit );
-			}
+			$this->add_property( $property, $attributes[ $name[1] ] . $unit );
 		} else if ( $defaults[1] ) {
 			$this->add_property( $property, $defaults[1] . $unit );
 		}
 		$this->set_media_state( 'mobile' );
 		if ( ! empty( $attributes[ $name[2] ] ) ) {
-			if($property === 'font-size') {
-				$this->add_property( $property, $this->get_font_size($attributes[ $name[2] ], $unit) );
-			} else {
-				$this->add_property( $property, $attributes[ $name[2] ] . $unit );
-			}
+			$this->add_property( $property, $attributes[ $name[2] ] . $unit );
 		} else if ( $defaults[2] ) {
 			$this->add_property( $property, $defaults[2] . $unit );
 		}

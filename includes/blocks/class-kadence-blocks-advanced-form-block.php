@@ -257,53 +257,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
-		if ( isset( $help_style['lineHeight'] ) ) {
-			$help_font_line_height = array( 
-				'lineHeight' => $help_style['lineHeight'][0],
-				'tabletLineHeight' => $help_style['lineHeight'][1],
-				'mobileLineHeight' => $help_style['lineHeight'][2],
-				'lineType' => $help_style['lineType'],
-			);
-			$css->render_responsive_size( $help_font_line_height, array( 'lineHeight', 'tabletLineHeight', 'mobileLineHeight' ), 'line-height', 'lineType' );
-		}
-
-		if ( isset( $help_style['size'] ) ) {
-			$help_font_size = array( 
-				'size' => $help_style['size'][0],
-				'tabletSize' => $help_style['size'][1],
-				'mobileSize' => $help_style['size'][2],
-				'sizeType' => $help_style['sizeType'],
-			);
-			$css->render_responsive_size( $help_font_size, array( 'size', 'tabletSize', 'mobileSize' ), 'font-size', 'sizeType' );
-		}
-		if ( isset( $help_style['letterSpacing'] ) ) {
-			$help_font_letter_spacing = array( 
-				'letterSpacing' => $help_style['letterSpacing'][0],
-				'tabletLetterSpacing' => $help_style['letterSpacing'][1],
-				'mobileLetterSpacing' => $help_style['letterSpacing'][2],
-				'letterType' => $help_style['letterType'],
-			);
-			$css->render_responsive_size( $help_font_letter_spacing, array( 'letterSpacing', 'tabletLetterSpacing', 'mobileLetterSpacing' ), 'letter-spacing', 'letterType' );
-		}
-
-		$css->render_color_output( $help_style, 'color', 'color' );
+		$tmp_help_font = array( 'typography' => $help_style );
+		$css->render_typography( $tmp_help_font, 'typography' );
 		$css->render_measure_output( $help_style, 'padding', 'padding' );
 		$css->render_measure_output( $help_style, 'margin', 'margin' );
-		if ( isset( $help_style['textTransform'] ) && ! empty( $help_style['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $help_style['textTransform'] );
-		}
 
-		if ( isset( $help_style['family'] ) && ! empty( $help_style['family'] ) ) {
-			$google = isset( $help_style['google'] ) && $help_style['google'] ? true : false;
-			$google = $google && ( isset( $help_style['loadGoogle'] ) && $help_style['loadGoogle'] || ! isset( $help_style['loadGoogle'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $help_style['family'], $google, ( isset( $help_style['variant'] ) ? $help_style['variant'] : '' ), ( isset( $help_style['subset'] ) ? $help_style['subset'] : '' ) ) );
-		}
-		if ( isset( $help_style['style'] ) && ! empty( $help_style['style'] ) ) {
-			$css->add_property( 'font-style', $help_style['style'] );
-		}
-		if ( isset( $help_style['weight'] ) && ! empty( $help_style['weight'] ) && 'regular' !== $help_style['weight'] ) {
-			$css->add_property( 'font-weight', $help_style['weight'] );
-		}
 		/*
 		 *
 		 * Message Styles
