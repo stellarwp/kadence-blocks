@@ -164,6 +164,7 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 	function onSelectImages( images ) {
 		const formattedPhotos = images.map((photo) => ({
 			id: photo.id,
+			post_id: photo.id,
 			alt: photo.alt || photo.name,
 			url: photo?.sizes?.large?.url || photo?.sizes?.full?.url,
 			sizes: [
