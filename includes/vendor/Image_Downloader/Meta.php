@@ -12,12 +12,12 @@ final class Meta {
 	public const ATTACHMENT_ALT          = '_wp_attachment_image_alt';
 	public const PEXELS_PHOTOGRAPHER     = '_pexels_photographer';
 	public const PEXELS_PHOTOGRAPHER_URL = '_pexels_photographer_url';
-	public const IMAGE_HASH              = '_kadence_blocks_image_hash';
+	public const PEXELS_ID               = '_pexels_id';
 
 	public const DELETABLE = [
 		self::PEXELS_PHOTOGRAPHER,
 		self::PEXELS_PHOTOGRAPHER_URL,
-		self::IMAGE_HASH,
+		self::PEXELS_ID,
 	];
 
 	/**
@@ -33,11 +33,11 @@ final class Meta {
 			self::ATTACHMENT_ALT          => $image->alt,
 			self::PEXELS_PHOTOGRAPHER     => $image->photographer,
 			self::PEXELS_PHOTOGRAPHER_URL => $image->photographer_url,
-			self::IMAGE_HASH              => $image->url ? sha1( $image->url ) : '',
+			self::PEXELS_ID               => $image->id,
 		];
 
 		foreach ( $meta as $meta_key => $value ) {
-			if ( strlen( $value ) <= 0 ) {
+			if ( strlen( (string) $value ) <= 0 ) {
 				continue;
 			}
 

@@ -51,6 +51,10 @@ final class Image_Downloader {
 		return self::$instance;
 	}
 
+	public function container(): Container {
+		return $this->container;
+	}
+
 	/**
 	 * Download and import a collection of images to the WordPress library.
 	 *
@@ -59,6 +63,7 @@ final class Image_Downloader {
 	 *      image_type?: string,
 	 *      images: array<int, array{
 	 *           id: int,
+	 *           post_id?: int,
 	 *           width: int,
 	 *           height: int,
 	 *           alt: string,
@@ -75,6 +80,100 @@ final class Image_Downloader {
 	 * @throws \Throwable
 	 */
 	public function download( array $images ): array {
+		$existing   = $this->get_existing_images( $images );
+		$downloaded = empty( $images['images'] ) ? [] : $this->download_images( $images );
+
+		// Merge any imported images with existing images.
+		return array_merge( $existing, $downloaded );
+	}
+
+	/**
+	 * Based on the incoming request, determine which images have already been
+	 * downloaded.
+	 *
+	 * This is weird because the frontend replaces the id and the URL, which is normally
+	 * the pexels_id and pexels URL with the attachment_id and full URL to the image.
+	 *
+	 * Now local images will pass a post_id, but depending on the image state, we still
+	 * have to check the meta for the pexels_id, because the image may exist in the media
+	 * library.
+	 *
+	 * @param array<array{
+	 *       collection_slug?: string,
+	 *       image_type?: string,
+	 *       images: array<int, array{
+	 *            id: int,
+	 *            post_id?: int,
+	 *            width: int,
+	 *            height: int,
+	 *            alt: string,
+	 *            url: string,
+	 *            photographer: string,
+	 *            photographer_url: string,
+	 *            avg_color: string,
+	 *            sizes: non-empty-array<int,array{name: string, src: string}>
+	 *       }>
+	 *      }> $images
+	 *
+	 * @return array<array{id: int, url: string}>
+	 */
+	private function get_existing_images( array &$images ): array {
+		$existing = [];
+		$ids      = $this->container->get( Pexels_ID_Registry::class )->all();
+
+		foreach ( $images['images'] as $key => $image ) {
+			$post_id   = $image['post_id'] ?? false;
+			$pexels_id = $image['id'] ?? false;
+
+			if ( $post_id !== false ) {
+				// We were provided a post_id, but it's not in our list of attachments.
+				if ( ! isset( $ids['post_ids'][ $post_id ] ) ) {
+					continue;
+				}
+			} elseif ( $pexels_id !== false ) {
+				$post_id = $ids['pexels_ids'][ $pexels_id ] ?? false;
+
+				if ( $post_id === false ) {
+					continue;
+				}
+			}
+
+			$existing[] = [
+				'id'  => $post_id,
+				'url' => wp_get_attachment_image_url( $post_id ),
+			];
+
+			unset( $images['images'][ $key ] );
+		}
+
+		return $existing;
+	}
+
+	/**
+	 * Download and import Pexels images to the WordPress library.
+	 *
+	 * @param array<array{
+	 *        collection_slug?: string,
+	 *        image_type?: string,
+	 *        images: array<int, array{
+	 *             id: int,
+	 *             post_id?: int,
+	 *             width: int,
+	 *             height: int,
+	 *             alt: string,
+	 *             url: string,
+	 *             photographer: string,
+	 *             photographer_url: string,
+	 *             avg_color: string,
+	 *             sizes: non-empty-array<int,array{name: string, src: string}>
+	 *        }>
+	 *       }> $images
+	 *
+	 * @return array<array{id: int, url: string}>
+	 * @throws ImageDownloadException
+	 * @throws \Throwable
+	 */
+	private function download_images( array $images ): array {
 		if ( ! current_user_can( 'upload_files' ) ) {
 			return [];
 		}
@@ -93,22 +192,10 @@ final class Image_Downloader {
 			$images['collection_slug'] = wp_generate_password( 12, false );
 		}
 
-		$first_url = $images['images'][0]['url'];
-
-		// Images have already been imported.
-		if(!str_contains($first_url, 'pexels.com') ) {
-			return $this->container->get( Response_Formatter::class )->format( $images );
-		}
-
 		$collection[] = $images;
-
-		$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
+		$downloaded   = $this->container->get( ImageDownloader::class )->download( $collection, $path );
 
 		return $this->container->get( WordPress_Importer::class )->import( $downloaded );
-	}
-
-	public function container(): Container {
-		return $this->container;
 	}
 
 	private function init(): void {
