@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\ImageDownloader;
 use RuntimeException;
+use Throwable;
 
 final class Image_Downloader {
 
@@ -77,7 +78,7 @@ final class Image_Downloader {
 	 *
 	 * @return array<array{id: int, url: string}>
 	 * @throws ImageDownloadException
-	 * @throws \Throwable
+	 * @throws Throwable
 	 */
 	public function download( array $images ): array {
 		$existing   = $this->get_existing_images( $images );
@@ -171,7 +172,7 @@ final class Image_Downloader {
 	 *
 	 * @return array<array{id: int, url: string}>
 	 * @throws ImageDownloadException
-	 * @throws \Throwable
+	 * @throws Throwable
 	 */
 	private function download_images( array $images ): array {
 		if ( ! current_user_can( 'upload_files' ) ) {
@@ -193,9 +194,18 @@ final class Image_Downloader {
 		}
 
 		$collection[] = $images;
-		$downloaded   = $this->container->get( ImageDownloader::class )->download( $collection, $path );
 
-		return $this->container->get( WordPress_Importer::class )->import( $downloaded );
+		try {
+			$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
+
+			return $this->container->get( WordPress_Importer::class )->import( $downloaded );
+		} catch ( Throwable $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( $e->getMessage() );
+			}
+
+			return [];
+		}
 	}
 
 	private function init(): void {
