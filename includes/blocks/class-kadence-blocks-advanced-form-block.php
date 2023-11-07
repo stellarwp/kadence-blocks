@@ -120,16 +120,16 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector(
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=text],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=tel],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=number],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=date],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=time],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=file],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' select,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea'
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=text],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=tel],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=number],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=date],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=time],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=file],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form select,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form textarea'
 		);
 
 		$css->render_typography( $form_attributes, 'inputFont' );
