@@ -99,12 +99,15 @@ developers of this plugin.
 
 = 3.1.24 =
 Release Date: November TBD, 2023
+* Update: Add option to allow decimals in Advanced Form number field.
 * Update: Allow mute/unmute buttons row video backgrounds to be displayed separately from the play / pause button.
 * Fix: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
 * Fix: Google V3 reCAPTCHA not hiding in when set to hide.
 * Fix: Add aria label to Advanced Gallery lightbox links.
 * Fix: Allow show more button to be focusable using tab key.
 * Fix: Border styling display on Advanced button in editor
+* Fix: Adv gallery dots having an inaccurate count in some situations.
+* Fix: Advanced form help text font size on front end.
 
 = 3.1.23 =
 Release Date: November 1st, 2023
