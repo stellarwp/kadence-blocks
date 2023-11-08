@@ -87,8 +87,8 @@ class Analytics {
 
 		$defaults = [
 			'domain'          => $site_url,
-			'key'             => $api_details['api_key'],
-			'email'           => $api_details['api_email'],
+			'key'             => $api_details['api_key'] ?? '',
+			'email'           => $api_details['api_email'] ?? '',
 			'site_name'       => $site_name,
 			'product_slug'    => 'kadence-blocks',
 			'product_version' => KADENCE_BLOCKS_VERSION
