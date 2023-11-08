@@ -422,19 +422,19 @@ export function getAsyncData() {
 	/**
 	 * Send Event to Backend.
 	 *
-	 * @param {string} event
-	 * @param {object} data
+	 * @param {string} event_label
+	 * @param {string} event_value
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function sendEvent( event, data ) {
+	async function sendEvent( event_label, event_value ) {
 		try {
 			const response = await apiFetch( {
 				path: '/kb-design-library/v1/handle_event',
 				method: 'POST',
 				data: {
-					event: event,
-					data: data,
+					event: event_label,
+					data: event_value,
 				},
 			} );
 			return response;

@@ -77,6 +77,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Handle image Industry.
 	 */
 	const PROP_INDUSTRY = 'industry';
+	/**
+	 * Event Label.
+	 */
+	const PROP_EVENT_LABEL = 'event_label';
+	/**
+	 * Event Value.
+	 */
+	const PROP_EVENT_VALUE = 'event_value';
 
 	/**
 	 * The library folder.
@@ -600,6 +608,34 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( $response );
 		}
 	}
+	/**
+	 * Handle the event and maybe send to Prophecy WP.
+	 */
+	public function handle_event( $request ) {
+		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
+		$event_value = $request->get_param( self::PROP_EVENT_VALUE );
+
+		if ( $event_label !== 'analytics' ) {
+			return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 200 );
+		}
+
+		$context = array();
+
+		if ( $event_value === 'ai_wizard_started' ) {
+			$context = array(
+				'date_time' => current_time( 'mysql' ),
+			);
+		}
+
+		if ( $context ) {
+			do_action( 'stellarwp/analytics/event', $event_value, $context );
+
+			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
+		}
+
+		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 200 );
+	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -2026,6 +2062,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => array( $this, 'sanitize_image_sizes_array' ),
+		);
+		$query_params[ self::PROP_EVENT_LABEL ] = array(
+			'description'       => __( 'The Event Label', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+		);
+		$query_params[ self::PROP_EVENT_VALUE ] = array(
+			'description'       => __( 'The Event Value', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
 		);
 		return $query_params;
 	}
