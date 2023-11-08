@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d1fefc127272ca6df910c66ad2e0780f",
+    "content-hash": "31441731520547e21b74828f23fa8b0f",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -525,22 +525,22 @@
             ],
             "description": "The Prophecy DI container and its contracts.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.0-RC6.72"
+                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.0-RC7.72"
             },
             "time": "2023-11-01T19:11:17+00:00"
         },
         {
             "name": "stellarwp/prophecy-image-downloader",
-            "version": "1.1.0-RC6.72",
+            "version": "1.1.0-RC7.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-image-downloader.git",
-                "reference": "e90d34b8bebbb0997cf17270ba96531b7d28034e"
+                "reference": "e96b3523324a45229e54168c5456ff96a4492bfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/e90d34b8bebbb0997cf17270ba96531b7d28034e",
-                "reference": "e90d34b8bebbb0997cf17270ba96531b7d28034e",
+                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/e96b3523324a45229e54168c5456ff96a4492bfe",
+                "reference": "e96b3523324a45229e54168c5456ff96a4492bfe",
                 "shasum": ""
             },
             "require": {
@@ -567,9 +567,9 @@
             ],
             "description": "A concurrent image downloading library.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.0-RC6.72"
+                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.0-RC7.72"
             },
-            "time": "2023-11-07T17:07:34+00:00"
+            "time": "2023-11-08T21:23:44+00:00"
         },
         {
             "name": "stellarwp/prophecy-log",
@@ -607,7 +607,7 @@
             ],
             "description": "The Prophecy Logger.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.0-RC6.72"
+                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.0-RC7.72"
             },
             "time": "2023-11-01T19:11:29+00:00"
         },
