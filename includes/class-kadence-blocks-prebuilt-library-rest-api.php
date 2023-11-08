@@ -4,6 +4,7 @@
  */
 
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
+use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -489,65 +490,79 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 *
+	 * @throws InvalidArgumentException
 	 */
 	public function get_images_by_industry( $request ) {
-		$industries = $request->get_param( self::PROP_INDUSTRIES );
-		$search_query = $request->get_param( self::PROP_INDUSTRY );
-		$image_type = $request->get_param( self::PROP_IMAGE_TYPE );
-		$image_sizes = $request->get_param( self::PROP_IMAGE_SIZES );
-		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		if ( empty( $industries ) ) {
+		$industries    = $request->get_param( self::PROP_INDUSTRIES );
+		$search_query  = $request->get_param( self::PROP_INDUSTRY );
+		$image_type    = $request->get_param( self::PROP_IMAGE_TYPE );
+		$image_sizes   = $request->get_param( self::PROP_IMAGE_SIZES );
+		$reload        = $request->get_param( self::PROP_FORCE_RELOAD );
+		$this->api_key = $request->get_param( self::PROP_API_KEY );
+
+		if ( empty( $industries ) || ! is_array( $industries ) ) {
 			return rest_ensure_response( 'error' );
 		}
-		if ( ! is_array( $industries ) ) {
-			return rest_ensure_response( 'error' );
-		}
+
 		$identifier = 'imageCollection' . json_encode( $industries ) . KADENCE_BLOCKS_VERSION;
+
 		if ( ! empty( $image_type ) ) {
 			$identifier .= '_' . $image_type;
 		}
+
 		if ( ! empty( $image_sizes ) && is_array( $image_sizes ) ) {
 			$identifier .= '_' . json_encode( $image_sizes );
 		}
+
 		if ( ! empty( $search_query ) ) {
 			$identifier .= '_' . $search_query;
 		}
+
+		// Whether this request will get saved to cache.
+		$store = false;
+
 		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
-			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
+			$response = $this->get_local_data_contents( $this->get_local_data_path( $identifier ) );
 		} else {
+			$store = true;
+
 			if ( ! empty( $search_query ) && in_array( 'aiGenerated', $industries, true ) ) {
-				// Check if we have a remote file.
+				// Fetch search image data.
 				$response = $this->get_remote_search_images( $search_query, $image_type, $image_sizes );
-				$data = json_decode( $response, true );
-				if ( $response === 'error' ) {
-					return rest_ensure_response( 'error' );
-				} else if ( ! isset( $data['data'] ) ) {
-					return rest_ensure_response( 'error' );
-				} else {
-					$this->create_data_file( $response, $identifier );
-					return rest_ensure_response( $response );
-				}
 			} else {
-				// Check if we have a remote file.
+				// Fetch industry image data.
 				$response = $this->get_remote_industry_images( $industries, $image_type, $image_sizes );
-				$data = json_decode( $response, true );
-				if ( $response === 'error' ) {
-					return rest_ensure_response( 'error' );
-				} else if ( ! isset( $data['data'][0]['collection_slug'] ) ) {
-					return rest_ensure_response( 'error' );
-				} else {
-					$this->create_data_file( $response, $identifier );
-					return rest_ensure_response( $response );
-				}
 			}
 		}
+
+		if ( $response === 'error' ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$data = json_decode( $response, true );
+
+		if ( ! isset( $data['data'] ) ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		if ( $store ) {
+			$this->create_data_file( $response, $identifier );
+		}
+
+		// Prime the cache for all image sizes for potential download.
+		Image_Downloader::instance()->container()->get( Cache_Primer::class )->cache( $data['data'] );
+
+		return rest_ensure_response( $response );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -1079,7 +1094,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves the path to the local data file.
 	 *
-	 * @param array $prompt_data The prompt data.
+	 * @param array|string $prompt_data The prompt data.
 	 *
 	 * @return string of the path to local data file.
 	 */

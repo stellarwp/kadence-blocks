@@ -25,8 +25,27 @@ final class Image_Downloader_Provider extends Provider {
 	 * @inheritDoc
 	 */
 	public function register(): void {
+		// Create the HTTP Client used to concurrently download images.
+		$this->container->bind( HttpClientInterface::class, HttpClient::create() );
+
+		$this->register_cache_primer();
 		$this->register_logging();
 		$this->register_image_downloader();
+	}
+
+	private function register_cache_primer(): void {
+		/**
+		 * Filter how many external cache requests we will open at once before discarding them.
+		 *
+		 * This may need to be adjusted depending on the host's limitations.
+		 *
+		 * @param int $batch_size The number of external cache requests per batch.
+		 */
+		$batch_size = absint( apply_filters( 'kadence_blocks_cache_primer_batch_size', 500 ) );
+
+		$this->container->when( Cache_Primer::class )
+		                ->needs( '$batch_size' )
+		                ->give( $batch_size );
 	}
 
 	private function register_logging(): void {
@@ -83,18 +102,15 @@ final class Image_Downloader_Provider extends Provider {
 			                'png'  => true,
 		                ] );
 
-		// Create the HTTP Client used to concurrently download images.
-		$this->container->when( ImageDownloader::class )
-		                ->needs( HttpClientInterface::class )
-		                ->give( HttpClient::create() );
-
 		/**
-		 * Filter how many download requests we will open at once before we attempt to save
+		 * Filter how many concurrent download requests we will open at once before we attempt to save
 		 * the images to disk.
+		 *
+		 * This may need to be adjusted depending on the host's limitations.
 		 *
 		 * @param int $batch_size The number of download requests per batch.
 		 */
-		$batch_size = absint( apply_filters( 'kadence_blocks_image_download_batch_size', 100 ) );
+		$batch_size = absint( apply_filters( 'kadence_blocks_image_download_batch_size', 200 ) );
 
 		$this->container->when( ImageDownloader::class )
 		                ->needs( '$batch_size' )
