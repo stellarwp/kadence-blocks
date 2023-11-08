@@ -56,7 +56,7 @@ class Analytics {
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => $this->get_prophecy_token_header( [ 'key' => $context['key'] ?? '' ] ), // Use the key from the context if it's available.
+					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => wp_json_encode( [
