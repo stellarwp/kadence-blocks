@@ -623,8 +623,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$event = 'AI Wizard Started';
 				break;
 
-			case 'ai_wizard_save':
-				$event = 'AI Wizard Save';
+			case 'ai_wizard_update':
+				$event = 'AI Wizard Update';
 				$context = [
 					'organization_type' => $event_data['entityType'] ?? '',
 					'location_type'     => $event_data['locationType'] ?? '',

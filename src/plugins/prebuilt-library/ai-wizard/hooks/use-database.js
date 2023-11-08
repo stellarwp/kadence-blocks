@@ -18,7 +18,7 @@ export function useDatabase() {
 	async function saveAiWizardData(data) {
 		setLoading(true);
 		setError(false);
-		sendEvent( 'ai_wizard_save', data );
+		sendEvent( 'ai_wizard_update', data );
 
 		try {
 			const response = await apiFetch({
