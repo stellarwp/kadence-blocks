@@ -77,7 +77,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Handle image Industry.
 	 */
 	const PROP_INDUSTRY = 'industry';
-
+	/**
+	 * Event Label.
+	 */
+	const PROP_EVENT_LABEL = 'event_label';
+	/**
+	 * Event Value.
+	 */
+	const PROP_EVENT_DATA = 'event_data';
 	/**
 	 * The library folder.
 	 *
@@ -600,6 +607,46 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( $response );
 		}
 	}
+	/**
+	 * Handle the event and maybe send to Prophecy WP.
+	 */
+	public function handle_event( $request ) {
+		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
+		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
+		$event_data  = json_decode( $event_data, true );
+
+		$event       = '';
+		$context     = array();
+
+		switch ( $event_label ) {
+			case 'ai_wizard_started':
+				$event = 'AI Wizard Started';
+				break;
+
+			case 'ai_wizard_update':
+				$event = 'AI Wizard Update';
+				$context = [
+					'organization_type' => $event_data['entityType'] ?? '',
+					'location_type'     => $event_data['locationType'] ?? '',
+					'location'          => $event_data['location'] ?? '',
+					'industry'          => $event_data['industry'] ?? '',
+					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'keywords'          => $event_data['keywords'] ?? '',
+					'tone'              => $event_data['tone'] ?? '',
+					'collections'       => $event_data['customCollections'] ?? '',
+				];
+				break;
+		}
+
+		if ( strlen($event) !== 0 ) {
+			do_action( 'stellarwp/analytics/event', $event, $context );
+
+			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
+		}
+
+		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 200 );
+	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -2027,6 +2074,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => array( $this, 'sanitize_image_sizes_array' ),
+		);
+		$query_params[ self::PROP_EVENT_LABEL ] = array(
+			'description'       => __( 'The Event Label', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+		);
+		$query_params[ self::PROP_EVENT_DATA ] = array(
+			'description'       => __( 'The Event Value', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
 		);
 		return $query_params;
 	}

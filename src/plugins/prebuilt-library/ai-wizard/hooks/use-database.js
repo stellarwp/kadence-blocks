@@ -3,10 +3,12 @@
  */
 import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import { getAsyncData } from '../../data-fetch/get-async-data';
 
 export function useDatabase() {
 	const [ loading, setLoading ] = useState(false);
 	const [ error, setError ] = useState(false);
+	const { sendEvent } = getAsyncData();
 
 	/**
 	 * Save wizard data to Wordpress options table.
@@ -16,6 +18,7 @@ export function useDatabase() {
 	async function saveAiWizardData(data) {
 		setLoading(true);
 		setError(false);
+		sendEvent( 'ai_wizard_update', data );
 
 		try {
 			const response = await apiFetch({
