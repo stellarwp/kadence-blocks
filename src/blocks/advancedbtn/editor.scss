@@ -12,7 +12,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
-
+// Fix Spacing issue with Astra Theme.
+.kadence-controls-content .components-base-control .components-base-control__field {
+    padding: 0;
+}
 .components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn {
     border: 2px solid #eeeeee;
     color: #555;
@@ -198,6 +201,12 @@
 	text-align: center;
 	align-items: center;
 	justify-content: center;
+}
+.kt-button.kb-btn-underline-none {
+    text-decoration: none;
+}
+.kt-button.kb-btn-underline-underline {
+    text-decoration: underline;
 }
 .kt-button:not(.kb-btn-global-inherit) {
     padding: 0.4em 1em;
