@@ -83,10 +83,12 @@ class Analytics {
 
 		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$site_name    = get_bloginfo( 'name' );
+		$api_details  = get_option( 'kt_api_manager_kadence_gutenberg_pro_data', [] );
 
 		$defaults = [
 			'domain'          => $site_url,
-			'key'             => '',
+			'key'             => $api_details['api_key'],
+			'email'           => $api_details['api_email'],
 			'site_name'       => $site_name,
 			'product_slug'    => 'kadence-blocks',
 			'product_version' => KADENCE_BLOCKS_VERSION

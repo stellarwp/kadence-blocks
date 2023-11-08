@@ -977,7 +977,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
 				'context-name'    => $context,
 				'credits-after'   => $this->get_remote_remaining_credits(),
-				'key'             => $this->api_key,
 				'is_regeneration' => true,
 			] );
 
