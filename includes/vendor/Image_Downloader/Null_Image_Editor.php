@@ -10,7 +10,7 @@ use WP_Image_Editor;
 /**
  * Normally the WP_Image_Editor will create all the different thumbnail sizes on the server,
  * however, we simply return the data of the images that have already been downloaded with
- * the async image downloader.
+ * the concurrent image downloader.
  */
 final class Null_Image_Editor extends WP_Image_Editor {
 
