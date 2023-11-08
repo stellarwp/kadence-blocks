@@ -491,6 +491,12 @@ function PatternLibrary( {
 			setIsLoading( false );
 		}
 	}
+
+	/**
+	 * @TODO Ben: This seems to run even if you don't have the Pro plugin, are these images even used if the "With AI" tab isn't active?
+	 *
+	 * @returns {Promise<void>}
+	 */
 	async function getImageCollection() {
 		const tempUser = JSON.parse(JSON.stringify( aIUserData ) );
 		tempUser.photoLibrary = 'Other';
@@ -806,7 +812,7 @@ function PatternLibrary( {
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div>
-					
+
 				</div>
 				<div className='kb-prebuilt-sidebar-body-wrap'>
 					<div className="kb-library-sidebar-search">
