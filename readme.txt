@@ -98,7 +98,7 @@ developers of this plugin.
 == Changelog ==
 
 = 3.1.24 =
-Release Date: November TBD, 2023
+Release Date: November 8th, 2023
 * Update: Add option to allow decimals in Advanced Form number field.
 * Update: Allow mute/unmute buttons row video backgrounds to be displayed separately from the play / pause button.
 * Update: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
