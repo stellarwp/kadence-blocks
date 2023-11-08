@@ -4,7 +4,7 @@
  */
 
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
-use KadenceWP\KadenceBlocks\Rest\Traits\Image_Trait;
+use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

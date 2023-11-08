@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Rest\Traits;
+namespace KadenceWP\KadenceBlocks\Traits\Rest;
 
 /**
  * Shared image related functionality for REST controllers.
