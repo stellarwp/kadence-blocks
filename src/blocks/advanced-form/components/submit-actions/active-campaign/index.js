@@ -240,14 +240,14 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 	};
 
 	const saveAPIBase = ( value ) => {
-		isSavingBase( true );
+		setIsSavingBase( true );
 		apiFetch( {
 			path: '/wp/v2/settings',
 			method: 'POST',
 			data: { kadence_blocks_activecampaign_api_base: value },
 		} ).then( () => {
 			setApiBase( value );
-			isSavingBase( false );
+			setIsSavingBase( false );
 			setIsSavedApiBase( true );
 		} );
 	};

@@ -112,6 +112,7 @@ Release Date: November TBD, 2023
 * Fix: Advanced form styling for label font size when using infield.
 * Fix: Advanced form label custom styles being overridden by default styles.
 * Fix: Uploading of documents in advanced form.
+* Fix: Setting active campaign API url in advanced form.
 
 = 3.1.23 =
 Release Date: November 1st, 2023
