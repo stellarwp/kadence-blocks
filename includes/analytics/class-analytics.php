@@ -86,7 +86,6 @@ class Analytics {
 		$site_name    = get_bloginfo( 'name' );
 
 		$defaults = [
-			'date_time'       => current_time( 'mysql' ),
 			'domain'          => $site_url,
 			'key'             => '',
 			'user_id'         => $current_user->ID,

@@ -620,11 +620,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		switch ( $event_label ) {
 			case 'ai_wizard_started':
-				$event = 'ai_wizard_started';
+				$event = 'AI Wizard Started';
 				break;
 
 			case 'ai_wizard_save':
-				$event = 'ai_wizard_save';
+				$event = 'AI Wizard Save';
 				$context = [
 					'organization_type' => $event_data['entityType'] ?? '',
 					'location_type'     => $event_data['locationType'] ?? '',
@@ -638,7 +638,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				break;
 		}
 
-		if ( $event ) {
+		if ( strlen($event) === 0 ) {
 			do_action( 'stellarwp/analytics/event', $event, $context );
 
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
