@@ -167,9 +167,9 @@ class BackgroundControl extends Component {
 							options={ attachmentOptions }
 							onChange={ value => onSaveAttachment( value ) }
 						/>
-						{ imageAttachment  && (
+						{ ( imageAttachment ? imageAttachment : 'scroll' ) === 'fixed' && (
 							<p className="kb-sidebar-help">
-								{ __( 'Note: Attachment Fixed and Parallax work only on desktop.', 'kadence-blocks' ) }
+								{ __( 'Note: Attachment Fixed work only on desktop.', 'kadence-blocks' ) }
 							</p>
 						) }
 						{ onSaveInlineImage && (
