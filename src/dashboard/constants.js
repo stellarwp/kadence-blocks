@@ -60,11 +60,12 @@ export const AUTHENTICATED_CONTENT = {
 						}
 					/>
 				),
-				heading: __("Get started with full pages"),
+				heading: __("Build a page with AI-powered patterns"),
 				content: __(
-					"Choose from a variety of pages featuring exclusively tailored content for [project name]."
+					"Take your site further with hundreds of beautiful patterns filled with custom content developed just for [project or company name]"
 				),
 				variant: "blue",
+				link: "/wp-admin/post-new.php?post_type=page",
 			},
 			{
 				icon: (
@@ -97,11 +98,12 @@ export const AUTHENTICATED_CONTENT = {
 						}
 					/>
 				),
-				heading: __("Build a page with AI-powered patterns"),
+				heading: __("Get started with full pages"),
 				content: __(
-					"Take your site further with hundreds of beautiful patterns filled with custom content developed just for [project or company name]"
+					"Choose from a variety of pages featuring exclusively tailored content for [project name]."
 				),
 				variant: "green",
+				link: "/wp-admin/post-new.php?post_type=page",
 			},
 			{
 				icon: (
@@ -158,12 +160,63 @@ export const AUTHENTICATED_CONTENT = {
 			tag: __("Go Pro"),
 			heading: __("Achieve more with Bundles"),
 			description: __(
-				"Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more."
+				"Elevate your site development process with our Pro Bundles. Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more."
 			),
 			href: "https://www.kadencewp.com/blocks-pro/",
 			buttonText: __("Go Pro with a Bundle"),
+			flip: true,
 		},
 	],
+	knowledgeBase: {
+		heading: __(" Need Help Getting Started?"),
+		articles: [
+			{
+				category: __("Kadence AI"),
+				heading: __("Update AI Settings"),
+				description: __(
+					"Update Kadence AI settings. Regenerate contexts for patterns and pages to reflect your updated needs."
+				),
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/design-libary-changing-ai-details/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Kadence AI"),
+				heading: __("Customize Image Collections"),
+				description: __(
+					"Update your Design Library imagery using premade collections or create and customize your own."
+				),
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/design-library-changing-ai-image-collections/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Kadence Blocks"),
+				heading: __("Row Layout Block"),
+				description: __(
+					"Use the Row Layout block to improve the column functionality and create responsive post/page layouts."
+				),
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Kadence Blocks"),
+				heading: __("Advanced Text Block"),
+				description: __(
+					"Use the Advanced Text block to add text to your page/post with advanced customization - now with AI."
+				),
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Support"),
+				heading: __("Need more help?"),
+				description: __(
+					"Didn’t find what you were looking for? Find more articles in our knowledge base."
+				),
+				link: "https://www.kadencewp.com/help-center/",
+				linkTarget: "_blank",
+			},
+		],
+	},
 };
 
 export const UNAUTHENTICATED_CONTENT = {
@@ -172,8 +225,6 @@ export const UNAUTHENTICATED_CONTENT = {
 		subHeading:
 			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!",
 		buttonText: __("Activate Kadence AI", "kadence-blocks"),
-		imageSrc:
-			"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=1474&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 	},
 	actionCards: {
 		title: <SectionTitle title={__("Streamlined site building")} />,
@@ -213,6 +264,7 @@ export const UNAUTHENTICATED_CONTENT = {
 				content: __(
 					"Jump-start your site-building process with unique content and gorgeous designs. Learn More about the AI-Powered Design Library."
 				),
+				link: "/",
 				variant: "blue",
 			},
 			{
@@ -250,6 +302,7 @@ export const UNAUTHENTICATED_CONTENT = {
 				content: __(
 					"Get your messaging on point with in-line AI-assisted editing. Learn More about the inline AI."
 				),
+				link: "/",
 				variant: "green",
 			},
 		],
@@ -268,12 +321,12 @@ export const UNAUTHENTICATED_CONTENT = {
 		{
 			image: bundles,
 			tag: __("Go Pro"),
-			heading: __("Achieve more with Bundles"),
+			heading: __("Kadence Blocks works better with Kadence Theme"),
 			description: __(
-				"Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more."
+				"Level up with Kadence Blocks and Theme. Kickstart your site using Starter Templates, customize with ease, and elevate your pattern library’s style with the Kadence Theme."
 			),
-			href: "https://www.kadencewp.com/blocks-pro/",
-			buttonText: __("Go Pro with a Bundle"),
+			href: "https://wordpress.org/themes/kadence/",
+			buttonText: __("Try Kadence Theme Free"),
 			flip: true,
 		},
 	],
@@ -281,39 +334,57 @@ export const UNAUTHENTICATED_CONTENT = {
 		heading: __(" Need Help Getting Started?"),
 		articles: [
 			{
-				category: __(" Kadence Theme"),
-				heading: __("Getting Started with Kadence Theme"),
+				category: __("Kadence Blocks"),
+				heading: __("Using the Design Library"),
 				description: __(
-					"Learn the basics. Select a Starter Template, customize your site’s colors and fonts, build your own custom header."
+					"Use fully designed patterns and pages on your site with your own customizer settings - now with AI."
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-theme/getting-started-video-guide/",
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/",
 				linkTarget: "_blank",
 			},
 			{
-				category: __(" Kadence Theme"),
-				heading: __("Getting Started with Kadence Theme"),
+				category: __("Kadence Blocks"),
+				heading: __("Row Layout Block"),
 				description: __(
-					"Learn the basics. Select a Starter Template, customize your site’s colors and fonts, build your own custom header."
+					"Use the Row Layout block to improve the column functionality and create responsive post/page layouts."
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-theme/getting-started-video-guide/",
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/",
 				linkTarget: "_blank",
 			},
 			{
-				category: __(" Kadence Theme"),
-				heading: __("Getting Started with Kadence Theme"),
+				category: __("Kadence Blocks"),
+				heading: __("Advanced Text Block"),
 				description: __(
-					"Learn the basics. Select a Starter Template, customize your site’s colors and fonts, build your own custom header."
+					"Use the Advanced Text block to add text to your page/post with advanced customization - now with AI."
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-theme/getting-started-video-guide/",
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/",
 				linkTarget: "_blank",
 			},
 			{
-				category: __(" Kadence Theme"),
-				heading: __("Getting Started with Kadence Theme"),
+				category: __("Kadence Blocks Pro"),
+				heading: __("Kadence Blocks Pro Plugin"),
 				description: __(
-					"Learn the basics. Select a Starter Template, customize your site’s colors and fonts, build your own custom header."
+					"Install and activate the Kadence Blocks Pro plugin, and get an overview of the Pro features available."
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-theme/getting-started-video-guide/",
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-blocks-pro-plugin/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Kadence Blocks Pro"),
+				heading: __("Advanced Slider"),
+				description: __(
+					"Showcase products or highlight important visual content using the Advanced Slider block."
+				),
+				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-slider/",
+				linkTarget: "_blank",
+			},
+			{
+				category: __("Support"),
+				heading: __("Need more help?"),
+				description: __(
+					"Didn’t find what you were looking for? Find more articles in our knowledge base."
+				),
+				link: "https://www.kadencewp.com/help-center/",
 				linkTarget: "_blank",
 			},
 		],
