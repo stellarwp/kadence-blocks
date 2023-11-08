@@ -61,6 +61,11 @@ final class Cache_Primer {
 	public function cache( array $collections ): void {
 		$batch = 0;
 
+		// Search results differ slightly from industry collections, reformat.
+		if ( isset( $collections['images'] ) ) {
+			$collections = [ $collections ];
+		}
+
 		foreach ( $collections as $collection ) {
 			foreach ( $collection['images'] as $image ) {
 
