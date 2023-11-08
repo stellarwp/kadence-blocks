@@ -636,6 +636,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'collections'       => $event_data['customCollections'] ?? '',
 				];
 				break;
+			case 'pattern_added_to_page':
+				$event = 'Pattern Added to Page';
+				$context = [
+					'pattern_id'         => $event_data['id'] ?? '',
+					'pattern_slug'       => $event_data['slug'] ?? '',
+					'pattern_name'       => $event_data['name'] ?? '',
+					'pattern_style'      => $event_data['style'] ?? '',
+					'pattern_is_ai'      => $event_data['is_ai'] ?? false,
+					'pattern_context'    => $event_data['context'] ?? '',
+					'pattern_categories' => $event_data['categories'] ?? [],
+				];
+				break;
 		}
 
 		if ( strlen($event) !== 0 ) {
