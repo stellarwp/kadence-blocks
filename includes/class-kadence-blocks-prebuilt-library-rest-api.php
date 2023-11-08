@@ -2151,9 +2151,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		return '';
 	}
 	/**
-	 * Import an image.
-	 *
-	 * @TODO remove when Async ImageDownloader is complete.
+	 * Import an image for the design library/patterns.
 	 *
 	 * @param array $image_data the image data to import.
 	 */
