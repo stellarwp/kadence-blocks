@@ -14,7 +14,7 @@ export default function getQueryOptions( provider, options ) {
 	headers.append("Content-Type", "application/json");
 	var body = {
 		query: API.defaults.query,
-		sizes: kadenceExtensionImagePicker.image_sizes,
+		sizes: kadenceExtensionImagePicker.all_image_sizes,
 		image_type: API.defaults.image_type,
 		page: 1,
 		per_page: API.defaults.per_page,

@@ -5,6 +5,7 @@
 
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
+use KadenceWP\KadenceBlocks\Rest\Traits\Image_Trait;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -13,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * REST API prebuilt library.
  */
 class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller {
+
+	use Image_Trait;
 
 	/**
 	 * Include ai prompt.
@@ -2090,29 +2093,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		return array();
 	}
-	/**
-	 * Sanitizes an array of sizes.
-	 *
-	 * @param array    $sizes One or more size arrays.
-	 * @param WP_REST_Request $request   Full details about the request.
-	 * @param string          $parameter Parameter name.
-	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
-	 */
-	public function sanitize_image_sizes_array( $sizes, $request ) {
-		if ( ! empty( $sizes ) && is_array( $sizes ) ) {
-			$new_sizes = array();
-			foreach ( $sizes as $key => $value ) {
-				$new_sizes[] = array(
-					'id'     => sanitize_text_field( $value['id'] ),
-					'width'  => absint( $value['width'] ),
-					'height' => absint( $value['height'] ),
-					'crop'   => filter_var( $value['crop'], FILTER_VALIDATE_BOOLEAN ),
-				);
-			}
-			return $new_sizes;
-		}
-		return array();
-	}
+
 	/**
 	 * Sanitizes a string for a filename.
 	 *
