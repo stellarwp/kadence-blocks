@@ -84,8 +84,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Event Value.
 	 */
-	const PROP_EVENT_VALUE = 'event_value';
-
+	const PROP_EVENT_DATA = 'event_data';
 	/**
 	 * The library folder.
 	 *
@@ -613,22 +612,34 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function handle_event( $request ) {
 		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
-		$event_value = $request->get_param( self::PROP_EVENT_VALUE );
+		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
+		$event_data  = json_decode( $event_data, true );
 
-		if ( $event_label !== 'analytics' ) {
-			return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 200 );
+		$event       = '';
+		$context     = array();
+
+		switch ( $event_label ) {
+			case 'ai_wizard_started':
+				$event = 'ai_wizard_started';
+				break;
+
+			case 'ai_wizard_save':
+				$event = 'ai_wizard_save';
+				$context = [
+					'organization_type' => $event_data['entityType'] ?? '',
+					'location_type'     => $event_data['locationType'] ?? '',
+					'location'          => $event_data['location'] ?? '',
+					'industry'          => $event_data['industry'] ?? '',
+					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'keywords'          => $event_data['keywords'] ?? '',
+					'tone'              => $event_data['tone'] ?? '',
+					'collections'       => $event_data['customCollections'] ?? '',
+				];
+				break;
 		}
 
-		$context = array();
-
-		if ( $event_value === 'ai_wizard_started' ) {
-			$context = array(
-				'date_time' => current_time( 'mysql' ),
-			);
-		}
-
-		if ( $context ) {
-			do_action( 'stellarwp/analytics/event', $event_value, $context );
+		if ( $event ) {
+			do_action( 'stellarwp/analytics/event', $event, $context );
 
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
 		}
@@ -2068,7 +2079,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		);
-		$query_params[ self::PROP_EVENT_VALUE ] = array(
+		$query_params[ self::PROP_EVENT_DATA ] = array(
 			'description'       => __( 'The Event Value', 'kadence-blocks' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',

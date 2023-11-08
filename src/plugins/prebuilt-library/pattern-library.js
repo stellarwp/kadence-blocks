@@ -1157,7 +1157,7 @@ function PatternLibrary( {
 								reloadAI( tempCon );
 							} }
 							launchWizard={ () => {
-								sendEvent( 'analytics', 'ai_wizard_started');
+								sendEvent( 'ai_wizard_started' );
 								setWizardState( {
 									visible: true,
 									photographyOnly: false

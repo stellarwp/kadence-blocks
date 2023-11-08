@@ -49,7 +49,7 @@ class Analytics {
 		 *
 		 * @param string The URL to use when sending events.
 		 */
-		$url  = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
 
 		$response = wp_remote_post(
 			$url,
@@ -86,6 +86,7 @@ class Analytics {
 		$site_name    = get_bloginfo( 'name' );
 
 		$defaults = [
+			'date_time'       => current_time( 'mysql' ),
 			'domain'          => $site_url,
 			'key'             => '',
 			'user_id'         => $current_user->ID,
