@@ -1022,8 +1022,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Bottom Sep.
 		if ( isset( $attributes['bottomSep'] ) && 'none' != $attributes['bottomSep'] ) {
-			$bottomSepUnit = !empty( $attributes['bottomSepHeightUnit']) ? $attributes['bottomSepHeightUnit'] : 'px';
-			$bottomSepHeight = !empty ($attributes['bottomSepHeight']) ? $attributes['bottomSepHeight'] : '100';
+			$bottomSepUnit   = ! empty( $attributes['bottomSepHeightUnit'] ) ? $attributes['bottomSepHeightUnit'] : 'px';
+			$bottomSepHeight = ! empty( $attributes['bottomSepHeight'] ) ? $attributes['bottomSepHeight'] : '100';
 
 			$css->set_selector( $base_selector . ' .kt-row-layout-bottom-sep' );
 			$css->add_property( 'height', $bottomSepHeight . $bottomSepUnit );
