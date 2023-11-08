@@ -101,9 +101,9 @@ developers of this plugin.
 Release Date: November TBD, 2023
 * Update: Add option to allow decimals in Advanced Form number field.
 * Update: Allow mute/unmute buttons row video backgrounds to be displayed separately from the play / pause button.
-* Fix: Ability to create new Advanced Forms on WordPress 6.4.
-* Fix: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
-* Fix: Google V3 reCAPTCHA not hiding in when set to hide.
+* Update: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
+* Fix: Issue creating new Advanced Forms on WordPress 6.4.
+* Fix: Google v3 reCAPTCHA not hiding in when set to hide.
 * Fix: Add aria label to Advanced Gallery lightbox links.
 * Fix: Allow show more button to be focusable using tab key.
 * Fix: Border styling display on Advanced button in editor
@@ -111,6 +111,7 @@ Release Date: November TBD, 2023
 * Fix: Advanced form help text font size on front end.
 * Fix: Advanced form styling for label font size when using infield.
 * Fix: Advanced form label custom styles being overridden by default styles.
+* Fix: Uploading of documents in advanced form.
 
 = 3.1.23 =
 Release Date: November 1st, 2023
