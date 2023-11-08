@@ -747,6 +747,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$pattern_type     = $request->get_param( self::PROP_PATTERN_TYPE );
 		$pattern_id       = $request->get_param( self::PROP_PATTERN_ID );
 		$pattern_style    = $request->get_param( self::PROP_PATTERN_STYLE );
+
 		if ( ! empty( $library_url ) ) {
 			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
 		} else {
@@ -966,20 +967,20 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					return wp_send_json( 'error' );
 				} else {
 					$this->create_data_file( $response, $available_prompts[ $context ], 'ai' );
+
+					// Log event for successful context generation.
+					do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
+						'context-name'    => $context,
+						'credits-after'   => $this->get_remote_remaining_credits(),
+						'is_regeneration' => true,
+					] );
+
 					return wp_send_json( $response );
 				}
 			}
 		} else {
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
-
-			// Log event for successful context generation.
-			do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
-				'context-name'    => $context,
-				'credits-after'   => $this->get_remote_remaining_credits(),
-				'is_regeneration' => true,
-			] );
-
 			$data = json_decode( $response, true );
 			if ( $response === 'error' ) {
 				return wp_send_json( 'error' );
