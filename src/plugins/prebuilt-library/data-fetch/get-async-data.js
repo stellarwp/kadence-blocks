@@ -433,8 +433,8 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/handle_event',
 				method: 'POST',
 				data: {
-					event: event_label,
-					data: event_value,
+					event_label: event_label,
+					event_value: event_value,
 				},
 			} );
 			return response;
