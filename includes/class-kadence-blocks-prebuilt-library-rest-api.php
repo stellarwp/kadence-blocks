@@ -5,6 +5,7 @@
 
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -636,13 +637,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Imports a collection of images.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error|array Response object on success, or WP_Error object on failure.
+	 *
+	 * @return array<array{id: int, url: string}> A list of local or pexels images, where the ID is an attachment_id or pexels_id.
+	 * @throws InvalidArgumentException
+	 * @throws Throwable
+	 * @throws ImageDownloadException
 	 */
 	public function process_images( $request ) {
-		$parameters = $request->get_json_params();
+		$parameters = (array) $request->get_json_params();
 
 		return Image_Downloader::instance()->download( $parameters );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
