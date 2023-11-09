@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
+use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;

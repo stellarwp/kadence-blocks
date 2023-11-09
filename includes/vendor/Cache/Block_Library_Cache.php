@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Cache;
 
-use KadenceWP\KadenceBlocks\Image_Downloader\Hasher;
+use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Contracts\Storage;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\StorageException;
