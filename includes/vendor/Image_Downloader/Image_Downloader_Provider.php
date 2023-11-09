@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
+use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Monolog\Handler\AbstractHandler;
 use KadenceWP\KadenceBlocks\Monolog\Handler\ErrorLogHandler;
 use KadenceWP\KadenceBlocks\Monolog\Handler\NullHandler;
