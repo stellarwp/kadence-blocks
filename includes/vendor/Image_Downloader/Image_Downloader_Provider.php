@@ -29,8 +29,8 @@ final class Image_Downloader_Provider extends Provider {
 		$this->container->bind( HttpClientInterface::class, HttpClient::create() );
 
 		$this->register_hasher();
-		$this->register_cache_primer();
 		$this->register_logging();
+		$this->register_cache_primer();
 		$this->register_image_downloader();
 	}
 
@@ -40,21 +40,6 @@ final class Image_Downloader_Provider extends Provider {
 		                ->give( static function (): string {
 			                return PHP_VERSION_ID >= 80100 ? 'xxh128' : 'md5';
 		                } );
-	}
-
-	private function register_cache_primer(): void {
-		/**
-		 * Filter how many external cache requests we will open at once before discarding them.
-		 *
-		 * This may need to be adjusted depending on the host's limitations.
-		 *
-		 * @param int $batch_size The number of external cache requests per batch.
-		 */
-		$batch_size = absint( apply_filters( 'kadence_blocks_cache_primer_batch_size', 500 ) );
-
-		$this->container->when( Cache_Primer::class )
-		                ->needs( '$batch_size' )
-		                ->give( $batch_size );
 	}
 
 	private function register_logging(): void {
@@ -92,6 +77,25 @@ final class Image_Downloader_Provider extends Provider {
 				return $logger;
 			} );
 		}
+	}
+
+	private function register_cache_primer(): void {
+		/**
+		 * Filter how many external cache requests we will open at once before discarding them.
+		 *
+		 * This may need to be adjusted depending on the host's limitations.
+		 *
+		 * @param int $batch_size The number of external cache requests per batch.
+		 */
+		$batch_size = absint( apply_filters( 'kadence_blocks_cache_primer_batch_size', 500 ) );
+
+		$this->container->when( Cache_Primer::class )
+		                ->needs( '$batch_size' )
+		                ->give( $batch_size );
+
+		$this->container->singleton( Cache_Primer::class, Cache_Primer::class );
+
+		add_action( 'shutdown', $this->container->callback( Cache_Primer::class, 'execute' ), PHP_INT_MAX - 1 );
 	}
 
 	private function register_image_downloader(): void {

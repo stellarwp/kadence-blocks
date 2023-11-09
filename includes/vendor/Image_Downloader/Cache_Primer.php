@@ -33,6 +33,27 @@ final class Cache_Primer {
 	 */
 	private $batch_size;
 
+	/**
+	 * The collections cache, to run when the class is destroyed.
+	 *
+	 * @var array<array{
+	 *         collection_slug: string,
+	 *         image_type: string,
+	 *         images: array<int, array{
+	 *              id: int,
+	 *              width: int,
+	 *              height: int,
+	 *              alt: string,
+	 *              url: string,
+	 *              photographer: string,
+	 *              photographer_url: string,
+	 *              avg_color: string,
+	 *              sizes: non-empty-array<int,array{name: string, src: string}>
+	 *         }>
+	 *        }> $collections
+	 */
+	private $collections;
+
 	public function __construct(
 		HttpClientInterface $client,
 		LoggerInterface $logger,
@@ -46,10 +67,7 @@ final class Cache_Primer {
 	}
 
 	/**
-	 * Make asynchronous HEAD requests to all the potential images we'll download
-	 * to ensure that Pexels caches their response to make downloading much quicker.
-	 *
-	 * This is as close to a non-blocking operation as possible.
+	 * Assign which collections will be primed on the WordPress shutdown hook.
 	 *
 	 * @param array<array{
 	 *        collection_slug: string,
@@ -69,26 +87,58 @@ final class Cache_Primer {
 	 *
 	 * @return void
 	 */
-	public function cache( array $collections ): void {
+	public function init( array $collections ): void {
 		if ( empty( $collections ) ) {
 			return;
 		}
 
+		$this->collections = $collections;
+	}
+
+	/**
+	 * On shutdown, make asynchronous HEAD requests to all the potential images we'll download
+	 * to ensure that Pexels caches their response to make downloading much quicker.
+	 *
+	 * This allows for 0 blocking.
+	 *
+	 * @action shutdown
+	 *
+	 * @return void
+	 *
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
+	public function execute(): void {
+		if ( ! isset( $this->collections ) ) {
+			return;
+		}
+
+		/*
+		 * If running on PHP-FPM, this will return the request, but continue processing
+		 * the code below in the thread, which means it instantly sends the request back
+		 * to the browser without needing to wait for anything.
+		 */
+		if ( function_exists( 'fastcgi_finish_request' ) ) {
+			fastcgi_finish_request();
+		}
+
 		$batch     = 0;
-		$cache_key = $this->hasher->hash( $collections );
+		$cache_key = $this->hasher->hash( $this->collections );
 
 		if ( get_transient( $cache_key ) !== false ) {
 			$this->logger->debug( sprintf( 'Found cache key "%s", skipping image cache priming', $cache_key ) );
+
+			unset( $this->collections );
 
 			return;
 		}
 
 		// Search results differ slightly from industry collections, reformat.
-		if ( isset( $collections['images'] ) ) {
-			$collections = [ $collections ];
+		if ( isset( $this->collections['images'] ) ) {
+			$this->collections = [ $this->collections ];
 		}
 
-		foreach ( $collections as $collection ) {
+		foreach ( $this->collections as $collection ) {
 
 			$this->logger->debug( sprintf( 'Priming image cache for %d images...', count( $collection['images'] ) ) );
 
@@ -128,6 +178,9 @@ final class Cache_Primer {
 			unset( $promises );
 		} catch ( Throwable $e ) {
 		}
+
+		// Clear collections state in case this is accessed again in the same request.
+		unset( $this->collections );
 
 		$duration = DAY_IN_SECONDS;
 
