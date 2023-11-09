@@ -67,6 +67,9 @@ final class Cache_Primer {
 		}
 
 		foreach ( $collections as $collection ) {
+
+			$this->logger->debug( sprintf( 'Priming image cache for %d images...', count( $collection['images'] ) ) );
+
 			foreach ( $collection['images'] as $image ) {
 
 				$this->logger->debug( sprintf( 'Priming image cache for: %s', $image['url'] ) );
@@ -79,7 +82,7 @@ final class Cache_Primer {
 
 						// These are async requests; We won't wait for the responses.
 						$promises[ $url ] = $this->client->request( 'HEAD', $url, [
-							'timeout'      => 0.5,
+							'timeout'      => 0.1,
 							'max_duration' => 0.1,
 						] );
 					} catch ( Throwable $e ) {
