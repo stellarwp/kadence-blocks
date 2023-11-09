@@ -12,6 +12,7 @@ import { HowItWorks, IndustryInformation, AboutYourSite, TheDetails, Photography
 import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
 import { useDatabase } from './hooks/use-database';
+import { getAsyncData } from '../data-fetch/get-async-data';
 
 const pages = [
 	{
@@ -87,7 +88,9 @@ export function KadenceAiWizard( props ) {
 		isForwardButtonDisabled,
 		isFinishButtonDisabled
 	} = useAiWizardHelper(state, getPages(photographyOnly));
-	const { saveAiWizardData } = useDatabase();
+	const { saveAiWizardData, getAiWizardData } = useDatabase();
+
+	const { sendEvent } = getAsyncData();
 
 	async function handleSave() {
 		const saveStatus = await saveAiWizardData({
@@ -98,6 +101,7 @@ export function KadenceAiWizard( props ) {
 
 		if (saveStatus) {
 			onWizardClose( 'saved' );
+			handleEvent( 'ai_wizard_update' );
 		}
 	}
 
