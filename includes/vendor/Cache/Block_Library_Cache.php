@@ -117,7 +117,6 @@ class Block_Library_Cache {
 					'exception' => $e->getMessage(),
 				] );
 			}
-
 		}
 
 		unset( $this->items );
