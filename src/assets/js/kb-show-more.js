@@ -31,20 +31,33 @@
                 }
                 // Initialize listener
                 if ( showMoreButton ) {
-                    showMoreButton.addEventListener( 'click', function( e ) {
+
+                    const showMoreAction = function ( e ) {
                         e.preventDefault();
+                        if ( e.type == 'keydown' && ! ( e.code == 'Enter' || e.code == 'Space' ) ) {
+                            return;
+                        }
+
                         rootElement.classList.add('kb-smc-open');
                         showMoreButton.setAttribute('aria-hidden', 'true');
                         showLessButton.removeAttribute('aria-hidden');
                         return false;
-                    });
-                    showLessButton.addEventListener( 'click', function( e ) {
+                    }
+                    const showLessAction = function ( e ) {
                         e.preventDefault();
+                        if ( e.type == 'keydown' && ! ( e.code == 'Enter' || e.code == 'Space' ) ) {
+                            return;
+                        }
+
                         rootElement.classList.remove('kb-smc-open');
                         showMoreButton.removeAttribute('aria-hidden');
                         showLessButton.setAttribute('aria-hidden', 'true');
                         return false;
-                    });
+                    }
+                    showMoreButton.addEventListener( 'click', showMoreAction );
+                    showMoreButton.addEventListener( 'keydown', showMoreAction );
+                    showLessButton.addEventListener( 'click', showLessAction );
+                    showLessButton.addEventListener( 'keydown', showLessAction );
                     showLessButton.setAttribute('aria-hidden', 'true');
                 }
             }
