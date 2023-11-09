@@ -562,7 +562,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		// Prime the cache for all image sizes for potential download.
-		Image_Downloader::instance()->container()->get( Cache_Primer::class )->cache( $data['data'] );
+		kadence_blocks()->get( Cache_Primer::class )->init( $data['data'] );
 
 		return rest_ensure_response( $response );
 	}
@@ -646,7 +646,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function process_images( $request ) {
 		$parameters = (array) $request->get_json_params();
 
-		return Image_Downloader::instance()->download( $parameters );
+		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
 	}
 
 	/**
@@ -1951,6 +1951,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 	/**
 	 * Write the data to the filesystem.
+	 *
+	 * @TODO: move this to its own class, save on shutdown.
 	 *
 	 * @access protected
 	 * @return string|false Returns the absolute path of the file on success, or false on fail.

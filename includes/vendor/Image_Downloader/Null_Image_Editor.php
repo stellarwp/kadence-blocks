@@ -69,10 +69,7 @@ final class Null_Image_Editor extends WP_Image_Editor {
 		}
 
 		// Fetch the currently downloaded images from the Importer.
-		$this->images = Image_Downloader::instance()
-		                                ->container()
-		                                ->get( WordPress_Importer::class )
-		                                ->images();
+		$this->images = kadence_blocks()->get( WordPress_Importer::class )->images();
 
 		// Find the image WordPress is currently processing by matching the file name.
 		foreach ( $this->images as $id => $images ) {

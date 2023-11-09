@@ -7,6 +7,9 @@
  */
 
 // Exit if accessed directly.
+use KadenceWP\KadenceBlocks\App;
+use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -1140,3 +1143,17 @@ function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
 	return $value;
 }
 add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );
+
+/**
+ * The Kadence Blocks Application Container.
+ *
+ * @see kadence_blocks_init()
+ *
+ * @note kadence_blocks_init() must be called before this one.
+ *
+ * @return ContainerInterface
+ * @throws InvalidArgumentException
+ */
+function kadence_blocks(): ContainerInterface {
+	return App::instance()->container();
+}

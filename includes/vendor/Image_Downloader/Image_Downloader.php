@@ -12,48 +12,29 @@ use Throwable;
 
 final class Image_Downloader {
 
-	private static $instance;
+	/**
+	 * @var ImageDownloader
+	 */
+	private $downloader;
 
 	/**
-	 * @var Container
+	 * @var WordPress_Importer
 	 */
-	private $container;
+	private $importer;
 
 	/**
-	 * @var class-string<Providable>
+	 * @var Pexels_ID_Registry
 	 */
-	private $providers = array(
-		Image_Downloader_Provider::class,
-	);
+	private $registry;
 
-	private function __construct(
-		Container $container
+	public function __construct(
+		ImageDownloader $downloader,
+		WordPress_Importer $importer,
+		Pexels_ID_Registry $registry
 	) {
-		$this->container = $container;
-
-		$this->init();
-	}
-
-	/**
-	 * @param Container|null $container
-	 *
-	 * @return self
-	 * @throws InvalidArgumentException
-	 */
-	public static function instance( ?Container $container = null ): Image_Downloader {
-		if ( ! isset( self::$instance ) ) {
-			if ( ! $container ) {
-				throw new InvalidArgumentException( 'You need to provide a concrete Contracts\Container instance!' );
-			}
-
-			self::$instance = new self( $container );
-		}
-
-		return self::$instance;
-	}
-
-	public function container(): Container {
-		return $this->container;
+		$this->downloader = $downloader;
+		$this->importer   = $importer;
+		$this->registry   = $registry;
 	}
 
 	/**
@@ -120,7 +101,7 @@ final class Image_Downloader {
 	 */
 	private function get_existing_images( array &$images ): array {
 		$existing = [];
-		$ids      = $this->container->get( Pexels_ID_Registry::class )->all();
+		$ids      = $this->registry->all();
 
 		foreach ( $images['images'] as $key => $image ) {
 			$post_id   = $image['post_id'] ?? false;
@@ -196,9 +177,9 @@ final class Image_Downloader {
 		$collection[] = $images;
 
 		try {
-			$downloaded = $this->container->get( ImageDownloader::class )->download( $collection, $path );
+			$downloaded = $this->downloader->download( $collection, $path );
 
-			return $this->container->get( WordPress_Importer::class )->import( $downloaded );
+			return $this->importer->import( $downloaded );
 		} catch ( Throwable $e ) {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( $e->getMessage() );
@@ -208,22 +189,4 @@ final class Image_Downloader {
 		}
 	}
 
-	private function init(): void {
-		$this->container->bind( Container::class, $this->container );
-
-		foreach ( $this->providers as $provider ) {
-			$this->container->register( $provider );
-		}
-	}
-
-	private function __clone() {
-	}
-
-	public function __wakeup(): void {
-		throw new RuntimeException( 'method not implemented' );
-	}
-
-	public function __sleep(): array {
-		throw new RuntimeException( 'method not implemented' );
-	}
 }

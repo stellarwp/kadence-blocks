@@ -27,7 +27,7 @@ require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php'
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 
-use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
+use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
@@ -49,8 +49,8 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
 function kadence_blocks_init() {
 	$container = new Container();
 
-	// Prophecy Async Image Downloader.
-	Image_Downloader::instance( new ContainerAdapter( $container->container() ) );
+	// The Kadence Blocks Application.
+	App::instance( new ContainerAdapter( $container->container() ) );
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';

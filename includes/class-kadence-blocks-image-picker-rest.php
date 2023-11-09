@@ -76,7 +76,7 @@ class Kadence_Blocks_Image_Picker_REST_Controller extends WP_REST_Controller {
 	public function process_images( $request ) {
 		$parameters = (array) $request->get_json_params();
 
-		return Image_Downloader::instance()->download( $parameters );
+		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
 	}
 
 	/**
