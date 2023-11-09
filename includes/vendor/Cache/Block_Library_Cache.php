@@ -106,10 +106,16 @@ class Block_Library_Cache {
 
 		foreach ( $this->items as $filename => $data ) {
 			if ( $this->storage->has( $filename ) ) {
+				$this->logger->warning( 'Filename already exists', [
+					'filename' => $filename,
+				] );
+
 				continue;
 			}
 
 			try {
+				$this->logger->debug( sprintf( 'Writing cache file: %s', $filename ) );
+
 				$this->storage->put( $filename, $data );
 			} catch ( StorageException $e ) {
 				$this->logger->error( 'Error saving cache file', [
