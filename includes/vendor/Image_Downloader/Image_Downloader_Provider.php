@@ -28,9 +28,18 @@ final class Image_Downloader_Provider extends Provider {
 		// Create the HTTP Client used to concurrently download images.
 		$this->container->bind( HttpClientInterface::class, HttpClient::create() );
 
+		$this->register_hasher();
 		$this->register_cache_primer();
 		$this->register_logging();
 		$this->register_image_downloader();
+	}
+
+	private function register_hasher(): void {
+		$this->container->when( Hasher::class )
+		                ->needs( '$algo' )
+		                ->give( static function (): string {
+			                return PHP_VERSION_ID >= 80100 ? 'xxh128' : 'md5';
+		                } );
 	}
 
 	private function register_cache_primer(): void {
