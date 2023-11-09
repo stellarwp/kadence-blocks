@@ -82,7 +82,6 @@ class Kadence_Blocks_Image_Picker {
 				'kadenceExtensionImagePicker',
 				array(
 					'image_sizes'      => $this->get_image_sizes(),
-					'all_image_sizes'  => $this->get_all_image_sizes(),
 					'default_provider' => 'pexels',
 				)
 			);
@@ -90,37 +89,11 @@ class Kadence_Blocks_Image_Picker {
 	}
 
 	/**
-	 * Enqueue block plugin for backend editor.
-	 */
-	public function get_image_sizes() {
-		return array(
-			array(
-				'id' => 'thumbnail',
-				'width' => 150,
-				'height' => 150,
-				'crop' => true,
-			),
-			array(
-				'id' => 'medium_large',
-				'width' => 768,
-				'height' => 0,
-				'crop' => false,
-			),
-			array(
-				'id' => 'download',
-				'width' => 2048,
-				'height' => 2048,
-				'crop' => false,
-			),
-		);
-	}
-
-	/**
 	 * Get all available image sizes, including any custom ones added above.
 	 *
 	 * @return array<array{id: string, width: int, height: int, crop: bool}>
 	 */
-	private function get_all_image_sizes(): array {
+	private function get_image_sizes(): array {
 		$registered = wp_get_registered_image_subsizes();
 		$formatted  = [];
 

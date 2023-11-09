@@ -5,7 +5,6 @@ import {
 	COLLECTION_REQUEST_IMAGE_TYPE,
 	API_ROUTE_GET_COLLECTIONS,
 	API_ROUTE_GET_VERTICALS,
-	COLLECTION_REQUEST_IMAGE_SIZES,
 	API_MAX_ATTEMPTS
 } from '../constants';
 
@@ -146,7 +145,7 @@ export function preMadeCollectionsHelper() {
 					industries: industries,
 					industry: search,
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
-					image_sizes: kadenceExtensionImagePicker.all_image_sizes,
+					image_sizes: kadenceExtensionImagePicker.image_sizes,
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );

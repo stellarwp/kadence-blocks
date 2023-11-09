@@ -20,22 +20,6 @@ export const API_ROUTE_GET_COLLECTIONS = '/kb-design-library/v1/get_image_collec
 export const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 export const API_ROUTE_GET_VERTICALS = '/kb-design-library/v1/get_verticals';
 export const COLLECTION_REQUEST_IMAGE_TYPE = 'JPEG';
-
-// TODO: probably need to remove this, or perhaps add medium_square as a real thumbnail size.
-export const COLLECTION_REQUEST_IMAGE_SIZES = [
-	{
-		id: 'medium_square',
-		width: 600,
-		height: 600,
-		crop: true
-	},
-	{
-		id: 'download',
-		width: 2048,
-		height: 2048,
-		crop: false
-	}
-]
 export const API_URL = "https://content.startertemplatecloud.com/wp-json/prophecy/v1/";
 export const API_ROUTE_GET_KEYWORDS = "/kb-design-library/v1/get_keywords";
 export const API_ROUTE_GET_SEARCH_QUERY = "/kb-design-library/v1/get_search_query";
