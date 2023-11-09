@@ -177,8 +177,6 @@ function PatternLibrary( {
 	};
 	const handleAiWizardPrimaryAction = ( event, rebuild ) => {
 
-		sendEvent('wizard_completed');
-
 		if ( rebuild ) {
 			getAllNewData();
 		}

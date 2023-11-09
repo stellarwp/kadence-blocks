@@ -105,6 +105,12 @@ export function KadenceAiWizard( props ) {
 		}
 	}
 
+	async function handleEvent( event ) {
+		const wizardData = await getAiWizardData();
+
+		sendEvent( event, JSON.parse( wizardData ) );
+	}
+
 	function handleOnPrimaryClick(event) {
 		// No action on blur or escape keydown.
 		if (event.type === 'blur' || (event.keyCode === 27 && event.type === 'keydown')) {
@@ -114,7 +120,8 @@ export function KadenceAiWizard( props ) {
 		// Submit wizard data on finish buttton click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
 			handleSave();
-			
+			handleEvent( 'ai_wizard_complete' );
+
 			if ( ! photographyOnly ) {
 				onPrimaryAction(event, true);
 			}
