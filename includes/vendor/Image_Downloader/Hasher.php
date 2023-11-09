@@ -13,6 +13,11 @@ final class Hasher {
 	 */
 	private $algo;
 
+	/**
+	 * @param string $algo The hashing algorithm to use.
+	 *
+	 * @see \hash_algos()
+	 */
 	public function __construct( string $algo = 'md5' ) {
 		$this->algo = $algo;
 	}
@@ -26,11 +31,7 @@ final class Hasher {
 	 * @return string
 	 */
 	public function hash( $data, bool $binary = false ): string {
-		if ( is_scalar( $data ) ) {
-			$data = (string) $data;
-		} else {
-			$data = json_encode( $data );
-		}
+		$data = is_scalar( $data ) ? (string) $data : json_encode( $data );
 
 		return hash( $this->algo, $data, $binary );
 	}
