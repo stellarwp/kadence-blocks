@@ -176,6 +176,7 @@ function PatternLibrary( {
 		triggerAIDataReload( ( state ) => ! state );
 	};
 	const handleAiWizardPrimaryAction = ( event, rebuild ) => {
+
 		if ( rebuild ) {
 			getAllNewData();
 		}

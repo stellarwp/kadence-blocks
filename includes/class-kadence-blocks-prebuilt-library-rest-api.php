@@ -636,6 +636,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'collections'       => $event_data['customCollections'] ?? '',
 				];
 				break;
+			case 'ai_wizard_complete':
+				$event = 'AI Wizard Complete';
+				$context = [
+					'organization_type' => $event_data['entityType'] ?? '',
+					'location_type'     => $event_data['locationType'] ?? '',
+					'location'          => $event_data['location'] ?? '',
+					'industry'          => $event_data['industry'] ?? '',
+					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'keywords'          => $event_data['keywords'] ?? '',
+					'tone'              => $event_data['tone'] ?? '',
+					'collections'       => $event_data['customCollections'] ?? '',
+				];
+				break;
 			case 'pattern_added_to_page':
 				$event = 'Pattern Added to Page';
 				$context = [
