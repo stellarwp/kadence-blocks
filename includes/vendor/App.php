@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks;
 
 use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
@@ -27,6 +28,7 @@ final class App {
 	 */
 	private $providers = array(
 		Image_Downloader_Provider::class,
+		Cache_Provider::class,
 	);
 
 	private function __construct(
