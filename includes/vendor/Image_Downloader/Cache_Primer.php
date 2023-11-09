@@ -22,15 +22,26 @@ final class Cache_Primer {
 	private $logger;
 
 	/**
+	 * @var Hasher
+	 */
+	private $hasher;
+
+	/**
 	 * How many external cache requests to create before removing them.
 	 *
 	 * @var int
 	 */
 	private $batch_size;
 
-	public function __construct( HttpClientInterface $client, LoggerInterface $logger, int $batch_size = 500 ) {
+	public function __construct(
+		HttpClientInterface $client,
+		LoggerInterface $logger,
+		Hasher $hasher,
+		int $batch_size = 500
+	) {
 		$this->client     = $client;
 		$this->logger     = $logger;
+		$this->hasher     = $hasher;
 		$this->batch_size = $batch_size;
 	}
 
@@ -59,7 +70,18 @@ final class Cache_Primer {
 	 * @return void
 	 */
 	public function cache( array $collections ): void {
-		$batch = 0;
+		if ( empty( $collections ) ) {
+			return;
+		}
+
+		$batch     = 0;
+		$cache_key = $this->hasher->hash( $collections );
+
+		if ( get_transient( $cache_key ) !== false ) {
+			$this->logger->debug( sprintf( 'Found cache key "%s", skipping image cache priming', $cache_key ) );
+
+			return;
+		}
 
 		// Search results differ slightly from industry collections, reformat.
 		if ( isset( $collections['images'] ) ) {
@@ -106,6 +128,12 @@ final class Cache_Primer {
 			unset( $promises );
 		} catch ( Throwable $e ) {
 		}
+
+		$duration = DAY_IN_SECONDS;
+
+		$this->logger->debug( sprintf( 'Caching image priming using key "%s" for %d seconds', $cache_key, $duration ) );
+
+		set_transient( $cache_key, true, $duration );
 	}
 
 }
