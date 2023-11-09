@@ -25,6 +25,9 @@
     flex: 1 0 fit-content;
     width: 100%;
 }
+.wp-block-kadence-advancedbtn .kb-button:not(.specificity):not(.extra-specificity) {
+    text-decoration: none;
+}
 .kb-button:not(.kb-btn-global-inherit) {
     border: 0 solid transparent;
     padding: 0.4em 1em;

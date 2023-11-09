@@ -868,6 +868,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			'kb_glightbox',
 			array(
 				'moreText' => __( 'See more', 'kadence-blocks' ),
+				'lightBoxAriaLabel' => __('Display this image in a lightbox', 'kadence-blocks'),
 			)
 		);
 	}

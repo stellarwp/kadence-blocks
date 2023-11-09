@@ -30,7 +30,7 @@ import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
 function FieldNumber( { attributes, setAttributes, isSelected, clientId, context, name } ) {
-	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, maxValue, minValue, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
+	const { uniqueID, required, label, showLabel, defaultValue, helpText, ariaDescription, allowDecimals, maxValue, minValue, maxWidth, maxWidthUnit, minWidth, minWidthUnit, defaultParameter, placeholder, auto, inputName, requiredMessage, kadenceDynamic } = attributes;
 
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -146,6 +146,12 @@ function FieldNumber( { attributes, setAttributes, isSelected, clientId, context
 									name={ name }
 									clientId={ clientId }
 									context={ context }
+								/>
+
+								<ToggleControl
+									label={__( 'Allow decimal numbers?', 'kadence-blocks' )}
+									checked={allowDecimals}
+									onChange={( value ) => setAttributes( { allowDecimals: value } )}
 								/>
 
 								<NumberControl

@@ -36,11 +36,16 @@
 
 .kb-progress-bar-type-line-mask {
 	.kb-progress-bar {
-		height: 100px;
+		height: 80px;
 		max-width: 100%;
 		
 		& > svg {
 			height: 100%;
 		}
+	}
+}
+.kb-progress-bar-container.aligncenter {
+	> .kb-progress-bar {
+		margin: 0 auto;
 	}
 }
