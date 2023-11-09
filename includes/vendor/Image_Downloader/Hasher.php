@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
+use InvalidArgumentException;
+
 final class Hasher {
 
 	/**
@@ -29,8 +31,14 @@ final class Hasher {
 	 * @param bool  $binary Output in raw binary.
 	 *
 	 * @return string
+	 *
+	 * @throws InvalidArgumentException
 	 */
 	public function hash( $data, bool $binary = false ): string {
+		if ( $data === null ) {
+			throw new InvalidArgumentException( '$data cannot be null.' );
+		}
+
 		$data = is_scalar( $data ) ? (string) $data : json_encode( $data );
 
 		return hash( $this->algo, $data, $binary );
