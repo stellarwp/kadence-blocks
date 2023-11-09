@@ -3,9 +3,12 @@
  * REST API for Kadence prebuilt library.
  */
 
+use KadenceWP\KadenceBlocks\Cache\Ai_Cache;
+use KadenceWP\KadenceBlocks\Cache\Block_Library_Cache;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -265,12 +268,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	);
 
 	/**
+	 * @var Block_Library_Cache
+	 */
+	protected $block_library_cache;
+
+	/**
+	 * @var Ai_Cache
+	 */
+	protected $ai_cache;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'kb-design-library/v1';
-		$this->rest_base = 'get';
-		$this->reset = 'reset';
+		$this->namespace           = 'kb-design-library/v1';
+		$this->rest_base           = 'get';
+		$this->reset               = 'reset';
+		$this->block_library_cache = kadence_blocks()->get( Block_Library_Cache::class );
+		$this->ai_cache            = kadence_blocks()->get( Ai_Cache::class );
 	}
 
 	/**
@@ -533,9 +548,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// Whether this request will get saved to cache.
 		$store = false;
 
-		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
-			$response = $this->get_local_data_contents( $this->get_local_data_path( $identifier ) );
-		} else {
+		// Try to get results from the cache.
+		if ( ! $reload ) {
+			try {
+				$response = $this->block_library_cache->get( $identifier );
+			} catch ( NotFoundException $e ) {
+
+			}
+		}
+
+		// No cache, fetch live.
+		if ( ! isset( $response ) ) {
 			$store = true;
 
 			if ( ! empty( $search_query ) && in_array( 'aiGenerated', $industries, true ) ) {
@@ -558,7 +581,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		if ( $store ) {
-			$this->create_data_file( $response, $identifier );
+			$this->block_library_cache->cache( $identifier, $response );
 		}
 
 		// Prime the cache for all image sizes for potential download.
@@ -574,23 +597,29 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_image_collections( $request ) {
-		$context = $request->get_param( self::PROP_CONTEXT );
-		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		if ( file_exists( $this->get_local_data_path( 'image_collections' ) ) && ! $reload ) {
-			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( 'image_collections' ) ) );
-		} else {
-			// Check if we have a remote file.
-			$response = $this->get_remote_image_collections();
-			$data = json_decode( $response, true );
-			if ( $response === 'error' ) {
-				return rest_ensure_response( 'error' );
-			} else {
-				$this->create_data_file( $response, 'image_collections' );
-				return rest_ensure_response( $response );
+		$reload        = $request->get_param( self::PROP_FORCE_RELOAD );
+		$this->api_key = $request->get_param( self::PROP_API_KEY );
+		$identifier    = 'image_collections';
+
+		if ( ! $reload ) {
+			try {
+				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
+			} catch ( NotFoundException $e ) {
 			}
 		}
+
+		// Check if we have a remote file.
+		$response = $this->get_remote_image_collections();
+
+		if ( $response === 'error' ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$this->block_library_cache->cache( $identifier, $response );
+
+		return rest_ensure_response( $response );
 	}
+
 	/**
 	 * Retrieves remaining credits.
 	 *
@@ -602,13 +631,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		// Check if we have a remote file.
 		$response = $this->get_remote_remaining_credits();
-		$data = json_decode( $response, true );
+
 		if ( $response === 'error' ) {
 			return rest_ensure_response( 'error' );
-		} else {
-			return rest_ensure_response( $response );
 		}
+
+		return rest_ensure_response( $response );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -616,21 +646,26 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_industry_verticals( $request ) {
-		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
+		$reload     = $request->get_param( self::PROP_FORCE_RELOAD );
 		$identifier = 'industry_verticals' . KADENCE_BLOCKS_VERSION;
-		if ( file_exists( $this->get_local_data_path( $identifier ) ) && ! $reload ) {
-			return rest_ensure_response( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
-		} else {
-			// Check if we have a remote file.
-			$response = $this->get_remote_industry_verticals();
-			$data = json_decode( $response, true );
-			if ( $response === 'error' ) {
-				return rest_ensure_response( 'error' );
-			} else {
-				$this->create_data_file( $response, $identifier );
-				return rest_ensure_response( $response );
+
+		if ( ! $reload ) {
+			try {
+				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
+			} catch ( NotFoundException $e ) {
 			}
 		}
+
+		// Check if we have a remote file.
+		$response = $this->get_remote_industry_verticals();
+
+		if ( $response === 'error' ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$this->block_library_cache->cache( $identifier, $response );
+
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -742,6 +777,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		} else {
 			$library_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/';
 		}
+
 		if ( ! empty( $library ) ) {
 			if ( is_callable( 'network_home_url' ) ) {
 				$site_url = network_home_url( '', 'http' );
@@ -790,12 +826,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( $contents );
 			}
 		}
+
+		return rest_ensure_response( 'error' );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return void Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( $request ) {
 		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
@@ -805,6 +844,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$library          = $request->get_param( self::PROP_LIBRARY );
 		$library_url      = $request->get_param( self::PROP_LIBRARY_URL );
 		$key              = $request->get_param( self::PROP_KEY );
+
 		if ( ! empty( $library_url ) ) {
 			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
@@ -813,20 +853,25 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		} else {
 			$library_url = $this->remote_url;
 		}
+
 		$identifier = 'library' . $library;
+
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
 		}
+
 		if ( ! empty( $key ) ) {
 			$identifier .= '_' . $key;
 		}
+
 		if ( 'templates' !== $library && 'pages' !== $library && 'section' !== $library && 'template' !== $library ) {
 			$cloud_settings = json_decode( get_option( 'kadence_blocks_cloud' ), true );
-			if ( isset( $cloud_settings['connections'] ) && isset( $cloud_settings['connections'][ $library ] ) && isset( $cloud_settings['connections'][ $library ]['expires'] ) && ! empty( $cloud_settings['connections'][ $library ]['expires'] ) ) {
+			if ( ! empty( $cloud_settings['connections'][ $library ]['expires'] ) ) {
 				$expires = strtotime( get_date_from_gmt( $cloud_settings['connections'][ $library ]['expires'] ) );
 				$now     = strtotime( get_date_from_gmt( current_time( 'Y-m-d H:i:s' ) ) );
+
 				if ( $expires < $now ) {
-					$refresh = ( isset( $cloud_settings['connections'][ $library ]['refresh'] ) && ! empty( $cloud_settings['connections'][ $library ]['refresh'] ) ? $cloud_settings['connections'][ $library ]['refresh'] : 'month' );
+					$refresh = ( ! empty( $cloud_settings['connections'][ $library ]['refresh'] ) ? $cloud_settings['connections'][ $library ]['refresh'] : 'month' );
 					if ( 'day' === $refresh ) {
 						$expires_add = DAY_IN_SECONDS;
 					} elseif ( 'week' === $refresh ) {
@@ -834,29 +879,37 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					} else {
 						$expires_add = MONTH_IN_SECONDS;
 					}
-					$cloud_settings['connections'][ $library ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time() ) + $expires_add );
+					$cloud_settings['connections'][ $library ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) + $expires_add );
 					update_option( 'kadence_blocks_cloud', json_encode( $cloud_settings ) );
 					$reload = true;
 				}
 			}
 		}
+
 		// Check if we have a local file.
-		if ( ! $reload && file_exists( $this->get_local_data_path( $identifier ) ) ) {
-			wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $identifier ) ) );
-		} else {
-			if ( 'custom' === $library ) {
-				wp_json_encode( apply_filters( 'kadence_block_library_custom_array', array() ) );
-			}
-			// Access via remote.
-			$response = $this->get_remote_library_contents( $library, $library_url, $key );
-			if ( 'error' === $response ) {
-				wp_send_json( 'error' );
-			} else {
-				$this->create_data_file( $response, $identifier );
-				wp_send_json( $response );
+		if ( ! $reload ) {
+			try {
+				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
+			} catch ( NotFoundException $e ) {
 			}
 		}
+
+		if ( 'custom' === $library ) {
+			wp_json_encode( apply_filters( 'kadence_block_library_custom_array', array() ) );
+		}
+
+		// Access via remote.
+		$response = $this->get_remote_library_contents( $library, $library_url, $key );
+
+		if ( 'error' === $response ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$this->block_library_cache->cache( $identifier, $response );
+
+		return rest_ensure_response( $response );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -881,43 +934,47 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'failed' );
 		}
 	}
+
 	/**
-	 * Retrieves all the currently available ai content.
+	 * Retrieves all the currently available AI content.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_all_items( $request ) {
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$this->api_key     = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
-		$return_data = array();
+		$return_data       = array();
+
 		if ( ! empty( $available_prompts ) && is_array( $available_prompts ) ) {
 			foreach ( $available_prompts as $context => $prompt ) {
-				if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) ) {
-					$return_data[ $context ] = json_decode( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ), true );
-				} else {
+				// Check local cache.
+				try {
+					$return_data[ $context ] = json_decode( $this->ai_cache->get( $prompt ), true );
+				} catch ( NotFoundException $e ) {
 					// Check if we have a remote file.
-					$response = $this->get_remote_contents( $available_prompts[ $context ] );
-					$data = json_decode( $response, true );
+					$response = $this->get_remote_contents( $prompt );
+					$data     = json_decode( $response, true );
+
+					// TODO: these variables aren't actually used for anything? What is supposed to be happening here.
 					if ( $response === 'error' ) {
 						$has_error = true;
 					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
 						$ready = false;
-					} else if ( isset( $data['data']['status'] ) && 409 !== $data['data']['status'] ) {
+					} else if ( isset( $data['data']['status'] ) ) {
 						$has_error = true;
 					} else {
-						$this->create_data_file( $response, $available_prompts[ $context ], 'ai' );
-						$return_data[ $context ] = json_decode( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ), true );
+						$this->ai_cache->cache( $prompt, $response );
+
+						$return_data[ $context ] = $data;
 					}
 				}
 			}
 		}
-		if ( ! empty( $return_data ) ) {
-			return rest_ensure_response( $return_data );
-		} else {
-			return rest_ensure_response( 'empty' );
-		}
+
+		return rest_ensure_response( $return_data ?: 'empty' );
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -925,58 +982,66 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		$context = $request->get_param( self::PROP_CONTEXT );
-		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$context           = $request->get_param( self::PROP_CONTEXT );
+		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
+		$this->api_key     = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
+
 		// Check if we have captured prompt.
 		if ( ! empty( $available_prompts[ $context ] ) && ! $reload ) {
+
 			// Check if we have a local file.
-			if ( file_exists( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) ) {
-				return wp_send_json( $this->get_local_data_contents( $this->get_local_data_path( $available_prompts[ $context ], 'ai' ) ) );
-			} else {
-				// Check if we have a remote file.
-				$response = $this->get_remote_contents( $available_prompts[ $context ] );
-				$data = json_decode( $response, true );
-				if ( $response === 'error' ) {
-					$current_prompts = get_option( 'kb_design_library_prompts', array() );
-					if ( isset( $current_prompts[ $context ] ) ) {
-						unset( $current_prompts[ $context ] );
-						update_option( 'kb_design_library_prompts', $current_prompts );
-					}
-					return wp_send_json( 'error' );
-				} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-					return wp_send_json( 'processing' );
-				} else if ( isset( $data['data']['status'] ) && 409 !== $data['data']['status'] ) {
-					$current_prompts = get_option( 'kb_design_library_prompts', array() );
-					if ( isset( $current_prompts[ $context ] ) ) {
-						unset( $current_prompts[ $context ] );
-						update_option( 'kb_design_library_prompts', $current_prompts );
-					}
-					return wp_send_json( 'error' );
-				} else {
-					$this->create_data_file( $response, $available_prompts[ $context ], 'ai' );
-					return wp_send_json( $response );
+			try {
+				return rest_ensure_response( $this->ai_cache->get( $available_prompts[ $context ] ) );
+			} catch ( NotFoundException $e ) {
+			}
+
+			// Check if we have a remote file.
+			$response = $this->get_remote_contents( $available_prompts[ $context ] );
+			$data     = json_decode( $response, true );
+
+			if ( $response === 'error' ) {
+				$current_prompts = get_option( 'kb_design_library_prompts', array() );
+
+				if ( isset( $current_prompts[ $context ] ) ) {
+					unset( $current_prompts[ $context ] );
+					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
+
+				return rest_ensure_response( 'error' );
+			} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+				return rest_ensure_response( 'processing' );
+			} else if ( isset( $data['data']['status'] ) ) {
+				$current_prompts = get_option( 'kb_design_library_prompts', array() );
+				if ( isset( $current_prompts[ $context ] ) ) {
+					unset( $current_prompts[ $context ] );
+					update_option( 'kb_design_library_prompts', $current_prompts );
+				}
+				return rest_ensure_response( 'error' );
+			} else {
+				$this->ai_cache->cache( $available_prompts[ $context ], $response );
+
+				return rest_ensure_response( $response );
 			}
 		} else {
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
-			$data = json_decode( $response, true );
-			if ( $response === 'error' ) {
-				return wp_send_json( 'error' );
-			} else if ( $response === 'credits' ) {
-				return wp_send_json( 'credits' );
+			$data     = json_decode( $response, true );
+
+			if ( $response === 'error' || $response === 'credits' ) {
+				return rest_ensure_response( $response );
 			} else if ( isset( $data['data']['job_id'] ) ) {
-				$current_prompts = get_option( 'kb_design_library_prompts', array() );
+				$current_prompts             = get_option( 'kb_design_library_prompts', array() );
 				$current_prompts[ $context ] = $data['data']['job_id'];
 				update_option( 'kb_design_library_prompts', $current_prompts );
-				return wp_send_json( 'processing' );
-			} else {
-				return wp_send_json( 'error' );
+
+				return rest_ensure_response( 'processing' );
 			}
+
+			return rest_ensure_response( 'error' );
 		}
 	}
+
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -1100,111 +1165,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return $str;
 	}
-	/**
-	 * Retrieves the path to the local data file.
-	 *
-	 * @param array|string $prompt_data The prompt data.
-	 *
-	 * @return string of the path to local data file.
-	 */
-	public function get_local_data_path( $prompt_data, $path_type = 'content' ) {
-		if ( 'ai' === $path_type ) {
-			return $this->get_block_library_folder( $path_type ) . '/' . $this->get_local_data_ai_filename( $prompt_data ) . '.json';
-		}
-		return $this->get_block_library_folder( $path_type ) . '/' . $this->get_local_data_filename( $prompt_data ) . '.json';
-	}
-	/**
-	 * Get the local data filename.
-	 *
-	 * This is a hash, generated from the current site url, the wp-content path, the prompt data.
-	 * This way we can avoid issues with sites changing their URL, or the wp-content path etc.
-	 *
-	 * @param array $prompt_data The prompt data.
-	 *
-	 * @return string
-	 */
-	public function get_local_data_filename( $prompt_data ) {
-		return md5( $this->get_base_url() . $this->get_base_path() . $prompt_data );
-	}
-	/**
-	 * Get the local data filename.
-	 *
-	 * This is a hash, generated from the current site url, the wp-content path, the prompt data.
-	 * This way we can avoid issues with sites changing their URL, or the wp-content path etc.
-	 *
-	 * @param array $prompt_data The prompt data.
-	 *
-	 * @return string
-	 */
-	public function get_local_data_ai_filename( $prompt_data ) {
-		return md5( 'kadence-ai-generated-content' . $prompt_data );
-	}
-	/**
-	 * Get the subfolder name.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_subfolder_name() {
-		$subfolder_name = apply_filters( 'kadence_block_library_local_data_subfolder_name', 'kadence_blocks_library' );
-		return $subfolder_name;
-	}
-	/**
-	 * Get the subfolder name.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_ai_subfolder_name() {
-		$subfolder_name = apply_filters( 'kadence_block_ai_local_data_subfolder_name', 'kadence_ai' );
-		return $subfolder_name;
-	}
-	/**
-	 * Get the base path.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_base_path() {
-		if ( ! $this->base_path ) {
-			$upload_dir = wp_upload_dir();
-			$this->base_path = apply_filters( 'kadence_block_library_local_data_base_path', trailingslashit( $upload_dir['basedir'] ) );
-		}
-		return $this->base_path;
-	}
-	/**
-	 * Get the base URL.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_base_url() {
-		if ( ! $this->base_url ) {
-			$this->base_url = apply_filters( 'kadence_block_library_local_data_base_url', content_url() );
-		}
-		return $this->base_url;
-	}
-	/**
-	 * Get the folder for templates data.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_block_library_folder( $path_type = 'content' ) {
-		if ( 'ai' === $path_type ) {
-			if ( ! $this->block_ai_folder ) {
-				$this->block_ai_folder = $this->get_base_path();
-				$this->block_ai_folder .= $this->get_ai_subfolder_name();
-			}
-			return $this->block_ai_folder;
 
-		}
-		if ( ! $this->block_library_folder ) {
-			$this->block_library_folder = $this->get_base_path();
-			$this->block_library_folder .= $this->get_subfolder_name();
-		}
-		return $this->block_library_folder;
-	}
 	/**
 	 * Get remote file contents.
 	 *
@@ -1821,7 +1782,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Get image search query.
 	 *
 	 * @access public
-	 * @return string Returns the remote URL contents.
+	 * @return WP_REST_Response Returns the remote URL contents.
 	 */
 	public function get_image_search_query( $request ) {
 		$parameters = $request->get_json_params();
@@ -1860,16 +1821,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$contents = wp_remote_retrieve_body( $response );
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
-			return 'error';
+			return rest_ensure_response( 'error' );
 		}
 
-		return $contents;
+		return rest_ensure_response( $contents );
 	}
 	/**
 	 * Get keyword suggestions.
 	 *
 	 * @access public
-	 * @return string Returns the remote URL contents.
+	 * @return WP_REST_Response Returns the remote URL contents.
 	 */
 	public function get_keyword_suggestions( $request ) {
 		$parameters = $request->get_json_params();
@@ -1910,10 +1871,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$contents = wp_remote_retrieve_body( $response );
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
-			return 'error';
+			return rest_ensure_response( 'error' );
 		}
 
-		return $contents;
+		return rest_ensure_response( $contents );
 	}
 	/**
 	 * Get remote file contents.
@@ -1949,54 +1910,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return $contents;
 	}
-	/**
-	 * Write the data to the filesystem.
-	 *
-	 * @TODO: move this to its own class, save on shutdown.
-	 *
-	 * @access protected
-	 * @return string|false Returns the absolute path of the file on success, or false on fail.
-	 */
-	protected function create_data_file( $content, $prompt_data, $path_type = 'content' ) {
-		$file_path  = $this->get_local_data_path( $prompt_data, $path_type );
-		$filesystem = $this->get_filesystem();
 
-		// If the folder doesn't exist, create it.
-		if ( ! file_exists( $this->get_block_library_folder( $path_type ) ) ) {
-			$chmod_dir = ( 0755 & ~ umask() );
-			if ( defined( 'FS_CHMOD_DIR' ) ) {
-				$chmod_dir = FS_CHMOD_DIR;
-			}
-			$this->get_filesystem()->mkdir( $this->get_block_library_folder( $path_type ), $chmod_dir );
-		}
-
-		// If the file doesn't exist, create it. Return false if it can not be created.
-		if ( ! $filesystem->exists( $file_path ) && ! $filesystem->touch( $file_path ) ) {
-			return false;
-		}
-
-		// Put the contents in the file. Return false if that fails.
-		if ( ! $filesystem->put_contents( $file_path, $content ) ) {
-			return false;
-		}
-
-		return $file_path;
-	}
-	/**
-	 * Get local data contents.
-	 *
-	 * @access public
-	 * @return string|false Returns the data contents.
-	 */
-	public function get_local_data_contents( $file_path ) {
-		// Check if the file path is set.
-		if ( empty( $file_path ) ) {
-			return false;
-		}
-		ob_start();
-		include $file_path;
-		return ob_get_clean();
-	}
 	/**
 	 * Retrieves the query params for the search results collection.
 	 *
@@ -2125,20 +2039,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// Join the words with dashes.
 		return implode( '-', $limited_words );
 	}
-	/**
-	 * Sanitizes an array of sizes.
-	 *
-	 * @param array    $sizes One or more size arrays.
-	 * @param WP_REST_Request $request   Full details about the request.
-	 * @param string          $parameter Parameter name.
-	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
-	 */
-	public function sanitize_block_content( $content, $request ) {
-		if ( ! empty( $content ) ) {
-			return $content;
-		}
-		return '';
-	}
+
 	/**
 	 * Import an image for the design library/patterns.
 	 *
@@ -2243,30 +2144,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 							'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
 							'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
 						);
-						break;
 					}
 				}
 			}
 		}
 		return false;
-	}
-	/**
-	 * Get a name for our image.
-	 *
-	 * @param array $url the image url.
-	 */
-	public function get_name_from_url( $url ) {
-		// Parse the URL and get the path.
-		$parsed_url = parse_url( $url );
-		$path = $parsed_url['path'];
-		// Split the path on the '/' character.
-		$parts = explode( '/', $path );
-		// The second part is the key.
-		if ( isset( $parts[1] ) ) {
-			return $parts[1];
-		} else {
-			return wp_generate_password( 14, false );
-		}
 	}
 
 	/**
@@ -2320,22 +2202,5 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );
 	}
-	/**
-	 * Get the filesystem.
-	 *
-	 * @access protected
-	 * @return WP_Filesystem
-	 */
-	protected function get_filesystem() {
-		global $wp_filesystem;
 
-		// If the filesystem has not been instantiated yet, do it here.
-		if ( ! $wp_filesystem ) {
-			if ( ! function_exists( 'WP_Filesystem' ) ) {
-				require_once wp_normalize_path( ABSPATH . '/wp-admin/includes/file.php' );
-			}
-			WP_Filesystem();
-		}
-		return $wp_filesystem;
-	}
 }
