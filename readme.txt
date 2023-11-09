@@ -102,6 +102,7 @@ Release Date: November 8th, 2023
 * Update: Add option to allow decimals in Advanced Form number field.
 * Update: Allow mute/unmute buttons row video backgrounds to be displayed separately from the play / pause button.
 * Update: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
+* Update: Add option to style buttons with underline text.
 * Fix: Issue creating new Advanced Forms on WordPress 6.4.
 * Fix: Google v3 reCAPTCHA not hiding in when set to hide.
 * Fix: Add aria label to Advanced Gallery lightbox links.
