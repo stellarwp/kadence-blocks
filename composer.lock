@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "31441731520547e21b74828f23fa8b0f",
+    "content-hash": "977c1089fece79fac06b9f0e19d128fc",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -612,17 +612,55 @@
             "time": "2023-11-01T19:11:29+00:00"
         },
         {
-            "name": "stellarwp/telemetry",
-            "version": "2.3.0",
+            "name": "stellarwp/prophecy-storage",
+            "version": "1.0.2.72",
             "source": {
                 "type": "git",
-                "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "c311c04dc103c53f0adb866f7245cf679035bc7c"
+                "url": "git@github.com:stellarwp/prophecy-storage.git",
+                "reference": "cc48f15a7369d6cd5ed9b44988513a53b3ec175b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/c311c04dc103c53f0adb866f7245cf679035bc7c",
-                "reference": "c311c04dc103c53f0adb866f7245cf679035bc7c",
+                "url": "https://api.github.com/repos/stellarwp/prophecy-storage/zipball/cc48f15a7369d6cd5ed9b44988513a53b3ec175b",
+                "reference": "cc48f15a7369d6cd5ed9b44988513a53b3ec175b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || 8.0.*",
+                "symfony/filesystem": "^3.4|^4.4|^5.4|^6.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\ProphecyMonorepo\\Storage\\": ""
+                }
+            },
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "description": "A storage system with multiple drivers.",
+            "support": {
+                "source": "https://github.com/stellarwp/prophecy-storage/tree/1.1.0-RC7.72"
+            },
+            "time": "2023-11-01T19:11:25+00:00"
+        },
+        {
+            "name": "stellarwp/telemetry",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stellarwp/telemetry.git",
+                "reference": "79f7a048c0f1b3beddd1dc07075e5e70ad39cd21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/79f7a048c0f1b3beddd1dc07075e5e70ad39cd21",
+                "reference": "79f7a048c0f1b3beddd1dc07075e5e70ad39cd21",
                 "shasum": ""
             },
             "require": {
@@ -656,9 +694,9 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/2.3.0"
+                "source": "https://github.com/stellarwp/telemetry/tree/2.3.1"
             },
-            "time": "2023-10-31T19:07:27+00:00"
+            "time": "2023-11-09T18:29:08+00:00"
         },
         {
             "name": "stellarwp/uplink",
