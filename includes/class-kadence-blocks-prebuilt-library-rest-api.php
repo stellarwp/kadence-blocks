@@ -613,7 +613,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function handle_event( $request ) {
 		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
 		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
-		$event_data  = json_decode( $event_data, true );
 
 		$event       = '';
 		$context     = array();
@@ -2106,9 +2105,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'sanitize_callback' => 'sanitize_text_field',
 		);
 		$query_params[ self::PROP_EVENT_DATA ] = array(
-			'description'       => __( 'The Event Value', 'kadence-blocks' ),
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
+			'description'       => __( 'The Event Data', 'kadence-blocks' ),
+			'type'              => 'object',
 		);
 		return $query_params;
 	}
