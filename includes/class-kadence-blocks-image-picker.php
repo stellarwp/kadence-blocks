@@ -114,6 +114,15 @@ class Kadence_Blocks_Image_Picker {
 			], $data );
 		}
 
+		// Sort by smallest to largest sizes.
+		// Do not change this: It's important for Pexels image downloading.
+		usort( $formatted, static function( $a, $b ) {
+			$max_a = max( $a['width'], $a['height'] );
+			$max_b = max( $b['width'], $b['height'] );
+
+			return $max_a <=> $max_b;
+		} );
+
 		return $this->image_sizes = $formatted;
 	}
 
