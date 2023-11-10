@@ -139,7 +139,13 @@ class Block_Library_Cache {
 	 * @throws \RuntimeException
 	 */
 	public function get( $identifier ): string {
-		return $this->storage->get( $this->filename( $identifier ) );
+		$identifier = $this->filename( $identifier );
+
+		$content = $this->storage->get( $identifier );
+
+		$this->logger->debug( sprintf( 'Found cache file: %s', $identifier ) );
+
+		return $content;
 	}
 
 	/**
