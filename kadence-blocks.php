@@ -165,8 +165,6 @@ add_action( 'after_setup_theme', 'kt_blocks_beta_updating', 1 );
 
 /**
  * Plugin Updated.
- *
- *
  */
 function kt_blocks_updated( $upgrader_object, $options ): void {
 
