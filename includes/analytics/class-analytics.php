@@ -51,18 +51,19 @@ class Analytics {
 		 */
 		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
 
-		$response = wp_remote_post(
+		wp_remote_post(
 			$url,
 			array(
-				'timeout' => 20,
-				'headers' => array(
+				'timeout'  => 20,
+				'blocking' => false,
+				'headers'  => array(
 					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type'     => 'application/json',
 				),
-				'body'    => wp_json_encode( [
+				'body'     => wp_json_encode( [
 					'name'    => $name,
 					'context' => $context,
-				]),
+				] ),
 			)
 		);
 	}
