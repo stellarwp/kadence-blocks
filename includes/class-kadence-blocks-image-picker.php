@@ -21,6 +21,13 @@ class Kadence_Blocks_Image_Picker {
 	private static $instance = null;
 
 	/**
+	 * Memoization cache for image sizes.
+	 *
+	 * @var array<array{id: string, width: int, height: int, crop: bool}>
+	 */
+	private $image_sizes;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -94,6 +101,10 @@ class Kadence_Blocks_Image_Picker {
 	 * @return array<array{id: string, width: int, height: int, crop: bool}>
 	 */
 	private function get_image_sizes(): array {
+		if ( isset( $this->image_sizes ) ) {
+			return $this->image_sizes;
+		}
+
 		$registered = wp_get_registered_image_subsizes();
 		$formatted  = [];
 
@@ -103,7 +114,7 @@ class Kadence_Blocks_Image_Picker {
 			], $data );
 		}
 
-		return $formatted;
+		return $this->image_sizes = $formatted;
 	}
 
 	/**
