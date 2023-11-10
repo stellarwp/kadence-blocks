@@ -84,7 +84,7 @@ class Analytics {
 
 		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$site_name    = get_bloginfo( 'name' );
-		$api_details  = get_option( 'kt_api_manager_kadence_gutenberg_pro_data', [] );
+		$api_details  = (array) get_option( 'kt_api_manager_kadence_gutenberg_pro_data', [] );
 
 		$defaults = [
 			'domain'          => $site_url,
