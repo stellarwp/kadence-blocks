@@ -343,7 +343,7 @@ function KadenceAdvancedHeading( props ) {
 	};
 
 	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
-	const richTextFormatsBase = ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
+	const richTextFormatsBase = ['core/bold', 'core/italic', 'kadence/ai-text', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'];
 	const richTextFormats = ! kadenceDynamic?.['content']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
 
 	const renderTypography = typography && !typography.includes( ',' ) ? '\'' + typography + '\'' : typography;

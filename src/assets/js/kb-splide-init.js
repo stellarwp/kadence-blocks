@@ -233,13 +233,11 @@
 
 		getSplideOptions: function (dataSet) {
 			const scrollIsOne = dataSet.sliderScroll === 1 ? 1 : false;
-			return {
+			const splideOpts = {
 				//start: 0,
-				focus: 0,
 				trimSpace: true,
 				drag: true,
 				perPage: dataSet.columnsXxl || 1,
-				perMove: scrollIsOne || dataSet.columnsXxl || 1,
 				type: dataSet.sliderFade ? 'fade' : 'loop',
 				easing:
 					dataSet.sliderAnimSpeed && dataSet.sliderAnimSpeed > 1000
@@ -287,6 +285,13 @@
 					next: "splide__arrow--next slick-next",
 				},
 			};
+
+			if(splideOpts.perPage === 1 || scrollIsOne) {
+				splideOpts.focus = 0;
+				splideOpts.perMove = scrollIsOne || dataSet.columnsXxl || 1;
+			}
+
+			return splideOpts;
 		},
 
 		// Initiate the menus when the DOM loads.

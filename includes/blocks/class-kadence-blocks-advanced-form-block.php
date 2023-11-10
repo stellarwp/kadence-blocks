@@ -108,8 +108,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->render_color_output( $background_style, 'background', 'background' );
 		}
-		$max_width_unit = ! empty( $form_attributes['maxWidthUnit'] ) ? $form_attributes['maxWidthUnit'] : 'px';
-		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', $max_width_unit );
+		$css->render_responsive_range( $form_attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 
 		// Input Styles.
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form' );
@@ -121,16 +120,16 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector(
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=text],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=tel],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=number],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=date],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=time],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=file],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' input[type=email],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' select,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' textarea'
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=text],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=tel],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=number],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=date],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=time],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=file],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form select,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form textarea'
 		);
 
 		$css->render_typography( $form_attributes, 'inputFont' );
@@ -227,7 +226,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 * Labels
 		 *
 		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-label' );
+		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-field .kb-adv-form-label' );
 
 		$css->render_measure_output( $label_style, 'padding', 'padding' );
 		$css->render_measure_output( $label_style, 'margin', 'margin' );
@@ -258,36 +257,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
-
-		if ( isset( $help_style['lineHeight'] ) ) {
-			$css->render_responsive_size( $help_style['lineHeight'], array( 0, 1, 2 ), 'line-height', 'lineType' );
-		}
-
-		if ( isset( $help_style['size'] ) ) {
-			$css->render_responsive_size( $help_style['size'], array( 0, 1, 2 ), 'font-size', 'sizeType' );
-		}
-		if ( isset( $help_style['letterSpacing'] ) ) {
-			$css->render_responsive_size( $help_style['letterSpacing'], array( 0, 1, 2 ), 'letter-spacing', 'letterType' );
-		}
-
-		$css->render_color_output( $help_style, 'color', 'color' );
+		$tmp_help_font = array( 'typography' => $help_style );
+		$css->render_typography( $tmp_help_font, 'typography' );
 		$css->render_measure_output( $help_style, 'padding', 'padding' );
 		$css->render_measure_output( $help_style, 'margin', 'margin' );
-		if ( isset( $help_style['textTransform'] ) && ! empty( $help_style['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $help_style['textTransform'] );
-		}
 
-		if ( isset( $help_style['family'] ) && ! empty( $help_style['family'] ) ) {
-			$google = isset( $help_style['google'] ) && $help_style['google'] ? true : false;
-			$google = $google && ( isset( $help_style['loadGoogle'] ) && $help_style['loadGoogle'] || ! isset( $help_style['loadGoogle'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $help_style['family'], $google, ( isset( $help_style['variant'] ) ? $help_style['variant'] : '' ), ( isset( $help_style['subset'] ) ? $help_style['subset'] : '' ) ) );
-		}
-		if ( isset( $help_style['style'] ) && ! empty( $help_style['style'] ) ) {
-			$css->add_property( 'font-style', $help_style['style'] );
-		}
-		if ( isset( $help_style['weight'] ) && ! empty( $help_style['weight'] ) && 'regular' !== $help_style['weight'] ) {
-			$css->add_property( 'font-weight', $help_style['weight'] );
-		}
 		/*
 		 *
 		 * Message Styles

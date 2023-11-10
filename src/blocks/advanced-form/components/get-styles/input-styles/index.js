@@ -10,7 +10,6 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	const [ tabletFieldBorderRadius ] = useFormMeta( '_kad_form_tabletFieldBorderRadius' );
 	const [ mobileFieldBorderRadius ] = useFormMeta( '_kad_form_mobileFieldBorderRadius' );
 	const [ fieldBorderRadiusUnit ] = useFormMeta( '_kad_form_fieldBorderRadiusUnit' );
-
 	const [ fieldBorderStyle ] = useFormMeta( '_kad_form_fieldBorderStyle' );
 	const [ tabletFieldBorderStyle ] = useFormMeta( '_kad_form_tabletFieldBorderStyle' );
 	const [ mobileFieldBorderStyle ] = useFormMeta( '_kad_form_mobileFieldBorderStyle' );
@@ -68,11 +67,13 @@ export default ( previewDevice, fieldStyle, inputFont, useFormMeta ) => {
 	styles.borderBottomColor = getBorderColor( previewDevice, 'bottom', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderLeftColor = getBorderColor( previewDevice, 'left', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 
+	styles.borderActive = fieldStyle?.borderActive ? fieldStyle.borderActive : '';
+
 	styles.borderTop = getBorderStyle( previewDevice, 'top', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderRight = getBorderStyle( previewDevice, 'right', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderBottom = getBorderStyle( previewDevice, 'bottom', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
 	styles.borderLeft = getBorderStyle( previewDevice, 'left', [ fieldBorderStyle ], [ tabletFieldBorderStyle ], [ mobileFieldBorderStyle ] );
-
+	
 	styles.boxShadow = ( undefined !== fieldStyle?.boxShadow && undefined !== fieldStyle?.boxShadow[ 0 ] && fieldStyle?.boxShadow[ 0 ] ? ( undefined !== fieldStyle?.boxShadow[ 7 ] && fieldStyle?.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== fieldStyle?.boxShadow[ 3 ] ? fieldStyle?.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== fieldStyle?.boxShadow[ 4 ] ? fieldStyle?.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== fieldStyle?.boxShadow[ 5 ] ? fieldStyle?.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== fieldStyle?.boxShadow[ 6 ] ? fieldStyle?.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== fieldStyle?.boxShadow[ 1 ] ? fieldStyle?.boxShadow[ 1 ] : '#000000' ), ( undefined !== fieldStyle?.boxShadow[ 2 ] ? fieldStyle?.boxShadow[ 2 ] : 1 ) ) : undefined );
 
 	if ( undefined !== fieldStyle?.backgroundType && 'gradient' === fieldStyle?.backgroundType && undefined !== fieldStyle?.gradient && '' !== fieldStyle?.gradient ) {

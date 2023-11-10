@@ -73,6 +73,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -452,7 +453,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 						</div>
 					}
 
-					{helpText && <span className="kb-form-field-help">{helpText}</span>}
+					{helpText && <span className="kb-form-field-help kb-adv-form-help">{helpText}</span>}
 
 				</>
 				<FieldBlockAppender inline={true} className="kb-custom-inbetween-inserter" getRoot={clientId}/>

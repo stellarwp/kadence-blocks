@@ -185,6 +185,7 @@ import {
 import {
 	addFilter,
 	applyFilters,
+	doAction,
 } from '@wordpress/hooks';
 
 
@@ -254,6 +255,7 @@ export default function KadenceButtonEdit( props ) {
 		kadenceAOSOptions,
 		kadenceAnimation,
 		hideLink,
+		textUnderline,
 		inQueryBlock,
 		kadenceDynamic,
 	} = attributes;
@@ -316,6 +318,8 @@ export default function KadenceButtonEdit( props ) {
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
+		doAction( 'kadence.triggerDynamicUpdate', 'link', 'link', props );
 	}, [] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -464,6 +468,7 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
+		[ `kb-btn-underline-${textUnderline}` ] : textUnderline,
 		className                  : className,
 	} );
 	const classes = classnames( {
@@ -1115,6 +1120,16 @@ export default function KadenceButtonEdit( props ) {
 											onFontStyle={( value ) => saveTypography( { style: value } )}
 											fontSubset={typography[0].subset}
 											onFontSubset={( value ) => saveTypography( { subset: value } )}
+										/>
+										<SelectControl
+											label={__( 'Text Underline', 'kadence-blocks' )}
+											value={textUnderline}
+											options={[
+												{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+												{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+												{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+											]}
+											onChange={value => setAttributes( { textUnderline: value } )}
 										/>
 									</KadencePanelBody>
 								)}

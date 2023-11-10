@@ -11,7 +11,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback, useEffect } from '@wordpress/element';
+import { useState, useCallback, useEffect, useMemo } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { size, get, isEqual } from 'lodash';
@@ -217,7 +217,7 @@ export function EditInner( props ) {
 
 	const [ title, setTitle ] = useFormProp( 'title' );
 
-	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
+	let [ blocks, onInput, onChange ] = useEntityBlockEditor(
 		'postType',
 		'kadence_form',
 		id,
@@ -226,7 +226,22 @@ export function EditInner( props ) {
 		updateBlockAttributes
 	} = useDispatch( editorStore );
 
-	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
+	let emptyForm = useMemo( () => {
+		return [ createBlock( 'kadence/advanced-form', {} ) ];
+	}, [ clientId ] );
+
+	if( blocks.length === 0 ) {
+		blocks = emptyForm;
+	}
+
+	let formInnerBlocks = useMemo( () => {
+		return get( blocks, [ 0, 'innerBlocks' ], [] );
+	}, [ blocks ] );
+
+	let newBlock = useMemo( () => {
+		return get( blocks, [ 0 ], {} );
+	}, [ blocks ] );
+
 	useEffect( () => {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
 			dedupeFormFieldUniqueIds( formInnerBlocks, updateBlockAttributes, id );
@@ -238,8 +253,6 @@ export function EditInner( props ) {
 			}
 		}
 	}, [formInnerBlocks] );
-
-	let newBlock = get( blocks, [ 0 ], {} );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
 	const onAdd = async( title, template, style, initialDescription ) => {
