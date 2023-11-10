@@ -668,7 +668,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
 		}
 
-		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 200 );
+		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
 	}
 
 	/**
