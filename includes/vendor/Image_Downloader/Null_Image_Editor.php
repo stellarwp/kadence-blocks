@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
 use RuntimeException;
 use WP_Error;
@@ -73,13 +74,15 @@ final class Null_Image_Editor extends WP_Image_Editor {
 
 		// Find the image WordPress is currently processing by matching the file name.
 		foreach ( $this->images as $id => $images ) {
-			$largest = end( $images );
+			// Grab the scaled image, or fallback to the largest size.
+			$scaled_key = array_search( FileNameProcessor::SCALED_SIZE, array_column( $images, 'size' ), true );
+			$scaled     = $images[ $scaled_key ] ?? end( $images );
 
-			if ( $this->file !== $largest->file ) {
+			if ( $this->file !== $scaled->file ) {
 				continue;
 			}
 
-			$this->image = $largest;
+			$this->image = $scaled;
 			$this->id    = $id;
 			break;
 		}

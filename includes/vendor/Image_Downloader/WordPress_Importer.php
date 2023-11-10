@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
 use Exception;
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
 
 final class WordPress_Importer {
@@ -67,11 +68,13 @@ final class WordPress_Importer {
 		}, 8, 1 );
 
 		foreach ( $this->images as $id => $images ) {
-			$largest = end( $this->images[ $id ] );
+			// Grab the scaled image, or fallback to the largest size.
+			$scaled_key = array_search( FileNameProcessor::SCALED_SIZE, array_column( $images, 'size' ), true );
+			$scaled     = $this->images[ $id ][ $scaled_key ] ?? end( $this->images[ $id ] );
 
-			$info         = wp_check_filetype( $largest->file );
-			$title        = sprintf( __( 'Photo by %s', 'kadence-blocks' ), $largest->photographer );
-			$filename     = $this->get_file_name( $largest );
+			$info         = wp_check_filetype( $scaled->file );
+			$title        = sprintf( __( 'Photo by %s', 'kadence-blocks' ), $scaled->photographer );
+			$filename     = $this->get_file_name( $scaled );
 			$uploaded_url = $upload['url'] . "/$filename";
 
 			$attachment = [
@@ -81,15 +84,15 @@ final class WordPress_Importer {
 				'post_content'   => '',
 			];
 
-			$attachment_id = wp_insert_attachment( $attachment, $largest->file );
+			$attachment_id = wp_insert_attachment( $attachment, $scaled->file );
 
 			if ( $attachment_id <= 0 ) {
 				throw new Exception( 'Failed to insert attachment' );
 			}
 
-			wp_generate_attachment_metadata( $attachment_id, $largest->file );
+			wp_generate_attachment_metadata( $attachment_id, $scaled->file );
 
-			$this->meta->add( $attachment_id, $largest );
+			$this->meta->add( $attachment_id, $scaled );
 
 			$stored[] = [
 				'id'  => $attachment_id,
