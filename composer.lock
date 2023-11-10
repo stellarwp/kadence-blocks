@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "977c1089fece79fac06b9f0e19d128fc",
+    "content-hash": "201049fbc090203bc9f18deb2cf9d9fb",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -490,7 +490,7 @@
         },
         {
             "name": "stellarwp/prophecy-container",
-            "version": "1.0.2.72",
+            "version": "1.1.0.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-container.git",
@@ -525,13 +525,13 @@
             ],
             "description": "The Prophecy DI container and its contracts.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.0-RC7.72"
+                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.0.72"
             },
             "time": "2023-11-01T19:11:17+00:00"
         },
         {
             "name": "stellarwp/prophecy-image-downloader",
-            "version": "1.1.0-RC7.72",
+            "version": "1.1.0.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-image-downloader.git",
@@ -567,13 +567,13 @@
             ],
             "description": "A concurrent image downloading library.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.0-RC7.72"
+                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.0.72"
             },
             "time": "2023-11-08T21:23:44+00:00"
         },
         {
             "name": "stellarwp/prophecy-log",
-            "version": "1.0.2.72",
+            "version": "1.1.0.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-log.git",
@@ -607,13 +607,13 @@
             ],
             "description": "The Prophecy Logger.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.0-RC7.72"
+                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.0.72"
             },
             "time": "2023-11-01T19:11:29+00:00"
         },
         {
             "name": "stellarwp/prophecy-storage",
-            "version": "1.0.2.72",
+            "version": "1.1.0.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-storage.git",
@@ -645,7 +645,7 @@
             ],
             "description": "A storage system with multiple drivers.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-storage/tree/1.1.0-RC7.72"
+                "source": "https://github.com/stellarwp/prophecy-storage/tree/1.1.0.72"
             },
             "time": "2023-11-01T19:11:25+00:00"
         },
@@ -898,16 +898,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.4.29",
+            "version": "v5.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "04784c66cbee613a827363ee1e65db65392893c1"
+                "reference": "6cdf6cdf48101454f014a9ab4e0905f0b902389d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/04784c66cbee613a827363ee1e65db65392893c1",
-                "reference": "04784c66cbee613a827363ee1e65db65392893c1",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/6cdf6cdf48101454f014a9ab4e0905f0b902389d",
+                "reference": "6cdf6cdf48101454f014a9ab4e0905f0b902389d",
                 "shasum": ""
             },
             "require": {
@@ -969,7 +969,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v5.4.29"
+                "source": "https://github.com/symfony/http-client/tree/v5.4.31"
             },
             "funding": [
                 {
@@ -985,7 +985,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-14T20:49:15+00:00"
+            "time": "2023-10-29T12:33:05+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -1642,16 +1642,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.29",
+            "version": "v5.4.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "e41bdc93def20eaf3bfc1537c4e0a2b0680a152d"
+                "reference": "2765096c03f39ddf54f6af532166e42aaa05b24b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/e41bdc93def20eaf3bfc1537c4e0a2b0680a152d",
-                "reference": "e41bdc93def20eaf3bfc1537c4e0a2b0680a152d",
+                "url": "https://api.github.com/repos/symfony/string/zipball/2765096c03f39ddf54f6af532166e42aaa05b24b",
+                "reference": "2765096c03f39ddf54f6af532166e42aaa05b24b",
                 "shasum": ""
             },
             "require": {
@@ -1708,7 +1708,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.29"
+                "source": "https://github.com/symfony/string/tree/v5.4.31"
             },
             "funding": [
                 {
@@ -1724,7 +1724,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-13T11:47:41+00:00"
+            "time": "2023-11-09T08:19:44+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -1815,8 +1815,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "stellarwp/uplink": 20,
-        "stellarwp/prophecy-image-downloader": 5
+        "stellarwp/uplink": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
