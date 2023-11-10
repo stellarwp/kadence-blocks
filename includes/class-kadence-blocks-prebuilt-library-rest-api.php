@@ -3,19 +3,17 @@
  * REST API for Kadence prebuilt library.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 use KadenceWP\KadenceBlocks\Cache\Ai_Cache;
 use KadenceWP\KadenceBlocks\Cache\Block_Library_Cache;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\StorageException;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /**
  * REST API prebuilt library.
  */
@@ -554,7 +552,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! $reload ) {
 			try {
 				$response = $this->block_library_cache->get( $identifier );
-			} catch ( NotFoundException|StorageException $e ) {
+			} catch ( NotFoundException $e ) {
+
 			}
 		}
 
@@ -605,7 +604,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! $reload ) {
 			try {
 				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
-			} catch ( NotFoundException|StorageException $e ) {
+			} catch ( NotFoundException $e ) {
 			}
 		}
 
@@ -653,7 +652,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! $reload ) {
 			try {
 				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
-			} catch ( NotFoundException|StorageException $e ) {
+			} catch ( NotFoundException $e ) {
 			}
 		}
 
@@ -891,7 +890,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! $reload ) {
 			try {
 				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
-			} catch ( NotFoundException|StorageException $e ) {
+			} catch ( NotFoundException $e ) {
 			}
 		}
 
@@ -952,7 +951,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				// Check local cache.
 				try {
 					$return_data[ $context ] = json_decode( $this->ai_cache->get( $prompt ), true );
-				} catch ( NotFoundException|StorageException $e ) {
+				} catch ( NotFoundException $e ) {
 					// Check if we have a remote file.
 					$response = $this->get_remote_contents( $prompt );
 					$data     = json_decode( $response, true );
@@ -994,7 +993,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			// Check if we have a local file.
 			try {
 				return rest_ensure_response( $this->ai_cache->get( $available_prompts[ $context ] ) );
-			} catch ( NotFoundException|StorageException $e ) {
+			} catch ( NotFoundException $e ) {
 			}
 
 			// Check if we have a remote file.

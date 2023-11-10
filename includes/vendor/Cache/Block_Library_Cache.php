@@ -5,7 +5,6 @@ namespace KadenceWP\KadenceBlocks\Cache;
 use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Contracts\Storage;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\StorageException;
 
 /**
@@ -34,11 +33,6 @@ class Block_Library_Cache {
 	protected $logger;
 
 	/**
-	 * @var Image_Cache_Validator
-	 */
-	protected $validator;
-
-	/**
 	 * The filename extension for all files.
 	 *
 	 * @var string
@@ -53,27 +47,24 @@ class Block_Library_Cache {
 	protected $items;
 
 	/**
-	 * @param Storage               $storage   The file storage library.
-	 * @param Hasher                $hasher    The hashing library.
-	 * @param Config                $config    The cache configuration.
-	 * @param LoggerInterface       $logger    The logger, enabled if WP_DEBUG is set to true.
-	 * @param Image_Cache_Validator $validator Validates a cached API response still has the correct image sizes.
-	 * @param string                $ext       The file extension all files will be saved with.
+	 * @param Storage         $storage The file storage library.
+	 * @param Hasher          $hasher  The hashing library.
+	 * @param Config          $config  The cache configuration.
+	 * @param LoggerInterface $logger  The logger, enabled if WP_DEBUG is set to true.
+	 * @param string          $ext     The file extension all files will be saved with.
 	 */
 	public function __construct(
 		Storage $storage,
 		Hasher $hasher,
 		Config $config,
 		LoggerInterface $logger,
-		Image_Cache_Validator $validator,
 		string $ext = '.json'
 	) {
-		$this->storage   = $storage;
-		$this->hasher    = $hasher;
-		$this->config    = $config;
-		$this->logger    = $logger;
-		$this->validator = $validator;
-		$this->ext       = $ext;
+		$this->storage = $storage;
+		$this->hasher  = $hasher;
+		$this->config  = $config;
+		$this->logger  = $logger;
+		$this->ext     = $ext;
 	}
 
 	/**
@@ -145,42 +136,16 @@ class Block_Library_Cache {
 	 * @return string The file contents.
 	 * @throws \InvalidArgumentException
 	 * @throws \KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException
-	 * @throws \KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\StorageException
 	 * @throws \RuntimeException
 	 */
 	public function get( $identifier ): string {
 		$identifier = $this->filename( $identifier );
-		$content    = $this->storage->get( $identifier );
+
+		$content = $this->storage->get( $identifier );
 
 		$this->logger->debug( sprintf( 'Found cache file: %s', $identifier ) );
 
-		if ( ! $this->is_valid( $content ) ) {
-			$this->logger->warning( sprintf(
-				'"%s" does not contain valid image sizes, deleting cache file...',
-				$identifier
-			) );
-
-			$this->storage->delete( $identifier );
-
-			throw NotFoundException::pathNotFound( $identifier );
-		}
-
 		return $content;
-	}
-
-	/**
-	 * Make sure image sizes haven't changed between the site and the cached file.
-	 *
-	 * @param string $content The JSON content from a cached file.
-	 *
-	 * @return bool
-	 */
-	protected function is_valid( string $content ): bool {
-		if ( ! str_contains( $content, '"images":' ) ) {
-			return true;
-		}
-
-		return $this->validator->is_valid( $content );
 	}
 
 	/**
