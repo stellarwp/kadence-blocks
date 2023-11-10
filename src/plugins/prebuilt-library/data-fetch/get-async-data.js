@@ -429,17 +429,16 @@ export function getAsyncData() {
 	 */
 	async function sendEvent( event_label, event_data ) {
 		try {
-			const response = await apiFetch( {
+			return await apiFetch( {
 				path: '/kb-design-library/v1/handle_event',
 				method: 'POST',
 				data: {
 					event_label: event_label,
-					event_data: event_data ? JSON.stringify(event_data) : '',
+					event_data: event_data ? event_data : '',
 				},
 			} );
-			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			console.log(`ERROR: ${ JSON.stringify(error) }`);
 			return 'failed';
 		}
 	}
