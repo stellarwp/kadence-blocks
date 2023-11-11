@@ -2,10 +2,12 @@
 
 namespace KadenceWP\KadenceBlocks\Traits;
 
+use KadenceWP\KadenceBlocks\Image_Downloader\Image_Editor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 
 /**
  * @mixin \Kadence_Blocks_Image_Picker
+ * @mixin Image_Editor
  */
 trait Image_Size_Trait {
 
