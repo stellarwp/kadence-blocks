@@ -14,7 +14,7 @@ trait Image_Size_Trait {
 	 *
 	 * @var array<array{id: string, width: int, height: int, crop: bool}>
 	 */
-	protected $image_sizes;
+	protected $image_sizes_cache;
 
 
 	/**
@@ -24,8 +24,8 @@ trait Image_Size_Trait {
 	 * @return array<array{id: string, width: int, height: int, crop: bool}>
 	 */
 	protected function get_image_sizes(): array {
-		if ( isset( $this->image_sizes ) ) {
-			return $this->image_sizes;
+		if ( isset( $this->image_sizes_cache ) ) {
+			return $this->image_sizes_cache;
 		}
 
 		$registered = wp_get_registered_image_subsizes();
@@ -77,7 +77,7 @@ trait Image_Size_Trait {
 			return $max_a <=> $max_b;
 		} );
 
-		return $this->image_sizes = $formatted;
+		return $this->image_sizes_cache = $formatted;
 	}
 
 }
