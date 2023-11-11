@@ -96,7 +96,7 @@ final class Image_Downloader_Provider extends Provider {
 
 		$this->container->singleton( Cache_Primer::class, Cache_Primer::class );
 
-		add_action( 'shutdown', $this->container->callback( Cache_Primer::class, 'execute' ), PHP_INT_MAX - 10 );
+		add_action( 'shutdown', $this->container->callback( Cache_Primer::class, 'execute' ), 1 );
 	}
 
 	private function register_image_downloader(): void {

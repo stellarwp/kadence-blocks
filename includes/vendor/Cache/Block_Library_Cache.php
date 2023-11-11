@@ -140,8 +140,7 @@ class Block_Library_Cache {
 	 */
 	public function get( $identifier ): string {
 		$identifier = $this->filename( $identifier );
-
-		$content = $this->storage->get( $identifier );
+		$content    = $this->storage->get( $identifier );
 
 		$this->logger->debug( sprintf( 'Found cache file: %s', $identifier ) );
 
