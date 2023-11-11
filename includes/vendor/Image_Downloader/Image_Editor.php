@@ -15,7 +15,7 @@ use WP_Image_Editor;
  * however, we simply return the data of the images that have already been downloaded with
  * the concurrent image downloader.
  */
-final class Null_Image_Editor extends WP_Image_Editor {
+final class Image_Editor extends WP_Image_Editor {
 
 	use Image_Size_Trait;
 
@@ -39,6 +39,11 @@ final class Null_Image_Editor extends WP_Image_Editor {
 	 * @var int
 	 */
 	private $id;
+
+	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
 
 	/**
 	 * Tests if this Image Editor is supported.
@@ -73,6 +78,8 @@ final class Null_Image_Editor extends WP_Image_Editor {
 			return new WP_Error( 'error_loading_image', __( 'File cannot be null.' ) );
 		}
 
+		$this->logger = kadence_blocks()->get( LoggerInterface::class );
+
 		// Fetch the currently downloaded images from the Importer.
 		$this->images = kadence_blocks()->get( WordPress_Importer::class )->images();
 
@@ -92,6 +99,10 @@ final class Null_Image_Editor extends WP_Image_Editor {
 		}
 
 		if ( $this->image === null ) {
+			$this->logger->error( 'Cannot find downloaded file', [
+				'file' => $this->file,
+			] );
+
 			return new WP_Error( 'error_loading_image', __( 'Cannot find downloaded file.' ), $this->file );
 		}
 
@@ -200,8 +211,8 @@ final class Null_Image_Editor extends WP_Image_Editor {
 			}
 		}
 
-		if ( strlen($thumbnail_id) === 0 ) {
-			kadence_blocks()->get( LoggerInterface::class )->error( 'Could not find thumbnail size', [
+		if ( strlen( $thumbnail_id ) === 0 ) {
+			$this->logger->error( 'Could not find thumbnail size', [
 				'file'             => $this->image->file,
 				'requested_width'  => $size_data['width'],
 				'requested_height' => $size_data['height'],
@@ -226,7 +237,7 @@ final class Null_Image_Editor extends WP_Image_Editor {
 			return $saved;
 		}
 
-		kadence_blocks()->get( LoggerInterface::class )->error( 'Cannot match image to size data', [
+		$this->logger->error( 'Cannot match image to size data', [
 			'file'             => $this->image->file,
 			'file_max_width'   => $this->image->width,
 			'file_max_height'  => $this->image->height,

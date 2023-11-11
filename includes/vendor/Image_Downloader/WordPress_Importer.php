@@ -64,7 +64,7 @@ final class WordPress_Importer {
 		add_filter( 'wp_image_editors', static function ( $editors ) use ( &$existing_editors ) {
 			$existing_editors = $editors;
 
-			return [ '\\KadenceWP\\KadenceBlocks\\Image_Downloader\\Null_Image_Editor' ];
+			return [ '\\KadenceWP\\KadenceBlocks\\Image_Downloader\\Image_Editor' ];
 		}, 8, 1 );
 
 		foreach ( $this->images as $id => $images ) {
