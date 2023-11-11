@@ -87,7 +87,12 @@ final class Image_Editor extends WP_Image_Editor {
 		foreach ( $this->images as $id => $images ) {
 			// Grab the scaled image, or fallback to the largest size.
 			$scaled_key = array_search( FileNameProcessor::SCALED_SIZE, array_column( $images, 'size' ), true );
-			$scaled     = $images[ $scaled_key ] ?? end( $images );
+
+			if ( $scaled_key !== false ) {
+				$scaled = $images[ $scaled_key ] ?? end( $images );
+			} else {
+				$scaled = end( $images );
+			}
 
 			if ( $this->file !== $scaled->file ) {
 				continue;

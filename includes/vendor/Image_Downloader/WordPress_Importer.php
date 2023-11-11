@@ -76,7 +76,12 @@ final class WordPress_Importer {
 		foreach ( $this->images as $id => $images ) {
 			// Grab the scaled image, or fallback to the largest size.
 			$scaled_key = array_search( FileNameProcessor::SCALED_SIZE, array_column( $images, 'size' ), true );
-			$scaled     = $this->images[ $id ][ $scaled_key ] ?? end( $this->images[ $id ] );
+
+			if ( $scaled_key !== false ) {
+				$scaled = $this->images[ $id ][ $scaled_key ] ?? end( $this->images[ $id ] );
+			} else {
+				$scaled = end( $this->images[ $id ] );
+			}
 
 			$info         = wp_check_filetype( $scaled->file );
 			$title        = sprintf( __( 'Photo by %s', 'kadence-blocks' ), $scaled->photographer );
