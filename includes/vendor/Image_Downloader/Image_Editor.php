@@ -222,7 +222,7 @@ final class Image_Editor extends WP_Image_Editor {
 		}
 
 		// Find the matching file for the requested thumbnail size and get its metadata.
-		foreach ( $this->images[ $this->id ] as $image ) {
+		foreach ( $this->images[ $this->id ] as $key => $image ) {
 			if ( $image->size !== $thumbnail_id ) {
 				continue;
 			}
@@ -233,6 +233,8 @@ final class Image_Editor extends WP_Image_Editor {
 			$saved = $this->save();
 
 			$this->image = $original;
+
+			unset( $this->images[ $this->id ][ $key ] );
 
 			return $saved;
 		}
