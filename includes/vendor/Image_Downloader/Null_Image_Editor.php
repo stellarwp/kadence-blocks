@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Image_Downloader;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
+use KadenceWP\KadenceBlocks\Traits\Image_Size_Trait;
 use RuntimeException;
 use WP_Error;
 use WP_Image_Editor;
@@ -15,6 +16,8 @@ use WP_Image_Editor;
  * the concurrent image downloader.
  */
 final class Null_Image_Editor extends WP_Image_Editor {
+
+	use Image_Size_Trait;
 
 	/**
 	 * The collection of all downloaded images.
@@ -164,8 +167,6 @@ final class Null_Image_Editor extends WP_Image_Editor {
 	/**
 	 * Find our already made sub-sized images in our image collection.
 	 *
-	 * @TODO This may still not be properly matching images, if only WordPress provided a thumbnail id...
-	 *
 	 * @param array{width?: int, height?: int, crop?: bool} $size_data
 	 *
 	 * @return WP_Error|array{path: string, file: string, width: int, height: int, mime-type: string, filesize: int}
@@ -188,34 +189,30 @@ final class Null_Image_Editor extends WP_Image_Editor {
 			$size_data['crop'] = false;
 		}
 
-		$original_width  = $this->image->width;
-		$original_height = $this->image->height;
+		$existing_sizes = $this->get_image_sizes();
+		$thumbnail_id = '';
 
-		// Pexels has the ability to make images larger than their original size, but WordPress doesn't.
-		if ( ( $original_width < $size_data['width'] ) || ( $original_height < $size_data['height'] ) ) {
-			$original_width  = $original_width * 5;
-			$original_height = $original_height * 5;
+		// Find the thumbnail name based on the requested dimensions.
+		foreach ( $existing_sizes as $existing_size ) {
+			if ( $existing_size['width'] === $size_data['width'] && $existing_size['height'] === $size_data['height'] ) {
+				$thumbnail_id = $existing_size['id'];
+				break;
+			}
 		}
 
-		$dims = image_resize_dimensions( $original_width, $original_height, $size_data['width'], $size_data['height'], $size_data['crop'] );
+		if ( strlen($thumbnail_id) === 0 ) {
+			kadence_blocks()->get( LoggerInterface::class )->error( 'Could not find thumbnail size', [
+				'file'             => $this->image->file,
+				'requested_width'  => $size_data['width'],
+				'requested_height' => $size_data['height'],
+			] );
 
-		if ( $dims ) {
-			[ $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ] = $dims;
-		} else {
-			// Fallback to originally requested dimensions.
-			$dst_w = $size_data['width'];
-			$dst_h = $size_data['height'];
+			return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.' ) );
 		}
 
+		// Find the matching file for the requested thumbnail size and get its metadata.
 		foreach ( $this->images[ $this->id ] as $image ) {
-			// Account for slight variations between WordPress's calculations and Pexel's resizing.
-			// TODO: This probably needs more work and testing to match images.
-			if ( ! str_contains( $image->file, sprintf( '%dx%d', $dst_w, $dst_h ) ) &&
-			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w - 1, $dst_h ) ) &&
-			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w, $dst_h -1 ) ) &&
-			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w -1 , $dst_h -1 ) ) &&
-				! str_contains( $image->file, sprintf( '%dx%d', $size_data['width'], $size_data['height'] ) )
-			) {
+			if ( $image->size !== $thumbnail_id ) {
 				continue;
 			}
 
@@ -239,4 +236,5 @@ final class Null_Image_Editor extends WP_Image_Editor {
 
 		return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.' ) );
 	}
+
 }
