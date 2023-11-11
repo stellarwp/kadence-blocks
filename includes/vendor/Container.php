@@ -7,6 +7,9 @@ use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 
 class Container implements ContainerInterface {
 
+	/**
+	 * @var DI52Container
+	 */
 	protected $container;
 
 	/**
@@ -16,7 +19,7 @@ class Container implements ContainerInterface {
 		$this->container = new DI52Container();
 	}
 
-	public function container() {
+	public function container(): DI52Container {
 		return $this->container;
 	}
 
