@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
 use RuntimeException;
@@ -163,9 +164,12 @@ final class Null_Image_Editor extends WP_Image_Editor {
 	/**
 	 * Find our already made sub-sized images in our image collection.
 	 *
+	 * @TODO This may still not be properly matching images, if only WordPress provided a thumbnail id...
+	 *
 	 * @param array{width?: int, height?: int, crop?: bool} $size_data
 	 *
 	 * @return WP_Error|array{path: string, file: string, width: int, height: int, mime-type: string, filesize: int}
+	 * @throws \InvalidArgumentException
 	 */
 	public function make_subsize( $size_data ) {
 		if ( ! isset( $size_data['width'] ) && ! isset( $size_data['height'] ) ) {
@@ -184,16 +188,32 @@ final class Null_Image_Editor extends WP_Image_Editor {
 			$size_data['crop'] = false;
 		}
 
-		$dims = image_resize_dimensions( $this->image->width, $this->image->height, $size_data['width'], $size_data['height'], $size_data['crop'] );
+		$original_width  = $this->image->width;
+		$original_height = $this->image->height;
 
-		if ( ! $dims ) {
-			return new WP_Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions' ), $this->file );
+		// Pexels has the ability to make images larger than their original size, but WordPress doesn't.
+		if ( ( $original_width < $size_data['width'] ) || ( $original_height < $size_data['height'] ) ) {
+			$original_width  = $original_width * 5;
+			$original_height = $original_height * 5;
 		}
 
-		[ $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ] = $dims;
+		$dims = image_resize_dimensions( $original_width, $original_height, $size_data['width'], $size_data['height'], $size_data['crop'] );
+
+		if ( $dims ) {
+			[ $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ] = $dims;
+		} else {
+			// Fallback to originally requested dimensions.
+			$dst_w = $size_data['width'];
+			$dst_h = $size_data['height'];
+		}
 
 		foreach ( $this->images[ $this->id ] as $image ) {
+			// Account for slight variations between WordPress's calculations and Pexel's resizing.
+			// TODO: This probably needs more work and testing to match images.
 			if ( ! str_contains( $image->file, sprintf( '%dx%d', $dst_w, $dst_h ) ) &&
+			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w - 1, $dst_h ) ) &&
+			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w, $dst_h -1 ) ) &&
+			     ! str_contains( $image->file, sprintf( '%dx%d', $dst_w -1 , $dst_h -1 ) ) &&
 				! str_contains( $image->file, sprintf( '%dx%d', $size_data['width'], $size_data['height'] ) )
 			) {
 				continue;
@@ -208,6 +228,14 @@ final class Null_Image_Editor extends WP_Image_Editor {
 
 			return $saved;
 		}
+
+		kadence_blocks()->get( LoggerInterface::class )->error( 'Cannot match image to size data', [
+			'file'             => $this->image->file,
+			'file_max_width'   => $this->image->width,
+			'file_max_height'  => $this->image->height,
+			'requested_width'  => $size_data['width'],
+			'requested_height' => $size_data['height'],
+		] );
 
 		return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.' ) );
 	}
