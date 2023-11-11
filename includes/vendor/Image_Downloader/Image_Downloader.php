@@ -152,7 +152,6 @@ final class Image_Downloader {
 	 *       }> $images
 	 *
 	 * @return array<array{id: int, url: string}>
-	 * @throws ImageDownloadException
 	 * @throws Throwable
 	 */
 	private function download_images( array $images ): array {

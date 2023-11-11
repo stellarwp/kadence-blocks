@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
-use Exception;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\FileNameProcessor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Models\DownloadedImage;
 
@@ -23,10 +23,17 @@ final class WordPress_Importer {
 	private $meta;
 
 	/**
-	 * @param Meta $meta
+	 * @var LoggerInterface
 	 */
-	public function __construct( Meta $meta ) {
-		$this->meta = $meta;
+	private $logger;
+
+	/**
+	 * @param Meta            $meta
+	 * @param LoggerInterface $logger
+	 */
+	public function __construct( Meta $meta, LoggerInterface $logger ) {
+		$this->meta   = $meta;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -42,7 +49,6 @@ final class WordPress_Importer {
 	 * @param array<int, array<string, DownloadedImage>> $collections
 	 *
 	 * @return array<array{id: int, url: string}>
-	 * @throws Exception
 	 */
 	public function import( array $collections ): array {
 		$upload = wp_get_upload_dir();
@@ -87,7 +93,11 @@ final class WordPress_Importer {
 			$attachment_id = wp_insert_attachment( $attachment, $scaled->file );
 
 			if ( $attachment_id <= 0 ) {
-				throw new Exception( 'Failed to insert attachment' );
+				$this->logger->error( 'Failed to insert attachment', [
+					'file' => $scaled->file
+				] );
+
+				continue;
 			}
 
 			wp_generate_attachment_metadata( $attachment_id, $scaled->file );
