@@ -55,6 +55,14 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"repeat": {
+		"type": "boolean",
+		"default": false
+	},
+	"frecuency": {
+		"type": "string",
+		"default": ""
+	},
 	"enableTimer": {
 	  "type": "boolean",
 	  "default": true

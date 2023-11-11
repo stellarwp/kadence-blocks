@@ -120,6 +120,12 @@ const actionOptions = [
 	{ value: 'message', label: __( 'Replace with Content (Pro addon)', 'kadence-blocks' ), disabled: true },
 	{ value: 'redirect', label: __( 'Redirect (Pro addon)', 'kadence-blocks' ), disabled: true },
 ];
+const frecuencyOptions = [
+	{ value: 'daily', label: __( 'Daily', 'kadence-blocks' ), disabled: false },
+	{ value: 'weekly', label: __( 'Weekly', 'kadence-blocks' ), disabled: false },
+	{ value: 'monthly', label: __( 'Monthly', 'kadence-blocks' ), disabled: false },
+	{ value: 'yearly', label: __( 'Yearly', 'kadence-blocks' ), disabled: false },
+];
 const ANCHOR_REGEX = /[\s#]/g;
 
 /**
@@ -135,6 +141,8 @@ function KadenceCountdown( props ) {
 		enableTimer,
 		evergreenHours,
 		evergreenMinutes,
+		repeat,
+		frecuency,
 		redirectURL,
 		timerLayout,
 		date,
@@ -209,6 +217,44 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
+	const setEndDate = (endDate, repeatFrecuency) => {
+		const currentDate = new Date();
+		const newDate = new Date();
+		const formattedEndDate = new Date(endDate);
+		let moveDays = 2;
+		if(endDate && currentDate > formattedEndDate) {
+			switch(repeatFrecuency) {
+				case "daily":
+					moveDays = 1;
+					break;
+				case "weekly":
+					moveDays = 7;
+					break;
+				case "monthly":
+					moveDays = 30;
+					break;
+				case "yearly":
+					moveDays = 365;
+					break;
+				default:
+					break;
+			}
+
+			newDate.setDate(formattedEndDate.getDate() + moveDays);
+	    	setAttributes({date: newDate});
+		}
+		
+		if ( !endDate ) {
+			dateSettings = getDateSettings();
+			const { timezone } = dateSettings;
+			const today = currentDate;
+			newDate.setDate( today.getDate() + moveDays );
+			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
+			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
+			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
+		}
+	};
+
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
 
@@ -228,16 +274,8 @@ function KadenceCountdown( props ) {
 			setBorderRadiusControl( 'individual' );
 		}
 
-		if ( !date ) {
-			dateSettings = getDateSettings();
-			const { timezone } = dateSettings;
-			const today = new Date();
-			const newDate = new Date();
-			newDate.setDate( today.getDate() + 2 );
-			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
-			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
-			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
-		}
+		setEndDate(date, frecuency);
+		console.log(date);
 	}, [] );
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -749,6 +787,24 @@ function KadenceCountdown( props ) {
 													/>
 												</>
 											)}
+											<ToggleControl
+												label={__( 'Repeat contdown', 'kadence-blocks' )}
+												checked={repeat}
+												onChange={value => setAttributes( { repeat: value } )}
+												help={__( 'This will give the option to restart the conuntdown concurrently.', 'kadence-blocks' )}
+											/>
+											{
+												repeat && (
+													<>
+														<SelectControl
+															label={__( 'Repeat Frecuency', 'kadence-blocks' )}
+															options={frecuencyOptions}
+															value={frecuency}
+															onChange={( value ) => setAttributes( { frecuency: value } )}
+														/>
+													</>
+												)
+											}
 											<SelectControl
 												label={__( 'Action on Expire', 'kadence-blocks' )}
 												options={countdownActions}
