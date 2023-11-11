@@ -187,7 +187,7 @@ function kt_blocks_updated( $upgrader_object, $options ): void {
 
 	do_action( 'stellarwp/analytics/event', 'Plugin Updated', array(
 		'product_name'             => $current_plugin_data['Name'],
-		'previous_product_version' => get_option('my_plugin_previous_version'),
+		'previous_product_version' => get_option( 'my_plugin_previous_version' ),
 		'new_version'              => $new_version,
 	) );
 

@@ -434,7 +434,7 @@ export function getAsyncData() {
 				method: 'POST',
 				data: {
 					event_label: event_label,
-					event_data: event_data ? event_data : '',
+					event_data: event_data ? event_data : {},
 				},
 			} );
 		} catch (error) {
