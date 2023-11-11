@@ -365,7 +365,7 @@ export function getAsyncData() {
 					key: key ? key : library,
 					pattern_id: item_id ? item_id : '',
 					pattern_type: type ? type : '',
-					pattern_type: style ? style : '', // TODO: This is here twice?
+					pattern_style: style ? style : '',
 					api_key: data_key,
 					api_email: data_email,
 					product_id: product_id,
