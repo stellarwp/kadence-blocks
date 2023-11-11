@@ -42,7 +42,7 @@ final class Hasher {
 
 		$data = is_scalar( $data ) ? (string) $data : (string) json_encode( $data );
 
-		if( strlen($data) <= 0 ) {
+		if ( strlen( $data ) <= 0 ) {
 			throw new RuntimeException( 'Cannot hash an empty data string. Perhaps JSON encoding failed?' );
 		}
 
