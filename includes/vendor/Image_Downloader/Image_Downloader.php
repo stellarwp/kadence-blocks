@@ -2,12 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
-use InvalidArgumentException;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\ImageDownloader;
-use RuntimeException;
 use Throwable;
 
 final class Image_Downloader {
@@ -27,14 +24,21 @@ final class Image_Downloader {
 	 */
 	private $registry;
 
+	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
+
 	public function __construct(
 		ImageDownloader $downloader,
 		WordPress_Importer $importer,
-		Pexels_ID_Registry $registry
+		Pexels_ID_Registry $registry,
+		LoggerInterface $logger
 	) {
 		$this->downloader = $downloader;
 		$this->importer   = $importer;
 		$this->registry   = $registry;
+		$this->logger     = $logger;
 	}
 
 	/**
@@ -156,6 +160,8 @@ final class Image_Downloader {
 	 */
 	private function download_images( array $images ): array {
 		if ( ! current_user_can( 'upload_files' ) ) {
+			$this->logger->warning( 'User doesn\'t have permission to upload files. Aborting image download' );
+
 			return [];
 		}
 
@@ -180,9 +186,10 @@ final class Image_Downloader {
 
 			return $this->importer->import( $downloaded );
 		} catch ( Throwable $e ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( $e->getMessage() );
-			}
+			$this->logger->error( 'Image download or import error', [
+				'message' => $e->getMessage(),
+				'trace'   => $e->getTraceAsString(),
+			] );
 
 			return [];
 		}
