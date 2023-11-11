@@ -24,7 +24,7 @@ final class Cache_Provider extends Provider {
 
 	private function register_block_library_storage(): void {
 		$library_subfolder = apply_filters( 'kadence_block_library_local_data_subfolder_name', 'kadence_blocks_library' );
-		$path              = $this->container->get( Config::class )->base_path . $library_subfolder;
+		$path              = $this->container->get( Config::class )->base_path() . $library_subfolder;
 
 		$this->container->when( Block_Library_Cache::class )
 		                ->needs( Storage::class )
@@ -39,7 +39,7 @@ final class Cache_Provider extends Provider {
 
 	private function register_ai_storage(): void {
 		$ai_subfolder = apply_filters( 'kadence_block_ai_local_data_subfolder_name', 'kadence_ai' );
-		$path         = $this->container->get( Config::class )->base_path . $ai_subfolder;
+		$path         = $this->container->get( Config::class )->base_path() . $ai_subfolder;
 
 		$this->container->when( Ai_Cache::class )
 		                ->needs( Storage::class )

@@ -159,8 +159,8 @@ class Block_Library_Cache {
 	 */
 	protected function filename( $identifier ): string {
 		return $this->hasher->hash( [
-			$this->config->base_url,
-			$this->config->base_path,
+			$this->config->base_url(),
+			$this->config->base_path(),
 			$identifier,
 		] ) . $this->ext;
 	}

@@ -12,14 +12,14 @@ final class Config {
 	 *
 	 * @var string
 	 */
-	public $base_path;
+	private $base_path;
 
 	/**
 	 * The base URL to the uploads folder.
 	 *
 	 * @var string
 	 */
-	public $base_url;
+	private $base_url;
 
 	public function __construct(
 		string $base_path,
@@ -27,6 +27,14 @@ final class Config {
 	) {
 		$this->base_path = $base_path;
 		$this->base_url  = $base_url;
+	}
+
+	public function base_path(): string {
+		return $this->base_path;
+	}
+
+	public function base_url(): string {
+		return $this->base_url;
 	}
 
 }
