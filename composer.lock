@@ -490,7 +490,7 @@
         },
         {
             "name": "stellarwp/prophecy-container",
-            "version": "1.1.2.72",
+            "version": "1.1.3.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-container.git",
@@ -525,22 +525,22 @@
             ],
             "description": "The Prophecy DI container and its contracts.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.2.72"
+                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.3.72"
             },
             "time": "2023-11-01T19:11:17+00:00"
         },
         {
             "name": "stellarwp/prophecy-image-downloader",
-            "version": "1.1.2.72",
+            "version": "1.1.3.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-image-downloader.git",
-                "reference": "2d72b0b3b93008b254f7d2e04c2eb87057f3646c"
+                "reference": "2c21c8ce79d35f5a6df3ef1cd44c96a108d159a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/2d72b0b3b93008b254f7d2e04c2eb87057f3646c",
-                "reference": "2d72b0b3b93008b254f7d2e04c2eb87057f3646c",
+                "url": "https://api.github.com/repos/stellarwp/prophecy-image-downloader/zipball/2c21c8ce79d35f5a6df3ef1cd44c96a108d159a6",
+                "reference": "2c21c8ce79d35f5a6df3ef1cd44c96a108d159a6",
                 "shasum": ""
             },
             "require": {
@@ -567,13 +567,13 @@
             ],
             "description": "A concurrent image downloading library.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.2.72"
+                "source": "https://github.com/stellarwp/prophecy-image-downloader/tree/1.1.3.72"
             },
-            "time": "2023-11-11T23:43:36+00:00"
+            "time": "2023-11-12T00:01:09+00:00"
         },
         {
             "name": "stellarwp/prophecy-log",
-            "version": "1.1.2.72",
+            "version": "1.1.3.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-log.git",
@@ -607,13 +607,13 @@
             ],
             "description": "The Prophecy Logger.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.2.72"
+                "source": "https://github.com/stellarwp/prophecy-log/tree/1.1.3.72"
             },
             "time": "2023-11-01T19:11:29+00:00"
         },
         {
             "name": "stellarwp/prophecy-storage",
-            "version": "1.1.2.72",
+            "version": "1.1.3.72",
             "source": {
                 "type": "git",
                 "url": "git@github.com:stellarwp/prophecy-storage.git",
@@ -645,7 +645,7 @@
             ],
             "description": "A storage system with multiple drivers.",
             "support": {
-                "source": "https://github.com/stellarwp/prophecy-storage/tree/1.1.2.72"
+                "source": "https://github.com/stellarwp/prophecy-storage/tree/1.1.3.72"
             },
             "time": "2023-11-01T19:11:25+00:00"
         },
