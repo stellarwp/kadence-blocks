@@ -93,7 +93,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn' );
 		$css->add_property( 'margin-top', '1em' );
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-child(2)' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(2)' );
 		$css->add_property( 'display', 'none' );
 
 
@@ -125,15 +125,15 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '-webkit-mask-image', 'none' );
 		$css->add_property( 'mask-image', 'none' );
 
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(1), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-child(1)' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(1), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 		$css->add_property( 'display', 'none' );
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-child(2)' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(2)' );
 		$css->add_property( 'display', 'inline-flex' );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .kt-btn-wrap:nth-child(2)' );
 		$css->add_property( 'display', 'block' );
 
 		if( isset( $attributes['showHideMore'] ) && !$attributes['showHideMore'] ) {
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-child(2)' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(2)' );
 			$css->add_property( 'display', 'none' );
 		}
 
@@ -145,7 +145,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 			$css->add_property( 'display', 'none' );
 			$css->set_media_state( 'desktop' );
 		}
@@ -158,7 +158,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 			$css->add_property( 'display', 'none' );
 			$css->set_media_state( 'desktop' );
 
@@ -174,7 +174,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)' );
 				}
 
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:first-child' );
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 				$css->add_property( 'display', 'inline' );
 				$css->set_media_state( 'desktop' );
 			}
@@ -188,7 +188,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child, .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 			$css->add_property( 'display', 'none' );
 			$css->set_media_state( 'desktop' );
 		}

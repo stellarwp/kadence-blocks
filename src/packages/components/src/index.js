@@ -104,3 +104,4 @@ export { default as KadenceIconPicker } from './icon-picker';
 export { default as TaxonomySelect } from './taxonomy-select';
 
 export { default as SelectParentBlock } from './select-parent-block';
+export { default as ObfuscateTextControl } from './obfuscate-text-control';

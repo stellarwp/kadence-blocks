@@ -16,7 +16,6 @@ import { getFormFields } from '../../';
  */
 import { __ } from '@wordpress/i18n';
 import {
-	Fragment,
 	useEffect,
 	useMemo,
 	useState,
@@ -29,9 +28,10 @@ import {
 	SelectControl,
 	ExternalLink,
 } from '@wordpress/components';
-import { KadencePanelBody } from '@kadence/components';
+import { KadencePanelBody, ObfuscateTextControl } from '@kadence/components';
+import TagSearch from './tag-search';
 
-const HELP_URL = 'https://ithemes92330.activehosted.com/app/settings/developer';
+const HELP_URL = 'https://help.activecampaign.com/hc/en-us/articles/207317590-Getting-started-with-the-API/';
 
 /**
  * Build the Measure controls
@@ -41,9 +41,11 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
+	const [ isLoadingSettings, setIsLoadingSettings ] = useState( true );
 	const [ apiBase, setApiBase ] = useState( '' );
 	const [ isSavedApiBase, setIsSavedApiBase ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
+	const [ isSavingBase, setIsSavingBase ] = useState( false );
 	const [ lists, setLists ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
 	const [ listsLoaded, setListsLoaded ] = useState( false );
@@ -55,6 +57,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 	const [ automationLoaded, setAutomationsLoaded ] = useState( false );
 	const [ isFetchingTags, setIsFetchingTags ] = useState( false );
 	const [ tags, setTags ] = useState( false );
+	const [ tagSearch, setTagSearch ] = useState( '' );
 	const [ tagsLoaded, setTagsLoaded ] = useState( false );
 
 	useEffect( () => {
@@ -64,7 +67,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		} ).then( ( response ) => {
 			setApi( response.kadence_blocks_activecampaign_api_key );
 			setApiBase( response.kadence_blocks_activecampaign_api_base );
-
+			setIsLoadingSettings( false );
 			if ( '' !== response.kadence_blocks_activecampaign_api_key && '' !== response.kadence_blocks_activecampaign_api_base ) {
 				setIsSavedApi( true );
 				setIsSavedApiBase( true );
@@ -93,7 +96,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-activecampaign/v1/get',
-				{ endpoint: 'lists' },
+				{ endpoint: 'lists', queryargs: [ 'limit=200' ] },
 			),
 		} )
 			.then( ( lists ) => {
@@ -145,7 +148,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-activecampaign/v1/get',
-				{ endpoint: 'tags' },
+				{ endpoint: 'tags', queryargs: [ 'search=' + tagSearch ] },
 			),
 		} )
 			.then( ( tags ) => {
@@ -173,7 +176,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-activecampaign/v1/get',
-				{ endpoint: 'fields' },
+				{ endpoint: 'fields', queryargs: [ 'count=300', 'offset=0' ] },
 			),
 		} )
 			.then( ( list ) => {
@@ -223,16 +226,28 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 
 	};
 
-	const saveAPI = () => {
+	const saveAPI = ( value ) => {
 		setIsSaving( true );
-
-		const settingModel = new wp.api.models.Settings( {
-			kadence_blocks_activecampaign_api_key : api,
-			kadence_blocks_activecampaign_api_base: apiBase,
-		} );
-		settingModel.save().then( response => {
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'POST',
+			data: { kadence_blocks_activecampaign_api_key: value },
+		} ).then( () => {
+			setApi( value );
 			setIsSaving( false );
 			setIsSavedApi( true );
+		} );
+	};
+
+	const saveAPIBase = ( value ) => {
+		setIsSavingBase( true );
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'POST',
+			data: { kadence_blocks_activecampaign_api_base: value },
+		} ).then( () => {
+			setApiBase( value );
+			setIsSavingBase( false );
 			setIsSavedApiBase( true );
 		} );
 	};
@@ -241,7 +256,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
 	const hasAutomations = Array.isArray( automations ) && automations.length > 0;
 	const hasTags = Array.isArray( tags ) && tags.length > 0;
-
+	const listValue = ( undefined !== settings.listMulti && settings.listMulti ? settings.listMulti : ( undefined !== settings.list && settings.list ? [ settings.list ] : '' ) );
 	return (
 		<KadencePanelBody
 			title={__( 'ActiveCampaign Settings', 'kadence-blocks' )}
@@ -251,169 +266,185 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 			<p>
 				<ExternalLink href={HELP_URL}>{__( 'Get help', 'kadence-blocks' )}</ExternalLink>
 			</p>
-			<TextControl
-				label={__( 'API Key', 'kadence-blocks' )}
-				value={api}
-				onChange={value => setApi( value )}
-			/>
-			<TextControl
-				label={__( 'API URL', 'kadence-blocks' )}
-				placeholder={'https://youaccount.api-us1.com'}
-				value={apiBase}
-				onChange={value => setApiBase( value )}
-			/>
-			<div className="components-base-control">
-				<Button
-					isPrimary
-					onClick={() => saveAPI()}
-					disabled={'' === api}
-				>
-					{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
-				</Button>
-				{api !== '' && (
-					<Fragment>
-						&nbsp;
-						<Button
-							isSecondary
-							onClick={() => removeAPI()}
-						>
-							{__( 'Remove', 'kadence-blocks' )}
-						</Button>
-					</Fragment>
-				)}
-			</div>
+			{ isLoadingSettings && (
+				<Spinner />
+			) }
+			{ ! isLoadingSettings && (
+				<>
+					<ObfuscateTextControl
+						label={ __( 'API Key', 'kadence-blocks-pro' ) }
+						value={ api }
+						onChange={ value => saveAPI( value ) }
+						isSaving={ isSaving }
+					/>
+					<ObfuscateTextControl
+						label={ __( 'API URL', 'kadence-blocks-pro' ) }
+						value={ apiBase  }
+						obfuscate={ false }
+						placeholder={'https://youaccount.api-us1.com'}
+						onChange={ value => saveAPIBase( value )}
+						isSaving={ isSavingBase }
+					/>
+				</>
+			) }
 			{isSavedApi && isSavedApiBase && (
-				<Fragment>
+				<>
 					{isFetching && (
 						<Spinner/>
 					)}
 					{!isFetching && !hasLists && (
-						<Fragment>
+						<>
 							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
 							{( !listsLoaded ? getLists() : '' )}
 							{!Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No Lists found.', 'kadence-blocks' )}
-						</Fragment>
+						</>
 
 					)}
 					{!isFetching && hasLists && (
-						<Fragment>
-							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
-							<Select
-								value={( undefined !== settings && undefined !== settings && undefined !== settings.list ? settings.list : '' )}
-								onChange={( value ) => {
-									save( { list: ( value ? value : {} ) } );
-								}}
-								id={'mc-list-selection'}
-								isClearable={true}
-								options={lists}
-								isMulti={false}
-								maxMenuHeight={200}
-								placeholder={__( 'Select List' )}
-							/>
+						<>
+							<div className='components-base-control'>
+								<span className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</span>
+								<Select
+									value={listValue}
+									onChange={( value ) => {
+										save( { listMulti: ( value ? value : [] ), list: {} } );
+									}}
+									id={'mc-list-selection'}
+									isClearable={true}
+									options={lists}
+									isMulti={true}
+									maxMenuHeight={200}
+									placeholder={__( 'Select List', 'kadence-blocks' )}
+								/>
+							</div>
 
-							<Fragment>
+							<>
 								{isFetchingGroups && (
 									<Spinner/>
 								)}
 								{!isFetchingGroups && !hasAutomations && (
-									<Fragment>
-										<h2 className="kt-heading-size-title">{__( 'Select Automation', 'kadence-blocks' )}</h2>
+									<>
+										<h2 className="kt-heading-size-title">{__( 'Select Automation (Optional)', 'kadence-blocks' )}</h2>
 										{( !automationLoaded ? getAutomations() : '' )}
 										{!Array.isArray( automations ) ?
 											<Spinner/> :
 											__( 'No Groups found.', 'kadence-blocks' )}
-									</Fragment>
+									</>
 								)}
 								{ ! isFetchingGroups && hasAutomations && (
-									<Fragment>
-										<h2 className="kt-heading-size-title">{__( 'Select Automation', 'kadence-blocks' )}</h2>
-										<Select
-											value={( undefined !== settings && undefined !== settings && undefined !== settings.automation ? settings.automation : '' )}
-											onChange={( value ) => {
-												save( { automation: ( value ? value : [] ) } );
-											}}
-											id={'mc-automation-selection'}
-											isClearable={true}
-											options={automations}
-											maxMenuHeight={200}
-											placeholder={__( 'Select Automation' )}
-										/>
-									</Fragment>
+									<>
+										<div className='components-base-control'>
+											<span className="kt-heading-size-title">{__( 'Select Automation (Optional)', 'kadence-blocks' )}</span>
+											<Select
+												value={( undefined !== settings && undefined !== settings && undefined !== settings.automation ? settings.automation : '' )}
+												onChange={( value ) => {
+													save( { automation: ( value ? value : [] ) } );
+												}}
+												id={'mc-automation-selection'}
+												isClearable={true}
+												options={automations}
+												maxMenuHeight={200}
+												placeholder={__( 'Select Automation' )}
+											/>
+										</div>
+									</>
 								)}
 								{isFetchingTags && (
 									<Spinner/>
 								)}
 								{!isFetchingTags && !hasTags && (
-									<Fragment>
-										<h2 className="kt-heading-size-title">{__( 'Select Tags', 'kadence-blocks' )}</h2>
+									<>
+										<h2 className="kt-heading-size-title">{__( 'Select Tags (Optional)', 'kadence-blocks' )}</h2>
 										{( !tagsLoaded ? getTags() : '' )}
 										{!Array.isArray( tags ) ?
 											<Spinner/> :
 											__( 'No Tags found.', 'kadence-blocks' )}
-									</Fragment>
+									</>
 
 								)}
 								{!isFetchingTags && hasTags && (
-									<Fragment>
-										<h2 className="kt-heading-size-title">{__( 'Select Tags', 'kadence-blocks' )}</h2>
+									<div className='components-base-control'>
+										<div className='kadence-select-tags-title-wrap'>
+											<span className="kt-heading-size-title">{ __( 'Select Tags (Optional)', 'kadence-blocks-pro' ) }</span>
+											<TagSearch
+												value={ tagSearch }
+												onChange={ ( value ) => {
+													setTagSearch( value );
+												} }
+												onAction={ () => {
+													getTags();
+												} }
+											/>
+										</div>
 										<Select
-											value={( undefined !== settings && undefined !== settings && undefined !== settings.tags ? settings.tags : '' )}
-											onChange={( value ) => {
+											value={ ( undefined !== settings && undefined !== settings.tags ? settings.tags : '' ) }
+											onChange={ ( value ) => {
 												save( { tags: ( value ? value : [] ) } );
-											}}
-											id={'mc-tag-selection'}
-											isClearable={true}
-											options={tags}
-											isMulti={true}
-											maxMenuHeight={200}
-											placeholder={__( 'Select Tags' )}
+											} }
+											id={ 'mc-tag-selection' }
+											isClearable={ true }
+											options={ tags }
+											isMulti={ true }
+											maxMenuHeight={ 200 }
+											placeholder={ __( 'Select Tags' ) }
 										/>
-									</Fragment>
+									</div>
 								)}
 								{isFetchingAttributes && (
 									<Spinner/>
 								)}
 								{!isFetchingAttributes && !hasAttr && (
-									<Fragment>
+									<>
 										<h2 className="kt-heading-size-title">{__( 'Map Fields', 'kadence-blocks' )}</h2>
 										{( !listAttrLoaded ? getAttributes() : '' )}
 										{!Array.isArray( listAttr ) ?
 											<Spinner/> :
 											__( 'No Fields found.', 'kadence-blocks' )}
-									</Fragment>
+									</>
 
 								)}
 								{!isFetchingAttributes && hasAttr && (
-									<Fragment>
-										<h2 className="kt-heading-size-title">{__( 'Map Fields', 'kadence-blocks' )}</h2>
-										{fields && (
-											fields.map( ( item, index ) => {
-												return (
-													<div key={index} className="kb-field-map-item">
-														<div className="kb-field-map-item-form">
-															<p className="kb-field-map-item-label">{__( 'Form Field', 'kadence-blocks' )}</p>
-															<p className="kb-field-map-item-name">{item.label}</p>
+									<>
+										<div className='components-base-control'>
+											<span className="kt-heading-size-title">{__( 'Map Fields', 'kadence-blocks' )}</span>
+											{fields && (
+												fields.map( ( item, index ) => {
+													return (
+														<div key={index} className="kb-field-map-item">
+															<div className="kb-field-map-item-form">
+																<p className="kb-field-map-item-label">{__( 'Form Field', 'kadence-blocks' )}</p>
+																<p className="kb-field-map-item-name">{item.label}</p>
+															</div>
+															<SelectControl
+																label={__( 'Select Field:' )}
+																options={listAttr}
+																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
+																onChange={( value ) => {
+																	saveMap( value, item.uniqueID );
+																}}
+															/>
 														</div>
-														<SelectControl
-															label={__( 'Select Field:' )}
-															options={listAttr}
-															value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
-															onChange={( value ) => {
-																saveMap( value, item.uniqueID );
-															}}
-														/>
-													</div>
-												);
-											} )
-										)}
-									</Fragment>
+													);
+												} )
+											)}
+										</div>
+									</>
 								)}
-							</Fragment>
-						</Fragment>
+							</>
+							<div style={ { height: '10px' } }></div>
+							<ToggleControl
+								label={ __( 'Require Double Opt In?', 'kadence-blocks-pro' ) }
+								help={ __( 'This will set the status of the contact to unconfirmed, you must setup an automation in ActiveCampaign to email the contact and update the status after confirmation.', 'kadence-blocks-pro' ) }
+								checked={ ( undefined !== settings.doubleOptin ? settings.doubleOptin : false ) }
+								onChange={ ( value ) => {
+									save( { doubleOptin: value } );
+								}}
+							/>
+						</>
 					)}
-				</Fragment>
+				</>
 			)}
 		</KadencePanelBody>
 	);

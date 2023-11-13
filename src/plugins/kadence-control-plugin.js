@@ -588,21 +588,19 @@ function KadenceConfig() {
 							theDefault={true}
 						/>
 					</PanelBody>
-					{ 'undefined' !== typeof( window.kadenceDynamicParams ) && (
-						<PanelBody
-							title={__('Dynamic Content Settings', 'kadence-blocks')}
-							initialOpen={ false }
-						>
-							<KadenceSetting 
-								slug={'get_fields_show_all'}
-								label={__('Always show all fields', 'kadence-blocks')}
-								type={'toggle'}
-								theDefault={false}
-							/>
-						</PanelBody>
-					) }
-
-
+						{ 'undefined' !== typeof( window.kadenceDynamicParams ) && (
+							<PanelBody
+								title={__('Dynamic Content Settings', 'kadence-blocks')}
+								initialOpen={ false }
+							>
+								<KadenceSetting 
+									slug={'get_fields_show_all'}
+									label={__('Always show all fields', 'kadence-blocks')}
+									type={'toggle'}
+									theDefault={false}
+								/>
+							</PanelBody>
+						) }
 					</>
 					// End check for user = admin.
 				)}

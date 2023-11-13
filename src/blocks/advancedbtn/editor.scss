@@ -12,7 +12,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
-
+// Fix Spacing issue with Astra Theme.
+.kadence-controls-content .components-base-control .components-base-control__field {
+    padding: 0;
+}
 .components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn {
     border: 2px solid #eeeeee;
     color: #555;
@@ -199,6 +202,12 @@
 	align-items: center;
 	justify-content: center;
 }
+.kt-button.kb-btn-underline-none {
+    text-decoration: none;
+}
+.kt-button.kb-btn-underline-underline {
+    text-decoration: underline;
+}
 .kt-button:not(.kb-btn-global-inherit) {
     padding: 0.4em 1em;
     cursor: pointer;
@@ -262,13 +271,16 @@
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-xlarge {
     border-width: 4px;
+    border-style: solid;
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
     border-width: 3px;
+    border-style: solid;
     padding: calc( 0.4em - 3px ) calc( 1em - 3px );
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
     border-width: 1px;
+    border-style: solid;
     padding: calc( 0.4em - 1px ) calc( 1em - 1px );
 }
 // .wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {

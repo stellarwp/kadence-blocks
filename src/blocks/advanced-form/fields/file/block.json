@@ -22,6 +22,17 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"requiredMessage": {
+		"type": "string"
+	},
+	"multiple": {
+		"type": "boolean",
+		"default": false
+	},
+	"multipleLimit": {
+		"type": "number",
+		"default": 5
+	},
 	"allowedTypes": {
 	  "type": "array",
 	  "default": [ "image" ]
@@ -39,6 +50,9 @@
 	  "default": ""
 	},
 	"anchor": {
+	  "type": "string"
+	},
+	"inputName": {
 	  "type": "string"
 	}
   },

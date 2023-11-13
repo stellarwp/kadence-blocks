@@ -146,7 +146,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_base_url = KADENCE_BLOCKS_URL . 'includes/assets/images/masks/';
 			$mask_url = $mask_base_url . $mask . '.svg';
 			// $mask_gap = $attributes['maskGap'] ?? 10;
-			$mask_height = ! empty( $attributes['progressWidth'] ) ? ( absint( $attributes['progressWidth'] ) * 11.5 ) : 80;
+			$progress_width = ! empty( $attributes['progressWidth'] ) ? absint( $attributes['progressWidth'] ) : 2;
+			$mask_height = ! empty( $progress_width ) ? ( absint( $progress_width ) * 11.5 ) : 80;
 			$mask_height_tablet = ! empty( $attributes['progressWidthTablet'] ) ? ( absint( $attributes['progressWidthTablet'] ) * 11.5 ) : 0;
 			$mask_height_mobile = ! empty( $attributes['progressWidthMobile'] ) ? ( absint( $attributes['progressWidthMobile'] ) * 11.5 ) : 0;
 			// $mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );

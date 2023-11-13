@@ -19,24 +19,24 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 				${ fieldStyles?.borderTopColor ? '--kb-form-border-color: ' + fieldStyles.borderTopColor + ';' : '' }
 				${ fieldStyles?.borderTopWidth ? '--kb-form-border-width: ' + fieldStyles.borderTopWidth + ';' : '' }
 			}
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="text"]:not(.ignore-field-styles),
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="email"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="url"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="password"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="search"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="number"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="tel"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="range"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="date"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="month"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="week"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="time"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="datetime-local"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="color"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="file"],
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select,
-			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea {
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="text"]:not(.ignore-field-styles),
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="email"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="url"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="password"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="search"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="number"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="tel"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="range"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="date"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="month"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="week"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="time"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="datetime"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="datetime-local"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="color"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="file"],
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field select,
+			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field textarea {
 				${ fieldStyles?.fontSize ? 'font-size:' + fieldStyles.fontSize + ';' : ''}
 				${ fieldStyles?.lineHeight ? 'line-height:' + fieldStyles.lineHeight + ';' : '' }
 				${ fieldStyles?.letterSpacing ? 'letter-spacing:' + fieldStyles.letterSpacing + ';' : '' }
@@ -67,20 +67,40 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 
 				${ fieldStyles?.boxShadow ? 'box-shadow: ' + fieldStyles.boxShadow + ';' : '' }
 		}
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input:not(.ignore-field-styles):focus,
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select:not(.ignore-field-styles):focus,
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea:focus {
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="text"]:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="email"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="url"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="password"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="search"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="number"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="tel"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="range"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="date"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="month"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="week"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="time"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="datetime"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="datetime-local"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="color"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="file"]:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field select:focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field textarea:focus {
+			${ fieldStyles?.borderActive ? 'border-color: ' + fieldStyles.borderActive + ';' : '' }
+		}
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field select:not(.ignore-field-styles):focus,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field textarea:focus {
 			${ fieldStyles?.backgroundActive ? 'background: ' + fieldStyles.backgroundActive + ';' : '' }
 		}
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input::placeholder,
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form select::placeholder,
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form textarea::placeholder {
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input::placeholder,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field select::placeholder,
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field textarea::placeholder {
 			${ fieldStyles?.placeholderColor ? 'color: ' + fieldStyles.placeholderColor + ';' : '' }
 		}
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="radio"]{
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="radio"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
-		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form input[type="checkbox"]{
+		.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-field input[type="checkbox"]{
 			${ fieldStyles?.borderColor ? 'border-color:' + fieldStyles.borderColor + ';' : '' }
 		}
 		`}

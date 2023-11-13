@@ -83,8 +83,11 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 
 		$radio_label = $attributes;
 		$radio_label['inputName'] = 'rb' . $class_id;
-
-		$inner_content .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
+		$inline_class = '';
+		if( isset($attributes['inline']) && true === $attributes['inline']) {
+			$inline_class = ' kb-radio-check-items-inline';
+		}
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap' . $inline_class . '" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
 		$inner_content      .= $this->field_legend( $radio_label );
 		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
@@ -106,7 +109,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 
 			$inner_content .= '</div>';
 		}
-
+		
 		$inner_content .= '</fieldset>';
 
 		$inner_content .= $this->field_help_text( $attributes );

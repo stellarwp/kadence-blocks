@@ -185,6 +185,7 @@ import {
 import {
 	addFilter,
 	applyFilters,
+	doAction,
 } from '@wordpress/hooks';
 
 
@@ -254,13 +255,19 @@ export default function KadenceButtonEdit( props ) {
 		kadenceAOSOptions,
 		kadenceAnimation,
 		hideLink,
+		textUnderline,
 		inQueryBlock,
 		kadenceDynamic,
 	} = attributes;
 
 	// Support rank math content analysis.
-	const rankMathContent = link !== '' ? '<a href="' + link + '">' + text + '</a>' : text;
-	addFilter( 'rank_math_content', 'kadence/advbtn', () => { return rankMathContent } )
+	if( uniqueID !== '' ) {
+		const rankMathContent = '<!-- KB:BTN:' + uniqueID + ' -->' + ( link !== '' ? '<a href="' + link + '">' + text + '</a>' : '<button>' + text + '</button>' ) + '<!-- /KB:BTN:' + uniqueID + ' -->';
+		addFilter( 'rank_math_content', 'kadence/advbtn', ( content ) => {
+			const regex = new RegExp( '<!-- KB:BTN:' + uniqueID + ' -->[^]*?<!-- /KB:BTN:' + uniqueID + ' -->', 'g' );
+			return content.replace( regex, '' ) + rankMathContent
+		} );
+	}
 
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 	const { btnsBlock, rootID } = useSelect(
@@ -311,6 +318,8 @@ export default function KadenceButtonEdit( props ) {
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
+		doAction( 'kadence.triggerDynamicUpdate', 'link', 'link', props );
 	}, [] );
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
@@ -459,9 +468,10 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
+		[ `kb-btn-underline-${textUnderline}` ] : textUnderline,
+		className                  : className,
 	} );
 	const classes = classnames( {
-		className                  : className,
 		[ `kb-single-btn-${uniqueID}` ]  : true,
 		[ `kt-btn-width-type-${( widthType ? widthType : 'auto' )}` ]   : true,
 	} );
@@ -1110,6 +1120,16 @@ export default function KadenceButtonEdit( props ) {
 											onFontStyle={( value ) => saveTypography( { style: value } )}
 											fontSubset={typography[0].subset}
 											onFontSubset={( value ) => saveTypography( { subset: value } )}
+										/>
+										<SelectControl
+											label={__( 'Text Underline', 'kadence-blocks' )}
+											value={textUnderline}
+											options={[
+												{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+												{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+												{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+											]}
+											onChange={value => setAttributes( { textUnderline: value } )}
 										/>
 									</KadencePanelBody>
 								)}

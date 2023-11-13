@@ -35,6 +35,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 		showLabel,
 		defaultValue,
 		options,
+		inline,
 		helpText,
 		ariaDescription,
 		maxWidth,
@@ -47,7 +48,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 		requiredMessage,
 		kadenceDynamic,
 	} = attributes;
-
+	
 	const [ rerender, setRerender ] = useState( 0 );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { previewDevice } = useSelect(
@@ -72,6 +73,7 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
 	const classes = classNames( {
 		'kb-adv-form-field': true,
+
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -240,6 +242,11 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 								>
 									{__( 'Add Option', 'kadence-blocks' )}
 								</Button>
+								<ToggleControl
+									label={__( 'Display inline?', 'kadence-blocks' )}
+									checked={ inline }
+									onChange={( value ) => setAttributes( {inline: value} )}
+								/>
 							</KadencePanelBody>
 							<KadencePanelBody
 								title={__( 'Field Controls', 'kadence-blocks' )}
@@ -436,17 +443,17 @@ function FieldCheckbox( { attributes, setAttributes, isSelected, clientId, conte
 							</Button>
 						</div>
 						:
-						<>
+						<div className={`${inline === true ? 'kb-radio-check-inline' : ''}`}>
 							{times( options.length, n => (
 								<div className={'kb-radio-check-item'} key={n}>
 									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} checked={options[ n ].selected}/>
 									<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 								</div>
 							) )}
-						</>
+						</div>
 					}
 
-					{helpText && <span className="kb-form-field-help">{helpText}</span>}
+					{helpText && <span className="kb-form-field-help kb-adv-form-help">{helpText}</span>}
 
 				</>
 				<FieldBlockAppender inline={true} className="kb-custom-inbetween-inserter" getRoot={clientId}/>

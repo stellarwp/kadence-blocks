@@ -134,6 +134,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 	const [ isSaving, setIsSaving ] = useState( false );
 
 	let allowedTabs = [ 'general', 'style', 'advanced' ];
+	const linkToKadenceCaptchaSettings = <a href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
+											target={'_blank'}>{__( 'Modify Kadence Captcha settings', 'kadence-blocks' )}</a>;
 
 	const googleV2RerenderKey = theme + size + recaptchaLanguage + recaptchaSiteKey + recaptchaSecretKey;
 
@@ -228,8 +230,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 								}
 
 								{hasKadenceCaptcha && useKcSettings ? (
-									<a href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
-									   target={'_blank'}>{__( 'Modify Kadence Captcha settings', 'kadence-blocks' )}</a>
+									linkToKadenceCaptchaSettings
 								) : (
 									<>
 										<SelectControl
@@ -343,7 +344,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 					}
 					{( activeTab === 'style' ) &&
 						<KadencePanelBody>
-							{type === 'googlev3' &&
+							{type === 'googlev3' && useKcSettings === false &&
 								<>
 									<ToggleControl
 										label={__( 'Hide reCAPTCHA badge', 'kadence-blocks' )}
@@ -373,7 +374,10 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 									}
 								</>
 							}
-
+							{ useKcSettings === true && (
+								linkToKadenceCaptchaSettings
+							) }
+							{ useKcSettings === false && (
 							<SelectControl
 								label={__( 'Color Theme', 'kadence-blocks' )}
 								value={theme}
@@ -383,6 +387,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 								]}
 								onChange={( value ) => setAttributes( { theme: value } )}
 							/>
+							) }
+
 							{type !== 'googlev3' &&
 								<SelectControl
 									label={__( 'Size', 'kadence-blocks' )}
@@ -503,7 +509,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 									{ previewHide && ! previewShowNotice &&
 										<em>{ __( 'Placeholder for hidden Google V3 reCaptcha', 'kadence-blocks' ) }</em>
 									}
-									{previewHide && previewShowNotice &&
+									{ previewHide && previewShowNotice &&
 										<span
 											style={{
 												fontSize    : '11px',
@@ -517,8 +523,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 											}}
 											className={'kt-recaptcha-branding-string'}
 										>
-									{googlev3HiddenNotice}
-								</span>
+											{googlev3HiddenNotice}
+										</span>
 									}
 								</>
 							}

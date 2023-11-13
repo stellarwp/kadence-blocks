@@ -494,6 +494,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 					'automation' => array(),
 					'tags' => array(),
 					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -520,6 +522,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 									'type' => 'string',
 								),
 							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
 						),
 					),
 				),
