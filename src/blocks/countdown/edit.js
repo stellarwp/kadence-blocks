@@ -70,6 +70,7 @@ import {
 	Component,
 	useEffect,
 	useState,
+	useCallback,
 } from '@wordpress/element';
 
 import { withSelect, withDispatch } from '@wordpress/data';
@@ -217,12 +218,12 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
-	const setEndDate = (endDate, repeatFrecuency) => {
+	const updateEndDate = useCallback((endDate, repeatFrecuency) => {
 		const currentDate = new Date();
 		const newDate = new Date();
 		const formattedEndDate = new Date(endDate);
 		let moveDays = 2;
-		if(endDate && currentDate > formattedEndDate) {
+		if(currentDate > formattedEndDate) {
 			switch(repeatFrecuency) {
 				case "daily":
 					moveDays = 1;
@@ -241,7 +242,7 @@ function KadenceCountdown( props ) {
 			}
 
 			newDate.setDate(formattedEndDate.getDate() + moveDays);
-	    	setAttributes({date: newDate});
+	    	saveDate(newDate);
 		}
 		
 		if ( !endDate ) {
@@ -253,7 +254,7 @@ function KadenceCountdown( props ) {
 			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
 		}
-	};
+	}, [date, frecuency]);
 
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
@@ -274,8 +275,7 @@ function KadenceCountdown( props ) {
 			setBorderRadiusControl( 'individual' );
 		}
 
-		setEndDate(date, frecuency);
-		console.log(date);
+		updateEndDate(date, frecuency);
 	}, [] );
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -652,6 +652,7 @@ function KadenceCountdown( props ) {
 				{( previewItemPaddingBottom ? `padding-bottom: ${previewItemPaddingBottom + previewItemPaddingType};` : '' )}
 				{'}'}
 			</style>
+			{console.log(date)}
 			{showSettings( 'allSettings', 'kadence/countdown' ) && (
 				<>
 					<BlockControls>
