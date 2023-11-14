@@ -62,11 +62,12 @@ export function Edit( props ) {
 	const blockProps = useBlockProps( {
 		className: blockClasses
 	} );
-	const { post, postExists, currentPostType, postId } = useSelect(
+	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		( select ) => {
 			return {
 				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_form', id ),
 				postExists: id && select( coreStore ).getEntityRecord( 'postType', 'kadence_form', id ),
+				isLoading: select( coreStore ).isResolving(  'getEntityRecord', [ 'postType', 'kadence_form', id  ] ),
 				currentPostType: select( 'core/editor' )?.getCurrentPostType() ? select( 'core/editor' )?.getCurrentPostType() : '',
 				postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 			}
@@ -127,7 +128,7 @@ export function Edit( props ) {
 	return (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}
-			{ ( id === 0 || undefined === postExists ) && (
+			{ ( id === 0 || ( undefined === postExists && !isLoading ) ) && (
 				<Chooser
 					id={id}
 					postExists={postExists}
@@ -137,7 +138,7 @@ export function Edit( props ) {
 			)}
 
 			{/* Form selected but not loaded yet, show spinner */}
-			{id > 0 && isEmpty( post ) && undefined !== postExists && (
+			{id > 0 && isEmpty( post ) && ( undefined === postExists && isLoading ) && (
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"

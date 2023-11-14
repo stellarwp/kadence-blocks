@@ -254,7 +254,7 @@ export function ImageEdit( props ) {
 	useEffect( () => {
 		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
 		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, context, setDynamicURL, url ? false : true);
-	}, [ 'url' ] );
+	}, [ url, context ] );
 
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();

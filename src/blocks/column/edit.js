@@ -452,8 +452,8 @@ function SectionEdit( props ) {
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
-	const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
+	const hasBackgroundImage = ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImg ? true : false );
 	const previewBackgroundImgCSS = hasBackgroundImage ? `url( ${ previewBackgroundImg[ 0 ].bgImg } )` : '';
 	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImgCSS;
 	const hasHoverBackgroundImage = ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? true : false );
