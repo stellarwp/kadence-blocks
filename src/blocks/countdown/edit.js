@@ -146,7 +146,9 @@ function KadenceCountdown( props ) {
 		frecuency,
 		redirectURL,
 		timerLayout,
+		startDate,
 		date,
+		endDate,
 		timestamp,
 		evergreenReset,
 		timezone,
@@ -218,11 +220,19 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
+	const daysInMonth = (year, month) => {
+		console.log(month);
+		return new Date(year, month, 0).getDate();
+	}
+
 	const updateEndDate = useCallback((endDate, repeatFrecuency) => {
 		const currentDate = new Date();
 		const newDate = new Date();
 		const formattedEndDate = new Date(endDate);
+		let endMonth = formattedEndDate.getMonth();
+		let endYear = formattedEndDate.getFullYear();
 		let moveDays = 2;
+
 		if(currentDate > formattedEndDate) {
 			switch(repeatFrecuency) {
 				case "daily":
@@ -232,16 +242,31 @@ function KadenceCountdown( props ) {
 					moveDays = 7;
 					break;
 				case "monthly":
-					moveDays = 30;
+					const isDecember = 11 === endMonth ? true : false;
+					endMonth = isDecember ? 0 : endMonth;
+					moveDays = daysInMonth(endYear, endMonth + 1);
 					break;
 				case "yearly":
-					moveDays = 365;
+					const nextYear = endYear + 1;
+					const leapYear = false;
+					if(1 <= endMonth) {
+						if(29 === daysInMonth(endYear, 2)) {
+							leapYear = true;
+						}
+					} else {
+						if(29 === daysInMonth(nextYear, 2)) {
+							leapYear = true;
+						}
+					}
+
+					moveDays = leapYear ? 366 : 365;
 					break;
 				default:
 					break;
 			}
 
 			newDate.setDate(formattedEndDate.getDate() + moveDays);
+			setAttributes({startDate: endDate});
 	    	saveDate(newDate);
 		}
 		
@@ -652,7 +677,7 @@ function KadenceCountdown( props ) {
 				{( previewItemPaddingBottom ? `padding-bottom: ${previewItemPaddingBottom + previewItemPaddingType};` : '' )}
 				{'}'}
 			</style>
-			{console.log(date)}
+
 			{showSettings( 'allSettings', 'kadence/countdown' ) && (
 				<>
 					<BlockControls>
@@ -803,6 +828,15 @@ function KadenceCountdown( props ) {
 															value={frecuency}
 															onChange={( value ) => setAttributes( { frecuency: value } )}
 														/>
+														<div className="components-base-control kb-datepicker-fix">
+															<h2>{__( 'End Date for Recurrent Countdown', 'kadence-blocks' )}</h2>
+															<DateTimePicker
+																currentDate={( !endDate ? undefined : endDate )}
+																onChange={ value => setAttributes({ endDate: value}) }
+																is12Hour={is12HourTime}
+																help={__( 'Pick a date to stop recurrent repetition of the countdown.', 'kadence-blocks' )}
+															/>
+														</div>
 													</>
 												)
 											}
