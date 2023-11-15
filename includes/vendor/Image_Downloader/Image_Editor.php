@@ -190,6 +190,10 @@ final class Image_Editor extends WP_Image_Editor {
 	 */
 	public function make_subsize( $size_data ) {
 		if ( ! isset( $size_data['width'] ) && ! isset( $size_data['height'] ) ) {
+			$this->logger->error( 'Cannot resize the image. Both width and height are not set.', [
+				'file' => $this->image->file,
+			] );
+
 			return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image. Both width and height are not set.' ) );
 		}
 
