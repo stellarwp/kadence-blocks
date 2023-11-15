@@ -51,6 +51,8 @@ trait Image_Size_Trait {
 					'height' => $threshold,
 					'crop'   => false,
 				];
+
+				continue;
 			}
 
 			// Add an id index.
@@ -59,16 +61,33 @@ trait Image_Size_Trait {
 			], $data );
 		}
 
-		// Remove any duplicate scaled images.
-		$formatted = array_reduce( $formatted, static function ( $carry, $size ) {
-			$id = $size['id'];
+		// We should have at least one scaled image to act as the main image.
+		if ( $max === 0 ) {
+			/** This filter is documented in wp-admin/includes/image.php */
+			$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, [ 2560, 2560 ], '', 0 );
 
-			if ( ! isset( $carry['id'] ) ) {
-				$carry[ $id ] = $size;
+			if ( ! $threshold ) {
+				$threshold = 2560;
 			}
 
-			return $carry;
-		}, [] );
+			$formatted[] = [
+				'id'     => FileNameProcessor::SCALED_SIZE,
+				'width'  => $threshold,
+				'height' => $threshold,
+				'crop'   => false,
+			];
+		} else {
+			// Remove any duplicate scaled images.
+			$formatted = array_reduce( $formatted, static function ( $carry, $size ) {
+				$id = $size['id'];
+
+				if ( ! isset( $carry['id'] ) ) {
+					$carry[ $id ] = $size;
+				}
+
+				return $carry;
+			}, [] );
+		}
 
 		// Sort by smallest to largest sizes.
 		// Do not change this: It's important for Pexels image downloading, so we know the largest size.
