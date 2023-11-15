@@ -54,6 +54,11 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
 		$css->render_responsive_range( $attributes, 'minWidth', 'min-width', 'minWidthUnit' );
 
+		if( !empty( $attributes['hideRecaptcha'] )) {
+			$css->set_selector( '.grecaptcha-badge' );
+			$css->add_property( 'visibility', 'hidden' );
+		}
+
 		return $css->css_output();
 	}
 
@@ -133,7 +138,18 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		wp_add_inline_script( 'kadence-blocks-recaptcha', $recaptcha_v3_script, 'after' );
 		$this->enqueue_script( 'kadence-blocks-recaptcha' );
 
-		return '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . $unique_id . '" />';
+		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . $unique_id . '" />';
+
+		$hide_v3 = $captcha_settings->get_kadence_captcha_stored_value( 'hide_v3_badge', false );
+		$add_notice = $captcha_settings->get_kadence_captcha_stored_value( 'show_v3_notice', false );
+		if( $captcha_settings->using_kadence_captcha && $hide_v3 && $add_notice ) {
+			$default = __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
+			$custom_notice = $captcha_settings->get_kadence_captcha_stored_value( 'v3_notice', $default );
+
+			$output .= '<span style="max-width: 100%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">'. $custom_notice .'</span>';
+		}
+
+		return $output;
 	}
 
 	private function render_turnstile( $captcha_settings ) {

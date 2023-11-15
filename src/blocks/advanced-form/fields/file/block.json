@@ -51,6 +51,9 @@
 	},
 	"anchor": {
 	  "type": "string"
+	},
+	"inputName": {
+	  "type": "string"
 	}
   },
   "supports": {

@@ -42,6 +42,9 @@
 		}
 	},
 	"scripts": {
+		"stellar-uplink": [
+			"vendor/bin/stellar-uplink domain=kadence-blocks"
+		],
 		"strauss": [
 			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.1/strauss.phar",
 			"@php bin/strauss.phar",
@@ -54,9 +57,6 @@
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
-		],
-		"stellar-uplink": [
-			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"post-install-cmd": [
 			"@strauss"
