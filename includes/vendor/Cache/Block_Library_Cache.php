@@ -2,15 +2,17 @@
 
 namespace KadenceWP\KadenceBlocks\Cache;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
+use KadenceWP\KadenceBlocks\Shutdown\Contracts\Terminable;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Contracts\Storage;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\StorageException;
 
 /**
  * Caches Block Library files.
  */
-class Block_Library_Cache {
+class Block_Library_Cache implements Terminable {
 
 	/**
 	 * @var Storage
@@ -52,6 +54,8 @@ class Block_Library_Cache {
 	 * @param Config          $config  The cache configuration.
 	 * @param LoggerInterface $logger  The logger, enabled if WP_DEBUG is set to true.
 	 * @param string          $ext     The file extension all files will be saved with.
+	 *
+	 * @throws InvalidArgumentException
 	 */
 	public function __construct(
 		Storage $storage,
@@ -65,6 +69,11 @@ class Block_Library_Cache {
 		$this->config  = $config;
 		$this->logger  = $logger;
 		$this->ext     = $ext;
+
+		if ( ! str_starts_with( $ext, '.' ) || str_starts_with( $ext, '..' ) ) {
+			throw new InvalidArgumentException( 'The $ext must start with a single period' );
+		}
+
 	}
 
 	/**
@@ -74,7 +83,7 @@ class Block_Library_Cache {
 	 * @param mixed $data       The data to store.
 	 *
 	 * @return void
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @throws \RuntimeException
 	 */
 	public function cache( $identifier, $data ): void {
@@ -84,24 +93,26 @@ class Block_Library_Cache {
 	}
 
 	/**
+	 * Write cache file on shutdown.
+	 *
+	 * @action shutdown
+	 *
+	 * @return void
+	 */
+	public function terminate(): void {
+		$this->write();
+	}
+
+	/**
 	 * Writes the data to the file system cache on WordPress's shutdown action.
 	 *
 	 * @action shutdown
 	 *
 	 * @return void
 	 */
-	public function write(): void {
+	private function write(): void {
 		if ( ! isset( $this->items ) ) {
 			return;
-		}
-
-		/*
-		 * If running on PHP-FPM, this will return the request, but continue processing
-		 * the code below in the thread, which means it instantly sends the request back
-		 * to the browser without needing to wait for anything.
-         */
-		if ( function_exists( 'fastcgi_finish_request' ) ) {
-			fastcgi_finish_request();
 		}
 
 		foreach ( $this->items as $filename => $data ) {
@@ -134,7 +145,7 @@ class Block_Library_Cache {
 	 * @param mixed $identifier Unique data to identify this file.
 	 *
 	 * @return string The file contents.
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @throws \KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException
 	 * @throws \RuntimeException
 	 */
@@ -153,7 +164,7 @@ class Block_Library_Cache {
 	 * @param mixed $identifier Unique data to identify this file.
 	 *
 	 * @return string
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @throws \RuntimeException
 	 */
 	protected function filename( $identifier ): string {

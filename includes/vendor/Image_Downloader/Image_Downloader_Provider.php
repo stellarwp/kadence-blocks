@@ -90,13 +90,22 @@ final class Image_Downloader_Provider extends Provider {
 		 */
 		$batch_size = absint( apply_filters( 'kadence_blocks_cache_primer_batch_size', 500 ) );
 
+		/**
+		 * How long in seconds to wait until we remotely prime the collection of images again.
+		 *
+		 * @param int $cache_duration Time in seconds.
+		 */
+		$cache_duration = absint( apply_filters( 'kadence_blocks_cache_primer_cache_duration', DAY_IN_SECONDS ) );
+
 		$this->container->when( Cache_Primer::class )
 		                ->needs( '$batch_size' )
 		                ->give( $batch_size );
 
-		$this->container->singleton( Cache_Primer::class, Cache_Primer::class );
+		$this->container->when( Cache_Primer::class )
+		                ->needs( '$cache_duration' )
+		                ->give( $cache_duration );
 
-		add_action( 'shutdown', $this->container->callback( Cache_Primer::class, 'execute' ), 1 );
+		$this->container->singleton( Cache_Primer::class, Cache_Primer::class );
 	}
 
 	private function register_image_downloader(): void {
