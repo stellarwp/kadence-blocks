@@ -33,7 +33,8 @@
 		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
 		"stellarwp/prophecy-image-downloader": "^1.1",
-		"stellarwp/prophecy-storage": "^1.1"
+		"stellarwp/prophecy-storage": "^1.1",
+		"symfony/translation-contracts": "^2.5"
 	},
 	"autoload": {
 		"psr-4": {
@@ -89,7 +90,8 @@
 				"stellarwp/prophecy-storage",
 				"lucatume/di52",
 				"symfony/filesystem",
-				"symfony/http-client"
+				"symfony/http-client",
+				"symfony/translation-contracts"
 			]
 		}
 	}
