@@ -41,7 +41,7 @@ final class Meta {
 				continue;
 			}
 
-			update_post_meta( $attachment_id, $meta_key, sanitize_text_field( $value ) );
+			update_post_meta( $attachment_id, $meta_key, wp_slash( sanitize_text_field( $value ) ) );
 		}
 	}
 
