@@ -51,8 +51,6 @@ trait Image_Size_Trait {
 					'height' => $threshold,
 					'crop'   => false,
 				];
-
-				continue;
 			}
 
 			// Add an id index.
