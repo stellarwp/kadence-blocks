@@ -289,6 +289,10 @@
 								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
+						case 'file':
+								// mark the error in the field.
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
+							break;
 
 					};
 				}
