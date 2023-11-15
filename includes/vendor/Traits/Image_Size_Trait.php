@@ -32,64 +32,36 @@ trait Image_Size_Trait {
 
 		$registered = wp_get_registered_image_subsizes();
 		$formatted  = [];
-		$max        = 0;
 
 		foreach ( $registered as $id => $data ) {
-			$width  = $data['width'];
-			$height = $data['height'];
-
-			/** This filter is documented in wp-admin/includes/image.php */
-			$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, [ $width, $height ], '', 0 );
-
-			// Make a scaled image size if above the threshold and the largest scaled image we have.
-			if ( $threshold && ( $width > $threshold || $height > $threshold ) && max( $width, $height ) > $max ) {
-				$max = max( $width, $height );
-
-				$formatted[] = [
-					'id'     => FileNameProcessor::SCALED_SIZE,
-					'width'  => $threshold,
-					'height' => $threshold,
-					'crop'   => false,
-				];
-			}
-
 			// Add an id index.
 			$formatted[] = array_merge( [
 				'id' => $id,
 			], $data );
 		}
 
-		// We should have at least one scaled image to act as the main image.
-		if ( $max === 0 ) {
-			/** This filter is documented in wp-admin/includes/image.php */
-			$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, [ 2560, 2560 ], '', 0 );
+		/**
+		 * We should have at least one scaled image to act as the main image, even if the user disabled
+		 * it as we don't store a super high resolution image.
+		 *
+		 * This filter is documented in wp-admin/includes/image.php
+		 */
+		$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, [ 2561, 2561 ], '', 0 );
 
-			if ( ! $threshold ) {
-				$threshold = 2560;
-			}
-
-			$formatted[] = [
-				'id'     => FileNameProcessor::SCALED_SIZE,
-				'width'  => $threshold,
-				'height' => $threshold,
-				'crop'   => false,
-			];
-		} else {
-			// Remove any duplicate scaled images.
-			$formatted = array_reduce( $formatted, static function ( $carry, $size ) {
-				$id = $size['id'];
-
-				if ( ! isset( $carry['id'] ) ) {
-					$carry[ $id ] = $size;
-				}
-
-				return $carry;
-			}, [] );
+		if ( ! $threshold ) {
+			$threshold = 2560;
 		}
+
+		$formatted[] = [
+			'id'     => FileNameProcessor::SCALED_SIZE,
+			'width'  => $threshold,
+			'height' => $threshold,
+			'crop'   => false,
+		];
 
 		// Sort by smallest to largest sizes.
 		// Do not change this: It's important for Pexels image downloading, so we know the largest size.
-		usort( $formatted, static function( $a, $b ) {
+		usort( $formatted, static function( array $a, array $b ) {
 			$max_a = max( $a['width'], $a['height'] );
 			$max_b = max( $b['width'], $b['height'] );
 
