@@ -278,6 +278,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	protected $ai_cache;
 
 	/**
+	 * @var Cache_Primer
+	 */
+	protected $cache_primer;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -286,6 +291,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$this->reset               = 'reset';
 		$this->block_library_cache = kadence_blocks()->get( Block_Library_Cache::class );
 		$this->ai_cache            = kadence_blocks()->get( Ai_Cache::class );
+		$this->cache_primer        = kadence_blocks()->get( Cache_Primer::class );
 	}
 
 	/**
@@ -519,7 +525,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function get_images_by_industry( $request ) {
+	public function get_images_by_industry( WP_REST_Request $request ) {
 		$industries    = $request->get_param( self::PROP_INDUSTRIES );
 		$search_query  = $request->get_param( self::PROP_INDUSTRY );
 		$image_type    = $request->get_param( self::PROP_IMAGE_TYPE );
@@ -581,11 +587,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		if ( $store ) {
+			// Create a cache file.
 			$this->block_library_cache->cache( $identifier, $response );
 		}
 
 		// Prime the cache for all image sizes for potential download.
-		kadence_blocks()->get( Cache_Primer::class )->init( $data['data'] );
+		$this->cache_primer->init( $data['data'] );
 
 		return rest_ensure_response( $response );
 	}
@@ -596,7 +603,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_image_collections( $request ) {
+	public function get_image_collections( WP_REST_Request $request ) {
 		$reload        = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key = $request->get_param( self::PROP_API_KEY );
 		$identifier    = 'image_collections';
@@ -626,7 +633,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_remaining_credits( $request ) {
+	public function get_remaining_credits( WP_REST_Request $request ) {
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
 		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		// Check if we have a remote file.
@@ -645,7 +652,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_industry_verticals( $request ) {
+	public function get_industry_verticals( WP_REST_Request $request ) {
 		$reload     = $request->get_param( self::PROP_FORCE_RELOAD );
 		$identifier = 'industry_verticals' . KADENCE_BLOCKS_VERSION;
 
@@ -678,7 +685,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @throws Throwable
 	 * @throws ImageDownloadException
 	 */
-	public function process_images( $request ) {
+	public function process_images( WP_REST_Request $request ): array {
 		$parameters = (array) $request->get_json_params();
 
 		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
@@ -690,7 +697,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function process_pattern( $request ) {
+	public function process_pattern( WP_REST_Request $request ) {
 		$parameters = $request->get_json_params();
 		if ( empty( $parameters['content'] ) ) {
 			return rest_ensure_response( 'failed' );
@@ -762,7 +769,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_pattern_content( $request ) {
+	public function get_pattern_content( WP_REST_Request $request ) {
 		$this->api_key    = $request->get_param( self::PROP_API_KEY );
 		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
 		$this->product_id = $request->get_param( self::PROP_API_PRODUCT );
@@ -836,7 +843,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
-	public function get_library( $request ) {
+	public function get_library( WP_REST_Request $request ) {
 		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key    = $request->get_param( self::PROP_API_KEY );
 		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
@@ -916,7 +923,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_local_contexts( $request ) {
+	public function get_local_contexts( WP_REST_Request $request ) {
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		if ( ! empty( $available_prompts && is_array( $available_prompts) ) ) {
 			$contexts_available = array();
@@ -941,7 +948,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_all_items( $request ) {
+	public function get_all_items( WP_REST_Request $request ) {
 		$this->api_key     = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		$return_data       = array();
@@ -1048,7 +1055,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_initial_jobs( $request ) {
+	public function get_initial_jobs( WP_REST_Request $request ) {
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
 		update_option( 'kb_design_library_prompts', array() );
 		$contexts = $this->initial_contexts;
@@ -1086,7 +1093,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function get_remaining_jobs( $request ) {
+	public function get_remaining_jobs( WP_REST_Request $request ) {
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
 		$this->api_key  = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
@@ -1636,61 +1643,69 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		return $contents;
 	}
 	/**
-	 * Get remote file contents.
+	 * Get the Pexels industry image JSON definitions.
 	 *
-	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
-	public function get_remote_industry_images( $industries, $image_type = 'JPEG', $sizes = array() ) {
+	public function get_remote_industry_images( $industries, $image_type = 'JPEG', $sizes = array() ): string {
 		if ( is_callable( 'network_home_url' ) ) {
 			$site_url = network_home_url( '', 'http' );
 		} else {
 			$site_url = get_bloginfo( 'url' );
 		}
+
 		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+
 		$auth = array(
 			'domain' => $site_url,
 			'key'    => $this->api_key,
 		);
+
 		if ( empty( $industries ) ) {
 			return 'error';
 		}
+
 		if ( empty( $sizes ) ) {
 			$sizes = array(
 				array(
-					"id" => "2048x2048",
-					"width" => 2048,
-					"height" => 2048,
-					"crop" => false,
+					'id'     => '2048x2048',
+					'width'  => 2048,
+					'height' => 2048,
+					'crop'   => false,
 				),
 			);
 		}
+
 		if ( empty( $image_type ) ) {
 			$image_type = 'JPEG';
 		}
+
 		$body = array(
 			'industries' => $industries,
 			'image_type' => $image_type,
-			'sizes' => $sizes,
+			'sizes'      => $sizes,
 		);
+
 		$response = wp_remote_post(
 			$this->remote_ai_url . 'images/collections',
 			array(
 				'timeout' => 20,
 				'headers' => array(
 					'X-Prophecy-Token' => base64_encode( json_encode( $auth ) ),
-					'Content-Type' => 'application/json',
+					'Content-Type'     => 'application/json',
 				),
-				'body' => json_encode( $body ),
+				'body'    => json_encode( $body ),
 			)
 		);
+
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
 			return 'error';
 		}
 
-		// Get the CSS from our response.
+		// Get the image JSON from our response.
 		$contents = wp_remote_retrieve_body( $response );
+
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
 			return 'error';
@@ -1698,6 +1713,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return $contents;
 	}
+
 	/**
 	 * Get remote file contents.
 	 *
@@ -1832,7 +1848,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return WP_REST_Response Returns the remote URL contents.
 	 */
-	public function get_keyword_suggestions( $request ) {
+	public function get_keyword_suggestions( WP_REST_Request $request ) {
 		$parameters = $request->get_json_params();
 		if ( empty( $parameters['name'] ) || empty($parameters['entity_type']) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
 			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
@@ -1883,12 +1899,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_industry_verticals() {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$api_url  = $this->remote_ai_url . 'verticals';
 		$response = wp_remote_get(
 			$api_url,
