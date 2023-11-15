@@ -345,7 +345,6 @@ function KadenceAdvancedHeading( props ) {
 	let richTextFormatsBase = applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading');
 	richTextFormatsBase = ! kadenceDynamic?.['content']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
 	const richTextFormats = link || isDynamicReplaced ? richTextFormatsBase : undefined;
-	console.log( richTextFormats );
 	const renderTypography = typography && ! typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
 	const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 	const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
