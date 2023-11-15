@@ -1,6 +1,13 @@
 import { __ } from '@wordpress/i18n';
 export const SPACING_SIZES_MAP = [
 	{
+		value: 'ss-auto',
+		output: 'var(--global-kb-spacing-auto, auto)',
+		label: __( 'Auto', 'kadence-blocks' ),
+		size: 0,
+		name: __( 'Auto', 'kadence-blocks' ),
+	},
+	{
 		value: '0',
 		output: '0',
 		label: __( 'None', 'kadence-blocks' ),

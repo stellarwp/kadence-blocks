@@ -70,6 +70,7 @@ export default function ResponsiveMeasureRangeControl( {
 		setCustomControl = null,
 		onMouseOver,
 		onMouseOut,
+		allowAuto = false,
 	} ) {
 	const ref = useRef();
 	const measureIcons = {
@@ -84,6 +85,14 @@ export default function ResponsiveMeasureRangeControl( {
 	const [ theControl, setTheControl ] = useState( control );
 	const realIsCustomControl = setCustomControl ? customControl : isCustom;
 	const realSetIsCustom = setCustomControl ? setCustomControl : setIsCustom;
+	const reviewOptions = JSON.parse(JSON.stringify(options));
+	reviewOptions.push( {
+		value: 'ss-auto',
+		output: 'var(--global-kb-spacing-auto, auto)',
+		label: __( 'Auto', 'kadence-blocks' ),
+		size: 0,
+		name: __( 'Auto', 'kadence-blocks' ),
+	} );
 	const onSetIsCustom = () => {
 		convertValueToFromCustomByDeviceType()
 
@@ -147,7 +156,7 @@ export default function ResponsiveMeasureRangeControl( {
 		}else if ( theDevice == 'Mobile' ) {
 			valueToCheck = mobileValue;
 		}
-		setIsCustom( isCustomOption( options, valueToCheck ) );
+		setIsCustom( isCustomOption( reviewOptions, valueToCheck ) );
 	}, [theDevice] );
 
 	const {
@@ -235,6 +244,7 @@ export default function ResponsiveMeasureRangeControl( {
 			unlinkIcon={ unlinkIcon }
 			onMouseOver={ onMouseOver }
 			onMouseOut={ onMouseOut }
+			allowAuto={ allowAuto }
 		/>
 	);
 	output.Tablet = (
@@ -268,6 +278,7 @@ export default function ResponsiveMeasureRangeControl( {
 			unlinkIcon={ unlinkIcon }
 			onMouseOver={ onMouseOver }
 			onMouseOut={ onMouseOut }
+			allowAuto={ allowAuto }
 		/>
 	);
 	output.Desktop = (
@@ -300,6 +311,7 @@ export default function ResponsiveMeasureRangeControl( {
 			unlinkIcon={ unlinkIcon }
 			onMouseOver={ onMouseOver }
 			onMouseOut={ onMouseOut }
+			allowAuto={ allowAuto }
 		/>
 	);
 	let currentDefault = deskDefault;

@@ -1,0 +1,58 @@
+@import "../../scss/variables.scss";
+@import '../../scss/mixins.scss';
+
+.location-select-control__label {
+	@include input_label;
+
+  margin-bottom: 0;
+}
+
+.location-select-control__group {
+  margin-bottom: 8px;
+}
+
+.components-card.location-select-card {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  border-radius: 4px;
+  border-color: $color-gray-300;
+  border-width: 1px;
+  border-style: solid;
+  text-align: left;
+  box-shadow: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    border-color: $color-black;
+  }
+  
+  &.is-selected {
+    border-color: $color-primary;
+
+    .components-card__header,
+    .components-card__body {
+      color: $color-primary
+    }
+   
+    .components-card__header svg {
+      fill: $color-primary;
+    }
+  }
+
+  .components-card__header {
+    border-bottom: none;
+    padding-bottom: 24px;
+  }
+  
+  .components-card__body {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .components-card__header + .components-card__body {
+    padding-top: 0;
+  }
+}
+

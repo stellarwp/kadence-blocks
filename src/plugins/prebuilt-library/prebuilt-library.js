@@ -48,6 +48,7 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
+import './stores';
 
 const normal_actions =[
 	{
@@ -166,7 +167,13 @@ class PrebuiltModal extends Component {
 					<Modal
 						className="kt-prebuilt-modal kb-prebuilt-library-modal"
 						title={ __( 'Design Library', 'kadence-blocks' ) }
-						onRequestClose={ () => {
+						onRequestClose={ (event) => {
+							// @todo: Check with Ben on this guard.
+							// No action on blur event (prevents AI modal from closing when Media Library modal opens).
+							if (event.type === 'blur') {
+								return;
+							}
+
 							this.setState( { modalOpen: false } );
 							if ( this.state.onlyModal ) {
                                 this.props.removeBlock( this.props.clientId );
@@ -175,10 +182,6 @@ class PrebuiltModal extends Component {
 					>
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header kb-prebuilt-library-header">
-								<div className="kb-prebuilt-header kb-prebuilt-library-logo">
-									<span className="kb-prebuilt-header-logo">{ kadenceCatNewIcon }</span>
-									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
-								</div>
 								{ this.state.reloadActions && (
 									<div className="kb-prebuilt-library-actions">
 										<Spinner />

@@ -7,6 +7,9 @@
  */
 
 // Exit if accessed directly.
+use KadenceWP\KadenceBlocks\App;
+use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -1045,13 +1048,15 @@ function kadence_blocks_register_api_endpoints() {
 	$mailerlite_controller->register_routes();
 	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
 	$fluentcrm_controller->register_routes();
-	$lottieanimation_conteoller_get = new Kadence_LottieAnimation_get_REST_Controller();
-	$lottieanimation_conteoller_get->register_routes();
-	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
-	$lottieanimation_conteoller_upload->register_routes();
+	$lottieanimation_controller_get = new Kadence_LottieAnimation_get_REST_Controller();
+	$lottieanimation_controller_get->register_routes();
+	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
+	$lottieanimation_controller_upload->register_routes();
 
-	$image_picker_conteoller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
-	$image_picker_conteoller_upload->register_routes();
+	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
+	$design_library_controller_upload->register_routes();
+	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
+	$image_picker_controller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 
@@ -1138,3 +1143,17 @@ function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
 	return $value;
 }
 add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );
+
+/**
+ * The Kadence Blocks Application Container.
+ *
+ * @see kadence_blocks_init()
+ *
+ * @note kadence_blocks_init() must be called before this one.
+ *
+ * @return ContainerInterface
+ * @throws InvalidArgumentException
+ */
+function kadence_blocks(): ContainerInterface {
+	return App::instance()->container();
+}

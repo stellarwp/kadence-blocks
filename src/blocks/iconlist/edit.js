@@ -594,6 +594,7 @@ function KadenceIconLists( props ) {
 										onUnit={( value ) => setAttributes( { listMarginType: value } )}
 										onMouseOver={ listMarginMouseOver.onMouseOver }
 										onMouseOut={ listMarginMouseOver.onMouseOut }
+										allowAuto={ true }
 									/>
 								</KadencePanelBody>
 

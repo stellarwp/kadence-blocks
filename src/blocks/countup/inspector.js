@@ -415,6 +415,7 @@ function Inspector( {
 									onUnit={( value ) => setAttributes( { titleMarginType: value } )}
 									onMouseOver={ titleMarginMouseOver.onMouseOver }
 									onMouseOut={ titleMarginMouseOver.onMouseOut }
+									allowAuto={ true }
 								/>
 							</>
 						}
@@ -568,6 +569,7 @@ function Inspector( {
 							onUnit={( value ) => setAttributes( { numberMarginType: value } )}
 							onMouseOver={ numberMarginMouseOver.onMouseOver }
 							onMouseOut={ numberMarginMouseOver.onMouseOut }
+							allowAuto={ true }
 						/>
 					</KadencePanelBody>
 				</>

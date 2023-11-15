@@ -397,6 +397,7 @@ function KadenceButtons( props ) {
 										onUnit={( value ) => setAttributes( { marginUnit: value } )}
 										onMouseOver={ marginMouseOver.onMouseOver }
 										onMouseOut={ marginMouseOver.onMouseOut }
+										allowAuto={ true }
 									/>
 								</KadencePanelBody>
 

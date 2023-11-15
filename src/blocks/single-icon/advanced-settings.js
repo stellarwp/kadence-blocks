@@ -56,6 +56,7 @@ export function AdvancedSettings({ attributes, setAttributes }) {
                 unit={ ( marginUnit ? marginUnit : 'px' ) }
                 units={ [ 'px', 'em', 'rem' ] }
                 onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+                allowAuto={ true }
             />
         </KadencePanelBody>
     );
