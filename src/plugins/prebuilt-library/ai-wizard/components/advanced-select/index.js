@@ -58,7 +58,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
     return (
 		<AdvancedSelectContext.Provider value={{ createRecord, updateRecord, deleteRecord }}>
 			<div className="stellarwp components-advanced-select" ref={ ref }>
-				{label && <label class="components-input-control__label">{ label }</label>}
+				{label && <label className="components-input-control__label">{ label }</label>}
 
 					<div className="stellarwp-advancedSelect" ref={parentRef}>
 						<Button
