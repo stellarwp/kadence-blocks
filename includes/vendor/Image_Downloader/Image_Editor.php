@@ -142,12 +142,41 @@ final class Image_Editor extends WP_Image_Editor {
 	}
 
 	/**
-	 * This is for old versions of WordPress.
+	 * Create multiple smaller images from a single source.
 	 *
-	 * @inheritDoc
+	 * Attempts to create all sub-sizes and returns the meta data at the end.
+	 *
+	 * As of 5.3.0 the preferred way to do this is with `make_subsize()`. It creates
+	 * the new images one at a time and allows for the meta data to be saved after
+	 * each new image is created.
+	 *
+	 * @param array<string, array{width?: int, height?: int, crop?: bool}> $sizes
+	 *
+	 * @return array<string,array{path: string, file: string, width: int, height: int, mime-type: string, filesize: int}> An array of resized images' metadata by size.
+	 *
+	 * @throws \InvalidArgumentException
 	 */
 	public function multi_resize( $sizes ) {
-		throw new RuntimeException( 'method not implemented' );
+		$this->logger->debug( 'Using old multi_resize method' );
+
+		$metadata = [];
+
+		foreach ( $sizes as $size => $size_data ) {
+			$meta = $this->make_subsize( $size_data );
+
+			if ( ! is_wp_error( $meta ) ) {
+				$metadata[ $size ] = $meta;
+
+				continue;
+			}
+
+			$this->logger->error( 'Unable to make image subsize', [
+				'file'   => $this->image->file,
+				'errors' => $meta->get_error_messages(),
+			] );
+		}
+
+		return $metadata;
 	}
 
 	/**
