@@ -1,4 +1,5 @@
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { preMadeCollectionsHelper } from './premade-collection-helper';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 
