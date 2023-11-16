@@ -28,7 +28,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 	useEffect(() => {
 		if(parentRef && parentRef.current) {
 			/* Subtracting 16 for the padding in the parent */
-			setComponentWidth(`${parentRef.current.clientWidth - 16}px`);
+			setComponentWidth(`${parentRef.current.clientWidth - 32}px`);
 		}
 	}, [parentRef]);
 
@@ -75,9 +75,6 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 									placement="bottom-start"
 									offset={8}
 									animate={false}
-									style={{
-										maxHeight: '500px'
-									}}
 									className="stellarwp-advancedSelect__content"
 									onClose={ doNothing }
 									onFocusOutside={ doNothing }
@@ -90,6 +87,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 										allowClose={ setAllowClose }
 									/>
 								</Popover>
+
 							)}
 						</Button>
 					</div>
