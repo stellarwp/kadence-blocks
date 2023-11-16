@@ -95,7 +95,7 @@ final class Image_Downloader_Provider extends Provider {
 		 *
 		 * @param int $cache_duration Time in seconds.
 		 */
-		$cache_duration = absint( apply_filters( 'kadence_blocks_cache_primer_cache_duration', DAY_IN_SECONDS ) );
+		$cache_duration = absint( apply_filters( 'kadence_blocks_cache_primer_cache_duration', HOUR_IN_SECONDS ) );
 
 		$this->container->when( Cache_Primer::class )
 		                ->needs( '$batch_size' )
