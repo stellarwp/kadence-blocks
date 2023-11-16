@@ -33,7 +33,8 @@
 		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
 		"stellarwp/prophecy-image-downloader": "^1.1",
-		"stellarwp/prophecy-storage": "^1.1"
+		"stellarwp/prophecy-storage": "^1.1",
+		"symfony/translation-contracts": "^2.5"
 	},
 	"autoload": {
 		"psr-4": {
@@ -41,8 +42,11 @@
 		}
 	},
 	"scripts": {
+		"stellar-uplink": [
+			"vendor/bin/stellar-uplink domain=kadence-blocks"
+		],
 		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.0/strauss.phar",
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.1/strauss.phar",
 			"@php bin/strauss.phar",
 			"@composer dump-autoload"
 		],
@@ -54,16 +58,11 @@
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
-		"stellar-uplink": [
-			"vendor/bin/stellar-uplink domain=kadence-blocks"
-		],
 		"post-install-cmd": [
-			"@strauss",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+			"@strauss"
 		],
 		"post-update-cmd": [
-			"@strauss",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+			"@strauss"
 		]
 	},
 	"extra": {
@@ -89,7 +88,8 @@
 				"stellarwp/prophecy-storage",
 				"lucatume/di52",
 				"symfony/filesystem",
-				"symfony/http-client"
+				"symfony/http-client",
+				"symfony/translation-contracts"
 			]
 		}
 	}

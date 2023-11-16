@@ -4,13 +4,14 @@ namespace KadenceWP\KadenceBlocks\Image_Downloader;
 
 use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
+use KadenceWP\KadenceBlocks\Shutdown\Contracts\Terminable;
 use KadenceWP\KadenceBlocks\Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
 /**
  * Prime Pexels HTTP cache for future image downloading.
  */
-final class Cache_Primer {
+final class Cache_Primer implements Terminable {
 
 	/**
 	 * @var HttpClientInterface
@@ -26,6 +27,13 @@ final class Cache_Primer {
 	 * @var Hasher
 	 */
 	private $hasher;
+
+	/**
+	 * How long in seconds to wait until we remotely prime the collection of images again.
+	 *
+	 * @var int Time in seconds.
+	 */
+	private $cache_duration;
 
 	/**
 	 * How many external cache requests to create before removing them.
@@ -55,16 +63,25 @@ final class Cache_Primer {
 	 */
 	private $collections;
 
+	/**
+	 * @param HttpClientInterface $client         The HTTP client.
+	 * @param LoggerInterface     $logger         The logger.
+	 * @param Hasher              $hasher         The hasher.
+	 * @param int                 $cache_duration The cache duration in seconds.
+	 * @param int                 $batch_size     How many external cache requests to create before removing them.
+	 */
 	public function __construct(
 		HttpClientInterface $client,
 		LoggerInterface $logger,
 		Hasher $hasher,
+		int $cache_duration,
 		int $batch_size = 500
 	) {
-		$this->client     = $client;
-		$this->logger     = $logger;
-		$this->hasher     = $hasher;
-		$this->batch_size = $batch_size;
+		$this->client         = $client;
+		$this->logger         = $logger;
+		$this->hasher         = $hasher;
+		$this->cache_duration = $cache_duration;
+		$this->batch_size     = $batch_size;
 	}
 
 	/**
@@ -97,6 +114,19 @@ final class Cache_Primer {
 	}
 
 	/**
+	 * Prime cache on shutdown.
+	 *
+	 * @action shutdown
+	 *
+	 * @return void
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
+	public function terminate(): void {
+		$this->execute();
+	}
+
+	/**
 	 * On shutdown, make asynchronous HEAD requests to all the potential images we'll download
 	 * to ensure that Pexels caches their response to make downloading much quicker.
 	 *
@@ -109,18 +139,9 @@ final class Cache_Primer {
 	 * @throws \InvalidArgumentException
 	 * @throws \RuntimeException
 	 */
-	public function execute(): void {
+	private function execute(): void {
 		if ( ! isset( $this->collections ) ) {
 			return;
-		}
-
-		/*
-		 * If running on PHP-FPM, this will return the request, but continue processing
-		 * the code below in the thread, which means it instantly sends the request back
-		 * to the browser without needing to wait for anything.
-		 */
-		if ( function_exists( 'fastcgi_finish_request' ) ) {
-			fastcgi_finish_request();
 		}
 
 		$batch     = 0;
@@ -183,11 +204,9 @@ final class Cache_Primer {
 		// Clear collections state in case this is accessed again in the same request.
 		unset( $this->collections );
 
-		$duration = DAY_IN_SECONDS;
+		$this->logger->debug( sprintf( 'Caching image priming using key "%s" for %d seconds', $cache_key, $this->cache_duration ) );
 
-		$this->logger->debug( sprintf( 'Caching image priming using key "%s" for %d seconds', $cache_key, $duration ) );
-
-		set_transient( $cache_key, true, $duration );
+		set_transient( $cache_key, true, $this->cache_duration );
 	}
 
 }

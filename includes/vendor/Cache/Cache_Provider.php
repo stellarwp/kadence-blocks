@@ -33,8 +33,6 @@ final class Cache_Provider extends Provider {
 		                } );
 
 		$this->container->singleton( Block_Library_Cache::class, Block_Library_Cache::class );
-
-		add_action( 'shutdown', $this->container->callback( Block_Library_Cache::class, 'write' ), 2 );
 	}
 
 	private function register_ai_storage(): void {
@@ -48,8 +46,6 @@ final class Cache_Provider extends Provider {
 		                } );
 
 		$this->container->singleton( Ai_Cache::class, Ai_Cache::class );
-
-		add_action( 'shutdown', $this->container->callback( Ai_Cache::class, 'write' ), 2 );
 	}
 
 }

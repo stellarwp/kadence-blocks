@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
-Tested up to: 6.3
+Tested up to: 6.4
 Stable tag: 3.2.5
 Requires PHP: 7.2
 License: GPLv2 or later
@@ -105,8 +105,27 @@ Release Date: October 5th, 2023
 * Add: New Flex control options in section block.
 * Add: New auto option for margin controls.
 
+= 3.1.24 =
+Release Date: November 8th, 2023
+* Update: Add option to allow decimals in Advanced Form number field.
+* Update: Allow mute/unmute buttons row video backgrounds to be displayed separately from the play / pause button.
+* Update: Integrate hide recaptcha settings from Kadence Captcha into Advanced Form.
+* Update: Add option to style buttons with underline text.
+* Fix: Issue creating new Advanced Forms on WordPress 6.4.
+* Fix: Google v3 reCAPTCHA not hiding in when set to hide.
+* Fix: Add aria label to Advanced Gallery lightbox links.
+* Fix: Allow show more button to be focusable using tab key.
+* Fix: Border styling display on Advanced button in editor
+* Fix: Adv gallery dots having an inaccurate count in some situations.
+* Fix: Advanced form help text font size on front end.
+* Fix: Advanced form styling for label font size when using infield.
+* Fix: Advanced form label custom styles being overridden by default styles.
+* Fix: Uploading of documents in advanced form.
+* Fix: Setting active campaign API url in advanced form.
+
 = 3.1.23 =
-Release Date: October 31st, 2023
+Release Date: November 1st, 2023
+* Update: Include a tiktok icon.
 * Fix: Issue with icon list margin.
 * Fix: Issue with advanced form max width units.
 * Fix: Progress bar mask align center.

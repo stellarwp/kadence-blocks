@@ -670,7 +670,7 @@ function PatternList( {
 				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
-				{ contextTab === 'context' && !filterValue && (
+				{ contextTab === 'context' && !failedAI && !filterValue && (
 					<PatternFilterDropdown categories={ categories } selectedCategories={ updateFilters } />
 				) }
 				{ hasItems && !failedAI && (
