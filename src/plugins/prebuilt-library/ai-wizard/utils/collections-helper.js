@@ -6,7 +6,7 @@ export function collectionsHelper() {
 	const { state: { customCollections, imageSearchQuery }, dispatch } = useKadenceAi();
 	const { loading: preMadeLoading, verticals: preMadeCollections, getPreMadeCollectionByIndustry } = preMadeCollectionsHelper();
 	const [loading, setLoading] = useState(true);
-	const [wordpressCollections, setWordpressCollections] = useState([]);
+	const [wordpressCollections, setWordpressCollections] = useState();
 
 	useEffect(() => {
 		setLoading(true);
