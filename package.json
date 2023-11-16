@@ -10,7 +10,9 @@
     "build-wp": "wp-scripts build",
     "build-gulp": "gulp build",
     "build": "wp-scripts build && gulp build",
-    "build:custom": "wp-scripts build --webpack-bundle-analyzer"
+    "build:custom": "wp-scripts build --webpack-bundle-analyzer",
+    "lint:js": "wp-scripts lint-js",
+    "format": "wp-scripts format"
   },
   "dependencies": {
     "@dotlottie/player-component": "^1.2.2",
@@ -50,12 +52,16 @@
   "devDependencies": {
     "@babel/preset-react": "^7.16.7",
     "@wordpress/dependency-extraction-webpack-plugin": "^4.17.0",
+    "@wordpress/eslint-plugin": "^14.7.0",
     "@wordpress/i18n": "^4.34.0",
+    "@wordpress/prettier-config": "^2.17.0",
     "@wordpress/scripts": "^26.5.0",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^10.1.0",
     "babel-preset-env": "^1.7.0",
     "concurrently": "^8.2.0",
     "del": "^6.0.0",
+    "eslint-import-resolver-webpack": "^0.13.8",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-babel-minify": "^0.5.2",

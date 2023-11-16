@@ -8,7 +8,7 @@
 .distignore
 .gitignore
 .eslintignore
-.eslintrc.json
+.eslintrc.js
 composer.json
 composer.lock
 gulpfile.js
