@@ -16,7 +16,7 @@ const eslintConfig = {
 		'import/no-extraneous-dependencies': 'off',
 		'import/no-unresolved': 'off',
 		'import/named': 'off',
-		'prettier/prettier': 'off', // Disabling prettier warnings until configure how we want
+		'prettier/prettier': 'off', // Disabling prettier warnings until configured how we want
 	},
 };
 

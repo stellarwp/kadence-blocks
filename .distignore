@@ -9,6 +9,7 @@
 .gitignore
 .eslintignore
 .eslintrc.js
+.prettierrc.js
 composer.json
 composer.lock
 gulpfile.js
