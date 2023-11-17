@@ -251,12 +251,12 @@ function KadenceCountdown( props ) {
 					break;
 				case "monthly":
 					const isDecember = 11 === endMonth ? true : false;
-					const nextMonthIsFebraury = 0 === endMonth ? true : false;
 					// Needed to avoid having a not valid month number
 					endMonth = isDecember ? 0 : endMonth;
+					const nextMonthIsFebraury = 0 === endMonth ? true : false;
+					const thisMonthDays = daysInMonth(endYear, endMonth + 1);
 					// Needed in case the next end date is in Febraury
 					endYear = isDecember ? nextYear : endYear;
-					const thisMonthDays = daysInMonth(endYear, endMonth + 1);
 					const nextMonthDays = daysInMonth(endYear, endMonth + 2);
 					if(nextMonthIsFebraury) {
 						moveDays = endDay > nextMonthDays ? thisMonthDays - endDay + nextMonthDays : 31;
