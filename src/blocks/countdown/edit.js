@@ -220,18 +220,25 @@ function KadenceCountdown( props ) {
 		},
 		[ clientId ]
 	);
-
+	
+	// Returns the number of days of the previous month
 	const daysInMonth = (year, month) => {
-		console.log(month);
 		return new Date(year, month, 0).getDate();
 	}
 
+	/*
+	** Updates the date when the repeater is activated 
+	** or starts the countdown when the block is placed 
+	** for the first time.
+	*/
 	const updateEndDate = useCallback((endDate, repeatFrecuency) => {
 		const currentDate = new Date();
 		const newDate = new Date();
 		const formattedEndDate = new Date(endDate);
+		let endDay = formattedEndDate.getDay();
 		let endMonth = formattedEndDate.getMonth();
 		let endYear = formattedEndDate.getFullYear();
+		const nextYear = endYear + 1;
 		let moveDays = 2;
 
 		if(currentDate > formattedEndDate) {
@@ -244,12 +251,32 @@ function KadenceCountdown( props ) {
 					break;
 				case "monthly":
 					const isDecember = 11 === endMonth ? true : false;
+					const nextMonthIsFebraury = 0 === endMonth ? true : false;
+					// Needed to avoid having a not valid month number
 					endMonth = isDecember ? 0 : endMonth;
-					moveDays = daysInMonth(endYear, endMonth + 1);
+					// Needed in case the next end date is in Febraury
+					endYear = isDecember ? nextYear : endYear;
+					const thisMonthDays = daysInMonth(endYear, endMonth + 1);
+					const nextMonthDays = daysInMonth(endYear, endMonth + 2);
+					if(nextMonthIsFebraury) {
+						moveDays = endDay > nextMonthDays ? thisMonthDays - endDay + nextMonthDays : 31;
+					} else if(endDay < 31 && thisMonthDays === 31 ) {
+						moveDays = 31;
+					} else if(endDay === 31 && nextMonthDays === 31) {
+						moveDays = 31;
+					} else {
+						moveDays = 30;
+					}
 					break;
 				case "yearly":
-					const nextYear = endYear + 1;
 					const leapYear = false;
+
+					/*
+					** If the current countdown ends before the end of Febraury
+					** of this year, then determine if this year's Febraury has 29 days.
+					** If the current countdown end after febraury of this year, then
+					** determine if next year's Febraury has 29 days.
+					*/
 					if(1 <= endMonth) {
 						if(29 === daysInMonth(endYear, 2)) {
 							leapYear = true;
@@ -365,8 +392,8 @@ function KadenceCountdown( props ) {
 	const saveDate = ( value ) => {
 		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
 		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
-
 		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
+
 		setAttributes( {
 			date      : value,
 			timestamp : theSiteTimezoneTimestamp,
