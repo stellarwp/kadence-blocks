@@ -67,6 +67,10 @@
 		"type": "boolean",
 		"default": false
 	},
+	"stopRepeating": {
+		"type": "boolean",
+		"default": false
+	},
 	"frecuency": {
 		"type": "string",
 		"default": ""

@@ -143,6 +143,7 @@ function KadenceCountdown( props ) {
 		evergreenHours,
 		evergreenMinutes,
 		repeat,
+		stopRepeating,
 		frecuency,
 		redirectURL,
 		timerLayout,
@@ -813,33 +814,7 @@ function KadenceCountdown( props ) {
 													/>
 												</>
 											)}
-											<ToggleControl
-												label={__( 'Repeat contdown', 'kadence-blocks' )}
-												checked={repeat}
-												onChange={value => setAttributes( { repeat: value } )}
-												help={__( 'This will give the option to restart the conuntdown concurrently.', 'kadence-blocks' )}
-											/>
-											{
-												repeat && (
-													<>
-														<SelectControl
-															label={__( 'Repeat Frecuency', 'kadence-blocks' )}
-															options={frecuencyOptions}
-															value={frecuency}
-															onChange={( value ) => setAttributes( { frecuency: value } )}
-														/>
-														<div className="components-base-control kb-datepicker-fix">
-															<h2>{__( 'End Date for Recurrent Countdown', 'kadence-blocks' )}</h2>
-															<DateTimePicker
-																currentDate={( !endDate ? undefined : endDate )}
-																onChange={ value => setAttributes({ endDate: value}) }
-																is12Hour={is12HourTime}
-																help={__( 'Pick a date to stop recurrent repetition of the countdown.', 'kadence-blocks' )}
-															/>
-														</div>
-													</>
-												)
-											}
+
 											<SelectControl
 												label={__( 'Action on Expire', 'kadence-blocks' )}
 												options={countdownActions}
@@ -866,6 +841,50 @@ function KadenceCountdown( props ) {
 										</>
 									)}
 								</Panel>
+								<KadencePanelBody
+									title={__( 'Countdown Auto Repeater', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-countdown-repeater'}
+								>
+									<ToggleControl
+										label={__( 'Repeat Countdown', 'kadence-blocks' )}
+										checked={repeat}
+										onChange={value => setAttributes( { repeat: value } )}
+										help={__( 'This will give the option to restart the conuntdown concurrently.', 'kadence-blocks' )}
+									/>
+										{
+											repeat && (
+												<>
+													<SelectControl
+														label={__( 'Repeat Frecuency', 'kadence-blocks' )}
+														options={frecuencyOptions}
+														value={frecuency}
+														onChange={( value ) => setAttributes( { frecuency: value } )}
+													/>
+
+													<ToggleControl
+														label={__( 'Stop Repeating the Countdown', 'kadence-blocks' )}
+														checked={stopRepeating}
+														onChange={value => setAttributes( { stopRepeating: value } )}
+														help={__( 'This will give the option to stop repeating the countdown at a specific date.', 'kadence-blocks' )}
+													/>
+
+													{
+														stopRepeating &&
+															<div className="components-base-control kb-datepicker-fix">
+																<h2>{__( 'End Date for Recurrent Countdown', 'kadence-blocks' )}</h2>
+																<DateTimePicker
+																	currentDate={( !endDate ? undefined : endDate )}
+																	onChange={ value => setAttributes({ endDate: value}) }
+																	is12Hour={is12HourTime}
+																	help={__( 'Pick a date to stop recurrent repetition of the countdown.', 'kadence-blocks' )}
+																/>
+															</div>
+													}
+												</>
+											)
+										}
+								</KadencePanelBody>
 								<KadencePanelBody
 									title={__( 'Countdown Layout', 'kadence-blocks' )}
 									initialOpen={false}
