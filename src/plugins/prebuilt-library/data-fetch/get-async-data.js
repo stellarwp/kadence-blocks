@@ -365,7 +365,7 @@ export function getAsyncData() {
 					key: key ? key : library,
 					pattern_id: item_id ? item_id : '',
 					pattern_type: type ? type : '',
-					pattern_type: style ? style : '',
+					pattern_style: style ? style : '',
 					api_key: data_key,
 					api_email: data_email,
 					product_id: product_id,
@@ -419,6 +419,30 @@ export function getAsyncData() {
 		}
 	}
 
+	/**
+	 * Send Event to Backend.
+	 *
+	 * @param {string} event_label
+	 * @param {object} event_data
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function sendEvent( event_label, event_data ) {
+		try {
+			return await apiFetch( {
+				path: '/kb-design-library/v1/handle_event',
+				method: 'POST',
+				data: {
+					event_label: event_label,
+					event_data: event_data ? event_data : {},
+				},
+			} );
+		} catch (error) {
+			console.log(`ERROR: ${ JSON.stringify(error) }`);
+			return 'failed';
+		}
+	}
+
 	return {
 		error,
 		getAIContentData,
@@ -434,6 +458,7 @@ export function getAsyncData() {
 		getInitialAIContent,
 		getAIContentRemaining,
 		getAvailableCredits,
+		sendEvent,
 	}
 }
 

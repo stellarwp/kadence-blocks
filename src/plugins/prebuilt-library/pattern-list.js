@@ -45,6 +45,7 @@ import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { CONTEXT_PROMPTS } from './data-fetch/constants';
+import { getAsyncData } from './data-fetch/get-async-data';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -351,6 +352,7 @@ function PatternList( {
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce( speak, 500 );
+	const { sendEvent } = getAsyncData();
 	const { getContextState, getContextContent, getAllContext } = useSelect(
 		( select ) => {
 			return {
@@ -368,6 +370,17 @@ function PatternList( {
 			type: 'pattern',
 			style: selectedStyle ? selectedStyle : 'light',
 		}
+
+		sendEvent( 'pattern_added_to_page', {
+			categories: info.categories,
+			id: info.id,
+			slug: info.slug,
+			name: info.name,
+			style: selectedStyle ? selectedStyle : 'light',
+			context: contextLabel,
+			is_ai: contextTab === 'context',
+		} );
+
 		let newInfo = info.content;
 		newInfo = deleteContent( newInfo );
 		if ( ! selectedStyle || 'light' === selectedStyle ) {

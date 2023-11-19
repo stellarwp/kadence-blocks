@@ -12,12 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Analytics {
 
 	/**
-	 * The remote URL.
-	 *
-	 * @access protected
-	 * @var string
+	 * The event endpoint.
 	 */
-	protected $event_url = 'https://content.startertemplatecloud.com/wp-json/prophecy/v1/analytics/event';
+	public const ENDPOINT = '/wp-json/prophecy/v1/analytics/event';
+
+	/**
+	 * The API domain.
+	 */
+	public const DOMAIN = 'https://content.startertemplatecloud.com';
 
 	/**
 	 * Registers all necessary hooks.
@@ -31,7 +33,7 @@ class Analytics {
 	}
 
 	/**
-	 * Sends events to Prophecy WP (if the user has opted-in to Telemetry).
+	 * Sends events to Prophecy WP (if the user has installed and activated Kadence Blocks Pro).
 	 *
 	 * @return void
 	 */
@@ -42,15 +44,23 @@ class Analytics {
 			return;
 		}
 
+		/**
+		 * Filters the URL used to send events to.
+		 *
+		 * @param string The URL to use when sending events.
+		 */
+		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+
 		wp_remote_post(
-			$this->event_url,
+			$url,
 			array(
-				'timeout' => 20,
-				'headers' => array(
+				'timeout'  => 20,
+				'blocking' => false,
+				'headers'  => array(
 					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
-					'Content-Type' => 'application/json',
+					'Content-Type'     => 'application/json',
 				),
-				'body' => json_encode( [
+				'body'     => wp_json_encode( [
 					'name'    => $name,
 					'context' => $context,
 				] ),
@@ -73,14 +83,13 @@ class Analytics {
 		}
 
 		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
-		$current_user = wp_get_current_user();
 		$site_name    = get_bloginfo( 'name' );
+		$api_details  = (array) get_option( 'kt_api_manager_kadence_gutenberg_pro_data', [] );
 
 		$defaults = [
 			'domain'          => $site_url,
-			'key'             => '',
-			'user_id'         => $current_user->ID,
-			'email'           => $current_user->email,
+			'key'             => $api_details['api_key'] ?? '',
+			'email'           => $api_details['api_email'] ?? '',
 			'site_name'       => $site_name,
 			'product_slug'    => 'kadence-blocks',
 			'product_version' => KADENCE_BLOCKS_VERSION
