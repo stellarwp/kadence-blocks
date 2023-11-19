@@ -3,7 +3,7 @@
  */
 import { useState, useEffect } from '@wordpress/element';
 import { Flex, FlexBlock, Popover, TextareaControl, Button } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -39,13 +39,14 @@ const styles = {
 export function Photography(props) {
 	const { photographyOnly } = props;
 	const { state: { photoLibrary, imageSearchQuery }, dispatch } = useKadenceAi();
-	const { preMadeCollections, wordpressCollections, getCollectionGalleries, loading,
+	const { preMadeCollections, wordpressCollections, getCollectionGalleries,
 		updateGalleries, createCollection, updateCollectionName, deleteCollection } = collectionsHelper();
 	const [ allVerticals, setAllVerticals ] = useState( [] );
 	const [ loadingSelection, setLoadingSelection ] = useState( false );
-	const [ selectedCollection, setSelectedCollection ] = useState([{}, {}]);
-	const [ isOpen, setIsOpen ] = useState(false);
-	const [ localSearchQuery, setLocalSearchQuery ] = useState('');
+	const [ selectedCollection, setSelectedCollection ] = useState( [{}, {}] );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const [ localSearchQuery, setLocalSearchQuery ] = useState( '' );
+	const [ isSearchQueryCleared, setIsSearchQueryCleared ] = useState( false );
 	const [popoverAnchor, setPopoverAnchor] = useState();
 
 	useEffect(() => {
@@ -115,8 +116,8 @@ export function Photography(props) {
 
 	function updateCollectionPhotos(galleryIndex, photoList) {
 		const newCollection = [
-			{ name: 'featured', isLocal:selectedCollection?.[0]?.isLocal ? true : false, images: selectedCollection?.[0]?.images },
-			{ name: 'background', isLocal:selectedCollection?.[1]?.isLocal ? true : false, images: selectedCollection?.[1]?.images }
+			{ name: 'featured', isLocal:!!selectedCollection?.[0]?.isLocal, images: selectedCollection?.[0]?.images },
+			{ name: 'background', isLocal:!!selectedCollection?.[1]?.isLocal, images: selectedCollection?.[1]?.images }
 		];
 		newCollection[galleryIndex].images = photoList;
 		newCollection[galleryIndex].isLocal = true;
@@ -144,13 +145,14 @@ export function Photography(props) {
 
 	function updateCollection( updatedName, collectionId ) {
 		const option = updateCollectionName(updatedName, collectionId);
-		if( photoLibrary === option ) {
+
+		if (photoLibrary === option) {
 			handlePhotoLibraryChange(option);
 		}
 	}
 
 	function removeCollection(collectionId) {
-		if(photoLibrary.value === collectionId) {
+		if (photoLibrary === collectionId) {
 			handlePhotoLibraryChange(allVerticals[1].options[0]);
 		}
 		deleteCollection(collectionId);
@@ -238,8 +240,10 @@ export function Photography(props) {
 							<TextareaControl
 								label={__( 'Search Query', 'kadence-blocks' )}
 								help={ __( 'Customize the image search query.', 'kadence-blocks' )}
-								value={ ( localSearchQuery ? localSearchQuery : imageSearchQuery )}
+								value={ isSearchQueryCleared ? '' : localSearchQuery !== '' ? localSearchQuery : imageSearchQuery }
 								onChange={ value => {
+
+									value === '' ? setIsSearchQueryCleared( true ) : setIsSearchQueryCleared( false );
 									setLocalSearchQuery( value );
 								}}
 							/>

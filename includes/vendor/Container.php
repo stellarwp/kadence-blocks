@@ -6,6 +6,10 @@ use KadenceWP\KadenceBlocks\lucatume\DI52\Container as DI52Container;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 
 class Container implements ContainerInterface {
+
+	/**
+	 * @var DI52Container
+	 */
 	protected $container;
 
 	/**
@@ -15,11 +19,15 @@ class Container implements ContainerInterface {
 		$this->container = new DI52Container();
 	}
 
+	public function container(): DI52Container {
+		return $this->container;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public function bind( string $id, $implementation = null, array $afterBuildMethods = null ) {
-		return $this->container->bind( $id, $implementation, $afterBuildMethods );
+		$this->container->bind( $id, $implementation, $afterBuildMethods );
 	}
 
 	/**

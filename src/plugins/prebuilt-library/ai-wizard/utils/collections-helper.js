@@ -1,8 +1,5 @@
-import {
-	COLLECTIONS_CUSTOM_SESSION_KEY,
-} from '../constants';
-
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { preMadeCollectionsHelper } from './premade-collection-helper';
 import { useKadenceAi } from '../context/kadence-ai-provider';
 
@@ -52,8 +49,8 @@ export function collectionsHelper() {
 				return foundWordpressCollection.galleries;
 			}
 		}
-		const premadeCollection = await getPreMadeCollectionByIndustry(collectionId, imageSearchQuery );
-		return premadeCollection;
+
+		return await getPreMadeCollectionByIndustry(collectionId, imageSearchQuery);
 	}
 
 	/**
@@ -69,8 +66,6 @@ export function collectionsHelper() {
 		}
 
 		let newCollection = {};
-		let updatedCollections = [...wordpressCollections];
-
 		const found = wordpressCollections.findIndex((item) => item.value === collectionId);
 		if(found > -1) {
 			// update wordpress collection
@@ -140,23 +135,24 @@ export function collectionsHelper() {
 	 * @param {string} collectionName
 	 * @param {string} collectionId
 	 *
-	 * @return {void}
+	 * @return {string}
 	 */
 	function updateCollectionName(collectionName, collectionId) {
 		if (! collectionId || ! collectionName) {
-			return;
+			return '';
 		}
 
 		const matchingIndex = wordpressCollections.findIndex((item) => item.value === collectionId);
 		if(matchingIndex === -1) {
-			return;
+			return '';
 		}
 
 		const toUpdate = [...wordpressCollections];
 		toUpdate[matchingIndex].label = collectionName;
 		dispatch({ type: "SET_CUSTOM_COLLECTIONS", payload: toUpdate });
 		setWordpressCollections(toUpdate);
-		return toUpdate.value;
+
+		return toUpdate[matchingIndex].value;
 	}
 
 	/**
@@ -183,7 +179,7 @@ export function collectionsHelper() {
 	}
 
 	return {
-		loading: !loading && !preMadeLoading ? false : true,
+		loading: !(!loading && !preMadeLoading),
 		preMadeCollections,
 		wordpressCollections,
 		getCollectionGalleries,

@@ -5,7 +5,6 @@ import {
 	COLLECTION_REQUEST_IMAGE_TYPE,
 	API_ROUTE_GET_COLLECTIONS,
 	API_ROUTE_GET_VERTICALS,
-	COLLECTION_REQUEST_IMAGE_SIZES,
 	API_MAX_ATTEMPTS
 } from '../constants';
 
@@ -86,7 +85,7 @@ export function preMadeCollectionsHelper() {
 				if (responseData && responseData?.data) {
 					// PreMade vertical don't have the galleries key
 					let parsedVerticals = responseData.data.reduce((acc, item) => {
-						
+
 						const subVerticals = item.sub_verticals.map((vert) => {
 							return {
 								label: vert,
@@ -146,7 +145,7 @@ export function preMadeCollectionsHelper() {
 					industries: industries,
 					industry: search,
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
-					image_sizes: COLLECTION_REQUEST_IMAGE_SIZES,
+					image_sizes: kadenceExtensionImagePicker.image_sizes,
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );

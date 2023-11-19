@@ -581,7 +581,7 @@ function KadenceConfig() {
 						title={__('Pexels Library Search', 'kadence-blocks')}
 						initialOpen={ false }
 					>
-						<KadenceSetting 
+						<KadenceSetting
 							slug={'enable_image_picker'}
 							label={__('Enable Pexels Image Picker', 'kadence-blocks')}
 							type={'toggle'}
@@ -593,7 +593,7 @@ function KadenceConfig() {
 							title={__('Dynamic Content Settings', 'kadence-blocks')}
 							initialOpen={ false }
 						>
-							<KadenceSetting 
+							<KadenceSetting
 								slug={'get_fields_show_all'}
 								label={__('Always show all fields', 'kadence-blocks')}
 								type={'toggle'}

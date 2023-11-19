@@ -10,7 +10,7 @@
 
 	.components-input-control__label {
 		@include input_label;
-		margin-bottom: 0px;
+		margin-bottom: 0;
 	}
 
 	.stellarwp-advancedSelect {
@@ -22,7 +22,7 @@
 		button.stellarwp.components-button {
 			border: 1px solid;
 			border-color: $color-gray-300;
-			background: $color-white;
+			background-color: $color-white;
 			color: $color-gray-700;
 			height: 40px;
 			font-weight: 400;
@@ -39,7 +39,7 @@
 			}
 
 			&:hover {
-				background:  $color-white;
+				background-color:  $color-white;
 				border-color: $color-gray-800;
 				color: $color-gray-700;
 				box-shadow: none;
@@ -84,7 +84,7 @@
 			button.advanced-select-menu__create {
 				border: 1px solid;
 				border-color: $color-gray-300;
-				background: $color-white;
+				background-color: $color-white;
 				color: $color-gray-500;
 				height: 40px;
 				font-weight: 400;
@@ -99,23 +99,23 @@
 				margin-bottom: 8px;
 
 				&:hover {
-					background:  $color-primary;
+					background-color:  $color-primary;
 					border-color: $color-primary;
 					color: $color-white;
 					box-shadow: none;
 				}
 				&:focus {
-					outline: 0px;
+					outline: 0;
     				box-shadow: none;
 				}
 			}
 
 			.advanced-select-menu__create-input {
 				height: 40px;
-				background: $color-gray-200;
+				background-color: $color-gray-200;
 				margin-left: -8px;
 				margin-right: -8px;
-				padding: 0px 8px;
+				padding: 0 8px;
 				display: flex;
 				align-items: center;
 				border-top: $color-gray-200;
@@ -129,7 +129,7 @@
 
 				input.advanced-select-menu__input-item {
 					border: 0;
-					background: transparent;
+					background-color: transparent;
 					width: 100%;
 
 					&:focus-within {
@@ -153,13 +153,12 @@
 					font-size: 13px;
 					font-weight: 600;
 					color: $color-black;
-					padding: 8px 0px 4px 0px;
+					padding: 8px 0 4px 0;
 				}
 				.advanced-select-menu__option-item {
 					font-size: 15px;
 					font-weight: 400;
 					color: $color-gray-900;
-					padding: 6px 12px 6px 12px;
 					background-color: $color-white;
 					cursor: pointer;
 					margin-right: -8px;
@@ -187,6 +186,7 @@
 						text-overflow: ellipsis;
 						display: flex;
 						gap: 4px;
+						padding: 6px 12px 6px 12px;
 						align-items: center;
 					}
 					.advanced-select-menu__option-item__label > svg {
