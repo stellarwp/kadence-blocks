@@ -38,19 +38,19 @@
 			"@php -d memory_limit=4G bin/wp-cli.phar"
 		],
 		"post-install-cmd": [
-			"@strauss",
 			"@stellar-uplink",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+			"@strauss",
+			"echo \"<?php\" > vendor-prefixed/lucatume/di52/aliases.php"
 		],
 		"post-update-cmd": [
-			"@strauss",
 			"@stellar-uplink",
-			"echo \"<?php\" > vendor/vendor-prefixed/lucatume/di52/aliases.php"
+			"@strauss",
+			"echo \"<?php\" > vendor-prefixed/lucatume/di52/aliases.php"
 		]
 	},
 	"extra": {
 		"strauss": {
-			"target_directory": "vendor/vendor-prefixed",
+			"target_directory": "vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",

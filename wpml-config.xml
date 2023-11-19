@@ -20,7 +20,7 @@
 		<gutenberg-block type="kadence/infobox" translate="1">
 			<xpath>//div/a/@href</xpath>
 			<xpath>//*[@class="kt-blocks-info-box-title"]</xpath>
-			<xpath>//div[@class="kt-infobox-textcontent"]</xpath>
+			<xpath>//*[@class="kt-blocks-info-box-text"]</xpath>
 			<xpath>//span[@class="kt-blocks-info-box-learnmore"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/pane" translate="1">
