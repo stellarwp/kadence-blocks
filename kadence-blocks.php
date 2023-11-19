@@ -23,7 +23,7 @@ define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTO
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.2.5' );
 
-require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 
@@ -167,3 +167,35 @@ function kt_blocks_beta_updating() {
 	}
 }
 add_action( 'after_setup_theme', 'kt_blocks_beta_updating', 1 );
+
+/**
+ * Plugin Updated.
+ */
+function kt_blocks_updated( $upgrader_object, $options ): void {
+
+	if ( $options['action'] !== 'update' || $options['type'] !== 'plugin' ) {
+		return;
+	}
+
+	$plugin_path = plugin_basename(__FILE__);
+
+	if ( ! isset($options['plugins']) || ! in_array( $plugin_path, $options['plugins'] ) ) {
+		return;
+	}
+
+	if ( ! function_exists( 'get_plugin_data' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	$current_plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_path );
+	$new_version         = $current_plugin_data['Version'];
+
+	do_action( 'stellarwp/analytics/event', 'Plugin Updated', array(
+		'product_name'             => $current_plugin_data['Name'],
+		'previous_product_version' => get_option( 'my_plugin_previous_version' ),
+		'new_version'              => $new_version,
+	) );
+
+	update_option( 'kadence_blocks_previous_version', $new_version );
+}
+add_action( 'upgrader_process_complete', 'kt_blocks_updated', 10, 2 );

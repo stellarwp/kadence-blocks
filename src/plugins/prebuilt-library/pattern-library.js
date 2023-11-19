@@ -176,6 +176,7 @@ function PatternLibrary( {
 		triggerAIDataReload( ( state ) => ! state );
 	};
 	const handleAiWizardPrimaryAction = ( event, rebuild ) => {
+
 		if ( rebuild ) {
 			getAllNewData();
 		}
@@ -263,7 +264,7 @@ function PatternLibrary( {
 
 		setPageStyles( activePageStyles );
 	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits, sendEvent } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
@@ -1163,6 +1164,7 @@ function PatternLibrary( {
 								reloadAI( tempCon );
 							} }
 							launchWizard={ () => {
+								sendEvent( 'ai_wizard_started' );
 								setWizardState( {
 									visible: true,
 									photographyOnly: false

@@ -67,7 +67,7 @@
 	},
 	"extra": {
 		"strauss": {
-			"target_directory": "vendor/vendor-prefixed",
+			"target_directory": "vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
