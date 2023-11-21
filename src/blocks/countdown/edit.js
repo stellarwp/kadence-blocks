@@ -226,14 +226,14 @@ function KadenceCountdown( props ) {
 		return new Date(year, month + 1, 0).getDate();
 	}
 
-	const getFutureReapetDate = (date1, date2) => {
-		const dayOfMonth = date2.getDate();
-		const futureDayOfMonth = date1.getDate();
+	const getFutureReapetDate = (currentDate, initialDate) => {
+		const dayOfMonth = initialDate.getDate();
+		const futureDayOfMonth = currentDate.getDate();
 		let futureDate = new Date()
-		const isDecember = date1.getMonth() === 11 ? true : false;
-		const initialMonth = date2.getMonth();
-		const futureMonth = futureDayOfMonth >= dayOfMonth ? date1.getMonth() + 1 : date1.getMonth();
-		const futureYear = isDecember ? date1.getFullYear() + 1 : date1.getFullYear();
+		const isDecember = currentDate.getMonth() === 11 ? true : false;
+		const initialMonth = initialDate.getMonth();
+		const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+		const futureYear = isDecember ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 		
 
 		switch(frecuency) {
@@ -242,9 +242,9 @@ function KadenceCountdown( props ) {
 					futureYear, 
 					futureMonth,
 					dayOfMonth + 1,
-					date2.getHours(), 
-					date2.getMinutes(),
-					date2.getSeconds()
+					initialDate.getHours(), 
+					initialDate.getMinutes(),
+					initialDate.getSeconds()
 				);
 				break;
 			case 'weekly':
@@ -261,9 +261,9 @@ function KadenceCountdown( props ) {
 					futureYear, 
 					futureMonth,
 					dayOfMonth,
-					date2.getHours(), 
-					date2.getMinutes(),
-					date2.getSeconds()
+					initialDate.getHours(), 
+					initialDate.getMinutes(),
+					initialDate.getSeconds()
 				);
 				console.log(futureDate);
 				break;
@@ -272,9 +272,9 @@ function KadenceCountdown( props ) {
 					futureYear, 
 					initialMonth,
 					dayOfMonth,
-					date2.getHours(), 
-					date2.getMinutes(),
-					date2.getSeconds()
+					initialDate.getHours(), 
+					initialDate.getMinutes(),
+					initialDate.getSeconds()
 				);
 				break;
 			default:
