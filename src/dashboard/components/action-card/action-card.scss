@@ -1,0 +1,61 @@
+.kb-action-card {
+	border: 1px solid transparent;
+	border-radius: 16px;
+	padding: 32px;
+	color: #161a1e;
+	position: relative;
+
+	/* Variant: Blue */
+	&--blue {
+		border-color: rgba(0, 115, 230, 0.2);
+		background-color: #d1e2f8;
+	}
+
+	/* Variant: Green */
+	&--green {
+		border-color: #68bc83;
+		background-color: #e7f3eb;
+	}
+
+	/* Variant: Yellow */
+	&--yellow {
+		border-color: #efd861;
+		background-color: #f8f5e1;
+	}
+}
+
+.kb-action-card__icon {
+	width: 55px;
+	height: 55px;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid rgba(22, 26, 30, 0.2);
+	background: rgba(22, 26, 30, 0.05);
+	margin-bottom: 40px;
+
+	svg {
+		max-width: 24px;
+	}
+}
+
+.kb-action-card__heading {
+	font-size: 28px;
+	font-weight: 600;
+	line-height: 125%;
+	letter-spacing: -0.28px;
+	margin-bottom: 24px;
+}
+
+.kb-action-card__content {
+	font-size: 16px;
+	line-height: 175%;
+	letter-spacing: 0.32px;
+}
+
+.kb-action-card__link {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}

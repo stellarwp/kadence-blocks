@@ -1018,18 +1018,6 @@ class Kadence_Blocks_Settings {
 	public function home_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
 		?>
-		<div class="kadence_blocks_dash_head">
-			<div class="kadence_blocks_dash_head_container">
-				<div class="kadence_blocks_dash_logo">
-					<img src="<?php echo esc_url( KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png' ); ?>" alt="Kadence WP">
-				</div>
-				<div class="kadence_blocks_dash_version">
-					<span>
-						<?php echo esc_html( apply_filters( 'kadence_blocks_brand_name', 'Kadence Blocks' ) ) . ' ' . esc_html( KADENCE_BLOCKS_VERSION ); ?>
-					</span>
-				</div>
-			</div>
-		</div>
 		<div class="wrap kadence_blocks_dash">
 			<div class="kadence_blocks_dash_head_container">
 				<h2 class="notices" style="display:none;"></h2>

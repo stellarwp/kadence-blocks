@@ -1,0 +1,25 @@
+.kb-section-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 32px;
+	font-weight: 500;
+	line-height: 130%;
+	letter-spacing: -0.64px;
+	margin-bottom: 32px;
+
+	/* Variant: White */
+	&--white {
+		color: #ffffff;
+	}
+
+	/* Variant: Black */
+	&--black {
+		color: #000000;
+	}
+}
+
+.kb-section-title__icon {
+	fill: #0073e6;
+	display: inline-flex;
+}
