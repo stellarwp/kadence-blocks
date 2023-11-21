@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e055ffc21ebc141fb38d7c4df46361d8",
+    "content-hash": "86a2f8f0929c3e4d74883a991fa38d6c",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -525,7 +525,7 @@
             ],
             "description": "The Prophecy DI container and its contracts.",
             "support": {
-                  "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.3.72"
+                "source": "https://github.com/stellarwp/prophecy-container/tree/1.1.3.72"
             },
             "time": "2023-11-01T19:11:17+00:00"
         },
