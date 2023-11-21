@@ -223,86 +223,91 @@ function KadenceCountdown( props ) {
 	
 	// Returns the number of days of the previous month
 	const daysInMonth = (year, month) => {
-		return new Date(year, month, 0).getDate();
+		return new Date(year, month + 1, 0).getDate();
 	}
+
+	const getFutureReapetDate = (date1, date2) => {
+		const dayOfMonth = date2.getDate();
+		const futureDayOfMonth = date1.getDate();
+		let futureDate = new Date()
+		const isDecember = date1.getMonth() === 11 ? true : false;
+		const initialMonth = date2.getMonth();
+		const futureMonth = futureDayOfMonth >= dayOfMonth ? date1.getMonth() + 1 : date1.getMonth();
+		const futureYear = isDecember ? date1.getFullYear() + 1 : date1.getFullYear();
+		
+
+		switch(frecuency) {
+			case 'daily':
+				futureDate = new Date(
+					futureYear, 
+					futureMonth,
+					dayOfMonth + 1,
+					date2.getHours(), 
+					date2.getMinutes(),
+					date2.getSeconds()
+				);
+				break;
+			case 'weekly':
+			
+				break;
+			case 'monthly':
+				if(dayOfMonth === 31 && nextMonthDays === 30 ) {
+					dayOfMonth = 30;
+				} else if(futureMonth === 0 && dayOfMonth >= 29) {
+					dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
+				}
+
+				futureDate = new Date(
+					futureYear, 
+					futureMonth,
+					dayOfMonth,
+					date2.getHours(), 
+					date2.getMinutes(),
+					date2.getSeconds()
+				);
+				console.log(futureDate);
+				break;
+			case 'yearly':
+				futureDate = new Date(
+					futureYear, 
+					initialMonth,
+					dayOfMonth,
+					date2.getHours(), 
+					date2.getMinutes(),
+					date2.getSeconds()
+				);
+				break;
+			default:
+				break;
+		}
+		
+		return futureDate;
+	}
+	
 
 	/*
 	** Updates the date when the repeater is activated 
 	** or starts the countdown when the block is placed 
 	** for the first time.
 	*/
-	const updateEndDate = useCallback((endDate, repeatFrecuency) => {
+	const updateEndDate = useCallback(() => {
 		const currentDate = new Date();
+		const formattedEndDate = new Date(date);
 		const newDate = new Date();
-		const formattedEndDate = new Date(endDate);
-		let endDay = formattedEndDate.getDay();
-		let endMonth = formattedEndDate.getMonth();
-		let endYear = formattedEndDate.getFullYear();
-		const nextYear = endYear + 1;
-		let moveDays = 2;
-
-		if(currentDate > formattedEndDate) {
-			switch(repeatFrecuency) {
-				case "daily":
-					moveDays = 1;
-					break;
-				case "weekly":
-					moveDays = 7;
-					break;
-				case "monthly":
-					const isDecember = 11 === endMonth ? true : false;
-					// Needed to avoid having a not valid month number
-					endMonth = isDecember ? 0 : endMonth;
-					const nextMonthIsFebraury = 0 === endMonth ? true : false;
-					// Needed in case the next end date is in Febraury
-					endYear = isDecember ? nextYear : endYear;
-					const thisMonthDays = daysInMonth(endYear, endMonth + 1);
-					const nextMonthDays = daysInMonth(endYear, endMonth + 2);
-					if(nextMonthIsFebraury) {
-						moveDays = endDay > nextMonthDays ? thisMonthDays - endDay + nextMonthDays : 31;
-					} else if(endDay < 31 && thisMonthDays === 31 ) {
-						moveDays = 31;
-					} else if(endDay === 31 && nextMonthDays === 31) {
-						moveDays = 31;
-					} else {
-						moveDays = 30;
-					}
-					break;
-				case "yearly":
-					const leapYear = false;
-
-					/*
-					** If the current countdown ends before the end of Febraury
-					** of this year, then determine if this year's Febraury has 29 days.
-					** If the current countdown end after febraury of this year, then
-					** determine if next year's Febraury has 29 days.
-					*/
-					if(1 <= endMonth) {
-						if(29 === daysInMonth(endYear, 2)) {
-							leapYear = true;
-						}
-					} else {
-						if(29 === daysInMonth(nextYear, 2)) {
-							leapYear = true;
-						}
-					}
-
-					moveDays = leapYear ? 366 : 365;
-					break;
-				default:
-					break;
-			}
-
-			newDate.setDate(formattedEndDate.getDate() + moveDays);
-			setAttributes({startDate: endDate});
-	    	saveDate(newDate);
+		
+		if(currentDate >= formattedEndDate) {
+			//newDate.setDate(formattedEndDate.getDate() + getMoveDays(currentDate, formattedEndDate));
+			const futureDate = new Date();
+			futureDate.setDate(futureDate.getDate() + 365);
+			console.log(futureDate);
+			const thisDate = new Date();
+	    	saveDate(getFutureReapetDate(futureDate, thisDate));
 		}
 		
-		if ( !endDate ) {
-			dateSettings = getDateSettings();
+		if ( !date ) {
 			const { timezone } = dateSettings;
 			const today = currentDate;
-			newDate.setDate( today.getDate() + moveDays );
+			newDate.setDate( today.getDate() + 2 );
 			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
 			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
@@ -874,7 +879,7 @@ function KadenceCountdown( props ) {
 									panelName={'kb-countdown-repeater'}
 								>
 									<ToggleControl
-										label={__( 'Repeat Countdown', 'kadence-blocks' )}
+										label={__( 'Repeat Countdown Concurrently?', 'kadence-blocks' )}
 										checked={repeat}
 										onChange={value => setAttributes( { repeat: value } )}
 										help={__( 'This will give the option to restart the conuntdown concurrently.', 'kadence-blocks' )}
@@ -883,7 +888,7 @@ function KadenceCountdown( props ) {
 											repeat && (
 												<>
 													<SelectControl
-														label={__( 'Repeat Frecuency', 'kadence-blocks' )}
+														label={__( 'Repeat Countdown Frecuency', 'kadence-blocks' )}
 														options={frecuencyOptions}
 														value={frecuency}
 														onChange={( value ) => setAttributes( { frecuency: value } )}
