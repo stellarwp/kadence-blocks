@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.1.24
+Stable tag: 3.1.26
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,15 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.1.26 =
+Release Date: November 15th, 2023
+* Fix: Text (Adv) not showing link format option.
+
+= 3.1.25 =
+Release Date: November 14th, 2023
+* Update: Add hooks for dynamic replace control.
+* Fix: Form field custon name not saving.
 
 = 3.1.24 =
 Release Date: November 8th, 2023

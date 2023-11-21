@@ -66,12 +66,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 	private function filter_post_type_columns( array $columns ) : array {
 
 		$add = array(
-			'description'  => esc_html__( 'Description', 'kadence-pro' ),
+			'description'  => esc_html__( 'Description', 'kadence-blocks' ),
 		);
 		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-			$add['entries'] = esc_html__( 'Entries', 'kadence-pro' );
+			$add['entries'] = esc_html__( 'Entries', 'kadence-blocks' );
 		} else {
-			$add['entries'] = esc_html__( 'Entries (Pro Only)', 'kadence-pro' );
+			$add['entries'] = esc_html__( 'Entries (Pro Only)', 'kadence-blocks' );
 		}
 
 		$new_columns = array();
