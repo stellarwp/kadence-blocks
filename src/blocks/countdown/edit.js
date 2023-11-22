@@ -233,8 +233,8 @@ function KadenceCountdown( props ) {
 	const updateEndDate = useCallback(() => {
 		const currentDate = new Date();
 		const initialDate = new Date(date);
-		
-		if(repeat && currentDate >= initialDate) {
+
+		if( repeat && currentDate >= initialDate ) {
 			let futureDate = new Date();
 			const seconds = initialDate.getSeconds();
 			const minutes = initialDate.getMinutes();
@@ -249,15 +249,15 @@ function KadenceCountdown( props ) {
 
 			switch(frecuency) {
 				case 'daily':
-					offsetDays = currentDate.getDate() - initialDate.getDate() + 1;
-					futureDate.setDate(initialDate.getDate() + offsetDays);
+					offsetDays = futureDayOfMonth - dayOfMonth + 1;
+					futureDate.setDate(dayOfMonth + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
 					break;
 				case 'weekly':
-					offsetDays = currentDate.getDate() - initialDate.getDate() + (7 - ((currentDate.getDate() - initialDate.getDate()) % 7));
-					futureDate.setDate(initialDate.getDate() + offsetDays);
+					offsetDays = futureDayOfMonth - dayOfMonth + (7 - ((futureDayOfMonth - dayOfMonth) % 7));
+					futureDate.setDate(dayOfMonth + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
