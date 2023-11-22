@@ -219,22 +219,28 @@ function KadenceCountdown( props ) {
 		},
 		[ clientId ]
 	);
-	
-	// Returns the number of days of the previous month
+
+	const saveRepeaterFrecuency = (value) => {
+		getRepeatDate(value);
+		setAttributes({frecuency: value});
+	};
+
 	const daysInMonth = (year, month) => {
 		return new Date(year, month + 1, 0).getDate();
 	}
+
+	const isLeapYear = (year) => {
+		const leap = new Date(year, 1, 29).getDate() === 29;
+		if (leap) {
+			return true;
+		} 
+		return false;
+	}
 	
-	/*
-	** Updates the date when the repeater is active 
-	** or starts the countdown when the block is placed 
-	** for the first time.
-	*/
-	const updateEndDate = useCallback(() => {
+	const getRepeatDate = (repeatFrecuency) => {
 		const currentDate = new Date();
 		const initialDate = new Date(date);
-
-		if( repeat && currentDate >= initialDate ) {
+		if(repeat && currentDate >= initialDate) {
 			let futureDate = new Date();
 			const seconds = initialDate.getSeconds();
 			const minutes = initialDate.getMinutes();
@@ -244,9 +250,10 @@ function KadenceCountdown( props ) {
 			const initialMonth = initialDate.getMonth();
 			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+			const nextMonthDays = daysInMonth(futureYear, futureMonth);
 			let offsetDays = 0;
 
-			switch(frecuency) {
+			switch(repeatFrecuency) {
 				case 'daily':
 					offsetDays = futureDayOfMonth - dayOfMonth + 1;
 					futureDate.setDate(dayOfMonth + offsetDays);
@@ -278,6 +285,7 @@ function KadenceCountdown( props ) {
 					);
 					break;
 				case 'yearly':
+					offsetDays = futureDayOfMonth - dayOfMonth;
 					futureDate = new Date(
 						futureYear, 
 						initialMonth,
@@ -290,21 +298,41 @@ function KadenceCountdown( props ) {
 				default:
 					break;
 			}
-			
-			saveDate(futureDate);	
-		}
 
+			const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
+			const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
+			const theSiteTimezoneTimestamp = getTimestamp( futureDate, theTimeOffset );
+
+			setAttributes({
+				timestamp : theSiteTimezoneTimestamp,
+				timezone  : theTimezone,
+				timeOffset: theTimeOffset,
+			});
+			
+			setRepeatDate(futureDate);
+		}
+	};
+	
+	/*
+	** Updates the date when the repeater is active 
+	** or starts the countdown when the block is placed 
+	** for the first time.
+	*/
+	const updateEndDate = () => {
+		
 		const newDate = new Date();
 		
 		if ( !date ) {
 			const { timezone } = dateSettings;
-			const today = currentDate;
+			const today = new Date();
 			newDate.setDate( today.getDate() + 2 );
 			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
 			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
+		} else {
+			getRepeatDate(frecuency);
 		}
-	}, [date, frecuency]);
+	};
 
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
@@ -325,7 +353,7 @@ function KadenceCountdown( props ) {
 			setBorderRadiusControl( 'individual' );
 		}
 
-		updateEndDate(date, frecuency);
+		updateEndDate(frecuency);
 	}, [] );
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -337,6 +365,7 @@ function KadenceCountdown( props ) {
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
 	const [ previewExpired, setPreviewExpired ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ repeatDate, setRepeatDate ] = useState('');
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -391,12 +420,14 @@ function KadenceCountdown( props ) {
 		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
 		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
 
-		setAttributes( {
+		setAttributes({
 			date      : value,
 			timestamp : theSiteTimezoneTimestamp,
 			timezone  : theTimezone,
 			timeOffset: theTimeOffset,
-		} );
+		});
+
+		getRepeatDate(frecuency);
 	};
 	const getEverGreenTimestamp = ( value ) => {
 		const newDate = new Date();
@@ -776,7 +807,7 @@ function KadenceCountdown( props ) {
 											{'date' === countdownType && (
 												<div className="components-base-control kb-datepicker-fix">
 													<DateTimePicker
-														currentDate={( !date ? undefined : date )}
+														currentDate={( new Date() >= new Date(date) ? repeatDate : !date ? undefined : date )}
 														onChange={value => {
 															saveDate( value );
 														}}
@@ -883,7 +914,7 @@ function KadenceCountdown( props ) {
 														label={__( 'Repeat Countdown Frecuency', 'kadence-blocks' )}
 														options={frecuencyOptions}
 														value={frecuency}
-														onChange={( value ) => setAttributes( { frecuency: value } )}
+														onChange={( value ) => saveRepeaterFrecuency(value)}
 													/>
 
 													<ToggleControl
