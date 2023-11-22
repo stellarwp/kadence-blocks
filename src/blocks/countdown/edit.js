@@ -819,7 +819,8 @@ function KadenceCountdown( props ) {
 																? repeatDate 
 																: !date 
 																	? undefined 
-																	: date )}
+																	: date 
+														)}
 														onChange={value => {
 															saveDate( value );
 														}}
