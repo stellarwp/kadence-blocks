@@ -70,7 +70,6 @@ import {
 	Component,
 	useEffect,
 	useState,
-	useCallback,
 } from '@wordpress/element';
 
 import { withSelect, withDispatch } from '@wordpress/data';
