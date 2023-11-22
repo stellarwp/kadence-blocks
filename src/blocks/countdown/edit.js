@@ -220,9 +220,9 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
-	const saveRepeaterFrecuency = (value) => {
-		getRepeatDate(value);
+	const handleFrecuencyChange = (value) => {
 		setAttributes({frecuency: value});
+		getRepeatDate(value);
 	};
 
 	const daysInMonth = (year, month) => {
@@ -285,7 +285,14 @@ function KadenceCountdown( props ) {
 					);
 					break;
 				case 'yearly':
-					offsetDays = futureDayOfMonth - dayOfMonth;
+					const datePassed = currentDate.getMonth() <= initialDate.getMonth() 
+						&& currentDate.getDate() <= initialDate.getDate()
+						&& currentDate.getHours() <= initialDate.getHours()
+						&& currentDate.getMinutes() <= initialDate.getMinutes()
+						&& currentDate.getSeconds() <= initialDate.getSeconds();
+					futureYear = datePassed
+						? currentDate.getFullYear()
+						: currentDate.getFullYear() + 1;
 					futureDate = new Date(
 						futureYear, 
 						initialMonth,
@@ -914,7 +921,9 @@ function KadenceCountdown( props ) {
 														label={__( 'Repeat Countdown Frecuency', 'kadence-blocks' )}
 														options={frecuencyOptions}
 														value={frecuency}
-														onChange={( value ) => saveRepeaterFrecuency(value)}
+														onChange={( value ) => {
+															handleFrecuencyChange(value)
+														}}
 													/>
 
 													<ToggleControl
