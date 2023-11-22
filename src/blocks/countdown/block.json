@@ -14,10 +14,6 @@
 	  "type": "string",
 	  "default": "date"
 	},
-	"startDate": {
-		"type": "string",
-		"default": ""
-	},
 	"date": {
 	  "type": "string",
 	  "default": ""
