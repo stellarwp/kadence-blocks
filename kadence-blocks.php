@@ -18,7 +18,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.2.5' );
@@ -177,7 +176,7 @@ function kt_blocks_updated( $upgrader_object, $options ): void {
 		return;
 	}
 
-	$plugin_path = plugin_basename(__FILE__);
+	$plugin_path = plugin_basename( __FILE__ );
 
 	if ( ! isset($options['plugins']) || ! in_array( $plugin_path, $options['plugins'] ) ) {
 		return;
@@ -192,7 +191,7 @@ function kt_blocks_updated( $upgrader_object, $options ): void {
 
 	do_action( 'stellarwp/analytics/event', 'Plugin Updated', array(
 		'product_name'             => $current_plugin_data['Name'],
-		'previous_product_version' => get_option( 'my_plugin_previous_version' ),
+		'previous_product_version' => get_option( 'kadence_blocks_previous_version' ),
 		'new_version'              => $new_version,
 	) );
 

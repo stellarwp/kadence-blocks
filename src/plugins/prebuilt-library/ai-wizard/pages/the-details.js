@@ -142,7 +142,6 @@ export function TheDetails() {
 			type: "SET_SUGGESTED_KEYWORDS_STATE",
 			payload: KEYWORD_SUGGESTION_STATES.loading,
 		});
-
 		getSuggestedKeywords({
 			name: companyName,
 			entity_type: entityType,

@@ -7,6 +7,7 @@ export function ActionCard({
 	content,
 	link,
 	linkTarget = "_self",
+	label = '',
 }) {
 	return (
 		<div className={`kb-action-card kb-action-card--${variant}`}>
@@ -14,7 +15,7 @@ export function ActionCard({
 			<div className="kb-action-card__heading">{heading}</div>
 			<div className="kb-action-card__content">{content}</div>
 			{link && (
-				<a href={link} className="kb-action-card__link" target={linkTarget}></a>
+				<a href={link} className="kb-action-card__link" aria-label={ label ? label : undefined } target={linkTarget}></a>
 			)}
 		</div>
 	);

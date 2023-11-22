@@ -11,8 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\render_authorize_button;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Admin\Disconnect_Controller;
 
 /**
  * Build Welcome Page class
@@ -602,6 +605,20 @@ class Kadence_Blocks_Settings {
 	 * Loads admin style sheets and scripts
 	 */
 	public function home_scripts() {
+		$container     = UplinkConfig::get_container();
+		$data          = $container->get( Data::class );
+		$token_manager = $container->get( Token_Manager::class );
+		$token         = $token_manager->get();
+		$is_authorized = false;
+		$auth_url      = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
+		$license_key   = kadence_blocks_get_current_license_key();
+		$disconnect_url = '';
+		if ( $token ) {
+			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		}
+		if ( $is_authorized ) {
+			$disconnect_url = wp_nonce_url( add_query_arg( array( Disconnect_Controller::ARG => true ), get_admin_url( get_current_blog_id() ) ), Disconnect_Controller::ARG );
+		}
 		// Icons Scripts & Styles.
 		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
 		wp_register_script( 'kadence-icons', KADENCE_BLOCKS_URL . 'dist/icons.js', array_merge( $kadence_icons_meta['dependencies'], array( 'wp-api' ) ), $kadence_icons_meta['version'], true );
@@ -630,10 +647,16 @@ class Kadence_Blocks_Settings {
 		wp_enqueue_style( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_home_meta['version'] );
 		wp_localize_script(
 			'admin-kadence-home',
-			'kadence_blocks_home',
+			'kadenceHomeParams',
 			array(
 				'ajaxurl'             => admin_url( 'admin-ajax.php' ),
 				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
+				'isAuthorized'        => $is_authorized,
+				'licenseKey'          => $license_key,
+				'authUrl'             => esc_url( $auth_url ),
+				'disconnectUrl'       => esc_url( $disconnect_url ),
+				'isPro'               => class_exists( 'Kadence_Blocks_Pro' ),
+				'apiKey'              => $license_key,
 			)
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/assets/css/admin-dashboard.min.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
@@ -1017,19 +1040,30 @@ class Kadence_Blocks_Settings {
 	 */
 	public function home_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
+		$container     = UplinkConfig::get_container();
+		$data          = $container->get( Data::class );
+		$token_manager = $container->get( Token_Manager::class );
+		$token         = $token_manager->get();
+		$is_authorized = false;
+		$license_key   = kadence_blocks_get_current_license_key();
+		if ( $token ) {
+			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		}
 		?>
 		<div class="wrap kadence_blocks_dash">
 			<div class="kadence_blocks_dash_head_container">
 				<h2 class="notices" style="display:none;"></h2>
-				<div class="kadence_blocks_home_main">
+				<div class="kadence_blocks_dash_wrap">
+					<div class="kadence_blocks_home_main">
+					</div>
 				</div>
 			</div>
 			<?php
-				$data = UplinkConfig::get_container()->get( Data::class );
+				// $data = UplinkConfig::get_container()->get( Data::class );
 
-				echo '<div class="authorize-button-container">';
-				render_authorize_button( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
-				echo '</div>';
+				// echo '<div class="authorize-button-container">';
+				// render_authorize_button( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
+				// echo '</div>';
 			?>
 		</div>
 		<?php

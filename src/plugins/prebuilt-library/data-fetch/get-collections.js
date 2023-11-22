@@ -56,7 +56,6 @@ export function getCollection() {
 			const response = await apiFetch( {
 				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 					industries: industries,
-					api_key: ( kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' ),
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );

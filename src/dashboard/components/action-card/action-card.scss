@@ -4,6 +4,9 @@
 	padding: 32px;
 	color: #161a1e;
 	position: relative;
+	transform: translate(0px, 0px);
+    transition: transform .3s, box-shadow 0.3s;
+    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.0);
 
 	/* Variant: Blue */
 	&--blue {
@@ -21,6 +24,10 @@
 	&--yellow {
 		border-color: #efd861;
 		background-color: #f8f5e1;
+	}
+	&:hover, &:focus {
+		transform: translate(0px, -6px);
+		box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.05);
 	}
 }
 
@@ -58,4 +65,5 @@
 	position: absolute;
 	inset: 0;
 	z-index: 1;
+	border-radius: 16px;
 }

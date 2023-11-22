@@ -131,3 +131,85 @@ function kadence_blocks_wc_clean( $var ) {
 		return is_scalar( $var ) ? sanitize_text_field( $var ) : $var;
 	}
 }
+/**
+ * Get the current license key for the plugin.
+ */
+function kadence_blocks_get_current_license_key() {
+	// Check if we have pro active.
+	if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
+		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
+		if ( ! empty( $license_key ) ) {
+			return $license_key;
+		} else {
+			$license_data = kadence_blocks_get_deprecated_pro_license_data();
+			if ( $license_data && ! empty( $license_data['api_key'] ) ) {
+				return $license_data['api_key'];
+			}
+		}
+	}
+	$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks', '' );
+	return $license_key;
+}
+/**
+ * Get the current license key for the plugin.
+ */
+function kadence_blocks_get_current_license_email() {
+	// Check if we have pro active.
+	if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
+		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
+		if ( ! empty( $license_key ) ) {
+			return '';
+		} else {
+			$license_data = kadence_blocks_get_deprecated_pro_license_data();
+			if ( $license_data && ! empty( $license_data['api_email'] ) ) {
+				return $license_data['api_email'];
+			}
+		}
+	}
+	return '';
+}
+/**
+ * Get the current license key for the plugin.
+ */
+function kadence_blocks_get_current_license_data() {
+	$license_data = array(
+		'key'   => kadence_blocks_get_current_license_key(),
+		'email' => kadence_blocks_get_current_license_email(),
+	);
+	return $license_data;
+}
+/**
+ * Get the license information.
+ *
+ * @return array
+ */
+function kadence_blocks_get_deprecated_pro_license_data() {
+	$data = false;
+	$current_theme = wp_get_theme();
+	$current_theme_name = $current_theme->get( 'Name' );
+	$current_theme_template = $current_theme->get( 'Template' );
+	// Check for a classic theme license.
+	if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template || 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template || 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
+		$pro_data = get_option( 'kt_api_manager' );
+		if ( $pro_data ) {
+			$data['ithemes']  = '';
+			$data['username'] = '';
+			if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template ) {
+				$data['product_id'] = 'pinnacle_premium';
+			} elseif ( 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template ) {
+				$data['product_id'] = 'ascend_premium';
+			} elseif ( 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
+				$data['product_id'] = 'virtue_premium';
+			}
+			$data['api_key'] = $pro_data['kt_api_key'];
+			$data['api_email'] = $pro_data['activation_email'];
+		}
+	} else {
+		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', true ) ) {
+			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		} else {
+			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		}
+	}
+	return $data;
+}

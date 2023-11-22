@@ -700,16 +700,16 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-main",
+            "version": "dev-feature/base64-encoded-callback",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "310014b4c21cbaba9b7ca487a1515cf43c187f79"
+                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/310014b4c21cbaba9b7ca487a1515cf43c187f79",
-                "reference": "310014b4c21cbaba9b7ca487a1515cf43c187f79",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
+                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
                 "shasum": ""
             },
             "require": {
@@ -735,7 +735,6 @@
                 "symfony/string": "^5.4",
                 "szepeviktor/phpstan-wordpress": "^1.1"
             },
-            "default-branch": true,
             "bin": [
                 "bin/stellar-uplink"
             ],
@@ -761,9 +760,9 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/main"
+                "source": "https://github.com/stellarwp/uplink/tree/feature/base64-encoded-callback"
             },
-            "time": "2023-11-14T22:17:13+00:00"
+            "time": "2023-11-21T19:28:08+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1902,5 +1901,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -35,10 +35,7 @@ export function getAsyncData() {
 	async function getAvailableCredits() {
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( '/kb-design-library/v1/get_remaining_credits', {
-					api_key: data_key,
-					api_email: data_email,
-				} ),
+				path: '/kb-design-library/v1/get_remaining_credits',
 			} );
 			return response;
 		} catch (error) {
@@ -149,7 +146,6 @@ export function getAsyncData() {
 					path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 						industries: industries,
 						industry: userData?.imageSearchQuery,
-						api_key: data_key,
 					} ),
 				} );
 				const responseData = SafeParseJSON( response, false );
@@ -175,7 +171,6 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 					industries: industries,
-					api_key: data_key,
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
@@ -201,7 +196,6 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get', {
 					context: context,
-					api_key:data_key,
 				} ),
 			} );
 			return response;
@@ -221,9 +215,7 @@ export function getAsyncData() {
 	async function getLocalAIContentData() {
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( '/kb-design-library/v1/get_all_items', {
-					api_key:data_key,
-				} ),
+				path: '/kb-design-library/v1/get_all_items',
 			} );
 			return response;
 		} catch (error) {
@@ -241,9 +233,7 @@ export function getAsyncData() {
 	async function getInitialAIContent() {
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( '/kb-design-library/v1/get_initial_jobs' , {
-					api_key:data_key,
-				} ),
+				path: '/kb-design-library/v1/get_initial_jobs',
 			} );
 			return response;
 		} catch (error) {
@@ -258,9 +248,7 @@ export function getAsyncData() {
 	 */
 	async function loadVerticals() {
 		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get_verticals', {
-				api_key: data_key,
-			} ),
+			path: '/kb-design-library/v1/get_verticals',
 		} );
 		return response;
 	};
@@ -271,9 +259,7 @@ export function getAsyncData() {
 	 */
 	async function loadCollections() {
 		const response = await apiFetch( {
-			path: addQueryArgs( '/kb-design-library/v1/get_image_collections', {
-				api_key: data_key,
-			} ),
+			path: '/kb-design-library/v1/get_image_collections',
 		} );
 		return response;
 	}
@@ -291,7 +277,6 @@ export function getAsyncData() {
 				path: addQueryArgs( '/kb-design-library/v1/get', {
 					force_reload: true,
 					context: context,
-					api_key:data_key,
 				} ),
 			} );
 			return response;
@@ -313,7 +298,6 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get_remaining_jobs', {
 					force_reload: reload,
-					api_key:data_key,
 				} ),
 			} );
 			return response;
@@ -338,9 +322,6 @@ export function getAsyncData() {
 					library: library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
-					api_key:data_key,
-					api_email:data_email,
-					product_id:product_id,
 				} ),
 			} );
 			return response;

@@ -10,6 +10,8 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -545,12 +547,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @throws InvalidArgumentException
 	 */
 	public function get_images_by_industry( WP_REST_Request $request ) {
+		$this->get_license_keys();
 		$industries    = $request->get_param( self::PROP_INDUSTRIES );
 		$search_query  = $request->get_param( self::PROP_INDUSTRY );
 		$image_type    = $request->get_param( self::PROP_IMAGE_TYPE );
 		$image_sizes   = $request->get_param( self::PROP_IMAGE_SIZES );
 		$reload        = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key = $request->get_param( self::PROP_API_KEY );
 
 		if ( empty( $industries ) || ! is_array( $industries ) ) {
 			return rest_ensure_response( 'error' );
@@ -624,7 +626,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_image_collections( WP_REST_Request $request ) {
 		$reload        = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key = $request->get_param( self::PROP_API_KEY );
+		$this->get_license_keys();
 		$identifier    = 'image_collections';
 
 		if ( ! $reload ) {
@@ -653,8 +655,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_remaining_credits( WP_REST_Request $request ) {
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
+		$this->get_license_keys();
 		// Check if we have a remote file.
 		$response = $this->get_remote_remaining_credits();
 
@@ -664,7 +665,26 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return rest_ensure_response( $response );
 	}
-
+	/** 
+	 * Get the license data for submitting Ai calls.
+	 */
+	public function get_license_keys() {
+		$data = kadence_blocks_get_current_license_data();
+		if ( ! empty( $data['key'] ) ) {
+			$this->api_key = $data['key'];
+		}
+		if ( ! empty( $data['email'] ) ) {
+			$this->api_email = $data['email'];
+		}
+	}
+	/** 
+	 * Get the site domain.
+	 */
+	public function get_site_domain() {
+		$container     = UplinkConfig::get_container();
+		$data          = $container->get( Data::class );
+		return $data->get_domain();
+	}
 	/**
 	 * Handle the event and maybe send to Prophecy WP.
 	 */
@@ -853,8 +873,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_pattern_content( WP_REST_Request $request ) {
-		$this->api_key    = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
+		$this->get_license_keys();
 		$this->product_id = $request->get_param( self::PROP_API_PRODUCT );
 		$library          = $request->get_param( self::PROP_LIBRARY );
 		$library_url      = $request->get_param( self::PROP_LIBRARY_URL );
@@ -870,27 +889,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		if ( ! empty( $library ) ) {
-			if ( is_callable( 'network_home_url' ) ) {
-				$site_url = network_home_url( '', 'http' );
-			} else {
-				$site_url = get_bloginfo( 'url' );
-			}
-			$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 			$args = array(
 				'type'    => ( ! empty( $pattern_type ) ? $pattern_type : 'pattern' ),
 				'key'     => $key,
 				'id'      => $pattern_id,
-				'site'    => $site_url,
+				'site'    => $this->get_site_domain(),
 			);
 			if ( ! empty( $pattern_style ) ) {
 				$args['style'] = $pattern_style;
 			}
 			if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
-				$args['api_email']  = $this->api_email;
 				$args['api_key']    = $this->api_key;
+				if ( ! empty( $this->api_email ) ) {
+					// Send in case we need to verify with old api.
+					$args['email'] = $this->api_email;
+				}
 				$args['product_id'] = $this->product_id;
 				if ( 'iThemes' === $this->api_email ) {
-					$args['site_url'] = $site_url;
+					$args['site_url'] = $args['site'];
 				}
 			}
 			// Get the response.
@@ -928,10 +944,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( WP_REST_Request $request ) {
+		$this->get_license_keys();
 		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key    = $request->get_param( self::PROP_API_KEY );
-		$this->api_email  = $request->get_param( self::PROP_API_EMAIL );
-		$this->product_id = $request->get_param( self::PROP_API_PRODUCT );
 		$library          = $request->get_param( self::PROP_LIBRARY );
 		$library_url      = $request->get_param( self::PROP_LIBRARY_URL );
 		$key              = $request->get_param( self::PROP_KEY );
@@ -1033,7 +1047,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_all_items( WP_REST_Request $request ) {
-		$this->api_key     = $request->get_param( self::PROP_API_KEY );
+		$this->get_license_keys();
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		$return_data       = array();
 
@@ -1073,9 +1087,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
+		$this->get_license_keys();
 		$context           = $request->get_param( self::PROP_CONTEXT );
 		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key     = $request->get_param( self::PROP_API_KEY );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 
 		// Check if we have captured prompt.
@@ -1111,12 +1125,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( 'error' );
 			} else {
 				$this->ai_cache->cache( $available_prompts[ $context ], $response );
-          // Log event for successful context generation.
-					do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
-						'context-name'    => $context,
-						'credits-after'   => $this->get_remote_remaining_credits(),
-						'is_regeneration' => true,
-					] );
+				// Log event for successful context generation.
+				do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
+					'context-name'    => $context,
+					'credits-after'   => $this->get_remote_remaining_credits(),
+					'is_regeneration' => true,
+				] );
 				return rest_ensure_response( $response );
 			}
 		} else {
@@ -1145,7 +1159,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_initial_jobs( WP_REST_Request $request ) {
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$this->get_license_keys();
 		update_option( 'kb_design_library_prompts', array() );
 		$contexts = $this->initial_contexts;
 		$available_prompts = array();
@@ -1515,7 +1529,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1523,7 +1537,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
-			//error_log( print_r( $response, true ) );
 			$contents = wp_remote_retrieve_body( $response );
 			if ( ! empty( $contents ) && is_string( $contents ) && json_decode( $contents, true ) ) {
 				$error_message = json_decode( $contents, true );
@@ -1570,7 +1583,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 				),
 			)
 		);
@@ -1681,7 +1694,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1737,7 +1750,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1767,17 +1780,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_remaining_credits() {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
 		$args = array(
-			'site'  => $site_url,
+			'site'  => $this->get_site_domain(),
 			'key'   => $this->api_key,
-			'email' => $this->api_email,
 		);
+		if ( ! empty( $this->api_email ) ) {
+			// Send in case we need to verify with old api.
+			$args['email'] = $this->api_email;
+		}
 		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
 		$response = wp_remote_get(
 			$api_url,
@@ -1812,7 +1822,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 				),
 			)
 		);
@@ -1854,7 +1864,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1875,8 +1885,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response Returns the remote URL contents.
 	 */
 	public function get_keyword_suggestions( WP_REST_Request $request ) {
+		$this->get_license_keys();
 		$parameters = $request->get_json_params();
-		if ( empty( $parameters['name'] ) || empty($parameters['entity_type']) || empty($parameters['industry']) || empty($parameters['location']) || empty($parameters['description']) ) {
+		if ( empty( $parameters['name'] ) || empty( $parameters['entity_type'] ) || empty( $parameters['industry'] ) || empty( $parameters['location'] ) || empty( $parameters['description'] ) ) {
 			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
 		}
 		$api_url  = $this->remote_ai_url . 'proxy/intake/suggest-keywords';
@@ -1893,7 +1904,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( [ 'key' => $this->api_key ] ),
+					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),

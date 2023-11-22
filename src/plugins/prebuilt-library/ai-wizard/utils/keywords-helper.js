@@ -18,11 +18,7 @@ export function keywordsHelper() {
 	}) {
 		try {
 			const response = await apiFetch({
-				path: addQueryArgs(API_ROUTE_GET_KEYWORDS, {
-					api_key: kadence_blocks_params?.proData?.api_key
-						? kadence_blocks_params.proData.api_key
-						: "",
-				}),
+				path: API_ROUTE_GET_KEYWORDS,
 				method: "POST",
 				data: {
 					name,

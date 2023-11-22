@@ -21,25 +21,31 @@ import './editor.scss';
  * WordPress dependencies
  */
 import { useEffect, useState } from "@wordpress/element";
-import { __, _n } from "@wordpress/i18n";
+import { __, _n, sprintf } from "@wordpress/i18n";
 import { store as noticesStore } from "@wordpress/notices";
 import { useDispatch } from "@wordpress/data";
 
 export default function KadenceBlocksHome() {
 	const [wizardState, setWizardState] = useState(false);
 	const queryParameters = new URLSearchParams(window.location.search);
-	const wizard = queryParameters.get("wizard");
+	const wizard = queryParameters.get("uplink_token");
 	const { getAIContentRemaining, getAvailableCredits } = getAsyncData();
 
 	// Get if user is authenticated
-	// TODO: Replace with real authentication logic
-	const authenticated = false;
+	const authenticated = kadenceHomeParams.isAuthorized ? true : false;
 	const content = authenticated
 		? AUTHENTICATED_CONTENT
 		: UNAUTHENTICATED_CONTENT;
 
 	useEffect(() => {
-		if (wizard) {
+		if ( wizard ) {
+			queryParameters.delete('uplink_token');
+			queryParameters.delete('uplink_license');
+			queryParameters.delete('uplink_slug');
+			queryParameters.delete('_uplink_nonce');
+			history.pushState(null, '', window.location.pathname + '?' + queryParameters.toString());
+		}
+		if ( wizard && authenticated ) {
 			setWizardState(true);
 		}
 	}, []);
@@ -76,12 +82,15 @@ export default function KadenceBlocksHome() {
 			console.log("Error getting all new AI Content.");
 		}
 	}
-
+	const footerText = <>
+		{ __( 'AI access authorized.','kadence-blocks' ) } <a href={ kadenceHomeParams.disconnectUrl }>{ __( 'Disconnect?', 'kadence-blocks' ) }</a>
+	</>;
 	return (
 		<>
 			<LargeBanner
 				{...content?.largeBanner}
-				onClick={() => setWizardState(true)}
+				activateUrl={ kadenceHomeParams.authUrl }
+				onUpdateWizard={() => setWizardState(true)}
 				isUserAuthenticated={authenticated}
 			/>
 			<div className="kb-container">
@@ -122,6 +131,9 @@ export default function KadenceBlocksHome() {
 					<SectionTitle title={content.knowledgeBase.heading} variant="white" />
 					<ArticleSlider articles={content.knowledgeBase.articles} />
 				</div>
+			</div>
+			<div className="kb-footer-status">
+				<p>{ authenticated ? footerText : __( 'AI access is not authorized.')}</p>
 			</div>
 		</>
 	);

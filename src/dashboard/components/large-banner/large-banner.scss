@@ -16,11 +16,34 @@
 	@media only screen and (min-width: 768px) {
 		margin-bottom: 60px;
 	}
+	.uplink-authorize {
+		padding: 12px 24px 12px 24px;
+		font-size: 14px;
+		height: auto;
+		display: inline-flex;
+		gap: 4px;
+		color: #FFFFFF;
+		box-shadow: none;
+		border-radius: 4px;
+		background: #0073E6;
+		text-decoration: none;
+	}
+	.kadence-update-ai-wizard {
+		color:white;
+		text-decoration: none;
+		&.components-button:not(:disabled,[aria-disabled=true]):active {
+			color: white;
+			opacity: .8;
+		}
+	}
 }
 
 .kb-large-banner__logo {
 	position: relative;
 	z-index: 2;
+	svg {
+		width: 190px;
+	}
 }
 
 .kb-large-banner__content {
@@ -80,8 +103,7 @@
 	bottom: 48px;
 	z-index: 2;
 }
-
-.components-tooltip {
+.components-popover.kb-large-banner__tooltip_popup .components-popover__content {
 	background-color: #fff;
 	color: #000;
 	border-radius: 8px;
@@ -90,4 +112,5 @@
 	line-height: 110%;
 	letter-spacing: 0.36px;
 	padding: 12px 16px;
+	min-width: max-content;
 }

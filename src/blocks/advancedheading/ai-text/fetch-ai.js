@@ -13,12 +13,7 @@ export function getAIContentHelper() {
 	async function getAvailableCredits() {
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( '/kb-design-library/v1/get_remaining_credits', {
-					api_key: kadence_blocks_params?.proData?.api_key
-					? kadence_blocks_params.proData.api_key
-					: "",
-					api_email:( kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_email ? kadence_blocks_params.proData.api_email : '' ),
-				} ),
+				path: '/kb-design-library/v1/get_remaining_credits',
 			} );
 			return response;
 		} catch (error) {
