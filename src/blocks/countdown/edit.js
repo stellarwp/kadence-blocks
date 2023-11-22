@@ -224,94 +224,93 @@ function KadenceCountdown( props ) {
 	const daysInMonth = (year, month) => {
 		return new Date(year, month + 1, 0).getDate();
 	}
-
-	const getFutureReapetDate = (currentDate, initialDate) => {
-		const seconds = initialDate.getSeconds();
-		const minutes = initialDate.getMinutes();
-		const hours = initialDate.getHours();
-		let dayOfMonth = initialDate.getDate();
-		const futureDayOfMonth = currentDate.getDate();
-		let futureDate = new Date();
-		const initialMonth = initialDate.getMonth();
-		const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
-		let initialYear = initialDate.getFullYear();
-		let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
-		
-
-		switch(frecuency) {
-			case 'daily':
-				initialYear = initialDate.getMonth() === 11 && dayOfMonth === 31 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
-				const initialMonthDays = daysInMonth(initialYear, initialMonth);
-				if((initialMonthDays === 30 && dayOfMonth === 30) || (initialMonthDays === 31 && dayOfMonth === 31)) {
-					dayOfMonth = 1;
-					initialMonth = initialMonth === 11 ? 0 : initialMonth + 1;
-					initialYear = initialMonth === 11 ? initialYear + 1 : initialYear;
-				} else if(initialMonthDays >= 28 && initialMonthDays <= 29) {
-					dayOfMonth = 1;
-					initialMonth = initialMonth + 1;
-				} else {
-					dayOfMonth++;
-				}
-
-				futureDate = new Date(
-					initialYear, 
-					initialMonth,
-					dayOfMonth,
-					hours, 
-					minutes,
-					seconds
-				);
-				break;
-			case 'weekly':
-			
-				break;
-			case 'monthly':
-				if(dayOfMonth === 31 && nextMonthDays === 30 ) {
-					dayOfMonth = 30;
-				} else if(futureMonth === 0 && dayOfMonth >= 29) {
-					dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
-				}
-
-				futureDate = new Date(
-					futureYear, 
-					futureMonth,
-					dayOfMonth,
-					hours, 
-					minutes,
-					seconds
-				);
-				break;
-			case 'yearly':
-				futureDate = new Date(
-					futureYear, 
-					initialMonth,
-					dayOfMonth,
-					initialDate.getHours(), 
-					initialDate.getMinutes(),
-					initialDate.getSeconds()
-				);
-				break;
-			default:
-				break;
-		}
-		
-		return futureDate;
-	}
 	
-
 	/*
-	** Updates the date when the repeater is activated 
+	** Updates the date when the repeater is active 
 	** or starts the countdown when the block is placed 
 	** for the first time.
 	*/
 	const updateEndDate = useCallback(() => {
 		const currentDate = new Date();
 		const initialDate = new Date(date);
-		const newDate = new Date();
 		
-		if(currentDate >= initialDate) {
-	    	saveDate(getFutureReapetDate(currentDate, initialDate));
+		if(repeat && currentDate >= initialDate) {
+			let futureDate = new Date();
+			const seconds = initialDate.getSeconds();
+			const minutes = initialDate.getMinutes();
+			const hours = initialDate.getHours();
+			let dayOfMonth = initialDate.getDate();
+			const futureDayOfMonth = currentDate.getDate();
+			const initialMonth = initialDate.getMonth();
+			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			let initialYear = initialDate.getFullYear();
+			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+
+			switch(frecuency) {
+				case 'daily':
+					initialYear = initialDate.getMonth() === 11 && dayOfMonth === 31 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+					const initialMonthDays = daysInMonth(initialYear, initialMonth);
+					if((initialMonthDays === 30 && dayOfMonth === 30) || (initialMonthDays === 31 && dayOfMonth === 31)) {
+						dayOfMonth = 1;
+						initialMonth = initialMonth === 11 ? 0 : initialMonth + 1;
+						initialYear = initialMonth === 11 ? initialYear + 1 : initialYear;
+					} else if(initialMonthDays >= 28 && initialMonthDays <= 29) {
+						dayOfMonth = 1;
+						initialMonth = initialMonth + 1;
+					} else {
+						dayOfMonth++;
+					}
+
+					futureDate = new Date(
+						initialYear, 
+						initialMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				case 'weekly':
+					const offsetDays = currentDate.getDate() - initialDate.getDate() + (7 - ((currentDate.getDate() - initialDate.getDate()) % 7));
+					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
+					break;
+				case 'monthly':
+					if(dayOfMonth === 31 && nextMonthDays === 30 ) {
+						dayOfMonth = 30;
+					} else if(futureMonth === 0 && dayOfMonth >= 29) {
+						dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
+					}
+
+					futureDate = new Date(
+						futureYear, 
+						futureMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				case 'yearly':
+					futureDate = new Date(
+						futureYear, 
+						initialMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				default:
+					break;
+			}
+			
+			saveDate(futureDate);	
 		}
+
+		const newDate = new Date();
 		
 		if ( !date ) {
 			const { timezone } = dateSettings;
