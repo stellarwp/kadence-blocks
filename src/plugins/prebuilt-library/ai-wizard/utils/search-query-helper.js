@@ -18,11 +18,7 @@ export function searchQueryHelper() {
 	}) {
 		try {
 			const response = await apiFetch({
-				path: addQueryArgs(API_ROUTE_GET_SEARCH_QUERY, {
-					api_key: kadence_blocks_params?.proData?.api_key
-						? kadence_blocks_params.proData.api_key
-						: "",
-				}),
+				path: addQueryArgs(API_ROUTE_GET_SEARCH_QUERY),
 				method: "POST",
 				data: {
 					name,

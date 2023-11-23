@@ -6,11 +6,13 @@ export function missionStatementHelper() {
 			// Get site domain from the url.
 			const url = new URL(window.location.href);
 			const domain = url.hostname;
+			let key = window?.kadence_blocks_params?.proData?.api_key ? window.kadence_blocks_params.proData.api_key : '';
+			if ( ! key ) {
+				key = window?.kadenceHomeParams?.apiKey ? window.kadenceHomeParams.apiKey : '';
+			}
 			const token = {
 				domain: domain,
-				key: kadence_blocks_params?.proData?.api_key
-					? kadence_blocks_params.proData.api_key
-					: "",
+				key: key,
 			};
 			const response = await fetch(
 				`${API_URL}proxy/intake/improve-mission-statement`,
