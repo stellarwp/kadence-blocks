@@ -120,11 +120,11 @@ function kadence_blocks_init() {
 	Telemetry::instance()->init( __FILE__ );
 
 	/**
-	 * AI-specific analytics.
+	 * AI-specific usage tracking. Only track if AI is opted in by user.
 	 */
-	require_once KADENCE_BLOCKS_PATH . 'includes/analytics/class-analytics.php';
-	$analytics = new Analytics();
-	$analytics->register();
+	require_once KADENCE_BLOCKS_PATH . 'includes/kadence-blocks-ai-events.php';
+	$ai_events = new Kadence_Blocks_AI_Events();
+	$ai_events->register();
 
 	/**
 	 * Uplink.
@@ -167,34 +167,3 @@ function kt_blocks_beta_updating() {
 }
 add_action( 'after_setup_theme', 'kt_blocks_beta_updating', 1 );
 
-/**
- * Plugin Updated.
- */
-function kt_blocks_updated( $upgrader_object, $options ): void {
-
-	if ( $options['action'] !== 'update' || $options['type'] !== 'plugin' ) {
-		return;
-	}
-
-	$plugin_path = plugin_basename( __FILE__ );
-
-	if ( ! isset($options['plugins']) || ! in_array( $plugin_path, $options['plugins'] ) ) {
-		return;
-	}
-
-	if ( ! function_exists( 'get_plugin_data' ) ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-	}
-
-	$current_plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_path );
-	$new_version         = $current_plugin_data['Version'];
-
-	do_action( 'stellarwp/analytics/event', 'Plugin Updated', array(
-		'product_name'             => $current_plugin_data['Name'],
-		'previous_product_version' => get_option( 'kadence_blocks_previous_version' ),
-		'new_version'              => $new_version,
-	) );
-
-	update_option( 'kadence_blocks_previous_version', $new_version );
-}
-add_action( 'upgrader_process_complete', 'kt_blocks_updated', 10, 2 );

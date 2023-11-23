@@ -1,15 +1,20 @@
 <?php
 /**
- * General Analytics class responsible for sending events to Prophecy WP.
+ * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
+
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 /**
- * REST API Products controller class.
+ * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
-class Analytics {
+class Kadence_Blocks_AI_Events {
 
 	/**
 	 * The event endpoint.
@@ -39,8 +44,15 @@ class Analytics {
 	 */
 	public function handle_event( string $name, array $context ) {
 
-		// Only track events when Kadence Blocks Pro is active.
-		if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
+		// Only pass tracking events if AI has been activated through Opt in.
+		$container     = UplinkConfig::get_container();
+		$token_manager = $container->get( Token_Manager::class );
+		$token         = $token_manager->get();
+		$is_authorized = false;
+		if ( $token ) {
+			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		}
+		if ( ! $is_authorized ) {
 			return;
 		}
 
@@ -76,28 +88,24 @@ class Analytics {
 	 * @return string The base64 encoded string.
 	 */
 	public static function get_prophecy_token_header( $args = [] ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
+		$container     = UplinkConfig::get_container();
+		$data          = $container->get( Data::class );
 
-		$site_url     = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$site_url     = $data->get_domain();
 		$site_name    = get_bloginfo( 'name' );
-		$api_details  = (array) get_option( 'kt_api_manager_kadence_gutenberg_pro_data', [] );
+		$license_data = kadence_blocks_get_current_license_data();
 
 		$defaults = [
 			'domain'          => $site_url,
-			'key'             => $api_details['api_key'] ?? '',
-			'email'           => $api_details['api_email'] ?? '',
+			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
+			'email'           => ! empty( $license_data['email'] ) ? $license_data['email'] : '',
 			'site_name'       => $site_name,
-			'product_slug'    => 'kadence-blocks',
-			'product_version' => KADENCE_BLOCKS_VERSION
+			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
+			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
 
 		$parsed_args = wp_parse_args( $args, $defaults );
 
 		return base64_encode( json_encode( $parsed_args ) );
 	}
-
 }

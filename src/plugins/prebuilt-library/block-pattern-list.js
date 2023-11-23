@@ -69,8 +69,7 @@ function KadenceBlockPattern( {
 			return (
 				<div className="block-editor-block-patterns-list__item-title kb-pattern-type-page">
 					<div className="kb-pattern-footer-top">
-						<span className="kb-pattern-title">
-							{ pattern.title }
+						<span className="kb-pattern-title" dangerouslySetInnerHTML={{ __html:pattern.title }}>
 						</span>
 						{ ( pattern?.pageStyles && pattern.pageStyles.length ) &&
 							Object.values(pattern.pageStyles).map((style) =>
@@ -88,7 +87,7 @@ function KadenceBlockPattern( {
 		} else {
 			return (
 				<div className="block-editor-block-patterns-list__item-title">
-					{ pattern.title }
+					<span className="kb-pattern-inline-title" dangerouslySetInnerHTML={{__html:pattern.title}}></span>
 					{ undefined !== pro && pro && (
 						<span className="kb-pattern-pro-item">{ __( 'Pro', 'kadence-blocks' ) }</span>
 					) }

@@ -494,8 +494,6 @@ function PatternLibrary( {
 	}
 
 	/**
-	 * @TODO Ben: This seems to run even if you don't have the Pro plugin, are these images even used if the "With AI" tab isn't active?
-	 *
 	 * @returns {Promise<void>}
 	 */
 	async function getImageCollection() {

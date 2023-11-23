@@ -740,7 +740,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				break;
 		}
 
-		if ( strlen($event) !== 0 ) {
+		if ( strlen( $event ) !== 0 ) {
 			do_action( 'stellarwp/analytics/event', $event, $context );
 
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
@@ -1047,7 +1047,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_all_items( WP_REST_Request $request ) {
-		$this->get_license_keys();
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		$return_data       = array();
 
@@ -1087,7 +1086,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		$this->get_license_keys();
 		$context           = $request->get_param( self::PROP_CONTEXT );
 		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
@@ -1198,7 +1196,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remaining_jobs( WP_REST_Request $request ) {
 		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
-		$this->api_key  = $request->get_param( self::PROP_API_KEY );
+		$this->get_license_keys();
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
 		$contexts = array(
 			'about',
@@ -1529,7 +1527,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1583,7 +1581,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 				),
 			)
 		);
@@ -1615,12 +1613,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_library_contents( $library, $library_url, $key ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = str_replace( array( 'http://', 'https://', 'www.' ), array( '', '', '' ), $site_url );
+		$site_url = $this->get_site_domain();
 		$args = array(
 			'key'  => $key,
 			'site' => $site_url,
@@ -1694,7 +1687,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1750,7 +1743,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1822,7 +1815,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 				),
 			)
 		);
@@ -1864,7 +1857,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1904,7 +1897,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => Analytics::get_prophecy_token_header( array( 'key' => $this->api_key ) ),
+					'X-Prophecy-Token' => self::get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -2247,6 +2240,32 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return true;
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );
+	}
+	/**
+	 * Constructs a consistent Token header.
+	 *
+	 * @param array $args An array of arguments to include in the encoded header.
+	 *
+	 * @return string The base64 encoded string.
+	 */
+	public static function get_token_header( $args = array() ) {
+
+		$site_url     = $this->get_site_domain();
+		$site_name    = get_bloginfo( 'name' );
+		$license_data = kadence_blocks_get_current_license_data();
+
+		$defaults = [
+			'domain'          => $site_url,
+			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
+			'email'           => ! empty( $license_data['email'] ) ? $license_data['email'] : '',
+			'site_name'       => $site_name,
+			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
+			'product_version' => KADENCE_BLOCKS_VERSION,
+		];
+
+		$parsed_args = wp_parse_args( $args, $defaults );
+
+		return base64_encode( json_encode( $parsed_args ) );
 	}
 
 }
