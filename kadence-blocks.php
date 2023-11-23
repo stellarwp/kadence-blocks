@@ -122,7 +122,7 @@ function kadence_blocks_init() {
 	/**
 	 * AI-specific usage tracking. Only track if AI is opted in by user.
 	 */
-	require_once KADENCE_BLOCKS_PATH . 'includes/kadence-blocks-ai-events.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-ai-events.php';
 	$ai_events = new Kadence_Blocks_AI_Events();
 	$ai_events->register();
 
