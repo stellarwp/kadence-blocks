@@ -173,10 +173,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	} elseif ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
 		$userrole = 'contributor';
 	}
-	$pro_data = false;
-	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		$pro_data = kadence_blocks_get_pro_license_data();
-	}
 	$access_levels = false;
 	$level_ids = false;
 	if ( function_exists( 'rcp_get_access_levels' ) ) {
@@ -228,6 +224,13 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
 		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
 	);
+	$pro_data = kadence_blocks_get_current_license_data();
+	if ( ! empty( $pro_data['key'] ) ) {
+		$pro_data['api_key'] = $pro_data['key'];
+	}
+	if ( ! empty( $pro_data['email'] ) ) {
+		$pro_data['api_email'] = $pro_data['email'];
+	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
@@ -254,6 +257,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
 			'proData'        => $pro_data,
+			'homeLink'       => admin_url( 'admin.php?page=kadence-blocks-home' ),
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
@@ -1059,42 +1063,6 @@ function kadence_blocks_register_api_endpoints() {
 	$image_picker_controller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
-
-/**
- * Get the license information.
- *
- * @return array
- */
-function kadence_blocks_get_pro_license_data() {
-	$data = false;
-	$current_theme = wp_get_theme();
-	$current_theme_name = $current_theme->get( 'Name' );
-	$current_theme_template = $current_theme->get( 'Template' );
-	// Check for a classic theme license.
-	if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template || 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template || 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
-		$pro_data = get_option( 'kt_api_manager' );
-		if ( $pro_data ) {
-			$data['ithemes']  = '';
-			$data['username'] = '';
-			if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template ) {
-				$data['product_id'] = 'pinnacle_premium';
-			} elseif ( 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template ) {
-				$data['product_id'] = 'ascend_premium';
-			} elseif ( 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
-				$data['product_id'] = 'virtue_premium';
-			}
-			$data['api_key'] = $pro_data['kt_api_key'];
-			$data['api_email'] = $pro_data['activation_email'];
-		}
-	} else {
-		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', true ) ) {
-			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		} else {
-			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		}
-	}
-	return $data;
-}
 
 /**
  * Register the lotte post type.

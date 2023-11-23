@@ -136,7 +136,7 @@ function kadence_blocks_wc_clean( $var ) {
  */
 function kadence_blocks_get_current_license_key() {
 	// Check if we have pro active.
-	if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
+	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
 		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
 		if ( ! empty( $license_key ) ) {
 			return $license_key;
@@ -155,7 +155,7 @@ function kadence_blocks_get_current_license_key() {
  */
 function kadence_blocks_get_current_license_email() {
 	// Check if we have pro active.
-	if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
+	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
 		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
 		if ( ! empty( $license_key ) ) {
 			return '';

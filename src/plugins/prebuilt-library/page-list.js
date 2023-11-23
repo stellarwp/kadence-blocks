@@ -103,7 +103,8 @@ function PageListNotice( { type } ) {
 }
 function ProOnlyHeader() {
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
-	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	const data_key = ( kadence_blocks_params?.proData?.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	const activateLink = ( kadence_blocks_params?.homeLink ?  kadence_blocks_params.homeLink : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -114,18 +115,16 @@ function ProOnlyHeader() {
 			>
 				{ __( 'Drop in professionally designed pages with AI Generated Content', 'kadence Blocks' ) }
 			</Heading>
-			{ ! hasPro && ! data_key && (
-				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-			)}
-			{ hasPro && ! data_key && (
+			{ ! data_key && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
-					disabled={ true }
+					text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+					disabled={ activateLink ? false : true }
+					href={ activateLink ? activateLink : '' }
 				/>
-			)}
+			) }
 		</div>
 	);
 }

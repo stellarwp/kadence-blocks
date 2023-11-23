@@ -463,9 +463,9 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function get_local_template_data_filename() {
 		$kb_api = 'free';
 		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-			$kbp_data = kadence_blocks_get_pro_license_data();
-			if ( $kbp_data && isset( $kbp_data['api_key'] ) && ! empty( $kbp_data['api_key'] ) ) {
-				$kb_api = $kbp_data['api_key'];
+			$kbp_data = kadence_blocks_get_current_license_key();
+			if ( ! empty( $kbp_data ) ) {
+				$kb_api = $kbp_data;
 			}
 		}
 		if ( 'templates' !== $this->package && 'section' !== $this->package && ! $this->is_template && $this->key ) {
