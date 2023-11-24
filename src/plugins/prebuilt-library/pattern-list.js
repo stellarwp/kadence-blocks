@@ -129,6 +129,8 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 	}, [ context, contextState ] );
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
 	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -152,19 +154,41 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 				contextLabel,
 				) }
 			</p>
-			{ ! hasPro && ! data_key && (
-				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-			)}
-			{ hasPro && ! data_key && (
+			{ ! isAuthorized && ! loading && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
-					disabled={ true }
+					text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+					disabled={ activateLink ? false : true }
+					href={ activateLink ? activateLink : '' }
 				/>
-			)}
-			{ hasPro && data_key && ! loading && (
+			) }
+			{ isAuthorized && ! data_key && ! loading && (
+				<>
+					{ hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							href={ activateLink ? activateLink : '' }
+						/>
+					) }
+					{ ! hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							href={ activateLink ? activateLink : '' }
+						/>
+					)}
+				</>
+			) }
+			{ isAuthorized && data_key && ! loading && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'

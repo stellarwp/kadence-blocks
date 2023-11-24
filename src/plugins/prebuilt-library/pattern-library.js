@@ -207,6 +207,7 @@ function PatternLibrary( {
 		}
 		return true;
 	}
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
@@ -565,12 +566,12 @@ function PatternLibrary( {
 	}
 	useEffect(() => {
 		getAIUserData();
-		if ( currentCredits === 'fetch' ) {
+		if ( isAuthorized && currentCredits === 'fetch' ) {
 			getRemoteAvailableCredits();
 		}
 	}, [aiDataState]);
 	useEffect(() => {
-		if ( aIUserData && ! hasInitialAI ) {
+		if ( isAuthorized && aIUserData && ! hasInitialAI ) {
 			getAILocalData();
 		}
 	}, [aIUserData]);
@@ -1099,6 +1100,13 @@ function PatternLibrary( {
 							imageCollection={ imageCollection }
 							useImageReplace={ selectedReplaceImages }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
+							launchWizard={ () => {
+								sendEvent( 'ai_wizard_started' );
+								setWizardState( {
+									visible: true,
+									photographyOnly: false
+								} );
+							} }
 						/>
 					) }
 				</>

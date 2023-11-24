@@ -101,10 +101,11 @@ function PageListNotice( { type } ) {
 		</Heading>
 	);
 }
-function ProOnlyHeader() {
+function ProOnlyHeader( launchWizard ) {
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
+	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
-	const data_key = ( kadence_blocks_params?.proData?.api_key ?  kadence_blocks_params.proData.api_key : '' );
-	const activateLink = ( kadence_blocks_params?.homeLink ?  kadence_blocks_params.homeLink : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -115,7 +116,7 @@ function ProOnlyHeader() {
 			>
 				{ __( 'Drop in professionally designed pages with AI Generated Content', 'kadence Blocks' ) }
 			</Heading>
-			{ ! data_key && (
+			{ ! isAuthorized && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
@@ -125,6 +126,41 @@ function ProOnlyHeader() {
 					href={ activateLink ? activateLink : '' }
 				/>
 			) }
+			{ isAuthorized && ! data_key && (
+				<>
+					{ hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							href={ activateLink ? activateLink : '' }
+						/>
+					) }
+					{ ! hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							href={ activateLink ? activateLink : '' }
+						/>
+					)}
+				</>
+			) }
+			{ isAuthorized && data_key && (
+				<Button
+					className='kadence-generate-copy-button'
+					iconPosition='right'
+					icon={ aiIcon }
+					text={__( 'Generate Content AI Content', 'kadence-blocks' ) }
+					onClick={ () => {
+						launchWizard( true );
+					}}
+				/>
+			)}
 		</div>
 	);
 }
@@ -247,7 +283,8 @@ function PageList( {
 	imageCollection,
 	contextTab,
 	useImageReplace,
-	onSelect
+	onSelect,
+	launchWizard
 } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
@@ -529,7 +566,7 @@ function PageList( {
 					<PageListNotice type={ 'mising-context' } />
 				)}
 				{ contextTab === 'context' && ( ! hasPro || ! data_key ) && (
-					<ProOnlyHeader />
+					<ProOnlyHeader launchWizard={ launchWizard } />
 				)}
 				{ hasItems && (
 					<KadenceBlockPatternList

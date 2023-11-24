@@ -607,8 +607,7 @@ class Kadence_Blocks_Settings {
 	public function home_scripts() {
 		$container     = UplinkConfig::get_container();
 		$data          = $container->get( Data::class );
-		$token_manager = $container->get( Token_Manager::class );
-		$token         = $token_manager->get();
+		$token         = get_authorization_token();
 		$is_authorized = false;
 		$auth_url      = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
 		$license_key   = kadence_blocks_get_current_license_key();

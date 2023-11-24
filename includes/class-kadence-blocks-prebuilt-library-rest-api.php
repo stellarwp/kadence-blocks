@@ -1157,7 +1157,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_initial_jobs( WP_REST_Request $request ) {
-		$this->get_license_keys();
 		update_option( 'kb_design_library_prompts', array() );
 		$contexts = $this->initial_contexts;
 		$available_prompts = array();
@@ -1527,7 +1526,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1581,7 +1580,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 				),
 			)
 		);
@@ -1687,7 +1686,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1743,7 +1742,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1815,7 +1814,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 				),
 			)
 		);
@@ -1857,7 +1856,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -1878,7 +1877,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response Returns the remote URL contents.
 	 */
 	public function get_keyword_suggestions( WP_REST_Request $request ) {
-		$this->get_license_keys();
 		$parameters = $request->get_json_params();
 		if ( empty( $parameters['name'] ) || empty( $parameters['entity_type'] ) || empty( $parameters['industry'] ) || empty( $parameters['location'] ) || empty( $parameters['description'] ) ) {
 			return new WP_REST_Response( array( 'error' => 'Missing parameters' ), 400 );
@@ -1897,7 +1895,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			array(
 				'timeout' => 20,
 				'headers' => array(
-					'X-Prophecy-Token' => self::get_token_header(),
+					'X-Prophecy-Token' => $this->get_token_header(),
 					'Content-Type'     => 'application/json',
 				),
 				'body'    => json_encode( $body ),
@@ -2248,7 +2246,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @return string The base64 encoded string.
 	 */
-	public static function get_token_header( $args = array() ) {
+	public function get_token_header( $args = array() ) {
 
 		$site_url     = $this->get_site_domain();
 		$site_name    = get_bloginfo( 'name' );
