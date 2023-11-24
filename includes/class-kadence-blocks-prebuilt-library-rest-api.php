@@ -677,10 +677,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$this->api_email = $data['email'];
 		}
 	}
-	/** 
+	/**
 	 * Get the site domain.
 	 */
-	public function get_site_domain() {
+	public static function get_site_domain() {
 		$container     = UplinkConfig::get_container();
 		$data          = $container->get( Data::class );
 		return $data->get_domain();
@@ -2250,7 +2250,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public static function get_token_header( $args = array() ) {
 
-		$site_url     = $this->get_site_domain();
+		$site_url     = self::get_site_domain();
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
 
