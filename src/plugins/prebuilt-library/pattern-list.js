@@ -45,7 +45,7 @@ import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { CONTEXT_PROMPTS } from './data-fetch/constants';
-import { getAsyncData } from './data-fetch/get-async-data';
+import { sendEvent } from '../../extension/analytics/send-event';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -351,8 +351,7 @@ function PatternList( {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
-	const debouncedSpeak = useDebounce( speak, 500 );
-	const { sendEvent } = getAsyncData();
+	const debouncedSpeak = useDebounce(speak, 500);
 	const { getContextState, getContextContent, getAllContext } = useSelect(
 		( select ) => {
 			return {
